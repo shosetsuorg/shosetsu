@@ -25,7 +25,7 @@ import org.json.JSONException
 
 /** An exception occurred in SQL*/
 fun errorResult(e: SQLiteException): HResult.Error =
-		HResult.Error(ErrorKeys.ERROR_HTTP_SQL, e.message ?: "UnknownSQLException", e)
+	HResult.Error(ErrorKeys.ERROR_HTTP_SQL, e.message ?: "UnknownSQLException", e)
 
 fun errorResult(e: JSONException): HResult.Error =
-		HResult.Error(ErrorKeys.ERROR_JSON, e.message ?: "UnknownJSONException", e)
+	HResult.Error(ErrorKeys.ERROR_JSON, e.message ?: "UnknownJSONException", e)

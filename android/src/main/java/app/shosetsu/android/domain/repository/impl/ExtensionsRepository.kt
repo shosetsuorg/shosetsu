@@ -43,32 +43,32 @@ import kotlinx.coroutines.flow.Flow
  * @author github.com/doomsdayrs
  */
 class ExtensionsRepository(
-		private val memorySource: IMemExtensionsDataSource,
-		private val databaseSource: ILocalExtensionsDataSource,
-		private val fileSource: IFileExtensionDataSource,
-		private val remoteSource: IRemoteExtensionDataSource,
-		private val repositorySource: ILocalExtRepoDataSource,
-		private val remoteCatalogueDataSource: IRemoteCatalogueDataSource,
+	private val memorySource: IMemExtensionsDataSource,
+	private val databaseSource: ILocalExtensionsDataSource,
+	private val fileSource: IFileExtensionDataSource,
+	private val remoteSource: IRemoteExtensionDataSource,
+	private val repositorySource: ILocalExtRepoDataSource,
+	private val remoteCatalogueDataSource: IRemoteCatalogueDataSource,
 ) : IExtensionsRepository {
 	override fun loadExtensionEntitiesLive(): Flow<HResult<List<ExtensionEntity>>> =
-			databaseSource.loadExtensions()
+		databaseSource.loadExtensions()
 
 
 	override fun getExtensionEntityLive(id: Int): Flow<HResult<ExtensionEntity>> =
-			databaseSource.loadExtensionLive(id)
+		databaseSource.loadExtensionLive(id)
 
 	override suspend fun getExtensionEntity(id: Int): HResult<ExtensionEntity> =
-			databaseSource.loadExtension(id)
+		databaseSource.loadExtension(id)
 
 	override suspend fun getExtensionEntities(repoID: Int): HResult<List<ExtensionEntity>> =
-			databaseSource.getExtensions(repoID)
+		databaseSource.getExtensions(repoID)
 
 	override suspend fun installExtension(extensionEntity: ExtensionEntity): HResult<*> {
 		val repo = repositorySource.loadRepository(extensionEntity.repoID)
 		if (repo is HResult.Success)
 			when (val result = remoteSource.downloadExtension(
-					repo.data,
-					extensionEntity
+				repo.data,
+				extensionEntity
 			)) {
 				is HResult.Success -> {
 					try {
@@ -104,21 +104,25 @@ class ExtensionsRepository(
 	}
 
 	override suspend fun uninstallExtension(extensionEntity: ExtensionEntity): HResult<*> =
-			memorySource.removeFormatterFromMemory(extensionEntity.id) and
-					fileSource.deleteFormatter(extensionEntity.fileName) and
-					databaseSource.updateExtension(
-							extensionEntity.copy(enabled = false, installed = false, installedVersion = null)
+		memorySource.removeFormatterFromMemory(extensionEntity.id) and
+				fileSource.deleteFormatter(extensionEntity.fileName) and
+				databaseSource.updateExtension(
+					extensionEntity.copy(
+						enabled = false,
+						installed = false,
+						installedVersion = null
 					)
+				)
 
 	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<*> =
-			databaseSource.insertOrUpdate(extensionEntity)
+		databaseSource.insertOrUpdate(extensionEntity)
 
 	override suspend fun updateExtensionEntity(extensionEntity: ExtensionEntity): HResult<*> =
-			databaseSource.updateExtension(extensionEntity)
+		databaseSource.updateExtension(extensionEntity)
 
 	override suspend fun loadIExtension(extensionEntity: ExtensionEntity): HResult<IExtension> {
 		memorySource.loadFormatterFromMemory(extensionEntity.id)
-				.takeIf { it is HResult.Success }?.let { return it }
+			.takeIf { it is HResult.Success }?.let { return it }
 
 		val fileResult = fileSource.loadFormatter(extensionEntity.fileName)
 		if (fileResult !is HResult.Success)
@@ -132,28 +136,28 @@ class ExtensionsRepository(
 	}
 
 	override suspend fun loadIExtension(formatterID: Int): HResult<IExtension> =
-			databaseSource.loadExtension(formatterID).transform { loadIExtension(it) }
+		databaseSource.loadExtension(formatterID).transform { loadIExtension(it) }
 
 	override fun getCards(): Flow<HResult<List<IDTitleImage>>> =
-			databaseSource.loadPoweredExtensionsCards()
+		databaseSource.loadPoweredExtensionsCards()
 
 
 	override suspend fun loadCatalogueSearch(
-			formatter: IExtension,
-			query: String,
-			data: Map<Int, Any>
+		formatter: IExtension,
+		query: String,
+		data: Map<Int, Any>
 	): HResult<List<Novel.Listing>> =
-			remoteCatalogueDataSource.search(
-					formatter, query, data
-			)
+		remoteCatalogueDataSource.search(
+			formatter, query, data
+		)
 
 	override suspend fun loadCatalogueData(
-			formatter: IExtension,
-			listing: Int,
-			data: Map<Int, Any>,
+		formatter: IExtension,
+		listing: Int,
+		data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>> =
-			remoteCatalogueDataSource.loadListing(formatter, listing, data)
+		remoteCatalogueDataSource.loadListing(formatter, listing, data)
 
 	override suspend fun removeExtension(it: ExtensionEntity): HResult<*> =
-			databaseSource.deleteExtension(it)
+		databaseSource.deleteExtension(it)
 }

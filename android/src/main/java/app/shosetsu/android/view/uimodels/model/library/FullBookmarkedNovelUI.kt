@@ -22,11 +22,15 @@ package app.shosetsu.android.view.uimodels.model.library
  * 23 / 08 / 2020
  */
 data class FullBookmarkedNovelUI(
-		override val id: Int,
-		override val title: String,
-		override val imageURL: String,
-		override var bookmarked: Boolean,
-		override val unread: Int,
+	override val id: Int,
+	override val title: String,
+	override val imageURL: String,
+	override var bookmarked: Boolean,
+	override val unread: Int,
+	override val genres: List<String>,
+	override val authors: List<String>,
+	override val artists: List<String>,
+	override val tags: List<String>,
 ) : ABookmarkedNovelUI() {
 	override val layoutRes: Int = com.github.doomsdayrs.apps.shosetsu.R.layout.recycler_novel_card
 	override val type: Int = com.github.doomsdayrs.apps.shosetsu.R.layout.recycler_novel_card

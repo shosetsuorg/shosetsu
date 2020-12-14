@@ -204,15 +204,17 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 		actionBarDrawerToggle = ActionBarDrawerToggle(
-				this,
-				binding.drawerLayout,
-				binding.toolbar,
-				R.string.todo,
-				R.string.todo
+			this,
+			binding.drawerLayout,
+			binding.toolbar,
+			R.string.todo,
+			R.string.todo
 		)
 
-		val toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.toolbar,
-				R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+		val toggle = ActionBarDrawerToggle(
+			this, binding.drawerLayout, binding.toolbar,
+			R.string.navigation_drawer_open, R.string.navigation_drawer_close
+		)
 		binding.drawerLayout.addDrawerListener(toggle)
 		toggle.syncState()
 
@@ -230,7 +232,10 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 	private fun setupBottomNavigationDrawer() {
 		logV("Setting up modern navigation")
-		binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, binding.navView)
+		binding.drawerLayout.setDrawerLockMode(
+			DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
+			binding.navView
+		)
 
 		binding.bottomNavigationView.setOnNavigationItemSelectedListener {
 			val id = it.itemId
@@ -255,21 +260,21 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		router = attachRouter(this, binding.controllerContainer, savedInstanceState)
 		router.addChangeListener(object : ControllerChangeHandler.ControllerChangeListener {
 			override fun onChangeStarted(
-					to: Controller?,
-					from: Controller?,
-					isPush: Boolean,
-					container: ViewGroup,
-					handler: ControllerChangeHandler,
+				to: Controller?,
+				from: Controller?,
+				isPush: Boolean,
+				container: ViewGroup,
+				handler: ControllerChangeHandler,
 			) {
 				syncActivityViewWithController(to, from)
 			}
 
 			override fun onChangeCompleted(
-					to: Controller?,
-					from: Controller?,
-					isPush: Boolean,
-					container: ViewGroup,
-					handler: ControllerChangeHandler,
+				to: Controller?,
+				from: Controller?,
+				isPush: Boolean,
+				container: ViewGroup,
+				handler: ControllerChangeHandler,
 			) {
 			}
 		})
@@ -285,16 +290,24 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			Intent.ACTION_SEARCH -> {
 				if (!router.hasRootController()) setSelectedDrawerItem(R.id.nav_library)
 
-				transitionView(SearchController(bundleOf(
-						BUNDLE_QUERY to (intent.getStringExtra(SearchManager.QUERY) ?: "")
-				)))
+				transitionView(
+					SearchController(
+						bundleOf(
+							BUNDLE_QUERY to (intent.getStringExtra(SearchManager.QUERY) ?: "")
+						)
+					)
+				)
 			}
 			ACTION_OPEN_SEARCH -> {
 				if (!router.hasRootController()) setSelectedDrawerItem(R.id.nav_library)
 
-				transitionView(SearchController(bundleOf(
-						BUNDLE_QUERY to (intent.getStringExtra(SearchManager.QUERY) ?: "")
-				)))
+				transitionView(
+					SearchController(
+						bundleOf(
+							BUNDLE_QUERY to (intent.getStringExtra(SearchManager.QUERY) ?: "")
+						)
+					)
+				)
 			}
 			Intent.ACTION_MAIN -> {
 				if (!router.hasRootController()) {
@@ -318,18 +331,22 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	private fun setupProcesses() {
 		viewModel.startUpdateCheck().observe(this) { result ->
 			result.handle(
-					onError = {
-						applicationContext.toast("$result")
-					}
+				onError = {
+					applicationContext.toast("$result")
+				}
 			) {
 				val update = it
 				AlertDialog.Builder(this).apply {
 					setTitle(R.string.update_app_now_question)
-					setMessage("${update.version}\t${update.versionCode}\n" + update.notes.joinToString("\n"))
+					setMessage(
+						"${update.version}\t${update.versionCode}\n" + update.notes.joinToString(
+							"\n"
+						)
+					)
 					setPositiveButton(R.string.update) { it, _ ->
 						viewModel.share(
-								update.url,
-								if (update.versionCode == -1) "Discord" else "Github"
+							update.url,
+							if (update.versionCode == -1) "Discord" else "Github"
 						)
 						it.dismiss()
 					}
@@ -362,7 +379,10 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 				logI("Sync activity view with controller for legacy")
 				supportActionBar?.setDisplayHomeAsUpEnabled(true)
 				actionBarDrawerToggle.isDrawerIndicatorEnabled = true
-				binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, binding.navView)
+				binding.drawerLayout.setDrawerLockMode(
+					DrawerLayout.LOCK_MODE_UNLOCKED,
+					binding.navView
+				)
 			} else {
 				supportActionBar?.setDisplayHomeAsUpEnabled(false)
 				binding.bottomNavigationView.visibility = VISIBLE
@@ -374,7 +394,10 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 				logI("Sync activity view with controller for legacy")
 				supportActionBar?.setDisplayHomeAsUpEnabled(false)
 				actionBarDrawerToggle.isDrawerIndicatorEnabled = false
-				binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, binding.navView)
+				binding.drawerLayout.setDrawerLockMode(
+					DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
+					binding.navView
+				)
 			} else {
 				supportActionBar?.setDisplayHomeAsUpEnabled(true)
 				binding.bottomNavigationView.visibility = GONE
@@ -382,7 +405,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		}
 
 		val fab = binding.fab
-		val efab = binding.efab
+		val eFab = binding.efab
 		if (from is FABController) {
 			from.hideFAB(fab)
 			from.resetFAB(fab)
@@ -394,13 +417,13 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		}
 
 		if (from is ExtendedFABController) {
-			from.hideFAB(efab)
-			from.resetFAB(efab)
+			from.hideFAB(eFab)
+			from.resetFAB(eFab)
 		}
 
 		if (to is ExtendedFABController) {
-			to.manipulateFAB(efab)
-			to.showFAB(efab)
+			to.manipulateFAB(eFab)
+			to.showFAB(eFab)
 		}
 
 		if (to is PushCapableController) to.acceptPushing { transitionView(it) }
@@ -421,6 +444,39 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 		if (from is TabbedController && to !is TabbedController) tabLayout.collapse()
 		if (from !is TabbedController && to is TabbedController) tabLayout.expand()
+
+		if (from is BottomMenuController) {
+			binding.slidingUpBottomMenu.apply {
+				clearOnHideListeners()
+				clearOnShowListeners()
+				clearChildren()
+			}
+		}
+
+		if (to is BottomMenuController) {
+			var created = false
+			to.bottomMenuRetriever = { binding.slidingUpBottomMenu }
+
+			binding.slidingUpBottomMenu.apply {
+				addOnShowListener {
+					if (!created) {
+						addChildView(to.getBottomMenuView())
+						created = true
+					}
+				}
+
+				if (to is FABController) {
+					addOnShowListener { to.hideFAB(fab) }
+					addOnHideListener { to.showFAB(fab) }
+				}
+
+
+				if (to is ExtendedFABController) {
+					addOnShowListener { to.hideFAB(eFab) }
+					addOnHideListener { to.showFAB(eFab) }
+				}
+			}
+		}
 
 		when (to) {
 			is CollapsedToolBarController -> {

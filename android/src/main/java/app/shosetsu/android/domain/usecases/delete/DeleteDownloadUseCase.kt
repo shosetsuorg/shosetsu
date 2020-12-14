@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases.delete
 
-import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
 import app.shosetsu.android.view.uimodels.model.DownloadUI
+import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
 
 /*
  * This file is part of shosetsu.
@@ -25,7 +25,7 @@ import app.shosetsu.android.view.uimodels.model.DownloadUI
  * 21 / 06 / 2020
  */
 class DeleteDownloadUseCase(
-		private val iDownloadsRepository: IDownloadsRepository,
+	private val iDownloadsRepository: IDownloadsRepository,
 ) {
 	suspend operator fun invoke(downloadUI: DownloadUI) {
 		iDownloadsRepository.deleteEntity(downloadUI.convertTo())

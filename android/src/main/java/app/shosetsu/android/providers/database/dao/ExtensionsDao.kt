@@ -70,12 +70,14 @@ interface ExtensionsDao : BaseDao<DBExtensionEntity> {
 	@Transaction
 	suspend fun insertOrUpdate(DBExtensionEntity: DBExtensionEntity) {
 		if (doesExtensionExist(DBExtensionEntity.id)) {
-			suspendedUpdate(getExtension(DBExtensionEntity.id).copy(
+			suspendedUpdate(
+				getExtension(DBExtensionEntity.id).copy(
 					name = DBExtensionEntity.name,
 					imageURL = DBExtensionEntity.imageURL,
 					repositoryVersion = DBExtensionEntity.repositoryVersion,
 					md5 = DBExtensionEntity.md5
-			))
+				)
+			)
 		} else {
 			insertReplace(DBExtensionEntity)
 		}

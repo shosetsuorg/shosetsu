@@ -29,9 +29,12 @@ import app.shosetsu.lib.exceptions.HTTPException
  * @param
  */
 class ToastErrorUseCase(
-		val application: Application,
+	val application: Application,
 ) {
-	inline operator fun <reified R : Any> invoke(error: HResult.Error, duration: Int = Toast.LENGTH_LONG) {
+	inline operator fun <reified R : Any> invoke(
+		error: HResult.Error,
+		duration: Int = Toast.LENGTH_LONG
+	) {
 		app.shosetsu.android.common.ext.launchUI {
 			val exception = error.error
 
@@ -50,8 +53,8 @@ class ToastErrorUseCase(
 				}
 
 			application.toast(
-					duration = duration,
-					string = errorMessage
+				duration = duration,
+				string = errorMessage
 			)
 		}
 	}

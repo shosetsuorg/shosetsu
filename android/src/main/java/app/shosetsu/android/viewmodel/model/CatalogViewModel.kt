@@ -46,14 +46,14 @@ import kotlinx.coroutines.flow.collectLatest
  * 01 / 05 / 2020
  */
 class CatalogViewModel(
-		private val getFormatterUseCase: LoadFormatterUseCase,
-		private val backgroundAddUseCase: NovelBackgroundAddUseCase,
-		private val loadCatalogueListingData: LoadCatalogueListingDataUseCase,
-		private val loadCatalogueQueryDataUseCase: LoadCatalogueQueryDataUseCase,
-		private var reportExceptionUseCase: ReportExceptionUseCase,
-		private val loadNovelUITypeUseCase: LoadNovelUITypeUseCase,
-		private val loadNovelUIColumnsHUseCase: LoadNovelUIColumnsHUseCase,
-		private val loadNovelUIColumnsPUseCase: LoadNovelUIColumnsPUseCase,
+	private val getFormatterUseCase: LoadFormatterUseCase,
+	private val backgroundAddUseCase: NovelBackgroundAddUseCase,
+	private val loadCatalogueListingData: LoadCatalogueListingDataUseCase,
+	private val loadCatalogueQueryDataUseCase: LoadCatalogueQueryDataUseCase,
+	private var reportExceptionUseCase: ReportExceptionUseCase,
+	private val loadNovelUITypeUseCase: LoadNovelUITypeUseCase,
+	private val loadNovelUIColumnsHUseCase: LoadNovelUIColumnsHUseCase,
+	private val loadNovelUIColumnsPUseCase: LoadNovelUIColumnsPUseCase,
 ) : ICatalogViewModel() {
 	private var novelUIType: NovelUIType = NovelUIType.fromInt(SettingKey.NovelCardType.default)
 	private var columnP: Int = SettingKey.ChapterColumnsInPortait.default
@@ -133,19 +133,19 @@ class CatalogViewModel(
 		return if (query.isEmpty()) {
 			logV("Loading listing data")
 			loadCatalogueListingData(
-					formatter!!,
-					filterData.apply {
-						this[PAGE_INDEX] = currentMaxPage
-					}
+				formatter!!,
+				filterData.apply {
+					this[PAGE_INDEX] = currentMaxPage
+				}
 			)
 		} else {
 			logV("Loading query data")
 			loadCatalogueQueryDataUseCase(
-					formatter!!,
-					query,
-					filterData.apply {
-						this[PAGE_INDEX] = currentMaxPage
-					}
+				formatter!!,
+				query,
+				filterData.apply {
+					this[PAGE_INDEX] = currentMaxPage
+				}
 			)
 		}
 	}
@@ -220,7 +220,7 @@ class CatalogViewModel(
 	}
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) =
-			reportExceptionUseCase(error)
+		reportExceptionUseCase(error)
 
 	override fun getColumnsInP(): Int = columnP
 	override fun getColumnsInH(): Int = columnH

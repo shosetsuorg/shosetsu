@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import android.view.ActionMode
 import android.view.LayoutInflater.from
 import android.view.MenuItem
-import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
@@ -39,12 +38,12 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.BottomActionBarBinding.in
  * 01 / 10 / 2020
  */
 class BottomActionBar @JvmOverloads constructor(
-		context: Context,
-		attrs: AttributeSet? = null
+	context: Context,
+	attrs: AttributeSet? = null
 ) : FrameLayout(context, attrs) {
 
 	private val binding: BottomActionBarBinding =
-			inflate(from(context), this, true)
+		inflate(from(context), this, true)
 
 	/**
 	 * Removes all items

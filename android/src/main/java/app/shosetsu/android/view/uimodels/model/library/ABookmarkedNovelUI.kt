@@ -5,11 +5,11 @@ import androidx.core.view.isVisible
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.toast
-import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.GetImageURL
 import app.shosetsu.android.view.uimodels.base.GetTitle
 import app.shosetsu.android.view.viewholders.TitleImageFViewHolder
+import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.common.dto.Convertible
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.card.MaterialCardView
@@ -40,7 +40,7 @@ import com.google.android.material.chip.Chip
  */
 abstract class ABookmarkedNovelUI
 	: BaseRecyclerItem<ABookmarkedNovelUI.ViewHolder>(), Convertible<BookmarkedNovelEntity>,
-		GetImageURL, GetTitle {
+	GetImageURL, GetTitle {
 
 	/** ID of the novel*/
 	abstract val id: Int
@@ -57,6 +57,11 @@ abstract class ABookmarkedNovelUI
 	/** chapters of this novel*/
 	abstract val unread: Int
 
+	abstract val genres: List<String>
+	abstract val authors: List<String>
+	abstract val artists: List<String>
+	abstract val tags: List<String>
+
 	override var identifier: Long
 		get() = id.toLong()
 		set(@Suppress("UNUSED_PARAMETER") value) {}
@@ -66,7 +71,7 @@ abstract class ABookmarkedNovelUI
 	override fun getDataTitle(): String = title
 
 	override fun convertTo(): BookmarkedNovelEntity =
-			BookmarkedNovelEntity(id, title, imageURL, bookmarked, unread)
+		BookmarkedNovelEntity(id, title, imageURL, bookmarked, unread)
 
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 

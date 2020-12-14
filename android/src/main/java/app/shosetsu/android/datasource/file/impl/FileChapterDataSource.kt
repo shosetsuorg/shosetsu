@@ -4,10 +4,10 @@ import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
 import app.shosetsu.common.consts.ErrorKeys.ERROR_NOT_FOUND
-import app.shosetsu.common.enums.InternalFileDir.FILES
 import app.shosetsu.common.datasource.file.base.IFileChapterDataSource
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.dto.*
+import app.shosetsu.common.enums.InternalFileDir.FILES
 import java.io.File
 import java.io.FileNotFoundException
 
@@ -33,55 +33,55 @@ import java.io.FileNotFoundException
  * 12 / 05 / 2020
  */
 class FileChapterDataSource(
-		private val iFileSystemProvider: IFileSystemProvider
+	private val iFileSystemProvider: IFileSystemProvider
 ) : IFileChapterDataSource {
 	init {
 		logV("Creating required directories")
 		iFileSystemProvider.createInternalDirectory(FILES, "/download/").handle(
-				onError = {
-					logV("Error on creation of directories $it")
-				},
-				onSuccess = {
-					logV("Created required directories")
-				}
+			onError = {
+				logV("Error on creation of directories $it")
+			},
+			onSuccess = {
+				logV("Created required directories")
+			}
 		)
 	}
 
 
 	/** Makes path */
 	private fun makePath(ce: ChapterEntity): String =
-			"/download/${ce.formatterID}/${ce.novelID}/${ce.id}.txt"
+		"/download/${ce.formatterID}/${ce.novelID}/${ce.id}.txt"
 
 	override suspend fun saveChapterPassageToStorage(
-			chapterEntity: ChapterEntity,
-			passage: String,
+		chapterEntity: ChapterEntity,
+		passage: String,
 	): HResult<*> {
 		val path = makePath(chapterEntity)
 		return iFileSystemProvider.createInternalDirectory(
-				FILES,
-				path.substringBeforeLast("/")
+			FILES,
+			path.substringBeforeLast("/")
 		).transform {
 			iFileSystemProvider.writeInternalFile(
-					FILES,
-					path,
-					passage
+				FILES,
+				path,
+				passage
 			)
 		}
 	}
 
 
 	override suspend fun loadChapterPassageFromStorage(chapterEntity: ChapterEntity): HResult<String> =
-			try {
-				iFileSystemProvider.readInternalFile(FILES, makePath(chapterEntity))
-			} catch (e: FileNotFoundException) {
-				emptyResult()
-			} catch (e: Exception) {
-				e.toHError()
-			}
+		try {
+			iFileSystemProvider.readInternalFile(FILES, makePath(chapterEntity))
+		} catch (e: FileNotFoundException) {
+			emptyResult()
+		} catch (e: Exception) {
+			e.toHError()
+		}
 
 	override suspend fun deleteChapter(chapterEntity: ChapterEntity): HResult<*> {
 		File(makePath(chapterEntity)).takeIf { it.exists() }?.delete()
-				?: return errorResult(ERROR_NOT_FOUND, "Chapter not found")
+			?: return errorResult(ERROR_NOT_FOUND, "Chapter not found")
 		return successResult("")
 	}
 }

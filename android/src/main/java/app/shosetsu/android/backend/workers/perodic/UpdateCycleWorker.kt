@@ -16,8 +16,8 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.common.consts.settings.SettingKey.*
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.dto.HResult
 import org.kodein.di.generic.instance
 import java.util.concurrent.TimeUnit.HOURS
 import androidx.work.PeriodicWorkRequestBuilder as PWRB
@@ -48,8 +48,8 @@ import androidx.work.PeriodicWorkRequestBuilder as PWRB
  * </p>
  */
 class UpdateCycleWorker(
-		appContext: Context,
-		params: WorkerParameters,
+	appContext: Context,
+	params: WorkerParameters,
 ) : CoroutineWorker(appContext, params) {
 	/**
 	 * Manager of [UpdateCycleWorker]
@@ -65,32 +65,32 @@ class UpdateCycleWorker(
 		}
 
 		private suspend fun updateOnMetered(): Boolean =
-				iSettingsRepository.getBoolean(UpdateOnMeteredConnection).let {
-					if (it is HResult.Success)
-						it.data
-					else UpdateOnMeteredConnection.default
-				}
+			iSettingsRepository.getBoolean(UpdateOnMeteredConnection).let {
+				if (it is HResult.Success)
+					it.data
+				else UpdateOnMeteredConnection.default
+			}
 
 		private suspend fun updateOnLowStorage(): Boolean =
-				iSettingsRepository.getBoolean(UpdateOnLowStorage).let {
-					if (it is HResult.Success)
-						it.data
-					else UpdateOnLowStorage.default
-				}
+			iSettingsRepository.getBoolean(UpdateOnLowStorage).let {
+				if (it is HResult.Success)
+					it.data
+				else UpdateOnLowStorage.default
+			}
 
 		private suspend fun updateOnLowBattery(): Boolean =
-				iSettingsRepository.getBoolean(UpdateOnLowBattery).let {
-					if (it is HResult.Success)
-						it.data
-					else UpdateOnLowBattery.default
-				}
+			iSettingsRepository.getBoolean(UpdateOnLowBattery).let {
+				if (it is HResult.Success)
+					it.data
+				else UpdateOnLowBattery.default
+			}
 
 		private suspend fun updateOnlyIdle(): Boolean =
-				iSettingsRepository.getBoolean(UpdateOnlyWhenIdle).let {
-					if (it is HResult.Success)
-						it.data
-					else UpdateOnlyWhenIdle.default
-				}
+			iSettingsRepository.getBoolean(UpdateOnlyWhenIdle).let {
+				if (it is HResult.Success)
+					it.data
+				else UpdateOnlyWhenIdle.default
+			}
 
 		/**
 		 * Returns the status of the service.
@@ -99,7 +99,7 @@ class UpdateCycleWorker(
 		 */
 		override fun isRunning(): Boolean = try {
 			workerManager.getWorkInfosForUniqueWork(UPDATE_CYCLE_WORK_ID)
-					.get()[0].state == WorkInfo.State.RUNNING
+				.get()[0].state == WorkInfo.State.RUNNING
 		} catch (e: Exception) {
 			false
 		}
@@ -112,25 +112,25 @@ class UpdateCycleWorker(
 			launchIO {
 				Log.i(logID(), LogConstants.SERVICE_NEW)
 				workerManager.enqueueUniquePeriodicWork(
-						UPDATE_CYCLE_WORK_ID,
-						REPLACE,
-						PWRB<UpdateCycleWorker>(
-								updateCycle(),
-								HOURS
-						).setConstraints(
-								Constraints.Builder().apply {
-									setRequiredNetworkType(
-											if (updateOnMetered()) {
-												CONNECTED
-											} else UNMETERED
-									)
-									setRequiresStorageNotLow(!updateOnLowStorage())
-									setRequiresBatteryNotLow(!updateOnLowBattery())
-									if (SDK_INT >= VERSION_CODES.M)
-										setRequiresDeviceIdle(updateOnlyIdle())
-								}.build()
-						)
-								.build()
+					UPDATE_CYCLE_WORK_ID,
+					REPLACE,
+					PWRB<UpdateCycleWorker>(
+						updateCycle(),
+						HOURS
+					).setConstraints(
+						Constraints.Builder().apply {
+							setRequiredNetworkType(
+								if (updateOnMetered()) {
+									CONNECTED
+								} else UNMETERED
+							)
+							setRequiresStorageNotLow(!updateOnLowStorage())
+							setRequiresBatteryNotLow(!updateOnLowBattery())
+							if (SDK_INT >= VERSION_CODES.M)
+								setRequiresDeviceIdle(updateOnlyIdle())
+						}.build()
+					)
+						.build()
 				)
 				workerManager.getWorkInfosForUniqueWork(UPDATE_CYCLE_WORK_ID).await()[0].let {
 					Log.d(logID(), "State ${it.state}")

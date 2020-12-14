@@ -6,8 +6,8 @@ import androidx.room.Query
 import androidx.room.Transaction
 import app.shosetsu.android.common.ext.trimDate
 import app.shosetsu.android.domain.model.database.DBUpdate
-import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
+import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import kotlinx.coroutines.flow.Flow
 import org.joda.time.DateTime
 import org.joda.time.Days
@@ -52,11 +52,11 @@ interface UpdatesDao : BaseDao<DBUpdate> {
 
 	@Throws(SQLiteException::class)
 	suspend fun getStartingDayTime(): Long =
-			DateTime(loadStartingDayTime()).trimDate().millis
+		DateTime(loadStartingDayTime()).trimDate().millis
 
 	@Throws(SQLiteException::class)
 	fun getLatestDayTime(): Long =
-			DateTime(loadLatestDayTime()).trimDate().millis
+		DateTime(loadLatestDayTime()).trimDate().millis
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT COUNT(*) FROM updates WHERE time < :date2 AND time >= :date1")
@@ -78,7 +78,6 @@ interface UpdatesDao : BaseDao<DBUpdate> {
 	}
 
 
-
 	@Query("DELETE FROM updates WHERE novelID = :novelID")
 	@Throws(SQLiteException::class)
 	fun deleteUpdateByNovelID(novelID: Int)
@@ -89,8 +88,8 @@ interface UpdatesDao : BaseDao<DBUpdate> {
 		for (x in list.size - 1 downTo 1) {
 			val updateDate = list[x]
 			val c = loadDayCountBetweenDates(
-					updateDate,
-					updateDate + 86399999
+				updateDate,
+				updateDate + 86399999
 			)
 			if (c <= 0) list.removeAt(x)
 		}
@@ -98,7 +97,8 @@ interface UpdatesDao : BaseDao<DBUpdate> {
 	}
 
 	@Throws(SQLiteException::class)
-	@Query("""SELECT 
+	@Query(
+		"""SELECT 
 						updates.chapterID, 
 						updates.novelID, 
 						updates.time,
@@ -124,6 +124,7 @@ interface UpdatesDao : BaseDao<DBUpdate> {
 								bookmarked 
 							FROM novels WHERE id = updates.novelID
 						) = 1
-				""")
+				"""
+	)
 	fun loadCompleteUpdates(): Flow<List<UpdateCompleteEntity>>
 }

@@ -35,20 +35,24 @@ interface SDItem<T> {
 	fun getValue(): T
 }
 
-class SDRadioGroup(context: Context, attributeSet: AttributeSet?) : RadioGroup(context, attributeSet), SDItem<Int> {
+class SDRadioGroup(context: Context, attributeSet: AttributeSet?) :
+	RadioGroup(context, attributeSet), SDItem<Int> {
 	constructor(context: Context) : this(context, null)
 
 	override fun getValue(): Int = checkedRadioButtonId
 }
 
-class SDEditText(context: Context, attributeSet: AttributeSet) : AppCompatEditText(context, attributeSet), SDItem<String> {
+class SDEditText(context: Context, attributeSet: AttributeSet) :
+	AppCompatEditText(context, attributeSet), SDItem<String> {
 	override fun getValue(): String = text.toString()
 }
 
-class SDSpinner(context: Context, attributeSet: AttributeSet) : AppCompatSpinner(context, attributeSet), SDItem<Int> {
+class SDSpinner(context: Context, attributeSet: AttributeSet) :
+	AppCompatSpinner(context, attributeSet), SDItem<Int> {
 	override fun getValue(): Int = selectedItemPosition
 }
 
-class SDSwitch(context: Context, attributeSet: AttributeSet) : Switch(context, attributeSet), SDItem<Boolean> {
+class SDSwitch(context: Context, attributeSet: AttributeSet) : Switch(context, attributeSet),
+	SDItem<Boolean> {
 	override fun getValue(): Boolean = isChecked
 }

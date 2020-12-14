@@ -6,7 +6,6 @@ import androidx.room.Query
 import androidx.room.Transaction
 import app.shosetsu.android.common.ext.entity
 import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.domain.model.database.DBChapterEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
@@ -86,11 +85,11 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 	@Transaction
 	@Throws(SQLiteException::class)
 	suspend fun updateReaderChapter(readerDBChapter: ReaderChapterEntity): Unit =
-			loadChapter(readerDBChapter.id).copy(
-					readingPosition = readerDBChapter.readingPosition,
-					readingStatus = readerDBChapter.readingStatus,
-					bookmarked = readerDBChapter.bookmarked
-			).let { suspendedUpdate(it) }
+		loadChapter(readerDBChapter.id).copy(
+			readingPosition = readerDBChapter.readingPosition,
+			readingStatus = readerDBChapter.readingStatus,
+			bookmarked = readerDBChapter.bookmarked
+		).let { suspendedUpdate(it) }
 
 	@Transaction
 	@Throws(SQLiteException::class)
@@ -106,8 +105,8 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 	@Throws(SQLiteException::class)
 	@Transaction
 	suspend fun handleChaptersReturnNew(
-			novelEntity: NovelEntity,
-			list: List<Novel.Chapter>,
+		novelEntity: NovelEntity,
+		list: List<Novel.Chapter>,
 	): HResult<List<DBChapterEntity>> {
 		val newChapters = ArrayList<DBChapterEntity>()
 		val databaseChapterEntities: List<DBChapterEntity> = loadChapters(novelEntity.id!!)
@@ -116,9 +115,9 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 				handleUpdate(it, novelChapter)
 			} ?: run {
 				insertReturn(novelEntity, novelChapter).handle(
-						onError = {
-							logE(it.toString())
-						}
+					onError = {
+						logE(it.toString())
+					}
 				) {
 					newChapters.add(it)
 				}
@@ -130,12 +129,12 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 	@Throws(SQLiteException::class)
 	@Transaction
 	suspend fun insertAndReturnDBChapter(DBChapterEntity: DBChapterEntity): DBChapterEntity =
-			loadChapter(insertReplace(DBChapterEntity))
+		loadChapter(insertReplace(DBChapterEntity))
 
 
 	private suspend fun insertReturn(
-			novelEntity: NovelEntity,
-			novelChapter: Novel.Chapter,
+		novelEntity: NovelEntity,
+		novelChapter: Novel.Chapter,
 	): HResult<DBChapterEntity> {
 		try {
 			val row = handleAbortInsert(novelChapter, novelEntity)
@@ -149,14 +148,19 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 
 	@Throws(SQLiteException::class)
 	private suspend fun handleAbortInsert(novelChapter: Novel.Chapter, novelEntity: NovelEntity) =
-			insertAbort(novelChapter.entity(novelEntity).toDB())
+		insertAbort(novelChapter.entity(novelEntity).toDB())
 
 	@Throws(SQLiteException::class)
-	private suspend fun handleUpdate(DBChapterEntity: DBChapterEntity, novelChapter: Novel.Chapter) {
-		suspendedUpdate(DBChapterEntity.copy(
+	private suspend fun handleUpdate(
+		DBChapterEntity: DBChapterEntity,
+		novelChapter: Novel.Chapter
+	) {
+		suspendedUpdate(
+			DBChapterEntity.copy(
 				title = novelChapter.title,
 				releaseDate = novelChapter.release,
 				order = novelChapter.order
-		))
+			)
+		)
 	}
 }

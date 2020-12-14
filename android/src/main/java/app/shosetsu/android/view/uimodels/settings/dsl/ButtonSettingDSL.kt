@@ -29,21 +29,21 @@ import app.shosetsu.android.view.uimodels.settings.base.SettingsListBuilder
 
 @SettingsItemDSL
 inline fun buttonSettingData(
-		id: Int,
-		action: ButtonSettingData.() -> Unit,
+	id: Int,
+	action: ButtonSettingData.() -> Unit,
 ): SettingsItemData = ButtonSettingData(id).also(action)
 
 @SettingsItemDSL
 inline fun SettingsListBuilder.buttonSettingData(
-		id: Int,
-		action: ButtonSettingData.() -> Unit,
+	id: Int,
+	action: ButtonSettingData.() -> Unit,
 ): Unit = this.let { list.add(ButtonSettingData(id).also(action)) }
 
 @SettingsItemDSL
 inline fun ButtonSettingData.onButtonClicked(
-		crossinline action: ButtonSettingData.(
-				@ParameterName("view") View,
-		) -> Unit,
+	crossinline action: ButtonSettingData.(
+		@ParameterName("view") View,
+	) -> Unit,
 ) {
 	buttonOnClickListener = { action(it) }
 }

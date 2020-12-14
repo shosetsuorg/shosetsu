@@ -33,8 +33,8 @@ import app.shosetsu.common.enums.ReadingStatus
  * @author github.com/doomsdayrs
  */
 class UpdatesViewModel(
-		private val getUpdatesUseCase: LoadUpdatesUseCase,
-		private val reportExceptionUseCase: ReportExceptionUseCase
+	private val getUpdatesUseCase: LoadUpdatesUseCase,
+	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : IUpdatesViewModel() {
 	override val liveData: LiveData<HResult<List<UpdateUI>>> by lazy {
 		getUpdatesUseCase().asIOLiveData()

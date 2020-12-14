@@ -23,9 +23,9 @@ import app.shosetsu.android.domain.usecases.load.LoadAppUpdateUseCase
 import app.shosetsu.android.ui.splash.SplashScreen
 import app.shosetsu.common.consts.settings.SettingKey.AppUpdateOnMeteredConnection
 import app.shosetsu.common.consts.settings.SettingKey.AppUpdateOnlyWhenIdle
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.transmogrify
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -54,8 +54,8 @@ import org.kodein.di.generic.instance
  * 06 / 09 / 2020
  */
 class AppUpdateWorker(
-		appContext: Context,
-		params: WorkerParameters
+	appContext: Context,
+	params: WorkerParameters
 ) : CoroutineWorker(appContext, params), KodeinAware {
 	override val kodein: Kodein by closestKodein(applicationContext)
 	private val openAppForUpdateIntent: Intent
@@ -75,9 +75,9 @@ class AppUpdateWorker(
 			@Suppress("DEPRECATION")
 			Notification.Builder(appContext)
 		}
-				.setContentTitle(applicationContext.getString(R.string.app_update_check))
-				.setSmallIcon(R.drawable.app_update)
-				.setOnlyAlertOnce(true)
+			.setContentTitle(applicationContext.getString(R.string.app_update_check))
+			.setSmallIcon(R.drawable.app_update)
+			.setOnlyAlertOnce(true)
 	}
 
 	override suspend fun doWork(): Result {
@@ -94,8 +94,8 @@ class AppUpdateWorker(
 			notificationManager.notify(ID_APP_UPDATE, pr.build())
 		}) {
 			pr.setContentText(
-					applicationContext.getString(R.string.app_update_available)
-							+ " " + it.version
+				applicationContext.getString(R.string.app_update_available)
+						+ " " + it.version
 			)
 			notificationManager.notify(ID_APP_UPDATE, pr.build())
 		}
@@ -110,15 +110,15 @@ class AppUpdateWorker(
 		private val iSettingsRepository: ISettingsRepository by instance()
 
 		private suspend fun appUpdateOnMetered(): Boolean =
-				iSettingsRepository.getBoolean(AppUpdateOnMeteredConnection).transmogrify {
-					it
-				} ?: AppUpdateOnMeteredConnection.default
+			iSettingsRepository.getBoolean(AppUpdateOnMeteredConnection).transmogrify {
+				it
+			} ?: AppUpdateOnMeteredConnection.default
 
 
 		private suspend fun appUpdateOnlyIdle(): Boolean =
-				iSettingsRepository.getBoolean(AppUpdateOnlyWhenIdle).transmogrify {
-					it
-				} ?: AppUpdateOnlyWhenIdle.default
+			iSettingsRepository.getBoolean(AppUpdateOnlyWhenIdle).transmogrify {
+				it
+			} ?: AppUpdateOnlyWhenIdle.default
 
 		/**
 		 * Returns the status of the service.
@@ -127,7 +127,7 @@ class AppUpdateWorker(
 		 */
 		override fun isRunning(): Boolean = try {
 			workerManager.getWorkInfosForUniqueWork(WorkerTags.UPDATE_CYCLE_WORK_ID)
-					.get()[0].state == WorkInfo.State.RUNNING
+				.get()[0].state == WorkInfo.State.RUNNING
 		} catch (e: Exception) {
 			false
 		}
@@ -140,17 +140,18 @@ class AppUpdateWorker(
 			launchIO {
 				logI(LogConstants.SERVICE_NEW)
 				workerManager.enqueueUniqueWork(
-						APP_UPDATE_WORK_ID,
-						ExistingWorkPolicy.REPLACE,
-						OneTimeWorkRequestBuilder<AppUpdateWorker>(
-						).setConstraints(Constraints.Builder().apply {
+					APP_UPDATE_WORK_ID,
+					ExistingWorkPolicy.REPLACE,
+					OneTimeWorkRequestBuilder<AppUpdateWorker>(
+					).setConstraints(
+						Constraints.Builder().apply {
 							setRequiredNetworkType(
-									if (appUpdateOnMetered()) CONNECTED else UNMETERED
+								if (appUpdateOnMetered()) CONNECTED else UNMETERED
 							)
 							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
 								setRequiresDeviceIdle(appUpdateOnlyIdle())
 						}.build()
-						).build()
+					).build()
 				)
 				workerManager.getWorkInfosForUniqueWork(APP_UPDATE_WORK_ID).await()[0].let {
 					logI("Worker State ${it.state}")

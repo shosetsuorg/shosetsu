@@ -28,4 +28,4 @@ import com.mikepenz.fastadapter.items.AbstractItem
  * @author github.com/doomsdayrs
  */
 abstract class BaseRecyclerItem<VH> :
-		AbstractItem<VH>() where VH : FastAdapter.ViewHolder<*>
+	AbstractItem<VH>() where VH : FastAdapter.ViewHolder<*>

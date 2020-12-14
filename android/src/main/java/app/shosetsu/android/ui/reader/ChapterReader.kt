@@ -173,7 +173,7 @@ class ChapterReader
 			logV("Attaching self to each item completed in $time ms")
 
 			FastAdapterDiffUtil[itemAdapter] =
-					calculateDiff(itemAdapter, list)
+				calculateDiff(itemAdapter, list)
 
 			if (oldSize == 0)
 				viewpager.setCurrentItem(getCurrentChapterIndex(), false)
@@ -185,9 +185,9 @@ class ChapterReader
 	private fun setObservers() {
 		viewModel.liveData.observe(this) { result ->
 			result.handle(
-					onLoading = {
-						logD("Loading")
-					}
+				onLoading = {
+					logD("Loading")
+				}
 			) {
 				handleChaptersResult(it)
 			}
@@ -234,7 +234,10 @@ class ChapterReader
 		}
 	}
 
-	private fun applyToReaders(onlyCurrent: Boolean = false, action: TypedReaderViewHolder.() -> Unit) {
+	private fun applyToReaders(
+		onlyCurrent: Boolean = false,
+		action: TypedReaderViewHolder.() -> Unit
+	) {
 		val textTypedReaders = chapterItems.mapNotNull { it.reader }
 		textTypedReaders.find {
 			it.chapter.id == viewModel.currentChapterID
@@ -250,9 +253,9 @@ class ChapterReader
 	}
 
 	private fun getCurrentChapter(): ReaderChapterUI? =
-			chapterItems.find {
-				it.id == viewModel.currentChapterID
-			}
+		chapterItems.find {
+			it.id == viewModel.currentChapterID
+		}
 
 	private fun getCurrentChapterIndex(): Int = itemAdapter.itemList.items.indexOfFirst {
 		if (it is ReaderChapterUI)
@@ -262,9 +265,9 @@ class ChapterReader
 
 	private fun setBookmarkIcon(readerChapterUI: ReaderChapterUI) {
 		bookmark.setImageResource(
-				if (readerChapterUI.bookmarked)
-					R.drawable.filled_bookmark
-				else R.drawable.empty_bookmark
+			if (readerChapterUI.bookmarked)
+				R.drawable.filled_bookmark
+			else R.drawable.empty_bookmark
 		)
 	}
 
@@ -281,10 +284,10 @@ class ChapterReader
 		themeSelect.apply {
 			setOnClickListener {
 				ColorPickerDialog.Builder(context)
-						.setPositiveButton("") { _, _ ->
-							logD("Clicked")
-						}
-						.show()
+					.setPositiveButton("") { _, _ ->
+						logD("Clicked")
+					}
+					.show()
 			}
 		}
 
@@ -494,7 +497,6 @@ class ChapterReader
 		} ?: logE("Returned target was null")
 	}
 
-
 	inner class ChapterReaderPageChange : OnPageChangeCallback() {
 		override fun onPageSelected(position: Int) {
 			when (val item = itemAdapter.getAdapterItem(position)) {
@@ -515,7 +517,11 @@ class ChapterReader
 					// Marks the previous chapter as read when you hit the divider
 					// This was implemented due to performance shortcuts taken due to excessive
 					// [handleChaptersResult] operation time
-					viewModel.updateChapter(lastChapter, readingStatus = ReadingStatus.READ, readingPosition = 0)
+					viewModel.updateChapter(
+						lastChapter,
+						readingStatus = ReadingStatus.READ,
+						readingPosition = 0
+					)
 				}
 			}
 		}

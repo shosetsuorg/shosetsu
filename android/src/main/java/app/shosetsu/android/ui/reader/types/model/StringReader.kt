@@ -12,6 +12,7 @@ import androidx.core.view.setPadding
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.LifecycleObserver
 import app.shosetsu.android.common.ext.logID
+import app.shosetsu.android.common.ext.percentageScrolled
 import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.common.enums.ReadingStatus
@@ -42,7 +43,7 @@ import org.kodein.di.android.kodein
  * 13 / 12 / 2019
  */
 class StringReader(
-		itemView: View
+	itemView: View
 ) : TypedReaderViewHolder(itemView), KodeinAware, LifecycleObserver {
 	override val kodein: Kodein by kodein(itemView.context)
 
@@ -100,8 +101,8 @@ class StringReader(
 	}
 
 	fun bind(
-			paragraphSpacing: Int = chapterReader.viewModel.defaultParaSpacing,
-			paragraphIndent: Int = chapterReader.viewModel.defaultIndentSize
+		paragraphSpacing: Int = chapterReader.viewModel.defaultParaSpacing,
+		paragraphIndent: Int = chapterReader.viewModel.defaultIndentSize
 	) {
 
 		val replaceSpacing = StringBuilder("\n")
@@ -154,11 +155,8 @@ class StringReader(
 	 * What to do when scroll hits bottom
 	 */
 	private fun scrollHitBottom() {
-		val view = scrollView
-
-		val total = view.getChildAt(0).height - view.height
-		val yPosition = view.scrollY
-		if (yPosition / total.toFloat() < .99) {
+		val yPosition = scrollView.scrollY
+		if (scrollView.percentageScrolled() < 99) {
 			if (yPosition % 5 == 0) {
 				Log.i(logID(), "Scrolling")
 				// Mark as reading if on scroll
@@ -168,9 +166,9 @@ class StringReader(
 			Log.i(logID(), "Hit the bottom")
 			// Hit bottom
 			chapterReader.viewModel.updateChapter(
-					chapter,
-					readingStatus = ReadingStatus.READ,
-					readingPosition = 0
+				chapter,
+				readingStatus = ReadingStatus.READ,
+				readingPosition = 0
 			)
 		}
 	}

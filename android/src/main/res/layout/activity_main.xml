@@ -76,6 +76,11 @@
             app:layout_insetEdge="bottom"
             app:menu="@menu/bottom_menu" />
 
+        <app.shosetsu.android.view.widget.SlidingUpBottomMenu
+            android:id="@+id/slidingUpBottomMenu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="16dp" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.navigation.NavigationView

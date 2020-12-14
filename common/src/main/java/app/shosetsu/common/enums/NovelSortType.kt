@@ -1,4 +1,4 @@
-package app.shosetsu.android.ui.library.viewHolders
+package app.shosetsu.common.enums
 
 /*
  * This file is part of Shosetsu.
@@ -18,8 +18,11 @@ package app.shosetsu.android.ui.library.viewHolders
  */
 
 /**
- * Shosetsu
- * 13 / 07 / 2019
- *
- * @author github.com/doomsdayrs
+ * shosetsu
+ * 12 / 12 / 2020
  */
+enum class NovelSortType {
+	BY_TITLE,
+	BY_UNREAD_COUNT,
+	BY_ID,
+}

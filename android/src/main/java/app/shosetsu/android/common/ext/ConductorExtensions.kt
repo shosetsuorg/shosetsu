@@ -25,7 +25,11 @@ fun Controller.requestPermissionsSafe(permissions: Array<String>, requestCode: I
 	activity?.let {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			permissions.forEach { permission ->
-				if (ContextCompat.checkSelfPermission(it, permission) != PackageManager.PERMISSION_GRANTED) {
+				if (ContextCompat.checkSelfPermission(
+						it,
+						permission
+					) != PackageManager.PERMISSION_GRANTED
+				) {
 					requestPermissions(arrayOf(permission), requestCode)
 				}
 			}
@@ -34,8 +38,8 @@ fun Controller.requestPermissionsSafe(permissions: Array<String>, requestCode: I
 }
 
 fun Controller.withFadeTransaction(): RouterTransaction = RouterTransaction.with(this)
-		.pushChangeHandler(FadeChangeHandler())
-		.popChangeHandler(FadeChangeHandler())
+	.pushChangeHandler(FadeChangeHandler())
+	.popChangeHandler(FadeChangeHandler())
 
 
 val Controller.context: Context?
@@ -45,7 +49,7 @@ fun Controller.getString(@StringRes resId: Int, default: String = "NULL"): Strin
 	try {
 		return resources?.getString(resId) ?: default
 	} catch (e: Resources.NotFoundException) {
-		Log.d(logID(),"Could not find string resource: $resId")
+		Log.d(logID(), "Could not find string resource: $resId")
 		return default
 	}
 }

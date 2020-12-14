@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.usecases.update
 
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -26,8 +26,8 @@ import app.shosetsu.common.domain.model.local.ExtensionEntity
  * 14 / 07 / 2020
  */
 class UpdateExtensionEntityUseCase(
-		private val extensionRepository: IExtensionsRepository,
+	private val extensionRepository: IExtensionsRepository,
 ) {
 	suspend operator fun invoke(extensionUI: ExtensionEntity): HResult<*> =
-			extensionRepository.updateExtensionEntity(extensionUI)
+		extensionRepository.updateExtensionEntity(extensionUI)
 }

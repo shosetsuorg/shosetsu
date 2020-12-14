@@ -3,11 +3,11 @@ package app.shosetsu.android.datasource.remote.impl
 import app.shosetsu.android.common.consts.REPO_DIR_STRUCT
 import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.datasource.remote.base.IRemoteExtLibDataSource
 import app.shosetsu.common.domain.model.local.ExtLibEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.successResult
 import okhttp3.OkHttpClient
 
 /*
@@ -32,19 +32,23 @@ import okhttp3.OkHttpClient
  * 13 / 05 / 2020
  */
 class RemoteExtLibDataSource(
-		private val client: OkHttpClient,
+	private val client: OkHttpClient,
 ) : IRemoteExtLibDataSource {
 	private fun makeLibraryURL(repo: RepositoryEntity, le: ExtLibEntity): String =
-			"${repo.url}$REPO_DIR_STRUCT/lib/${le.scriptName}.lua"
+		"${repo.url}$REPO_DIR_STRUCT/lib/${le.scriptName}.lua"
 
 	override fun downloadLibrary(
-			repo: RepositoryEntity,
-			extLibEntity: ExtLibEntity,
+		repo: RepositoryEntity,
+		extLibEntity: ExtLibEntity,
 	): HResult<String> = try {
-		successResult(client.quickie(makeLibraryURL(
-				repo,
-				extLibEntity
-		)).body!!.string())
+		successResult(
+			client.quickie(
+				makeLibraryURL(
+					repo,
+					extLibEntity
+				)
+			).body!!.string()
+		)
 	} catch (e: Exception) {
 		e.toHError()
 	}

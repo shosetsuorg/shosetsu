@@ -3,7 +3,6 @@ package app.shosetsu.android.domain.model.local
 import app.shosetsu.android.common.ext.deserializeString
 import app.shosetsu.android.common.ext.serializeToString
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
-import java.io.IOException
 
 /*
  * This file is part of Shosetsu.
@@ -31,10 +30,10 @@ import java.io.IOException
  * @param backgroundColor Color of the background
  */
 data class ColorChoiceData(
-		val identifier: Long,
-		val name: String,
-		val textColor: Int,
-		val backgroundColor: Int,
+	val identifier: Long,
+	val name: String,
+	val textColor: Int,
+	val backgroundColor: Int,
 ) {
 
 	override fun toString(): String = try {
@@ -49,14 +48,14 @@ data class ColorChoiceData(
 		 */
 		fun fromString(string: String): ColorChoiceData = string.split(",").let {
 			ColorChoiceData(
-					it[0].toLong(),
-					try {
-						it[1].deserializeString()
-					} catch (e: Exception) {
-						null
-					} ?: "UNKNOWN",
-					it[2].toInt(),
-					it[3].toInt()
+				it[0].toLong(),
+				try {
+					it[1].deserializeString()
+				} catch (e: Exception) {
+					null
+				} ?: "UNKNOWN",
+				it[2].toInt(),
+				it[3].toInt()
 			)
 		}
 	}

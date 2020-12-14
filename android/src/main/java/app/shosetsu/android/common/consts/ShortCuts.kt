@@ -33,39 +33,41 @@ object ShortCuts {
 
 
 	fun createShortcuts(context: Context) {
-		ShortcutManagerCompat.addDynamicShortcuts(context, listOf(
+		ShortcutManagerCompat.addDynamicShortcuts(
+			context, listOf(
 				Builder(context, "Library")
-						.setIcon(createWithResource(context, R.drawable.library))
-						.setLongLabel(context.getString(R.string.my_library))
-						.setShortLabel(context.getString(R.string.my_library))
-						.setIntent(Intent(context, SplashScreen::class.java).apply {
-							action = ACTION_OPEN_LIBRARY
-						})
-						.build(),
+					.setIcon(createWithResource(context, R.drawable.library))
+					.setLongLabel(context.getString(R.string.my_library))
+					.setShortLabel(context.getString(R.string.my_library))
+					.setIntent(Intent(context, SplashScreen::class.java).apply {
+						action = ACTION_OPEN_LIBRARY
+					})
+					.build(),
 				Builder(context, "Browse")
-						.setIcon(createWithResource(context, R.drawable.view_module))
-						.setLongLabel(context.getString(R.string.browse))
-						.setShortLabel(context.getString(R.string.browse))
-						.setIntent(Intent(context, SplashScreen::class.java).apply {
-							action = ACTION_OPEN_CATALOGUE
-						})
-						.build(),
+					.setIcon(createWithResource(context, R.drawable.view_module))
+					.setLongLabel(context.getString(R.string.browse))
+					.setShortLabel(context.getString(R.string.browse))
+					.setIntent(Intent(context, SplashScreen::class.java).apply {
+						action = ACTION_OPEN_CATALOGUE
+					})
+					.build(),
 				Builder(context, "Updates")
-						.setIcon(createWithResource(context, R.drawable.update))
-						.setLongLabel(context.getString(R.string.updates))
-						.setShortLabel(context.getString(R.string.updates))
-						.setIntent(Intent(context, SplashScreen::class.java).apply {
-							action = ACTION_OPEN_UPDATES
-						})
-						.build(),
+					.setIcon(createWithResource(context, R.drawable.update))
+					.setLongLabel(context.getString(R.string.updates))
+					.setShortLabel(context.getString(R.string.updates))
+					.setIntent(Intent(context, SplashScreen::class.java).apply {
+						action = ACTION_OPEN_UPDATES
+					})
+					.build(),
 				Builder(context, "Search")
-						.setIcon(createWithResource(context, R.drawable.search))
-						.setLongLabel(context.getString(R.string.search))
-						.setShortLabel(context.getString(R.string.search))
-						.setIntent(Intent(context, SplashScreen::class.java).apply {
-							action = ACTION_OPEN_SEARCH
-						})
-						.build()
-		))
+					.setIcon(createWithResource(context, R.drawable.search))
+					.setLongLabel(context.getString(R.string.search))
+					.setShortLabel(context.getString(R.string.search))
+					.setIntent(Intent(context, SplashScreen::class.java).apply {
+						action = ACTION_OPEN_SEARCH
+					})
+					.build()
+			)
+		)
 	}
 }

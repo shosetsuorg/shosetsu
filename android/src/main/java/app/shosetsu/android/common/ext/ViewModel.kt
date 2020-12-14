@@ -28,5 +28,5 @@ import kotlin.experimental.ExperimentalTypeInference
 
 @OptIn(ExperimentalTypeInference::class)
 fun <T> ViewModel.liveDataIO(
-		@BuilderInference block: suspend LiveDataScope<T>.() -> Unit
+	@BuilderInference block: suspend LiveDataScope<T>.() -> Unit
 ): LiveData<T> = liveData(viewModelScope.coroutineContext + Dispatchers.IO) { block() }

@@ -27,19 +27,19 @@ import com.github.doomsdayrs.apps.shosetsu.BuildConfig
  */
 
 val SHOSETSU_UPDATE_URL: String =
-		"https://raw.githubusercontent.com/Doomsdayrs/shosetsu/${
-			if (BuildConfig.DEBUG)
-				"development"
-			else "master"
-		}/android/src/${
-			if (BuildConfig.DEBUG)
-				"debug"
-			else "master"
-		}/assets/update.${
-			if (BuildConfig.DEBUG)
-				"json"
-			else "xml"
-		}"
+	"https://raw.githubusercontent.com/Doomsdayrs/shosetsu/${
+		if (BuildConfig.DEBUG)
+			"development"
+		else "master"
+	}/android/src/${
+		if (BuildConfig.DEBUG)
+			"debug"
+		else "master"
+	}/assets/update.${
+		if (BuildConfig.DEBUG)
+			"json"
+		else "xml"
+	}"
 
 const val SELECTED_STROKE_WIDTH: Int = 8
 
@@ -54,10 +54,18 @@ const val REPO_DIR_STRUCT: String = "/src/main/resources/"
 const val APP_UPDATE_CACHE_FILE = "SHOSETSU_APP_UPDATE.json"
 
 
-@Deprecated("Just use View", replaceWith = ReplaceWith("VISIBLE", "import android.view.View.VISIBLE"), DeprecationLevel.WARNING)
+@Deprecated(
+	"Just use View",
+	replaceWith = ReplaceWith("VISIBLE", "import android.view.View.VISIBLE"),
+	DeprecationLevel.WARNING
+)
 const val VISIBLE: Int = View.VISIBLE
 
-@Deprecated("Just use View", replaceWith = ReplaceWith("GONE", "import android.view.View.GONE"), DeprecationLevel.WARNING)
+@Deprecated(
+	"Just use View",
+	replaceWith = ReplaceWith("GONE", "import android.view.View.GONE"),
+	DeprecationLevel.WARNING
+)
 const val GONE: Int = View.GONE
 
 const val READER_BAR_ALPHA: Float = 0.8F

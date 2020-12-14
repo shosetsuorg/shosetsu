@@ -23,4 +23,5 @@ import app.shosetsu.common.domain.repositories.base.ISettingsRepository
  * shosetsu
  * 31 / 08 / 2020
  */
-abstract class AAdvancedSettingsViewModel(iSettingsRepository: ISettingsRepository) : ASubSettingsViewModel(iSettingsRepository)
+abstract class AAdvancedSettingsViewModel(iSettingsRepository: ISettingsRepository) :
+	ASubSettingsViewModel(iSettingsRepository)

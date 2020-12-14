@@ -26,8 +26,8 @@ import app.shosetsu.common.dto.HResult
  * 20 / 06 / 2020
  */
 class LoadAppUpdateUseCase(
-		private val iAppUpdatesRepository: IAppUpdatesRepository
+	private val iAppUpdatesRepository: IAppUpdatesRepository
 ) {
 	suspend operator fun invoke(): HResult<DebugAppUpdate> =
-			iAppUpdatesRepository.checkForAppUpdate()
+		iAppUpdatesRepository.checkForAppUpdate()
 }

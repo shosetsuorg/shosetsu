@@ -37,13 +37,13 @@ import kotlinx.coroutines.flow.collect
  * 20 / 06 / 2020
  */
 class MainViewModel(
-		private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
-		private val loadAppUpdateUseCase: LoadAppUpdateLiveUseCase,
-		private val isOnlineUseCase: IsOnlineUseCase,
-		private val shareUseCase: ShareUseCase,
-		private val loadNavigationStyleUseCase: LoadNavigationStyleUseCase,
-		private val reportExceptionUseCase: ReportExceptionUseCase,
-		private var loadLiveAppThemeUseCase: LoadLiveAppThemeUseCase
+	private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
+	private val loadAppUpdateUseCase: LoadAppUpdateLiveUseCase,
+	private val isOnlineUseCase: IsOnlineUseCase,
+	private val shareUseCase: ShareUseCase,
+	private val loadNavigationStyleUseCase: LoadNavigationStyleUseCase,
+	private val reportExceptionUseCase: ReportExceptionUseCase,
+	private var loadLiveAppThemeUseCase: LoadLiveAppThemeUseCase
 ) : IMainViewModel() {
 	private var navigationStyle = 0
 
@@ -68,7 +68,7 @@ class MainViewModel(
 	}
 
 	override fun startUpdateCheck(): LiveData<HResult<DebugAppUpdate>> =
-			loadAppUpdateUseCase().asIOLiveData()
+		loadAppUpdateUseCase().asIOLiveData()
 
 	override fun navigationStyle(): Int = navigationStyle
 

@@ -32,8 +32,8 @@ import kotlinx.coroutines.flow.mapLatest
  * 18 / 05 / 2020
  */
 class GetNovelUIUseCase(
-		private val novelsRepository: INovelsRepository,
-		private val extensionRepository: IExtensionsRepository
+	private val novelsRepository: INovelsRepository,
+	private val extensionRepository: IExtensionsRepository
 ) {
 	operator fun invoke(novelID: Int): Flow<HResult<NovelUI>> = flow {
 		emit(loading())

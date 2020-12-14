@@ -5,8 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.dto.Convertible
 import app.shosetsu.lib.Version
 
 /*
@@ -31,63 +31,63 @@ import app.shosetsu.lib.Version
  * 05 / 12 / 2020
  */
 @Entity(
-		tableName = "extensions",
-		foreignKeys = [
-			ForeignKey(
-					entity = DBRepositoryEntity::class,
-					parentColumns = ["id"],
-					childColumns = ["repoID"],
-					onDelete = ForeignKey.CASCADE
-			)
-		],
-		indices = [Index("repoID")]
+	tableName = "extensions",
+	foreignKeys = [
+		ForeignKey(
+			entity = DBRepositoryEntity::class,
+			parentColumns = ["id"],
+			childColumns = ["repoID"],
+			onDelete = ForeignKey.CASCADE
+		)
+	],
+	indices = [Index("repoID")]
 )
 
 data class DBExtensionEntity(
-		/** Extension ID */
-		@PrimaryKey val id: Int,
+	/** Extension ID */
+	@PrimaryKey val id: Int,
 
-		/** Repository extension belongs too*/
-		val repoID: Int,
+	/** Repository extension belongs too*/
+	val repoID: Int,
 
-		/** Name of the extension, can be changed */
-		@NonNull var name: String = "",
+	/** Name of the extension, can be changed */
+	@NonNull var name: String = "",
 
-		/** FileName of the extension */
-		@NonNull val fileName: String = "",
+	/** FileName of the extension */
+	@NonNull val fileName: String = "",
 
-		/** Image URL of the extension*/
-		var imageURL: String? = null,
+	/** Image URL of the extension*/
+	var imageURL: String? = null,
 
-		/** The language of the extension */
-		val lang: String = "",
+	/** The language of the extension */
+	val lang: String = "",
 
-		/** If extension is enabled */
-		var enabled: Boolean = false,
+	/** If extension is enabled */
+	var enabled: Boolean = false,
 
-		/** If extension is installed*/
-		var installed: Boolean = false,
+	/** If extension is installed*/
+	var installed: Boolean = false,
 
-		/** Version currently installed */
-		var installedVersion: Version? = null,
+	/** Version currently installed */
+	var installedVersion: Version? = null,
 
-		/** Version in repository*/
-		var repositoryVersion: Version = Version(0, 0, 0),
+	/** Version in repository*/
+	var repositoryVersion: Version = Version(0, 0, 0),
 
-		/** MD5 to check against */
-		var md5: String = "",
+	/** MD5 to check against */
+	var md5: String = "",
 ) : Convertible<ExtensionEntity> {
 	override fun convertTo(): ExtensionEntity = ExtensionEntity(
-			id,
-			repoID,
-			name,
-			fileName,
-			imageURL,
-			lang,
-			enabled,
-			installed,
-			installedVersion,
-			repositoryVersion,
-			md5
+		id,
+		repoID,
+		name,
+		fileName,
+		imageURL,
+		lang,
+		enabled,
+		installed,
+		installedVersion,
+		repositoryVersion,
+		md5
 	)
 }

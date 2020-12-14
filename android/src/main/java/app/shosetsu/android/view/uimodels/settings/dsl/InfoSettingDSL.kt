@@ -28,14 +28,14 @@ import app.shosetsu.android.view.uimodels.settings.base.SettingsListBuilder
 
 @SettingsItemDSL
 inline fun infoSettingData(
-		id: Int,
-		action: InfoSettingData.() -> Unit,
+	id: Int,
+	action: InfoSettingData.() -> Unit,
 ): SettingsItemData = InfoSettingData(id).also(action)
 
 @SettingsItemDSL
 inline fun SettingsListBuilder.infoSettingData(
-		id: Int,
-		action: InfoSettingData.() -> Unit,
+	id: Int,
+	action: InfoSettingData.() -> Unit,
 ): Unit = this.let { list.add(InfoSettingData(id).also(action)) }
 
 @SettingsItemDSL

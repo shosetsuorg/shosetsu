@@ -61,8 +61,8 @@ import org.kodein.di.generic.instance
  * </p>
  */
 class UpdateWorker(
-		appContext: Context,
-		params: WorkerParameters,
+	appContext: Context,
+	params: WorkerParameters,
 ) : CoroutineWorker(appContext, params), KodeinAware {
 	companion object {
 		const val KEY_TARGET: String = "Target"
@@ -79,32 +79,32 @@ class UpdateWorker(
 		private val iSettingsRepository by instance<ISettingsRepository>()
 
 		private suspend fun updateOnMetered(): Boolean =
-				iSettingsRepository.getBoolean(UpdateOnMeteredConnection).let {
-					if (it is HResult.Success)
-						it.data
-					else UpdateOnMeteredConnection.default
-				}
+			iSettingsRepository.getBoolean(UpdateOnMeteredConnection).let {
+				if (it is HResult.Success)
+					it.data
+				else UpdateOnMeteredConnection.default
+			}
 
 		private suspend fun updateOnLowStorage(): Boolean =
-				iSettingsRepository.getBoolean(UpdateOnLowStorage).let {
-					if (it is HResult.Success)
-						it.data
-					else UpdateOnLowStorage.default
-				}
+			iSettingsRepository.getBoolean(UpdateOnLowStorage).let {
+				if (it is HResult.Success)
+					it.data
+				else UpdateOnLowStorage.default
+			}
 
 		private suspend fun updateOnLowBattery(): Boolean =
-				iSettingsRepository.getBoolean(UpdateOnLowBattery).let {
-					if (it is HResult.Success)
-						it.data
-					else UpdateOnLowBattery.default
-				}
+			iSettingsRepository.getBoolean(UpdateOnLowBattery).let {
+				if (it is HResult.Success)
+					it.data
+				else UpdateOnLowBattery.default
+			}
 
 		private suspend fun updateOnlyIdle(): Boolean =
-				iSettingsRepository.getBoolean(UpdateOnlyWhenIdle).let {
-					if (it is HResult.Success)
-						it.data
-					else UpdateOnlyWhenIdle.default
-				}
+			iSettingsRepository.getBoolean(UpdateOnlyWhenIdle).let {
+				if (it is HResult.Success)
+					it.data
+				else UpdateOnlyWhenIdle.default
+			}
 
 		/**
 		 * Returns the status of the service.
@@ -113,7 +113,7 @@ class UpdateWorker(
 		 */
 		override fun isRunning(): Boolean = try {
 			workerManager.getWorkInfosForUniqueWork(UPDATE_WORK_ID)
-					.get()[0].state == WorkInfo.State.RUNNING
+				.get()[0].state == WorkInfo.State.RUNNING
 		} catch (e: Exception) {
 			false
 		}
@@ -126,21 +126,21 @@ class UpdateWorker(
 			launchIO {
 				Log.i(logID(), LogConstants.SERVICE_NEW)
 				workerManager.enqueueUniqueWork(
-						UPDATE_WORK_ID,
-						REPLACE,
-						OneTimeWorkRequestBuilder<UpdateWorker>().setConstraints(
-								Constraints.Builder().apply {
-									setRequiredNetworkType(
-											if (updateOnMetered()) {
-												CONNECTED
-											} else UNMETERED
-									)
-									setRequiresStorageNotLow(!updateOnLowStorage())
-									setRequiresBatteryNotLow(!updateOnLowBattery())
-									if (SDK_INT >= VERSION_CODES.M)
-										setRequiresDeviceIdle(updateOnlyIdle())
-								}.build()
-						).build()
+					UPDATE_WORK_ID,
+					REPLACE,
+					OneTimeWorkRequestBuilder<UpdateWorker>().setConstraints(
+						Constraints.Builder().apply {
+							setRequiredNetworkType(
+								if (updateOnMetered()) {
+									CONNECTED
+								} else UNMETERED
+							)
+							setRequiresStorageNotLow(!updateOnLowStorage())
+							setRequiresBatteryNotLow(!updateOnLowBattery())
+							if (SDK_INT >= VERSION_CODES.M)
+								setRequiresDeviceIdle(updateOnlyIdle())
+						}.build()
+					).build()
 				)
 				workerManager.getWorkInfosForUniqueWork(UPDATE_WORK_ID).await()[0].let {
 					Log.d(logID(), "State ${it.state}")
@@ -164,9 +164,9 @@ class UpdateWorker(
 			@Suppress("DEPRECATION")
 			Notification.Builder(appContext)
 		}
-				.setSmallIcon(R.drawable.refresh)
-				.setContentText("Update in progress")
-				.setOnlyAlertOnce(true)
+			.setSmallIcon(R.drawable.refresh)
+			.setContentText("Update in progress")
+			.setOnlyAlertOnce(true)
 	}
 
 	override val kodein: Kodein by closestKodein(appContext)
@@ -177,18 +177,18 @@ class UpdateWorker(
 	private val iSettingsRepository: ISettingsRepository by instance()
 
 	private suspend fun onlyUpdateOngoing(): Boolean =
-			iSettingsRepository.getBoolean(OnlyUpdateOngoing).let {
-				if (it is HResult.Success)
-					it.data
-				else OnlyUpdateOngoing.default
-			}
+		iSettingsRepository.getBoolean(OnlyUpdateOngoing).let {
+			if (it is HResult.Success)
+				it.data
+			else OnlyUpdateOngoing.default
+		}
 
 	private suspend fun downloadOnUpdate(): Boolean =
-			iSettingsRepository.getBoolean(IsDownloadOnUpdate).let {
-				if (it is HResult.Success)
-					it.data
-				else IsDownloadOnUpdate.default
-			}
+		iSettingsRepository.getBoolean(IsDownloadOnUpdate).let {
+			if (it is HResult.Success)
+				it.data
+			else IsDownloadOnUpdate.default
+		}
 
 	override suspend fun doWork(): Result {
 		Log.i(logID(), LogConstants.SERVICE_EXECUTE)
@@ -221,8 +221,8 @@ class UpdateWorker(
 
 					pr.setContentTitle(applicationContext.getString(R.string.update))
 					pr.setContentText(
-							applicationContext.getString(R.string.update_complete) + "\n" +
-									combine(",\n")
+						applicationContext.getString(R.string.update_complete) + "\n" +
+								combine(",\n")
 					)
 					pr.setOngoing(false)
 					pr.setProgress(0, 0, false)

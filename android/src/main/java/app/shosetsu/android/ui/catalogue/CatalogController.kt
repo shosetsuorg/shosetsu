@@ -60,10 +60,10 @@ import com.mikepenz.fastadapter.scroll.EndlessRecyclerOnScrollListener
  * @author github.com/doomsdayrs
  */
 class CatalogController(
-		/** data bundle uwu */
-		val bundle: Bundle,
+	/** data bundle uwu */
+	val bundle: Bundle,
 ) : FastAdapterRecyclerController<ControllerCatalogueBinding, ACatalogNovelUI>(bundle),
-		PushCapableController {
+	PushCapableController {
 	private var searchView: SearchView? = null
 
 	lateinit var pushController: (Controller) -> Unit
@@ -98,34 +98,34 @@ class CatalogController(
 	override fun createLayoutManager(): RecyclerView.LayoutManager {
 		return when (viewModel.getNovelUIType()) {
 			COMPRESSED -> LinearLayoutManager(
-					context,
-					VERTICAL,
-					false
+				context,
+				VERTICAL,
+				false
 			)
 			else -> GridLayoutManager(
-					context,
-					context!!.resources.let {
-						val density = it.displayMetrics.density
-						val widthPixels = it.displayMetrics.widthPixels
-						when (it.configuration.orientation) {
-							Configuration.ORIENTATION_LANDSCAPE -> {
-								viewModel.calculateHColumnCount(
-										widthPixels,
-										density,
-										200f
-								)
-							}
-							else -> {
-								viewModel.calculatePColumnCount(
-										widthPixels,
-										density,
-										200f
-								)
-							}
+				context,
+				context!!.resources.let {
+					val density = it.displayMetrics.density
+					val widthPixels = it.displayMetrics.widthPixels
+					when (it.configuration.orientation) {
+						Configuration.ORIENTATION_LANDSCAPE -> {
+							viewModel.calculateHColumnCount(
+								widthPixels,
+								density,
+								200f
+							)
 						}
-					},
-					VERTICAL,
-					false
+						else -> {
+							viewModel.calculatePColumnCount(
+								widthPixels,
+								density,
+								200f
+							)
+						}
+					}
+				},
+				VERTICAL,
+				false
 			)
 		}
 	}
@@ -134,12 +134,14 @@ class CatalogController(
 		super.setupFastAdapter()
 		fastAdapter.apply {
 			setOnClickListener { _, _, item, _ ->
-				pushController(NovelController(
+				pushController(
+					NovelController(
 						bundleOf(
-								BUNDLE_NOVEL_ID to item.id,
-								BUNDLE_EXTENSION to bundle.getInt(BUNDLE_EXTENSION)
+							BUNDLE_NOVEL_ID to item.id,
+							BUNDLE_EXTENSION to bundle.getInt(BUNDLE_EXTENSION)
 						)
-				))
+					)
+				)
 				true
 			}
 			onLongClickListener = { _, _, i, _ ->
@@ -222,5 +224,5 @@ class CatalogController(
 	}
 
 	override fun bindView(inflater: LayoutInflater): ControllerCatalogueBinding =
-			ControllerCatalogueBinding.inflate(inflater).also { recyclerView = it.recyclerView }
+		ControllerCatalogueBinding.inflate(inflater).also { recyclerView = it.recyclerView }
 }

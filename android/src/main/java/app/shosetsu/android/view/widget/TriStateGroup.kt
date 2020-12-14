@@ -29,8 +29,8 @@ import app.shosetsu.android.view.widget.TriStateButton.State
  * 24 / 11 / 2020
  */
 class TriStateGroup @JvmOverloads constructor(
-		context: Context,
-		attrs: AttributeSet? = null
+	context: Context,
+	attrs: AttributeSet? = null
 ) : LinearLayout(context, attrs) {
 	private val stateChangeListeners = ArrayList<(Int, State) -> Unit>()
 
@@ -72,8 +72,10 @@ class TriStateGroup @JvmOverloads constructor(
 	/**
 	 * When a state becomes something other then ignored for a certain button
 	 */
-	fun addOnStateChangeListener(listener: (
+	fun addOnStateChangeListener(
+		listener: (
 			@ParameterName("id") Int,
 			@ParameterName("state") State
-	) -> Unit) = stateChangeListeners.add(listener)
+		) -> Unit
+	) = stateChangeListeners.add(listener)
 }

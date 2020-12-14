@@ -1,10 +1,10 @@
 package app.shosetsu.android.common.utils.uifactory
 
 import app.shosetsu.android.view.uimodels.model.NovelUI
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.transform
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.transform
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 
@@ -30,30 +30,30 @@ import kotlinx.coroutines.flow.mapLatest
  * 05 / 12 / 2020
  */
 class NovelConversionFactory(data: NovelEntity) : UIConversionFactory<NovelEntity, NovelUI>(data) {
-	override fun NovelEntity.convertTo(): NovelUI =  NovelUI(
-			id = id!!,
-			novelURL = url,
-			extID = formatterID,
-			bookmarked = bookmarked,
-			readerType = readerType,
-			title = title,
-			imageURL = imageURL,
-			description = description,
-			loaded = loaded,
-			language = language,
-			genres = genres.toList(),
-			authors = authors.toList(),
-			artists = artists.toList(),
-			tags = tags.toList(),
-			status = status
+	override fun NovelEntity.convertTo(): NovelUI = NovelUI(
+		id = id!!,
+		novelURL = url,
+		extID = formatterID,
+		bookmarked = bookmarked,
+		readerType = readerType,
+		title = title,
+		imageURL = imageURL,
+		description = description,
+		loaded = loaded,
+		language = language,
+		genres = genres.toList(),
+		authors = authors.toList(),
+		artists = artists.toList(),
+		tags = tags.toList(),
+		status = status
 	)
 }
 
 fun List<NovelEntity>.mapToFactory() =
-		map { NovelConversionFactory(it) }
+	map { NovelConversionFactory(it) }
 
 fun HResult<List<NovelEntity>>.mapResultWithFactory() =
-		transform { successResult(it.mapToFactory()) }
+	transform { successResult(it.mapToFactory()) }
 
 fun Flow<HResult<List<NovelEntity>>>.mapLatestToResultFlowWithFactory() =
-		mapLatest { it.mapResultWithFactory() }
+	mapLatest { it.mapResultWithFactory() }

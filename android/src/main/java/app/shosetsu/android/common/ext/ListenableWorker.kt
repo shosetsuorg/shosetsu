@@ -28,8 +28,8 @@ import androidx.work.ListenableWorker
 
 /** @see [toast] */
 fun ListenableWorker.toast(
-		length: Int = Toast.LENGTH_SHORT,
-		message: () -> String,
+	length: Int = Toast.LENGTH_SHORT,
+	message: () -> String,
 ) {
 	launchUI {
 		applicationContext.toast(message(), length)
@@ -38,8 +38,8 @@ fun ListenableWorker.toast(
 
 /** @see [toast] */
 fun ListenableWorker.toast(
-		length: Int = Toast.LENGTH_SHORT,
-		@StringRes message: Int,
+	length: Int = Toast.LENGTH_SHORT,
+	@StringRes message: Int,
 ) {
 	launchUI {
 		applicationContext.toast(message, length)

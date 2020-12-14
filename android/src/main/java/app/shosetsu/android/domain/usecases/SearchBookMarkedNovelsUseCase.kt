@@ -27,8 +27,8 @@ import app.shosetsu.common.dto.convertList
  * 08 / 05 / 2020
  */
 class SearchBookMarkedNovelsUseCase(
-		private val iNovelsRepository: INovelsRepository,
+	private val iNovelsRepository: INovelsRepository,
 ) {
 	suspend operator fun invoke(p1: String): HResult<List<IDTitleImageUI>> =
-			iNovelsRepository.searchBookmarked(p1).convertList()
+		iNovelsRepository.searchBookmarked(p1).convertList()
 }

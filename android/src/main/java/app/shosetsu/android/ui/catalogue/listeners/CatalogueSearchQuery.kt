@@ -24,8 +24,8 @@ import app.shosetsu.android.ui.catalogue.CatalogController
  * Shosetsu
  * 18 / 06 / 2019
  */
-class CatalogueSearchQuery(private val catalogFragment: CatalogController)
-	: SearchView.OnQueryTextListener {
+class CatalogueSearchQuery(private val catalogFragment: CatalogController) :
+	SearchView.OnQueryTextListener {
 	override fun onQueryTextSubmit(query: String): Boolean {
 		catalogFragment.viewModel.setQuery(query)
 		catalogFragment.viewModel.loadQuery()

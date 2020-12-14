@@ -36,7 +36,11 @@ abstract class RemoveMigration(from: Int, to: Int) : Migration(from, to) {
 	 * @param database the apps database
 	 * @param tableName table you want to alter
 	 */
-	fun deleteColumnFromTable(database: SupportSQLiteDatabase, tableName: String, vararg colName: String?) {
+	fun deleteColumnFromTable(
+		database: SupportSQLiteDatabase,
+		tableName: String,
+		vararg colName: String?
+	) {
 
 		val backupTableName = "data_backup"
 		database.execSQL("DROP TABLE IF EXISTS $backupTableName;")
@@ -61,10 +65,19 @@ abstract class RemoveMigration(from: Int, to: Int) : Migration(from, to) {
 					}
 				}
 				if (columnInfo.isLast) {
-					var createBackupTableSQL = "CREATE TABLE IF NOT EXISTS  $backupTableName($sourceTableInfos"
+					var createBackupTableSQL =
+						"CREATE TABLE IF NOT EXISTS  $backupTableName($sourceTableInfos"
 
 					while (foreignKeys.moveToNext()) {
-						createBackupTableSQL += ",FOREIGN KEY (${foreignKeys.getString(3)}) REFERENCES ${foreignKeys.getString(2)}(${foreignKeys.getString(4)}) ON UPDATE ${foreignKeys.getString(5)} ON DELETE ${foreignKeys.getString(6)}"
+						createBackupTableSQL += ",FOREIGN KEY (${foreignKeys.getString(3)}) REFERENCES ${
+							foreignKeys.getString(
+								2
+							)
+						}(${foreignKeys.getString(4)}) ON UPDATE ${foreignKeys.getString(5)} ON DELETE ${
+							foreignKeys.getString(
+								6
+							)
+						}"
 					}
 					createBackupTableSQL += ");"
 					Log.i(logID(), "Creating Backup Table with sql: $createBackupTableSQL")
@@ -89,7 +102,8 @@ abstract class RemoveMigration(from: Int, to: Int) : Migration(from, to) {
 						}
 					}
 
-					val insertIntoBackupSQL = "INSERT INTO $backupTableName SELECT $targetColumns FROM $tableName;"
+					val insertIntoBackupSQL =
+						"INSERT INTO $backupTableName SELECT $targetColumns FROM $tableName;"
 
 					Log.i(logID(), "Insert into Backup Table with sql: $insertIntoBackupSQL")
 					database.execSQL(insertIntoBackupSQL)

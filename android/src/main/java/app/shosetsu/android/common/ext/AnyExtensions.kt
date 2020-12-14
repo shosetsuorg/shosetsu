@@ -74,53 +74,53 @@ inline fun <reified T : Any> T.logID(): String = T::class.java.simpleName
  * @param time time, default in MS
  */
 inline fun <reified T : Any> T.wait(time: Int, unit: TimeUnit = TimeUnit.MILLISECONDS): Any =
-		try {
-			unit.sleep(time.toLong())
-		} catch (e: InterruptedException) {
-			Log.e(logID(), "Failed to wait", e)
-		}
+	try {
+		unit.sleep(time.toLong())
+	} catch (e: InterruptedException) {
+		Log.e(logID(), "Failed to wait", e)
+	}
 
 
 fun ViewModel.launchUI(block: suspend CoroutineScope.() -> Unit): Job =
-		GlobalScope.launch(
-				viewModelScope.coroutineContext + Dispatchers.Main,
-				CoroutineStart.DEFAULT,
-				block
-		)
+	GlobalScope.launch(
+		viewModelScope.coroutineContext + Dispatchers.Main,
+		CoroutineStart.DEFAULT,
+		block
+	)
 
 fun ViewModel.launchIO(block: suspend CoroutineScope.() -> Unit): Job =
-		GlobalScope.launch(
-				viewModelScope.coroutineContext + Dispatchers.IO,
-				CoroutineStart.DEFAULT,
-				block
-		)
+	GlobalScope.launch(
+		viewModelScope.coroutineContext + Dispatchers.IO,
+		CoroutineStart.DEFAULT,
+		block
+	)
 
 @ExperimentalCoroutinesApi
 fun ViewModel.launchAsync(block: suspend CoroutineScope.() -> Unit): Job =
-		GlobalScope.launch(
-				viewModelScope.coroutineContext + Dispatchers.Default,
-				CoroutineStart.UNDISPATCHED,
-				block
-		)
+	GlobalScope.launch(
+		viewModelScope.coroutineContext + Dispatchers.Default,
+		CoroutineStart.UNDISPATCHED,
+		block
+	)
 
 @ExperimentalCoroutinesApi
 fun ViewModel.launchFree(block: suspend CoroutineScope.() -> Unit): Job =
-		GlobalScope.launch(
-				viewModelScope.coroutineContext + Dispatchers.Unconfined,
-				CoroutineStart.UNDISPATCHED,
-				block
-		)
+	GlobalScope.launch(
+		viewModelScope.coroutineContext + Dispatchers.Unconfined,
+		CoroutineStart.UNDISPATCHED,
+		block
+	)
 
 fun launchUI(block: suspend CoroutineScope.() -> Unit): Job =
-		GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT, block)
+	GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT, block)
 
 fun launchIO(block: suspend CoroutineScope.() -> Unit): Job =
-		GlobalScope.launch(Dispatchers.IO, CoroutineStart.DEFAULT, block)
+	GlobalScope.launch(Dispatchers.IO, CoroutineStart.DEFAULT, block)
 
 @ExperimentalCoroutinesApi
 fun launchAsync(block: suspend CoroutineScope.() -> Unit): Job =
-		GlobalScope.launch(Dispatchers.Default, CoroutineStart.UNDISPATCHED, block)
+	GlobalScope.launch(Dispatchers.Default, CoroutineStart.UNDISPATCHED, block)
 
 @ExperimentalCoroutinesApi
 fun launchFree(block: suspend CoroutineScope.() -> Unit): Job =
-		GlobalScope.launch(Dispatchers.Unconfined, CoroutineStart.UNDISPATCHED, block)
+	GlobalScope.launch(Dispatchers.Unconfined, CoroutineStart.UNDISPATCHED, block)

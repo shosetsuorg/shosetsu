@@ -41,11 +41,11 @@ import app.shosetsu.common.dto.successResult
  * @author github.com/doomsdayrs
  */
 class ExtensionConfigureViewModel(
-		private val loadExtensionUIUI: LoadExtensionUIUseCase,
-		private val updateExtensionEntityUseCase: UpdateExtensionEntityUseCase,
-		private val uninstallExtensionUIUseCase: UninstallExtensionUIUseCase,
-		private val getExtensionSettings: GetExtensionSettingsUseCase,
-		private val reportExceptionUseCase: ReportExceptionUseCase
+	private val loadExtensionUIUI: LoadExtensionUIUseCase,
+	private val updateExtensionEntityUseCase: UpdateExtensionEntityUseCase,
+	private val uninstallExtensionUIUseCase: UninstallExtensionUIUseCase,
+	private val getExtensionSettings: GetExtensionSettingsUseCase,
+	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : IExtensionConfigureViewModel() {
 	private val idLive by lazy {
 		MutableLiveData(internalID)

@@ -1,16 +1,16 @@
 package app.shosetsu.android.domain.repository.impl
 
 import app.shosetsu.android.datasource.database.base.ILocalNovelsDataSource
-import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.android.domain.model.local.IDTitleImage
 import app.shosetsu.android.domain.model.local.IDTitleImageBook
 import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.common.datasource.remote.base.IRemoteNovelDataSource
+import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
+import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.emptyResult
-import app.shosetsu.common.dto.transform
 import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.datasource.remote.base.IRemoteNovelDataSource
-import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.dto.transform
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
@@ -39,66 +39,70 @@ import kotlinx.coroutines.flow.Flow
  * @author github.com/doomsdayrs
  */
 class NovelsRepository(
-		private val database: ILocalNovelsDataSource,
-		private val remoteSource: IRemoteNovelDataSource,
+	private val database: ILocalNovelsDataSource,
+	private val remoteSource: IRemoteNovelDataSource,
 ) : INovelsRepository {
 	override suspend fun getLiveBookmarked(): Flow<HResult<List<BookmarkedNovelEntity>>> =
-			database.loadLiveBookmarkedNovelsAndCount()
+		database.loadLiveBookmarkedNovelsAndCount()
 
 	override suspend fun getBookmarkedNovels(): HResult<List<NovelEntity>> =
-			database.loadBookmarkedNovels()
+		database.loadBookmarkedNovels()
 
 	override suspend fun updateNovel(novelEntity: NovelEntity): HResult<*> =
-			database.updateNovel(novelEntity)
+		database.updateNovel(novelEntity)
 
 
 	override suspend fun insertNovelReturnCard(novelEntity: NovelEntity): HResult<IDTitleImageBook> =
-			database.insertNovelReturnCard(novelEntity)
+		database.insertNovelReturnCard(novelEntity)
 
 	override suspend fun insertNovel(novelEntity: NovelEntity): HResult<*> =
-			database.insertNovel(novelEntity)
+		database.insertNovel(novelEntity)
 
 
 	override suspend fun searchBookmarked(string: String): HResult<List<IDTitleImage>> =
-			getBookmarkedNovels().let { result ->
-				result.transform { list: List<NovelEntity> ->
-					if (list.isEmpty()) emptyResult()
-					successResult(list.filter { it.title.contains(string, false) }.map { (id, _, _, _, _, _, t, imageURL, _, _, _, _, _, _, _) ->
+		getBookmarkedNovels().let { result ->
+			result.transform { list: List<NovelEntity> ->
+				if (list.isEmpty()) emptyResult()
+				successResult(list.filter { it.title.contains(string, false) }
+					.map { (id, _, _, _, _, _, t, imageURL, _, _, _, _, _, _, _) ->
 						IDTitleImage(id!!, t, imageURL)
 					})
-				}
 			}
+		}
 
 
 	override suspend fun loadNovel(novelID: Int): HResult<NovelEntity> =
-			database.loadNovel(novelID)
+		database.loadNovel(novelID)
 
 	override suspend fun loadNovelLive(novelID: Int): Flow<HResult<NovelEntity>> =
-			database.loadNovelLive(novelID)
+		database.loadNovelLive(novelID)
 
-	override suspend fun updateNovelData(novelEntity: NovelEntity, novelInfo: Novel.Info): HResult<*> =
-			database.updateNovel(
-					novelEntity.copy(
-							title = novelInfo.title,
-							imageURL = novelInfo.imageURL,
-							language = novelInfo.language,
-							loaded = true,
-							status = novelInfo.status,
-							description = novelInfo.description,
-							genres = novelInfo.genres.toList(),
-							tags = novelInfo.tags.toList(),
-							authors = novelInfo.authors.toList(),
-							artists = novelInfo.artists.toList()
-					)
+	override suspend fun updateNovelData(
+		novelEntity: NovelEntity,
+		novelInfo: Novel.Info
+	): HResult<*> =
+		database.updateNovel(
+			novelEntity.copy(
+				title = novelInfo.title,
+				imageURL = novelInfo.imageURL,
+				language = novelInfo.language,
+				loaded = true,
+				status = novelInfo.status,
+				description = novelInfo.description,
+				genres = novelInfo.genres.toList(),
+				tags = novelInfo.tags.toList(),
+				authors = novelInfo.authors.toList(),
+				artists = novelInfo.artists.toList()
 			)
+		)
 
 	override suspend fun updateBookmarkedNovelData(list: List<BookmarkedNovelEntity>): HResult<*> =
-			database.updateBookmarkedNovels(list)
+		database.updateBookmarkedNovels(list)
 
 	override suspend fun retrieveNovelInfo(
-			formatter: IExtension,
-			novelEntity: NovelEntity,
-			loadChapters: Boolean,
+		formatter: IExtension,
+		novelEntity: NovelEntity,
+		loadChapters: Boolean,
 	): HResult<Novel.Info> =
-			remoteSource.loadNovel(formatter, novelEntity.url, loadChapters)
+		remoteSource.loadNovel(formatter, novelEntity.url, loadChapters)
 }

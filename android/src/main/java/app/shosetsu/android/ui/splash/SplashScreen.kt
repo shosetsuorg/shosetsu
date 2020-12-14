@@ -59,10 +59,12 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 		super.onCreate(savedInstanceState)
 		// Settings setup
 		if (viewModel.showIntro())
-			startActivityForResult(Intent(
+			startActivityForResult(
+				Intent(
 					this,
 					IntroductionActivity::class.java
-			), INTRO_CODE)
+				), INTRO_CODE
+			)
 		else startBoot()
 	}
 

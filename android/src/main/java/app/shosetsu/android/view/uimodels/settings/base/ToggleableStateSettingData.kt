@@ -26,5 +26,5 @@ import android.widget.CompoundButton
 abstract class ToggleableStateSettingData(id: Int) : RightSettingsItemData(id) {
 	var isChecked: Boolean = false
 	var onCheckedListener: CompoundButton.OnCheckedChangeListener =
-			CompoundButton.OnCheckedChangeListener { _, _ -> }
+		CompoundButton.OnCheckedChangeListener { _, _ -> }
 }

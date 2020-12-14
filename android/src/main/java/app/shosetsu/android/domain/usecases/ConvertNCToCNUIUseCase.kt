@@ -28,9 +28,9 @@ import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
  */
 class ConvertNCToCNUIUseCase {
 	operator fun invoke(idTitleImageBook: IDTitleImageBook, cardType: Int): ACatalogNovelUI =
-			idTitleImageBook.let { (id, title, imageURL, bookmarked) ->
-				if (cardType == 0)
-					FullCatalogNovelUI(id, title, imageURL, bookmarked)
-				else CompactCatalogNovelUI(id, title, imageURL, bookmarked)
-			}
+		idTitleImageBook.let { (id, title, imageURL, bookmarked) ->
+			if (cardType == 0)
+				FullCatalogNovelUI(id, title, imageURL, bookmarked)
+			else CompactCatalogNovelUI(id, title, imageURL, bookmarked)
+		}
 }

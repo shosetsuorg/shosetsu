@@ -28,8 +28,8 @@ import app.shosetsu.android.ui.library.LibraryController
  *
  * @author github.com/doomsdayrs
  */
-class LibrarySearchQuery(private val libraryController: LibraryController)
-	: SearchView.OnQueryTextListener {
+class LibrarySearchQuery(private val libraryController: LibraryController) :
+	SearchView.OnQueryTextListener {
 	override fun onQueryTextSubmit(query: String): Boolean {
 		libraryController.itemAdapter.filter(query)
 		return true

@@ -5,9 +5,9 @@ import app.shosetsu.android.providers.database.dao.RepositoryDao
 import app.shosetsu.common.datasource.database.base.ILocalExtRepoDataSource
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.convertList
 import app.shosetsu.common.dto.mapLatestListTo
 import app.shosetsu.common.dto.mapLatestToSuccess
-import app.shosetsu.common.dto.convertList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.flow
  * 12 / 05 / 2020
  */
 class LocalExtRepoDataSource(
-		private val repositoryDao: RepositoryDao,
+	private val repositoryDao: RepositoryDao,
 ) : ILocalExtRepoDataSource {
 	override fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>> = flow {
 		try {
@@ -51,7 +51,9 @@ class LocalExtRepoDataSource(
 	}
 
 	override fun loadRepository(repoID: Int): HResult<RepositoryEntity> = try {
-		app.shosetsu.common.dto.successResult(repositoryDao.loadRepositoryFromID(repoID).convertTo())
+		app.shosetsu.common.dto.successResult(
+			repositoryDao.loadRepositoryFromID(repoID).convertTo()
+		)
 	} catch (e: Exception) {
 		e.toHError()
 	}

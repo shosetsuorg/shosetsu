@@ -1,9 +1,6 @@
 package app.shosetsu.android.domain.repository.impl
 
 import app.shosetsu.android.common.dto.errorResult
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.datasource.database.base.ILocalExtLibDataSource
 import app.shosetsu.common.datasource.file.base.IFileExtLibDataSource
 import app.shosetsu.common.datasource.memory.base.IMemExtLibDataSource
@@ -11,6 +8,9 @@ import app.shosetsu.common.datasource.remote.base.IRemoteExtLibDataSource
 import app.shosetsu.common.domain.model.local.ExtLibEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.IExtLibRepository
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.handle
+import app.shosetsu.common.dto.successResult
 import app.shosetsu.lib.Version
 import app.shosetsu.lib.json.J_VERSION
 import org.json.JSONException
@@ -38,20 +38,20 @@ import org.json.JSONObject
  * 12 / 05 / 2020
  */
 class ExtLibRepository(
-		private val fileSource: IFileExtLibDataSource,
-		private val databaseSource: ILocalExtLibDataSource,
-		private val remoteSource: IRemoteExtLibDataSource,
-		private val memSource: IMemExtLibDataSource,
+	private val fileSource: IFileExtLibDataSource,
+	private val databaseSource: ILocalExtLibDataSource,
+	private val remoteSource: IRemoteExtLibDataSource,
+	private val memSource: IMemExtLibDataSource,
 ) : IExtLibRepository {
 	override suspend fun loadExtLibByRepo(
-			repositoryEntity: RepositoryEntity,
+		repositoryEntity: RepositoryEntity,
 	): HResult<List<ExtLibEntity>> =
-			databaseSource.loadExtLibByRepo(repositoryEntity)
+		databaseSource.loadExtLibByRepo(repositoryEntity)
 
 	@Throws(JSONException::class)
 	override suspend fun installExtLibrary(
-			repositoryEntity: RepositoryEntity,
-			extLibEntity: ExtLibEntity,
+		repositoryEntity: RepositoryEntity,
+		extLibEntity: ExtLibEntity,
 	): HResult<*> {
 		remoteSource.downloadLibrary(repositoryEntity, extLibEntity).handle {
 			val data = it
@@ -69,9 +69,9 @@ class ExtLibRepository(
 	}
 
 	override fun blockingLoadExtLibrary(name: String): HResult<String> =
-			memSource.blockingLoadLibrary(name).takeIf { it is HResult.Success }
-					?: fileSource.blockingLoadLib(name).also {
-						if (it is HResult.Success)
-							memSource.blockingSetLibrary(name, it.data)
-					}
+		memSource.blockingLoadLibrary(name).takeIf { it is HResult.Success }
+			?: fileSource.blockingLoadLib(name).also {
+				if (it is HResult.Success)
+					memSource.blockingSetLibrary(name, it.data)
+			}
 }

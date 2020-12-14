@@ -7,8 +7,8 @@ import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import app.shosetsu.android.view.uimodels.model.NovelUI.ViewHolder
-import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.dto.Convertible
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoHeaderBinding
@@ -39,50 +39,50 @@ import com.google.android.material.chip.Chip
  * @author github.com/doomsdayrs
  */
 data class NovelUI(
-		val id: Int,
+	val id: Int,
 
-		val novelURL: String,
+	val novelURL: String,
 
-		val extID: Int,
+	val extID: Int,
 
-		var extName: String = "",
+	var extName: String = "",
 
-		var bookmarked: Boolean,
+	var bookmarked: Boolean,
 
-		var readerType: Int,
+	var readerType: Int,
 
-		var title: String,
+	var title: String,
 
-		var imageURL: String,
+	var imageURL: String,
 
-		var description: String,
-		var loaded: Boolean,
-		var language: String,
+	var description: String,
+	var loaded: Boolean,
+	var language: String,
 
-		var genres: List<String>,
-		var authors: List<String>,
-		var artists: List<String>,
-		var tags: List<String>,
+	var genres: List<String>,
+	var authors: List<String>,
+	var artists: List<String>,
+	var tags: List<String>,
 
-		var status: Novel.Status,
+	var status: Novel.Status,
 ) : BaseRecyclerItem<ViewHolder>(), Convertible<NovelEntity> {
 	companion object {
 		fun instance() = NovelUI(
-				id = -1,
-				novelURL = "",
-				extID = -1,
-				bookmarked = false,
-				readerType = -1,
-				title = "",
-				imageURL = "",
-				description = "",
-				loaded = true,
-				language = "",
-				genres = listOf(),
-				authors = listOf(),
-				artists = listOf(),
-				tags = listOf(),
-				status = Novel.Status.UNKNOWN
+			id = -1,
+			novelURL = "",
+			extID = -1,
+			bookmarked = false,
+			readerType = -1,
+			title = "",
+			imageURL = "",
+			description = "",
+			loaded = true,
+			language = "",
+			genres = listOf(),
+			authors = listOf(),
+			artists = listOf(),
+			tags = listOf(),
+			status = Novel.Status.UNKNOWN
 		)
 	}
 
@@ -97,21 +97,21 @@ data class NovelUI(
 	override var isSelectable: Boolean = false
 
 	override fun convertTo(): NovelEntity = NovelEntity(
-			id = id,
-			url = novelURL,
-			formatterID = extID,
-			bookmarked = bookmarked,
-			loaded = loaded,
-			readerType = readerType,
-			title = title,
-			imageURL = imageURL,
-			description = description,
-			language = language,
-			genres = genres,
-			authors = authors,
-			artists = artists,
-			tags = tags,
-			status = status
+		id = id,
+		url = novelURL,
+		formatterID = extID,
+		bookmarked = bookmarked,
+		loaded = loaded,
+		readerType = readerType,
+		title = title,
+		imageURL = imageURL,
+		description = description,
+		language = language,
+		genres = genres,
+		authors = authors,
+		artists = artists,
+		tags = tags,
+		status = status
 	)
 
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)

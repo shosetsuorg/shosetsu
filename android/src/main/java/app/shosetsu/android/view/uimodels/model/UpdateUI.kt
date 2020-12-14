@@ -33,12 +33,12 @@ import java.util.*
  * UpdateUI entity to display
  */
 data class UpdateUI(
-		val chapterID: Int,
-		val novelID: Int,
-		val time: Long,
-		val chapterName: String,
-		val novelName: String,
-		val novelImageURL: String,
+	val chapterID: Int,
+	val novelID: Int,
+	val time: Long,
+	val chapterName: String,
+	val novelName: String,
+	val novelImageURL: String,
 ) : BaseRecyclerItem<UpdateUI.ViewHolder>() {
 	override val layoutRes: Int = R.layout.recycler_update_ui
 	override val type: Int = R.layout.recycler_update_ui

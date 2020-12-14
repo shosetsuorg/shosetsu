@@ -28,21 +28,21 @@ import kotlin.reflect.KMutableProperty0
  */
 @SettingsItemDSL
 inline fun colorPickerSettingData(
-		id: Int,
-		action: ColorPickerSettingData.() -> Unit,
+	id: Int,
+	action: ColorPickerSettingData.() -> Unit,
 ): SettingsItemData = ColorPickerSettingData(id).also(action)
 
 @SettingsItemDSL
 inline fun SettingsListBuilder.colorPickerSettingData(
-		id: Int,
-		action: ColorPickerSettingData.() -> Unit,
+	id: Int,
+	action: ColorPickerSettingData.() -> Unit,
 ): Unit = this.let { list.add(ColorPickerSettingData(id).also(action)) }
 
 @SettingsItemDSL
 inline fun ColorPickerSettingData.onColorPicked(
-		crossinline action: ColorPickerSettingData.(
-				@ParameterName("color") Int,
-		) -> Unit,
+	crossinline action: ColorPickerSettingData.(
+		@ParameterName("color") Int,
+	) -> Unit,
 ) {
 	colorFunction = {
 		action(it)
@@ -51,17 +51,17 @@ inline fun ColorPickerSettingData.onColorPicked(
 
 @SettingsItemDSL
 inline fun ColorPickerSettingData.colorName(
-		crossinline value: ColorPickerSettingData.() -> String,
+	crossinline value: ColorPickerSettingData.() -> String,
 ): Unit = value().let { colorPreferenceName = it }
 
 @SettingsItemDSL
 inline fun ColorPickerSettingData.itemColor(
-		crossinline value: ColorPickerSettingData.() -> Int,
+	crossinline value: ColorPickerSettingData.() -> Int,
 ): Unit = value().let { itemColor = it }
 
 @SettingsItemDSL
 inline fun ColorPickerSettingData.colorValue(
-		crossinline action: ColorPickerSettingData.() -> KMutableProperty0<Int>,
+	crossinline action: ColorPickerSettingData.() -> KMutableProperty0<Int>,
 ) {
 	val property = action()
 	itemColor { property.get() }

@@ -10,9 +10,9 @@ import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.AppTheme
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -37,42 +37,42 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * 31 / 08 / 2020
  */
 class AdvancedSettingsViewModel(
-		iSettingsRepository: ISettingsRepository,
-		private val context: Context,
-		private val reportExceptionUseCase: ReportExceptionUseCase
+	iSettingsRepository: ISettingsRepository,
+	private val context: Context,
+	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : AAdvancedSettingsViewModel(iSettingsRepository) {
 	override suspend fun settings(): List<SettingsItemData> = listOf(
-			spinnerSettingData(1) {
-				title { R.string.theme }
+		spinnerSettingData(1) {
+			title { R.string.theme }
+			try {
+				arrayAdapter = ArrayAdapter(
+					context,
+					android.R.layout.simple_spinner_dropdown_item,
+					context.resources.getStringArray(R.array.application_themes)
+				)
+			} catch (e: Resources.NotFoundException) {
+				TODO("Add error handling here")
+			}
+
+			iSettingsRepository.getInt(AppTheme).handle {
+				spinnerValue { it }
+			}
+
+			onSpinnerItemSelected { adapter, _, selectedTheme, _ ->
+				launchIO { iSettingsRepository.setInt(AppTheme, selectedTheme) }
+			}
+		},
+		buttonSettingData(2) {
+			title { R.string.remove_novel_cache }
+			onButtonClicked {
 				try {
-					arrayAdapter = ArrayAdapter(
-							context,
-							android.R.layout.simple_spinner_dropdown_item,
-							context.resources.getStringArray(R.array.application_themes)
-					)
-				} catch (e: Resources.NotFoundException) {
-					TODO("Add error handling here")
-				}
-
-				iSettingsRepository.getInt(AppTheme).handle {
-					spinnerValue { it }
-				}
-
-				onSpinnerItemSelected { adapter, _, selectedTheme, _ ->
-					launchIO { iSettingsRepository.setInt(AppTheme, selectedTheme) }
-				}
-			},
-			buttonSettingData(2) {
-				title { R.string.remove_novel_cache }
-				onButtonClicked {
-					try {
-						// TODO purge
-					} catch (e: android.database.SQLException) {
-						context.toast("SQLITE Error")
-						android.util.Log.e("AdvancedSettings", "DatabaseError", e)
-					}
+					// TODO purge
+				} catch (e: android.database.SQLException) {
+					context.toast("SQLITE Error")
+					android.util.Log.e("AdvancedSettings", "DatabaseError", e)
 				}
 			}
+		}
 	)
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {

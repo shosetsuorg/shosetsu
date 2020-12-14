@@ -2,8 +2,8 @@ package app.shosetsu.android.domain.usecases
 
 import app.shosetsu.android.domain.usecases.load.LoadNovelUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -27,17 +27,19 @@ import app.shosetsu.common.domain.model.local.NovelEntity
  * 15 / 05 / 2020
  */
 class NovelBackgroundAddUseCase(
-		private val loadNovelUseCase: LoadNovelUseCase,
-		private val updateNovelEntityUseCase: UpdateNovelUseCase,
+	private val loadNovelUseCase: LoadNovelUseCase,
+	private val updateNovelEntityUseCase: UpdateNovelUseCase,
 ) {
 	suspend operator fun invoke(novelID: Int): HResult<*> =
-			loadNovelUseCase(novelID, false).also {
-				if (it is HResult.Success<*>) {
-					if (it.data is NovelEntity) {
-						updateNovelEntityUseCase((it.data as NovelEntity).copy(
-								bookmarked = true
-						))
-					}
+		loadNovelUseCase(novelID, false).also {
+			if (it is HResult.Success<*>) {
+				if (it.data is NovelEntity) {
+					updateNovelEntityUseCase(
+						(it.data as NovelEntity).copy(
+							bookmarked = true
+						)
+					)
 				}
 			}
+		}
 }

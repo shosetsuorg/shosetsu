@@ -70,8 +70,8 @@ class AboutController : ViewedController<ControllerAboutBinding>(), PushCapableC
 	}
 
 	override fun bindView(inflater: LayoutInflater): ControllerAboutBinding =
-			ControllerAboutBinding.inflate(inflater)
+		ControllerAboutBinding.inflate(inflater)
 
 	private fun onClickLicense() =
-			pushController(TextAssetReader(TextAssetReader.Target.LICENSE.bundle))
+		pushController(TextAssetReader(TextAssetReader.Target.LICENSE.bundle))
 }

@@ -4,9 +4,9 @@ import android.view.View
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
+import app.shosetsu.common.domain.model.local.DownloadEntity
 import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.enums.DownloadStatus
-import app.shosetsu.common.domain.model.local.DownloadEntity
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerDownloadCardBinding
 
@@ -36,56 +36,59 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerDownloadCardBindi
  *
  */
 data class DownloadUI(
-		val chapterID: Int,
-		val novelID: Int,
-		val chapterURL: String,
-		val chapterName: String,
-		val novelName: String,
-		val extensionID: Int,
-		var status: DownloadStatus = DownloadStatus.PENDING,
+	val chapterID: Int,
+	val novelID: Int,
+	val chapterURL: String,
+	val chapterName: String,
+	val novelName: String,
+	val extensionID: Int,
+	var status: DownloadStatus = DownloadStatus.PENDING,
 ) : BaseRecyclerItem<DownloadUI.ViewHolder>(), Convertible<DownloadEntity> {
 	override var identifier: Long
 		get() = chapterID.toLong()
 		set(@Suppress("UNUSED_PARAMETER") value) {}
 
 	override fun convertTo(): DownloadEntity = DownloadEntity(
-			chapterID,
-			novelID,
-			chapterURL,
-			chapterName,
-			novelName,
-			extensionID,
-			status
+		chapterID,
+		novelID,
+		chapterURL,
+		chapterName,
+		novelName,
+		extensionID,
+		status
 	)
 
-	class ViewHolder(itemView: View) : BindViewHolder<DownloadUI, RecyclerDownloadCardBinding>(itemView) {
+	class ViewHolder(itemView: View) :
+		BindViewHolder<DownloadUI, RecyclerDownloadCardBinding>(itemView) {
 		override val binding = RecyclerDownloadCardBinding.bind(itemView)
 
 		override fun RecyclerDownloadCardBinding.bindView(item: DownloadUI, payloads: List<Any>) {
 			novelTitle.text = item.novelName
 			chapterTitle.text = item.chapterName
-			status.setText(when (item.status) {
-				DownloadStatus.PENDING -> {
-					progress.isIndeterminate = false
-					R.string.pending
+			status.setText(
+				when (item.status) {
+					DownloadStatus.PENDING -> {
+						progress.isIndeterminate = false
+						R.string.pending
+					}
+					DownloadStatus.DOWNLOADING -> {
+						progress.isIndeterminate = true
+						R.string.downloading
+					}
+					DownloadStatus.PAUSED -> {
+						progress.isIndeterminate = false
+						R.string.paused
+					}
+					DownloadStatus.ERROR -> {
+						progress.isIndeterminate = false
+						R.string.error
+					}
+					DownloadStatus.WAITING -> {
+						progress.isIndeterminate = true
+						R.string.waiting
+					}
 				}
-				DownloadStatus.DOWNLOADING -> {
-					progress.isIndeterminate = true
-					R.string.downloading
-				}
-				DownloadStatus.PAUSED -> {
-					progress.isIndeterminate = false
-					R.string.paused
-				}
-				DownloadStatus.ERROR -> {
-					progress.isIndeterminate = false
-					R.string.error
-				}
-				DownloadStatus.WAITING -> {
-					progress.isIndeterminate = true
-					R.string.waiting
-				}
-			})
+			)
 			cardView.strokeWidth = if (item.isSelected) SELECTED_STROKE_WIDTH else 0
 			if (item.isSelected) cardView.isSelected
 		}

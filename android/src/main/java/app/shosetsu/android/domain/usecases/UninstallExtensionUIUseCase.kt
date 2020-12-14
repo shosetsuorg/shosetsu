@@ -25,7 +25,7 @@ import app.shosetsu.android.view.uimodels.model.ExtensionUI
  * 14 / 08 / 2020
  */
 class UninstallExtensionUIUseCase(
-		private val extensionRepository: IExtensionsRepository,
+	private val extensionRepository: IExtensionsRepository,
 ) {
 	operator fun invoke(extensionEntity: ExtensionUI) {
 		app.shosetsu.android.common.ext.launchIO {

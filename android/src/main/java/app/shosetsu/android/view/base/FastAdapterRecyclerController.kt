@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import androidx.annotation.CallSuper
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerWithBottomMenuBinding
@@ -35,7 +36,8 @@ import com.mikepenz.fastadapter.items.AbstractItem
  * shosetsu
  * 02 / 07 / 2020
  */
-abstract class FastAdapterRecyclerController<VB, ITEM> : RecyclerController<FastAdapter<ITEM>, ITEM, VB>
+abstract class FastAdapterRecyclerController<VB, ITEM> :
+	RecyclerController<FastAdapter<ITEM>, ITEM, VB>
 		where ITEM : GenericItem, VB : ViewBinding {
 
 	/**
@@ -73,10 +75,10 @@ abstract class FastAdapterRecyclerController<VB, ITEM> : RecyclerController<Fast
 
 	/** @param result [HResult], if [HResult.Success] then updates UI */
 	fun <T : GenericItem> handleRecyclerUpdate(
-			itemAdapter: ItemAdapter<T>,
-			showEmpty: () -> Unit,
-			hideEmpty: () -> Unit,
-			result: HResult<List<T>>
+		itemAdapter: ItemAdapter<T>,
+		showEmpty: () -> Unit,
+		hideEmpty: () -> Unit,
+		result: HResult<List<T>>
 	) {
 		when (result) {
 			is HResult.Loading -> showLoading()
@@ -88,26 +90,30 @@ abstract class FastAdapterRecyclerController<VB, ITEM> : RecyclerController<Fast
 
 
 	override fun updateUI(newList: List<ITEM>) {
-		if (newList.isEmpty()) showEmpty() else hideEmpty()
+		if (newList.isEmpty()) {
+			showEmpty()
+		} else hideEmpty()
 		FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
 	}
 
 	fun <T : GenericItem> updateUI(
-			itemAdapter: ItemAdapter<T>,
-			showEmpty: () -> Unit,
-			hideEmpty: () -> Unit,
-			newList: List<T>
+		itemAdapter: ItemAdapter<T>,
+		showEmpty: () -> Unit,
+		hideEmpty: () -> Unit,
+		newList: List<T>
 	) {
-		if (newList.isEmpty()) showEmpty() else hideEmpty()
+		if (newList.isEmpty()) {
+			showEmpty()
+		} else hideEmpty()
 		FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
 	}
 
 	override fun difAreItemsTheSame(oldItem: ITEM, newItem: ITEM): Boolean =
-			difAreContentsTheSame(oldItem, newItem)
+		difAreContentsTheSame(oldItem, newItem)
 
 
 	abstract class BottomMenuBasicFastAdapterRecyclerController<ITEM : AbstractItem<*>> :
-			FastAdapterRecyclerController<ControllerRecyclerWithBottomMenuBinding, ITEM> {
+		FastAdapterRecyclerController<ControllerRecyclerWithBottomMenuBinding, ITEM> {
 
 		constructor() : super()
 		constructor(args: Bundle) : super(args)
@@ -126,11 +132,12 @@ abstract class FastAdapterRecyclerController<VB, ITEM> : RecyclerController<Fast
 
 
 		override fun bindView(inflater: LayoutInflater): ControllerRecyclerWithBottomMenuBinding =
-				ControllerRecyclerWithBottomMenuBinding.inflate(inflater).also { recyclerView = it.recyclerView }
+			ControllerRecyclerWithBottomMenuBinding.inflate(inflater)
+				.also { recyclerView = it.recyclerView }
 	}
 
 	abstract class BasicFastAdapterRecyclerController<ITEM : AbstractItem<*>> :
-			FastAdapterRecyclerController<ControllerRecyclerBinding, ITEM> {
+		FastAdapterRecyclerController<ControllerRecyclerBinding, ITEM> {
 
 		constructor() : super()
 		constructor(args: Bundle) : super(args)
@@ -148,7 +155,7 @@ abstract class FastAdapterRecyclerController<VB, ITEM> : RecyclerController<Fast
 		}
 
 		override fun bindView(inflater: LayoutInflater): ControllerRecyclerBinding =
-				ControllerRecyclerBinding.inflate(inflater).also { recyclerView = it.recyclerView }
+			ControllerRecyclerBinding.inflate(inflater).also { recyclerView = it.recyclerView }
 	}
 
 }

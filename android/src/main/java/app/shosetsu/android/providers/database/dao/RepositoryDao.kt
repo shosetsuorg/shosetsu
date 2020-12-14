@@ -40,7 +40,7 @@ interface RepositoryDao : BaseDao<DBRepositoryEntity> {
 	@Throws(SQLiteException::class)
 	@Transaction
 	suspend fun insertRepositoryAndReturn(DBRepositoryEntity: DBRepositoryEntity): DBRepositoryEntity =
-			loadRepositoryFromROWID(insertReplace(DBRepositoryEntity))
+		loadRepositoryFromROWID(insertReplace(DBRepositoryEntity))
 
 	/**
 	 * Run only if you know for sure the data exists
@@ -83,8 +83,8 @@ interface RepositoryDao : BaseDao<DBRepositoryEntity> {
 		val branch = if (BuildConfig.DEBUG) "dev" else "master"
 		val name = if (BuildConfig.DEBUG) "Development" else "Stable"
 		val repo = DBRepositoryEntity(
-				url = "https://raw.githubusercontent.com/shosetsuorg/extensions/$branch",
-				name = name
+			url = "https://raw.githubusercontent.com/shosetsuorg/extensions/$branch",
+			name = name
 		)
 		createIfNotExist(repo)
 	}

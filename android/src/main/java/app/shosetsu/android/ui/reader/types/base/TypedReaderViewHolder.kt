@@ -27,7 +27,7 @@ import com.mikepenz.fastadapter.FastAdapter
  * 13 / 12 / 2019
  */
 abstract class TypedReaderViewHolder(
-		itemView: View
+	itemView: View
 ) : FastAdapter.ViewHolder<ReaderChapterUI>(itemView) {
 	lateinit var chapter: ReaderChapterUI
 	lateinit var chapterReader: ChapterReader

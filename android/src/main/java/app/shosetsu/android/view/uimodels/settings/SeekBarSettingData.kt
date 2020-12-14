@@ -56,27 +56,27 @@ class SeekBarSettingData(id: Int) : BottomSettingsItemData(id) {
 	var array: SparseArray<String> = SparseArray()
 
 	var onProgressChangedUnit: (
-			@ParameterName("bubbleSeekBar") BubbleSeekBar?,
-			@ParameterName("progress") Int,
-			@ParameterName("progressFloat") Float,
-			@ParameterName("fromUser") Boolean,
+		@ParameterName("bubbleSeekBar") BubbleSeekBar?,
+		@ParameterName("progress") Int,
+		@ParameterName("progressFloat") Float,
+		@ParameterName("fromUser") Boolean,
 	) -> Unit =
-			{ _, _, _, _ -> }
+		{ _, _, _, _ -> }
 
 	var onProgressActionUpUnit: (
-			@ParameterName("bubbleSeekBar") BubbleSeekBar?,
-			@ParameterName("progress") Int,
-			@ParameterName("progressFloat") Float,
+		@ParameterName("bubbleSeekBar") BubbleSeekBar?,
+		@ParameterName("progress") Int,
+		@ParameterName("progressFloat") Float,
 	) -> Unit =
-			{ _, _, _ -> }
+		{ _, _, _ -> }
 
 	var oProgressOnFinallyUnit: (
-			@ParameterName("bubbleSeekBar") BubbleSeekBar?,
-			@ParameterName("progress") Int,
-			@ParameterName("progressFloat") Float,
-			@ParameterName("fromUser") Boolean,
+		@ParameterName("bubbleSeekBar") BubbleSeekBar?,
+		@ParameterName("progress") Int,
+		@ParameterName("progressFloat") Float,
+		@ParameterName("fromUser") Boolean,
 	) -> Unit =
-			{ _, _, _, _ -> }
+		{ _, _, _, _ -> }
 
 	override fun bindBinding(holder: SettingsItemBinding, payloads: List<Any>) {
 		super.bindBinding(holder, payloads)
@@ -109,27 +109,27 @@ class SeekBarSettingData(id: Int) : BottomSettingsItemData(id) {
 			bubbleSeekBar.setCustomSectionTextArray { _, _ -> array }
 			bubbleSeekBar.onProgressChangedListener = object : OnProgressChangedListener {
 				override fun onProgressChanged(
-						bubbleSeekBar: BubbleSeekBar?,
-						progress: Int,
-						progressFloat: Float,
-						fromUser: Boolean,
+					bubbleSeekBar: BubbleSeekBar?,
+					progress: Int,
+					progressFloat: Float,
+					fromUser: Boolean,
 				) {
 					onProgressChangedUnit(bubbleSeekBar, progress, progressFloat, fromUser)
 				}
 
 				override fun getProgressOnActionUp(
-						bubbleSeekBar: BubbleSeekBar?,
-						progress: Int,
-						progressFloat: Float,
+					bubbleSeekBar: BubbleSeekBar?,
+					progress: Int,
+					progressFloat: Float,
 				) {
 					onProgressActionUpUnit(bubbleSeekBar, progress, progressFloat)
 				}
 
 				override fun getProgressOnFinally(
-						bubbleSeekBar: BubbleSeekBar?,
-						progress: Int,
-						progressFloat: Float,
-						fromUser: Boolean,
+					bubbleSeekBar: BubbleSeekBar?,
+					progress: Int,
+					progressFloat: Float,
+					fromUser: Boolean,
 				) {
 					oProgressOnFinallyUnit(bubbleSeekBar, progress, progressFloat, fromUser)
 				}

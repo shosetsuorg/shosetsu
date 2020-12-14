@@ -27,35 +27,35 @@ import com.xw.repo.BubbleSeekBar
  */
 
 fun BubbleSeekBar.setBubbleOnProgressChanged(
-		onProgressChangedFun: (
-				@ParameterName("bubbleSeekBar") BubbleSeekBar?,
-				@ParameterName("progress") Int,
-				@ParameterName("progressFloat") Float,
-				@ParameterName("fromUser") Boolean,
-		) -> Unit,
+	onProgressChangedFun: (
+		@ParameterName("bubbleSeekBar") BubbleSeekBar?,
+		@ParameterName("progress") Int,
+		@ParameterName("progressFloat") Float,
+		@ParameterName("fromUser") Boolean,
+	) -> Unit,
 ) {
 	this.onProgressChangedListener = object : BubbleSeekBar.OnProgressChangedListener {
 		override fun onProgressChanged(
-				bubbleSeekBar: BubbleSeekBar?,
-				progress: Int,
-				progressFloat: Float,
-				fromUser: Boolean,
+			bubbleSeekBar: BubbleSeekBar?,
+			progress: Int,
+			progressFloat: Float,
+			fromUser: Boolean,
 		) {
 			onProgressChangedFun(bubbleSeekBar, progress, progressFloat, fromUser)
 		}
 
 		override fun getProgressOnActionUp(
-				bubbleSeekBar: BubbleSeekBar?,
-				progress: Int,
-				progressFloat: Float,
+			bubbleSeekBar: BubbleSeekBar?,
+			progress: Int,
+			progressFloat: Float,
 		) {
 		}
 
 		override fun getProgressOnFinally(
-				bubbleSeekBar: BubbleSeekBar?,
-				progress: Int,
-				progressFloat: Float,
-				fromUser: Boolean,
+			bubbleSeekBar: BubbleSeekBar?,
+			progress: Int,
+			progressFloat: Float,
+			fromUser: Boolean,
 		) {
 		}
 	}

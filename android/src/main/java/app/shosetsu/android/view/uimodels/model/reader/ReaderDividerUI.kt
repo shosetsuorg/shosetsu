@@ -12,8 +12,8 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ChapterDividerBinding
  * Will appear after the last chapter, but stating there are no more chapters
  */
 data class ReaderDividerUI(
-		val prev: String,
-		val next: String? = null
+	val prev: String,
+	val next: String? = null
 ) : ReaderUIItem<ReaderDividerUI, ReaderDividerUI.ViewHolder>() {
 	override var identifier: Long
 		get() = (prev.hashCode() + next.hashCode()).toLong()
@@ -46,7 +46,7 @@ data class ReaderDividerUI(
 
 	class ViewHolder(view: View) : BindViewHolder<ReaderDividerUI, ChapterDividerBinding>(view) {
 		override val binding: ChapterDividerBinding =
-				ChapterDividerBinding.bind(view)
+			ChapterDividerBinding.bind(view)
 
 		override fun ChapterDividerBinding.bindView(item: ReaderDividerUI, payloads: List<Any>) {
 			if (item.next == null) {

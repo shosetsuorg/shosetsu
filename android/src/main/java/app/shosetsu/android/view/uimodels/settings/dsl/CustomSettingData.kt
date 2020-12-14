@@ -29,19 +29,19 @@ import app.shosetsu.android.view.uimodels.settings.base.SettingsListBuilder
 
 @SettingsItemDSL
 inline fun customSettingData(
-		id: Int,
-		action: CustomSettingData.() -> Unit,
+	id: Int,
+	action: CustomSettingData.() -> Unit,
 ): SettingsItemData = CustomSettingData(id).also(action)
 
 @SettingsItemDSL
 inline fun SettingsListBuilder.customSettingData(
-		id: Int,
-		action: CustomSettingData.() -> Unit,
+	id: Int,
+	action: CustomSettingData.() -> Unit,
 ): Unit = this.let { list.add(CustomSettingData(id).also(action)) }
 
 @SettingsItemDSL
 inline fun CustomSettingData.customView(
-		crossinline view: () -> View,
+	crossinline view: () -> View,
 ): CustomSettingData = this.apply {
 	customView = { view() }
 }

@@ -8,8 +8,8 @@ import app.shosetsu.android.common.utils.uifactory.mapToFactory
 import app.shosetsu.android.domain.model.local.ColorChoiceData
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.common.consts.settings.SettingKey.ReaderUserThemes
-import app.shosetsu.common.dto.convertList
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.dto.convertList
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
@@ -36,49 +36,49 @@ import kotlinx.coroutines.flow.mapLatest
  * 24 / 09 / 2020
  */
 class LoadReaderThemes(
-		private val iSettingsRepository: ISettingsRepository,
-		private val context: Context
+	private val iSettingsRepository: ISettingsRepository,
+	private val context: Context
 ) {
 	operator fun invoke(): Flow<List<ColorChoiceUI>> {
 		return iSettingsRepository.observeStringSet(ReaderUserThemes)
-				.mapLatest { set: Set<String> ->
+			.mapLatest { set: Set<String> ->
 
-					(if (set.isNotEmpty())
-						set.map { ColorChoiceData.fromString(it) }
-					else listOf(
-							ColorChoiceData(
-									-1,
-									context.getString(R.string.light),
-									-0x1000000,
-									-0x1
-							),
-							ColorChoiceData(
-									-2,
-									context.getString(R.string.light_dark),
-									-0x333334,
-									-0xbbbbbc
-							),
-							ColorChoiceData(
-									-3,
-									context.getString(R.string.sepia),
-									-0x1000000,
-									ContextCompat.getColor(context, R.color.wheat).also {
-										logE("Hey here is the color you need: $it")
-									}
-							),
-							ColorChoiceData(
-									-4,
-									context.getString(R.string.amoled),
-									-0x777778,
-									-0x1000000
-							)
-					).also {
-						launchIO {
-							it.map { it.toString() }.toSet().let {
-								iSettingsRepository.setStringSet(ReaderUserThemes, it)
-							}
+				(if (set.isNotEmpty())
+					set.map { ColorChoiceData.fromString(it) }
+				else listOf(
+					ColorChoiceData(
+						-1,
+						context.getString(R.string.light),
+						-0x1000000,
+						-0x1
+					),
+					ColorChoiceData(
+						-2,
+						context.getString(R.string.light_dark),
+						-0x333334,
+						-0xbbbbbc
+					),
+					ColorChoiceData(
+						-3,
+						context.getString(R.string.sepia),
+						-0x1000000,
+						ContextCompat.getColor(context, R.color.wheat).also {
+							logE("Hey here is the color you need: $it")
 						}
-					}).mapToFactory().convertList()
-				}
+					),
+					ColorChoiceData(
+						-4,
+						context.getString(R.string.amoled),
+						-0x777778,
+						-0x1000000
+					)
+				).also {
+					launchIO {
+						it.map { it.toString() }.toSet().let {
+							iSettingsRepository.setStringSet(ReaderUserThemes, it)
+						}
+					}
+				}).mapToFactory().convertList()
+			}
 	}
 }

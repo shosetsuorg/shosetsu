@@ -28,7 +28,7 @@ import androidx.core.content.getSystemService
  * 04 / 09 / 2020
  */
 class IsOnlineUseCase(
-		private val application: Application,
+	private val application: Application,
 ) {
 	private val connectivityManager by lazy {
 		application.getSystemService<ConnectivityManager>()!!
@@ -38,7 +38,7 @@ class IsOnlineUseCase(
 		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			val networkCapabilities = connectivityManager.activeNetwork ?: return false
 			val actNw = connectivityManager.getNetworkCapabilities(networkCapabilities)
-					?: return false
+				?: return false
 			when {
 				actNw.hasTransport(TRANSPORT_BLUETOOTH) -> true
 				actNw.hasTransport(TRANSPORT_CELLULAR) -> true

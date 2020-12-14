@@ -26,8 +26,8 @@ import app.shosetsu.common.dto.HResult
  * 13 / 05 / 2020
  */
 class InstallExtensionUIUseCase(
-		private val extensionsRepository: IExtensionsRepository,
+	private val extensionsRepository: IExtensionsRepository,
 ) {
 	suspend operator fun invoke(p1: ExtensionUI): HResult<*> =
-			extensionsRepository.installExtension(p1.convertTo())
+		extensionsRepository.installExtension(p1.convertTo())
 }

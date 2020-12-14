@@ -35,14 +35,19 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * @author github.com/doomsdayrs
  */
 
-class DialogBody(inflater: LayoutInflater, builder: AlertDialog.Builder, private val susScriptDialog: SusScriptDialog) {
+class DialogBody(
+	inflater: LayoutInflater,
+	builder: AlertDialog.Builder,
+	private val susScriptDialog: SusScriptDialog
+) {
 	val view: View = inflater.inflate(R.layout.alert_extensions_handle, null)!!
 	lateinit var dialog: AlertDialog
 
 	init {
 		val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
 		recyclerView.adapter = SusScriptAdapter(susScriptDialog)
-		recyclerView.layoutManager = LinearLayoutManager(builder.context, LinearLayoutManager.VERTICAL, false)
+		recyclerView.layoutManager =
+			LinearLayoutManager(builder.context, LinearLayoutManager.VERTICAL, false)
 
 		val acceptAll: Button = view.findViewById(R.id.acceptAll)
 		acceptAll.setOnClickListener {

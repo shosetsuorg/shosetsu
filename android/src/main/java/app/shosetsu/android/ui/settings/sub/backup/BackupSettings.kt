@@ -51,8 +51,10 @@ class BackupSettings : SettingsSubController() {
 	}
 
 	private fun performFileSelection() {
-		context?.toast("Please make sure this is on the main storage, " +
-				"SD card storage is not functional yet", duration = Toast.LENGTH_LONG)
+		context?.toast(
+			"Please make sure this is on the main storage, " +
+					"SD card storage is not functional yet", duration = Toast.LENGTH_LONG
+		)
 		val intent = Intent(context, NormalFilePickActivity::class.java)
 		intent.putExtra(Constant.MAX_NUMBER, 9)
 		intent.putExtra(NormalFilePickActivity.SUFFIX, arrayOf("shoback", "json"))
@@ -64,7 +66,7 @@ class BackupSettings : SettingsSubController() {
 		if (REQUEST_CODE_PICK_FILE == requestCode && resultCode == Activity.RESULT_OK) {
 			if (data != null) {
 				val list: ArrayList<NormalFile>? =
-						data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE)
+					data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE)
 				if (list != null && list.size > 0) {
 					val normalFile = list[0]
 				}

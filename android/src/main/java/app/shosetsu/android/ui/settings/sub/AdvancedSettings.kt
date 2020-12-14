@@ -34,7 +34,6 @@ class AdvancedSettings : SettingsSubController() {
 	override val viewTitleRes: Int = R.string.settings_advanced
 
 
-
 	@Throws(Resources.NotFoundException::class)
 	override fun onViewCreated(view: View) {
 		/*

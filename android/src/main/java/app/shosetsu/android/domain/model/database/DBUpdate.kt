@@ -4,8 +4,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.domain.model.local.UpdateEntity
+import app.shosetsu.common.dto.Convertible
 
 /*
  * This file is part of Shosetsu.
@@ -28,26 +28,27 @@ import app.shosetsu.common.domain.model.local.UpdateEntity
  * shosetsu
  * 05 / 12 / 2020
  */
-@Entity(tableName = "updates",
-		foreignKeys = [
-			ForeignKey(
-					entity = DBChapterEntity::class,
-					parentColumns = ["id"],
-					childColumns = ["chapterID"],
-					onDelete = ForeignKey.CASCADE
-			)
-		],
-		indices = [Index("chapterID")]
+@Entity(
+	tableName = "updates",
+	foreignKeys = [
+		ForeignKey(
+			entity = DBChapterEntity::class,
+			parentColumns = ["id"],
+			childColumns = ["chapterID"],
+			onDelete = ForeignKey.CASCADE
+		)
+	],
+	indices = [Index("chapterID")]
 )
 data class DBUpdate(
-		@PrimaryKey
-		val chapterID: Int,
-		val novelID: Int,
-		val time: Long,
+	@PrimaryKey
+	val chapterID: Int,
+	val novelID: Int,
+	val time: Long,
 ) : Convertible<UpdateEntity> {
 	override fun convertTo(): UpdateEntity = UpdateEntity(
-			chapterID,
-			novelID,
-			time
+		chapterID,
+		novelID,
+		time
 	)
 }

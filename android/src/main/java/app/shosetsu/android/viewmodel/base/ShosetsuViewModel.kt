@@ -29,5 +29,5 @@ import kotlinx.coroutines.flow.Flow
  */
 abstract class ShosetsuViewModel : ViewModel() {
 	fun <T> Flow<T>.asIOLiveData() =
-			asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
+		asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 }

@@ -32,10 +32,10 @@ import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
  * @author github.com/doomsdayrs
  */
 abstract class IDownloadsViewModel :
-		SubscribeHandleViewModel<List<DownloadUI>>,
-		ShosetsuViewModel(),
-		IsOnlineCheckViewModel,
-		ErrorReportingViewModel {
+	SubscribeHandleViewModel<List<DownloadUI>>,
+	ShosetsuViewModel(),
+	IsOnlineCheckViewModel,
+	ErrorReportingViewModel {
 
 	abstract val isDownloadPaused: LiveData<Boolean>
 

@@ -32,10 +32,13 @@ import kotlinx.coroutines.flow.flow
  * 13 / 05 / 2020
  */
 class LoadExtensionsUIUseCase(
-		private val extensionsRepository: IExtensionsRepository,
+	private val extensionsRepository: IExtensionsRepository,
 ) {
 	operator fun invoke(): Flow<HResult<List<ExtensionUI>>> = flow {
 		loading()
-		emitAll(extensionsRepository.loadExtensionEntitiesLive().mapLatestToResultFlowWithFactory().mapLatestResultListTo())
+		emitAll(
+			extensionsRepository.loadExtensionEntitiesLive().mapLatestToResultFlowWithFactory()
+				.mapLatestResultListTo()
+		)
 	}
 }

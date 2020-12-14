@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.flow
  * 04 / 07 / 2020
  */
 class LoadExtensionUIUseCase(
-		private val iExtensionsRepository: IExtensionsRepository,
+	private val iExtensionsRepository: IExtensionsRepository,
 ) {
 	operator fun invoke(id: Int): Flow<HResult<ExtensionUI>> = flow {
 		emit(loading())

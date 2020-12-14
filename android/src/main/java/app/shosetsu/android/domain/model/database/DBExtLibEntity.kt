@@ -4,8 +4,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.domain.model.local.ExtLibEntity
+import app.shosetsu.common.dto.Convertible
 import app.shosetsu.lib.Version
 
 /*
@@ -29,21 +29,23 @@ import app.shosetsu.lib.Version
  * shosetsu
  * 05 / 12 / 2020
  */
-@Entity(tableName = "libs",
-		foreignKeys = [
-			ForeignKey(
-					entity = DBRepositoryEntity::class,
-					parentColumns = ["id"],
-					childColumns = ["repoID"],
-					onDelete = ForeignKey.CASCADE
-			)
-		],
-		indices = [Index("repoID")])
+@Entity(
+	tableName = "libs",
+	foreignKeys = [
+		ForeignKey(
+			entity = DBRepositoryEntity::class,
+			parentColumns = ["id"],
+			childColumns = ["repoID"],
+			onDelete = ForeignKey.CASCADE
+		)
+	],
+	indices = [Index("repoID")]
+)
 data class DBExtLibEntity(
-		@PrimaryKey
-		val scriptName: String,
-		var version: Version,
-		var repoID: Int,
+	@PrimaryKey
+	val scriptName: String,
+	var version: Version,
+	var repoID: Int,
 ) : Convertible<ExtLibEntity> {
 	override fun convertTo(): ExtLibEntity = ExtLibEntity(scriptName, version, repoID)
 }

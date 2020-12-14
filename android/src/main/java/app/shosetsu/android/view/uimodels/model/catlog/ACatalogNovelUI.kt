@@ -30,14 +30,14 @@ import app.shosetsu.android.view.viewholders.TitleImageFViewHolder
  * This class represents novels listed by an extension in its catalogue
  */
 abstract class ACatalogNovelUI :
-		BaseRecyclerItem<TitleImageFViewHolder<ACatalogNovelUI>>(), GetImageURL, GetTitle {
+	BaseRecyclerItem<TitleImageFViewHolder<ACatalogNovelUI>>(), GetImageURL, GetTitle {
 	abstract val id: Int
 	abstract val title: String
 	abstract val imageURL: String
 	abstract var bookmarked: Boolean
 
 	override fun getViewHolder(v: View): TitleImageFViewHolder<ACatalogNovelUI> =
-			TitleImageFViewHolder(v)
+		TitleImageFViewHolder(v)
 
 	override fun getDataImageURL(): String = imageURL
 

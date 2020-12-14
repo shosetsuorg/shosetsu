@@ -38,9 +38,9 @@ import app.shosetsu.lib.IExtension.Companion.KEY_NOVEL_URL
  * Opens the chapter into
  */
 class OpenInBrowserUseCase(
-		private val repository: IExtensionsRepository,
-		private val stringToastUseCase: StringToastUseCase,
-		private val application: Application,
+	private val repository: IExtensionsRepository,
+	private val stringToastUseCase: StringToastUseCase,
+	private val application: Application,
 ) {
 	operator fun invoke(url: String) {
 		Log.d(logID(), "Opening URL $url")
@@ -68,14 +68,14 @@ class OpenInBrowserUseCase(
 	}
 
 	suspend operator fun invoke(novelUI: NovelUI): Unit = this(
-			novelUI.novelURL,
-			novelUI.extID,
-			KEY_NOVEL_URL
+		novelUI.novelURL,
+		novelUI.extID,
+		KEY_NOVEL_URL
 	)
 
 	suspend operator fun invoke(chapterUI: ChapterUI): Unit = this(
-			chapterUI.link,
-			chapterUI.formatterID,
-			KEY_CHAPTER_URL
+		chapterUI.link,
+		chapterUI.formatterID,
+		KEY_CHAPTER_URL
 	)
 }

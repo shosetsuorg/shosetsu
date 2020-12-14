@@ -37,9 +37,9 @@ import kotlinx.coroutines.Job
  * Used for showing the specific listing of a novel
  */
 abstract class ICatalogViewModel :
-		ShosetsuViewModel(),
-		ErrorReportingViewModel,
-		ColumnCalculator {
+	ShosetsuViewModel(),
+	ErrorReportingViewModel,
+	ColumnCalculator {
 	/**
 	 * The current max page loaded, if 2, then the current page that has been appended is 2
 	 */

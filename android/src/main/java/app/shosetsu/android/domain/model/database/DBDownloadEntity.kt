@@ -2,9 +2,9 @@ package app.shosetsu.android.domain.model.database
 
 import androidx.annotation.NonNull
 import androidx.room.*
+import app.shosetsu.common.domain.model.local.DownloadEntity
 import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.enums.DownloadStatus
-import app.shosetsu.common.domain.model.local.DownloadEntity
 
 /*
  * This file is part of Shosetsu.
@@ -27,53 +27,54 @@ import app.shosetsu.common.domain.model.local.DownloadEntity
  * shosetsu
  * 05 / 12 / 2020
  */
-@Entity(tableName = "downloads",
-		foreignKeys = [
-			ForeignKey(
-					entity = DBChapterEntity::class,
-					parentColumns = ["id"],
-					childColumns = ["chapterID"],
-					onDelete = ForeignKey.CASCADE
-			),
-			ForeignKey(
-					entity = DBNovelEntity::class,
-					parentColumns = ["id"],
-					childColumns = ["novelID"],
-					onDelete = ForeignKey.CASCADE
-			),
-			ForeignKey(
-					entity = DBChapterEntity::class,
-					parentColumns = ["url"],
-					childColumns = ["chapterURL"],
-					onDelete = ForeignKey.CASCADE
-			)
-		],
-		indices = [
-			Index("chapterID"),
-			Index("novelID"),
-			Index("chapterURL")
-		]
+@Entity(
+	tableName = "downloads",
+	foreignKeys = [
+		ForeignKey(
+			entity = DBChapterEntity::class,
+			parentColumns = ["id"],
+			childColumns = ["chapterID"],
+			onDelete = ForeignKey.CASCADE
+		),
+		ForeignKey(
+			entity = DBNovelEntity::class,
+			parentColumns = ["id"],
+			childColumns = ["novelID"],
+			onDelete = ForeignKey.CASCADE
+		),
+		ForeignKey(
+			entity = DBChapterEntity::class,
+			parentColumns = ["url"],
+			childColumns = ["chapterURL"],
+			onDelete = ForeignKey.CASCADE
+		)
+	],
+	indices = [
+		Index("chapterID"),
+		Index("novelID"),
+		Index("chapterURL")
+	]
 )
 data class DBDownloadEntity(
-		@PrimaryKey
-		val chapterID: Int,
-		val novelID: Int,
-		val chapterURL: String,
-		val chapterName: String,
-		val novelName: String,
-		@NonNull
-		@ColumnInfo(name = "formatterID")
-		val extensionID: Int,
-		var status: DownloadStatus = DownloadStatus.PENDING,
+	@PrimaryKey
+	val chapterID: Int,
+	val novelID: Int,
+	val chapterURL: String,
+	val chapterName: String,
+	val novelName: String,
+	@NonNull
+	@ColumnInfo(name = "formatterID")
+	val extensionID: Int,
+	var status: DownloadStatus = DownloadStatus.PENDING,
 ) : Convertible<DownloadEntity> {
 	override fun convertTo(): DownloadEntity =
-			DownloadEntity(
-					chapterID,
-					novelID,
-					chapterURL,
-					chapterName,
-					novelName,
-					extensionID,
-					status
-			)
+		DownloadEntity(
+			chapterID,
+			novelID,
+			chapterURL,
+			chapterName,
+			novelName,
+			extensionID,
+			status
+		)
 }

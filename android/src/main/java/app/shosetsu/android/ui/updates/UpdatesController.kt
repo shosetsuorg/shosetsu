@@ -34,7 +34,8 @@ import org.joda.time.DateTime
  *
  * @author github.com/doomsdayrs
  */
-class UpdatesController : BasicFastAdapterRecyclerController<UpdateUI>(), CollapsedToolBarController {
+class UpdatesController : BasicFastAdapterRecyclerController<UpdateUI>(),
+	CollapsedToolBarController {
 	val viewModel: IUpdatesViewModel by viewModel()
 	override val viewTitleRes: Int = R.string.updates
 	override fun onViewCreated(view: View) {}

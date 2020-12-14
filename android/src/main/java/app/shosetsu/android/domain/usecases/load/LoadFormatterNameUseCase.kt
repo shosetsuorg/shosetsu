@@ -3,9 +3,9 @@ package app.shosetsu.android.domain.usecases.load
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.transform
 import app.shosetsu.common.dto.loading
 import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.transform
 import kotlinx.coroutines.Dispatchers
 
 /*
@@ -30,7 +30,7 @@ import kotlinx.coroutines.Dispatchers
  * 18 / 05 / 2020
  */
 class LoadFormatterNameUseCase(
-		private val getFormatterUseCase: LoadFormatterUseCase,
+	private val getFormatterUseCase: LoadFormatterUseCase,
 ) : ((@kotlin.ParameterName("formatterID") Int) -> LiveData<HResult<String>>) {
 	override fun invoke(formatterID: Int): LiveData<HResult<String>> {
 		return liveData(context = Dispatchers.IO) {

@@ -31,6 +31,6 @@ import org.kodein.di.generic.singleton
  */
 
 val providersModule = Kodein.Module("providers_module") {
-    bind<SharedPreferenceProvider>() with singleton { SharedPreferenceProvider((instance())) }
-    bind<IFileSystemProvider>() with singleton { AndroidFileSystemProvider(instance()) }
+	bind<SharedPreferenceProvider>() with singleton { SharedPreferenceProvider((instance())) }
+	bind<IFileSystemProvider>() with singleton { AndroidFileSystemProvider(instance()) }
 }

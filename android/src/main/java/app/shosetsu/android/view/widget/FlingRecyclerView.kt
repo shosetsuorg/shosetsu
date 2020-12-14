@@ -30,8 +30,8 @@ import kotlin.math.abs
  * 30 / 09 / 2020
  */
 class FlingRecyclerView @JvmOverloads constructor(
-		context: Context,
-		attrs: AttributeSet? = null
+	context: Context,
+	attrs: AttributeSet? = null
 ) : RecyclerView(context, attrs) {
 	init {
 		setItemViewCacheSize(20)

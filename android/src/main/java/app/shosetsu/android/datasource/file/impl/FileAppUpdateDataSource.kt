@@ -38,7 +38,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
  */
 @ExperimentalCoroutinesApi
 class FileAppUpdateDataSource(
-		private val iFileSystemProvider: IFileSystemProvider
+	private val iFileSystemProvider: IFileSystemProvider
 ) : IFileCachedAppUpdateDataSource {
 
 	override val updateAvaLive: MutableStateFlow<HResult<DebugAppUpdate>> by lazy {
@@ -47,9 +47,9 @@ class FileAppUpdateDataSource(
 
 	private fun write(debugAppUpdate: DebugAppUpdate): HResult<*> = try {
 		iFileSystemProvider.writeInternalFile(
-				CACHE,
-				APP_UPDATE_CACHE_FILE,
-				ObjectMapper().registerKotlinModule().writeValueAsString(debugAppUpdate)
+			CACHE,
+			APP_UPDATE_CACHE_FILE,
+			ObjectMapper().registerKotlinModule().writeValueAsString(debugAppUpdate)
 		)
 	} catch (e: JsonProcessingException) {
 		errorResult(ErrorKeys.ERROR_IO, e)
@@ -58,14 +58,14 @@ class FileAppUpdateDataSource(
 	}
 
 	override suspend fun loadCachedAppUpdate(): HResult<DebugAppUpdate> =
-			iFileSystemProvider.readInternalFile(
-					CACHE,
-					APP_UPDATE_CACHE_FILE
-			).transform { ObjectMapper().registerKotlinModule().readValue(it) }
+		iFileSystemProvider.readInternalFile(
+			CACHE,
+			APP_UPDATE_CACHE_FILE
+		).transform { ObjectMapper().registerKotlinModule().readValue(it) }
 
 	override suspend fun putAppUpdateInCache(
-			debugAppUpdate: DebugAppUpdate,
-			isUpdate: Boolean
+		debugAppUpdate: DebugAppUpdate,
+		isUpdate: Boolean
 	): HResult<*> {
 		updateAvaLive.value = if (isUpdate) successResult(debugAppUpdate) else emptyResult()
 		return write(debugAppUpdate)

@@ -37,33 +37,33 @@ import app.shosetsu.lib.IExtension
  */
 
 fun Array<Filter<*>>.toSettingItems(
-		formatter: IExtension,
-		context: Context,
+	formatter: IExtension,
+	context: Context,
 ): List<SettingsItemData> {
 	val settings = ArrayList<SettingsItemData>()
 	forEach { filter ->
 		when (filter) {
 			is Filter.Checkbox -> {
 				settings.add(
-						checkBoxSettingData(filter.id) {
-							title { filter.name }
-							onChecked { _, isChecked ->
-							}
+					checkBoxSettingData(filter.id) {
+						title { filter.name }
+						onChecked { _, isChecked ->
 						}
+					}
 				)
 			}
 			is Filter.Dropdown -> {
 				settings.add(
-						spinnerSettingData(filter.id) {
-							title { filter.name }
-							arrayAdapter = ArrayAdapter(
-									context,
-									R.layout.simple_list_item_1,
-									filter.choices
-							)
-							onSpinnerItemSelected { _, _, position, _ ->
-							}
+					spinnerSettingData(filter.id) {
+						title { filter.name }
+						arrayAdapter = ArrayAdapter(
+							context,
+							R.layout.simple_list_item_1,
+							filter.choices
+						)
+						onSpinnerItemSelected { _, _, position, _ ->
 						}
+					}
 				)
 			}
 			is Filter.Group<*> -> {
@@ -72,41 +72,41 @@ fun Array<Filter<*>>.toSettingItems(
 			}
 			is Filter.List -> {
 				settings.addAll(
-						filter.filters.toSettingItems(formatter, context)
+					filter.filters.toSettingItems(formatter, context)
 				)
 			}
 			is Filter.RadioGroup -> {
 				settings.add(
-						spinnerSettingData(filter.id) {
-							title { filter.name }
-							arrayAdapter = ArrayAdapter(
-									context,
-									R.layout.simple_list_item_1,
-									filter.choices
-							)
-							onSpinnerItemSelected { _, _, position, _ ->
-							}
+					spinnerSettingData(filter.id) {
+						title { filter.name }
+						arrayAdapter = ArrayAdapter(
+							context,
+							R.layout.simple_list_item_1,
+							filter.choices
+						)
+						onSpinnerItemSelected { _, _, position, _ ->
 						}
+					}
 				)
 			}
 			is Filter.Separator -> {
 			}
 			is Filter.Switch -> {
 				settings.add(
-						switchSettingData(filter.id) {
-							title { filter.name }
-							onChecked { _, isChecked ->
-							}
+					switchSettingData(filter.id) {
+						title { filter.name }
+						onChecked { _, isChecked ->
 						}
+					}
 				)
 			}
 			is Filter.Text -> {
 				settings.add(
-						textInputSettingData(filter.id) {
-							title { filter.name }
-							doAfterTextChanged {
-							}
+					textInputSettingData(filter.id) {
+						title { filter.name }
+						doAfterTextChanged {
 						}
+					}
 				)
 			}
 			is Filter.TriState -> {

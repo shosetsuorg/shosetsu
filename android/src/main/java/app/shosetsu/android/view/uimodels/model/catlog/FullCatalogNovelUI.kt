@@ -22,11 +22,12 @@ package app.shosetsu.android.view.uimodels.model.catlog
  * 23 / 08 / 2020
  */
 data class FullCatalogNovelUI(
-		override val id: Int,
-		override val title: String,
-		override val imageURL: String,
-		override var bookmarked: Boolean,
+	override val id: Int,
+	override val title: String,
+	override val imageURL: String,
+	override var bookmarked: Boolean,
 ) : ACatalogNovelUI() {
 	override val layoutRes: Int = com.github.doomsdayrs.apps.shosetsu.R.layout.recycler_novel_card
-	override val type: Int = com.github.doomsdayrs.apps.shosetsu.R.layout.recycler_novel_card_compressed
+	override val type: Int =
+		com.github.doomsdayrs.apps.shosetsu.R.layout.recycler_novel_card_compressed
 }

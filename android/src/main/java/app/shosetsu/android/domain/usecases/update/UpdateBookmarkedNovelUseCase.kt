@@ -27,8 +27,8 @@ import app.shosetsu.common.dto.convertList
  * 29 / 07 / 2020
  */
 class UpdateBookmarkedNovelUseCase(
-		private val novelsRepository: INovelsRepository,
+	private val novelsRepository: INovelsRepository,
 ) {
 	suspend operator fun invoke(list: List<ABookmarkedNovelUI>): HResult<*> =
-			novelsRepository.updateBookmarkedNovelData(list.convertList())
+		novelsRepository.updateBookmarkedNovelData(list.convertList())
 }

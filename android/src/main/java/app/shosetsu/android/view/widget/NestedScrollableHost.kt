@@ -37,8 +37,8 @@ import kotlin.math.sign
  * (e.g. a horizontal RecyclerView in a vertical RecyclerView in a horizontal ViewPager2).
  */
 class NestedScrollableHost @JvmOverloads constructor(
-		context: Context,
-		attrs: AttributeSet? = null
+	context: Context,
+	attrs: AttributeSet? = null
 ) : FrameLayout(context, attrs) {
 
 	private var touchSlop = 0
@@ -69,7 +69,7 @@ class NestedScrollableHost @JvmOverloads constructor(
 	}
 
 	override fun onInterceptTouchEvent(e: MotionEvent): Boolean =
-			handleInterceptTouchEvent(e) || super.onInterceptTouchEvent(e)
+		handleInterceptTouchEvent(e) || super.onInterceptTouchEvent(e)
 
 	/**
 	 * @return The child does not need to scroll.

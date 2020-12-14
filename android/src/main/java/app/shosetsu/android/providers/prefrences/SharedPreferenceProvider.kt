@@ -32,9 +32,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
  */
 @ExperimentalCoroutinesApi
 class SharedPreferenceProvider(
-		/** Application context for internal use */
-		val context: Context,
-		val settings: SharedPreferences = context.getSharedPreferences("view", 0),
+	/** Application context for internal use */
+	val context: Context,
+	val settings: SharedPreferences = context.getSharedPreferences("view", 0),
 ) : SharedPreferences.OnSharedPreferenceChangeListener {
 	private val longMap: HashMap<SettingKey<Long>, MutableStateFlow<Long>> by lazy { hashMapOf() }
 	private val stringMap: HashMap<SettingKey<String>, MutableStateFlow<String>> by lazy { hashMapOf() }
@@ -96,70 +96,70 @@ class SharedPreferenceProvider(
 	}
 
 	fun observeLong(key: SettingKey<Long>): Flow<Long> =
-			longMap[key] ?: MutableStateFlow(getLong(key)).also {
-				longMap[key] = it
-			}
+		longMap[key] ?: MutableStateFlow(getLong(key)).also {
+			longMap[key] = it
+		}
 
 	fun observeString(key: SettingKey<String>): Flow<String> =
-			stringMap[key] ?: MutableStateFlow(getString(key)).also {
-				stringMap[key] = it
-			}
+		stringMap[key] ?: MutableStateFlow(getString(key)).also {
+			stringMap[key] = it
+		}
 
 	fun observeInt(key: SettingKey<Int>): Flow<Int> =
-			intMap[key] ?: MutableStateFlow(getInt(key)).also {
-				intMap[key] = it
-			}
+		intMap[key] ?: MutableStateFlow(getInt(key)).also {
+			intMap[key] = it
+		}
 
 	fun observeBoolean(key: SettingKey<Boolean>): Flow<Boolean> =
-			booleanMap[key] ?: MutableStateFlow(getBoolean(key)).also {
-				booleanMap[key] = it
-			}
+		booleanMap[key] ?: MutableStateFlow(getBoolean(key)).also {
+			booleanMap[key] = it
+		}
 
 	fun observeStringSet(key: SettingKey<Set<String>>): Flow<Set<String>> =
-			stringSetMap[key] ?: MutableStateFlow(getStringSet(key)).also {
-				stringSetMap[key] = it
-			}
+		stringSetMap[key] ?: MutableStateFlow(getStringSet(key)).also {
+			stringSetMap[key] = it
+		}
 
 	fun observeFloat(key: SettingKey<Float>): Flow<Float> =
-			floatMap[key] ?: MutableStateFlow(getFloat(key)).also {
-				floatMap[key] = it
-			}
+		floatMap[key] ?: MutableStateFlow(getFloat(key)).also {
+			floatMap[key] = it
+		}
 
 	fun getLong(key: SettingKey<Long>): Long =
-			settings.getLong(key.name, key.default)
+		settings.getLong(key.name, key.default)
 
 	fun getString(key: SettingKey<String>): String =
-			settings.getString(key.name, key.default) ?: ""
+		settings.getString(key.name, key.default) ?: ""
 
 	fun getInt(key: SettingKey<Int>): Int =
-			settings.getInt(key.name, key.default)
+		settings.getInt(key.name, key.default)
 
 	fun getBoolean(key: SettingKey<Boolean>): Boolean =
-			settings.getBoolean(key.name, key.default)
+		settings.getBoolean(key.name, key.default)
 
 	fun getStringSet(key: SettingKey<Set<String>>): Set<String> =
-			settings.getStringSet(key.name, key.default) ?: setOf()
+		settings.getStringSet(key.name, key.default) ?: setOf()
 
 	fun getFloat(key: SettingKey<Float>): Float =
-			settings.getFloat(key.name, key.default)
+		settings.getFloat(key.name, key.default)
 
 	fun setLong(key: SettingKey<Long>, value: Long): Unit =
-			settings.edit { putLong(key.name, value) }
+		settings.edit { putLong(key.name, value) }
 
 	fun setString(key: SettingKey<String>, value: String): Unit =
-			settings.edit { putString(key.name, value) }
+		settings.edit { putString(key.name, value) }
 
 	fun setInt(key: SettingKey<Int>, value: Int): Unit =
-			settings.edit { putInt(key.name, value) }
+		settings.edit { putInt(key.name, value) }
 
 	fun setBoolean(key: SettingKey<Boolean>, value: Boolean): Unit =
-			settings.edit { putBoolean(key.name, value) }
+		settings.edit { putBoolean(key.name, value) }
 
 	fun setStringSet(key: SettingKey<Set<String>>, value: Set<String>): Unit =
-			settings.edit { putStringSet(key.name, value) }
+		settings.edit { putStringSet(key.name, value) }
 
 	fun setFloat(key: SettingKey<Float>, value: Float): Unit =
-			settings.edit { putFloat(key.name, value) }
+		settings.edit { putFloat(key.name, value) }
 
 }
 

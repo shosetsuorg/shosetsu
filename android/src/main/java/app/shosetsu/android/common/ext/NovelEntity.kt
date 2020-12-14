@@ -26,21 +26,21 @@ import app.shosetsu.common.domain.model.local.NovelEntity
  */
 
 fun NovelEntity.toDB() = DBNovelEntity(
-		id,
-		url,
-		formatterID,
-		bookmarked,
-		loaded,
-		readerType,
-		title,
-		imageURL,
-		description,
-		language,
-		genres,
-		authors,
-		artists,
-		tags,
-		status
+	id,
+	url,
+	formatterID,
+	bookmarked,
+	loaded,
+	readerType,
+	title,
+	imageURL,
+	description,
+	language,
+	genres,
+	authors,
+	artists,
+	tags,
+	status
 )
 
 fun List<NovelEntity>.toDB() = map { it.toDB() }

@@ -26,14 +26,14 @@ import app.shosetsu.android.common.ext.toast
  * 14 / 08 / 2020
  */
 class StringToastUseCase(
-		private val application: Application,
+	private val application: Application,
 ) {
 
 	operator fun invoke(duration: Int = Toast.LENGTH_SHORT, message: () -> String) {
 		app.shosetsu.android.common.ext.launchUI {
 			application.toast(
-					duration = duration,
-					string = message()
+				duration = duration,
+				string = message()
 			)
 		}
 	}

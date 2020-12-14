@@ -26,17 +26,17 @@ import app.shosetsu.common.domain.model.local.ChapterEntity
  */
 
 fun ChapterEntity.toDB(): DBChapterEntity = DBChapterEntity(
-		id,
-		url,
-		novelID,
-		formatterID,
-		title,
-		releaseDate,
-		order,
-		readingPosition,
-		readingStatus,
-		bookmarked,
-		isSaved
+	id,
+	url,
+	novelID,
+	formatterID,
+	title,
+	releaseDate,
+	order,
+	readingPosition,
+	readingStatus,
+	bookmarked,
+	isSaved
 )
 
 fun List<ChapterEntity>.toDB() = map { it.toDB() }

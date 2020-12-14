@@ -36,66 +36,66 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * 31 / 08 / 2020
  */
 class ViewSettingsViewModel(
-		iSettingsRepository: ISettingsRepository,
-		private val context: Context,
-		private val reportExceptionUseCase: ReportExceptionUseCase
+	iSettingsRepository: ISettingsRepository,
+	private val context: Context,
+	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : AViewSettingsViewModel(iSettingsRepository) {
 	override suspend fun settings(): List<SettingsItemData> = listOf(
 
-			numberPickerSettingData(1) {
-				title { R.string.columns_of_novel_listing_p }
-				description { (R.string.columns_zero_automatic) }
-				iSettingsRepository.getInt(ChapterColumnsInPortait).handle {
-					initalValue { it }
-				}
-				onValuePicked { _, _, newVal ->
-					launchIO {
-						iSettingsRepository.setInt(ChapterColumnsInPortait, newVal)
-					}
-				}
-				range { 0 to 10 }
-			},
-			numberPickerSettingData(2) {
-				title { R.string.columns_of_novel_listing_h }
-				description { (R.string.columns_zero_automatic) }
-				iSettingsRepository.getInt(ChapterColumnsInLandscape).handle {
-					initalValue { it }
-				}
-				onValuePicked { _, _, newVal ->
-					launchIO {
-						iSettingsRepository.setInt(ChapterColumnsInLandscape, newVal)
-					}
-				}
-				range { 0 to 10 }
-			},
-			spinnerSettingData(3) {
-				title { R.string.novel_card_type_selector_title }
-				description { R.string.novel_card_type_selector_desc }
-				iSettingsRepository.getInt(NovelCardType).handle {
-					spinnerValue { it }
-				}
-				onSpinnerItemSelected { _, _, position, _ ->
-					launchIO {
-						iSettingsRepository.setInt(NovelCardType, position)
-					}
-				}
-				try {
-					arrayAdapter = ArrayAdapter(
-							context,
-							android.R.layout.simple_spinner_dropdown_item,
-							context.resources!!.getStringArray(R.array.novel_card_types)
-					)
-				} catch (e: Resources.NotFoundException) {
-					TODO("Add error handling here")
-				}
-			},
-			switchSettingData(4) {
-				title { "Legacy navigation" }
-				description { "Disableds bottom navigation, enables drawer" }
-				iSettingsRepository.getInt(NavStyle).handle {
-					isChecked = it == 1
+		numberPickerSettingData(1) {
+			title { R.string.columns_of_novel_listing_p }
+			description { (R.string.columns_zero_automatic) }
+			iSettingsRepository.getInt(ChapterColumnsInPortait).handle {
+				initalValue { it }
+			}
+			onValuePicked { _, _, newVal ->
+				launchIO {
+					iSettingsRepository.setInt(ChapterColumnsInPortait, newVal)
 				}
 			}
+			range { 0 to 10 }
+		},
+		numberPickerSettingData(2) {
+			title { R.string.columns_of_novel_listing_h }
+			description { (R.string.columns_zero_automatic) }
+			iSettingsRepository.getInt(ChapterColumnsInLandscape).handle {
+				initalValue { it }
+			}
+			onValuePicked { _, _, newVal ->
+				launchIO {
+					iSettingsRepository.setInt(ChapterColumnsInLandscape, newVal)
+				}
+			}
+			range { 0 to 10 }
+		},
+		spinnerSettingData(3) {
+			title { R.string.novel_card_type_selector_title }
+			description { R.string.novel_card_type_selector_desc }
+			iSettingsRepository.getInt(NovelCardType).handle {
+				spinnerValue { it }
+			}
+			onSpinnerItemSelected { _, _, position, _ ->
+				launchIO {
+					iSettingsRepository.setInt(NovelCardType, position)
+				}
+			}
+			try {
+				arrayAdapter = ArrayAdapter(
+					context,
+					android.R.layout.simple_spinner_dropdown_item,
+					context.resources!!.getStringArray(R.array.novel_card_types)
+				)
+			} catch (e: Resources.NotFoundException) {
+				TODO("Add error handling here")
+			}
+		},
+		switchSettingData(4) {
+			title { "Legacy navigation" }
+			description { "Disableds bottom navigation, enables drawer" }
+			iSettingsRepository.getInt(NavStyle).handle {
+				isChecked = it == 1
+			}
+		}
 	)
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {

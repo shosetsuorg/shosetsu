@@ -19,14 +19,14 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.viewmodel.abstracted.IChapterReaderViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.MarkingTypes
 import app.shosetsu.common.enums.MarkingTypes.ONSCROLL
 import app.shosetsu.common.enums.MarkingTypes.ONVIEW
 import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.common.enums.ReadingStatus.READ
 import app.shosetsu.common.enums.ReadingStatus.READING
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -54,12 +54,12 @@ import kotlinx.coroutines.withContext
  * 06 / 05 / 2020
  */
 class ChapterReaderViewModel(
-		private val iSettingsRepository: ISettingsRepository,
-		private val loadReaderChaptersUseCase: LoadReaderChaptersUseCase,
-		private val loadChapterPassageUseCase: LoadChapterPassageUseCase,
-		private val updateReaderChapterUseCase: UpdateReaderChapterUseCase,
-		private val loadReadersThemes: LoadReaderThemes,
-		private val reportExceptionUseCase: ReportExceptionUseCase
+	private val iSettingsRepository: ISettingsRepository,
+	private val loadReaderChaptersUseCase: LoadReaderChaptersUseCase,
+	private val loadChapterPassageUseCase: LoadChapterPassageUseCase,
+	private val updateReaderChapterUseCase: UpdateReaderChapterUseCase,
+	private val loadReadersThemes: LoadReaderThemes,
+	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : IChapterReaderViewModel() {
 
 	private val hashMap: HashMap<Int, Flow<*>> = hashMapOf()
@@ -76,10 +76,12 @@ class ChapterReaderViewModel(
 					 */
 					val startPoint = size - 2
 					for (index in startPoint downTo 1)
-						add(index, ReaderDividerUI(
+						add(
+							index, ReaderDividerUI(
 								(this[index - 1] as ReaderChapterUI).title,
 								(this[index] as ReaderChapterUI).title
-						))
+							)
+						)
 
 				})
 			}
@@ -92,25 +94,27 @@ class ChapterReaderViewModel(
 
 	override val liveTheme: LiveData<Pair<Int, Int>> by lazy {
 		liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-			emitSource(iSettingsRepository.observeInt(ReaderTheme).asIOLiveData().switchMap { id: Int ->
-				logD("Loading theme for $id")
-				liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-					val s = iSettingsRepository.getStringSet(ReaderUserThemes)
-					if (s is HResult.Success) {
-						val selected = s.data.map { ColorChoiceData.fromString(it) }.find { it.identifier == id.toLong() }
-						selected?.let {
-							emit(it.textColor to it.backgroundColor)
-						} ?: emit(Color.BLACK to Color.WHITE)
-					} else emit(Color.BLACK to Color.WHITE)
-				}
-			})
+			emitSource(
+				iSettingsRepository.observeInt(ReaderTheme).asIOLiveData().switchMap { id: Int ->
+					logD("Loading theme for $id")
+					liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
+						val s = iSettingsRepository.getStringSet(ReaderUserThemes)
+						if (s is HResult.Success) {
+							val selected = s.data.map { ColorChoiceData.fromString(it) }
+								.find { it.identifier == id.toLong() }
+							selected?.let {
+								emit(it.textColor to it.backgroundColor)
+							} ?: emit(Color.BLACK to Color.WHITE)
+						} else emit(Color.BLACK to Color.WHITE)
+					}
+				})
 		}
 	}
 
 	override val liveMarkingTypes: LiveData<MarkingTypes> by lazy {
 		iSettingsRepository.observeString(ReadingMarkingType)
-				.asIOLiveData()
-				.map { MarkingTypes.valueOf(it) }
+			.asIOLiveData()
+			.map { MarkingTypes.valueOf(it) }
 	}
 
 	override val liveThemes: LiveData<List<ColorChoiceUI>> by lazy {
@@ -174,39 +178,43 @@ class ChapterReaderViewModel(
 	}
 
 	override fun appendID(readerChapterUI: ReaderChapterUI): String =
-			"${readerChapterUI.id}|${readerChapterUI.link}"
+		"${readerChapterUI.id}|${readerChapterUI.link}"
 
 	override fun toggleBookmark(readerChapterUI: ReaderChapterUI) {
 		updateChapter(readerChapterUI, bookmarked = !readerChapterUI.bookmarked)
 	}
 
 	override fun updateChapter(
-			readerChapterUI: ReaderChapterUI,
-			readingPosition: Int,
-			readingStatus: ReadingStatus,
-			bookmarked: Boolean,
+		readerChapterUI: ReaderChapterUI,
+		readingPosition: Int,
+		readingStatus: ReadingStatus,
+		bookmarked: Boolean,
 	) {
 		launchIO {
-			updateReaderChapterUseCase(readerChapterUI.copy(
+			updateReaderChapterUseCase(
+				readerChapterUI.copy(
 					readingPosition = readingPosition,
 					readingStatus = readingStatus,
 					bookmarked = bookmarked
-			))
+				)
+			)
 		}
 	}
 
 	private fun markAsReading(
-			chapterUI: ReaderChapterUI,
-			markingTypes: MarkingTypes,
-			readingPosition: Int = chapterUI.readingPosition
+		chapterUI: ReaderChapterUI,
+		markingTypes: MarkingTypes,
+		readingPosition: Int = chapterUI.readingPosition
 	) {
 		launchIO {
 			iSettingsRepository.getBoolean(ReaderMarkReadAsReading).handle { markReadAsReading ->
 				if (!markReadAsReading && chapterUI.readingStatus == READ) return@launchIO
 				iSettingsRepository.getString(ReadingMarkingType).handle {
-					if (MarkingTypes.valueOf(it) == markingTypes) updateChapter(chapterUI.copy(
+					if (MarkingTypes.valueOf(it) == markingTypes) updateChapter(
+						chapterUI.copy(
 							readingStatus = READING, readingPosition = readingPosition
-					))
+						)
+					)
 				}
 			}
 		}

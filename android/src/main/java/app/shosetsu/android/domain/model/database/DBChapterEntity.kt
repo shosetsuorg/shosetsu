@@ -5,9 +5,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.enums.ReadingStatus
-import app.shosetsu.common.domain.model.local.ChapterEntity
 
 /*
  * This file is part of Shosetsu.
@@ -30,63 +30,64 @@ import app.shosetsu.common.domain.model.local.ChapterEntity
  * shosetsu
  * 05 / 12 / 2020
  */
-@Entity(tableName = "chapters",
-		foreignKeys = [
-			ForeignKey(
-					entity = DBNovelEntity::class,
-					parentColumns = ["id"],
-					childColumns = ["novelID"],
-					onDelete = ForeignKey.CASCADE
-			),
-			ForeignKey(
-					entity = DBExtensionEntity::class,
-					parentColumns = ["id"],
-					childColumns = ["formatterID"],
-					onDelete = ForeignKey.SET_NULL,
-					onUpdate = ForeignKey.CASCADE
-			)
-		],
-		indices = [Index("novelID"), Index("url", unique = true), Index("formatterID")]
+@Entity(
+	tableName = "chapters",
+	foreignKeys = [
+		ForeignKey(
+			entity = DBNovelEntity::class,
+			parentColumns = ["id"],
+			childColumns = ["novelID"],
+			onDelete = ForeignKey.CASCADE
+		),
+		ForeignKey(
+			entity = DBExtensionEntity::class,
+			parentColumns = ["id"],
+			childColumns = ["formatterID"],
+			onDelete = ForeignKey.SET_NULL,
+			onUpdate = ForeignKey.CASCADE
+		)
+	],
+	indices = [Index("novelID"), Index("url", unique = true), Index("formatterID")]
 )
 data class DBChapterEntity(
-		@PrimaryKey(autoGenerate = true)
-		var id: Int? = null,
+	@PrimaryKey(autoGenerate = true)
+	var id: Int? = null,
 
-		@NonNull
-		var url: String,
+	@NonNull
+	var url: String,
 
-		@NonNull
-		val novelID: Int,
+	@NonNull
+	val novelID: Int,
 
-		val formatterID: Int,
+	val formatterID: Int,
 
-		@NonNull
-		var title: String,
+	@NonNull
+	var title: String,
 
-		@NonNull
-		var releaseDate: String,
+	@NonNull
+	var releaseDate: String,
 
-		var order: Double,
+	var order: Double,
 
-		var readingPosition: Int = 0,
+	var readingPosition: Int = 0,
 
-		var readingStatus: ReadingStatus = ReadingStatus.UNREAD,
+	var readingStatus: ReadingStatus = ReadingStatus.UNREAD,
 
-		var bookmarked: Boolean = false,
+	var bookmarked: Boolean = false,
 
-		var isSaved: Boolean = false,
+	var isSaved: Boolean = false,
 ) : Convertible<ChapterEntity> {
 	override fun convertTo(): ChapterEntity = ChapterEntity(
-			id,
-			url,
-			novelID,
-			formatterID,
-			title,
-			releaseDate,
-			order,
-			readingPosition,
-			readingStatus,
-			bookmarked,
-			isSaved
+		id,
+		url,
+		novelID,
+		formatterID,
+		title,
+		releaseDate,
+		order,
+		readingPosition,
+		readingStatus,
+		bookmarked,
+		isSaved
 	)
 }

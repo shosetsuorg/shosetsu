@@ -24,7 +24,7 @@ import app.shosetsu.android.backend.workers.onetime.UpdateWorker.Manager
  * 23 / 06 / 2020
  */
 class StartUpdateWorkerUseCase(
-		private val manager: Manager
+	private val manager: Manager
 ) {
 	/**
 	 * Starts the update worker

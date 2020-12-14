@@ -3,12 +3,12 @@ package app.shosetsu.android.datasource.database.impl
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.providers.database.dao.ExtensionLibraryDao
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.convertList
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.datasource.database.base.ILocalExtLibDataSource
 import app.shosetsu.common.domain.model.local.ExtLibEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.convertList
+import app.shosetsu.common.dto.successResult
 
 /*
  * This file is part of shosetsu.
@@ -32,7 +32,7 @@ import app.shosetsu.common.domain.model.local.RepositoryEntity
  * 12 / 05 / 2020
  */
 class LocalExtLibDataSource(
-		private val extensionLibraryDao: ExtensionLibraryDao,
+	private val extensionLibraryDao: ExtensionLibraryDao,
 ) : ILocalExtLibDataSource {
 	override suspend fun updateExtension(extLibEntity: ExtLibEntity): HResult<*> = try {
 		successResult(extensionLibraryDao.suspendedUpdate(extLibEntity.toDB()))
@@ -47,7 +47,7 @@ class LocalExtLibDataSource(
 	}
 
 	override suspend fun loadExtLibByRepo(
-			repositoryEntity: RepositoryEntity,
+		repositoryEntity: RepositoryEntity,
 	): HResult<List<ExtLibEntity>> = try {
 		successResult(extensionLibraryDao.loadLibByRepoID(repositoryEntity.id).convertList())
 	} catch (e: Exception) {

@@ -31,7 +31,7 @@ import org.kodein.di.android.kodein
  * @param context Context of the application
  */
 abstract class CoroutineWorkerManager(
-		val context: Context
+	val context: Context
 ) : KodeinAware {
 	override val kodein: Kodein by kodein(context)
 

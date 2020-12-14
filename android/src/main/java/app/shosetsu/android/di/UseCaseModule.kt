@@ -120,8 +120,20 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 
 	bind<StringToastUseCase>() with provider { StringToastUseCase(instance()) }
 
-	bind<OpenInWebviewUseCase>() with provider { OpenInWebviewUseCase(instance(), instance(), instance()) }
-	bind<OpenInBrowserUseCase>() with provider { OpenInBrowserUseCase(instance(), instance(), instance()) }
+	bind<OpenInWebviewUseCase>() with provider {
+		OpenInWebviewUseCase(
+			instance(),
+			instance(),
+			instance()
+		)
+	}
+	bind<OpenInBrowserUseCase>() with provider {
+		OpenInBrowserUseCase(
+			instance(),
+			instance(),
+			instance()
+		)
+	}
 	bind<ShareUseCase>() with provider { ShareUseCase(instance(), instance(), instance()) }
 	bind<ToastErrorUseCase>() with provider { ToastErrorUseCase(instance()) }
 	bind<IsOnlineUseCase>() with provider { IsOnlineUseCase(instance()) }

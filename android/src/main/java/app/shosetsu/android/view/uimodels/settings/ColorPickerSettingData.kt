@@ -41,17 +41,17 @@ class ColorPickerSettingData(id: Int) : BottomSettingsItemData(id) {
 			colorBox.setBackgroundColor(itemColor)
 			colorBox.setOnClickListener {
 				CPDB(itemView.context)
-						.setTitle("ColorPicker Dialog")
-						.setPreferenceName(colorPreferenceName)
-						.setPositiveButton(
-								itemView.context.getString(R.string.confirm),
-								ColorEnvelopeListener { envelope, _ ->
-									colorFunction(envelope.color)
-									colorBox.setBackgroundColor(envelope.color)
-								}
-						)
-						.setNegativeButton(itemView.context.getString(android.R.string.cancel))
-						{ dialogInterface, _ -> dialogInterface.dismiss() }.show()
+					.setTitle("ColorPicker Dialog")
+					.setPreferenceName(colorPreferenceName)
+					.setPositiveButton(
+						itemView.context.getString(R.string.confirm),
+						ColorEnvelopeListener { envelope, _ ->
+							colorFunction(envelope.color)
+							colorBox.setBackgroundColor(envelope.color)
+						}
+					)
+					.setNegativeButton(itemView.context.getString(android.R.string.cancel))
+					{ dialogInterface, _ -> dialogInterface.dismiss() }.show()
 			}
 		}
 	}

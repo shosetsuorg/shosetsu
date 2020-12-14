@@ -15,9 +15,9 @@ import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.providers.database.converters.NovelStatusConverter
 import app.shosetsu.android.providers.database.dao.ChaptersDao
 import app.shosetsu.android.providers.database.dao.NovelsDao
-import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.lib.Novel
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -48,7 +48,7 @@ import java.io.IOException
  */
 @Deprecated("SQL Database removed")
 class DBHelper(context: Context) :
-		SQLiteOpenHelper(context, DB_NAME, null, 10), KodeinAware {
+	SQLiteOpenHelper(context, DB_NAME, null, 10), KodeinAware {
 	override val kodein: Kodein by kodein(context)
 	private val novelDAO by kodein.instance<NovelsDao>()
 	private val chapterDAO by instance<ChaptersDao>()
@@ -123,28 +123,31 @@ class DBHelper(context: Context) :
 		val novelIDS = db.rawQuery("SELECT * FROM $NOVEL_IDENTIFICATION", null).let {
 			ArrayList<NovelIdentification>().apply {
 				while (it.moveToNext()) add(
-						NovelIdentification(
-								novelID = it.getInt(ID),
-								novelURL = it.getString(URL),
-								formatterID = it.getInt(FORMATTER_ID)
-						)
+					NovelIdentification(
+						novelID = it.getInt(ID),
+						novelURL = it.getString(URL),
+						formatterID = it.getInt(FORMATTER_ID)
+					)
 				)
 			}
 		}
 
 		val chapterIDS = db.rawQuery("SELECT * FROM $CHAPTER_IDENTIFICATION", null).let {
 			ArrayList<ChapterIdentification>().apply {
-				while (it.moveToNext()) add(ChapterIdentification(
+				while (it.moveToNext()) add(
+					ChapterIdentification(
 						chapterID = it.getInt(ID),
 						novelID = it.getInt(PARENT_ID),
 						chapterURL = it.getString(URL)
-				))
+					)
+				)
 			}
 		}
 
 		val novels = db.rawQuery("SELECT * FROM $NOVELS", null).let {
 			ArrayList<OldNovel>().apply {
-				while (it.moveToNext()) add(OldNovel(
+				while (it.moveToNext()) add(
+					OldNovel(
 						novelID = it.getInt(PARENT_ID),
 						bookmarked = it.getInt(BOOKMARKED) == 1,
 						title = it.getString(TITLE).deserializeString() ?: "",
@@ -156,23 +159,25 @@ class DBHelper(context: Context) :
 							NovelStatusConverter().toStatus(it)
 						},
 						authors = it.getString(AUTHORS)
-								.deserializeString<String>()?.convertStringToArray()
-								?: arrayOf(),
+							.deserializeString<String>()?.convertStringToArray()
+							?: arrayOf(),
 						genres = it.getString(GENRES)
-								.deserializeString<String>()?.convertStringToArray()
-								?: arrayOf(),
+							.deserializeString<String>()?.convertStringToArray()
+							?: arrayOf(),
 						tags = it.getString(TAGS)
-								.deserializeString<String>()?.convertStringToArray()
-								?: arrayOf(),
+							.deserializeString<String>()?.convertStringToArray()
+							?: arrayOf(),
 						artists = it.getString(ARTISTS)
-								.deserializeString<String>()?.convertStringToArray()
-								?: arrayOf()
-				))
+							.deserializeString<String>()?.convertStringToArray()
+							?: arrayOf()
+					)
+				)
 			}
-		}.map { (novelID, bookmarked, title, imageURL, description, genres, authors, tags, publishingStatus, artists, language, maxChapter) ->
-			val novelIDF = novelIDS.find { it.novelID == novelID }!!
+		}
+			.map { (novelID, bookmarked, title, imageURL, description, genres, authors, tags, publishingStatus, artists, language, maxChapter) ->
+				val novelIDF = novelIDS.find { it.novelID == novelID }!!
 
-			NovelEntity(
+				NovelEntity(
 					id = novelID,
 					url = novelIDF.novelURL,
 					formatterID = novelIDF.formatterID,
@@ -187,12 +192,13 @@ class DBHelper(context: Context) :
 					artists = artists.toList(),
 					tags = tags.toList(),
 					status = publishingStatus
-			)
-		}
+				)
+			}
 
 		val chapters = db.rawQuery("SELECT * FROM $CHAPTERS", null).let {
 			ArrayList<OldChapter>().apply {
-				while (it.moveToNext()) add(OldChapter(
+				while (it.moveToNext()) add(
+					OldChapter(
 						chapterID = it.getInt(ID),
 						novelID = it.getInt(PARENT_ID),
 						title = it.getString(TITLE).deserializeString() ?: "",
@@ -203,23 +209,24 @@ class DBHelper(context: Context) :
 							ReadingStatus.fromInt(it)
 						},
 						bookmarked = it.getInt(BOOKMARKED) == 1
-				))
+					)
+				)
 			}
 		}.map { (chapterID, novelID, title, date, order, yPosition, readChapter, bookmarked) ->
 			val chapterIDF = chapterIDS.find { it.chapterID == chapterID }!!
 			val novelIDF = novelIDS.find { it.novelID == novelID }!!
 
 			ChapterEntity(
-					id = chapterID,
-					novelID = novelID,
-					url = chapterIDF.chapterURL,
-					formatterID = novelIDF.formatterID,
-					title = title,
-					releaseDate = date,
-					order = order,
-					readingPosition = yPosition,
-					readingStatus = readChapter,
-					bookmarked = bookmarked
+				id = chapterID,
+				novelID = novelID,
+				url = chapterIDF.chapterURL,
+				formatterID = novelIDF.formatterID,
+				title = title,
+				releaseDate = date,
+				order = order,
+				readingPosition = yPosition,
+				readingStatus = readChapter,
+				bookmarked = bookmarked
 			)
 		}
 
@@ -244,41 +251,41 @@ class DBHelper(context: Context) :
 	}
 
 	private data class NovelIdentification(
-			val novelID: Int,
-			val novelURL: String,
-			val formatterID: Int,
+		val novelID: Int,
+		val novelURL: String,
+		val formatterID: Int,
 	)
 
 	private data class ChapterIdentification(
-			val chapterID: Int,
-			val novelID: Int,
-			val chapterURL: String,
+		val chapterID: Int,
+		val novelID: Int,
+		val chapterURL: String,
 	)
 
 	private data class OldChapter(
-			val chapterID: Int,
-			val novelID: Int,
-			val title: String,
-			val date: String,
-			val order: Double,
-			val yPosition: Int,
-			val readChapter: ReadingStatus,
-			val bookmarked: Boolean,
+		val chapterID: Int,
+		val novelID: Int,
+		val title: String,
+		val date: String,
+		val order: Double,
+		val yPosition: Int,
+		val readChapter: ReadingStatus,
+		val bookmarked: Boolean,
 	)
 
 	private data class OldNovel(
-			val novelID: Int,
-			val bookmarked: Boolean,
-			val title: String,
-			val imageURL: String,
-			val description: String,
-			@Suppress("ArrayInDataClass") val genres: Array<String>,
-			@Suppress("ArrayInDataClass") val authors: Array<String>,
-			@Suppress("ArrayInDataClass") val tags: Array<String>,
-			val publishingStatus: Novel.Status,
-			@Suppress("ArrayInDataClass") val artists: Array<String>,
-			val language: String,
-			val maxChapter: Int,
+		val novelID: Int,
+		val bookmarked: Boolean,
+		val title: String,
+		val imageURL: String,
+		val description: String,
+		@Suppress("ArrayInDataClass") val genres: Array<String>,
+		@Suppress("ArrayInDataClass") val authors: Array<String>,
+		@Suppress("ArrayInDataClass") val tags: Array<String>,
+		val publishingStatus: Novel.Status,
+		@Suppress("ArrayInDataClass") val artists: Array<String>,
+		val language: String,
+		val maxChapter: Int,
 	)
 
 	/**
@@ -295,13 +302,13 @@ class DBHelper(context: Context) :
 	}
 
 	private fun Cursor.getString(column: Columns): String =
-			getString(getColumnIndex(column.toString()))
+		getString(getColumnIndex(column.toString()))
 
 	private fun Cursor.getInt(column: Columns): Int =
-			getInt(getColumnIndex(column.toString()))
+		getInt(getColumnIndex(column.toString()))
 
 	private fun Cursor.getDouble(column: Columns): Double =
-			getDouble(getColumnIndex(column.toString()))
+		getDouble(getColumnIndex(column.toString()))
 
 	companion object {
 		private const val DB_NAME = "database.db"

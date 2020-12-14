@@ -7,9 +7,9 @@ import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
 import app.shosetsu.common.consts.ErrorKeys.ERROR_LUA_GENERAL
 import app.shosetsu.common.consts.ErrorKeys.ERROR_NOT_FOUND
-import app.shosetsu.common.enums.InternalFileDir.FILES
 import app.shosetsu.common.datasource.file.base.IFileExtensionDataSource
 import app.shosetsu.common.dto.*
+import app.shosetsu.common.enums.InternalFileDir.FILES
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.lua.LuaExtension
 import org.luaj.vm2.LuaError
@@ -37,22 +37,22 @@ import java.io.FileNotFoundException
  * 12 / 05 / 2020
  */
 class FileExtensionDataSource(
-		private val iFileSystemProvider: IFileSystemProvider
+	private val iFileSystemProvider: IFileSystemProvider
 ) : IFileExtensionDataSource {
 	init {
 		logV("Creating required directories")
 		iFileSystemProvider.createInternalDirectory(FILES, "$SOURCE_DIR$SCRIPT_DIR").handle(
-				onError = {
-					logV("Error on creation of directories $it")
-				},
-				onSuccess = {
-					logV("Created required directories")
-				}
+			onError = {
+				logV("Error on creation of directories $it")
+			},
+			onSuccess = {
+				logV("Created required directories")
+			}
 		)
 	}
 
 	private fun makeFormatterFile(fileName: String): String =
-			"$SOURCE_DIR$SCRIPT_DIR$fileName.lua"
+		"$SOURCE_DIR$SCRIPT_DIR$fileName.lua"
 
 
 	override suspend fun loadFormatter(fileName: String): HResult<IExtension> = try {
@@ -64,18 +64,22 @@ class FileExtensionDataSource(
 			}
 		}
 	} catch (e: LuaError) {
-		errorResult(ERROR_LUA_GENERAL, e.message
-				?: "Unknown Lua Error", e)
+		errorResult(
+			ERROR_LUA_GENERAL, e.message
+				?: "Unknown Lua Error", e
+		)
 	} catch (e: FileNotFoundException) {
-		errorResult(ERROR_NOT_FOUND, e.message
-				?: "Unknown file not found", e)
+		errorResult(
+			ERROR_NOT_FOUND, e.message
+				?: "Unknown file not found", e
+		)
 	}
 
 	override suspend fun writeFormatter(fileName: String, data: String): HResult<*> =
-			iFileSystemProvider.writeInternalFile(FILES, makeFormatterFile(fileName), data)
+		iFileSystemProvider.writeInternalFile(FILES, makeFormatterFile(fileName), data)
 
 
 	override suspend fun deleteFormatter(fileName: String): HResult<*> =
-			iFileSystemProvider.deleteInternalFile(FILES, makeFormatterFile(fileName))
+		iFileSystemProvider.deleteInternalFile(FILES, makeFormatterFile(fileName))
 
 }

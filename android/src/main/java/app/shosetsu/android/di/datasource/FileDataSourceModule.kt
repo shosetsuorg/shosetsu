@@ -33,19 +33,19 @@ import org.kodein.di.generic.singleton
  * 12 / 05 / 2020
  */
 val fileDataSourceModule: Kodein.Module = Kodein.Module("file_data_source") {
-    bind<IFileExtensionDataSource>() with singleton {
-        FileExtensionDataSource(instance())
-    }
-    bind<IFileChapterDataSource>() with singleton {
-        FileChapterDataSource(instance())
-    }
-    bind<IFileExtLibDataSource>() with singleton {
-        FileExtLibDataSource(instance())
-    }
-    bind<IFileCachedChapterDataSource>() with singleton {
-        FileCachedChapterDataSource(instance())
-    }
-    bind<IFileCachedAppUpdateDataSource>() with singleton {
-        FileAppUpdateDataSource(instance())
-    }
+	bind<IFileExtensionDataSource>() with singleton {
+		FileExtensionDataSource(instance())
+	}
+	bind<IFileChapterDataSource>() with singleton {
+		FileChapterDataSource(instance())
+	}
+	bind<IFileExtLibDataSource>() with singleton {
+		FileExtLibDataSource(instance())
+	}
+	bind<IFileCachedChapterDataSource>() with singleton {
+		FileCachedChapterDataSource(instance())
+	}
+	bind<IFileCachedAppUpdateDataSource>() with singleton {
+		FileAppUpdateDataSource(instance())
+	}
 }

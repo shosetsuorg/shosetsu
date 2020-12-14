@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.common.utils.uifactory.mapLatestToResultFlowWithFactory
-import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.android.view.uimodels.model.ChapterUI
+import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.loading
 import app.shosetsu.common.dto.mapLatestResultListTo
@@ -32,11 +32,14 @@ import kotlinx.coroutines.flow.flow
  * 18 / 05 / 2020
  */
 class GetChapterUIsUseCase(
-		private val chapters: IChaptersRepository,
+	private val chapters: IChaptersRepository,
 ) {
 	operator fun invoke(novelID: Int): Flow<HResult<List<ChapterUI>>> = flow {
 		emit(loading())
 		if (novelID != -1)
-			emitAll(chapters.loadChapters(novelID).mapLatestToResultFlowWithFactory().mapLatestResultListTo())
+			emitAll(
+				chapters.loadChapters(novelID).mapLatestToResultFlowWithFactory()
+					.mapLatestResultListTo()
+			)
 	}
 }

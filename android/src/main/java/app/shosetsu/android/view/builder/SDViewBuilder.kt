@@ -40,13 +40,13 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * All added views are
  */
 open class SDViewBuilder(
-		val viewGroup: ViewGroup,
+	val viewGroup: ViewGroup,
 ) {
 	val inflater: LayoutInflater = LayoutInflater.from(viewGroup.context)
 	val layout: LinearLayout = inflater.inflate(
-			R.layout.drawer_layout_simple,
-			viewGroup,
-			false
+		R.layout.drawer_layout_simple,
+		viewGroup,
+		false
 	) as LinearLayout
 
 	fun <T> add(view: T): T where T : View {
@@ -66,9 +66,9 @@ open class SDViewBuilder(
 
 	fun switch(text: String, state: Boolean): SDSwitch {
 		val switch = inflater.inflate(
-				R.layout.drawer_item_switch,
-				layout,
-				false
+			R.layout.drawer_item_switch,
+			layout,
+			false
 		) as SDSwitch
 		switch.text = text
 		switch.isChecked = state
@@ -77,9 +77,9 @@ open class SDViewBuilder(
 
 	fun editText(hint: String): SDEditText {
 		val editText = inflater.inflate(
-				R.layout.drawer_item_edit_text,
-				layout,
-				false
+			R.layout.drawer_item_edit_text,
+			layout,
+			false
 		) as SDEditText
 		editText.hint = hint
 		return add(editText)
@@ -87,14 +87,15 @@ open class SDViewBuilder(
 
 	fun spinner(text: String, array: Array<String>, state: Int): SDSpinner {
 		val item = inflater.inflate(
-				R.layout.drawer_item_spinner,
-				layout,
-				false
+			R.layout.drawer_item_spinner,
+			layout,
+			false
 		) as LinearLayout
 		val spinner: SDSpinner = item.findViewById(R.id.spinner)
 		val textView: TextView = item.findViewById(R.id.title)
 		spinner.visibility = VISIBLE
-		spinner.adapter = ArrayAdapter(viewGroup.context, android.R.layout.simple_spinner_item, array)
+		spinner.adapter =
+			ArrayAdapter(viewGroup.context, android.R.layout.simple_spinner_item, array)
 		spinner.setSelection(state)
 		textView.visibility = VISIBLE
 		textView.text = text
@@ -133,9 +134,12 @@ open class SDViewBuilder(
 
 	val addEditText: (a: String) -> SDViewBuilder = wrap<String> { editText(it) }
 	val addSwitch: (a: String, b: Boolean) -> SDViewBuilder = wrap { a, b -> switch(a, b) }
-	val addSpinner: (a: String, b: Array<String>, c: Int) -> SDViewBuilder = wrap { a, b, c -> spinner(a, b, c) }
-	val addRadioGroup: (a: String, b: Array<String>, c: Int) -> SDViewBuilder = wrap { a, b, c -> radioGroup(a, b, c) }
-	val createInner: (a: String, b: (SDViewBuilder) -> Unit) -> SDViewBuilder = wrap { a, b -> inner(a, b) }
+	val addSpinner: (a: String, b: Array<String>, c: Int) -> SDViewBuilder =
+		wrap { a, b, c -> spinner(a, b, c) }
+	val addRadioGroup: (a: String, b: Array<String>, c: Int) -> SDViewBuilder =
+		wrap { a, b, c -> radioGroup(a, b, c) }
+	val createInner: (a: String, b: (SDViewBuilder) -> Unit) -> SDViewBuilder =
+		wrap { a, b -> inner(a, b) }
 
 	/*@SuppressLint("ResourceType")
 	open fun add(view: View): SDViewBuilder {

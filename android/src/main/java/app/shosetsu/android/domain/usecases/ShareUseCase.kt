@@ -37,9 +37,9 @@ import app.shosetsu.lib.IExtension.Companion.KEY_NOVEL_URL
  * Opens the chapter into
  */
 class ShareUseCase(
-		private val repository: IExtensionsRepository,
-		private val stringToastUseCase: StringToastUseCase,
-		private val application: Application,
+	private val repository: IExtensionsRepository,
+	private val stringToastUseCase: StringToastUseCase,
+	private val application: Application,
 ) {
 	operator fun invoke(url: String, title: String) {
 		Log.d(logID(), "Opening URL $url")
@@ -57,14 +57,14 @@ class ShareUseCase(
 
 	suspend operator fun invoke(url: String, formatterID: Int, title: String, type: Int) {
 		repository.loadIExtension(formatterID).handle(
-				onEmpty = {
-					Log.e(logID(), "Empty")
-					stringToastUseCase { "Empty??" }
-				},
-				onError = {
-					Log.e(logID(), "Error")
-					stringToastUseCase { "$it" }
-				}
+			onEmpty = {
+				Log.e(logID(), "Empty")
+				stringToastUseCase { "Empty??" }
+			},
+			onError = {
+				Log.e(logID(), "Error")
+				stringToastUseCase { "$it" }
+			}
 		) {
 			val formatter = it
 			this(formatter.expandURL(url, type), title)
@@ -72,16 +72,16 @@ class ShareUseCase(
 	}
 
 	suspend operator fun invoke(novelUI: NovelUI): Unit = this(
-			novelUI.novelURL,
-			novelUI.extID,
-			novelUI.title,
-			KEY_NOVEL_URL
+		novelUI.novelURL,
+		novelUI.extID,
+		novelUI.title,
+		KEY_NOVEL_URL
 	)
 
 	suspend operator fun invoke(chapterUI: ChapterUI): Unit = this(
-			chapterUI.link,
-			chapterUI.formatterID,
-			chapterUI.title,
-			KEY_CHAPTER_URL
+		chapterUI.link,
+		chapterUI.formatterID,
+		chapterUI.title,
+		KEY_CHAPTER_URL
 	)
 }

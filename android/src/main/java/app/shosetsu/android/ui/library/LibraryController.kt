@@ -14,15 +14,17 @@ import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.library.listener.LibrarySearchQuery
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.novel.NovelController
-import app.shosetsu.android.view.base.FastAdapterRecyclerController
-import app.shosetsu.android.view.base.PushCapableController
+import app.shosetsu.android.view.base.*
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
+import app.shosetsu.android.view.widget.SlidingUpBottomMenu
 import app.shosetsu.android.viewmodel.abstracted.ILibraryViewModel
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.handle
 import app.shosetsu.common.enums.NovelUIType.COMPRESSED
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerLibraryBinding
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.mikepenz.fastadapter.select.getSelectExtension
 import com.mikepenz.fastadapter.select.selectExtension
 
@@ -52,8 +54,12 @@ import com.mikepenz.fastadapter.select.selectExtension
  */
 class LibraryController
 	: FastAdapterRecyclerController<ControllerLibraryBinding, ABookmarkedNovelUI>(),
-		PushCapableController {
+	PushCapableController, ExtendedFABController, BottomMenuController {
 	lateinit var pushController: (Controller) -> Unit
+
+	override var bottomMenuRetriever: (() -> SlidingUpBottomMenu?)? = null
+
+	private var fab: ExtendedFloatingActionButton? = null
 
 	override val viewTitleRes: Int = R.string.my_library
 
@@ -68,39 +74,39 @@ class LibraryController
 	}
 
 	override fun bindView(inflater: LayoutInflater): ControllerLibraryBinding =
-			ControllerLibraryBinding.inflate(inflater).also { recyclerView = it.recyclerView }
+		ControllerLibraryBinding.inflate(inflater).also { recyclerView = it.recyclerView }
 
 	override fun createLayoutManager(): RecyclerView.LayoutManager {
 		return when (viewModel.getNovelUIType()) {
 			COMPRESSED -> LinearLayoutManager(
-					applicationContext,
-					LinearLayoutManager.VERTICAL,
-					false
+				applicationContext,
+				LinearLayoutManager.VERTICAL,
+				false
 			)
 			else -> GridLayoutManager(
-					applicationContext,
-					context!!.resources.let {
-						val density = it.displayMetrics.density
-						val widthPixels = it.displayMetrics.widthPixels
-						when (it.configuration.orientation) {
-							Configuration.ORIENTATION_LANDSCAPE -> {
-								viewModel.calculateHColumnCount(
-										widthPixels,
-										density,
-										200f
-								)
-							}
-							else -> {
-								viewModel.calculatePColumnCount(
-										widthPixels,
-										density,
-										200f
-								)
-							}
+				applicationContext,
+				context!!.resources.let {
+					val density = it.displayMetrics.density
+					val widthPixels = it.displayMetrics.widthPixels
+					when (it.configuration.orientation) {
+						Configuration.ORIENTATION_LANDSCAPE -> {
+							viewModel.calculateHColumnCount(
+								widthPixels,
+								density,
+								200f
+							)
 						}
-					},
-					RecyclerView.VERTICAL,
-					false
+						else -> {
+							viewModel.calculatePColumnCount(
+								widthPixels,
+								density,
+								200f
+							)
+						}
+					}
+				},
+				RecyclerView.VERTICAL,
+				false
 			)
 		}
 	}
@@ -118,6 +124,9 @@ class LibraryController
 
 	override fun setupRecyclerView() {
 		recyclerView.setHasFixedSize(false)
+		fab?.let {
+			syncFABWithRecyclerView(recyclerView, it)
+		}
 		super.setupRecyclerView()
 		setObservers()
 	}
@@ -145,8 +154,8 @@ class LibraryController
 				if (selectedItems.isNotEmpty()) {
 					if (!item.isSelected)
 						select(
-								item = item,
-								considerSelectableFlag = true
+							item = item,
+							considerSelectableFlag = true
 						)
 					else
 						deselect(position)
@@ -157,20 +166,20 @@ class LibraryController
 		}
 
 		fastAdapter.setOnClickListener { _, _, item, _ ->
-			pushController(NovelController(
+			pushController(
+				NovelController(
 					bundleOf(BundleKeys.BUNDLE_NOVEL_ID to item.id)
-			))
+				)
+			)
 			true
 		}
 	}
 
 	private fun setObservers() {
-		viewModel.liveData.observe(this) { handleRecyclerUpdate(it) }
-	}
-
-	override fun updateUI(newList: List<ABookmarkedNovelUI>) {
-		// sorts in IO, updates on UI
-		launchIO { newList.sortedBy { it.title }.let { launchUI { super.updateUI(it) } } }
+		viewModel.liveData.observe(this) {
+			it.handle { logV("${it.size}") }
+			handleRecyclerUpdate(it)
+		}
 	}
 
 	/***/
@@ -179,7 +188,7 @@ class LibraryController
 			Log.d(logID(), "Creating default menu")
 			inflater.inflate(R.menu.toolbar_library, menu)
 			val searchView =
-					menu.findItem(R.id.library_search).actionView as SearchView?
+				menu.findItem(R.id.library_search).actionView as SearchView?
 			searchView?.setOnQueryTextListener(LibrarySearchQuery(this))
 			searchView?.setOnCloseListener {
 				val v = viewModel.liveData.value
@@ -211,15 +220,19 @@ class LibraryController
 			R.id.remove_from_library -> {
 				launchIO {
 					viewModel.removeFromLibrary(
-							fastAdapter.getSelectExtension().selectedItems.toList()
+						fastAdapter.getSelectExtension().selectedItems.toList()
 					)
 				}
 				return true
 			}
 			R.id.source_migrate -> {
-				router.pushController(MigrationController(bundleOf(
-						MigrationController.TARGETS_BUNDLE_KEY to arrayListOf<Int>()
-				)).withFadeTransaction())
+				router.pushController(
+					MigrationController(
+						bundleOf(
+							MigrationController.TARGETS_BUNDLE_KEY to arrayListOf<Int>()
+						)
+					).withFadeTransaction()
+				)
 				return true
 			}
 		}
@@ -232,6 +245,7 @@ class LibraryController
 	}
 
 	override fun showEmpty() {
+		if (itemAdapter.adapterItemCount > 0) return
 		binding.recyclerView.isVisible = false
 		binding.emptyDataView.show("You don't have any novels, Go to \"Browse\" and add some!")
 	}
@@ -239,4 +253,20 @@ class LibraryController
 	override fun acceptPushing(pushController: (Controller) -> Unit) {
 		this.pushController = pushController
 	}
+
+	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
+		this.fab = fab
+		fab.setOnClickListener { bottomMenuRetriever?.invoke()?.show() }
+		fab.setText(R.string.filter)
+		fab.setIconResource(R.drawable.filter)
+	}
+
+	override fun onDestroy() {
+		viewModel.resetSortAndFilters()
+		super.onDestroy()
+	}
+
+	override fun getBottomMenuView(): View =
+		LibraryFilterMenuBuilder(activity!!.layoutInflater, viewModel).build()
+
 }

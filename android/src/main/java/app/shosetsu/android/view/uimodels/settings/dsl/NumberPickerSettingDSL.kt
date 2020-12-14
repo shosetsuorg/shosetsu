@@ -30,32 +30,32 @@ import kotlin.reflect.KMutableProperty0
 
 @SettingsItemDSL
 inline fun numberPickerSettingData(
-		id: Int,
-		action: NumberPickerSettingData.() -> Unit,
+	id: Int,
+	action: NumberPickerSettingData.() -> Unit,
 ): SettingsItemData = NumberPickerSettingData(id).also(action)
 
 @SettingsItemDSL
 inline fun SettingsListBuilder.numberPickerSettingData(
-		id: Int,
-		action: NumberPickerSettingData.() -> Unit,
+	id: Int,
+	action: NumberPickerSettingData.() -> Unit,
 ): Unit = this.let { list.add(NumberPickerSettingData(id).also(action)) }
 
 
 @SettingsItemDSL
 inline fun NumberPickerSettingData.range(
-		crossinline value: NumberPickerSettingData.() -> Pair<
-				@ParameterName("lowerBound") Int,
-				@ParameterName("upperBound") Int
-				>,
+	crossinline value: NumberPickerSettingData.() -> Pair<
+			@ParameterName("lowerBound") Int,
+			@ParameterName("upperBound") Int
+			>,
 ): Unit = value().let { lowerBound = it.first;upperBound = it.second }
 
 @SettingsItemDSL
 inline fun NumberPickerSettingData.onValuePicked(
-		crossinline action: NumberPickerSettingData.(
-				@ParameterName("picker") NumberPicker?,
-				@ParameterName("oldVal") Int,
-				@ParameterName("newVal") Int,
-		) -> Unit,
+	crossinline action: NumberPickerSettingData.(
+		@ParameterName("picker") NumberPicker?,
+		@ParameterName("oldVal") Int,
+		@ParameterName("newVal") Int,
+	) -> Unit,
 ) {
 	numberPickerOnValueChangedListener = { picker, oldVal, newVal ->
 		action(picker, oldVal, newVal)
@@ -64,12 +64,12 @@ inline fun NumberPickerSettingData.onValuePicked(
 
 @SettingsItemDSL
 inline fun NumberPickerSettingData.initalValue(
-		crossinline value: NumberPickerSettingData.() -> Int,
+	crossinline value: NumberPickerSettingData.() -> Int,
 ): Unit = value().let { numberPickerValue = it }
 
 @SettingsItemDSL
 inline fun NumberPickerSettingData.numberValue(
-		crossinline action: NumberPickerSettingData.() -> KMutableProperty0<Int>,
+	crossinline action: NumberPickerSettingData.() -> KMutableProperty0<Int>,
 ) {
 	val property = action()
 	initalValue { property.get() }

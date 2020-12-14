@@ -5,10 +5,10 @@ import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.view.uimodels.model.library.CompactBookmarkedNovelUI
 import app.shosetsu.android.view.uimodels.model.library.FullBookmarkedNovelUI
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.transform
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.transform
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emitAll
@@ -36,34 +36,36 @@ import kotlinx.coroutines.flow.flow
  * 08 / 05 / 2020
  */
 class LoadLibraryUseCase(
-		private val iNovelsRepository: INovelsRepository,
-		private val settings: ISettingsRepository,
+	private val iNovelsRepository: INovelsRepository,
+	private val settings: ISettingsRepository,
 ) {
 	operator fun invoke(): Flow<HResult<List<ABookmarkedNovelUI>>> = flow {
-		emitAll(iNovelsRepository.getLiveBookmarked().combine(settings.observeInt(SettingKey.NovelCardType)) { origin, cardType ->
-			origin.transform {
-				val list = it
-				val newList = list.map { (id, title, imageURL, bookmarked, unread) ->
-					if (cardType == 0)
-						FullBookmarkedNovelUI(
+		emitAll(
+			iNovelsRepository.getLiveBookmarked()
+				.combine(settings.observeInt(SettingKey.NovelCardType)) { origin, cardType ->
+					origin.transform {
+						val list = it
+						val newList = list.map { (id, title, imageURL, bookmarked, unread) ->
+							if (cardType == 0)
+								FullBookmarkedNovelUI(
+									id,
+									title,
+									imageURL,
+									bookmarked,
+									unread, listOf(), listOf(), listOf(), listOf()
+								)
+							else CompactBookmarkedNovelUI(
 								id,
 								title,
 								imageURL,
 								bookmarked,
-								unread
-						)
-					else CompactBookmarkedNovelUI(
-							id,
-							title,
-							imageURL,
-							bookmarked,
-							unread
-					)
-				}
-				successResult(newList)
-			}
+								unread, listOf(), listOf(), listOf(), listOf()
+							)
+						}
+						successResult(newList)
+					}
 
-		})
+				})
 	}
 
 

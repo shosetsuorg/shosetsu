@@ -40,7 +40,11 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
  * shosetsu
  * 09 / 09 / 2020
  */
-class SearchRowAdapter(private val lifecycleOwner: LifecycleOwner, private val pushController: (Controller) -> Unit, private val viewModel: ISearchViewModel) : FastAdapter<SearchRowUI>() {
+class SearchRowAdapter(
+	private val lifecycleOwner: LifecycleOwner,
+	private val pushController: (Controller) -> Unit,
+	private val viewModel: ISearchViewModel
+) : FastAdapter<SearchRowUI>() {
 	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 		super.onBindViewHolder(holder, position)
 		@Suppress("NAME_SHADOWING")
@@ -77,8 +81,8 @@ class SearchRowAdapter(private val lifecycleOwner: LifecycleOwner, private val p
 				is HResult.Success -> {
 					holder.binding.progressBar.visibility = View.GONE
 					FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(
-							itemAdapter,
-							result.data
+						itemAdapter,
+						result.data
 					)
 				}
 			}

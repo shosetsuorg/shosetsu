@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases.update
 
-import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
 import app.shosetsu.android.view.uimodels.model.DownloadUI
+import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
 import app.shosetsu.common.dto.HResult
 
 /*
@@ -26,8 +26,8 @@ import app.shosetsu.common.dto.HResult
  * 21 / 06 / 2020
  */
 class UpdateDownloadUseCase(
-		private val downloadsRepository: IDownloadsRepository,
+	private val downloadsRepository: IDownloadsRepository,
 ) {
 	suspend operator fun invoke(downloadUI: DownloadUI): HResult<*> =
-			downloadsRepository.update(downloadUI.convertTo())
+		downloadsRepository.update(downloadUI.convertTo())
 }

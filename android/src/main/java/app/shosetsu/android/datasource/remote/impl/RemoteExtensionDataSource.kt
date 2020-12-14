@@ -3,11 +3,11 @@ package app.shosetsu.android.datasource.remote.impl
 import app.shosetsu.android.common.consts.REPO_DIR_STRUCT
 import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.datasource.remote.base.IRemoteExtensionDataSource
 import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.successResult
 import okhttp3.OkHttpClient
 
 /*
@@ -32,23 +32,27 @@ import okhttp3.OkHttpClient
  * 13 / 05 / 2020
  */
 class RemoteExtensionDataSource(
-		private val client: OkHttpClient,
+	private val client: OkHttpClient,
 ) : IRemoteExtensionDataSource {
 
 	private fun makeFormatterURL(repo: RepositoryEntity, fe: ExtensionEntity): String =
-			"${repo.url}$REPO_DIR_STRUCT/src/${fe.lang}/${fe.fileName}.lua"
+		"${repo.url}$REPO_DIR_STRUCT/src/${fe.lang}/${fe.fileName}.lua"
 
 	override suspend fun downloadExtension(
-			repositoryEntity: RepositoryEntity,
-			extensionEntity: ExtensionEntity,
+		repositoryEntity: RepositoryEntity,
+		extensionEntity: ExtensionEntity,
 	): HResult<String> =
-			try {
-				@Suppress("BlockingMethodInNonBlockingContext")
-				(successResult(client.quickie(makeFormatterURL(
-				repositoryEntity,
-				extensionEntity
-		)).body!!.string()))
-			} catch (e: Exception) {
-				e.toHError()
-			}
+		try {
+			@Suppress("BlockingMethodInNonBlockingContext")
+			(successResult(
+				client.quickie(
+					makeFormatterURL(
+						repositoryEntity,
+						extensionEntity
+					)
+				).body!!.string()
+			))
+		} catch (e: Exception) {
+			e.toHError()
+		}
 }

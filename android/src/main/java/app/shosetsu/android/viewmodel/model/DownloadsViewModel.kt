@@ -12,9 +12,9 @@ import app.shosetsu.android.domain.usecases.update.UpdateDownloadUseCase
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.IDownloadsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.IsDownloadPaused
-import app.shosetsu.common.enums.DownloadStatus
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.*
+import app.shosetsu.common.enums.DownloadStatus
 
 /*
  * This file is part of shosetsu.
@@ -40,13 +40,13 @@ import app.shosetsu.common.dto.*
  * @author github.com/doomsdayrs
  */
 class DownloadsViewModel(
-		private val getDownloadsUseCase: LoadDownloadsUseCase,
-		private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
-		private val updateDownloadUseCase: UpdateDownloadUseCase,
-		private val deleteDownloadUseCase: DeleteDownloadUseCase,
-		private val settings: ISettingsRepository,
-		private var isOnlineUseCase: IsOnlineUseCase,
-		private val reportExceptionUseCase: ReportExceptionUseCase
+	private val getDownloadsUseCase: LoadDownloadsUseCase,
+	private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
+	private val updateDownloadUseCase: UpdateDownloadUseCase,
+	private val deleteDownloadUseCase: DeleteDownloadUseCase,
+	private val settings: ISettingsRepository,
+	private var isOnlineUseCase: IsOnlineUseCase,
+	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : IDownloadsViewModel() {
 
 	private fun List<DownloadUI>.sort() = sortedWith(compareBy<DownloadUI> {

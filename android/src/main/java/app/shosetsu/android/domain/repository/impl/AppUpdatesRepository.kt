@@ -36,13 +36,13 @@ import kotlinx.coroutines.flow.Flow
  * 07 / 09 / 2020
  */
 class AppUpdatesRepository(
-		private val iRemoteAppUpdateDataSource: IRemoteAppUpdateDataSource,
-		private val iFileAppUpdateDataSource: IFileCachedAppUpdateDataSource,
+	private val iRemoteAppUpdateDataSource: IRemoteAppUpdateDataSource,
+	private val iFileAppUpdateDataSource: IFileCachedAppUpdateDataSource,
 ) : IAppUpdatesRepository {
 	private var running = false
 
 	override fun watchAppUpdates(): Flow<HResult<DebugAppUpdate>> =
-			iFileAppUpdateDataSource.updateAvaLive
+		iFileAppUpdateDataSource.updateAvaLive
 
 
 	private fun compareVersion(newVersion: DebugAppUpdate): HResult<DebugAppUpdate> {

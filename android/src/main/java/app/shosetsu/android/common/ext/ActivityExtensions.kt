@@ -43,8 +43,8 @@ fun Activity.openInBrowser(url: String): Unit = openInBrowser(Uri.parse(url))
 fun Activity.openInWebView(url: String) {
 	startActivity(Intent(this, WebViewApp::class.java) {
 		bundleOf(
-				BundleKeys.BUNDLE_URL to url,
-				BundleKeys.BUNDLE_ACTION to WebViewApp.Actions.VIEW.action
+			BundleKeys.BUNDLE_URL to url,
+			BundleKeys.BUNDLE_ACTION to WebViewApp.Actions.VIEW.action
 		)
 	})
 }
@@ -64,8 +64,8 @@ fun Activity.openChapter(cUI: ChapterUI): Unit = openChapter(cUI.id, cUI.novelID
 fun Activity.openChapter(chapterID: Int, novelID: Int) {
 	startActivity(Intent(this, ChapterReader::class.java) {
 		bundleOf(
-				BUNDLE_CHAPTER_ID to chapterID,
-				BUNDLE_NOVEL_ID to novelID
+			BUNDLE_CHAPTER_ID to chapterID,
+			BUNDLE_NOVEL_ID to novelID
 		)
 	})
 }

@@ -30,22 +30,22 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * 01 / 10 / 2020
  */
 class AboutViewModel(
-		private val openInWebviewUseCase: OpenInWebviewUseCase,
-		private val context: Context,
-		private val manager: AppUpdateWorker.Manager,
+	private val openInWebviewUseCase: OpenInWebviewUseCase,
+	private val context: Context,
+	private val manager: AppUpdateWorker.Manager,
 ) : AAboutViewModel() {
 
 	override fun openGithub() {
 		context.startActivity(Intent(
-				Intent.ACTION_VIEW,
-				Uri.parse(context.getString(R.string.github_url))
+			Intent.ACTION_VIEW,
+			Uri.parse(context.getString(R.string.github_url))
 		).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK })
 	}
 
 	override fun openWebsite() {
 		context.startActivity(Intent(
-				Intent.ACTION_VIEW,
-				Uri.parse(context.getString(R.string.website_url))
+			Intent.ACTION_VIEW,
+			Uri.parse(context.getString(R.string.website_url))
 		).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK })
 	}
 
@@ -56,15 +56,15 @@ class AboutViewModel(
 
 	override fun openExtensions() {
 		context.startActivity(Intent(
-				Intent.ACTION_VIEW,
-				Uri.parse(context.getString(R.string.extensions_url))
+			Intent.ACTION_VIEW,
+			Uri.parse(context.getString(R.string.extensions_url))
 		).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK })
 	}
 
 	override fun openDiscord() {
 		context.startActivity(Intent(
-				Intent.ACTION_VIEW,
-				Uri.parse(context.getString(R.string.discord_url))
+			Intent.ACTION_VIEW,
+			Uri.parse(context.getString(R.string.discord_url))
 		).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK })
 	}
 
@@ -73,8 +73,8 @@ class AboutViewModel(
 
 	override fun openPatreon() {
 		context.startActivity(Intent(
-				Intent.ACTION_VIEW,
-				Uri.parse(context.getString(R.string.patreon_url))
+			Intent.ACTION_VIEW,
+			Uri.parse(context.getString(R.string.patreon_url))
 		).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK })
 	}
 }

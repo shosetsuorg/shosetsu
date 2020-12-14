@@ -37,24 +37,24 @@ import kotlinx.coroutines.launch
  */
 @Fts4
 @Database(
-		entities = [
-			DBExtensionEntity::class,
-			DBRepositoryEntity::class,
-			DBExtLibEntity::class,
-			DBDownloadEntity::class,
-			DBUpdate::class,
-			DBChapterEntity::class,
-			DBNovelEntity::class
-		],
-		version = 2
+	entities = [
+		DBExtensionEntity::class,
+		DBRepositoryEntity::class,
+		DBExtLibEntity::class,
+		DBDownloadEntity::class,
+		DBUpdate::class,
+		DBChapterEntity::class,
+		DBNovelEntity::class
+	],
+	version = 2
 )
 @TypeConverters(
-		ReadingStatusConverter::class,
-		StringArrayConverters::class,
-		NovelStatusConverter::class,
-		DownloadStatusConverter::class,
-		VersionConverter::class,
-		ListConverter::class,
+	ReadingStatusConverter::class,
+	StringArrayConverters::class,
+	NovelStatusConverter::class,
+	DownloadStatusConverter::class,
+	VersionConverter::class,
+	ListConverter::class,
 )
 abstract class ShosetsuDatabase : RoomDatabase() {
 	companion object {
@@ -65,15 +65,15 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 		fun getRoomDatabase(context: Context): ShosetsuDatabase {
 			if (!Companion::databaseShosetsu.isInitialized)
 				databaseShosetsu = Room.databaseBuilder(
-						context.applicationContext,
-						ShosetsuDatabase::class.java,
-						"room_database"
+					context.applicationContext,
+					ShosetsuDatabase::class.java,
+					"room_database"
 				).addMigrations(
-						object : RemoveMigration(1, 2) {
-							override fun migrate(database: SupportSQLiteDatabase) {
-								deleteColumnFromTable(database, "chapters", "savePath")
-							}
+					object : RemoveMigration(1, 2) {
+						override fun migrate(database: SupportSQLiteDatabase) {
+							deleteColumnFromTable(database, "chapters", "savePath")
 						}
+					}
 				).build()
 			GlobalScope.launch {
 				try {

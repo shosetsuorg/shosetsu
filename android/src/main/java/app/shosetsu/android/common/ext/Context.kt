@@ -60,7 +60,7 @@ fun Context.toast(string: String, duration: Int = LENGTH_SHORT) {
 }
 
 fun Context.checkActivitySelfPermission(@NonNull permission: String): Int =
-		ActivityCompat.checkSelfPermission(this, permission)
+	ActivityCompat.checkSelfPermission(this, permission)
 
 /**
  * Property to get the notification manager from the context.
@@ -70,14 +70,16 @@ val Context.notificationManager: NotificationManager
 
 fun Context.requestPerms() {
 	if (
-			checkActivitySelfPermission(WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED
-			||
-			checkActivitySelfPermission(WAKE_LOCK) != PERMISSION_GRANTED
+		checkActivitySelfPermission(WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED
+		||
+		checkActivitySelfPermission(WAKE_LOCK) != PERMISSION_GRANTED
 	) ActivityCompat.requestPermissions(
-			this as Activity,
-			arrayOf(
-					READ_EXTERNAL_STORAGE,
-					WRITE_EXTERNAL_STORAGE,
-					WAKE_LOCK),
-			1)
+		this as Activity,
+		arrayOf(
+			READ_EXTERNAL_STORAGE,
+			WRITE_EXTERNAL_STORAGE,
+			WAKE_LOCK
+		),
+		1
+	)
 }

@@ -60,11 +60,16 @@ class RepositoryController : BasicFastAdapterRecyclerController<RepositoryUI>(),
 	override fun setupFastAdapter() {
 		fastAdapter.addEventHook(object : ClickEventHook<RepositoryUI>() {
 			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? =
-					if (viewHolder is RepositoryUI.ViewHolder)
-						viewHolder.binding.removeButton
-					else null
+				if (viewHolder is RepositoryUI.ViewHolder)
+					viewHolder.binding.removeButton
+				else null
 
-			override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<RepositoryUI>, item: RepositoryUI) {
+			override fun onClick(
+				v: View,
+				position: Int,
+				fastAdapter: FastAdapter<RepositoryUI>,
+				item: RepositoryUI
+			) {
 				// Open remove thing
 			}
 		})

@@ -4,8 +4,8 @@ import android.view.View
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import app.shosetsu.android.view.uimodels.model.RepositoryUI.ViewHolder
-import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.domain.model.local.RepositoryEntity
+import app.shosetsu.common.dto.Convertible
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerRepositoryInfoBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerRepositoryInfoBinding.bind
@@ -32,9 +32,9 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerRepositoryInfoBin
  * 24 / 04 / 2020
  */
 data class RepositoryUI(
-		val id: Int,
-		val url: String,
-		val name: String
+	val id: Int,
+	val url: String,
+	val name: String
 ) : BaseRecyclerItem<ViewHolder>(), Convertible<RepositoryEntity> {
 	override val layoutRes: Int = R.layout.recycler_repository_info
 	override val type: Int = R.layout.recycler_repository_info
@@ -44,10 +44,14 @@ data class RepositoryUI(
 
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 
-	class ViewHolder(view: View) : BindViewHolder<RepositoryUI, RecyclerRepositoryInfoBinding>(view) {
+	class ViewHolder(view: View) :
+		BindViewHolder<RepositoryUI, RecyclerRepositoryInfoBinding>(view) {
 		override val binding: RecyclerRepositoryInfoBinding = bind(view)
 
-		override fun RecyclerRepositoryInfoBinding.bindView(item: RepositoryUI, payloads: List<Any>) {
+		override fun RecyclerRepositoryInfoBinding.bindView(
+			item: RepositoryUI,
+			payloads: List<Any>
+		) {
 			repoID.text = item.id.toString()
 			title.text = item.name
 			url.text = item.url

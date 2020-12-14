@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.flow
  * 14 / 09 / 2020
  */
 class GetExtensionSettingsUseCase(
-		private val iExtensionsRepository: IExtensionsRepository
+	private val iExtensionsRepository: IExtensionsRepository
 ) {
 	operator fun invoke(id: Int): Flow<HResult<List<Filter<*>>>> = flow {
 		emit(loading())

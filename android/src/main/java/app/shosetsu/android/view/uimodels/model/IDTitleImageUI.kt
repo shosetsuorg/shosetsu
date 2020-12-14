@@ -25,9 +25,9 @@ import app.shosetsu.common.dto.Convertible
  * 08 / 05 / 2020
  */
 data class IDTitleImageUI(
-		val id: Int,
-		val title: String,
-		val imageURL: String,
+	val id: Int,
+	val title: String,
+	val imageURL: String,
 ) : Convertible<IDTitleImage> {
 	override fun convertTo(): IDTitleImage = IDTitleImage(id, title, imageURL)
 }

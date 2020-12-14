@@ -27,25 +27,25 @@ import app.shosetsu.lib.IExtension
 
 
 fun Context.getIntSetting(formatter: IExtension, settingID: Int): Int? =
-		formatter.settingsModel.find { it.id == settingID }?.let {
-			getSharedPreferences("FORMATTER-${formatter.formatterID}", 0)
-					.getInt("$settingID", it.state as Int)
-		}
+	formatter.settingsModel.find { it.id == settingID }?.let {
+		getSharedPreferences("FORMATTER-${formatter.formatterID}", 0)
+			.getInt("$settingID", it.state as Int)
+	}
 
 fun Context.getBooleanSetting(formatter: IExtension, settingID: Int): Boolean? =
-		formatter.settingsModel.find { it.id == settingID }?.let {
-			getSharedPreferences("FORMATTER-${formatter.formatterID}", 0)
-					.getBoolean("$settingID", it.state as Boolean)
-		}
+	formatter.settingsModel.find { it.id == settingID }?.let {
+		getSharedPreferences("FORMATTER-${formatter.formatterID}", 0)
+			.getBoolean("$settingID", it.state as Boolean)
+	}
 
 fun Context.getDoubleSetting(formatter: IExtension, settingID: Int): Float? =
-		formatter.settingsModel.find { it.id == settingID }?.let {
-			getSharedPreferences("FORMATTER-${formatter.formatterID}", 0)
-					.getFloat("$settingID", it.state as Float)
-		}
+	formatter.settingsModel.find { it.id == settingID }?.let {
+		getSharedPreferences("FORMATTER-${formatter.formatterID}", 0)
+			.getFloat("$settingID", it.state as Float)
+	}
 
 fun Context.getStringSetting(formatter: IExtension, settingID: Int): String? =
-		formatter.settingsModel.find { it.id == settingID }?.let {
-			getSharedPreferences("FORMATTER-${formatter.formatterID}", 0)
-					.getString("$settingID", it.state as String)
-		}
+	formatter.settingsModel.find { it.id == settingID }?.let {
+		getSharedPreferences("FORMATTER-${formatter.formatterID}", 0)
+			.getString("$settingID", it.state as String)
+	}

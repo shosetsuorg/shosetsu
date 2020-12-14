@@ -29,8 +29,10 @@ import android.view.animation.Transformation
  */
 
 fun View.expand() {
-	val matchParentMeasureSpec: Int = View.MeasureSpec.makeMeasureSpec((parent as View).width, View.MeasureSpec.EXACTLY)
-	val wrapContentMeasureSpec: Int = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+	val matchParentMeasureSpec: Int =
+		View.MeasureSpec.makeMeasureSpec((parent as View).width, View.MeasureSpec.EXACTLY)
+	val wrapContentMeasureSpec: Int =
+		View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
 	measure(matchParentMeasureSpec, wrapContentMeasureSpec)
 	val targetHeight: Int = measuredHeight
 
@@ -39,7 +41,8 @@ fun View.expand() {
 	visibility = View.VISIBLE
 	val a: Animation = object : Animation() {
 		override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
-			layoutParams.height = if (interpolatedTime == 1f) LayoutParams.WRAP_CONTENT else (targetHeight * interpolatedTime).toInt()
+			layoutParams.height =
+				if (interpolatedTime == 1f) LayoutParams.WRAP_CONTENT else (targetHeight * interpolatedTime).toInt()
 			requestLayout()
 		}
 

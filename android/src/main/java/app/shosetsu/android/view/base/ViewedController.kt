@@ -139,9 +139,9 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 	 * The main creation method
 	 */
 	override fun onCreateView(
-			inflater: LayoutInflater,
-			container: ViewGroup,
-			savedViewState: Bundle?,
+		inflater: LayoutInflater,
+		container: ViewGroup,
+		savedViewState: Bundle?,
 	): View {
 		setViewTitle()
 		binding = bindView(inflater)
@@ -168,8 +168,8 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 
 	/** @see [toast] */
 	fun toast(
-			length: Int = Toast.LENGTH_SHORT,
-			message: () -> String,
+		length: Int = Toast.LENGTH_SHORT,
+		message: () -> String,
 	) {
 		launchUI {
 			applicationContext?.toast(message(), length)
@@ -178,8 +178,8 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 
 	/** @see [toast] */
 	fun toast(
-			@StringRes message: Int,
-			length: Int = Toast.LENGTH_SHORT,
+		@StringRes message: Int,
+		length: Int = Toast.LENGTH_SHORT,
 	) {
 		launchUI {
 			applicationContext?.toast(message, length)

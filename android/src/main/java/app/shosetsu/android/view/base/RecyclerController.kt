@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import app.shosetsu.android.common.ext.context
 import app.shosetsu.android.common.ext.logID
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding.inflate
@@ -65,9 +66,9 @@ abstract class RecyclerController<T, V, VB> : ViewedController<VB>
 	constructor(args: Bundle) : super(args)
 
 	override fun onCreateView(
-			inflater: LayoutInflater,
-			container: ViewGroup,
-			savedViewState: Bundle?,
+		inflater: LayoutInflater,
+		container: ViewGroup,
+		savedViewState: Bundle?,
 	): View {
 		setViewTitle()
 		binding = bindView(inflater)
@@ -126,10 +127,12 @@ abstract class RecyclerController<T, V, VB> : ViewedController<VB>
 	open fun updateUI(newList: List<V>) {
 		if (newList.isEmpty()) showEmpty() else hideEmpty()
 		adapter?.let {
-			DiffUtil.calculateDiff(RecyclerDiffToolCallBack(
+			DiffUtil.calculateDiff(
+				RecyclerDiffToolCallBack(
 					newList = newList,
 					oldList = recyclerArray
-			)).dispatchUpdatesTo(it)
+				)
+			).dispatchUpdatesTo(it)
 		}
 		recyclerArray.clear()
 		recyclerArray.addAll(newList)
@@ -139,8 +142,8 @@ abstract class RecyclerController<T, V, VB> : ViewedController<VB>
 	 * If the contents of two items are the same
 	 */
 	open fun difAreContentsTheSame(oldItem: V, newItem: V): Boolean =
-			//Log.d(logID(), "$oldItem v $newItem = $b")
-			oldItem == newItem
+		//Log.d(logID(), "$oldItem v $newItem = $b")
+		oldItem == newItem
 
 	/**
 	 * If the identification of two items are the same
@@ -177,20 +180,20 @@ abstract class RecyclerController<T, V, VB> : ViewedController<VB>
 	 * @param newList New List
 	 */
 	inner class RecyclerDiffToolCallBack(
-			private val newList: List<V> = arrayListOf(),
-			private val oldList: List<V> = recyclerArray,
+		private val newList: List<V> = arrayListOf(),
+		private val oldList: List<V> = recyclerArray,
 	) : DiffUtil.Callback() {
 		override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-				this@RecyclerController.difAreContentsTheSame(
-						oldItem = oldList[oldItemPosition],
-						newItem = newList[newItemPosition]
-				)
+			this@RecyclerController.difAreContentsTheSame(
+				oldItem = oldList[oldItemPosition],
+				newItem = newList[newItemPosition]
+			)
 
 		override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-				this@RecyclerController.difAreItemsTheSame(
-						oldItem = oldList[oldItemPosition],
-						newItem = newList[newItemPosition]
-				)
+			this@RecyclerController.difAreItemsTheSame(
+				oldItem = oldList[oldItemPosition],
+				newItem = newList[newItemPosition]
+			)
 
 		override fun getOldListSize(): Int = oldList.size
 		override fun getNewListSize(): Int = newList.size

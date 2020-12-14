@@ -1,9 +1,9 @@
 package app.shosetsu.android.datasource.remote.impl
 
 import app.shosetsu.android.common.ext.toHError
+import app.shosetsu.common.datasource.remote.base.IRemoteChaptersDataSource
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.datasource.remote.base.IRemoteChaptersDataSource
 import app.shosetsu.lib.IExtension
 
 /*
@@ -29,12 +29,12 @@ import app.shosetsu.lib.IExtension
  */
 class RemoteChaptersDataSource : IRemoteChaptersDataSource {
 	override suspend fun loadChapterPassage(
-			formatter: IExtension,
-			chapterURL: String,
+		formatter: IExtension,
+		chapterURL: String,
 	): HResult<String> =
-			try {
-				successResult(formatter.getPassage(chapterURL))
-			} catch (e: Exception) {
-				e.toHError()
-			}
+		try {
+			successResult(formatter.getPassage(chapterURL))
+		} catch (e: Exception) {
+			e.toHError()
+		}
 }

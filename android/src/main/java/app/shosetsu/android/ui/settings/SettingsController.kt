@@ -32,17 +32,18 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * Shosetsu
  * 9 / June / 2019
  */
-class SettingsController : BasicFastAdapterRecyclerController<SettingsCategoryUI>(), PushCapableController {
+class SettingsController : BasicFastAdapterRecyclerController<SettingsCategoryUI>(),
+	PushCapableController {
 	override val viewTitleRes: Int = R.string.settings
 	lateinit var pushController: (Controller) -> Unit
 	override var recyclerArray: ArrayList<SettingsCategoryUI>
 		get() = arrayListOf(
-				SettingsCategoryUI(VIEW, R.string.view, R.drawable.view_module),
-				SettingsCategoryUI(READER, R.string.reader, R.drawable.book),
-				SettingsCategoryUI(DOWNLOAD, R.string.download, R.drawable.download),
-				SettingsCategoryUI(UPDATE, R.string.update, R.drawable.update),
-				SettingsCategoryUI(BACKUP, R.string.backup, R.drawable.app_update),
-				SettingsCategoryUI(ADVANCED, R.string.advanced, R.drawable.settings),
+			SettingsCategoryUI(VIEW, R.string.view, R.drawable.view_module),
+			SettingsCategoryUI(READER, R.string.reader, R.drawable.book),
+			SettingsCategoryUI(DOWNLOAD, R.string.download, R.drawable.download),
+			SettingsCategoryUI(UPDATE, R.string.update, R.drawable.update),
+			SettingsCategoryUI(BACKUP, R.string.backup, R.drawable.app_update),
+			SettingsCategoryUI(ADVANCED, R.string.advanced, R.drawable.settings),
 		)
 		set(_) {}
 
@@ -60,14 +61,16 @@ class SettingsController : BasicFastAdapterRecyclerController<SettingsCategoryUI
 
 	override fun setupFastAdapter() {
 		fastAdapter.setOnClickListener { _, _, item, _ ->
-			pushController(when (item.category) {
-				VIEW -> ViewSettings()
-				ADVANCED -> AdvancedSettings()
-				DOWNLOAD -> DownloadSettings()
-				BACKUP -> BackupSettings()
-				READER -> ReaderSettings()
-				UPDATE -> UpdateSettings()
-			})
+			pushController(
+				when (item.category) {
+					VIEW -> ViewSettings()
+					ADVANCED -> AdvancedSettings()
+					DOWNLOAD -> DownloadSettings()
+					BACKUP -> BackupSettings()
+					READER -> ReaderSettings()
+					UPDATE -> UpdateSettings()
+				}
+			)
 			true
 		}
 		updateUI(recyclerArray)

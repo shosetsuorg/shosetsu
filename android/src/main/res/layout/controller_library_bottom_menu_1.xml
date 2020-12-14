@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <app.shosetsu.android.view.widget.TriStateGroup
+        android:id="@+id/triStateGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <app.shosetsu.android.view.widget.TriStateButton
+            android:id="@+id/by_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:button="@drawable/directional_box_drawable"
+            android:text="By title"
+            app:button_checked="@drawable/expand_less"
+            app:button_unchecked="@drawable/expand_more"
+            app:state="CHECKED" />
+
+        <app.shosetsu.android.view.widget.TriStateButton
+            android:id="@+id/by_unread_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:button="@drawable/directional_box_drawable"
+            android:text="By unread chapter count"
+            app:button_checked="@drawable/expand_less"
+            app:button_unchecked="@drawable/expand_more" />
+
+        <app.shosetsu.android.view.widget.TriStateButton
+            android:id="@+id/by_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:button="@drawable/directional_box_drawable"
+            android:text="By novel ID"
+            app:button_checked="@drawable/expand_less"
+            app:button_unchecked="@drawable/expand_more" />
+    </app.shosetsu.android.view.widget.TriStateGroup>
+</LinearLayout>

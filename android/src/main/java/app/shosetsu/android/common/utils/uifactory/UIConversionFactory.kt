@@ -24,7 +24,7 @@ import app.shosetsu.common.dto.Convertible
  * 05 / 12 / 2020
  */
 abstract class UIConversionFactory<DATA, UI>(
-		private val data: DATA
+	private val data: DATA
 ) : Convertible<UI> {
 
 	abstract fun DATA.convertTo(): UI

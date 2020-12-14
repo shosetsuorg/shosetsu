@@ -29,8 +29,8 @@ import app.shosetsu.common.dto.HResult
  * 16 / 09 / 2020
  */
 class RepositoryViewModel(
-		private val loadRepositoriesUseCase: LoadRepositoriesUseCase,
-		private val reportExceptionUseCase: ReportExceptionUseCase
+	private val loadRepositoriesUseCase: LoadRepositoriesUseCase,
+	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : ARepositoryViewModel() {
 	override fun addRepository(url: String) {
 	}

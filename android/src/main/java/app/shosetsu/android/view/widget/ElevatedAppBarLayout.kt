@@ -29,8 +29,8 @@ import com.google.android.material.appbar.AppBarLayout
  * 11 / 09 / 2020
  */
 class ElevatedAppBarLayout @JvmOverloads constructor(
-		context: Context,
-		attrs: AttributeSet? = null
+	context: Context,
+	attrs: AttributeSet? = null
 ) : AppBarLayout(context, attrs) {
 	private var origStateAnimator: StateListAnimator? = null
 
@@ -49,8 +49,12 @@ class ElevatedAppBarLayout @JvmOverloads constructor(
 
 			// Enabled and collapsible, but not collapsed means not elevated
 			addState(
-					intArrayOf(android.R.attr.enabled, R.attr.state_collapsible, -R.attr.state_collapsed),
-					objAnimator
+				intArrayOf(
+					android.R.attr.enabled,
+					R.attr.state_collapsible,
+					-R.attr.state_collapsed
+				),
+				objAnimator
 			)
 
 			// Default enabled state

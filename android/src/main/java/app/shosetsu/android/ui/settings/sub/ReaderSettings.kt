@@ -51,9 +51,9 @@ class ReaderSettings : SettingsSubController() {
 	override val adjustments: List<SettingsItemData>.() -> Unit = {
 		find<CustomBottomSettingData>(5)?.customView { root ->
 			root.context.getSystemService<LayoutInflater>()!!.inflate(
-					R.layout.reader_theme_selection,
-					root,
-					false
+				R.layout.reader_theme_selection,
+				root,
+				false
 			).apply {
 				val recycler = findViewById<RecyclerView>(R.id.color_picker_options)
 				val itemAdapter = ItemAdapter<ColorChoiceUI>()
@@ -67,7 +67,10 @@ class ReaderSettings : SettingsSubController() {
 				recycler.adapter = fastAdapter
 				fastAdapter.setOnClickListener { _, _, item, _ ->
 					launchIO {
-						viewModel.iSettingsRepository.setInt(SettingKey.ReaderTheme, item.identifier.toInt())
+						viewModel.iSettingsRepository.setInt(
+							SettingKey.ReaderTheme,
+							item.identifier.toInt()
+						)
 					}
 					item.isSelected = true
 
@@ -86,7 +89,8 @@ class ReaderSettings : SettingsSubController() {
 				viewModel.getReaderThemes().observe(this@ReaderSettings) { list ->
 					itemAdapter.clear()
 					launchIO {
-						val v = viewModel.iSettingsRepository.getInt(SettingKey.ReaderTheme).transmogrify { it }!!
+						val v = viewModel.iSettingsRepository.getInt(SettingKey.ReaderTheme)
+							.transmogrify { it }!!
 						list.find {
 							it.identifier == v.toLong()
 						}?.isSelected = true
@@ -98,16 +102,16 @@ class ReaderSettings : SettingsSubController() {
 		}
 		find<CustomBottomSettingData>(1)?.customView {
 			it.context.getSystemService<LayoutInflater>()!!.inflate(
-					R.layout.reader_theme_example,
-					null,
-					false
+				R.layout.reader_theme_example,
+				null,
+				false
 			).apply {
 				findViewById<TextView>(R.id.textView).apply textView@{
 					val exampleText =
-							"Because there are so many lines. I had lost sense of time. Plz help" +
-									"me escape this horror called" +
-									"\nThis is some sample text. With lots of testing. Lots of paragraph," +
-									"Lots of lines. Plenty to read"
+						"Because there are so many lines. I had lost sense of time. Plz help" +
+								"me escape this horror called" +
+								"\nThis is some sample text. With lots of testing. Lots of paragraph," +
+								"Lots of lines. Plenty to read"
 
 					val function = { textView: TextView ->
 						val replaceSpacing = StringBuilder("\n")
@@ -122,7 +126,8 @@ class ReaderSettings : SettingsSubController() {
 						//val t = shosetsuSettings.getReaderTextColor(r)
 						//textView.setTextColor(t)
 						//textView.setBackgroundColor(b)
-						textView.text = exampleText.replace("\n".toRegex(), replaceSpacing.toString())
+						textView.text =
+							exampleText.replace("\n".toRegex(), replaceSpacing.toString())
 					}
 					postDelayed(500) {
 						//shosetsuSettings.apply {

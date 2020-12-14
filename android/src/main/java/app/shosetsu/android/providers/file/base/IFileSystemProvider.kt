@@ -44,37 +44,45 @@ interface IFileSystemProvider {
 	fun readInternalFile(internalFileDir: InternalFileDir, path: String): HResult<String>
 
 	/**
-     * Loads a file from the user directories (Pictures, Downloads, Etc)
-     *
-     * @return file content
-     */
-    fun readExternalFile(externalFileDir: ExternalFileDir, path: String): HResult<String>
+	 * Loads a file from the user directories (Pictures, Downloads, Etc)
+	 *
+	 * @return file content
+	 */
+	fun readExternalFile(externalFileDir: ExternalFileDir, path: String): HResult<String>
 
 
-    fun deleteInternalFile(internalFileDir: InternalFileDir, path: String): HResult<*>
+	fun deleteInternalFile(internalFileDir: InternalFileDir, path: String): HResult<*>
 
-    fun deleteExternalFile(externalFileDir: ExternalFileDir, path: String): HResult<*>
-
-
-    /**
-     * Writes a file to the internal file directory
-     */
-    fun writeInternalFile(internalFileDir: InternalFileDir, path: String, content: String): HResult<*>
-
-    /**
-     * Writes a file to the external file directory
-     */
-    fun writeExternalFile(externalFileDir: ExternalFileDir, path: String, content: String): HResult<*>
+	fun deleteExternalFile(externalFileDir: ExternalFileDir, path: String): HResult<*>
 
 
-    /**
-     * Creates an internal directory, will avoid if not present
-     */
-    fun createInternalDirectory(internalFileDir: InternalFileDir, path: String): HResult<*>
+	/**
+	 * Writes a file to the internal file directory
+	 */
+	fun writeInternalFile(
+		internalFileDir: InternalFileDir,
+		path: String,
+		content: String
+	): HResult<*>
 
-    /**
-     * Creates an external directory, will avoid if not present
-     */
-    fun createExternalDirectory(externalFileDir: ExternalFileDir, path: String): HResult<*>
+	/**
+	 * Writes a file to the external file directory
+	 */
+	fun writeExternalFile(
+		externalFileDir: ExternalFileDir,
+		path: String,
+		content: String
+	): HResult<*>
+
+
+	/**
+	 * Creates an internal directory, will avoid if not present
+	 */
+	fun createInternalDirectory(internalFileDir: InternalFileDir, path: String): HResult<*>
+
+	/**
+	 * Creates an external directory, will avoid if not present
+	 */
+	fun createExternalDirectory(externalFileDir: ExternalFileDir, path: String): HResult<*>
 
 }

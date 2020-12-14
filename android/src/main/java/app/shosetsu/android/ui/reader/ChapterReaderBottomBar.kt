@@ -30,8 +30,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
  * 25 / 09 / 2020
  */
 class ChapterReaderBottomBar<T : View> @JvmOverloads constructor(
-		context: Context,
-		attrs: AttributeSet? = null
+	context: Context,
+	attrs: AttributeSet? = null
 ) : BottomSheetBehavior<T>(context, attrs) {
 	private val slideBehavior: SlideBehavior by lazy {
 		SlideBehavior(context, attrs)
@@ -46,52 +46,52 @@ class ChapterReaderBottomBar<T : View> @JvmOverloads constructor(
 
 
 	override fun onStartNestedScroll(
-			coordinatorLayout: CoordinatorLayout,
-			child: T,
-			directTargetChild: View,
-			target: View,
-			axes: Int,
-			type: Int
+		coordinatorLayout: CoordinatorLayout,
+		child: T,
+		directTargetChild: View,
+		target: View,
+		axes: Int,
+		type: Int
 	): Boolean {
 		slideBehavior.onStartNestedScroll(
-				coordinatorLayout,
-				child,
-				directTargetChild,
-				target,
-				axes,
-				type
+			coordinatorLayout,
+			child,
+			directTargetChild,
+			target,
+			axes,
+			type
 		)
 		return super.onStartNestedScroll(
-				coordinatorLayout,
-				child,
-				directTargetChild,
-				target,
-				axes,
-				type
+			coordinatorLayout,
+			child,
+			directTargetChild,
+			target,
+			axes,
+			type
 		)
 	}
 
 	override fun onNestedScroll(
-			coordinatorLayout: CoordinatorLayout,
-			child: T,
-			target: View,
-			dxConsumed: Int,
-			dyConsumed: Int,
-			dxUnconsumed: Int,
-			dyUnconsumed: Int,
-			type: Int,
-			consumed: IntArray
+		coordinatorLayout: CoordinatorLayout,
+		child: T,
+		target: View,
+		dxConsumed: Int,
+		dyConsumed: Int,
+		dxUnconsumed: Int,
+		dyUnconsumed: Int,
+		type: Int,
+		consumed: IntArray
 	) {
 		slideBehavior.onNestedScroll(
-				coordinatorLayout,
-				child,
-				target,
-				dxConsumed,
-				dyConsumed,
-				dxUnconsumed,
-				dyUnconsumed,
-				type,
-				consumed
+			coordinatorLayout,
+			child,
+			target,
+			dxConsumed,
+			dyConsumed,
+			dxUnconsumed,
+			dyUnconsumed,
+			type,
+			consumed
 		)
 	}
 
@@ -105,8 +105,8 @@ class ChapterReaderBottomBar<T : View> @JvmOverloads constructor(
 
 
 	inner class SlideBehavior(
-			context: Context,
-			attrs: AttributeSet?
+		context: Context,
+		attrs: AttributeSet?
 	) : HideBottomViewOnScrollBehavior<T>(context, attrs) {
 		/** If the view is hidden or not */
 		var isHidden = false
@@ -118,15 +118,15 @@ class ChapterReaderBottomBar<T : View> @JvmOverloads constructor(
 		}
 
 		override fun onNestedScroll(
-				coordinatorLayout: CoordinatorLayout,
-				child: T,
-				target: View,
-				dxConsumed: Int,
-				dyConsumed: Int,
-				dxUnconsumed: Int,
-				dyUnconsumed: Int,
-				type: Int,
-				consumed: IntArray
+			coordinatorLayout: CoordinatorLayout,
+			child: T,
+			target: View,
+			dxConsumed: Int,
+			dyConsumed: Int,
+			dxUnconsumed: Int,
+			dyUnconsumed: Int,
+			type: Int,
+			consumed: IntArray
 		) {
 			if (dyConsumed > 0 && target.id != R.id.chapter_reader_bottom_scroll) {
 				slideDown(child)

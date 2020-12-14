@@ -9,8 +9,8 @@ import app.shosetsu.android.backend.workers.perodic.UpdateCycleWorker
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.dto.HResult
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein

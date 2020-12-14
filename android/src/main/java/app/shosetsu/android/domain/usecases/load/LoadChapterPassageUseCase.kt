@@ -2,10 +2,10 @@ package app.shosetsu.android.domain.usecases.load
 
 import android.util.Log
 import app.shosetsu.android.common.ext.logID
-import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.common.consts.ErrorKeys
+import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.errorResult
 
@@ -31,8 +31,8 @@ import app.shosetsu.common.dto.errorResult
  * 10 / 06 / 2020
  */
 class LoadChapterPassageUseCase(
-		private val iChaptersRepository: IChaptersRepository,
-		private val iExtensionsRepository: IExtensionsRepository,
+	private val iChaptersRepository: IChaptersRepository,
+	private val iExtensionsRepository: IExtensionsRepository,
 ) {
 	suspend operator fun invoke(chapter: ReaderChapterUI): HResult<String> {
 		Log.d(logID(), "Getting chapter entity #${chapter.id}}")

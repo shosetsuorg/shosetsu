@@ -50,13 +50,13 @@ class MigrationController(bundle: Bundle) : ViewedController<MigrationViewBindin
 	}
 
 	override fun bindView(inflater: LayoutInflater): MigrationViewBinding =
-			inflate(inflater)
+		inflate(inflater)
 
 	class Transferee(
-			val original: Int,
-			var targetFormatterID: Int = -1,
-			var listings: Array<Novel.Listing> = arrayOf(),
-			var selectedURL: String = "",
+		val original: Int,
+		var targetFormatterID: Int = -1,
+		var listings: Array<Novel.Listing> = arrayOf(),
+		var selectedURL: String = "",
 	)
 
 	private var transferees: Array<Transferee>
@@ -94,18 +94,21 @@ class MigrationController(bundle: Bundle) : ViewedController<MigrationViewBindin
 		}
 	}
 
-	class TransfereeAdapter(private val migrationController: MigrationController) : RecyclerView.Adapter<TransfereeAdapter.TransfereeViewHolder>() {
+	class TransfereeAdapter(private val migrationController: MigrationController) :
+		RecyclerView.Adapter<TransfereeAdapter.TransfereeViewHolder>() {
 		class TransfereeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 			val imageView: ImageView = itemView.findViewById(R.id.imageView)
 			val title: TextView = itemView.findViewById(R.id.title)
 		}
 
 		override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransfereeViewHolder {
-			return TransfereeViewHolder(LayoutInflater.from(parent.context).inflate(
+			return TransfereeViewHolder(
+				LayoutInflater.from(parent.context).inflate(
 					R.layout.recycler_novel_card,
 					parent,
 					false
-			))
+				)
+			)
 		}
 
 		override fun getItemCount(): Int {
@@ -120,7 +123,10 @@ class MigrationController(bundle: Bundle) : ViewedController<MigrationViewBindin
 		}
 	}
 
-	class CatalogueSelectionAdapter(private val migrationController: MigrationController, private val transfereePosition: Int) : RecyclerView.Adapter<CatalogueSelectionAdapter.CatalogueHolder>() {
+	class CatalogueSelectionAdapter(
+		private val migrationController: MigrationController,
+		private val transfereePosition: Int
+	) : RecyclerView.Adapter<CatalogueSelectionAdapter.CatalogueHolder>() {
 		class CatalogueHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 			val imageView: ImageView = itemView.findViewById(R.id.imageView)
 			val title: TextView = itemView.findViewById(R.id.title)
@@ -128,7 +134,10 @@ class MigrationController(bundle: Bundle) : ViewedController<MigrationViewBindin
 		}
 
 		override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CatalogueHolder {
-			return CatalogueHolder(LayoutInflater.from(parent.context).inflate(R.layout.catalogue_item_card, parent, false))
+			return CatalogueHolder(
+				LayoutInflater.from(parent.context)
+					.inflate(R.layout.catalogue_item_card, parent, false)
+			)
 		}
 
 		override fun getItemCount(): Int {

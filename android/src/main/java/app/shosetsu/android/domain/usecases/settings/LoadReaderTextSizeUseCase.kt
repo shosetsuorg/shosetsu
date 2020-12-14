@@ -24,5 +24,5 @@ import app.shosetsu.common.domain.repositories.base.ISettingsRepository
  * 21 / 09 / 2020
  */
 class LoadReaderTextSizeUseCase(
-		private val iSettingsRepository: ISettingsRepository
+	private val iSettingsRepository: ISettingsRepository
 )

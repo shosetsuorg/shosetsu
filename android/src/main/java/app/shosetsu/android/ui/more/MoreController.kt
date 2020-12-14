@@ -55,7 +55,7 @@ class MoreController
 	}
 
 	override fun bindView(inflater: LayoutInflater): ControllerMoreBinding =
-			ControllerMoreBinding.inflate(inflater)
+		ControllerMoreBinding.inflate(inflater)
 
 	override fun acceptPushing(pushController: (Controller) -> Unit) {
 		this.pushController = pushController

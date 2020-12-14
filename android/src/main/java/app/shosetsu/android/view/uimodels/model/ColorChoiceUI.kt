@@ -37,10 +37,10 @@ import com.mikepenz.fastadapter.items.AbstractItem
  * @param backgroundColor Color of the background
  */
 data class ColorChoiceUI(
-		override var identifier: Long,
-		val name: String,
-		val textColor: Int,
-		val backgroundColor: Int,
+	override var identifier: Long,
+	val name: String,
+	val textColor: Int,
+	val backgroundColor: Int,
 ) : AbstractItem<ColorChoiceUI.ViewHolder>() {
 	/**
 	 * If this is in the chapter reader or not

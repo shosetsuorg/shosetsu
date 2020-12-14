@@ -35,9 +35,9 @@ import app.shosetsu.common.enums.ReadingStatus
  * 06 / 05 / 2020
  */
 abstract class IChapterReaderViewModel :
-		SubscribeHandleViewModel<List<ReaderUIItem<*, *>>>,
-		ShosetsuViewModel(),
-		ErrorReportingViewModel {
+	SubscribeHandleViewModel<List<ReaderUIItem<*, *>>>,
+	ShosetsuViewModel(),
+	ErrorReportingViewModel {
 
 	abstract var currentChapterID: Int
 
@@ -75,10 +75,10 @@ abstract class IChapterReaderViewModel :
 	abstract fun toggleBookmark(readerChapterUI: ReaderChapterUI)
 
 	abstract fun updateChapter(
-			readerChapterUI: ReaderChapterUI,
-			readingPosition: Int = readerChapterUI.readingPosition,
-			readingStatus: ReadingStatus = readerChapterUI.readingStatus,
-			bookmarked: Boolean = readerChapterUI.bookmarked,
+		readerChapterUI: ReaderChapterUI,
+		readingPosition: Int = readerChapterUI.readingPosition,
+		readingStatus: ReadingStatus = readerChapterUI.readingStatus,
+		bookmarked: Boolean = readerChapterUI.bookmarked,
 	)
 
 	abstract fun markAsReadingOnView(readerChapterUI: ReaderChapterUI)

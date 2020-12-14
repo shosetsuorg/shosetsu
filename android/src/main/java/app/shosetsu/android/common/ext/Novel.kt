@@ -31,18 +31,18 @@ import app.shosetsu.lib.Novel
  */
 
 fun Novel.Chapter.entity(novelEntity: NovelEntity): ChapterEntity =
-		ChapterEntity(
-				url = this.link,
-				novelID = novelEntity.id!!,
-				formatterID = novelEntity.formatterID,
-				title = this.title,
-				releaseDate = this.release,
-				order = this.order
-		)
+	ChapterEntity(
+		url = this.link,
+		novelID = novelEntity.id!!,
+		formatterID = novelEntity.formatterID,
+		title = this.title,
+		releaseDate = this.release,
+		order = this.order
+	)
 
 fun Novel.Listing.convertTo(formatter: IExtension): NovelEntity = NovelEntity(
-		url = this.link,
-		imageURL = this.imageURL,
-		title = this.title,
-		formatterID = formatter.formatterID
+	url = this.link,
+	imageURL = this.imageURL,
+	title = this.title,
+	formatterID = formatter.formatterID
 )

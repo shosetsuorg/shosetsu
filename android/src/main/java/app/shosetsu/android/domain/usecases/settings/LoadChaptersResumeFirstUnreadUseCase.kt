@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.usecases.settings
 
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of Shosetsu.
@@ -26,8 +26,8 @@ import app.shosetsu.common.domain.repositories.base.ISettingsRepository
  * 25 / 09 / 2020
  */
 class LoadChaptersResumeFirstUnreadUseCase(
-		private val settings: ISettingsRepository
+	private val settings: ISettingsRepository
 ) {
 	suspend operator fun invoke(): HResult<Boolean> =
-			settings.getBoolean(SettingKey.ChaptersResumeFirstUnread)
+		settings.getBoolean(SettingKey.ChaptersResumeFirstUnread)
 }

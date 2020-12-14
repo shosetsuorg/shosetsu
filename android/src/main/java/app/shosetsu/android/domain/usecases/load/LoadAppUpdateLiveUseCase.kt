@@ -27,8 +27,8 @@ import kotlinx.coroutines.flow.Flow
  * 07 / 09 / 2020
  */
 class LoadAppUpdateLiveUseCase(
-		private val iAppUpdatesRepository: IAppUpdatesRepository
+	private val iAppUpdatesRepository: IAppUpdatesRepository
 ) {
 	operator fun invoke(): Flow<HResult<DebugAppUpdate>> =
-			iAppUpdatesRepository.watchAppUpdates()
+		iAppUpdatesRepository.watchAppUpdates()
 }

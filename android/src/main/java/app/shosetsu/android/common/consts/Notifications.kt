@@ -44,21 +44,21 @@ object Notifications {
 	fun createChannels(context: Context) {
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
 		val channels = listOf(
-				NotificationChannel(
-						CHANNEL_UPDATE,
-						"Shosetsu Update",
-						NotificationManager.IMPORTANCE_LOW
-				),
-				NotificationChannel(
-						CHANNEL_DOWNLOAD,
-						"Shosetsu Download",
-						NotificationManager.IMPORTANCE_LOW
-				),
-				NotificationChannel(
-						CHANNEL_APP_UPDATE,
-						"Shosetsu App Update",
-						NotificationManager.IMPORTANCE_DEFAULT
-				)
+			NotificationChannel(
+				CHANNEL_UPDATE,
+				"Shosetsu Update",
+				NotificationManager.IMPORTANCE_LOW
+			),
+			NotificationChannel(
+				CHANNEL_DOWNLOAD,
+				"Shosetsu Download",
+				NotificationManager.IMPORTANCE_LOW
+			),
+			NotificationChannel(
+				CHANNEL_APP_UPDATE,
+				"Shosetsu App Update",
+				NotificationManager.IMPORTANCE_DEFAULT
+			)
 		)
 		context.notificationManager.createNotificationChannels(channels)
 	}

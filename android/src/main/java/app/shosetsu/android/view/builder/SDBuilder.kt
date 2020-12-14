@@ -36,8 +36,8 @@ import com.google.android.material.navigation.NavigationView
  * All added views are
  */
 class SDBuilder(
-		private val navigationView: NavigationView,
-		private val drawerLayout: DrawerLayout,
+	private val navigationView: NavigationView,
+	private val drawerLayout: DrawerLayout,
 ) : SDViewBuilder(navigationView) {
 
 	private val parentView = inflater.inflate(drawer_layout, navigationView, false)

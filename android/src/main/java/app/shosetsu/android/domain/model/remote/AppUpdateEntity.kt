@@ -24,12 +24,12 @@ import com.fasterxml.jackson.annotation.JsonProperty
  * 07 / 09 / 2020
  */
 data class DebugAppUpdate(
-		@JsonProperty("latestVersion")
-		val version: String,
-		@JsonProperty("versionCode")
-		val versionCode: Int = -1,
-		@JsonProperty("url")
-		val url: String,
-		@JsonProperty("releaseNotes")
-		val notes: List<String>,
+	@JsonProperty("latestVersion")
+	val version: String,
+	@JsonProperty("versionCode")
+	val versionCode: Int = -1,
+	@JsonProperty("url")
+	val url: String,
+	@JsonProperty("releaseNotes")
+	val notes: List<String>,
 )

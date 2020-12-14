@@ -15,18 +15,18 @@ import app.shosetsu.android.common.consts.Notifications.CHANNEL_DOWNLOAD
 import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_DOWNLOAD
 import app.shosetsu.android.common.consts.WorkerTags.DOWNLOAD_WORK_ID
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.common.domain.repositories.base.IChaptersRepository
-import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.consts.settings.SettingKey.*
+import app.shosetsu.common.domain.model.local.ChapterEntity
+import app.shosetsu.common.domain.model.local.DownloadEntity
+import app.shosetsu.common.domain.repositories.base.IChaptersRepository
+import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.enums.DownloadStatus
-import app.shosetsu.common.domain.model.local.ChapterEntity
-import app.shosetsu.common.domain.model.local.DownloadEntity
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.lib.IExtension
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.delay
@@ -60,8 +60,8 @@ import app.shosetsu.common.dto.HResult.Error as HError
  * @author github.com/doomsdayrs
  */
 class DownloadWorker(
-		appContext: Context,
-		params: WorkerParameters,
+	appContext: Context,
+	params: WorkerParameters,
 ) : CoroutineWorker(appContext, params), KodeinAware {
 
 	private val notificationManager by lazy {
@@ -75,10 +75,10 @@ class DownloadWorker(
 			@Suppress("DEPRECATION")
 			Notification.Builder(applicationContext)
 		}
-				.setSmallIcon(R.drawable.download)
-				.setContentTitle(applicationContext.getString(R.string.app_name))
-				.setContentText("Downloading Chapters")
-				.setOngoing(true)
+			.setSmallIcon(R.drawable.download)
+			.setContentTitle(applicationContext.getString(R.string.app_name))
+			.setContentText("Downloading Chapters")
+			.setOngoing(true)
 	}
 	override val kodein: Kodein by closestKodein(applicationContext)
 	private val downloadsRepo by instance<IDownloadsRepository>()
@@ -97,59 +97,64 @@ class DownloadWorker(
 
 	/** Retrieves the setting for if the download system is paused or not */
 	private suspend fun isDownloadPaused(): Boolean =
-			settingRepo.getBoolean(IsDownloadPaused).let {
-				if (it is HResult.Success)
-					it.data
-				else IsDownloadPaused.default
-			}
+		settingRepo.getBoolean(IsDownloadPaused).let {
+			if (it is HResult.Success)
+				it.data
+			else IsDownloadPaused.default
+		}
 
 	/** Retrieves the setting for simultaneous download threads allowed */
 	private suspend fun getDownloadThreads(): Int =
-			settingRepo.getInt(DownloadThreadPool).let {
-				if (it is HResult.Success)
-					it.data
-				else DownloadThreadPool.default
-			}
+		settingRepo.getInt(DownloadThreadPool).let {
+			if (it is HResult.Success)
+				it.data
+			else DownloadThreadPool.default
+		}
 
 	/** Retrieves the setting for simultaneous download threads allowed per extension */
 	private suspend fun getDownloadThreadsPerExtension(): Int =
-			settingRepo.getInt(DownloadExtThreads).let {
-				if (it is HResult.Success)
-					it.data
-				else DownloadExtThreads.default
-			}
+		settingRepo.getInt(DownloadExtThreads).let {
+			if (it is HResult.Success)
+				it.data
+			else DownloadExtThreads.default
+		}
 
 	/** Loads the download count that is present currently */
 	private suspend fun getDownloadCount(): Int =
-			downloadsRepo.loadDownloadCount().let { if (it is HResult.Success) it.data else -1 }
+		downloadsRepo.loadDownloadCount().let { if (it is HResult.Success) it.data else -1 }
 
 
 	private suspend fun download(downloadEntity: DownloadEntity): HResult<*> =
-			chapRepo.loadChapter(downloadEntity.chapterID).let { cR: HResult<ChapterEntity> ->
-				when (cR) {
-					is HResult.Success -> {
-						val chapterEntity = cR.data
-						extRepo.loadIExtension(chapterEntity.formatterID).let { fR: HResult<IExtension> ->
+		chapRepo.loadChapter(downloadEntity.chapterID).let { cR: HResult<ChapterEntity> ->
+			when (cR) {
+				is HResult.Success -> {
+					val chapterEntity = cR.data
+					extRepo.loadIExtension(chapterEntity.formatterID)
+						.let { fR: HResult<IExtension> ->
 							when (fR) {
 								is HResult.Success -> {
 									val formatterEntity = fR.data
-									chapRepo.loadChapterPassage(formatterEntity, chapterEntity).let {
-										when (it) {
-											is HResult.Success -> {
-												chapRepo.saveChapterPassageToStorage(chapterEntity, it.data)
-												successResult("Chapter Loaded")
+									chapRepo.loadChapterPassage(formatterEntity, chapterEntity)
+										.let {
+											when (it) {
+												is HResult.Success -> {
+													chapRepo.saveChapterPassageToStorage(
+														chapterEntity,
+														it.data
+													)
+													successResult("Chapter Loaded")
+												}
+												else -> it
 											}
-											else -> it
 										}
-									}
 								}
 								else -> HError(ErrorKeys.ERROR_NOT_FOUND, "Formatter not found")
 							}
 						}
-					}
-					else -> HError(ErrorKeys.ERROR_NOT_FOUND, "Chapter Entity not found")
 				}
+				else -> HError(ErrorKeys.ERROR_NOT_FOUND, "Chapter Entity not found")
 			}
+		}
 
 	@Synchronized
 	private fun activeExt(id: Int): Int {
@@ -176,9 +181,11 @@ class DownloadWorker(
 			while (downloadEntity.status != DownloadStatus.DOWNLOADING) {
 				// Will stop if download is paused
 				if (isDownloadPaused()) {
-					downloadsRepo.update(downloadEntity.copy(
+					downloadsRepo.update(
+						downloadEntity.copy(
 							status = DownloadStatus.PENDING
-					))
+						)
+					)
 					return
 				}
 
@@ -206,17 +213,21 @@ class DownloadWorker(
 			when (val downloadResult = download(downloadEntity)) {
 				is HResult.Success -> downloadsRepo.deleteEntity(downloadEntity)
 				is HError -> {
-					downloadsRepo.update(downloadEntity.copy(
+					downloadsRepo.update(
+						downloadEntity.copy(
 							status = DownloadStatus.ERROR
-					))
+						)
+					)
 					launchUI {
 						toast { downloadResult.message }
 					}
 				}
 				is HResult.Empty -> {
-					downloadsRepo.update(downloadEntity.copy(
+					downloadsRepo.update(
+						downloadEntity.copy(
 							status = DownloadStatus.ERROR
-					))
+						)
+					)
 					launchUI {
 						toast { "Empty Error" }
 					}
@@ -261,32 +272,32 @@ class DownloadWorker(
 		private val iSettingsRepository by instance<ISettingsRepository>()
 
 		private suspend fun downloadOnMetered(): Boolean =
-				iSettingsRepository.getBoolean(DownloadOnMeteredConnection).let {
-					if (it is HResult.Success)
-						it.data
-					else DownloadOnMeteredConnection.default
-				}
+			iSettingsRepository.getBoolean(DownloadOnMeteredConnection).let {
+				if (it is HResult.Success)
+					it.data
+				else DownloadOnMeteredConnection.default
+			}
 
 		private suspend fun downloadOnLowStorage(): Boolean =
-				iSettingsRepository.getBoolean(DownloadOnLowStorage).let {
-					if (it is HResult.Success)
-						it.data
-					else DownloadOnLowStorage.default
-				}
+			iSettingsRepository.getBoolean(DownloadOnLowStorage).let {
+				if (it is HResult.Success)
+					it.data
+				else DownloadOnLowStorage.default
+			}
 
 		private suspend fun downloadOnLowBattery(): Boolean =
-				iSettingsRepository.getBoolean(DownloadOnLowBattery).let {
-					if (it is HResult.Success)
-						it.data
-					else DownloadOnLowBattery.default
-				}
+			iSettingsRepository.getBoolean(DownloadOnLowBattery).let {
+				if (it is HResult.Success)
+					it.data
+				else DownloadOnLowBattery.default
+			}
 
 		private suspend fun downloadOnlyIdle(): Boolean =
-				iSettingsRepository.getBoolean(DownloadOnlyWhenIdle).let {
-					if (it is HResult.Success)
-						it.data
-					else DownloadOnlyWhenIdle.default
-				}
+			iSettingsRepository.getBoolean(DownloadOnlyWhenIdle).let {
+				if (it is HResult.Success)
+					it.data
+				else DownloadOnlyWhenIdle.default
+			}
 
 		/**
 		 * Returns the status of the service.
@@ -295,7 +306,7 @@ class DownloadWorker(
 		 */
 		override fun isRunning(): Boolean = try {
 			workerManager.getWorkInfosForUniqueWork(DOWNLOAD_WORK_ID)
-					.get()[0].state == WorkInfo.State.RUNNING
+				.get()[0].state == WorkInfo.State.RUNNING
 		} catch (e: Exception) {
 			false
 		}
@@ -307,21 +318,21 @@ class DownloadWorker(
 		override fun start() {
 			launchIO {
 				workerManager.enqueueUniqueWork(
-						DOWNLOAD_WORK_ID,
-						ExistingWorkPolicy.REPLACE,
-						OneTimeWorkRequestBuilder<DownloadWorker>()
-								.setConstraints(Constraints.Builder().apply {
-									setRequiredNetworkType(
-											if (downloadOnMetered()) {
-												CONNECTED
-											} else UNMETERED
-									)
-									setRequiresStorageNotLow(!downloadOnLowStorage())
-									setRequiresBatteryNotLow(!downloadOnLowBattery())
-									if (SDK_INT >= VERSION_CODES.M)
-										setRequiresDeviceIdle(downloadOnlyIdle())
-								}.build())
-								.build()
+					DOWNLOAD_WORK_ID,
+					ExistingWorkPolicy.REPLACE,
+					OneTimeWorkRequestBuilder<DownloadWorker>()
+						.setConstraints(Constraints.Builder().apply {
+							setRequiredNetworkType(
+								if (downloadOnMetered()) {
+									CONNECTED
+								} else UNMETERED
+							)
+							setRequiresStorageNotLow(!downloadOnLowStorage())
+							setRequiresBatteryNotLow(!downloadOnLowBattery())
+							if (SDK_INT >= VERSION_CODES.M)
+								setRequiresDeviceIdle(downloadOnlyIdle())
+						}.build())
+						.build()
 				)
 			}
 		}

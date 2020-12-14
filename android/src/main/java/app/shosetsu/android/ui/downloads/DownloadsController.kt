@@ -46,7 +46,7 @@ import com.mikepenz.fastadapter.utils.AdapterPredicate
  */
 //TODO selection mechanic with options to delete,  pause,  and more
 class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<DownloadUI>(),
-		PushCapableController, ExtendedFABController {
+	PushCapableController, ExtendedFABController {
 
 	override val viewTitleRes: Int = R.string.downloads
 	private val viewModel: IDownloadsViewModel by viewModel()
@@ -66,7 +66,7 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 
 	private fun calculateBottomSelectionMenuChanges() {
 		val selectedDownloads =
-				fastAdapter.getSelectExtension().selectedItems.toList()
+			fastAdapter.getSelectExtension().selectedItems.toList()
 
 		binding.bottomMenu.findItem(R.id.pause)?.isVisible = selectedDownloads.any {
 			it.status == PENDING
@@ -108,8 +108,8 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 				if (selectedItems.isNotEmpty()) {
 					if (!item.isSelected) {
 						select(
-								item = item,
-								considerSelectableFlag = true
+							item = item,
+							considerSelectableFlag = true
 						)
 					} else {
 						deselect(position)
@@ -145,14 +145,14 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 		viewModel.liveData.observe(this) { handleRecyclerUpdate(it) }
 		viewModel.isDownloadPaused.observe(this) {
 			fab?.setText(
-					if (it)
-						R.string.resume
-					else R.string.pause
+				if (it)
+					R.string.resume
+				else R.string.pause
 			)
 			fab?.setIconResource(
-					if (it)
-						R.drawable.play_arrow
-					else R.drawable.ic_pause_circle_outline_24dp
+				if (it)
+					R.drawable.play_arrow
+				else R.drawable.ic_pause_circle_outline_24dp
 			)
 		}
 	}
@@ -239,20 +239,20 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 	private fun invertSelection() {
 		fastAdapter.recursive(object : AdapterPredicate<DownloadUI> {
 			override fun apply(
-					lastParentAdapter: IAdapter<DownloadUI>,
-					lastParentPosition: Int,
-					item: DownloadUI,
-					position: Int
+				lastParentAdapter: IAdapter<DownloadUI>,
+				lastParentPosition: Int,
+				item: DownloadUI,
+				position: Int
 			): Boolean {
 				if (item.isSelected) {
 					fastAdapter.getSelectExtension().deselect(item)
 				} else {
 					fastAdapter.getSelectExtension().select(
-							adapter = lastParentAdapter,
-							item = item,
-							position = RecyclerView.NO_POSITION,
-							fireEvent = false,
-							considerSelectableFlag = true
+						adapter = lastParentAdapter,
+						item = item,
+						position = RecyclerView.NO_POSITION,
+						fireEvent = false,
+						considerSelectableFlag = true
 					)
 				}
 				return false
@@ -288,7 +288,8 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 					largest = last
 				}
 			}
-			adapterList.subList(smallest, largest).map { fastAdapter.getPosition(it) }.let { launchUI { select(it) } }
+			adapterList.subList(smallest, largest).map { fastAdapter.getPosition(it) }
+				.let { launchUI { select(it) } }
 		}
 	}
 
@@ -332,21 +333,21 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 		override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean = false
 
 		override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean =
-				when (item.itemId) {
-					R.id.chapter_select_all -> {
-						selectAll()
-						true
-					}
-					R.id.chapter_select_between -> {
-						selectBetween()
-						true
-					}
-					R.id.chapter_inverse -> {
-						invertSelection()
-						true
-					}
-					else -> false
+			when (item.itemId) {
+				R.id.chapter_select_all -> {
+					selectAll()
+					true
 				}
+				R.id.chapter_select_between -> {
+					selectBetween()
+					true
+				}
+				R.id.chapter_inverse -> {
+					invertSelection()
+					true
+				}
+				else -> false
+			}
 
 		override fun onDestroyActionMode(mode: ActionMode) {
 			binding.bottomMenu.hide()

@@ -3,8 +3,8 @@ package app.shosetsu.android.common.utils.uifactory
 import app.shosetsu.android.domain.model.local.ColorChoiceData
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.transform
 import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.transform
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 
@@ -30,22 +30,22 @@ import kotlinx.coroutines.flow.mapLatest
  * 05 / 12 / 2020
  */
 class ColorChoiceConversionFactory(
-		data: ColorChoiceData
+	data: ColorChoiceData
 ) : UIConversionFactory<ColorChoiceData, ColorChoiceUI>(data) {
 	override fun ColorChoiceData.convertTo(): ColorChoiceUI = ColorChoiceUI(
-			identifier,
-			name,
-			textColor,
-			backgroundColor
+		identifier,
+		name,
+		textColor,
+		backgroundColor
 	)
 
 }
 
 fun List<ColorChoiceData>.mapToFactory() =
-		map { ColorChoiceConversionFactory(it) }
+	map { ColorChoiceConversionFactory(it) }
 
 fun HResult<List<ColorChoiceData>>.mapResultWithFactory() =
-		transform { successResult(it.mapToFactory()) }
+	transform { successResult(it.mapToFactory()) }
 
 fun Flow<HResult<List<ColorChoiceData>>>.mapLatestToResultFlowWithFactory() =
-		mapLatest { it.mapResultWithFactory() }
+	mapLatest { it.mapResultWithFactory() }

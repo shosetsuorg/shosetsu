@@ -31,13 +31,13 @@ import app.shosetsu.lib.Novel
  */
 class RemoteNovelDataSource : IRemoteNovelDataSource {
 	override suspend fun loadNovel(
-			formatter: IExtension,
-			novelURL: String,
-			loadChapters: Boolean,
+		formatter: IExtension,
+		novelURL: String,
+		loadChapters: Boolean,
 	): HResult<Novel.Info> {
 		return try {
 			successResult(
-					formatter.parseNovel(novelURL, loadChapters)
+				formatter.parseNovel(novelURL, loadChapters)
 			)
 		} catch (e: Exception) {
 			e.toHError()

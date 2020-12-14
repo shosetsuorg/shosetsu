@@ -37,7 +37,7 @@ import java.io.IOException
  * 23 / 10 / 2020
  */
 class AndroidFileSystemProvider(
-		private val context: Context
+	private val context: Context
 ) : IFileSystemProvider {
 	private val cacheDirPath by lazy { context.cacheDir.absolutePath }
 	private val filesDirPath by lazy { context.filesDir.absolutePath }
@@ -72,7 +72,10 @@ class AndroidFileSystemProvider(
 		val file = File(internalFileDir.path() + path)
 		logV("Deleting $path in ${internalFileDir.path()} to $file")
 
-		if (!file.canWrite() && file.exists()) return errorResult(ERROR_LACK_PERM, "Cannot delete file: $file")
+		if (!file.canWrite() && file.exists()) return errorResult(
+			ERROR_LACK_PERM,
+			"Cannot delete file: $file"
+		)
 		return successResult(file.delete())
 	}
 
@@ -80,7 +83,11 @@ class AndroidFileSystemProvider(
 		TODO("Not yet implemented")
 	}
 
-	override fun writeInternalFile(internalFileDir: InternalFileDir, path: String, content: String): HResult<*> {
+	override fun writeInternalFile(
+		internalFileDir: InternalFileDir,
+		path: String,
+		content: String
+	): HResult<*> {
 		val file = File(internalFileDir.path() + path)
 
 		logV("Writing $path in ${internalFileDir.path()} to $file")
@@ -97,18 +104,28 @@ class AndroidFileSystemProvider(
 		return successResult(file.writeText(content))
 	}
 
-	override fun writeExternalFile(externalFileDir: ExternalFileDir, path: String, content: String): HResult<*> {
+	override fun writeExternalFile(
+		externalFileDir: ExternalFileDir,
+		path: String,
+		content: String
+	): HResult<*> {
 		TODO("Not yet implemented")
 	}
 
-	override fun createInternalDirectory(internalFileDir: InternalFileDir, path: String): HResult<*> {
+	override fun createInternalDirectory(
+		internalFileDir: InternalFileDir,
+		path: String
+	): HResult<*> {
 		val file = File(internalFileDir.path() + path)
 		logV("Creating $path in ${internalFileDir.path()}")
 		// if (!file.canWrite()) return errorResult(ERROR_LACK_PERM, "Cannot write file: $file")
 		return successResult(file.mkdirs())
 	}
 
-	override fun createExternalDirectory(externalFileDir: ExternalFileDir, path: String): HResult<*> {
+	override fun createExternalDirectory(
+		externalFileDir: ExternalFileDir,
+		path: String
+	): HResult<*> {
 		TODO("Not yet implemented")
 	}
 }

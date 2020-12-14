@@ -1,10 +1,10 @@
 package app.shosetsu.android.common.utils.uifactory
 
 import app.shosetsu.android.view.uimodels.model.ChapterUI
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.transform
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.domain.model.local.ChapterEntity
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.transform
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 
@@ -29,27 +29,28 @@ import kotlinx.coroutines.flow.mapLatest
  * shosetsu
  * 05 / 12 / 2020
  */
-class ChapterConversionFactory(data: ChapterEntity) : UIConversionFactory<ChapterEntity, ChapterUI>(data) {
+class ChapterConversionFactory(data: ChapterEntity) :
+	UIConversionFactory<ChapterEntity, ChapterUI>(data) {
 	override fun ChapterEntity.convertTo(): ChapterUI = ChapterUI(
-			id!!,
-			novelID,
-			url,
-			formatterID,
-			title,
-			releaseDate,
-			order,
-			readingPosition,
-			readingStatus,
-			bookmarked,
-			isSaved
+		id!!,
+		novelID,
+		url,
+		formatterID,
+		title,
+		releaseDate,
+		order,
+		readingPosition,
+		readingStatus,
+		bookmarked,
+		isSaved
 	)
 }
 
 fun List<ChapterEntity>.mapToFactory() =
-		map { ChapterConversionFactory(it) }
+	map { ChapterConversionFactory(it) }
 
 fun HResult<List<ChapterEntity>>.mapResultWithFactory() =
-		transform { successResult(it.mapToFactory()) }
+	transform { successResult(it.mapToFactory()) }
 
 fun Flow<HResult<List<ChapterEntity>>>.mapLatestToResultFlowWithFactory() =
-		mapLatest { it.mapResultWithFactory() }
+	mapLatest { it.mapResultWithFactory() }

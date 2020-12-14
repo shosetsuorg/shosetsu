@@ -1,7 +1,6 @@
 package app.shosetsu.android.viewmodel.model.settings
 
 import android.content.Context
-import android.content.res.Resources
 import android.content.res.Resources.NotFoundException
 import android.util.Log
 import android.widget.ArrayAdapter
@@ -14,10 +13,10 @@ import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AReaderSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.enums.MarkingTypes.*
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -42,184 +41,184 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * 31 / 08 / 2020
  */
 class ReaderSettingsViewModel(
-		iSettingsRepository: ISettingsRepository,
-		private val context: Context,
-		private val reportExceptionUseCase: ReportExceptionUseCase,
-		val loadReaderThemes: LoadReaderThemes
+	iSettingsRepository: ISettingsRepository,
+	private val context: Context,
+	private val reportExceptionUseCase: ReportExceptionUseCase,
+	val loadReaderThemes: LoadReaderThemes
 ) : AReaderSettingsViewModel(iSettingsRepository) {
 
 	override fun getReaderThemes(): LiveData<List<ColorChoiceUI>> =
-			loadReaderThemes().asIOLiveData()
+		loadReaderThemes().asIOLiveData()
 
 	override suspend fun settings(): List<SettingsItemData> = listOf(
-			customSettingData(1) {
-				title { "" }
-			},
-			spinnerSettingData(2) {
-				title { R.string.paragraph_spacing }
-				try {
-					arrayAdapter = ArrayAdapter(
-							context,
-							android.R.layout.simple_spinner_dropdown_item,
-							context.resources!!.getStringArray(R.array.sizes_with_none)
-					)
-				} catch (e: NotFoundException) {
-					TODO("Add error handling here")
+		customSettingData(1) {
+			title { "" }
+		},
+		spinnerSettingData(2) {
+			title { R.string.paragraph_spacing }
+			try {
+				arrayAdapter = ArrayAdapter(
+					context,
+					android.R.layout.simple_spinner_dropdown_item,
+					context.resources!!.getStringArray(R.array.sizes_with_none)
+				)
+			} catch (e: NotFoundException) {
+				TODO("Add error handling here")
+			}
+			iSettingsRepository.getInt(ReaderParagraphSpacing).handle {
+				spinnerValue { it }
+			}
+			onSpinnerItemSelected { _, _, position, _ ->
+				launchIO {
+					iSettingsRepository.setInt(ReaderParagraphSpacing, position)
 				}
-				iSettingsRepository.getInt(ReaderParagraphSpacing).handle {
-					spinnerValue { it }
-				}
-				onSpinnerItemSelected { _, _, position, _ ->
-					launchIO {
-						iSettingsRepository.setInt(ReaderParagraphSpacing, position)
+			}
+		},
+		spinnerSettingData(3) {
+			title { R.string.text_size }
+			try {
+				arrayAdapter = ArrayAdapter(
+					context,
+					android.R.layout.simple_spinner_dropdown_item,
+					context.resources!!.getStringArray(R.array.sizes_no_none)
+				)
+			} catch (e: NotFoundException) {
+				TODO("Add error handling here")
+			}
+			iSettingsRepository.getFloat(ReaderTextSize).handle {
+				spinnerValue {
+					when (it) {
+						14f -> 0
+						17f -> 1
+						20f -> 2
+						else -> 0
 					}
 				}
-			},
-			spinnerSettingData(3) {
-				title { R.string.text_size }
-				try {
-					arrayAdapter = ArrayAdapter(
-							context,
-							android.R.layout.simple_spinner_dropdown_item,
-							context.resources!!.getStringArray(R.array.sizes_no_none)
-					)
-				} catch (e: NotFoundException) {
-					TODO("Add error handling here")
+			}
+			onSpinnerItemSelected { adapterView, _, i, _ ->
+				if (i in 0..2) {
+					var size = 14
+					when (i) {
+						0 -> {
+						}
+						1 -> size = 17
+						2 -> size = 20
+					}
+					launchIO {
+						iSettingsRepository.setFloat(ReaderTextSize, size.toFloat())
+					}
+
+					adapterView?.setSelection(i)
 				}
-				iSettingsRepository.getFloat(ReaderTextSize).handle {
+			}
+		},
+		spinnerSettingData(4) {
+			title { R.string.paragraph_indent }
+			try {
+				arrayAdapter = ArrayAdapter(
+					context,
+					android.R.layout.simple_spinner_dropdown_item,
+					context.resources!!.getStringArray(R.array.sizes_with_none)
+				)
+			} catch (e: NotFoundException) {
+				TODO("Add error handling here")
+			}
+			iSettingsRepository.getInt(ReaderIndentSize).handle {
+				spinnerValue { it }
+			}
+			onSpinnerItemSelected { _, _, position, _ ->
+				launchIO {
+					iSettingsRepository.setInt(ReaderIndentSize, position)
+				}
+			}
+		},
+		customBottomSettingData(5) {
+			title { R.string.reader_theme }
+		},
+		switchSettingData(6) {
+			title { R.string.inverted_swipe }
+			iSettingsRepository.getBoolean(ReaderIsInvertedSwipe).handle {
+				isChecked = it
+			}
+			onChecked { _, isChecked ->
+				launchIO {
+					iSettingsRepository.setBoolean(ReaderIsInvertedSwipe, isChecked)
+				}
+			}
+		},
+		switchSettingData(7) {
+			title { R.string.tap_to_scroll }
+			iSettingsRepository.getBoolean(ReaderIsTapToScroll).handle {
+				isChecked = it
+			}
+			onChecked { _, isChecked ->
+				launchIO {
+					iSettingsRepository.setBoolean(ReaderIsTapToScroll, isChecked)
+				}
+			}
+		},
+
+		switchSettingData(6) {
+			title { R.string.mark_read_as_reading }
+			description { R.string.mark_read_as_reading_desc }
+			iSettingsRepository.getBoolean(ReaderMarkReadAsReading).handle {
+				isChecked = it
+			}
+			onChecked { _, isChecked ->
+				launchIO {
+					iSettingsRepository.setBoolean(ReaderMarkReadAsReading, isChecked)
+				}
+			}
+		},
+
+		spinnerSettingData(0) {
+			title { R.string.marking_mode }
+			try {
+				arrayAdapter = ArrayAdapter(
+					context,
+					android.R.layout.simple_spinner_dropdown_item,
+					context.resources!!.getStringArray(R.array.marking_names)
+				)
+			} catch (e: NotFoundException) {
+				TODO("Add error handling here")
+			}
+			iSettingsRepository.getString(ReadingMarkingType).handle {
+				valueOf(it).let {
 					spinnerValue {
 						when (it) {
-							14f -> 0
-							17f -> 1
-							20f -> 2
-							else -> 0
+							ONSCROLL -> 1
+							ONVIEW -> 0
 						}
 					}
-				}
-				onSpinnerItemSelected { adapterView, _, i, _ ->
-					if (i in 0..2) {
-						var size = 14
-						when (i) {
-							0 -> {
-							}
-							1 -> size = 17
-							2 -> size = 20
-						}
-						launchIO {
-							iSettingsRepository.setFloat(ReaderTextSize, size.toFloat())
-						}
 
-						adapterView?.setSelection(i)
+				}
+			}
+			onSpinnerItemSelected { _, _, position, _ ->
+				launchIO {
+					when (position) {
+						0 -> iSettingsRepository.setString(ReadingMarkingType, ONVIEW.name)
+						1 -> iSettingsRepository.setString(ReadingMarkingType, ONSCROLL.name)
+						else -> Log.e("MarkingMode", "UnknownType")
 					}
 				}
-			},
-			spinnerSettingData(4) {
-				title { R.string.paragraph_indent }
-				try {
-					arrayAdapter = ArrayAdapter(
-							context,
-							android.R.layout.simple_spinner_dropdown_item,
-							context.resources!!.getStringArray(R.array.sizes_with_none)
-					)
-				} catch (e: NotFoundException) {
-					TODO("Add error handling here")
-				}
-				iSettingsRepository.getInt(ReaderIndentSize).handle {
-					spinnerValue { it }
-				}
-				onSpinnerItemSelected { _, _, position, _ ->
-					launchIO {
-						iSettingsRepository.setInt(ReaderIndentSize, position)
-					}
-				}
-			},
-			customBottomSettingData(5) {
-				title { R.string.reader_theme }
-			},
-			switchSettingData(6) {
-				title { R.string.inverted_swipe }
-				iSettingsRepository.getBoolean(ReaderIsInvertedSwipe).handle {
-					isChecked = it
-				}
-				onChecked { _, isChecked ->
-					launchIO {
-						iSettingsRepository.setBoolean(ReaderIsInvertedSwipe, isChecked)
-					}
-				}
-			},
-			switchSettingData(7) {
-				title { R.string.tap_to_scroll }
-				iSettingsRepository.getBoolean(ReaderIsTapToScroll).handle {
-					isChecked = it
-				}
-				onChecked { _, isChecked ->
-					launchIO {
-						iSettingsRepository.setBoolean(ReaderIsTapToScroll, isChecked)
-					}
-				}
-			},
+			}
+		},
 
-			switchSettingData(6) {
-				title { R.string.mark_read_as_reading }
-				description { R.string.mark_read_as_reading_desc }
-				iSettingsRepository.getBoolean(ReaderMarkReadAsReading).handle {
-					isChecked = it
+		switchSettingData(8) {
+			title { "Resume first unread" }
+			description {
+				"Instead of resuming the first chapter reading/unread, " +
+						"the app will open the first unread chapter"
+			}
+			iSettingsRepository.getBoolean(ChaptersResumeFirstUnread).handle {
+				isChecked = it
+			}
+			onChecked { _, isChecked ->
+				launchIO {
+					iSettingsRepository.setBoolean(ChaptersResumeFirstUnread, isChecked)
 				}
-				onChecked { _, isChecked ->
-					launchIO {
-						iSettingsRepository.setBoolean(ReaderMarkReadAsReading, isChecked)
-					}
-				}
-			},
-
-			spinnerSettingData(0) {
-				title { R.string.marking_mode }
-				try {
-					arrayAdapter = ArrayAdapter(
-							context,
-							android.R.layout.simple_spinner_dropdown_item,
-							context.resources!!.getStringArray(R.array.marking_names)
-					)
-				} catch (e: NotFoundException) {
-					TODO("Add error handling here")
-				}
-				iSettingsRepository.getString(ReadingMarkingType).handle {
-					valueOf(it).let {
-						spinnerValue {
-							when (it) {
-								ONSCROLL -> 1
-								ONVIEW -> 0
-							}
-						}
-
-					}
-				}
-				onSpinnerItemSelected { _, _, position, _ ->
-					launchIO {
-						when (position) {
-							0 -> iSettingsRepository.setString(ReadingMarkingType, ONVIEW.name)
-							1 -> iSettingsRepository.setString(ReadingMarkingType, ONSCROLL.name)
-							else -> Log.e("MarkingMode", "UnknownType")
-						}
-					}
-				}
-			},
-
-			switchSettingData(8) {
-				title { "Resume first unread" }
-				description {
-					"Instead of resuming the first chapter reading/unread, " +
-							"the app will open the first unread chapter"
-				}
-				iSettingsRepository.getBoolean(ChaptersResumeFirstUnread).handle {
-					isChecked = it
-				}
-				onChecked { _, isChecked ->
-					launchIO {
-						iSettingsRepository.setBoolean(ChaptersResumeFirstUnread, isChecked)
-					}
-				}
-			},
+			}
+		},
 	)
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {

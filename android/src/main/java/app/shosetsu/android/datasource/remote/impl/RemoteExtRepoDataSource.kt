@@ -3,10 +3,10 @@ package app.shosetsu.android.datasource.remote.impl
 import app.shosetsu.android.common.consts.REPO_DIR_STRUCT
 import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.datasource.remote.base.IRemoteExtRepoDataSource
 import app.shosetsu.common.domain.model.local.RepositoryEntity
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.successResult
 import app.shosetsu.lib.json.RepoIndex
 import okhttp3.OkHttpClient
 
@@ -32,19 +32,21 @@ import okhttp3.OkHttpClient
  * 13 / 05 / 2020
  */
 class RemoteExtRepoDataSource(
-        private val client: OkHttpClient,
+	private val client: OkHttpClient,
 ) : IRemoteExtRepoDataSource {
-    override suspend fun downloadRepoData(
-		    repo: RepositoryEntity,
-    ): HResult<RepoIndex> = try {
-        @Suppress("BlockingMethodInNonBlockingContext")
-        (successResult(
-				RepoIndex(client.quickie(
-						"${repo.url}${REPO_DIR_STRUCT}index.json"
-				).body!!.string())
+	override suspend fun downloadRepoData(
+		repo: RepositoryEntity,
+	): HResult<RepoIndex> = try {
+		@Suppress("BlockingMethodInNonBlockingContext")
+		(successResult(
+			RepoIndex(
+				client.quickie(
+					"${repo.url}${REPO_DIR_STRUCT}index.json"
+				).body!!.string()
+			)
 		))
-    } catch (e: Exception) {
-        e.toHError()
-    }
+	} catch (e: Exception) {
+		e.toHError()
+	}
 
 }

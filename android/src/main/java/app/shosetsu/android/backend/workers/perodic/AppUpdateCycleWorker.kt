@@ -40,8 +40,8 @@ import java.util.concurrent.TimeUnit
  * 06 / 09 / 2020
  */
 class AppUpdateCycleWorker(
-		appContext: Context,
-		params: WorkerParameters
+	appContext: Context,
+	params: WorkerParameters
 ) : CoroutineWorker(appContext, params) {
 
 	override suspend fun doWork(): Result {
@@ -57,23 +57,26 @@ class AppUpdateCycleWorker(
 	class Manager(context: Context) : CoroutineWorkerManager(context) {
 		private val iSettingsRepository: ISettingsRepository by instance()
 
-		private suspend fun appUpdateCycle(): Long = iSettingsRepository.getInt(AppUpdateCycle).let {
-			if (it is HResult.Success)
-				it.data.toLong()
-			else AppUpdateCycle.default.toLong()
-		}
+		private suspend fun appUpdateCycle(): Long =
+			iSettingsRepository.getInt(AppUpdateCycle).let {
+				if (it is HResult.Success)
+					it.data.toLong()
+				else AppUpdateCycle.default.toLong()
+			}
 
-		private suspend fun appUpdateOnMetered(): Boolean = iSettingsRepository.getBoolean(AppUpdateOnMeteredConnection).let {
-			if (it is HResult.Success)
-				it.data
-			else AppUpdateOnMeteredConnection.default
-		}
+		private suspend fun appUpdateOnMetered(): Boolean =
+			iSettingsRepository.getBoolean(AppUpdateOnMeteredConnection).let {
+				if (it is HResult.Success)
+					it.data
+				else AppUpdateOnMeteredConnection.default
+			}
 
-		private suspend fun appUpdateOnlyIdle(): Boolean = iSettingsRepository.getBoolean(AppUpdateOnlyWhenIdle).let {
-			if (it is HResult.Success)
-				it.data
-			else AppUpdateOnlyWhenIdle.default
-		}
+		private suspend fun appUpdateOnlyIdle(): Boolean =
+			iSettingsRepository.getBoolean(AppUpdateOnlyWhenIdle).let {
+				if (it is HResult.Success)
+					it.data
+				else AppUpdateOnlyWhenIdle.default
+			}
 
 		/**
 		 * Returns the status of the service.
@@ -82,7 +85,7 @@ class AppUpdateCycleWorker(
 		 */
 		override fun isRunning(): Boolean = try {
 			workerManager.getWorkInfosForUniqueWork(WorkerTags.UPDATE_CYCLE_WORK_ID)
-					.get()[0].state == WorkInfo.State.RUNNING
+				.get()[0].state == WorkInfo.State.RUNNING
 		} catch (e: Exception) {
 			false
 		}
@@ -95,19 +98,20 @@ class AppUpdateCycleWorker(
 			launchIO {
 				logI(LogConstants.SERVICE_NEW)
 				workerManager.enqueueUniquePeriodicWork(
-						APP_UPDATE_CYCLE_WORK_ID,
-						ExistingPeriodicWorkPolicy.REPLACE,
-						PeriodicWorkRequestBuilder<AppUpdateCycleWorker>(
-								appUpdateCycle(),
-								TimeUnit.HOURS
-						).setConstraints(Constraints.Builder().apply {
+					APP_UPDATE_CYCLE_WORK_ID,
+					ExistingPeriodicWorkPolicy.REPLACE,
+					PeriodicWorkRequestBuilder<AppUpdateCycleWorker>(
+						appUpdateCycle(),
+						TimeUnit.HOURS
+					).setConstraints(
+						Constraints.Builder().apply {
 							setRequiredNetworkType(
-									if (appUpdateOnMetered()) CONNECTED else UNMETERED
+								if (appUpdateOnMetered()) CONNECTED else UNMETERED
 							)
 							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
 								setRequiresDeviceIdle(appUpdateOnlyIdle())
 						}.build()
-						).build()
+					).build()
 				)
 				workerManager.getWorkInfosForUniqueWork(APP_UPDATE_CYCLE_WORK_ID).await()[0].let {
 					logI("Worker State ${it.state}")

@@ -33,13 +33,13 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.TriStateButtonBinding
  * 23 / 11 / 2020
  */
 class TriStateButton @JvmOverloads constructor(
-		context: Context,
-		attrs: AttributeSet? = null,
-		defStyleAttr: Int = 0
+	context: Context,
+	attrs: AttributeSet? = null,
+	defStyleAttr: Int = 0
 ) : FrameLayout(
-		context,
-		attrs,
-		defStyleAttr
+	context,
+	attrs,
+	defStyleAttr
 ) {
 	private val checkedRes: Int
 	private val uncheckedRes: Int
@@ -65,24 +65,25 @@ class TriStateButton @JvmOverloads constructor(
 
 	private val binding: TriStateButtonBinding by lazy {
 		TriStateButtonBinding.inflate(
-				from(context), this, true
+			from(context), this, true
 		)
 	}
 
 	init {
-		context.theme.obtainStyledAttributes(attrs, R.styleable.TriStateButton, defStyleAttr, 0).apply {
-			try {
-				checkedRes = getResourceIdOrThrow(R.styleable.TriStateButton_button_unchecked)
-				uncheckedRes = getResourceIdOrThrow(R.styleable.TriStateButton_button_checked)
-				ignoredRes = getResourceId(R.styleable.TriStateButton_button_ignored, 0)
-				state = State.fromKey(getResourceId(R.styleable.TriStateButton_state, 0))
+		context.theme.obtainStyledAttributes(attrs, R.styleable.TriStateButton, defStyleAttr, 0)
+			.apply {
+				try {
+					checkedRes = getResourceIdOrThrow(R.styleable.TriStateButton_button_unchecked)
+					uncheckedRes = getResourceIdOrThrow(R.styleable.TriStateButton_button_checked)
+					ignoredRes = getResourceId(R.styleable.TriStateButton_button_ignored, 0)
+					state = State.fromKey(getResourceId(R.styleable.TriStateButton_state, 0))
 
-				binding.textView.text = getString(R.styleable.TriStateButton_android_text)
+					binding.textView.text = getString(R.styleable.TriStateButton_android_text)
 						?: ""
-			} finally {
-				recycle()
+				} finally {
+					recycle()
+				}
 			}
-		}
 		binding.press.setOnClickListener { view: View ->
 			// Add onclick listener to pass through to onClick
 			onClickListeners.forEach { onClick: (View) -> Unit ->

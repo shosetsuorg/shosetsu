@@ -14,9 +14,9 @@ import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ISearchViewModel
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.transform
 import app.shosetsu.common.dto.loading
 import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.transform
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlin.collections.set
@@ -43,10 +43,10 @@ import kotlin.collections.set
  * 01 / 05 / 2020
  */
 class SearchViewModel(
-		private val searchBookMarkedNovelsUseCase: SearchBookMarkedNovelsUseCase,
-		private val loadSearchRowUIUseCase: LoadSearchRowUIUseCase,
-		private val loadCatalogueQueryDataUseCase: LoadCatalogueQueryDataUseCase,
-		private val reportExceptionUseCase: ReportExceptionUseCase
+	private val searchBookMarkedNovelsUseCase: SearchBookMarkedNovelsUseCase,
+	private val loadSearchRowUIUseCase: LoadSearchRowUIUseCase,
+	private val loadCatalogueQueryDataUseCase: LoadCatalogueQueryDataUseCase,
+	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : ISearchViewModel() {
 	private val hashMap = HashMap<Int, MutableLiveData<HResult<List<ACatalogNovelUI>>>>()
 	private val jobMap = HashMap<Int, Job>()
@@ -92,11 +92,11 @@ class SearchViewModel(
 	private fun loadFormatter(formatterID: Int): Job {
 		jobMap[formatterID] = launchIO {
 			hashMap[formatterID]?.postValue(
-					loadCatalogueQueryDataUseCase(
-							formatterID,
-							query,
-							mapOf()
-					)
+				loadCatalogueQueryDataUseCase(
+					formatterID,
+					query,
+					mapOf()
+				)
 			)
 		}
 		return jobMap[formatterID]!!

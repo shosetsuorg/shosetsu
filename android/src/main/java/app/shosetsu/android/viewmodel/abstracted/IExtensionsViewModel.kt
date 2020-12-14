@@ -31,10 +31,10 @@ import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
  * @author github.com/doomsdayrs
  */
 abstract class IExtensionsViewModel :
-		ShosetsuViewModel(),
-		SubscribeHandleViewModel<List<ExtensionUI>>,
-		IsOnlineCheckViewModel,
-		ErrorReportingViewModel {
+	ShosetsuViewModel(),
+	SubscribeHandleViewModel<List<ExtensionUI>>,
+	IsOnlineCheckViewModel,
+	ErrorReportingViewModel {
 
 	/** Refreshes the repositories and data values */
 	abstract fun refreshRepository()

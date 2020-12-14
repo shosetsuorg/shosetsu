@@ -18,13 +18,13 @@ import com.github.doomsdayrs.apps.shosetsu.R
  */
 
 data class ReaderChapterUI(
-		val id: Int,
-		val link: String,
-		val title: String,
-		var readingPosition: Int,
-		var readingStatus: ReadingStatus,
-		var bookmarked: Boolean,
-		private val chapterType: ChapterType
+	val id: Int,
+	val link: String,
+	val title: String,
+	var readingPosition: Int,
+	var readingStatus: ReadingStatus,
+	var bookmarked: Boolean,
+	private val chapterType: ChapterType
 ) : Convertible<ReaderChapterEntity>, ReaderUIItem<ReaderChapterUI, TypedReaderViewHolder>() {
 	override var identifier: Long
 		get() = id.toLong()
@@ -82,14 +82,14 @@ data class ReaderChapterUI(
 		chapterReader?.let { reader ->
 			reader.viewModel.getChapterPassage(this).observe(reader) { result ->
 				result.handle(
-						{ logD("Showing loading"); holder.showProgress() },
-						{ logD("Empty result") },
-						{
-							logD("Showing error")
-							//	holder.setError(it.message, "Retry") {
-							//		TODO("Figure out how to restart the liveData")
-							//		}
-						}) {
+					{ logD("Showing loading"); holder.showProgress() },
+					{ logD("Empty result") },
+					{
+						logD("Showing error")
+						//	holder.setError(it.message, "Retry") {
+						//		TODO("Figure out how to restart the liveData")
+						//		}
+					}) {
 					logD("Successfully loaded :D")
 					holder.hideProgress()
 					holder.setData(it)
@@ -102,12 +102,12 @@ data class ReaderChapterUI(
 	}
 
 	override fun convertTo(): ReaderChapterEntity = ReaderChapterEntity(
-			id,
-			link,
-			title,
-			readingPosition,
-			readingStatus,
-			bookmarked
+		id,
+		link,
+		title,
+		readingPosition,
+		readingStatus,
+		bookmarked
 	)
 
 	override fun equals(other: Any?): Boolean {

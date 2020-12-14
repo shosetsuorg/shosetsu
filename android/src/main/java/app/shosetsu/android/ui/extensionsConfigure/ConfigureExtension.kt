@@ -37,7 +37,8 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ConfigureExtensionViewBin
  *
  * Opens up detailed view of an extension, allows modifications
  */
-class ConfigureExtension(bundle: Bundle) : FastAdapterRecyclerController<ConfigureExtensionViewBinding, SettingsItemData>(bundle) {
+class ConfigureExtension(bundle: Bundle) :
+	FastAdapterRecyclerController<ConfigureExtensionViewBinding, SettingsItemData>(bundle) {
 	val viewModel: IExtensionConfigureViewModel by viewModel()
 
 	override fun onViewCreated(view: View) {
@@ -84,5 +85,5 @@ class ConfigureExtension(bundle: Bundle) : FastAdapterRecyclerController<Configu
 
 
 	override fun bindView(inflater: LayoutInflater): ConfigureExtensionViewBinding =
-			ConfigureExtensionViewBinding.inflate(inflater).also { recyclerView = it.settings }
+		ConfigureExtensionViewBinding.inflate(inflater).also { recyclerView = it.settings }
 }

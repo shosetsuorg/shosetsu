@@ -1,10 +1,10 @@
 package app.shosetsu.android.common.utils.uifactory
 
-import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.view.uimodels.model.UpdateUI
+import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.transform
 import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.transform
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 
@@ -29,22 +29,23 @@ import kotlinx.coroutines.flow.mapLatest
  * shosetsu
  * 05 / 12 / 2020
  */
-class UpdateConversionFactory(data: UpdateCompleteEntity) : UIConversionFactory<UpdateCompleteEntity, UpdateUI>(data) {
+class UpdateConversionFactory(data: UpdateCompleteEntity) :
+	UIConversionFactory<UpdateCompleteEntity, UpdateUI>(data) {
 	override fun UpdateCompleteEntity.convertTo(): UpdateUI = UpdateUI(
-			chapterID,
-			novelID,
-			time,
-			chapterName,
-			novelName,
-			novelImageURL
+		chapterID,
+		novelID,
+		time,
+		chapterName,
+		novelName,
+		novelImageURL
 	)
 }
 
 fun List<UpdateCompleteEntity>.mapToFactory() =
-		map { UpdateConversionFactory(it) }
+	map { UpdateConversionFactory(it) }
 
 fun HResult<List<UpdateCompleteEntity>>.mapResultWithFactory() =
-		transform { successResult(it.mapToFactory()) }
+	transform { successResult(it.mapToFactory()) }
 
 fun Flow<HResult<List<UpdateCompleteEntity>>>.mapLatestToResultFlowWithFactory() =
-		mapLatest { it.mapResultWithFactory() }
+	mapLatest { it.mapResultWithFactory() }

@@ -35,15 +35,20 @@ import kotlin.math.max
  * 03 / 10 / 2020
  */
 class StickyHeaderDecor(
-		private var context: Context,
-		private var sectionCallback: SectionCallback,
-		private var headerOffset: Int = context.resources.getDimensionPixelSize(R.dimen.header_height),
-		private var sticky: Boolean = true,
+	private var context: Context,
+	private var sectionCallback: SectionCallback,
+	private var headerOffset: Int = context.resources.getDimensionPixelSize(R.dimen.header_height),
+	private var sticky: Boolean = true,
 ) : ItemDecoration() {
 	private var headerView: View? = null
 	private var tvTitle: TextView? = null
 
-	override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+	override fun getItemOffsets(
+		outRect: Rect,
+		view: View,
+		parent: RecyclerView,
+		state: RecyclerView.State
+	) {
 		super.getItemOffsets(outRect, view, parent, state)
 		val pos = parent.getChildAdapterPosition(view)
 		if (sectionCallback.isSection(pos)) {
@@ -64,7 +69,11 @@ class StickyHeaderDecor(
 			val childPos = parent.getChildAdapterPosition(child)
 			val title = sectionCallback.getSectionHeaderName(childPos)
 			tvTitle!!.text = title
-			if (!prevTitle.equals(title, ignoreCase = true) || sectionCallback.isSection(childPos)) {
+			if (!prevTitle.equals(
+					title,
+					ignoreCase = true
+				) || sectionCallback.isSection(childPos)
+			) {
 				drawHeader(c, child, headerView!!)
 				prevTitle = title
 			}
@@ -86,16 +95,26 @@ class StickyHeaderDecor(
 	}
 
 	private fun fixLayoutSize(view: View, viewGroup: ViewGroup) {
-		val widthSpec: Int = View.MeasureSpec.makeMeasureSpec(viewGroup.width, View.MeasureSpec.EXACTLY)
-		val heightSpec: Int = View.MeasureSpec.makeMeasureSpec(viewGroup.height, View.MeasureSpec.UNSPECIFIED)
-		val childWidth = ViewGroup.getChildMeasureSpec(widthSpec, viewGroup.paddingLeft + viewGroup.paddingRight, view.layoutParams.width)
-		val childHeight = ViewGroup.getChildMeasureSpec(heightSpec, viewGroup.paddingTop + viewGroup.paddingBottom, view.layoutParams.height)
+		val widthSpec: Int =
+			View.MeasureSpec.makeMeasureSpec(viewGroup.width, View.MeasureSpec.EXACTLY)
+		val heightSpec: Int =
+			View.MeasureSpec.makeMeasureSpec(viewGroup.height, View.MeasureSpec.UNSPECIFIED)
+		val childWidth = ViewGroup.getChildMeasureSpec(
+			widthSpec,
+			viewGroup.paddingLeft + viewGroup.paddingRight,
+			view.layoutParams.width
+		)
+		val childHeight = ViewGroup.getChildMeasureSpec(
+			heightSpec,
+			viewGroup.paddingTop + viewGroup.paddingBottom,
+			view.layoutParams.height
+		)
 		view.measure(childWidth, childHeight)
 		view.layout(0, 0, view.measuredWidth, view.measuredHeight)
 	}
 
 	private fun inflateHeader(recyclerView: RecyclerView): View =
-			LayoutInflater.from(context).inflate(R.layout.row_section_header, recyclerView, false)
+		LayoutInflater.from(context).inflate(R.layout.row_section_header, recyclerView, false)
 
 	interface SectionCallback {
 		/**

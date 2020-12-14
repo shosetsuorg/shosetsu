@@ -52,8 +52,10 @@ class DownloadSettings : SettingsSubController() {
 	}
 
 	private fun performFileSearch() {
-		context?.toast("Please make sure this is on the main storage, " +
-				"SD card storage is not functional yet", duration = Toast.LENGTH_LONG)
+		context?.toast(
+			"Please make sure this is on the main storage, " +
+					"SD card storage is not functional yet", duration = Toast.LENGTH_LONG
+		)
 		val i = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
 		i.addCategory(Intent.CATEGORY_DEFAULT)
 		activity?.startActivityForResult(Intent.createChooser(i, "Choose directory"), 42)

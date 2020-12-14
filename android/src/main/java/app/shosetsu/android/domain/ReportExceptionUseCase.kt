@@ -3,8 +3,8 @@ package app.shosetsu.android.domain
 import app.shosetsu.android.common.HResultException
 import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
 import app.shosetsu.common.consts.ErrorKeys
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.dto.HResult
 import org.acra.ACRA
 
 /*
@@ -33,8 +33,8 @@ import org.acra.ACRA
  *
  */
 class ReportExceptionUseCase(
-		private val iSettingsRepository: ISettingsRepository,
-		private val toastUseCase: ToastErrorUseCase
+	private val iSettingsRepository: ISettingsRepository,
+	private val toastUseCase: ToastErrorUseCase
 ) {
 
 	private fun report(result: HResult.Error, isSilent: Boolean = true) {

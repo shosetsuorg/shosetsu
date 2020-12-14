@@ -6,9 +6,9 @@ import androidx.core.content.ContextCompat
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
+import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.enums.ReadingStatus
-import app.shosetsu.common.domain.model.local.ChapterEntity
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerNovelChapterBinding
 
@@ -36,32 +36,32 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerNovelChapterBindi
  * @author github.com/doomsdayrs
  */
 data class ChapterUI(
-		val id: Int,
-		val novelID: Int,
-		val link: String,
-		val formatterID: Int,
-		var title: String,
-		var releaseDate: String,
-		var order: Double,
-		var readingPosition: Int,
-		var readingStatus: ReadingStatus,
-		var bookmarked: Boolean,
-		var isSaved: Boolean,
+	val id: Int,
+	val novelID: Int,
+	val link: String,
+	val formatterID: Int,
+	var title: String,
+	var releaseDate: String,
+	var order: Double,
+	var readingPosition: Int,
+	var readingStatus: ReadingStatus,
+	var bookmarked: Boolean,
+	var isSaved: Boolean,
 ) : BaseRecyclerItem<ChapterUI.ViewHolder>(), Convertible<ChapterEntity> {
 	override fun convertTo(): ChapterEntity =
-			ChapterEntity(
-					id,
-					link,
-					novelID,
-					formatterID,
-					title,
-					releaseDate,
-					order,
-					readingPosition,
-					readingStatus,
-					bookmarked,
-					isSaved
-			)
+		ChapterEntity(
+			id,
+			link,
+			novelID,
+			formatterID,
+			title,
+			releaseDate,
+			order,
+			readingPosition,
+			readingStatus,
+			bookmarked,
+			isSaved
+		)
 
 	override val layoutRes: Int = R.layout.recycler_novel_chapter
 
@@ -73,7 +73,8 @@ data class ChapterUI(
 
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 
-	class ViewHolder(itemView: View) : BindViewHolder<ChapterUI, RecyclerNovelChapterBinding>(itemView) {
+	class ViewHolder(itemView: View) :
+		BindViewHolder<ChapterUI, RecyclerNovelChapterBinding>(itemView) {
 		override val binding = RecyclerNovelChapterBinding.bind(view)
 
 
@@ -97,10 +98,12 @@ data class ChapterUI(
 			title.text = item.title
 			oldColors = title.textColors
 			if (item.bookmarked) {
-				title.setTextColor(ContextCompat.getColor(
+				title.setTextColor(
+					ContextCompat.getColor(
 						itemView.context,
 						R.color.bookmarked
-				))
+					)
+				)
 			}
 
 			downloadTag.visibility = if (item.isSaved) View.VISIBLE else View.INVISIBLE

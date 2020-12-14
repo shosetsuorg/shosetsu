@@ -65,7 +65,8 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 	fun loadIDImageTitle(): Flow<List<IDTitleImage>>
 
 	@Throws(SQLiteException::class)
-	@Query("""SELECT 
+	@Query(
+		"""SELECT 
 						novels.id, 
 						novels.title, 
 						novels.imageURL, 
@@ -75,7 +76,8 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 									count(*) 
 							FROM chapters WHERE novelID = novels.id AND readingStatus != 2 
 						) as unread 
-					FROM novels WHERE novels.bookmarked = 1""")
+					FROM novels WHERE novels.bookmarked = 1"""
+	)
 	fun loadBookmarkedNovelsCount(): Flow<List<BookmarkedNovelEntity>>
 
 	@Throws(SQLiteException::class)
@@ -133,7 +135,7 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 	@Transaction
 	@Throws(SQLiteException::class)
 	suspend fun insertAndReturn(DBNovelEntity: DBNovelEntity): DBNovelEntity =
-			loadNovel(insertIgnore(DBNovelEntity))
+		loadNovel(insertIgnore(DBNovelEntity))
 
 	@Throws(SQLiteException::class)
 	@Query("UPDATE novels SET bookmarked = :bookmarked WHERE id = :novelID")
@@ -143,9 +145,11 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 	@Throws(SQLiteException::class)
 	suspend fun updateBookmarked(list: List<BookmarkedNovelEntity>) {
 		list.forEach { bookMarked ->
-			blockingUpdate(loadNovel(bookMarked.id).copy(
+			blockingUpdate(
+				loadNovel(bookMarked.id).copy(
 					bookmarked = bookMarked.bookmarked
-			))
+				)
+			)
 		}
 	}
 

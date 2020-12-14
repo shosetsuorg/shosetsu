@@ -63,16 +63,16 @@ interface IExtensionsRepository {
 
 	/** Queries the extension for a search result*/
 	suspend fun loadCatalogueSearch(
-			formatter: IExtension,
-			query: String,
-			data: Map<Int, Any>
+		formatter: IExtension,
+		query: String,
+		data: Map<Int, Any>
 	): HResult<List<Novel.Listing>>
 
 	/** Loads catalogue data of an extension */
 	suspend fun loadCatalogueData(
-			formatter: IExtension,
-			listing: Int,
-			data: Map<Int, Any>,
+		formatter: IExtension,
+		listing: Int,
+		data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>>
 
 	suspend fun removeExtension(it: ExtensionEntity): HResult<*>

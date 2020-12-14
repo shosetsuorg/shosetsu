@@ -103,7 +103,7 @@ abstract class INovelViewModel
 	/**
 	 * Sort by [sortType]
 	 */
-	abstract fun setSortType(sortType: ChapterSortType)
+	abstract fun setChapterSortType(sortType: ChapterSortType)
 
 	/**
 	 * Display only chapters matching [status]

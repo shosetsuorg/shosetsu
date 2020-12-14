@@ -5,8 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.dto.Convertible
 import app.shosetsu.lib.Novel
 
 /*
@@ -30,84 +30,85 @@ import app.shosetsu.lib.Novel
  * shosetsu
  * 05 / 12 / 2020
  */
-@Entity(tableName = "novels",
-		foreignKeys = [
-			ForeignKey(
-					entity = DBExtensionEntity::class,
-					parentColumns = ["id"],
-					childColumns = ["formatterID"],
-					onDelete = ForeignKey.SET_NULL,
-					onUpdate = ForeignKey.CASCADE
-			)
-		],
-		indices = [Index("formatterID")]
+@Entity(
+	tableName = "novels",
+	foreignKeys = [
+		ForeignKey(
+			entity = DBExtensionEntity::class,
+			parentColumns = ["id"],
+			childColumns = ["formatterID"],
+			onDelete = ForeignKey.SET_NULL,
+			onUpdate = ForeignKey.CASCADE
+		)
+	],
+	indices = [Index("formatterID")]
 )
 data class DBNovelEntity(
-		@PrimaryKey(autoGenerate = true)
-		/** ID of this novel */
-		var id: Int? = null,
+	@PrimaryKey(autoGenerate = true)
+	/** ID of this novel */
+	var id: Int? = null,
 
-		@NonNull
-		/** URL of the novel */
-		var url: String,
+	@NonNull
+	/** URL of the novel */
+	var url: String,
 
-		/** Source this novel is from */
-		val formatterID: Int,
+	/** Source this novel is from */
+	val formatterID: Int,
 
-		/** If this novel is in the user's library */
-		var bookmarked: Boolean = false,
+	/** If this novel is in the user's library */
+	var bookmarked: Boolean = false,
 
-		/** Says if the data is loaded or now, if it is not it needs to be loaded */
-		var loaded: Boolean = false,
+	/** Says if the data is loaded or now, if it is not it needs to be loaded */
+	var loaded: Boolean = false,
 
-		/** What kind of reader is this novel using */
-		var readerType: Int = -1,
+	/** What kind of reader is this novel using */
+	var readerType: Int = -1,
 
-		@NonNull
-		/** The title of the novel */
-		var title: String,
+	@NonNull
+	/** The title of the novel */
+	var title: String,
 
-		@NonNull
-		/** Image URL of the novel */
-		var imageURL: String = "",
+	@NonNull
+	/** Image URL of the novel */
+	var imageURL: String = "",
 
-		/** Description */
-		var description: String = "",
+	/** Description */
+	var description: String = "",
 
-		/** Language of the novel */
-		var language: String = "",
+	/** Language of the novel */
+	var language: String = "",
 
-		/** Genres this novel matches too */
-		var genres: List<String> = listOf(),
+	/** Genres this novel matches too */
+	var genres: List<String> = listOf(),
 
-		/** Authors of this novel */
-		var authors: List<String> = listOf(),
+	/** Authors of this novel */
+	var authors: List<String> = listOf(),
 
-		/** Artists who helped with the novel illustration */
-		var artists: List<String> = listOf(),
+	/** Artists who helped with the novel illustration */
+	var artists: List<String> = listOf(),
 
-		/** Tags this novel matches, in case genres were not enough*/
-		var tags: List<String> = listOf(),
+	/** Tags this novel matches, in case genres were not enough*/
+	var tags: List<String> = listOf(),
 
-		@NonNull
-		/** The publishing status of this novel */
-		var status: Novel.Status = Novel.Status.UNKNOWN,
+	@NonNull
+	/** The publishing status of this novel */
+	var status: Novel.Status = Novel.Status.UNKNOWN,
 ) : Convertible<NovelEntity> {
 	override fun convertTo(): NovelEntity = NovelEntity(
-			id,
-			url,
-			formatterID,
-			bookmarked,
-			loaded,
-			readerType,
-			title,
-			imageURL,
-			description,
-			language,
-			genres,
-			authors,
-			artists,
-			tags,
-			status
+		id,
+		url,
+		formatterID,
+		bookmarked,
+		loaded,
+		readerType,
+		title,
+		imageURL,
+		description,
+		language,
+		genres,
+		authors,
+		artists,
+		tags,
+		status
 	)
 }

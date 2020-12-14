@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases.load
 
-import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
+import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.loading
 import app.shosetsu.common.dto.mapLatestResult
@@ -33,15 +33,23 @@ import kotlinx.coroutines.flow.flow
  * 07 / 06 / 2020
  */
 class LoadReaderChaptersUseCase(
-		private val iChaptersRepository: IChaptersRepository,
+	private val iChaptersRepository: IChaptersRepository,
 ) {
 	operator fun invoke(novelID: Int): Flow<HResult<List<ReaderChapterUI>>> =
-			flow {
-				emit(loading())
-				emitAll(iChaptersRepository.loadReaderChapters(novelID).mapLatestResult {
-					successResult(it.map { (id, url, title, readingPosition, readingStatus, bookmarked) ->
-						ReaderChapterUI(id, url, title, readingPosition, readingStatus, bookmarked, Novel.ChapterType.STRING)
-					})
+		flow {
+			emit(loading())
+			emitAll(iChaptersRepository.loadReaderChapters(novelID).mapLatestResult {
+				successResult(it.map { (id, url, title, readingPosition, readingStatus, bookmarked) ->
+					ReaderChapterUI(
+						id,
+						url,
+						title,
+						readingPosition,
+						readingStatus,
+						bookmarked,
+						Novel.ChapterType.STRING
+					)
 				})
-			}
+			})
+		}
 }

@@ -25,10 +25,10 @@ import app.shosetsu.common.dto.Convertible
  * 08 / 05 / 2020
  */
 data class IDTitleImageBookUI(
-		val id: Int,
-		val title: String,
-		val imageURL: String,
-		var bookmarked: Boolean,
+	val id: Int,
+	val title: String,
+	val imageURL: String,
+	var bookmarked: Boolean,
 ) : Convertible<IDTitleImageBook> {
 	override fun convertTo(): IDTitleImageBook = IDTitleImageBook(id, title, imageURL, bookmarked)
 }

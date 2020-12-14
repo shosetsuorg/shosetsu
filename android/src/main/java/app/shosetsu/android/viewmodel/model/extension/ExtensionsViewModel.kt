@@ -40,13 +40,13 @@ import kotlinx.coroutines.launch
  * @author github.com/doomsdayrs
  */
 class ExtensionsViewModel(
-		private val getExtensionsUIUseCase: LoadExtensionsUIUseCase,
-		private val initializeExtensionsUseCase: InitializeExtensionsUseCase,
-		private val installExtensionUIUseCase: InstallExtensionUIUseCase,
-		private val uninstallExtensionUIUseCase: UninstallExtensionUIUseCase,
-		private val stringToastUseCase: StringToastUseCase,
-		private var isOnlineUseCase: IsOnlineUseCase,
-		private val reportExceptionUseCase: ReportExceptionUseCase
+	private val getExtensionsUIUseCase: LoadExtensionsUIUseCase,
+	private val initializeExtensionsUseCase: InitializeExtensionsUseCase,
+	private val installExtensionUIUseCase: InstallExtensionUIUseCase,
+	private val uninstallExtensionUIUseCase: UninstallExtensionUIUseCase,
+	private val stringToastUseCase: StringToastUseCase,
+	private var isOnlineUseCase: IsOnlineUseCase,
+	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : IExtensionsViewModel() {
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
@@ -81,7 +81,7 @@ class ExtensionsViewModel(
 	}
 
 	override fun uninstallExtension(extensionUI: ExtensionUI): Unit =
-			uninstallExtensionUIUseCase(extensionUI)
+		uninstallExtensionUIUseCase(extensionUI)
 
 	override val liveData: LiveData<HResult<List<ExtensionUI>>> by lazy {
 		getExtensionsUIUseCase().asIOLiveData()

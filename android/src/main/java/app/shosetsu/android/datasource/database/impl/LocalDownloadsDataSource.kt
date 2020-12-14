@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.flow
  * 12 / 05 / 2020
  */
 class LocalDownloadsDataSource(
-		private val downloadsDao: DownloadsDao,
+	private val downloadsDao: DownloadsDao,
 ) : ILocalDownloadsDataSource {
 	override fun loadLiveDownloads(): Flow<HResult<List<DownloadEntity>>> = flow {
 		try {
@@ -51,8 +51,9 @@ class LocalDownloadsDataSource(
 	}
 
 	override suspend fun loadFirstDownload(): HResult<DownloadEntity> = try {
-		downloadsDao.loadFirstDownload()?.convertTo()?.let { app.shosetsu.common.dto.successResult(it) }
-				?: app.shosetsu.common.dto.emptyResult()
+		downloadsDao.loadFirstDownload()?.convertTo()
+			?.let { app.shosetsu.common.dto.successResult(it) }
+			?: app.shosetsu.common.dto.emptyResult()
 	} catch (e: Exception) {
 		e.toHError()
 	}

@@ -41,7 +41,18 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	}
 
 	// Library
-	bind<ILibraryViewModel>() with provider { LibraryViewModel(i(), i(), i(), i(), i(), i(), i(), i()) }
+	bind<ILibraryViewModel>() with provider {
+		LibraryViewModel(
+			i(),
+			i(),
+			i(),
+			i(),
+			i(),
+			i(),
+			i(),
+			i()
+		)
+	}
 
 	// Other
 	bind<IDownloadsViewModel>() with provider {
@@ -53,17 +64,71 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	bind<AAboutViewModel>() with provider { AboutViewModel(i(), i(), i()) }
 
 	// Catalog(s)
-	bind<ICatalogViewModel>() with provider { CatalogViewModel(i(), i(), i(), i(), i(), i(), i(), i()) }
+	bind<ICatalogViewModel>() with provider {
+		CatalogViewModel(
+			i(),
+			i(),
+			i(),
+			i(),
+			i(),
+			i(),
+			i(),
+			i()
+		)
+	}
 
 	// Extensions
-	bind<IExtensionsViewModel>() with provider { ExtensionsViewModel(i(), i(), i(), i(), i(), i(), i()) }
-	bind<IExtensionConfigureViewModel>() with provider { ExtensionConfigureViewModel(i(), i(), i(), i(), i()) }
+	bind<IExtensionsViewModel>() with provider {
+		ExtensionsViewModel(
+			i(),
+			i(),
+			i(),
+			i(),
+			i(),
+			i(),
+			i()
+		)
+	}
+	bind<IExtensionConfigureViewModel>() with provider {
+		ExtensionConfigureViewModel(
+			i(),
+			i(),
+			i(),
+			i(),
+			i()
+		)
+	}
 
 	// Novel View
-	bind<INovelViewModel>() with provider { NovelViewModel(i(), i(), i(), i(), i(), i(), i(), i(), i(), i(), i(), i(), i()) }
+	bind<INovelViewModel>() with provider {
+		NovelViewModel(
+			i(),
+			i(),
+			i(),
+			i(),
+			i(),
+			i(),
+			i(),
+			i(),
+			i(),
+			i(),
+			i(),
+			i(),
+			i()
+		)
+	}
 
 	// Chapter
-	bind<IChapterReaderViewModel>() with provider { ChapterReaderViewModel(i(), i(), i(), i(), i(), i()) }
+	bind<IChapterReaderViewModel>() with provider {
+		ChapterReaderViewModel(
+			i(),
+			i(),
+			i(),
+			i(),
+			i(),
+			i()
+		)
+	}
 	bind<ARepositoryViewModel>() with provider { RepositoryViewModel(i(), i()) }
 
 

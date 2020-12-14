@@ -32,9 +32,9 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerSearchRowBinding
  * @param name Name displayed of this data
  */
 data class SearchRowUI(
-		val formatterID: Int,
-		val name: String,
-		val imageURL: String
+	val formatterID: Int,
+	val name: String,
+	val imageURL: String
 ) : BaseRecyclerItem<SearchRowUI.ViewHolder>() {
 	override val layoutRes: Int = R.layout.recycler_search_row
 	override val type: Int = R.layout.recycler_search_row
@@ -42,12 +42,14 @@ data class SearchRowUI(
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 
 	/***/
-	class ViewHolder(itemView: View) : BindViewHolder<SearchRowUI, RecyclerSearchRowBinding>(itemView) {
+	class ViewHolder(itemView: View) :
+		BindViewHolder<SearchRowUI, RecyclerSearchRowBinding>(itemView) {
 		override val binding = RecyclerSearchRowBinding.bind(view)
 
 		override fun RecyclerSearchRowBinding.bindView(item: SearchRowUI, payloads: List<Any>) {
 			title.text = item.name
-			recyclerView.layoutManager = LinearLayoutManager(recyclerView.context, HORIZONTAL, false)
+			recyclerView.layoutManager =
+				LinearLayoutManager(recyclerView.context, HORIZONTAL, false)
 			recyclerView.setHasFixedSize(false)
 			if (item.imageURL.isNotEmpty()) picasso(item.imageURL, imageView)
 		}

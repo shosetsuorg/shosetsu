@@ -32,7 +32,7 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
  * 25 / 06 / 2020
  */
 abstract class SettingsItemData(
-		val id: Int
+	val id: Int
 ) : BaseRecyclerItem<SettingsItemData.ViewHolder>() {
 	lateinit var lifecycleOwner: LifecycleOwner
 
@@ -69,7 +69,8 @@ abstract class SettingsItemData(
 		settingsItemDesc.text = null
 	}
 
-	class ViewHolder(itemView: View) : BindViewHolder<SettingsItemData, SettingsItemBinding>(itemView) {
+	class ViewHolder(itemView: View) :
+		BindViewHolder<SettingsItemData, SettingsItemBinding>(itemView) {
 		override val binding: SettingsItemBinding = SettingsItemBinding.bind(view)
 
 		override fun SettingsItemBinding.bindView(item: SettingsItemData, payloads: List<Any>) {

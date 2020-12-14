@@ -24,7 +24,7 @@ import app.shosetsu.android.backend.workers.onetime.DownloadWorker.Manager
  * 20 / 06 / 2020
  */
 class StartDownloadWorkerUseCase(
-		private val manager: Manager,
+	private val manager: Manager,
 ) {
 	/**
 	 * Starts the download worker

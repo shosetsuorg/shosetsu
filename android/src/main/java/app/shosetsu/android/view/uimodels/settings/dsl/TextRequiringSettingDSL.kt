@@ -27,19 +27,19 @@ import app.shosetsu.android.view.uimodels.settings.base.TextRequiringSettingData
 
 @SettingsItemDSL
 inline fun TextRequiringSettingData.text(value: TextRequiringSettingData.() -> Any): Unit =
-		value().let {
-			when (it) {
-				is String -> textText = it
-				is Int -> textID = it
-				else -> throw IllegalArgumentException("Input must be either an int or string")
-			}
+	value().let {
+		when (it) {
+			is String -> textText = it
+			is Int -> textID = it
+			else -> throw IllegalArgumentException("Input must be either an int or string")
 		}
+	}
 
 @SettingsItemDSL
 inline fun TextRequiringSettingData.onClicked(
-		crossinline action: TextRequiringSettingData.(
-				@ParameterName("view") View,
-		) -> Unit,
+	crossinline action: TextRequiringSettingData.(
+		@ParameterName("view") View,
+	) -> Unit,
 ) {
 	textViewOnClickListener = { action(it) }
 }

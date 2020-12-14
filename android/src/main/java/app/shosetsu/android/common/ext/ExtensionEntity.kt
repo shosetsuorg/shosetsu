@@ -26,15 +26,15 @@ import app.shosetsu.common.domain.model.local.ExtensionEntity
  */
 
 fun ExtensionEntity.toDB(): DBExtensionEntity = DBExtensionEntity(
-		id,
-		repoID,
-		name,
-		fileName,
-		imageURL,
-		lang,
-		enabled,
-		installed,
-		installedVersion,
-		repositoryVersion,
-		md5
+	id,
+	repoID,
+	name,
+	fileName,
+	imageURL,
+	lang,
+	enabled,
+	installed,
+	installedVersion,
+	repositoryVersion,
+	md5
 )

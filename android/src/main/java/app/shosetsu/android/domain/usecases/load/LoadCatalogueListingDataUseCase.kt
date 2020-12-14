@@ -6,11 +6,11 @@ import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.common.consts.settings.SettingKey
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.dto.transform
 import app.shosetsu.common.dto.transmogrify
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 
@@ -36,30 +36,30 @@ import app.shosetsu.lib.Novel
  * 15 / 05 / 2020
  */
 class LoadCatalogueListingDataUseCase(
-		private val extensionRepository: IExtensionsRepository,
-		private val novelsRepository: INovelsRepository,
-		private val convertNCToCNUIUseCase: ConvertNCToCNUIUseCase,
-		private val iSettingsRepository: ISettingsRepository
+	private val extensionRepository: IExtensionsRepository,
+	private val novelsRepository: INovelsRepository,
+	private val convertNCToCNUIUseCase: ConvertNCToCNUIUseCase,
+	private val iSettingsRepository: ISettingsRepository
 ) {
 	suspend operator fun invoke(
-			formatter: IExtension,
-			data: Map<Int, Any>
+		formatter: IExtension,
+		data: Map<Int, Any>
 	): HResult<List<ACatalogNovelUI>> {
 		val cardType = iSettingsRepository.getInt(SettingKey.NovelCardType).transmogrify(
-				onError = {
-					return it
-				},
-				onEmpty = {
-					return HResult.Empty
-				}
+			onError = {
+				return it
+			},
+			onEmpty = {
+				return HResult.Empty
+			}
 		) {
 			it
 		}!!
 
 		return extensionRepository.loadCatalogueData(
-				formatter,
-				0,
-				data
+			formatter,
+			0,
+			data
 		).transform {
 			val list: List<Novel.Listing> = it
 			successResult(list.map { novelListing ->

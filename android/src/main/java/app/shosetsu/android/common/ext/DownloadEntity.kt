@@ -26,11 +26,11 @@ import app.shosetsu.common.domain.model.local.DownloadEntity
  */
 
 fun DownloadEntity.toDB(): DBDownloadEntity = DBDownloadEntity(
-		chapterID,
-		novelID,
-		chapterURL,
-		chapterName,
-		novelName,
-		extensionID,
-		status
+	chapterID,
+	novelID,
+	chapterURL,
+	chapterName,
+	novelName,
+	extensionID,
+	status
 )

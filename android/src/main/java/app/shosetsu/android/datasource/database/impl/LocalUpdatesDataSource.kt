@@ -2,14 +2,14 @@ package app.shosetsu.android.datasource.database.impl
 
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.common.ext.toHError
+import app.shosetsu.android.providers.database.dao.UpdatesDao
 import app.shosetsu.common.datasource.database.base.ILocalUpdatesDataSource
 import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
-import app.shosetsu.android.providers.database.dao.UpdatesDao
+import app.shosetsu.common.domain.model.local.UpdateEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.mapLatestListTo
 import app.shosetsu.common.dto.mapLatestToSuccess
 import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.domain.model.local.UpdateEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -36,7 +36,7 @@ import kotlinx.coroutines.flow.flow
  * 12 / 05 / 2020
  */
 class LocalUpdatesDataSource(
-		private val updatesDao: UpdatesDao,
+	private val updatesDao: UpdatesDao,
 ) : ILocalUpdatesDataSource {
 	override suspend fun getUpdates(): Flow<HResult<List<UpdateEntity>>> = flow {
 		try {

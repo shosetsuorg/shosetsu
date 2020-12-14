@@ -5,8 +5,8 @@ import androidx.core.view.isVisible
 import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
-import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.dto.Convertible
 import app.shosetsu.lib.Version
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ExtensionCardBinding
@@ -33,17 +33,17 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ExtensionCardBinding
  * 24 / 04 / 2020
  */
 data class ExtensionUI(
-		val id: Int,
-		val repoID: Int,
-		var name: String,
-		val fileName: String,
-		var imageURL: String?,
-		var lang: String,
-		var isExtEnabled: Boolean,
-		var installed: Boolean,
-		var installedVersion: Version?,
-		var repositoryVersion: Version,
-		var md5: String,
+	val id: Int,
+	val repoID: Int,
+	var name: String,
+	val fileName: String,
+	var imageURL: String?,
+	var lang: String,
+	var isExtEnabled: Boolean,
+	var installed: Boolean,
+	var installedVersion: Version?,
+	var repositoryVersion: Version,
+	var md5: String,
 ) : BaseRecyclerItem<ExtensionUI.ViewHolder>(), Convertible<ExtensionEntity> {
 	override val layoutRes: Int = R.layout.extension_card
 	override val type: Int = R.layout.extension_card
@@ -60,24 +60,24 @@ data class ExtensionUI(
 	}
 
 	override fun convertTo(): ExtensionEntity = ExtensionEntity(
-			id,
-			repoID,
-			name,
-			fileName,
-			imageURL,
-			lang,
-			isExtEnabled,
-			installed,
-			installedVersion,
-			repositoryVersion,
-			md5
+		id,
+		repoID,
+		name,
+		fileName,
+		imageURL,
+		lang,
+		isExtEnabled,
+		installed,
+		installedVersion,
+		repositoryVersion,
+		md5
 	)
 
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 
 	/***/
 	class ViewHolder(
-			view: View
+		view: View
 	) : BindViewHolder<ExtensionUI, ExtensionCardBinding>(view) {
 		override val binding = ExtensionCardBinding.bind(view)
 

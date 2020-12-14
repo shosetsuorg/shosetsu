@@ -1,8 +1,8 @@
 package app.shosetsu.android.datasource.database.base
 
 import app.shosetsu.android.domain.model.local.IDTitleImage
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 /*

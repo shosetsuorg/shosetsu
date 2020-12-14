@@ -93,8 +93,10 @@ class WebViewApp : AppCompatActivity(), KodeinAware {
 				// webview.addJavascriptInterface(JSInterface(), "HtmlViewer")
 				binding.webview.webViewClient = object : WebViewClient() {
 					override fun onPageFinished(view: WebView, url: String) {
-						binding.webview.loadUrl("javascript:window.HtmlViewer.showHTML" +
-								"('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');")
+						binding.webview.loadUrl(
+							"javascript:window.HtmlViewer.showHTML" +
+									"('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');"
+						)
 						finish()
 					}
 				}

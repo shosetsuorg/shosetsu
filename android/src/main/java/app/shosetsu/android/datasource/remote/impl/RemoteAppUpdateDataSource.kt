@@ -36,15 +36,15 @@ import okhttp3.OkHttpClient
  * 07 / 09 / 2020
  */
 class RemoteAppUpdateDataSource(
-		private val okHttpClient: OkHttpClient
+	private val okHttpClient: OkHttpClient
 ) : IRemoteAppUpdateDataSource {
 	override suspend fun loadGitAppUpdate(): HResult<DebugAppUpdate> {
 		val response = okHttpClient.quickie(SHOSETSU_UPDATE_URL)
 		response.takeIf { it.code == 200 }?.let { r ->
 			@Suppress("BlockingMethodInNonBlockingContext")
 			return successResult(
-					ObjectMapper().registerKotlinModule()
-							.readValue(r.body!!.string())
+				ObjectMapper().registerKotlinModule()
+					.readValue(r.body!!.string())
 			)
 		}
 		return errorResult(ERROR_HTTP_ERROR, HTTPException(response.code))

@@ -37,18 +37,18 @@ import org.kodein.di.generic.instance
  **/
 inline fun <reified VM : ViewModel, T> T.viewModel()
 		: Lazy<VM> where T : KodeinAware, T : LifecycleController =
-		lazy(LazyThreadSafetyMode.NONE) {
-			ViewModelProvider(
-					this.activity as AppCompatActivity,
-					direct.instance()
-			)[VM::class.java]
-		}
+	lazy(LazyThreadSafetyMode.NONE) {
+		ViewModelProvider(
+			this.activity as AppCompatActivity,
+			direct.instance()
+		)[VM::class.java]
+	}
 
 inline fun <reified VM : ViewModel, T> T.viewModel()
 		: Lazy<VM> where T : KodeinAware, T : AppCompatActivity =
-		lazy(LazyThreadSafetyMode.NONE) {
-			ViewModelProvider(
-					this,
-					direct.instance()
-			)[VM::class.java]
-		}
+	lazy(LazyThreadSafetyMode.NONE) {
+		ViewModelProvider(
+			this,
+			direct.instance()
+		)[VM::class.java]
+	}

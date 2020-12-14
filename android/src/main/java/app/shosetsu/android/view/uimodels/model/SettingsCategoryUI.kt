@@ -35,33 +35,37 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerSettingsCardBindi
  * @author github.com/doomsdayrs
  */
 data class SettingsCategoryUI(
-		val category: SettingCategory,
-		@StringRes
-		val title: Int,
-		@DrawableRes
-		val image: Int
+	val category: SettingCategory,
+	@StringRes
+	val title: Int,
+	@DrawableRes
+	val image: Int
 ) : BaseRecyclerItem<SettingsCategoryUI.ViewHolder>() {
 
-	class ViewHolder(view: View) : BindViewHolder<SettingsCategoryUI, RecyclerSettingsCardBinding>(view) {
+	class ViewHolder(view: View) :
+		BindViewHolder<SettingsCategoryUI, RecyclerSettingsCardBinding>(view) {
 		override val binding: RecyclerSettingsCardBinding = RecyclerSettingsCardBinding.bind(view)
 
-		override fun RecyclerSettingsCardBinding.bindView(item: SettingsCategoryUI, payloads: List<Any>) {
+		override fun RecyclerSettingsCardBinding.bindView(
+			item: SettingsCategoryUI,
+			payloads: List<Any>
+		) {
 			recyclerSettingsTitle.setText(item.title)
 			recyclerSettingsTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
-					item.image,
-					0,
-					0,
-					0
+				item.image,
+				0,
+				0,
+				0
 			)
 		}
 
 		override fun RecyclerSettingsCardBinding.unbindView(item: SettingsCategoryUI) {
 			recyclerSettingsTitle.text = null
 			recyclerSettingsTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
-					R.drawable.broken_image,
-					0,
-					0,
-					0
+				R.drawable.broken_image,
+				0,
+				0,
+				0
 			)
 		}
 	}

@@ -30,20 +30,20 @@ import app.shosetsu.android.view.uimodels.settings.base.SettingsListBuilder
 
 @SettingsItemDSL
 inline fun customBottomSettingData(
-		id: Int,
-		action: CustomBottomSettingData.() -> Unit,
+	id: Int,
+	action: CustomBottomSettingData.() -> Unit,
 ): SettingsItemData = CustomBottomSettingData(id).also(action)
 
 @SettingsItemDSL
 inline fun SettingsListBuilder.customBottomSettingData(
-		id: Int,
-		action: CustomBottomSettingData.() -> Unit,
+	id: Int,
+	action: CustomBottomSettingData.() -> Unit,
 ): Unit = this.let { list.add(CustomBottomSettingData(id).also(action)) }
 
 
 @SettingsItemDSL
 inline fun CustomBottomSettingData.customView(
-		crossinline view: (@ParameterName("root") ViewGroup) -> View,
+	crossinline view: (@ParameterName("root") ViewGroup) -> View,
 ): CustomBottomSettingData = this.apply {
 	customView = { view(it) }
 }

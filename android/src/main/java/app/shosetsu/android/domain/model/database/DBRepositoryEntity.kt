@@ -2,8 +2,8 @@ package app.shosetsu.android.domain.model.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.domain.model.local.RepositoryEntity
+import app.shosetsu.common.dto.Convertible
 
 /*
  * This file is part of Shosetsu.
@@ -28,14 +28,14 @@ import app.shosetsu.common.domain.model.local.RepositoryEntity
  */
 @Entity(tableName = "repositories")
 data class DBRepositoryEntity(
-		@PrimaryKey(autoGenerate = true)
-		val id: Int = -1,
-		val url: String,
-		var name: String,
+	@PrimaryKey(autoGenerate = true)
+	val id: Int = -1,
+	val url: String,
+	var name: String,
 ) : Convertible<RepositoryEntity> {
 	override fun convertTo(): RepositoryEntity = RepositoryEntity(
-			id,
-			url,
-			name
+		id,
+		url,
+		name
 	)
 }

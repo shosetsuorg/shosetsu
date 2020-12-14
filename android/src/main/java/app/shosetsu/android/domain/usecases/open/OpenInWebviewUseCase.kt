@@ -40,16 +40,16 @@ import app.shosetsu.lib.IExtension.Companion.KEY_NOVEL_URL
  *
  */
 class OpenInWebviewUseCase(
-		private val repository: IExtensionsRepository,
-		private val stringToastUseCase: StringToastUseCase,
-		private val application: Application,
+	private val repository: IExtensionsRepository,
+	private val stringToastUseCase: StringToastUseCase,
+	private val application: Application,
 ) {
 	operator fun invoke(url: String) {
 		Log.d(logID(), "Opening URL $url")
 		val i = Intent(application, WebViewApp::class.java) {
 			bundleOf(
-					BundleKeys.BUNDLE_URL to url,
-					BundleKeys.BUNDLE_ACTION to WebViewApp.Actions.VIEW.action
+				BundleKeys.BUNDLE_URL to url,
+				BundleKeys.BUNDLE_ACTION to WebViewApp.Actions.VIEW.action
 			)
 		}.apply {
 			addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -76,14 +76,14 @@ class OpenInWebviewUseCase(
 	}
 
 	suspend operator fun invoke(novelUI: NovelUI): Unit = this(
-			novelUI.novelURL,
-			novelUI.extID,
-			KEY_NOVEL_URL
+		novelUI.novelURL,
+		novelUI.extID,
+		KEY_NOVEL_URL
 	)
 
 	suspend operator fun invoke(chapterUI: ChapterUI): Unit = this(
-			chapterUI.link,
-			chapterUI.formatterID,
-			KEY_CHAPTER_URL
+		chapterUI.link,
+		chapterUI.formatterID,
+		KEY_CHAPTER_URL
 	)
 }

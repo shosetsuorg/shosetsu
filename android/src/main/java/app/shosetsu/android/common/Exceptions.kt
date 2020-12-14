@@ -29,6 +29,6 @@ import app.shosetsu.common.dto.HResult
 class IncorrectDateException(message: String?) : Exception(message)
 
 class HResultException(hResult: HResult.Error) : Exception(
-		"${hResult.code} ${hResult.message}",
-		hResult.error
+	"${hResult.code} ${hResult.message}",
+	hResult.error
 )

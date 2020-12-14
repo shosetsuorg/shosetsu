@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.flow
  * 12 / 05 / 2020
  */
 class LocalNovelsDataSource(
-		private val novelsDao: NovelsDao,
+	private val novelsDao: NovelsDao,
 ) : ILocalNovelsDataSource {
 	override suspend fun loadLiveBookmarkedNovels(): Flow<HResult<List<NovelEntity>>> = flow {
 		try {
@@ -80,7 +80,7 @@ class LocalNovelsDataSource(
 	}
 
 	override suspend fun updateBookmarkedNovels(
-			list: List<BookmarkedNovelEntity>
+		list: List<BookmarkedNovelEntity>
 	): HResult<*> = try {
 		successResult(novelsDao.updateBookmarked(list))
 	} catch (e: Exception) {
@@ -88,7 +88,7 @@ class LocalNovelsDataSource(
 	}
 
 	override suspend fun insertNovelReturnCard(
-			novelEntity: NovelEntity,
+		novelEntity: NovelEntity,
 	): HResult<IDTitleImageBook> = try {
 		successResult(novelsDao.insertNovelReturnCard(novelEntity.toDB()))
 	} catch (e: Exception) {

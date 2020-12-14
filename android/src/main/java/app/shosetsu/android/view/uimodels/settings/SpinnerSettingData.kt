@@ -30,18 +30,18 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
 class SpinnerSettingData(id: Int) : RightSettingsItemData(id) {
 	var spinnerOnClick: (View) -> Unit = {}
 	var spinnerOnItemSelectedListener: AdapterView.OnItemSelectedListener =
-			object : AdapterView.OnItemSelectedListener {
-				override fun onNothingSelected(parent: AdapterView<*>?) {
-				}
-
-				override fun onItemSelected(
-						parent: AdapterView<*>?,
-						view: View?,
-						position: Int,
-						id: Long,
-				) {
-				}
+		object : AdapterView.OnItemSelectedListener {
+			override fun onNothingSelected(parent: AdapterView<*>?) {
 			}
+
+			override fun onItemSelected(
+				parent: AdapterView<*>?,
+				view: View?,
+				position: Int,
+				id: Long,
+			) {
+			}
+		}
 	var arrayAdapter: ArrayAdapter<*>? = null
 	var spinnerSelection: Int = -1
 

@@ -35,44 +35,44 @@ annotation class SettingsItemDSL
 
 @SettingsItemDSL
 inline fun checkBoxSettingData(
-		id: Int,
-		action: CheckBoxSettingData.() -> Unit,
+	id: Int,
+	action: CheckBoxSettingData.() -> Unit,
 ): SettingsItemData = CheckBoxSettingData(id).also(action)
 
 
 @SettingsItemDSL
 inline fun switchSettingData(
-		id: Int,
-		action: SwitchSettingData.() -> Unit,
+	id: Int,
+	action: SwitchSettingData.() -> Unit,
 ): SettingsItemData = SwitchSettingData(id).also(action)
 
 @SettingsItemDSL
 inline fun textSettingData(
-		id: Int,
-		action: TextSettingData.() -> Unit,
+	id: Int,
+	action: TextSettingData.() -> Unit,
 ): SettingsItemData = TextSettingData(id).also(action)
 
 // - Functions
 
 @SettingsItemDSL
 inline fun SettingsItemData.title(value: SettingsItemData.() -> Any): Unit =
-		value().let {
-			when (it) {
-				is String -> titleText = it
-				is Int -> titleID = it
-				else -> throw IllegalArgumentException("Input must be either an int or string")
-			}
+	value().let {
+		when (it) {
+			is String -> titleText = it
+			is Int -> titleID = it
+			else -> throw IllegalArgumentException("Input must be either an int or string")
 		}
+	}
 
 @SettingsItemDSL
 inline fun SettingsItemData.description(value: SettingsItemData.() -> Any): Unit =
-		value().let {
-			when (it) {
-				is String -> descText = it
-				is Int -> descID = it
-				else -> throw IllegalArgumentException("Input must be either an int or string")
-			}
+	value().let {
+		when (it) {
+			is String -> descText = it
+			is Int -> descID = it
+			else -> throw IllegalArgumentException("Input must be either an int or string")
 		}
+	}
 
 @SettingsItemDSL
 inline fun SettingsItemData.requiredVersion(value: SettingsItemData.() -> Int) {
@@ -83,25 +83,25 @@ inline fun SettingsItemData.requiredVersion(value: SettingsItemData.() -> Int) {
 // - Settings list dsl
 
 inline fun settingsList(crossinline listBuilder: SettingsListBuilder.() -> Unit): Lazy<ArrayList<SettingsItemData>> =
-		lazy {
-			SettingsListBuilder().also(listBuilder).list
-		}
+	lazy {
+		SettingsListBuilder().also(listBuilder).list
+	}
 
 @SettingsItemDSL
 inline fun SettingsListBuilder.checkBoxSettingData(
-		id: Int,
-		action: CheckBoxSettingData.() -> Unit,
+	id: Int,
+	action: CheckBoxSettingData.() -> Unit,
 ): Unit = this.let { list.add(CheckBoxSettingData(id).also(action)) }
 
 
 @SettingsItemDSL
 inline fun SettingsListBuilder.switchSettingData(
-		id: Int,
-		action: SwitchSettingData.() -> Unit,
+	id: Int,
+	action: SwitchSettingData.() -> Unit,
 ): Unit = this.let { list.add(SwitchSettingData(id).also(action)) }
 
 @SettingsItemDSL
 inline fun SettingsListBuilder.textSettingData(
-		id: Int,
-		action: TextSettingData.() -> Unit,
+	id: Int,
+	action: TextSettingData.() -> Unit,
 ): Unit = this.let { list.add(TextSettingData(id).also(action)) }

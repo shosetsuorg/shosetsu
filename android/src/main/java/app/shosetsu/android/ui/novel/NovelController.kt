@@ -8,15 +8,19 @@ import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
+import app.shosetsu.android.ui.novel.filter.NovelFilterMenuBuilder
+import app.shosetsu.android.view.base.BottomMenuController
 import app.shosetsu.android.view.base.FABController
 import app.shosetsu.android.view.base.FastAdapterRecyclerController
+import app.shosetsu.android.view.base.syncFABWithRecyclerView
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
+import app.shosetsu.android.view.widget.SlidingUpBottomMenu
 import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.transform
 import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.transform
 import app.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.id
@@ -56,8 +60,11 @@ import javax.security.auth.DestroyFailedException
  *
  * The page you see when you select a novel
  */
-class NovelController(bundle: Bundle)
-	: FastAdapterRecyclerController<ControllerNovelInfoBinding, AbstractItem<*>>(bundle), FABController {
+class NovelController(bundle: Bundle) :
+	FastAdapterRecyclerController<ControllerNovelInfoBinding,
+			AbstractItem<*>>(bundle),
+	FABController,
+	BottomMenuController {
 
 	/*
 	/** Fixes invalid adapter postion errors */
@@ -112,20 +119,7 @@ class NovelController(bundle: Bundle)
 
 	override fun setupRecyclerView() {
 		recyclerView.setHasFixedSize(false)
-		recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-			override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-				when (newState) {
-					RecyclerView.SCROLL_STATE_DRAGGING -> {
-						resume?.let { hideFAB(it) }
-					}
-					RecyclerView.SCROLL_STATE_SETTLING -> {
-					}
-					RecyclerView.SCROLL_STATE_IDLE -> {
-						resume?.let { showFAB(it) }
-					}
-				}
-			}
-		})
+		syncFABWithRecyclerView(recyclerView, resume!!)
 		super.setupRecyclerView()
 	}
 
@@ -168,15 +162,21 @@ class NovelController(bundle: Bundle)
 	}
 
 	override fun bindView(inflater: LayoutInflater): ControllerNovelInfoBinding =
-			inflate(inflater).also {
-				this.recyclerView = it.recyclerView
-			}
+		inflate(inflater).also {
+			this.recyclerView = it.recyclerView
+		}
 
 	fun migrateOpen() {
-		parentController?.router?.pushController(MigrationController(bundleOf(Pair(
-				TARGETS_BUNDLE_KEY,
-				arrayOf(args.getNovelID()).toIntArray()
-		))).withFadeTransaction())
+		parentController?.router?.pushController(
+			MigrationController(
+				bundleOf(
+					Pair(
+						TARGETS_BUNDLE_KEY,
+						arrayOf(args.getNovelID()).toIntArray()
+					)
+				)
+			).withFadeTransaction()
+		)
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
@@ -235,18 +235,12 @@ class NovelController(bundle: Bundle)
 				refresh()
 			else toast(R.string.you_not_online)
 		}
-		binding.filterMenu.viewModel = viewModel
-		binding.filterMenu.onHideListener = {
-			resume?.let { showFAB(it) }
-		}
-		binding.filterMenu.onShowListener = {
-			resume?.let { hideFAB(it) }
-		}
+
 	}
 
 	private fun calculateBottomSelectionMenuChanges() {
 		val chaptersSelected =
-				fastAdapter.getSelectExtension().selectedItems.filterIsInstance<ChapterUI>()
+			fastAdapter.getSelectExtension().selectedItems.filterIsInstance<ChapterUI>()
 
 		// If any are not bookmarked, show bookmark option
 		if (chaptersSelected.any { !it.bookmarked }) {
@@ -259,11 +253,11 @@ class NovelController(bundle: Bundle)
 
 		// If any are downloaded, show delete
 		binding.bottomMenu.findItem(id.chapter_delete_selected)?.isVisible =
-				chaptersSelected.any { it.isSaved }
+			chaptersSelected.any { it.isSaved }
 
 		// If any are not downloaded, show download option
 		binding.bottomMenu.findItem(id.chapter_download_selected)?.isVisible =
-				chaptersSelected.any { !it.isSaved }
+			chaptersSelected.any { !it.isSaved }
 
 		// If any are unread, show read option
 		if (chaptersSelected.any { it.readingStatus == ReadingStatus.UNREAD }) {
@@ -298,8 +292,8 @@ class NovelController(bundle: Bundle)
 				if (selectedItems.isNotEmpty()) {
 					if (!item.isSelected) {
 						select(
-								item = item,
-								considerSelectableFlag = true
+							item = item,
+							considerSelectableFlag = true
 						)
 					} else {
 						deselect(position)
@@ -316,25 +310,43 @@ class NovelController(bundle: Bundle)
 		}
 
 		fastAdapter.addEventHook(object : ClickEventHook<NovelUI>() {
-			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? = if (viewHolder is NovelUI.ViewHolder) viewHolder.binding.inLibrary else null
+			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? =
+				if (viewHolder is NovelUI.ViewHolder) viewHolder.binding.inLibrary else null
 
-			override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<NovelUI>, item: NovelUI) {
+			override fun onClick(
+				v: View,
+				position: Int,
+				fastAdapter: FastAdapter<NovelUI>,
+				item: NovelUI
+			) {
 				viewModel.toggleNovelBookmark()
 			}
 		})
 
 		fastAdapter.addEventHook(object : ClickEventHook<NovelUI>() {
-			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? = if (viewHolder is NovelUI.ViewHolder) viewHolder.binding.webView else null
+			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? =
+				if (viewHolder is NovelUI.ViewHolder) viewHolder.binding.webView else null
 
-			override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<NovelUI>, item: NovelUI) {
+			override fun onClick(
+				v: View,
+				position: Int,
+				fastAdapter: FastAdapter<NovelUI>,
+				item: NovelUI
+			) {
 				viewModel.openWebView()
 			}
 		})
 
 		fastAdapter.addEventHook(object : ClickEventHook<NovelUI>() {
-			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? = if (viewHolder is NovelUI.ViewHolder) viewHolder.binding.filterChip else null
+			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? =
+				if (viewHolder is NovelUI.ViewHolder) viewHolder.binding.filterChip else null
 
-			override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<NovelUI>, item: NovelUI) {
+			override fun onClick(
+				v: View,
+				position: Int,
+				fastAdapter: FastAdapter<NovelUI>,
+				item: NovelUI
+			) {
 				openFilterMenu()
 			}
 		})
@@ -343,7 +355,7 @@ class NovelController(bundle: Bundle)
 	}
 
 	internal fun openFilterMenu() {
-		binding.filterMenu.show()
+		bottomMenuRetriever?.invoke()?.show()
 	}
 
 	override fun onDestroy() {
@@ -373,10 +385,10 @@ class NovelController(bundle: Bundle)
 		//viewModel.novelUILive().observe(this) { handleRecyclerUpdate(it) }
 		viewModel.novelLive.observe(this) { hResult ->
 			handleRecyclerUpdate(
-					novelUIAdapter,
-					{ showEmpty() },
-					{ hideEmpty() },
-					hResult.transform { successResult(listOf(it)) }
+				novelUIAdapter,
+				{ showEmpty() },
+				{ hideEmpty() },
+				hResult.transform { successResult(listOf(it)) }
 			)
 		}
 
@@ -391,7 +403,7 @@ class NovelController(bundle: Bundle)
 	}
 
 	private fun selectedChapters(): List<ChapterUI> =
-			fastAdapter.getSelectExtension().selectedItems.filterIsInstance<ChapterUI>()
+		fastAdapter.getSelectExtension().selectedItems.filterIsInstance<ChapterUI>()
 
 	private fun selectedChapterArray(): Array<ChapterUI> = selectedChapters().toTypedArray()
 
@@ -410,20 +422,20 @@ class NovelController(bundle: Bundle)
 	private fun invertSelection() {
 		fastAdapter.recursive(object : AdapterPredicate<AbstractItem<*>> {
 			override fun apply(
-					lastParentAdapter: IAdapter<AbstractItem<*>>,
-					lastParentPosition: Int,
-					item: AbstractItem<*>,
-					position: Int
+				lastParentAdapter: IAdapter<AbstractItem<*>>,
+				lastParentPosition: Int,
+				item: AbstractItem<*>,
+				position: Int
 			): Boolean {
 				if (item.isSelected) {
 					fastAdapter.getSelectExtension().deselect(item)
 				} else {
 					fastAdapter.getSelectExtension().select(
-							adapter = lastParentAdapter,
-							item = item,
-							position = RecyclerView.NO_POSITION,
-							fireEvent = false,
-							considerSelectableFlag = true
+						adapter = lastParentAdapter,
+						item = item,
+						position = RecyclerView.NO_POSITION,
+						fireEvent = false,
+						considerSelectableFlag = true
 					)
 				}
 				return false
@@ -442,8 +454,8 @@ class NovelController(bundle: Bundle)
 
 	private fun markSelectedAs(readingStatus: ReadingStatus) {
 		viewModel.markAllChaptersAs(
-				*selectedChapterArray(),
-				readingStatus = readingStatus
+			*selectedChapterArray(),
+			readingStatus = readingStatus
 		)
 	}
 
@@ -474,12 +486,9 @@ class NovelController(bundle: Bundle)
 					largest = last
 				}
 			}
-			adapterList.subList(smallest, largest).map { fastAdapter.getPosition(it) }.let { launchUI { select(it) } }
+			adapterList.subList(smallest, largest).map { fastAdapter.getPosition(it) }
+				.let { launchUI { select(it) } }
 		}
-	}
-
-	private fun reverseChapters() {
-		viewModel.reverseChapters()
 	}
 
 	private inner class SelectionActionMode : ActionMode.Callback {
@@ -531,21 +540,21 @@ class NovelController(bundle: Bundle)
 		override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean = false
 
 		override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean =
-				when (item.itemId) {
-					id.chapter_select_all -> {
-						selectAll()
-						true
-					}
-					id.chapter_select_between -> {
-						selectBetween()
-						true
-					}
-					id.chapter_inverse -> {
-						invertSelection()
-						true
-					}
-					else -> false
+			when (item.itemId) {
+				id.chapter_select_all -> {
+					selectAll()
+					true
 				}
+				id.chapter_select_between -> {
+					selectBetween()
+					true
+				}
+				id.chapter_inverse -> {
+					invertSelection()
+					true
+				}
+				else -> false
+			}
 
 		override fun onDestroyActionMode(mode: ActionMode) {
 			binding.bottomMenu.hide()
@@ -555,4 +564,9 @@ class NovelController(bundle: Bundle)
 			fastAdapter.getSelectExtension().deselect()
 		}
 	}
+
+	override var bottomMenuRetriever: (() -> SlidingUpBottomMenu?)? = null
+
+	override fun getBottomMenuView(): View =
+		NovelFilterMenuBuilder(activity!!.layoutInflater, viewModel).build()
 }

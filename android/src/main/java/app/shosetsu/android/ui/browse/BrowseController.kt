@@ -45,7 +45,7 @@ import com.mikepenz.fastadapter.listeners.ClickEventHook
  * @author github.com/doomsdayrs
  */
 class BrowseController : BasicFastAdapterRecyclerController<ExtensionUI>(),
-		PushCapableController {
+	PushCapableController {
 	override val viewTitleRes: Int = R.string.browse
 
 	init {
@@ -64,24 +64,35 @@ class BrowseController : BasicFastAdapterRecyclerController<ExtensionUI>(),
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_extensions, menu)
 		(menu.findItem(R.id.catalogues_search).actionView as SearchView)
-				.setOnQueryTextListener(BrowseSearchQuery(pushController))
+			.setOnQueryTextListener(BrowseSearchQuery(pushController))
 	}
 
 	override fun setupFastAdapter() {
 		fastAdapter.setOnClickListener { _, _, item, _ ->
 			if (item.installed)
 				if (viewModel.isOnline()) {
-					pushController(CatalogController(bundleOf(
-							BUNDLE_EXTENSION to item.id
-					)))
+					pushController(
+						CatalogController(
+							bundleOf(
+								BUNDLE_EXTENSION to item.id
+							)
+						)
+					)
 				} else context?.toast(R.string.you_not_online)
 			else toast(R.string.ext_not_installed)
 			true
 		}
 
 		fastAdapter.addEventHook(object : ClickEventHook<ExtensionUI>() {
-			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? = if (viewHolder is ExtensionUI.ViewHolder) viewHolder.binding.button else null
-			override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<ExtensionUI>, item: ExtensionUI) {
+			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? =
+				if (viewHolder is ExtensionUI.ViewHolder) viewHolder.binding.button else null
+
+			override fun onClick(
+				v: View,
+				position: Int,
+				fastAdapter: FastAdapter<ExtensionUI>,
+				item: ExtensionUI
+			) {
 				var installed = false
 				var update = false
 				if (item.installed && item.isExtEnabled) {
@@ -94,9 +105,15 @@ class BrowseController : BasicFastAdapterRecyclerController<ExtensionUI>(),
 		})
 
 		fastAdapter.addEventHook(object : ClickEventHook<ExtensionUI>() {
-			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? = if (viewHolder is ExtensionUI.ViewHolder) viewHolder.binding.settings else null
+			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? =
+				if (viewHolder is ExtensionUI.ViewHolder) viewHolder.binding.settings else null
 
-			override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<ExtensionUI>, item: ExtensionUI) {
+			override fun onClick(
+				v: View,
+				position: Int,
+				fastAdapter: FastAdapter<ExtensionUI>,
+				item: ExtensionUI
+			) {
 				pushController(ConfigureExtension(bundleOf(BUNDLE_EXTENSION to item.id)))
 			}
 
@@ -122,10 +139,10 @@ class BrowseController : BasicFastAdapterRecyclerController<ExtensionUI>(),
 	override fun updateUI(newList: List<ExtensionUI>) {
 		launchIO {
 			val list = newList
-					.sortedBy { it.name }
-					.sortedBy { it.lang }
-					.sortedBy { !it.installed }
-					.sortedBy { it.updateState() != ExtensionUI.State.UPDATE }
+				.sortedBy { it.name }
+				.sortedBy { it.lang }
+				.sortedBy { !it.installed }
+				.sortedBy { it.updateState() != ExtensionUI.State.UPDATE }
 			launchUI { super.updateUI(list) }
 		}
 	}

@@ -6,11 +6,11 @@ import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.common.consts.settings.SettingKey
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.dto.transform
 import app.shosetsu.common.dto.transmogrify
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 
@@ -36,27 +36,27 @@ import app.shosetsu.lib.Novel
  * 15 / 05 / 2020
  */
 class LoadCatalogueQueryDataUseCase(
-		private val extensionRepository: IExtensionsRepository,
-		private val novelsRepository: INovelsRepository,
-		private val convertNCToCNUIUseCase: ConvertNCToCNUIUseCase,
-		private val iSettingsRepository: ISettingsRepository
+	private val extensionRepository: IExtensionsRepository,
+	private val novelsRepository: INovelsRepository,
+	private val convertNCToCNUIUseCase: ConvertNCToCNUIUseCase,
+	private val iSettingsRepository: ISettingsRepository
 ) {
 	suspend operator fun invoke(
-			extID: Int,
-			query: String,
-			filters: Map<Int, Any>
+		extID: Int,
+		query: String,
+		filters: Map<Int, Any>
 	) = extensionRepository.loadIExtension(extID).transform {
 		invoke(it, query, filters)
 	}
 
 	suspend operator fun invoke(
-			ext: IExtension,
-			query: String,
-			filters: Map<Int, Any>
+		ext: IExtension,
+		query: String,
+		filters: Map<Int, Any>
 	): HResult<List<ACatalogNovelUI>> = extensionRepository.loadCatalogueSearch(
-			ext,
-			query,
-			filters
+		ext,
+		query,
+		filters
 	).transform {
 		val data: List<Novel.Listing> = it
 		iSettingsRepository.getInt(SettingKey.NovelCardType).transform { cardType ->

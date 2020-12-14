@@ -54,7 +54,8 @@ class ExpandingViewBar(context: Context, viewGroup: ViewGroup) {
 	init {
 		val inflater = LayoutInflater.from(context)
 
-		layout = inflater.inflate(R.layout.drawer_layout_expandable, viewGroup, false) as LinearLayout
+		layout =
+			inflater.inflate(R.layout.drawer_layout_expandable, viewGroup, false) as LinearLayout
 		bar = layout.findViewById(R.id.expandable_layout)
 		barTitle = bar.findViewById(R.id.title)
 		barTitle.setText(R.string.unknown)
@@ -84,8 +85,10 @@ class ExpandingViewBar(context: Context, viewGroup: ViewGroup) {
 				transition.addTarget(frameLayout)
 				TransitionManager.beginDelayedTransition(holder, transition)
 
-				expandableLayoutDivider.visibility = if (expandableLayoutDivider.visibility != View.VISIBLE) View.VISIBLE else View.GONE
-				frameLayout.visibility = if (frameLayout.visibility != View.VISIBLE) View.VISIBLE else View.GONE
+				expandableLayoutDivider.visibility =
+					if (expandableLayoutDivider.visibility != View.VISIBLE) View.VISIBLE else View.GONE
+				frameLayout.visibility =
+					if (frameLayout.visibility != View.VISIBLE) View.VISIBLE else View.GONE
 			} else first = !first
 		}
 	}

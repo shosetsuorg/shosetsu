@@ -99,3 +99,4 @@ fun String.md5(): String {
 
 
 fun String.toLowerCaseR(): String = this.toLowerCase(Locale.ROOT)
+fun String.toLowerCaseD(): String = this.toLowerCase(Locale.getDefault())

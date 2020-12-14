@@ -36,10 +36,14 @@ import com.github.doomsdayrs.apps.shosetsu.R
  *
  * @author github.com/doomsdayrs
  */
-class SusScriptAdapter(private val susScriptDialog: SusScriptDialog) : RecyclerView.Adapter<SusScriptCard>() {
+class SusScriptAdapter(private val susScriptDialog: SusScriptDialog) :
+	RecyclerView.Adapter<SusScriptCard>() {
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SusScriptCard {
-		return SusScriptCard(LayoutInflater.from(parent.context).inflate(R.layout.alert_extensions_handle_card, parent, false))
+		return SusScriptCard(
+			LayoutInflater.from(parent.context)
+				.inflate(R.layout.alert_extensions_handle_card, parent, false)
+		)
 	}
 
 	override fun getItemCount(): Int {
@@ -57,14 +61,23 @@ class SusScriptAdapter(private val susScriptDialog: SusScriptDialog) : RecyclerV
 		//	return
 		//}
 
-		holder.spinner.adapter = ArrayAdapter(holder.itemView.context!!, android.R.layout.simple_spinner_item, holder.itemView.resources.getStringArray(R.array.sus_array_actions))
+		holder.spinner.adapter = ArrayAdapter(
+			holder.itemView.context!!,
+			android.R.layout.simple_spinner_item,
+			holder.itemView.resources.getStringArray(R.array.sus_array_actions)
+		)
 		holder.spinner.setSelection(3)
 
 		holder.spinner.onItemSelectedListener = object : OnItemSelectedListener {
 			override fun onNothingSelected(parent: AdapterView<*>?) {
 			}
 
-			override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+			override fun onItemSelected(
+				parent: AdapterView<*>?,
+				view: View?,
+				position: Int,
+				id: Long
+			) {
 				fileObj.action = position
 			}
 		}

@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.collectLatest
  * 08 / 12 / 2020
  */
 class SplashScreenViewModel(
-		private val settingsRepository: ISettingsRepository
+	private val settingsRepository: ISettingsRepository
 ) : ASplashScreenViewModel() {
 	private var showIntro = FirstTime.default
 

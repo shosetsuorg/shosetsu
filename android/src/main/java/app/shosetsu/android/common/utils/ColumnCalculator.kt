@@ -4,11 +4,11 @@ interface ColumnCalculator {
 	fun getColumnsInP(): Int
 
 	fun getColumnsInH(): Int
-	
+
 	fun calculatePColumnCount(
-			widthPixels: Int,
-			density: Float,
-			columnWidthDp: Float,
+		widthPixels: Int,
+		density: Float,
+		columnWidthDp: Float,
 	): Int {
 		val columnCount = getColumnsInP()
 		val screenWidthDp = widthPixels / density
@@ -17,9 +17,9 @@ interface ColumnCalculator {
 	}
 
 	fun calculateHColumnCount(
-			widthPixels: Int,
-			density: Float,
-			columnWidthDp: Float,
+		widthPixels: Int,
+		density: Float,
+		columnWidthDp: Float,
 	): Int {
 		val columnCount = getColumnsInH()
 		val screenWidthDp = widthPixels / density

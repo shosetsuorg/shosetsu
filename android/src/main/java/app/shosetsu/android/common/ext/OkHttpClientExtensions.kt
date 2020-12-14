@@ -26,4 +26,5 @@ import okhttp3.Response
  * 13 / 05 / 2020
  */
 
-fun OkHttpClient.quickie(url: String): Response = newCall(Request.Builder().url(url).build()).execute()
+fun OkHttpClient.quickie(url: String): Response =
+	newCall(Request.Builder().url(url).build()).execute()

@@ -2,6 +2,7 @@ package app.shosetsu.android.view.base
 
 import android.util.Log
 import androidx.annotation.CallSuper
+import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ext.logID
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -60,3 +61,16 @@ interface FABController {
 	 */
 	fun manipulateFAB(fab: FloatingActionButton)
 }
+
+/**
+ * Syncs the FAB with the recyclerview, hiding it when scrolling and showing again when idle
+ */
+fun FABController.syncFABWithRecyclerView(recyclerView: RecyclerView, fab: FloatingActionButton) =
+	recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+		override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+			when (newState) {
+				RecyclerView.SCROLL_STATE_DRAGGING -> hideFAB(fab)
+				RecyclerView.SCROLL_STATE_IDLE -> showFAB(fab)
+			}
+		}
+	})

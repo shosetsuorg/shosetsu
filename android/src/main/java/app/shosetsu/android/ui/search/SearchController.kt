@@ -41,8 +41,8 @@ import com.mikepenz.fastadapter.FastAdapter
  *
  * @author github.com/doomsdayrs
  */
-class SearchController(bundle: Bundle)
-	: BasicFastAdapterRecyclerController<SearchRowUI>(bundle), PushCapableController {
+class SearchController(bundle: Bundle) : BasicFastAdapterRecyclerController<SearchRowUI>(bundle),
+	PushCapableController {
 	override val viewTitleRes: Int = R.string.search
 	internal val viewModel: ISearchViewModel by viewModel()
 	private var searchView: SearchView? = null

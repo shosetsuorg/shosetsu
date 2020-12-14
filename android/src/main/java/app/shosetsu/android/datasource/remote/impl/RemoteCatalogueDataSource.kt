@@ -2,10 +2,10 @@ package app.shosetsu.android.datasource.remote.impl
 
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.toHError
+import app.shosetsu.common.datasource.remote.base.IRemoteCatalogueDataSource
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.emptyResult
 import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.datasource.remote.base.IRemoteCatalogueDataSource
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.PAGE_INDEX
@@ -37,9 +37,9 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 
 
 	override suspend fun search(
-			ext: IExtension,
-			query: String,
-			data: Map<Int, Any>,
+		ext: IExtension,
+		query: String,
+		data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>> {
 		return try {
 			if (ext.hasSearch) {
@@ -55,9 +55,9 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 	}
 
 	override suspend fun loadListing(
-			ext: IExtension,
-			listing: Int,
-			data: Map<Int, Any>,
+		ext: IExtension,
+		listing: Int,
+		data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>> {
 		return try {
 			logV("Data: $data")

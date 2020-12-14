@@ -24,7 +24,7 @@ import app.shosetsu.common.domain.repositories.base.IExtRepoRepository
  * 13 / 05 / 2020
  */
 class RefreshRepositoryUseCase(
-		val repository: IExtRepoRepository,
+	val repository: IExtRepoRepository,
 ) : (() -> Unit) {
 	override fun invoke() {
 		TODO("Not yet implemented")

@@ -1,10 +1,10 @@
 package app.shosetsu.android.common.utils.uifactory
 
 import app.shosetsu.android.view.uimodels.model.DownloadUI
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.transform
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.domain.model.local.DownloadEntity
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.transform
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 
@@ -30,24 +30,24 @@ import kotlinx.coroutines.flow.mapLatest
  * 05 / 12 / 2020
  */
 class DownloadConversionFactory(
-		data: DownloadEntity
+	data: DownloadEntity
 ) : UIConversionFactory<DownloadEntity, DownloadUI>(data) {
 	override fun DownloadEntity.convertTo(): DownloadUI = DownloadUI(
-			chapterID,
-			novelID,
-			chapterURL,
-			chapterName,
-			novelName,
-			extensionID,
-			status
+		chapterID,
+		novelID,
+		chapterURL,
+		chapterName,
+		novelName,
+		extensionID,
+		status
 	)
 }
 
 fun List<DownloadEntity>.mapToFactory() =
-		map { DownloadConversionFactory(it) }
+	map { DownloadConversionFactory(it) }
 
 fun HResult<List<DownloadEntity>>.mapResultWithFactory() =
-		transform { successResult(it.mapToFactory()) }
+	transform { successResult(it.mapToFactory()) }
 
 fun Flow<HResult<List<DownloadEntity>>>.mapLatestToResultFlowWithFactory() =
-		mapLatest { it.mapResultWithFactory() }
+	mapLatest { it.mapResultWithFactory() }

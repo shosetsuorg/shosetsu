@@ -35,7 +35,7 @@ import kotlinx.coroutines.flow.mapLatest
  * 12 / May / 2020
  */
 class LocalExtensionsDataSource(
-		private val extensionsDao: ExtensionsDao,
+	private val extensionsDao: ExtensionsDao,
 ) : ILocalExtensionsDataSource {
 	override fun loadExtensions(): Flow<HResult<List<ExtensionEntity>>> = flow {
 		try {
@@ -56,7 +56,13 @@ class LocalExtensionsDataSource(
 	override fun loadPoweredExtensionsCards(): Flow<HResult<List<IDTitleImage>>> = flow {
 		try {
 			emitAll(extensionsDao.loadPoweredExtensionsBasic().mapLatest { list ->
-				app.shosetsu.common.dto.successResult(list.map { IDTitleImage(it.id, it.name, it.imageURL) })
+				app.shosetsu.common.dto.successResult(list.map {
+					IDTitleImage(
+						it.id,
+						it.name,
+						it.imageURL
+					)
+				})
 			})
 		} catch (e: Exception) {
 			emit(e.toHError())

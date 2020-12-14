@@ -1,15 +1,15 @@
 package app.shosetsu.android.domain.usecases.load
 
-import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.domain.model.local.UpdateEntity
+import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.common.domain.repositories.base.IUpdatesRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.transform
 import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.domain.model.local.NovelEntity
-import app.shosetsu.common.domain.model.local.UpdateEntity
+import app.shosetsu.common.dto.transform
 
 /*
  * This file is part of shosetsu.
@@ -35,43 +35,47 @@ import app.shosetsu.common.domain.model.local.UpdateEntity
  * takes a novelID & parameters, then loads it's data to storage
  */
 class LoadNovelUseCase(
-		private val nR: INovelsRepository,
-		private val eR: IExtensionsRepository,
-		private val cR: IChaptersRepository,
-		private val uR: IUpdatesRepository,
+	private val nR: INovelsRepository,
+	private val eR: IExtensionsRepository,
+	private val cR: IChaptersRepository,
+	private val uR: IUpdatesRepository,
 ) {
-	private suspend fun main(novel: NovelEntity, loadChapters: Boolean, haveChaptersUpdate: () -> Unit = {}): HResult<Boolean> =
-			eR.loadIExtension(novel.formatterID).transform { ext ->
-				nR.retrieveNovelInfo(ext, novel, loadChapters).transform { page ->
-					val currentStatus: Boolean = novel.loaded
+	private suspend fun main(
+		novel: NovelEntity,
+		loadChapters: Boolean,
+		haveChaptersUpdate: () -> Unit = {}
+	): HResult<Boolean> =
+		eR.loadIExtension(novel.formatterID).transform { ext ->
+			nR.retrieveNovelInfo(ext, novel, loadChapters).transform { page ->
+				val currentStatus: Boolean = novel.loaded
 
-					// Fills the novel with new data
-					nR.updateNovelData(novel, page)
+				// Fills the novel with new data
+				nR.updateNovelData(novel, page)
 
-					// If this novel has been loaded or not
-					if (loadChapters) {
-						if (!currentStatus)
-							cR.handleChapters(novel, page.chapters)
-						else cR.handleChaptersReturn(novel, page.chapters).handle { chapters ->
-							if (chapters.isNotEmpty()) haveChaptersUpdate()
-							uR.addUpdates(chapters.map {
-								UpdateEntity(it.id!!, novel.id!!, System.currentTimeMillis())
-							})
-						}
+				// If this novel has been loaded or not
+				if (loadChapters) {
+					if (!currentStatus)
+						cR.handleChapters(novel, page.chapters)
+					else cR.handleChaptersReturn(novel, page.chapters).handle { chapters ->
+						if (chapters.isNotEmpty()) haveChaptersUpdate()
+						uR.addUpdates(chapters.map {
+							UpdateEntity(it.id!!, novel.id!!, System.currentTimeMillis())
+						})
 					}
-					successResult(true)
 				}
+				successResult(true)
 			}
+		}
 
 	suspend operator fun invoke(
-			novel: NovelEntity,
-			loadChapters: Boolean,
-			haveChaptersUpdate: () -> Unit = {}
+		novel: NovelEntity,
+		loadChapters: Boolean,
+		haveChaptersUpdate: () -> Unit = {}
 	): HResult<Any> = main(novel, loadChapters, haveChaptersUpdate)
 
 	suspend operator fun invoke(
-			novelID: Int,
-			loadChapters: Boolean
+		novelID: Int,
+		loadChapters: Boolean
 	): HResult<Any> = nR.loadNovel(novelID).transform { novel ->
 		main(novel, loadChapters)
 	}

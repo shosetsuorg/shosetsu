@@ -6,8 +6,8 @@ import app.shosetsu.android.providers.file.base.IFileSystemProvider
 import app.shosetsu.common.datasource.file.base.IFileCachedChapterDataSource
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.transmogrify
 import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.transmogrify
 import app.shosetsu.common.enums.InternalFileDir.CACHE
 import org.json.JSONArray
 import org.json.JSONException
@@ -35,36 +35,36 @@ import org.json.JSONObject
  * 17 / 08 / 2020
  */
 class FileCachedChapterDataSource(
-		private val iFileSystemProvider: IFileSystemProvider
+	private val iFileSystemProvider: IFileSystemProvider
 ) : IFileCachedChapterDataSource {
 
 	init {
 		logV("Creating required directories")
 		iFileSystemProvider.createInternalDirectory(CACHE, chaptersCacheDir).handle(
-				onError = {
-					logV("Error on creation of directories $it")
-				},
-				onSuccess = {
-					logV("Created required directories")
-				}
+			onError = {
+				logV("Error on creation of directories $it")
+			},
+			onSuccess = {
+				logV("Created required directories")
+			}
 		)
 	}
 
 	@get:Synchronized
 	private val chaptersCacheInstruction: JSONArray by lazy {
 		iFileSystemProvider.readInternalFile(
-				CACHE,
-				mapFile
+			CACHE,
+			mapFile
 		).transmogrify(
-				onError = {
-					logE("Error on reading cache chapters index, Writing empty one")
-					iFileSystemProvider.writeInternalFile(
-							CACHE,
-							mapFile,
-							JSONArray().toString()
-					)
-					null
-				}
+			onError = {
+				logE("Error on reading cache chapters index, Writing empty one")
+				iFileSystemProvider.writeInternalFile(
+					CACHE,
+					mapFile,
+					JSONArray().toString()
+				)
+				null
+			}
 		) {
 			JSONArray(it)
 		} ?: JSONArray()
@@ -83,9 +83,9 @@ class FileCachedChapterDataSource(
 	 */
 	private fun writeFile() {
 		iFileSystemProvider.writeInternalFile(
-				CACHE,
-				mapFile,
-				chaptersCacheInstruction.toString(1)
+			CACHE,
+			mapFile,
+			chaptersCacheInstruction.toString(1)
 		)
 	}
 
@@ -146,9 +146,9 @@ class FileCachedChapterDataSource(
 				val id = obj.getInt(CHAPTER_KEY)
 				if (id == chapterID) {
 					iFileSystemProvider.writeInternalFile(
-							CACHE,
-							createFilePath(chapterID),
-							passage
+						CACHE,
+						createFilePath(chapterID),
+						passage
 					)
 					obj.put(TIME_KEY, System.currentTimeMillis())
 					chaptersCacheInstruction.put(i, obj)
@@ -159,9 +159,9 @@ class FileCachedChapterDataSource(
 			// Writes data to txt file then updates the chapterInstruction json
 
 			iFileSystemProvider.writeInternalFile(
-					CACHE,
-					createFilePath(chapterID),
-					passage
+				CACHE,
+				createFilePath(chapterID),
+				passage
 			)
 			chaptersCacheInstruction.put(JSONObject().apply {
 				put(CHAPTER_KEY, chapterID)
