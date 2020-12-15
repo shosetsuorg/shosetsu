@@ -39,7 +39,7 @@ interface ILocalNovelsDataSource {
 	suspend fun loadBookmarkedNovels(): HResult<List<NovelEntity>>
 
 	/** Loads a [List] of [BookmarkedNovelEntity] that are in the library */
-	suspend fun loadLiveBookmarkedNovelsAndCount(): Flow<HResult<List<BookmarkedNovelEntity>>>
+	fun loadLiveBookmarkedNovelsAndCount(): Flow<HResult<List<BookmarkedNovelEntity>>>
 
 	/** Loads a [NovelEntity] by its [novelID] */
 	suspend fun loadNovel(novelID: Int): HResult<NovelEntity>

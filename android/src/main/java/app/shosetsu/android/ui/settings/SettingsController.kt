@@ -4,8 +4,8 @@ import android.view.View
 import app.shosetsu.android.common.ext.setOnClickListener
 import app.shosetsu.android.ui.settings.sub.*
 import app.shosetsu.android.ui.settings.sub.backup.BackupSettings
-import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
-import app.shosetsu.android.view.base.PushCapableController
+import app.shosetsu.android.view.controller.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
+import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.SettingsCategoryUI
 import app.shosetsu.common.enums.SettingCategory.*
 import com.bluelinelabs.conductor.Controller
@@ -35,7 +35,8 @@ import com.github.doomsdayrs.apps.shosetsu.R
 class SettingsController : BasicFastAdapterRecyclerController<SettingsCategoryUI>(),
 	PushCapableController {
 	override val viewTitleRes: Int = R.string.settings
-	lateinit var pushController: (Controller) -> Unit
+	override var pushController: (Controller) -> Unit = {}
+
 	override var recyclerArray: ArrayList<SettingsCategoryUI>
 		get() = arrayListOf(
 			SettingsCategoryUI(VIEW, R.string.view, R.drawable.view_module),
@@ -46,10 +47,6 @@ class SettingsController : BasicFastAdapterRecyclerController<SettingsCategoryUI
 			SettingsCategoryUI(ADVANCED, R.string.advanced, R.drawable.settings),
 		)
 		set(_) {}
-
-	override fun acceptPushing(pushController: (Controller) -> Unit) {
-		this.pushController = pushController
-	}
 
 	override fun onViewCreated(view: View) {
 	}

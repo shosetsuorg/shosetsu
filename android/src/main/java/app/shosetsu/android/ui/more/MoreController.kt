@@ -6,9 +6,9 @@ import app.shosetsu.android.ui.about.AboutController
 import app.shosetsu.android.ui.downloads.DownloadsController
 import app.shosetsu.android.ui.repository.RepositoryController
 import app.shosetsu.android.ui.settings.SettingsController
-import app.shosetsu.android.view.base.CollapsedToolBarController
-import app.shosetsu.android.view.base.PushCapableController
-import app.shosetsu.android.view.base.ViewedController
+import app.shosetsu.android.view.controller.base.CollapsedToolBarController
+import app.shosetsu.android.view.controller.base.PushCapableController
+import app.shosetsu.android.view.controller.ViewedController
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerMoreBinding
 
@@ -37,7 +37,7 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerMoreBinding
  */
 class MoreController
 	: ViewedController<ControllerMoreBinding>(), CollapsedToolBarController, PushCapableController {
-	lateinit var pushController: (Controller) -> Unit
+	override var pushController: (Controller) -> Unit = {}
 
 	override fun onViewCreated(view: View) {
 		binding.download.setOnClickListener {
@@ -57,7 +57,4 @@ class MoreController
 	override fun bindView(inflater: LayoutInflater): ControllerMoreBinding =
 		ControllerMoreBinding.inflate(inflater)
 
-	override fun acceptPushing(pushController: (Controller) -> Unit) {
-		this.pushController = pushController
-	}
 }

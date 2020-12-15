@@ -30,9 +30,13 @@ package app.shosetsu.common.domain.model.local
  * @param unread chapters of this novel
  */
 data class BookmarkedNovelEntity(
-		val id: Int,
-		val title: String,
-		val imageURL: String,
-		var bookmarked: Boolean,
-		val unread: Int,
+	val id: Int,
+	val title: String,
+	val imageURL: String,
+	var bookmarked: Boolean,
+	val unread: Int,
+	val genres: List<String>,
+	val authors: List<String>,
+	val artists: List<String>,
+	val tags: List<String>,
 )

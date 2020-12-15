@@ -71,7 +71,17 @@ abstract class ABookmarkedNovelUI
 	override fun getDataTitle(): String = title
 
 	override fun convertTo(): BookmarkedNovelEntity =
-		BookmarkedNovelEntity(id, title, imageURL, bookmarked, unread)
+		BookmarkedNovelEntity(
+			id,
+			title,
+			imageURL,
+			bookmarked,
+			unread,
+			genres,
+			authors,
+			artists,
+			tags
+		)
 
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 

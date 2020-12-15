@@ -14,7 +14,11 @@ import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.library.listener.LibrarySearchQuery
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.novel.NovelController
-import app.shosetsu.android.view.base.*
+import app.shosetsu.android.view.controller.*
+import app.shosetsu.android.view.controller.base.BottomMenuController
+import app.shosetsu.android.view.controller.base.ExtendedFABController
+import app.shosetsu.android.view.controller.base.PushCapableController
+import app.shosetsu.android.view.controller.base.syncFABWithRecyclerView
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.view.widget.SlidingUpBottomMenu
 import app.shosetsu.android.viewmodel.abstracted.ILibraryViewModel
@@ -55,9 +59,9 @@ import com.mikepenz.fastadapter.select.selectExtension
 class LibraryController
 	: FastAdapterRecyclerController<ControllerLibraryBinding, ABookmarkedNovelUI>(),
 	PushCapableController, ExtendedFABController, BottomMenuController {
-	lateinit var pushController: (Controller) -> Unit
+	override var pushController: (Controller) -> Unit = {}
 
-	override var bottomMenuRetriever: (() -> SlidingUpBottomMenu?)? = null
+	override var bottomMenuRetriever: (() -> SlidingUpBottomMenu?) = { null }
 
 	private var fab: ExtendedFloatingActionButton? = null
 
@@ -250,9 +254,6 @@ class LibraryController
 		binding.emptyDataView.show("You don't have any novels, Go to \"Browse\" and add some!")
 	}
 
-	override fun acceptPushing(pushController: (Controller) -> Unit) {
-		this.pushController = pushController
-	}
 
 	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
 		this.fab = fab
@@ -262,11 +263,10 @@ class LibraryController
 	}
 
 	override fun onDestroy() {
-		viewModel.resetSortAndFilters()
 		super.onDestroy()
 	}
 
 	override fun getBottomMenuView(): View =
-		LibraryFilterMenuBuilder(activity!!.layoutInflater, viewModel).build()
+		LibraryFilterMenuBuilder(this, viewModel).build()
 
 }

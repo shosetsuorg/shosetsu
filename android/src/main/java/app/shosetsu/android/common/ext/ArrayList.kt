@@ -1,4 +1,4 @@
-package app.shosetsu.android.view.base
+package app.shosetsu.android.common.ext
 
 /*
  * This file is part of Shosetsu.
@@ -15,10 +15,20 @@ package app.shosetsu.android.view.base
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * 14 / 12 / 2020
  */
 
 /**
- * shosetsu
- * 11 / 09 / 2020
+ * 14 / 12 / 2020
+ *
+ * Removes the first element matching the [predicate]
  */
-interface CollapsedToolBarController
+fun <T> ArrayList<T>.removeFirst(predicate: (T) -> Boolean): Boolean {
+	for (i in size - 1 downTo 0)
+		if (predicate(get(i))) {
+			removeAt(i)
+			return true
+		}
+	return false
+}

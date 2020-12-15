@@ -1,11 +1,12 @@
 package app.shosetsu.android.viewmodel.abstracted
 
+import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.utils.ColumnCalculator
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.viewmodel.base.*
+import app.shosetsu.common.enums.InclusionState
 import app.shosetsu.common.enums.NovelSortType
 import app.shosetsu.common.enums.NovelUIType
-import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -40,16 +41,16 @@ abstract class ILibraryViewModel :
 	ColumnCalculator {
 
 	/** All genres from all [ABookmarkedNovelUI] combined*/
-	abstract val genresFlow: Flow<List<String>>
+	abstract val genresFlow: LiveData<List<String>>
 
 	/** All tags from all [ABookmarkedNovelUI] combined*/
-	abstract val tagsFlow: Flow<List<String>>
+	abstract val tagsFlow: LiveData<List<String>>
 
 	/** All authors from all [ABookmarkedNovelUI] combined*/
-	abstract val authorsFlow: Flow<List<String>>
+	abstract val authorsFlow: LiveData<List<String>>
 
 	/** All artists from all [ABookmarkedNovelUI] combined*/
-	abstract val artistsFlow: Flow<List<String>>
+	abstract val artistsFlow: LiveData<List<String>>
 
 	abstract fun getNovelUIType(): NovelUIType
 
@@ -64,21 +65,21 @@ abstract class ILibraryViewModel :
 	abstract fun isSortReversed(): Boolean
 	abstract fun setIsSortReversed(reversed: Boolean)
 
-	abstract fun addGenreToFilter(genre: String): Boolean
+	abstract fun addGenreToFilter(genre: String, inclusionState: InclusionState): Boolean
 	abstract fun removeGenreFromFilter(genre: String): Boolean
-	abstract fun getFilterGenres(): List<String>
+	abstract fun getFilterGenres(): List<Pair<String, InclusionState>>
 
-	abstract fun addAuthorToFilter(author: String): Boolean
+	abstract fun addAuthorToFilter(author: String, inclusionState: InclusionState): Boolean
 	abstract fun removeAuthorFromFilter(author: String): Boolean
-	abstract fun getFilterAuthors(): List<String>
+	abstract fun getFilterAuthors(): List<Pair<String, InclusionState>>
 
-	abstract fun addArtistToFilter(artist: String): Boolean
+	abstract fun addArtistToFilter(artist: String, inclusionState: InclusionState): Boolean
 	abstract fun removeArtistFromFilter(artist: String): Boolean
-	abstract fun getFilterArtists(): List<String>
+	abstract fun getFilterArtists(): List<Pair<String, InclusionState>>
 
-	abstract fun addTagToFilter(tag: String): Boolean
+	abstract fun addTagToFilter(tag: String, inclusionState: InclusionState): Boolean
 	abstract fun removeTagFromFilter(tag: String): Boolean
-	abstract fun getFilterTags(): List<String>
+	abstract fun getFilterTags(): List<Pair<String, InclusionState>>
 
 	abstract fun resetSortAndFilters()
 

@@ -8,11 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
-import app.shosetsu.android.ui.novel.filter.NovelFilterMenuBuilder
-import app.shosetsu.android.view.base.BottomMenuController
-import app.shosetsu.android.view.base.FABController
-import app.shosetsu.android.view.base.FastAdapterRecyclerController
-import app.shosetsu.android.view.base.syncFABWithRecyclerView
+import app.shosetsu.android.view.controller.base.BottomMenuController
+import app.shosetsu.android.view.controller.base.FABController
+import app.shosetsu.android.view.controller.FastAdapterRecyclerController
+import app.shosetsu.android.view.controller.base.syncFABWithRecyclerView
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.view.widget.SlidingUpBottomMenu
@@ -565,7 +564,7 @@ class NovelController(bundle: Bundle) :
 		}
 	}
 
-	override var bottomMenuRetriever: (() -> SlidingUpBottomMenu?)? = null
+	override var bottomMenuRetriever: (() -> SlidingUpBottomMenu?) = { null }
 
 	override fun getBottomMenuView(): View =
 		NovelFilterMenuBuilder(activity!!.layoutInflater, viewModel).build()

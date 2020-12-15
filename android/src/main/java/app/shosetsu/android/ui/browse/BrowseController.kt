@@ -28,8 +28,8 @@ import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.CatalogController
 import app.shosetsu.android.ui.extensionsConfigure.ConfigureExtension
-import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
-import app.shosetsu.android.view.base.PushCapableController
+import app.shosetsu.android.view.controller.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
+import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.viewmodel.abstracted.IExtensionsViewModel
 import app.shosetsu.common.dto.HResult
@@ -52,11 +52,8 @@ class BrowseController : BasicFastAdapterRecyclerController<ExtensionUI>(),
 		setHasOptionsMenu(true)
 	}
 
-	lateinit var pushController: (Controller) -> Unit
+	override var pushController: (Controller) -> Unit = {}
 
-	override fun acceptPushing(pushController: (Controller) -> Unit) {
-		this.pushController = pushController
-	}
 
 	/***/
 	val viewModel: IExtensionsViewModel by viewModel()

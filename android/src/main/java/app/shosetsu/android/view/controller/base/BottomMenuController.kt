@@ -1,6 +1,7 @@
-package app.shosetsu.android.view.base
+package app.shosetsu.android.view.controller.base
 
-import com.bluelinelabs.conductor.Controller
+import android.view.View
+import app.shosetsu.android.view.widget.SlidingUpBottomMenu
 
 /*
  * This file is part of Shosetsu.
@@ -21,9 +22,17 @@ import com.bluelinelabs.conductor.Controller
 
 /**
  * shosetsu
- * 12 / 09 / 2020
- * A controller that can push a new controller onto the router
+ * 13 / 12 / 2020
+ *
+ * For controllers to have a sliding up bottom menu
  */
-interface PushCapableController {
-	fun acceptPushing(pushController: (Controller) -> Unit)
+interface BottomMenuController {
+	var bottomMenuRetriever: (() -> SlidingUpBottomMenu?)
+
+	/**
+	 * Creates a view to pass into the sliding up menu
+	 *
+	 * Built when the view is called to be shown
+	 */
+	fun getBottomMenuView(): View
 }

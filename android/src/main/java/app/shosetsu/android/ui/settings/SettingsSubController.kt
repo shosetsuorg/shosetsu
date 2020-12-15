@@ -2,7 +2,7 @@ package app.shosetsu.android.ui.settings
 
 import android.view.View
 import androidx.annotation.CallSuper
-import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
+import app.shosetsu.android.view.controller.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.settings.ASubSettingsViewModel
 import app.shosetsu.common.dto.HResult

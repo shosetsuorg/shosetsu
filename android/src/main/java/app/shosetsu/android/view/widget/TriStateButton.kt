@@ -5,8 +5,10 @@ import android.util.AttributeSet
 import android.view.LayoutInflater.from
 import android.view.View
 import android.widget.FrameLayout
+import androidx.annotation.StringRes
 import androidx.core.content.res.getResourceIdOrThrow
 import androidx.core.view.isVisible
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.view.widget.TriStateButton.State.*
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.TriStateButtonBinding
@@ -73,8 +75,8 @@ class TriStateButton @JvmOverloads constructor(
 		context.theme.obtainStyledAttributes(attrs, R.styleable.TriStateButton, defStyleAttr, 0)
 			.apply {
 				try {
-					checkedRes = getResourceIdOrThrow(R.styleable.TriStateButton_button_unchecked)
-					uncheckedRes = getResourceIdOrThrow(R.styleable.TriStateButton_button_checked)
+					checkedRes = getResourceIdOrThrow(R.styleable.TriStateButton_button_checked)
+					uncheckedRes = getResourceIdOrThrow(R.styleable.TriStateButton_button_unchecked)
 					ignoredRes = getResourceId(R.styleable.TriStateButton_button_ignored, 0)
 					state = State.fromKey(getResourceId(R.styleable.TriStateButton_state, 0))
 
@@ -94,6 +96,14 @@ class TriStateButton @JvmOverloads constructor(
 			cycleState()
 		}
 
+	}
+
+	fun setText(@StringRes stringRes: Int) =
+		binding.textView.setText(stringRes)
+
+	fun setText(string: String?) {
+		logV("Setting text as $string")
+		binding.textView.text = string
 	}
 
 	fun addOnClickListener(onClick: (View) -> Unit) {

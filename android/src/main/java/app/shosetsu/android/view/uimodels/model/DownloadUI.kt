@@ -46,7 +46,7 @@ data class DownloadUI(
 ) : BaseRecyclerItem<DownloadUI.ViewHolder>(), Convertible<DownloadEntity> {
 	override var identifier: Long
 		get() = chapterID.toLong()
-		set(@Suppress("UNUSED_PARAMETER") value) {}
+		set(_) {}
 
 	override fun convertTo(): DownloadEntity = DownloadEntity(
 		chapterID,

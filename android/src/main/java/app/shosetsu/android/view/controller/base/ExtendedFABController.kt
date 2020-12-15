@@ -1,4 +1,4 @@
-package app.shosetsu.android.view.base
+package app.shosetsu.android.view.controller.base
 
 import android.util.Log
 import androidx.annotation.CallSuper

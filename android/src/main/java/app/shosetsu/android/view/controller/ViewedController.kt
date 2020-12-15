@@ -1,4 +1,4 @@
-package app.shosetsu.android.view.base
+package app.shosetsu.android.view.controller
 
 import android.os.Bundle
 import android.util.Log

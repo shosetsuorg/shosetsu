@@ -1,4 +1,4 @@
-package app.shosetsu.android.view.base
+package app.shosetsu.android.view.controller
 
 import android.os.Bundle
 import android.util.Log
@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import app.shosetsu.android.common.ext.context
 import app.shosetsu.android.common.ext.logID
-import app.shosetsu.android.common.ext.logV
 import app.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding.inflate

@@ -1,7 +1,4 @@
-package app.shosetsu.android.view.base
-
-import android.view.View
-import app.shosetsu.android.view.widget.SlidingUpBottomMenu
+package app.shosetsu.common.enums
 
 /*
  * This file is part of Shosetsu.
@@ -22,17 +19,6 @@ import app.shosetsu.android.view.widget.SlidingUpBottomMenu
 
 /**
  * shosetsu
- * 13 / 12 / 2020
- *
- * For controllers to have a sliding up bottom menu
+ * 15 / 12 / 2020
  */
-interface BottomMenuController {
-	var bottomMenuRetriever: (() -> SlidingUpBottomMenu?)?
-
-	/**
-	 * Creates a view to pass into the sliding up menu
-	 *
-	 * Built when the view is called to be shown
-	 */
-	fun getBottomMenuView(): View
-}
+enum class InclusionState { INCLUDE, EXCLUDE }

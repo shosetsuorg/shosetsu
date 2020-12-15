@@ -1,19 +1,33 @@
 package app.shosetsu.android.ui.library
 
 import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.core.view.isVisible
+import androidx.lifecycle.LiveData
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
 import app.shosetsu.android.common.ext.logV
-import app.shosetsu.android.view.widget.TriStateButton.State.CHECKED
-import app.shosetsu.android.view.widget.TriStateButton.State.UNCHECKED
+import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
+import app.shosetsu.android.view.uimodels.base.BindViewHolder
+import app.shosetsu.android.view.widget.TriStateButton.State.*
 import app.shosetsu.android.viewmodel.abstracted.ILibraryViewModel
+import app.shosetsu.common.enums.InclusionState
+import app.shosetsu.common.enums.InclusionState.EXCLUDE
+import app.shosetsu.common.enums.InclusionState.INCLUDE
 import app.shosetsu.common.enums.NovelSortType.*
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerLibraryBottomMenu0Binding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerLibraryBottomMenu1Binding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottomMenuBinding
+import com.github.doomsdayrs.apps.shosetsu.databinding.TristateCheckboxBinding
+import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.adapters.ItemAdapter
+import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
+import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.calculateDiff
+import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL as LLM_VERTICAL
 
 /*
  * This file is part of Shosetsu.
@@ -39,9 +53,12 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottom
  * Creates the bottom menu for Novel Controller
  */
 class LibraryFilterMenuBuilder constructor(
-	private val layoutInflater: LayoutInflater,
+	private val controller: LibraryController,
 	private val viewModel: ILibraryViewModel
 ) {
+	@Suppress("ProtectedInFinal")
+	protected val layoutInflater = controller.activity!!.layoutInflater
+
 	fun build(): View =
 		ControllerNovelInfoBottomMenuBinding.inflate(
 			layoutInflater
@@ -51,7 +68,195 @@ class LibraryFilterMenuBuilder constructor(
 			}
 		}.root
 
-	inner class MenuAdapter(
+	/** Creates the first menu */
+	private inner class Menu0 {
+		inner class ListModel(
+			val textView: TextView,
+			val recyclerView: RecyclerView,
+			val liveData: LiveData<List<String>>,
+			val retrieveState: () -> List<Pair<String, InclusionState>>,
+			val setState: (String, InclusionState) -> Unit,
+			val removeState: (String) -> Unit
+		) {
+			/**
+			 * Represents the checkbox to toggle with
+			 * @param inclusionState, The initial state this should start with
+			 */
+			inner class FilterModel(
+				val filterKeyName: String,
+				val inclusionState: InclusionState?
+			) : BaseRecyclerItem<FilterModel.ViewHolder>() {
+				override var identifier: Long
+					get() = filterKeyName.hashCode().toLong()
+					set(_) {}
+
+				inner class ViewHolder(view: View) :
+					BindViewHolder<FilterModel, TristateCheckboxBinding>(view) {
+
+					override val binding = TristateCheckboxBinding.bind(view)
+
+					override fun TristateCheckboxBinding.bindView(
+						item: FilterModel,
+						payloads: List<Any>
+					) {
+						this.root.apply {
+							setText(item.filterKeyName)
+							state = item.inclusionState?.let {
+								when (it) {
+									INCLUDE -> CHECKED
+									EXCLUDE -> UNCHECKED
+								}
+							} ?: IGNORED
+							addOnStateChangeListener {
+								when (it) {
+									CHECKED -> setState(item.filterKeyName, INCLUDE)
+									UNCHECKED -> setState(item.filterKeyName, EXCLUDE)
+									IGNORED -> removeState(item.filterKeyName)
+								}
+							}
+						}
+					}
+
+					override fun TristateCheckboxBinding.unbindView(item: FilterModel) {
+						this.root.apply {
+							clearOnStateChangeListener()
+							clearOnClickListeners()
+							setText(null)
+							state = IGNORED
+						}
+					}
+				}
+
+				override val layoutRes: Int = R.layout.tristate_checkbox
+				override val type: Int = R.layout.tristate_checkbox
+				override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
+
+				override fun toString(): String =
+					"FilterModel(key='$filterKeyName', state=$inclusionState, id=$identifier)"
+			}
+		}
+
+		operator fun invoke(container: ViewGroup): View =
+			ControllerLibraryBottomMenu0Binding.inflate(
+				layoutInflater,
+				container,
+				false
+			).apply {
+				buildView()
+			}.root
+
+		private fun ControllerLibraryBottomMenu0Binding.buildView() {
+			arrayListOf(
+				ListModel(
+					filterGenresLabel,
+					filterGenres,
+					viewModel.genresFlow,
+					{ viewModel.getFilterGenres() },
+					{ s, b -> viewModel.addGenreToFilter(s, b) },
+					{ viewModel.removeGenreFromFilter(it) }
+				),
+				ListModel(
+					filterTagsLabel,
+					filterTags,
+					viewModel.tagsFlow,
+					{ viewModel.getFilterTags() },
+					{ s, b -> viewModel.addTagToFilter(s, b) },
+					{ viewModel.removeTagFromFilter(it) }
+				),
+				ListModel(
+					filterAuthorsLabel,
+					filterAuthors,
+					viewModel.authorsFlow,
+					{ viewModel.getFilterAuthors() },
+					{ s, b -> viewModel.addAuthorToFilter(s, b) },
+					{ viewModel.removeAuthorFromFilter(it) }
+				),
+				ListModel(
+					filterArtistsLabel,
+					filterArtists,
+					viewModel.artistsFlow,
+					{ viewModel.getFilterArtists() },
+					{ s, b -> viewModel.addArtistToFilter(s, b) },
+					{ viewModel.removeArtistFromFilter(it) }
+				)
+			).forEach { listModel ->
+				val textView = listModel.textView
+				val recycler = listModel.recyclerView
+				val live = listModel.liveData
+				val retrieve = listModel.retrieveState
+
+				val itemAdapter = ItemAdapter<ListModel.FilterModel>()
+				live.observe(controller) { originalList: List<String> ->
+					// Gets the current states
+					val r = retrieve()
+					// Converts and applies states into a newList
+					val newItems = originalList.sorted().map { key ->
+						listModel.FilterModel(
+							key,
+							r.firstOrNull { vS -> vS.first == key }?.second
+						)
+					}
+					// Passes update to itemAdapter
+					FastAdapterDiffUtil[itemAdapter] = calculateDiff(itemAdapter, newItems)
+				}
+				recycler.layoutManager = LinearLayoutManager(recycler.context, LLM_VERTICAL, false)
+				recycler.adapter = FastAdapter.with(itemAdapter)
+
+				textView.setOnClickListener {
+					logV("Clicked ${itemAdapter.itemList.items}")
+					recycler.isVisible = !recycler.isVisible
+					textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
+						if (recycler.isVisible)
+							R.drawable.expand_less
+						else R.drawable.expand_more,
+						0,
+						0,
+						0
+					)
+				}
+
+			}
+		}
+	}
+
+	/** Creates the second menu */
+	private inner class Menu1 {
+		operator fun invoke(container: ViewGroup): View =
+			ControllerLibraryBottomMenu1Binding.inflate(
+				layoutInflater,
+				container,
+				false
+			).apply {
+				buildView()
+			}.root
+
+		private fun ControllerLibraryBottomMenu1Binding.buildView() {
+			val reversed = viewModel.isSortReversed()
+
+			when (viewModel.getSortType()) {
+				BY_TITLE -> byTitle::state
+				BY_UNREAD_COUNT -> byUnreadCount::state
+				BY_ID -> byId::state
+			}.set(if (!reversed) CHECKED else UNCHECKED)
+
+			triStateGroup.addOnStateChangeListener { id, state ->
+				viewModel.setSortType(
+					when (id) {
+						R.id.by_title -> BY_TITLE
+						R.id.by_unread_count -> BY_UNREAD_COUNT
+						R.id.by_id -> BY_ID
+						else -> BY_TITLE
+					}
+				)
+				viewModel.setIsSortReversed(state != CHECKED)
+			}
+		}
+	}
+
+	/**
+	 * Menu adapter for the filter menu
+	 */
+	private inner class MenuAdapter(
 		private val context: Context
 	) : PagerAdapter() {
 		override fun getCount(): Int = 2
@@ -66,44 +271,14 @@ class LibraryFilterMenuBuilder constructor(
 		override fun instantiateItem(container: ViewGroup, position: Int): Any {
 			when (position) {
 				0 -> {
-					val view = ControllerLibraryBottomMenu0Binding.inflate(
-						layoutInflater,
-						container,
-						false
-					).also {
-
-					}.root
-					container.addView(view)
-					return view
+					return Menu0().invoke(container).also {
+						container.addView(it)
+					}
 				}
 				1 -> {
-					val view = ControllerLibraryBottomMenu1Binding.inflate(
-						layoutInflater,
-						container,
-						false
-					).also {
-						val reversed = viewModel.isSortReversed()
-
-						when (viewModel.getSortType()) {
-							BY_TITLE -> it.byTitle::state
-							BY_UNREAD_COUNT -> it.byUnreadCount::state
-							BY_ID -> it.byId::state
-						}.set(if (!reversed) CHECKED else UNCHECKED)
-
-						it.triStateGroup.addOnStateChangeListener { id, state ->
-							viewModel.setSortType(
-								when (id) {
-									R.id.by_title -> BY_TITLE
-									R.id.by_unread_count -> BY_UNREAD_COUNT
-									R.id.by_id -> BY_ID
-									else -> BY_TITLE
-								}
-							)
-							viewModel.setIsSortReversed(state != CHECKED)
-						}
-					}.root
-					container.addView(view)
-					return view
+					return Menu1().invoke(container).also {
+						container.addView(it)
+					}
 				}
 			}
 			return super.instantiateItem(container, position)

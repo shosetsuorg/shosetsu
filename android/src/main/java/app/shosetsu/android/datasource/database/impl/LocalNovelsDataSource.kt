@@ -50,7 +50,7 @@ class LocalNovelsDataSource(
 		e.toHError()
 	}
 
-	override suspend fun loadLiveBookmarkedNovelsAndCount(
+	override fun loadLiveBookmarkedNovelsAndCount(
 	): Flow<HResult<List<BookmarkedNovelEntity>>> = flow {
 		try {
 			emitAll(novelsDao.loadBookmarkedNovelsCount().mapLatestToSuccess())

@@ -6,7 +6,7 @@ import android.view.View
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.common.ext.viewModel
-import app.shosetsu.android.view.base.FastAdapterRecyclerController
+import app.shosetsu.android.view.controller.FastAdapterRecyclerController
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.IExtensionConfigureViewModel

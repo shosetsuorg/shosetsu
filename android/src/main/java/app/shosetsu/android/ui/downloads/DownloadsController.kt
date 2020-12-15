@@ -23,9 +23,9 @@ import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.common.ext.setOnPreClickListener
 import app.shosetsu.android.common.ext.setSelectionListener
 import app.shosetsu.android.common.ext.viewModel
-import app.shosetsu.android.view.base.ExtendedFABController
-import app.shosetsu.android.view.base.FastAdapterRecyclerController.BottomMenuBasicFastAdapterRecyclerController
-import app.shosetsu.android.view.base.PushCapableController
+import app.shosetsu.android.view.controller.FastAdapterRecyclerController.BottomMenuBasicFastAdapterRecyclerController
+import app.shosetsu.android.view.controller.base.ExtendedFABController
+import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.IDownloadsViewModel
 import app.shosetsu.common.dto.HResult
@@ -184,9 +184,6 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 	override fun onDestroy() {
 		actionMode?.finish()
 		super.onDestroy()
-	}
-
-	override fun acceptPushing(pushController: (Controller) -> Unit) {
 	}
 
 	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
@@ -357,4 +354,6 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 			fastAdapter.getSelectExtension().deselect()
 		}
 	}
+
+	override var pushController: (Controller) -> Unit = {}
 }

@@ -20,8 +20,8 @@ import app.shosetsu.android.common.ext.setOnClickListener
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.catalogue.listeners.CatalogueSearchQuery
 import app.shosetsu.android.ui.novel.NovelController
-import app.shosetsu.android.view.base.FastAdapterRecyclerController
-import app.shosetsu.android.view.base.PushCapableController
+import app.shosetsu.android.view.controller.FastAdapterRecyclerController
+import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.ProgressItem
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ICatalogViewModel
@@ -66,7 +66,7 @@ class CatalogController(
 	PushCapableController {
 	private var searchView: SearchView? = null
 
-	lateinit var pushController: (Controller) -> Unit
+	override var pushController: (Controller) -> Unit = {}
 
 	/***/
 	val viewModel: ICatalogViewModel by viewModel()
@@ -85,9 +85,6 @@ class CatalogController(
 		setHasOptionsMenu(true)
 	}
 
-	override fun acceptPushing(pushController: (Controller) -> Unit) {
-		this.pushController = pushController
-	}
 
 	override fun onDestroy() {
 		super.onDestroy()

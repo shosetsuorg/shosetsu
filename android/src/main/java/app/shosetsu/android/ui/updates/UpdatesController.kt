@@ -19,8 +19,8 @@ package app.shosetsu.android.ui.updates
 
 import android.view.View
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.view.base.CollapsedToolBarController
-import app.shosetsu.android.view.base.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
+import app.shosetsu.android.view.controller.base.CollapsedToolBarController
+import app.shosetsu.android.view.controller.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
 import app.shosetsu.android.view.decoration.StickyHeaderDecor
 import app.shosetsu.android.view.uimodels.model.UpdateUI
 import app.shosetsu.android.viewmodel.abstracted.IUpdatesViewModel

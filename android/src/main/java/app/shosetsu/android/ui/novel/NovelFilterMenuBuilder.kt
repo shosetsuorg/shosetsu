@@ -1,4 +1,4 @@
-package app.shosetsu.android.ui.novel.filter
+package app.shosetsu.android.ui.novel
 
 import android.content.Context
 import android.view.LayoutInflater

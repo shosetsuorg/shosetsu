@@ -50,6 +50,7 @@ fun Exception.toHError(): HResult.Error = when (this) {
 		logE("HTTP Exception")
 		errorResult(ErrorKeys.ERROR_HTTP_ERROR, message!!, this)
 	}
+	is SocketTimeoutException -> errorResult(this)
 	is IOException -> {
 		logE("Network exception")
 		errorResult(ErrorKeys.ERROR_NETWORK, message ?: "Unknown Network Exception", this)
@@ -64,7 +65,6 @@ fun Exception.toHError(): HResult.Error = when (this) {
 	is SQLiteException -> errorResult(this)
 	is InvalidParameterException -> errorResult(this)
 	is JSONException -> errorResult(this)
-	is SocketTimeoutException -> errorResult(this)
 	is UnknownHostException -> errorResult(this)
 	else -> errorResult(ErrorKeys.ERROR_GENERAL, message ?: "Unknown General Error", this)
 }

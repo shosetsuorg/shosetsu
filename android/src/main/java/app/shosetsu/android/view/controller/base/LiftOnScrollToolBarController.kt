@@ -1,4 +1,4 @@
-package app.shosetsu.android.view.base
+package app.shosetsu.android.view.controller.base
 
 /*
  * This file is part of Shosetsu.

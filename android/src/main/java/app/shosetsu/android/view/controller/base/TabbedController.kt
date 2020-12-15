@@ -1,4 +1,4 @@
-package app.shosetsu.android.view.base
+package app.shosetsu.android.view.controller.base
 
 import com.google.android.material.tabs.TabLayout
 

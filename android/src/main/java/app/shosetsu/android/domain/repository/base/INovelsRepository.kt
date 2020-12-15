@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.Flow
  */
 interface INovelsRepository {
 	/** Gets all bookmarked as live data */
-	suspend fun getLiveBookmarked(): Flow<HResult<List<BookmarkedNovelEntity>>>
+	fun getLiveBookmarked(): Flow<HResult<List<BookmarkedNovelEntity>>>
 
 	/** Gets NovelEntities that are bookmarked */
 	suspend fun getBookmarkedNovels(): HResult<List<NovelEntity>>

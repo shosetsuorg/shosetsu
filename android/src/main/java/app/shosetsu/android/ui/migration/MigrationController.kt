@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ext.context
 import app.shosetsu.android.common.ext.picasso
-import app.shosetsu.android.view.base.ViewedController
+import app.shosetsu.android.view.controller.ViewedController
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R

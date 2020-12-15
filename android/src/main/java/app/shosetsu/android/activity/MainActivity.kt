@@ -28,7 +28,8 @@ import app.shosetsu.android.ui.library.LibraryController
 import app.shosetsu.android.ui.more.MoreController
 import app.shosetsu.android.ui.search.SearchController
 import app.shosetsu.android.ui.updates.UpdatesController
-import app.shosetsu.android.view.base.*
+import app.shosetsu.android.view.controller.*
+import app.shosetsu.android.view.controller.base.*
 import app.shosetsu.android.viewmodel.abstracted.IMainViewModel
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.enums.AppThemes.*
@@ -426,7 +427,8 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			to.showFAB(eFab)
 		}
 
-		if (to is PushCapableController) to.acceptPushing { transitionView(it) }
+		if (to is PushCapableController)
+			to.pushController = { transitionView(it) }
 
 		val tabLayout = binding.tabLayout
 

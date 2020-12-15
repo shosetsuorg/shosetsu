@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.settings.sub.TextAssetReader
-import app.shosetsu.android.view.base.PushCapableController
-import app.shosetsu.android.view.base.ViewedController
+import app.shosetsu.android.view.controller.base.PushCapableController
+import app.shosetsu.android.view.controller.ViewedController
 import app.shosetsu.android.viewmodel.abstracted.AAboutViewModel
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
@@ -36,7 +36,8 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerAboutBinding
 class AboutController : ViewedController<ControllerAboutBinding>(), PushCapableController {
 	override val viewTitleRes: Int = R.string.about
 	private val viewModel: AAboutViewModel by viewModel()
-	lateinit var pushController: (Controller) -> Unit
+	override var pushController: (Controller) -> Unit = {}
+
 
 	override fun onViewCreated(view: View) {
 		binding.apply {
@@ -63,10 +64,6 @@ class AboutController : ViewedController<ControllerAboutBinding>(), PushCapableC
 				onClickLicense()
 			}
 		}
-	}
-
-	override fun acceptPushing(pushController: (Controller) -> Unit) {
-		this.pushController = pushController
 	}
 
 	override fun bindView(inflater: LayoutInflater): ControllerAboutBinding =

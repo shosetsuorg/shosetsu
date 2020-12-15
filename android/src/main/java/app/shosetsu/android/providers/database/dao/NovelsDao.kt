@@ -75,7 +75,11 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 							SELECT 
 									count(*) 
 							FROM chapters WHERE novelID = novels.id AND readingStatus != 2 
-						) as unread 
+						) as unread,
+						novels.genres,
+						novels.authors,
+						novels.artists,
+						novels.tags
 					FROM novels WHERE novels.bookmarked = 1"""
 	)
 	fun loadBookmarkedNovelsCount(): Flow<List<BookmarkedNovelEntity>>
