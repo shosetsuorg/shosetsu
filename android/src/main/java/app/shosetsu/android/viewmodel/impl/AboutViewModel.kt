@@ -1,4 +1,4 @@
-package app.shosetsu.android.viewmodel.model
+package app.shosetsu.android.viewmodel.impl
 
 import android.content.Context
 import android.content.Intent

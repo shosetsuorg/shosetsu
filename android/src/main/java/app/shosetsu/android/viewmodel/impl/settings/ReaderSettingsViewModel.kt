@@ -1,4 +1,4 @@
-package app.shosetsu.android.viewmodel.model.settings
+package app.shosetsu.android.viewmodel.impl.settings
 
 import android.content.Context
 import android.content.res.Resources.NotFoundException

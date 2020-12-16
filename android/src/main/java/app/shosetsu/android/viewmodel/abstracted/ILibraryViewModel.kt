@@ -65,21 +65,21 @@ abstract class ILibraryViewModel :
 	abstract fun isSortReversed(): Boolean
 	abstract fun setIsSortReversed(reversed: Boolean)
 
-	abstract fun addGenreToFilter(genre: String, inclusionState: InclusionState): Boolean
-	abstract fun removeGenreFromFilter(genre: String): Boolean
-	abstract fun getFilterGenres(): List<Pair<String, InclusionState>>
+	abstract fun addGenreToFilter(genre: String, inclusionState: InclusionState)
+	abstract fun removeGenreFromFilter(genre: String)
+	abstract fun getFilterGenres(): HashMap<String, InclusionState>
 
-	abstract fun addAuthorToFilter(author: String, inclusionState: InclusionState): Boolean
-	abstract fun removeAuthorFromFilter(author: String): Boolean
-	abstract fun getFilterAuthors(): List<Pair<String, InclusionState>>
+	abstract fun addAuthorToFilter(author: String, inclusionState: InclusionState)
+	abstract fun removeAuthorFromFilter(author: String)
+	abstract fun getFilterAuthors(): HashMap<String, InclusionState>
 
-	abstract fun addArtistToFilter(artist: String, inclusionState: InclusionState): Boolean
-	abstract fun removeArtistFromFilter(artist: String): Boolean
-	abstract fun getFilterArtists(): List<Pair<String, InclusionState>>
+	abstract fun addArtistToFilter(artist: String, inclusionState: InclusionState)
+	abstract fun removeArtistFromFilter(artist: String)
+	abstract fun getFilterArtists(): HashMap<String, InclusionState>
 
-	abstract fun addTagToFilter(tag: String, inclusionState: InclusionState): Boolean
-	abstract fun removeTagFromFilter(tag: String): Boolean
-	abstract fun getFilterTags(): List<Pair<String, InclusionState>>
+	abstract fun addTagToFilter(tag: String, inclusionState: InclusionState)
+	abstract fun removeTagFromFilter(tag: String)
+	abstract fun getFilterTags(): HashMap<String, InclusionState>
 
 	abstract fun resetSortAndFilters()
 

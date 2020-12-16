@@ -1,4 +1,4 @@
-package app.shosetsu.android.viewmodel.model
+package app.shosetsu.android.viewmodel.impl
 
 /*
  * This file is part of shosetsu.
@@ -20,7 +20,6 @@ package app.shosetsu.android.viewmodel.model
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logV
-import app.shosetsu.android.common.ext.removeFirst
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.StartUpdateWorkerUseCase
@@ -43,7 +42,6 @@ import app.shosetsu.common.enums.NovelSortType
 import app.shosetsu.common.enums.NovelUIType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import org.luaj.vm2.ast.Str
 import java.util.Locale.getDefault as LGD
 
 /**
@@ -62,6 +60,8 @@ class LibraryViewModel(
 	private val loadNovelUIColumnsHUseCase: LoadNovelUIColumnsHUseCase,
 	private val loadNovelUIColumnsPUseCase: LoadNovelUIColumnsPUseCase,
 ) : ILibraryViewModel() {
+
+
 	private var novelUIType: NovelUIType = NovelUIType.fromInt(NovelCardType.default)
 
 	private var columnP: Int = ChapterColumnsInPortait.default
@@ -89,60 +89,35 @@ class LibraryViewModel(
 	override val artistsFlow: LiveData<List<String>> by lazy {
 		stripOutList { it.artists }
 	}
-	private var _novelSortType: NovelSortType = NovelSortType.BY_TITLE
-		set(value) {
-			field = value
-			launchIO {
-				logV("state change ${novelSortTypeFlow.value}")
-				novelSortTypeFlow.emit(value)
-				logV("New ${novelSortTypeFlow.value}")
-			}
-		}
-	private var _areNovelsReversed: Boolean = false
-		set(value) {
-			field = value
-			launchIO { areNovelsReversedFlow.emit(value) }
-		}
 
-	private val _genreFilter by lazy { ArrayList<Pair<String, InclusionState>>() }
-	private val _authorFilter by lazy { ArrayList<Pair<String, InclusionState>>() }
-	private val _artistFilter by lazy { ArrayList<Pair<String, InclusionState>>() }
-	private val _tagFilter by lazy { ArrayList<Pair<String, InclusionState>>() }
-
-	private val novelSortTypeFlow by lazy {
+	private val novelSortTypeFlow: MutableStateFlow<NovelSortType> by lazy {
 		MutableStateFlow(
-			_novelSortType
+			NovelSortType.BY_TITLE
 		)
 	}
-	private val areNovelsReversedFlow by lazy {
+	private val areNovelsReversedFlow: MutableStateFlow<Boolean> by lazy {
 		MutableStateFlow(
-			_areNovelsReversed
+			false
 		)
 	}
-	private val genreFilterFlow by lazy {
+	private val genreFilterFlow: MutableStateFlow<HashMap<String, InclusionState>> by lazy {
 		MutableStateFlow(
-			_genreFilter
-		).also {
-			launchIO {
-				it.collectLatest {
-					logV("$it")
-				}
-			}
-		}
-	}
-	private val authorFilterFlow by lazy {
-		MutableStateFlow(
-			_authorFilter
+			hashMapOf()
 		)
 	}
-	private val artistFilterFlow by lazy {
+	private val authorFilterFlow: MutableStateFlow<HashMap<String, InclusionState>> by lazy {
 		MutableStateFlow(
-			_artistFilter
+			hashMapOf()
 		)
 	}
-	private val tagFilterFlow by lazy {
+	private val artistFilterFlow: MutableStateFlow<HashMap<String, InclusionState>> by lazy {
 		MutableStateFlow(
-			_tagFilter
+			hashMapOf()
+		)
+	}
+	private val tagFilterFlow: MutableStateFlow<HashMap<String, InclusionState>> by lazy {
+		MutableStateFlow(
+			hashMapOf()
 		)
 	}
 
@@ -176,6 +151,9 @@ class LibraryViewModel(
 		}
 	}
 
+	/**
+	 * Removes the list for filtering from the [ABookmarkedNovelUI] with the flow
+	 */
 	@ExperimentalCoroutinesApi
 	private fun stripOutList(
 		strip: (ABookmarkedNovelUI) -> List<String>
@@ -193,34 +171,38 @@ class LibraryViewModel(
 		}
 	}.asIOLiveData()
 
-	private fun ArrayList<Pair<String, InclusionState>>.applyFilter(
-		list: List<ABookmarkedNovelUI>,
-		against: (ABookmarkedNovelUI) -> List<String>
-	): List<ABookmarkedNovelUI> {
-		var result = list
-		forEach { (s, inclusionState) ->
-			result = when (inclusionState) {
-				INCLUDE ->
-					result.filter { ui -> against(ui).any { g -> g.capitalize(LGD()) == s } }
-				EXCLUDE ->
-					result.filterNot { ui -> against(ui).any { g -> g.capitalize(LGD()) == s } }
-			}
-		}
-		return result
-	}
-
 	/**
 	 * @param flow What [Flow] to merge in updates from
 	 * @param against Return a [List] of [String] to compare against
 	 */
 	private fun Flow<HResult<List<ABookmarkedNovelUI>>>.applyFilterList(
-		flow: Flow<ArrayList<Pair<String, InclusionState>>>,
+		flow: Flow<HashMap<String, InclusionState>>,
 		against: (ABookmarkedNovelUI) -> List<String>
 	) = combine(flow) { novelResult, filters ->
-		logV("Yo im in hell")
+		logV("HELLO")
 		novelResult.transform { list ->
+			logV("TRANSFORM")
 			successResult(
-				if (filters.isNotEmpty()) filters.applyFilter(list, against) else list
+				if (filters.isNotEmpty()) {
+					logV("Remapping")
+					var result = list
+					filters.forEach { (s, inclusionState) ->
+						result = when (inclusionState) {
+							INCLUDE ->
+								result.filter {
+									against(it).any { g -> g.capitalize(LGD()) == s }
+								}
+							EXCLUDE ->
+								result.filterNot {
+									against(it).any { g -> g.capitalize(LGD()) == s }
+								}
+						}
+					}
+					result
+				} else {
+					logV("Inital")
+					list
+				}
 			)
 		}
 	}
@@ -285,79 +267,89 @@ class LibraryViewModel(
 		}
 	}
 
-	override fun getSortType(): NovelSortType = _novelSortType
+	override fun getSortType(): NovelSortType = novelSortTypeFlow.value
 
 	override fun setSortType(novelSortType: NovelSortType) {
-		_novelSortType = novelSortType
+		novelSortTypeFlow.value = novelSortType
 	}
 
-	override fun isSortReversed(): Boolean = _areNovelsReversed
+	override fun isSortReversed(): Boolean = areNovelsReversedFlow.value
 
 	override fun setIsSortReversed(reversed: Boolean) {
-		_areNovelsReversed = reversed
+		areNovelsReversedFlow.value = reversed
 	}
 
-	override fun addGenreToFilter(genre: String, inclusionState: InclusionState): Boolean =
-		_genreFilter.add(genre to inclusionState)
-			.also {
-				logV("Launch 1")
-				launchIO {
-					logV("Launch 2")
-					genreFilterFlow.emit(_genreFilter)
-					logV("Launch 3")
-				}
-			}
+	override fun addGenreToFilter(genre: String, inclusionState: InclusionState) {
+		val map = genreFilterFlow.value.copy()
+		map[genre] = inclusionState
+		genreFilterFlow.tryEmit(map)
+	}
 
-	override fun removeGenreFromFilter(genre: String): Boolean =
-		_genreFilter.removeFirst { it.first == genre }
-			.also { launchIO { genreFilterFlow.emit(_genreFilter) } }
+	override fun removeGenreFromFilter(genre: String) {
+		val map = genreFilterFlow.value.copy()
+		map.remove(genre)
+		genreFilterFlow.tryEmit(map.copy())
+	}
 
-	override fun getFilterGenres(): List<Pair<String, InclusionState>> = _genreFilter
+	override fun getFilterGenres(): HashMap<String, InclusionState> = genreFilterFlow.value
 
-	override fun addAuthorToFilter(author: String, inclusionState: InclusionState): Boolean =
-		_authorFilter.add(author to inclusionState)
-			.also { launchIO { authorFilterFlow.emit(_authorFilter) } }
+	override fun addAuthorToFilter(author: String, inclusionState: InclusionState) {
+		val map = authorFilterFlow.value.copy()
+		map[author] = inclusionState
+		authorFilterFlow.tryEmit(map)
+	}
 
-	override fun removeAuthorFromFilter(author: String): Boolean =
-		_authorFilter.removeFirst { it.first == author }
-			.also { launchIO { authorFilterFlow.emit(_authorFilter) } }
+	override fun removeAuthorFromFilter(author: String) {
+		val map = authorFilterFlow.value.copy()
+		map.remove(author)
+		authorFilterFlow.tryEmit(map.copy())
+	}
 
-	override fun getFilterAuthors(): List<Pair<String, InclusionState>> = _authorFilter
+	override fun getFilterAuthors(): HashMap<String, InclusionState> = authorFilterFlow.value
 
-	override fun addArtistToFilter(artist: String, inclusionState: InclusionState): Boolean =
-		_artistFilter.add(artist to inclusionState)
-			.also { launchIO { artistFilterFlow.emit(_artistFilter) } }
+	override fun addArtistToFilter(artist: String, inclusionState: InclusionState) {
+		val map = artistFilterFlow.value.copy()
+		map[artist] = inclusionState
+		artistFilterFlow.tryEmit(map)
+	}
 
-	override fun removeArtistFromFilter(artist: String): Boolean =
-		_artistFilter.removeFirst { it.first == artist }
-			.also { launchIO { artistFilterFlow.emit(_artistFilter) } }
+	override fun removeArtistFromFilter(artist: String) {
+		val map = artistFilterFlow.value.copy()
+		map.remove(artist)
+		artistFilterFlow.tryEmit(map.copy())
+	}
 
-	override fun getFilterArtists(): List<Pair<String, InclusionState>> = _artistFilter
+	override fun getFilterArtists(): HashMap<String, InclusionState> = artistFilterFlow.value
 
-	override fun addTagToFilter(tag: String, inclusionState: InclusionState): Boolean =
-		_tagFilter.add(tag to inclusionState)
-			.also { launchIO { tagFilterFlow.emit(_tagFilter) } }
+	override fun addTagToFilter(tag: String, inclusionState: InclusionState) {
+		val map = tagFilterFlow.value.copy()
+		map[tag] = inclusionState
+		tagFilterFlow.tryEmit(map)
+	}
 
-	override fun removeTagFromFilter(tag: String): Boolean =
-		_tagFilter.removeFirst { it.first == tag }
-			.also { launchIO { tagFilterFlow.emit(_tagFilter) } }
+	override fun removeTagFromFilter(tag: String) {
+		val map = tagFilterFlow.value.copy()
+		map.remove(tag)
+		tagFilterFlow.tryEmit(map.copy())
+	}
 
-	override fun getFilterTags(): List<Pair<String, InclusionState>> = _tagFilter
+	override fun getFilterTags(): HashMap<String, InclusionState> = tagFilterFlow.value
 
 	override fun resetSortAndFilters() {
-		_artistFilter.clear()
-		_authorFilter.clear()
-		_tagFilter.clear()
-		_genreFilter.clear()
+		genreFilterFlow.value = hashMapOf()
+		tagFilterFlow.value = hashMapOf()
+		authorFilterFlow.value = hashMapOf()
+		artistFilterFlow.value = hashMapOf()
 
-		launchIO {
-			artistFilterFlow.emit(_artistFilter)
-			authorFilterFlow.emit(_authorFilter)
-			tagFilterFlow.emit(_tagFilter)
-			genreFilterFlow.emit(_genreFilter)
+		novelSortTypeFlow.value = NovelSortType.BY_TITLE
+		areNovelsReversedFlow.value = false
+	}
+
+	private inline fun <reified K, reified V> HashMap<K, V>.copy(): HashMap<K, V> {
+		val map = HashMap<K, V>()
+		onEach { (k, v) ->
+			map[k] = v
 		}
-
-		_novelSortType = NovelSortType.BY_TITLE
-		_areNovelsReversed = false
+		return map
 	}
 }

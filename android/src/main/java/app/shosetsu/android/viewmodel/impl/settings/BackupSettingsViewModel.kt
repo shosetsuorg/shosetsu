@@ -1,4 +1,4 @@
-package app.shosetsu.android.viewmodel.model.settings
+package app.shosetsu.android.viewmodel.impl.settings
 
 import android.widget.CompoundButton
 import app.shosetsu.android.common.ext.launchIO

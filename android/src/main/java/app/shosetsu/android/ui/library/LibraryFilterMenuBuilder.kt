@@ -74,7 +74,7 @@ class LibraryFilterMenuBuilder constructor(
 			val textView: TextView,
 			val recyclerView: RecyclerView,
 			val liveData: LiveData<List<String>>,
-			val retrieveState: () -> List<Pair<String, InclusionState>>,
+			val retrieveState: () -> HashMap<String, InclusionState>,
 			val setState: (String, InclusionState) -> Unit,
 			val removeState: (String) -> Unit
 		) {
@@ -152,33 +152,29 @@ class LibraryFilterMenuBuilder constructor(
 					filterGenres,
 					viewModel.genresFlow,
 					{ viewModel.getFilterGenres() },
-					{ s, b -> viewModel.addGenreToFilter(s, b) },
-					{ viewModel.removeGenreFromFilter(it) }
-				),
+					{ s, b -> viewModel.addGenreToFilter(s, b) }
+				) { viewModel.removeGenreFromFilter(it) },
 				ListModel(
 					filterTagsLabel,
 					filterTags,
 					viewModel.tagsFlow,
 					{ viewModel.getFilterTags() },
-					{ s, b -> viewModel.addTagToFilter(s, b) },
-					{ viewModel.removeTagFromFilter(it) }
-				),
+					{ s, b -> viewModel.addTagToFilter(s, b) }
+				) { viewModel.removeTagFromFilter(it) },
 				ListModel(
 					filterAuthorsLabel,
 					filterAuthors,
 					viewModel.authorsFlow,
 					{ viewModel.getFilterAuthors() },
-					{ s, b -> viewModel.addAuthorToFilter(s, b) },
-					{ viewModel.removeAuthorFromFilter(it) }
-				),
+					{ s, b -> viewModel.addAuthorToFilter(s, b) }
+				) { viewModel.removeAuthorFromFilter(it) },
 				ListModel(
 					filterArtistsLabel,
 					filterArtists,
 					viewModel.artistsFlow,
 					{ viewModel.getFilterArtists() },
-					{ s, b -> viewModel.addArtistToFilter(s, b) },
-					{ viewModel.removeArtistFromFilter(it) }
-				)
+					{ s, b -> viewModel.addArtistToFilter(s, b) }
+				) { viewModel.removeArtistFromFilter(it) }
 			).forEach { listModel ->
 				val textView = listModel.textView
 				val recycler = listModel.recyclerView
@@ -193,7 +189,7 @@ class LibraryFilterMenuBuilder constructor(
 					val newItems = originalList.sorted().map { key ->
 						listModel.FilterModel(
 							key,
-							r.firstOrNull { vS -> vS.first == key }?.second
+							r[key]
 						)
 					}
 					// Passes update to itemAdapter
@@ -203,7 +199,6 @@ class LibraryFilterMenuBuilder constructor(
 				recycler.adapter = FastAdapter.with(itemAdapter)
 
 				textView.setOnClickListener {
-					logV("Clicked ${itemAdapter.itemList.items}")
 					recycler.isVisible = !recycler.isVisible
 					textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
 						if (recycler.isVisible)

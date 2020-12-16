@@ -1,4 +1,4 @@
-package app.shosetsu.android.viewmodel.model.novel
+package app.shosetsu.android.viewmodel.impl.novel
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
@@ -92,31 +92,31 @@ class NovelViewModel(
 	private var _showOnlyStatusOf: ReadingStatus? = null
 		set(value) {
 			field = value
-			launchIO { _showOnlyStatusOfFlow.emit(value) }
+			_showOnlyStatusOfFlow.tryEmit(value)
 		}
 
 	private var _showOnlyDownloaded: Boolean = false
 		set(value) {
 			field = value
-			launchIO { _onlyDownloadedFlow.emit(value) }
+			_onlyDownloadedFlow.tryEmit(value)
 		}
 
 	private var _showOnlyBookmarked: Boolean = false
 		set(value) {
 			field = value
-			launchIO { _onlyBookmarkedFlow.emit(value) }
+			_onlyBookmarkedFlow.tryEmit(value)
 		}
 
 	private var _chapterSortType: ChapterSortType = ChapterSortType.SOURCE
 		set(value) {
 			field = value
-			launchIO { _sortTypeFlow.emit(value) }
+			_sortTypeFlow.tryEmit(value)
 		}
 
 	private var _isSortReversed: Boolean = false
 		set(value) {
 			field = value
-			launchIO { _reversedSortFlow.emit(value) }
+			_reversedSortFlow.tryEmit(value)
 		}
 
 	private val _showOnlyStatusOfFlow: MutableStateFlow<ReadingStatus?> =
@@ -216,9 +216,7 @@ class NovelViewModel(
 		_isSortReversed = false
 
 		novelIDValue = -1
-		launchIO {
-			novelIDLive.emit(-1)
-		}
+		novelIDLive.tryEmit(-1)
 	}
 
 	override fun downloadChapter(vararg chapterUI: ChapterUI) {
@@ -306,10 +304,8 @@ class NovelViewModel(
 				return
 			}
 		}
-		launchIO {
-			novelIDLive.emit(novelID)
-			novelIDValue = novelID
-		}
+		novelIDLive.tryEmit(novelID)
+		novelIDValue = novelID
 	}
 
 	override fun share() {

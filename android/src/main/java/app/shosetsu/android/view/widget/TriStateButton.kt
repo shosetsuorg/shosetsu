@@ -102,7 +102,6 @@ class TriStateButton @JvmOverloads constructor(
 		binding.textView.setText(stringRes)
 
 	fun setText(string: String?) {
-		logV("Setting text as $string")
 		binding.textView.text = string
 	}
 

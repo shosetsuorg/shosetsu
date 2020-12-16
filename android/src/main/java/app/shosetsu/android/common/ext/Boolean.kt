@@ -37,3 +37,5 @@ fun Boolean.toInt(): Int = if (this) 1 else 0
 fun KMutableProperty<Boolean>.toggle() {
 	this.setter.call(!this.getter.call())
 }
+
+infix fun <T> Boolean.ifSo(action: T): T? = if (this) action else null

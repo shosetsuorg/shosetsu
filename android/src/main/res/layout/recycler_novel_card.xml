@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
     app:layout_constraintDimensionRatio="2:3"
-    app:strokeColor="@color/selected_blue">
+    app:strokeColor="@color/colorPrimary">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint"

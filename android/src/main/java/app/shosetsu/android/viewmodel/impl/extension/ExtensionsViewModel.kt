@@ -1,4 +1,4 @@
-package app.shosetsu.android.viewmodel.model.extension
+package app.shosetsu.android.viewmodel.impl.extension
 
 /*
  * This file is part of shosetsu.

@@ -2,11 +2,11 @@ package app.shosetsu.android.di
 
 import app.shosetsu.android.viewmodel.abstracted.*
 import app.shosetsu.android.viewmodel.abstracted.settings.*
-import app.shosetsu.android.viewmodel.model.*
-import app.shosetsu.android.viewmodel.model.extension.ExtensionConfigureViewModel
-import app.shosetsu.android.viewmodel.model.extension.ExtensionsViewModel
-import app.shosetsu.android.viewmodel.model.novel.NovelViewModel
-import app.shosetsu.android.viewmodel.model.settings.*
+import app.shosetsu.android.viewmodel.impl.*
+import app.shosetsu.android.viewmodel.impl.extension.ExtensionConfigureViewModel
+import app.shosetsu.android.viewmodel.impl.extension.ExtensionsViewModel
+import app.shosetsu.android.viewmodel.impl.novel.NovelViewModel
+import app.shosetsu.android.viewmodel.impl.settings.*
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.provider

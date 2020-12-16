@@ -21,6 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
+                android:drawablePadding="8dp"
                 android:text="Genres"
                 app:drawableLeftCompat="@drawable/expand_more" />
 
@@ -38,6 +39,7 @@
 
             <TextView
                 android:id="@+id/filter_tags_label"
+                android:drawablePadding="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
@@ -61,6 +63,7 @@
                 android:id="@+id/filter_authors_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:drawablePadding="8dp"
                 android:padding="8dp"
                 android:text="Authors"
                 app:drawableStartCompat="@drawable/expand_more" />
@@ -80,6 +83,7 @@
 
             <TextView
                 android:id="@+id/filter_artists_label"
+                android:drawablePadding="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"

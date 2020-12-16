@@ -1,4 +1,4 @@
-package app.shosetsu.android.viewmodel.model.settings
+package app.shosetsu.android.viewmodel.impl.settings
 
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.ReportExceptionUseCase

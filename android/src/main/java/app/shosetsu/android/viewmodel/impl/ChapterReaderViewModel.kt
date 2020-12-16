@@ -1,4 +1,4 @@
-package app.shosetsu.android.viewmodel.model
+package app.shosetsu.android.viewmodel.impl
 
 import android.graphics.Color
 import androidx.annotation.WorkerThread

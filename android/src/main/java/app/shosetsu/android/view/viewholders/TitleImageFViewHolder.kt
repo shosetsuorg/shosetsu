@@ -38,6 +38,7 @@ open class TitleImageFViewHolder<ITEM>(itemView: View) : FastAdapter.ViewHolder<
 		      ITEM : GetTitle {
 	val title: TextView = itemView.findViewById(R.id.title)
 	val imageView: ImageView = itemView.findViewById(R.id.imageView)
+	var oldType: ImageView.ScaleType? = null
 
 	@CallSuper
 	override fun bindView(item: ITEM, payloads: List<Any>) {
@@ -46,12 +47,16 @@ open class TitleImageFViewHolder<ITEM>(itemView: View) : FastAdapter.ViewHolder<
 		if (imageURL.isNotEmpty()) picasso(imageURL, imageView)
 		else {
 			imageView.setImageResource(R.drawable.broken_image)
+			if (oldType == null) oldType = imageView.scaleType
 			imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
 		}
 	}
 
 	@CallSuper
 	override fun unbindView(item: ITEM) {
+		oldType?.let {
+			imageView.scaleType = it
+		}
 		title.text = null
 	}
 }
