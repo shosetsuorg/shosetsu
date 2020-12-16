@@ -6,7 +6,7 @@ import androidx.lifecycle.liveData
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.SearchBookMarkedNovelsUseCase
-import app.shosetsu.android.domain.usecases.load.LoadCatalogueQueryDataUseCase
+import app.shosetsu.android.domain.usecases.get.GetCatalogueQueryDataUseCase
 import app.shosetsu.android.domain.usecases.load.LoadSearchRowUIUseCase
 import app.shosetsu.android.view.uimodels.model.IDTitleImageUI
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
@@ -45,7 +45,7 @@ import kotlin.collections.set
 class SearchViewModel(
 	private val searchBookMarkedNovelsUseCase: SearchBookMarkedNovelsUseCase,
 	private val loadSearchRowUIUseCase: LoadSearchRowUIUseCase,
-	private val loadCatalogueQueryDataUseCase: LoadCatalogueQueryDataUseCase,
+	private val loadCatalogueQueryDataUseCase: GetCatalogueQueryDataUseCase,
 	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : ISearchViewModel() {
 	private val hashMap = HashMap<Int, MutableLiveData<HResult<List<ACatalogNovelUI>>>>()
@@ -89,17 +89,17 @@ class SearchViewModel(
 		return jobMap[-1]!!
 	}
 
-	private fun loadFormatter(formatterID: Int): Job {
-		jobMap[formatterID] = launchIO {
-			hashMap[formatterID]?.postValue(
+	private fun loadExtension(extensionID: Int): Job {
+		jobMap[extensionID] = launchIO {
+			hashMap[extensionID]?.postValue(
 				loadCatalogueQueryDataUseCase(
-					formatterID,
+					extensionID,
 					query,
 					mapOf()
 				)
 			)
 		}
-		return jobMap[formatterID]!!
+		return jobMap[extensionID]!!
 	}
 
 	override fun loadQuery() {
@@ -110,14 +110,14 @@ class SearchViewModel(
 			hashMap[key]?.postValue(successResult(arrayListOf()))
 			hashMap[key]?.postValue(loading())
 			jobMap[key] = if (key == -1) loadLibrary()
-			else loadFormatter(key)
+			else loadExtension(key)
 		}
 	}
 
-	override fun searchFormatter(formatterID: Int): LiveData<HResult<List<ACatalogNovelUI>>> {
+	override fun searchExtension(formatterID: Int): LiveData<HResult<List<ACatalogNovelUI>>> {
 		if (!hashMap.containsKey(formatterID)) {
 			hashMap[formatterID] = MutableLiveData(loading())
-			loadFormatter(formatterID)
+			loadExtension(formatterID)
 		}
 		return hashMap[formatterID]!!
 	}

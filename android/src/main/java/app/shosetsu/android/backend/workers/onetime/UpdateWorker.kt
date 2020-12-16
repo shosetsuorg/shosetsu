@@ -21,7 +21,7 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerUseCase
-import app.shosetsu.android.domain.usecases.load.LoadNovelUseCase
+import app.shosetsu.android.domain.usecases.get.GetNovelUseCase
 import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.NovelEntity
@@ -171,7 +171,7 @@ class UpdateWorker(
 
 	override val kodein: Kodein by closestKodein(appContext)
 	private val iNovelsRepository: INovelsRepository by instance()
-	private val loadNovelUseCase: LoadNovelUseCase by instance()
+	private val loadNovelUseCase: GetNovelUseCase by instance()
 	private val toastErrorUseCase: ToastErrorUseCase by instance()
 	private val startDownloadWorker: StartDownloadWorkerUseCase by instance()
 	private val iSettingsRepository: ISettingsRepository by instance()

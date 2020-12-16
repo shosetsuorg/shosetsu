@@ -42,18 +42,18 @@ class GuavaMemExtensionDataSource : IMemExtensionsDataSource {
 		.expireAfterAccess(MEMORY_EXPIRE_EXT_LIB_TIME, MINUTES)
 		.build()
 
-	override suspend fun loadFormatterFromMemory(formatterID: Int): HResult<IExtension> {
-		logV("Loading formatter $formatterID from memory")
-		return extensionsCache[formatterID]?.let { successResult(it) } ?: emptyResult()
+	override suspend fun loadExtensionFromMemory(extensionID: Int): HResult<IExtension> {
+		logV("Loading formatter $extensionID from memory")
+		return extensionsCache[extensionID]?.let { successResult(it) } ?: emptyResult()
 	}
 
-	override suspend fun putFormatterInMemory(formatter: IExtension): HResult<*> {
-		logV("Putting formatter ${formatter.formatterID} into memory")
-		return successResult(extensionsCache.set(formatter.formatterID, formatter))
+	override suspend fun putExtensionInMemory(iExtension: IExtension): HResult<*> {
+		logV("Putting formatter ${iExtension.formatterID} into memory")
+		return successResult(extensionsCache.set(iExtension.formatterID, iExtension))
 	}
 
-	override suspend fun removeFormatterFromMemory(formatterID: Int): HResult<*> {
-		logV("Removing formatter $formatterID from memory")
-		return successResult(extensionsCache.invalidate(formatterID))
+	override suspend fun removeExtensionFromMemory(extensionID: Int): HResult<*> {
+		logV("Removing formatter $extensionID from memory")
+		return successResult(extensionsCache.invalidate(extensionID))
 	}
 }

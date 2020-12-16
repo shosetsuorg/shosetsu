@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.android.domain.usecases.load.LoadNovelUseCase
+import app.shosetsu.android.domain.usecases.get.GetNovelUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.dto.HResult
@@ -27,7 +27,7 @@ import app.shosetsu.common.dto.HResult
  * 15 / 05 / 2020
  */
 class NovelBackgroundAddUseCase(
-	private val loadNovelUseCase: LoadNovelUseCase,
+	private val loadNovelUseCase: GetNovelUseCase,
 	private val updateNovelEntityUseCase: UpdateNovelUseCase,
 ) {
 	suspend operator fun invoke(novelID: Int): HResult<*> =

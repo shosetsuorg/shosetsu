@@ -83,7 +83,7 @@ class OpenInWebviewUseCase(
 
 	suspend operator fun invoke(chapterUI: ChapterUI): Unit = this(
 		chapterUI.link,
-		chapterUI.formatterID,
+		chapterUI.extensionID,
 		KEY_CHAPTER_URL
 	)
 }

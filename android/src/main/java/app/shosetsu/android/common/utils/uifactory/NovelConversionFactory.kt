@@ -33,7 +33,7 @@ class NovelConversionFactory(data: NovelEntity) : UIConversionFactory<NovelEntit
 	override fun NovelEntity.convertTo(): NovelUI = NovelUI(
 		id = id!!,
 		novelURL = url,
-		extID = formatterID,
+		extID = extensionID,
 		bookmarked = bookmarked,
 		readerType = readerType,
 		title = title,

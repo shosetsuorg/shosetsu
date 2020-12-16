@@ -36,7 +36,7 @@ abstract class ISearchViewModel : ShosetsuViewModel(), ErrorReportingViewModel {
 
 	abstract fun setQuery(query: String)
 	abstract fun searchLibrary(): LiveData<HResult<List<ACatalogNovelUI>>>
-	abstract fun searchFormatter(formatterID: Int): LiveData<HResult<List<ACatalogNovelUI>>>
+	abstract fun searchExtension(formatterID: Int): LiveData<HResult<List<ACatalogNovelUI>>>
 
 	abstract fun loadQuery()
 }

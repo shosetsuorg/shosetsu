@@ -50,7 +50,7 @@ class FileChapterDataSource(
 
 	/** Makes path */
 	private fun makePath(ce: ChapterEntity): String =
-		"/download/${ce.formatterID}/${ce.novelID}/${ce.id}.txt"
+		"/download/${ce.extensionID}/${ce.novelID}/${ce.id}.txt"
 
 	override suspend fun saveChapterPassageToStorage(
 		chapterEntity: ChapterEntity,

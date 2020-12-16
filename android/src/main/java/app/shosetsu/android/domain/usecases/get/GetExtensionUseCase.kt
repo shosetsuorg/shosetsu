@@ -1,12 +1,8 @@
-package app.shosetsu.android.domain.usecases.load
+package app.shosetsu.android.domain.usecases.get
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
+import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.loading
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
-import kotlinx.coroutines.Dispatchers
+import app.shosetsu.lib.IExtension
 
 /*
  * This file is part of shosetsu.
@@ -27,16 +23,9 @@ import kotlinx.coroutines.Dispatchers
 
 /**
  * shosetsu
- * 18 / 05 / 2020
+ * 15 / 05 / 2020
  */
-class LoadFormatterNameUseCase(
-	private val getFormatterUseCase: LoadFormatterUseCase,
-) : ((@kotlin.ParameterName("formatterID") Int) -> LiveData<HResult<String>>) {
-	override fun invoke(formatterID: Int): LiveData<HResult<String>> {
-		return liveData(context = Dispatchers.IO) {
-			emit(loading())
-			if (formatterID != -1)
-				emit(getFormatterUseCase(formatterID).transform { successResult(it.name) })
-		}
-	}
+class GetExtensionUseCase(private val extensionsRepository: IExtensionsRepository) {
+	suspend operator fun invoke(formatterID: Int): HResult<IExtension> =
+		extensionsRepository.loadIExtension(formatterID)
 }

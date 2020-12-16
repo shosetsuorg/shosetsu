@@ -99,7 +99,7 @@ data class NovelUI(
 	override fun convertTo(): NovelEntity = NovelEntity(
 		id = id,
 		url = novelURL,
-		formatterID = extID,
+		extensionID = extID,
 		bookmarked = bookmarked,
 		loaded = loaded,
 		readerType = readerType,

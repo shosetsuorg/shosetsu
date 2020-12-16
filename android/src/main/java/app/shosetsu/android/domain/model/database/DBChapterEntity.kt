@@ -1,10 +1,7 @@
 package app.shosetsu.android.domain.model.database
 
 import androidx.annotation.NonNull
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
+import androidx.room.*
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.enums.ReadingStatus
@@ -59,7 +56,8 @@ data class DBChapterEntity(
 	@NonNull
 	val novelID: Int,
 
-	val formatterID: Int,
+	@ColumnInfo(name = "formatterID")
+	val extensionID: Int,
 
 	@NonNull
 	var title: String,
@@ -81,7 +79,7 @@ data class DBChapterEntity(
 		id,
 		url,
 		novelID,
-		formatterID,
+		extensionID,
 		title,
 		releaseDate,
 		order,

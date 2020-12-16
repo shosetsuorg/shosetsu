@@ -75,8 +75,8 @@ class ExtensionsRepository(
 						val formatter = LuaExtension(result.data)
 
 						// Write to storage/cache
-						memorySource.putFormatterInMemory(formatter)
-						fileSource.writeFormatter(extensionEntity.fileName, result.data)
+						memorySource.putExtensionInMemory(formatter)
+						fileSource.writeExtension(extensionEntity.fileName, result.data)
 
 						// Update database info
 						formatter.exMetaData.let { meta ->
@@ -104,8 +104,8 @@ class ExtensionsRepository(
 	}
 
 	override suspend fun uninstallExtension(extensionEntity: ExtensionEntity): HResult<*> =
-		memorySource.removeFormatterFromMemory(extensionEntity.id) and
-				fileSource.deleteFormatter(extensionEntity.fileName) and
+		memorySource.removeExtensionFromMemory(extensionEntity.id) and
+				fileSource.deleteExtension(extensionEntity.fileName) and
 				databaseSource.updateExtension(
 					extensionEntity.copy(
 						enabled = false,
@@ -121,17 +121,17 @@ class ExtensionsRepository(
 		databaseSource.updateExtension(extensionEntity)
 
 	override suspend fun loadIExtension(extensionEntity: ExtensionEntity): HResult<IExtension> {
-		memorySource.loadFormatterFromMemory(extensionEntity.id)
+		memorySource.loadExtensionFromMemory(extensionEntity.id)
 			.takeIf { it is HResult.Success }?.let { return it }
 
-		val fileResult = fileSource.loadFormatter(extensionEntity.fileName)
+		val fileResult = fileSource.loadExtension(extensionEntity.fileName)
 		if (fileResult !is HResult.Success)
 			return errorResult(ErrorKeys.ERROR_NOT_FOUND, "Extension file not found")
 
 		if (!fileResult.data.exMetaData.libVersion.isCompatible())
 			return errorResult(ErrorKeys.ERROR_INCOMPATIBLE)
 
-		memorySource.putFormatterInMemory(fileResult.data)
+		memorySource.putExtensionInMemory(fileResult.data)
 		return fileResult
 	}
 

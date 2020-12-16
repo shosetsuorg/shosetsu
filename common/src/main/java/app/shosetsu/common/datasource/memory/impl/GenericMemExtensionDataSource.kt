@@ -45,25 +45,25 @@ class GenericMemExtensionDataSource : IMemExtensionsDataSource {
 		}
 	}
 
-	override suspend fun loadFormatterFromMemory(formatterID: Int): HResult<IExtension> {
+	override suspend fun loadExtensionFromMemory(extensionID: Int): HResult<IExtension> {
 		val extension = extensions
-		return if (extension.containsKey(formatterID))
-			extension[formatterID]?.let { successResult(it.second) }
-					?: emptyResult() else emptyResult()
+		return if (extension.containsKey(extensionID))
+			extension[extensionID]?.let { successResult(it.second) }
+				?: emptyResult() else emptyResult()
 	}
 
-	override suspend fun putFormatterInMemory(formatter: IExtension): HResult<*> {
+	override suspend fun putExtensionInMemory(iExtension: IExtension): HResult<*> {
 		val extension = extensions
 		if (extension.size > MEMORY_MAX_EXTENSIONS) extension.remove(extension.keys.first())
-		extension[formatter.formatterID] = System.currentTimeMillis() to formatter
+		extension[iExtension.formatterID] = System.currentTimeMillis() to iExtension
 		return successResult("")
 	}
 
-	override suspend fun removeFormatterFromMemory(formatterID: Int): HResult<*> =
-			if (!extensions.containsKey(formatterID)) emptyResult()
-			else {
-				extensions.remove(formatterID)
-				successResult("")
-			}
+	override suspend fun removeExtensionFromMemory(extensionID: Int): HResult<*> =
+		if (!extensions.containsKey(extensionID)) emptyResult()
+		else {
+			extensions.remove(extensionID)
+			successResult("")
+		}
 
 }

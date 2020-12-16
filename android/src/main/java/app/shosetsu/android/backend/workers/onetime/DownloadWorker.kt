@@ -129,7 +129,7 @@ class DownloadWorker(
 			when (cR) {
 				is HResult.Success -> {
 					val chapterEntity = cR.data
-					extRepo.loadIExtension(chapterEntity.formatterID)
+					extRepo.loadIExtension(chapterEntity.extensionID)
 						.let { fR: HResult<IExtension> ->
 							when (fR) {
 								is HResult.Success -> {

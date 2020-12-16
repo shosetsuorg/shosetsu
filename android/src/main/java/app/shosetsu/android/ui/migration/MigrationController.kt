@@ -54,7 +54,7 @@ class MigrationController(bundle: Bundle) : ViewedController<MigrationViewBindin
 
 	class Transferee(
 		val original: Int,
-		var targetFormatterID: Int = -1,
+		var targetExtensionID: Int = -1,
 		var listings: Array<Novel.Listing> = arrayOf(),
 		var selectedURL: String = "",
 	)
@@ -83,7 +83,7 @@ class MigrationController(bundle: Bundle) : ViewedController<MigrationViewBindin
 	 */
 	fun setupViewWithTransferee(position: Int) {
 		val target = transferees[position]
-		if (target.targetFormatterID == -1) {
+		if (target.targetExtensionID == -1) {
 			binding.catalogueSelectionView.visibility = VISIBLE
 			binding.targetSearching.visibility = INVISIBLE
 			binding.catalogueSelection.adapter = CatalogueSelectionAdapter(this, position)
@@ -152,7 +152,7 @@ class MigrationController(bundle: Bundle) : ViewedController<MigrationViewBindin
 
 			holder.id = form.formatterID
 			holder.itemView.setOnClickListener {
-				migrationController.transferees[transfereePosition].targetFormatterID = holder.id
+				migrationController.transferees[transfereePosition].targetExtensionID = holder.id
 				migrationController.setupViewWithTransferee(transfereePosition)
 			}
 		}

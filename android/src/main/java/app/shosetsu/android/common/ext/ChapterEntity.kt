@@ -29,7 +29,7 @@ fun ChapterEntity.toDB(): DBChapterEntity = DBChapterEntity(
 	id,
 	url,
 	novelID,
-	formatterID,
+	extensionID,
 	title,
 	releaseDate,
 	order,

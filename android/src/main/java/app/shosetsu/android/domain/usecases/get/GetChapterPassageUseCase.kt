@@ -1,4 +1,4 @@
-package app.shosetsu.android.domain.usecases.load
+package app.shosetsu.android.domain.usecases.get
 
 import android.util.Log
 import app.shosetsu.android.common.ext.logID
@@ -30,7 +30,7 @@ import app.shosetsu.common.dto.errorResult
  * shosetsu
  * 10 / 06 / 2020
  */
-class LoadChapterPassageUseCase(
+class GetChapterPassageUseCase(
 	private val iChaptersRepository: IChaptersRepository,
 	private val iExtensionsRepository: IExtensionsRepository,
 ) {
@@ -40,7 +40,7 @@ class LoadChapterPassageUseCase(
 		return if (chapterResult is HResult.Success) {
 			Log.d(logID(), "Success")
 			val chapterEntity = chapterResult.data
-			val formatterResult = iExtensionsRepository.loadIExtension(chapterEntity.formatterID)
+			val formatterResult = iExtensionsRepository.loadIExtension(chapterEntity.extensionID)
 			if (formatterResult is HResult.Success) {
 				iChaptersRepository.loadChapterPassage(formatterResult.data, chapterEntity)
 			} else errorResult(ErrorKeys.ERROR_NOT_FOUND, "Formatter not found")

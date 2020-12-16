@@ -35,7 +35,7 @@ class ChapterConversionFactory(data: ChapterEntity) :
 		id!!,
 		novelID,
 		url,
-		formatterID,
+		extensionID,
 		title,
 		releaseDate,
 		order,

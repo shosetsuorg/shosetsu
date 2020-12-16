@@ -35,7 +35,7 @@ class RemoteExtensionDataSource(
 	private val client: OkHttpClient,
 ) : IRemoteExtensionDataSource {
 
-	private fun makeFormatterURL(repo: RepositoryEntity, fe: ExtensionEntity): String =
+	private fun makeExtensionURL(repo: RepositoryEntity, fe: ExtensionEntity): String =
 		"${repo.url}$REPO_DIR_STRUCT/src/${fe.lang}/${fe.fileName}.lua"
 
 	override suspend fun downloadExtension(
@@ -46,7 +46,7 @@ class RemoteExtensionDataSource(
 			@Suppress("BlockingMethodInNonBlockingContext")
 			(successResult(
 				client.quickie(
-					makeFormatterURL(
+					makeExtensionURL(
 						repositoryEntity,
 						extensionEntity
 					)

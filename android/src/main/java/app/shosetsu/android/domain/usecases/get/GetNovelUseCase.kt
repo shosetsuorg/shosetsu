@@ -1,4 +1,4 @@
-package app.shosetsu.android.domain.usecases.load
+package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.repository.base.INovelsRepository
@@ -34,7 +34,7 @@ import app.shosetsu.common.dto.transform
  *
  * takes a novelID & parameters, then loads it's data to storage
  */
-class LoadNovelUseCase(
+class GetNovelUseCase(
 	private val nR: INovelsRepository,
 	private val eR: IExtensionsRepository,
 	private val cR: IChaptersRepository,
@@ -45,7 +45,7 @@ class LoadNovelUseCase(
 		loadChapters: Boolean,
 		haveChaptersUpdate: () -> Unit = {}
 	): HResult<Boolean> =
-		eR.loadIExtension(novel.formatterID).transform { ext ->
+		eR.loadIExtension(novel.extensionID).transform { ext ->
 			nR.retrieveNovelInfo(ext, novel, loadChapters).transform { page ->
 				val currentStatus: Boolean = novel.loaded
 

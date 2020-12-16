@@ -7,6 +7,9 @@ import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.NovelBackgroundAddUseCase
+import app.shosetsu.android.domain.usecases.get.GetCatalogueListingDataUseCase
+import app.shosetsu.android.domain.usecases.get.GetCatalogueQueryDataUseCase
+import app.shosetsu.android.domain.usecases.get.GetExtensionUseCase
 import app.shosetsu.android.domain.usecases.load.*
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ICatalogViewModel
@@ -46,10 +49,10 @@ import kotlinx.coroutines.flow.collectLatest
  * 01 / 05 / 2020
  */
 class CatalogViewModel(
-	private val getFormatterUseCase: LoadFormatterUseCase,
+	private val getExtensionUseCase: GetExtensionUseCase,
 	private val backgroundAddUseCase: NovelBackgroundAddUseCase,
-	private val loadCatalogueListingData: LoadCatalogueListingDataUseCase,
-	private val loadCatalogueQueryDataUseCase: LoadCatalogueQueryDataUseCase,
+	private val getCatalogueListingData: GetCatalogueListingDataUseCase,
+	private val loadCatalogueQueryDataUseCase: GetCatalogueQueryDataUseCase,
 	private var reportExceptionUseCase: ReportExceptionUseCase,
 	private val loadNovelUITypeUseCase: LoadNovelUITypeUseCase,
 	private val loadNovelUIColumnsHUseCase: LoadNovelUIColumnsHUseCase,
@@ -58,7 +61,7 @@ class CatalogViewModel(
 	private var novelUIType: NovelUIType = NovelUIType.fromInt(SettingKey.NovelCardType.default)
 	private var columnP: Int = SettingKey.ChapterColumnsInPortait.default
 	private var columnH: Int = SettingKey.ChapterColumnsInLandscape.default
-	private var formatter: IExtension? = null
+	private var iExtension: IExtension? = null
 	private var listingItems: ArrayList<ACatalogNovelUI> = arrayListOf()
 	private var filterData = hashMapOf<Int, Any>()
 	private var query: String = ""
@@ -97,11 +100,11 @@ class CatalogViewModel(
 
 	private fun setFID(fID: Int): Job = launchIO {
 		when {
-			formatter == null -> {
+			iExtension == null -> {
 				logI("Loading formatter")
-				when (val v = getFormatterUseCase(fID)) {
+				when (val v = getExtensionUseCase(fID)) {
 					is HResult.Success -> {
-						formatter = v.data
+						iExtension = v.data
 						extensionName.postValue(successResult(v.data.name))
 						hasSearchLive.postValue(successResult(v.data.hasSearch))
 						filterData.putAll(v.data.searchFiltersModel.mapify())
@@ -112,7 +115,7 @@ class CatalogViewModel(
 					is HResult.Empty -> extensionName.postValue(v)
 				}
 			}
-			formatter!!.formatterID != fID -> {
+			iExtension!!.formatterID != fID -> {
 				logI("Resetting formatter")
 				destroy()
 				setFID(fID).join()
@@ -121,7 +124,7 @@ class CatalogViewModel(
 		}
 	}
 
-	override fun setFormatterID(fID: Int) {
+	override fun setExtensionID(fID: Int) {
 		setFID(fID)
 	}
 
@@ -132,8 +135,8 @@ class CatalogViewModel(
 	private suspend fun getDataLoaderAndLoad(): HResult<List<ACatalogNovelUI>> {
 		return if (query.isEmpty()) {
 			logV("Loading listing data")
-			loadCatalogueListingData(
-				formatter!!,
+			getCatalogueListingData(
+				iExtension!!,
 				filterData.apply {
 					this[PAGE_INDEX] = currentMaxPage
 				}
@@ -141,7 +144,7 @@ class CatalogViewModel(
 		} else {
 			logV("Loading query data")
 			loadCatalogueQueryDataUseCase(
-				formatter!!,
+				iExtension!!,
 				query,
 				filterData.apply {
 					this[PAGE_INDEX] = currentMaxPage
@@ -152,7 +155,7 @@ class CatalogViewModel(
 
 	@Synchronized
 	override fun loadData(): Job = launchIO {
-		if (formatter == null) {
+		if (iExtension == null) {
 			logE("formatter was null")
 			this.cancel("Extension not loaded")
 			return@launchIO
@@ -207,7 +210,7 @@ class CatalogViewModel(
 
 	override fun destroy() {
 		launchIO {
-			formatter = null
+			iExtension = null
 			listingItems.clear()
 			filterData.clear()
 			query = ""

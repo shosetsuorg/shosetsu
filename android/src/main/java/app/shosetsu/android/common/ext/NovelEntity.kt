@@ -28,7 +28,7 @@ import app.shosetsu.common.domain.model.local.NovelEntity
 fun NovelEntity.toDB() = DBNovelEntity(
 	id,
 	url,
-	formatterID,
+	extensionID,
 	bookmarked,
 	loaded,
 	readerType,

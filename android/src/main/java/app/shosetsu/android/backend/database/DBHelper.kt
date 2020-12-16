@@ -126,7 +126,7 @@ class DBHelper(context: Context) :
 					NovelIdentification(
 						novelID = it.getInt(ID),
 						novelURL = it.getString(URL),
-						formatterID = it.getInt(FORMATTER_ID)
+						extensionID = it.getInt(FORMATTER_ID)
 					)
 				)
 			}
@@ -180,7 +180,7 @@ class DBHelper(context: Context) :
 				NovelEntity(
 					id = novelID,
 					url = novelIDF.novelURL,
-					formatterID = novelIDF.formatterID,
+					extensionID = novelIDF.extensionID,
 					bookmarked = bookmarked,
 					loaded = true,
 					title = title,
@@ -220,7 +220,7 @@ class DBHelper(context: Context) :
 				id = chapterID,
 				novelID = novelID,
 				url = chapterIDF.chapterURL,
-				formatterID = novelIDF.formatterID,
+				extensionID = novelIDF.extensionID,
 				title = title,
 				releaseDate = date,
 				order = order,
@@ -253,7 +253,7 @@ class DBHelper(context: Context) :
 	private data class NovelIdentification(
 		val novelID: Int,
 		val novelURL: String,
-		val formatterID: Int,
+		val extensionID: Int,
 	)
 
 	private data class ChapterIdentification(

@@ -28,48 +28,48 @@ import app.shosetsu.lib.Novel
  */
 
 data class NovelEntity(
-		/** ID of this novel */
-		var id: Int? = null,
+	/** ID of this novel */
+	var id: Int? = null,
 
-		/** URL of the novel */
-		var url: String,
+	/** URL of the novel */
+	var url: String,
 
-		/** Source this novel is from */
-		val formatterID: Int,
+	/** Source this novel is from */
+	val extensionID: Int,
 
-		/** If this novel is in the user's library */
-		var bookmarked: Boolean = false,
+	/** If this novel is in the user's library */
+	var bookmarked: Boolean = false,
 
-		/** Says if the data is loaded or now, if it is not it needs to be loaded */
-		var loaded: Boolean = false,
+	/** Says if the data is loaded or now, if it is not it needs to be loaded */
+	var loaded: Boolean = false,
 
-		/** What kind of reader is this novel using */
-		var readerType: Int = -1,
+	/** What kind of reader is this novel using */
+	var readerType: Int = -1,
 
-		/** The title of the novel */
-		var title: String,
+	/** The title of the novel */
+	var title: String,
 
-		/** Image URL of the novel */
-		var imageURL: String = "",
+	/** Image URL of the novel */
+	var imageURL: String = "",
 
-		/** Description */
-		var description: String = "",
+	/** Description */
+	var description: String = "",
 
-		/** Language of the novel */
-		var language: String = "",
+	/** Language of the novel */
+	var language: String = "",
 
-		/** Genres this novel matches too */
-		var genres: List<String> = listOf(),
+	/** Genres this novel matches too */
+	var genres: List<String> = listOf(),
 
-		/** Authors of this novel */
-		var authors: List<String> = listOf(),
+	/** Authors of this novel */
+	var authors: List<String> = listOf(),
 
-		/** Artists who helped with the novel illustration */
-		var artists: List<String> = listOf(),
+	/** Artists who helped with the novel illustration */
+	var artists: List<String> = listOf(),
 
-		/** Tags this novel matches, in case genres were not enough*/
-		var tags: List<String> = listOf(),
+	/** Tags this novel matches, in case genres were not enough*/
+	var tags: List<String> = listOf(),
 
-		/** The publishing status of this novel */
-		var status: Novel.Status = Novel.Status.UNKNOWN,
+	/** The publishing status of this novel */
+	var status: Novel.Status = Novel.Status.UNKNOWN,
 )

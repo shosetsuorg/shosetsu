@@ -1,4 +1,4 @@
-package app.shosetsu.android.domain.usecases.load
+package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.flow
  * shosetsu
  * 07 / 06 / 2020
  */
-class LoadReaderChaptersUseCase(
+class GetReaderChaptersUseCase(
 	private val iChaptersRepository: IChaptersRepository,
 ) {
 	operator fun invoke(novelID: Int): Flow<HResult<List<ReaderChapterUI>>> =

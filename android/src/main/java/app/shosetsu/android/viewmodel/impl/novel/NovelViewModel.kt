@@ -12,7 +12,7 @@ import app.shosetsu.android.domain.usecases.ShareUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.get.GetChapterUIsUseCase
 import app.shosetsu.android.domain.usecases.get.GetNovelUIUseCase
-import app.shosetsu.android.domain.usecases.load.LoadNovelUseCase
+import app.shosetsu.android.domain.usecases.get.GetNovelUseCase
 import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
 import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadChaptersResumeFirstUnreadUseCase
@@ -57,7 +57,7 @@ class NovelViewModel(
 	private val openInBrowserUseCase: OpenInBrowserUseCase,
 	private val openInWebviewUseCase: OpenInWebviewUseCase,
 	private val shareUseCase: ShareUseCase,
-	private val loadNovelUseCase: LoadNovelUseCase,
+	private val loadNovelUseCase: GetNovelUseCase,
 	private var isOnlineUseCase: IsOnlineUseCase,
 	private val updateChapterUseCase: UpdateChapterUseCase,
 	private val downloadChapterPassageUseCase: DownloadChapterPassageUseCase,

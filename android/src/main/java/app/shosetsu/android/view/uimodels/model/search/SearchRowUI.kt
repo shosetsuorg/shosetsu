@@ -32,7 +32,7 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerSearchRowBinding
  * @param name Name displayed of this data
  */
 data class SearchRowUI(
-	val formatterID: Int,
+	val extensionID: Int,
 	val name: String,
 	val imageURL: String
 ) : BaseRecyclerItem<SearchRowUI.ViewHolder>() {

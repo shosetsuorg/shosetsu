@@ -28,25 +28,25 @@ import app.shosetsu.common.enums.ReadingStatus
  */
 
 data class ChapterEntity(
-		var id: Int? = null,
+	var id: Int? = null,
 
-		var url: String,
+	var url: String,
 
-		val novelID: Int,
+	val novelID: Int,
 
-		val formatterID: Int,
+	val extensionID: Int,
 
-		var title: String,
+	var title: String,
 
-		var releaseDate: String,
+	var releaseDate: String,
 
-		var order: Double,
+	var order: Double,
 
-		var readingPosition: Int = 0,
+	var readingPosition: Int = 0,
 
-		var readingStatus: ReadingStatus = ReadingStatus.UNREAD,
+	var readingStatus: ReadingStatus = ReadingStatus.UNREAD,
 
-		var bookmarked: Boolean = false,
+	var bookmarked: Boolean = false,
 
-		var isSaved: Boolean = false,
+	var isSaved: Boolean = false,
 )

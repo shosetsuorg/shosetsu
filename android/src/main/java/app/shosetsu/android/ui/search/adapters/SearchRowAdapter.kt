@@ -90,7 +90,7 @@ class SearchRowAdapter(
 
 		getItem(position)?.let { (formatterID) ->
 			if (formatterID != -1) {
-				viewModel.searchFormatter(formatterID).observe(lifecycleOwner) {
+				viewModel.searchExtension(formatterID).observe(lifecycleOwner) {
 					handleUpdate(it)
 				}
 			} else {

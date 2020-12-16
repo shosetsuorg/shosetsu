@@ -64,7 +64,7 @@ abstract class ICatalogViewModel :
 	/**
 	 * Sets the [IExtension]
 	 */
-	abstract fun setFormatterID(formatterID: Int)
+	abstract fun setExtensionID(extensionID: Int)
 
 	/**
 	 * Initializes [listingItemsLive]

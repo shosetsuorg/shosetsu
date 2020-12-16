@@ -25,7 +25,7 @@ import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.UninstallExtensionUIUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtensionSettingsUseCase
-import app.shosetsu.android.domain.usecases.load.LoadExtensionUIUseCase
+import app.shosetsu.android.domain.usecases.get.GetExtensionUIUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateExtensionEntityUseCase
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
@@ -41,7 +41,7 @@ import app.shosetsu.common.dto.successResult
  * @author github.com/doomsdayrs
  */
 class ExtensionConfigureViewModel(
-	private val loadExtensionUIUI: LoadExtensionUIUseCase,
+	private val loadExtensionUIUI: GetExtensionUIUseCase,
 	private val updateExtensionEntityUseCase: UpdateExtensionEntityUseCase,
 	private val uninstallExtensionUIUseCase: UninstallExtensionUIUseCase,
 	private val getExtensionSettings: GetExtensionSettingsUseCase,

@@ -149,7 +149,7 @@ class CatalogController(
 	}
 
 	override fun onViewCreated(view: View) {
-		viewModel.setFormatterID(bundle.getInt(BUNDLE_EXTENSION))
+		viewModel.setExtensionID(bundle.getInt(BUNDLE_EXTENSION))
 		binding.swipeRefreshLayout.setOnRefreshListener { viewModel.resetView() }
 		setupObservers()
 		setupRecyclerView()

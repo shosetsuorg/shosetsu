@@ -9,8 +9,8 @@ import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.model.local.ColorChoiceData
-import app.shosetsu.android.domain.usecases.load.LoadChapterPassageUseCase
-import app.shosetsu.android.domain.usecases.load.LoadReaderChaptersUseCase
+import app.shosetsu.android.domain.usecases.get.GetChapterPassageUseCase
+import app.shosetsu.android.domain.usecases.get.GetReaderChaptersUseCase
 import app.shosetsu.android.domain.usecases.load.LoadReaderThemes
 import app.shosetsu.android.domain.usecases.update.UpdateReaderChapterUseCase
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
@@ -55,8 +55,8 @@ import kotlinx.coroutines.withContext
  */
 class ChapterReaderViewModel(
 	private val iSettingsRepository: ISettingsRepository,
-	private val loadReaderChaptersUseCase: LoadReaderChaptersUseCase,
-	private val loadChapterPassageUseCase: LoadChapterPassageUseCase,
+	private val loadReaderChaptersUseCase: GetReaderChaptersUseCase,
+	private val loadChapterPassageUseCase: GetChapterPassageUseCase,
 	private val updateReaderChapterUseCase: UpdateReaderChapterUseCase,
 	private val loadReadersThemes: LoadReaderThemes,
 	private val reportExceptionUseCase: ReportExceptionUseCase

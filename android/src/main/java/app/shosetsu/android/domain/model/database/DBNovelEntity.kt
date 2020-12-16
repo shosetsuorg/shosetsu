@@ -1,10 +1,7 @@
 package app.shosetsu.android.domain.model.database
 
 import androidx.annotation.NonNull
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
+import androidx.room.*
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.dto.Convertible
 import app.shosetsu.lib.Novel
@@ -53,7 +50,8 @@ data class DBNovelEntity(
 	var url: String,
 
 	/** Source this novel is from */
-	val formatterID: Int,
+	@ColumnInfo(name = "formatterID")
+	val extensionID: Int,
 
 	/** If this novel is in the user's library */
 	var bookmarked: Boolean = false,
@@ -97,7 +95,7 @@ data class DBNovelEntity(
 	override fun convertTo(): NovelEntity = NovelEntity(
 		id,
 		url,
-		formatterID,
+		extensionID,
 		bookmarked,
 		loaded,
 		readerType,

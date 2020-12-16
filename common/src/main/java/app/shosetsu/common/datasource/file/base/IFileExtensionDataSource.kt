@@ -26,9 +26,9 @@ import app.shosetsu.lib.IExtension
  */
 interface IFileExtensionDataSource {
 	/** Loads the formatter from file system */
-	suspend fun loadFormatter(fileName: String): HResult<IExtension>
+	suspend fun loadExtension(fileName: String): HResult<IExtension>
 
-	suspend fun writeFormatter(fileName: String, data: String): HResult<*>
+	suspend fun writeExtension(fileName: String, data: String): HResult<*>
 
-	suspend fun deleteFormatter(fileName: String): HResult<*>
+	suspend fun deleteExtension(fileName: String): HResult<*>
 }

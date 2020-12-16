@@ -51,12 +51,12 @@ class FileExtensionDataSource(
 		)
 	}
 
-	private fun makeFormatterFile(fileName: String): String =
+	private fun makeExtensionFileURL(fileName: String): String =
 		"$SOURCE_DIR$SCRIPT_DIR$fileName.lua"
 
 
-	override suspend fun loadFormatter(fileName: String): HResult<IExtension> = try {
-		iFileSystemProvider.readInternalFile(FILES, makeFormatterFile(fileName)).transform {
+	override suspend fun loadExtension(fileName: String): HResult<IExtension> = try {
+		iFileSystemProvider.readInternalFile(FILES, makeExtensionFileURL(fileName)).transform {
 			try {
 				successResult(LuaExtension(it, fileName))
 			} catch (e: Exception) {
@@ -75,11 +75,11 @@ class FileExtensionDataSource(
 		)
 	}
 
-	override suspend fun writeFormatter(fileName: String, data: String): HResult<*> =
-		iFileSystemProvider.writeInternalFile(FILES, makeFormatterFile(fileName), data)
+	override suspend fun writeExtension(fileName: String, data: String): HResult<*> =
+		iFileSystemProvider.writeInternalFile(FILES, makeExtensionFileURL(fileName), data)
 
 
-	override suspend fun deleteFormatter(fileName: String): HResult<*> =
-		iFileSystemProvider.deleteInternalFile(FILES, makeFormatterFile(fileName))
+	override suspend fun deleteExtension(fileName: String): HResult<*> =
+		iFileSystemProvider.deleteInternalFile(FILES, makeExtensionFileURL(fileName))
 
 }

@@ -44,7 +44,7 @@ class DownloadChapterPassageUseCase(
 						chapterUI.link,
 						chapterUI.title,
 						novel.title,
-						chapterUI.formatterID
+						chapterUI.extensionID
 					)
 				)
 				startDownloadWorkerUseCase()
