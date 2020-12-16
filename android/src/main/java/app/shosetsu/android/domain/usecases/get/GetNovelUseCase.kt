@@ -1,10 +1,15 @@
 package app.shosetsu.android.domain.usecases.get
 
+import app.shosetsu.android.common.ext.ifSo
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
+import app.shosetsu.common.consts.settings.SettingKey.IsDownloadOnUpdate
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.UpdateEntity
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.domain.repositories.base.IUpdatesRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
@@ -39,6 +44,8 @@ class GetNovelUseCase(
 	private val eR: IExtensionsRepository,
 	private val cR: IChaptersRepository,
 	private val uR: IUpdatesRepository,
+	private val sR: ISettingsRepository,
+	private val download: DownloadChapterPassageUseCase
 ) {
 	private suspend fun main(
 		novel: NovelEntity,
@@ -61,6 +68,11 @@ class GetNovelUseCase(
 						uR.addUpdates(chapters.map {
 							UpdateEntity(it.id!!, novel.id!!, System.currentTimeMillis())
 						})
+						sR.getBoolean(IsDownloadOnUpdate).handle { downloadUpdates ->
+							downloadUpdates ifSo chapters.forEach { download(it) }
+								?: logI("Not installing updates")
+						}
+
 					}
 				}
 				successResult(true)

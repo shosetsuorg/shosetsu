@@ -2,6 +2,7 @@ package app.shosetsu.android.domain.usecases
 
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.view.uimodels.model.ChapterUI
+import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.DownloadEntity
 import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
 import app.shosetsu.common.dto.HResult
@@ -26,22 +27,24 @@ import app.shosetsu.common.dto.HResult
 /**
  * shosetsu
  * 14 / 05 / 2020
- * Downloads a specific chapter
+ *
+ *
+ * Takes either a [ChapterEntity] or a [ChapterUI] and downloads it
  */
 class DownloadChapterPassageUseCase(
 	private val novelRepo: INovelsRepository,
 	private val downloadsRepository: IDownloadsRepository,
 	private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
 ) {
-	suspend operator fun invoke(chapterUI: ChapterUI) {
+	suspend operator fun invoke(chapterUI: ChapterEntity) {
 		novelRepo.loadNovel(chapterUI.novelID).let {
 			if (it is HResult.Success) {
 				val novel = it.data
 				downloadsRepository.addDownload(
 					DownloadEntity(
-						chapterUI.id,
+						chapterUI.id!!,
 						chapterUI.novelID,
-						chapterUI.link,
+						chapterUI.url,
 						chapterUI.title,
 						novel.title,
 						chapterUI.extensionID
@@ -51,4 +54,6 @@ class DownloadChapterPassageUseCase(
 			}
 		}
 	}
+
+	suspend operator fun invoke(chapterUI: ChapterUI) = invoke(chapterUI.convertTo())
 }

@@ -55,8 +55,6 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 
 	bind<RefreshRepositoryUseCase>() with provider { RefreshRepositoryUseCase(instance()) }
 
-	bind<ReloadFormattersUseCase>() with provider { ReloadFormattersUseCase() }
-
 	bind<InitializeExtensionsUseCase>() with provider {
 		InitializeExtensionsUseCase(instance(), instance(), instance(), instance())
 	}
@@ -74,7 +72,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<GetNovelUIUseCase>() with provider { GetNovelUIUseCase(instance(), instance()) }
 
 	bind<GetNovelUseCase>() with provider {
-		GetNovelUseCase(instance(), instance(), instance(), instance())
+		GetNovelUseCase(instance(), instance(), instance(), instance(), instance(), instance())
 	}
 
 	bind<GetCatalogueListingDataUseCase>() with provider {
