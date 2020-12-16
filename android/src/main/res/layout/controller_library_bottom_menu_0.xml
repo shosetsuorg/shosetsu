@@ -11,6 +11,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <app.shosetsu.android.view.widget.TriStateButton
+            android:id="@+id/unread_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/unread_status"
+            app:button_checked="@drawable/checkbox_checked"
+            app:button_ignored="@drawable/checkbox_ignored"
+            app:button_unchecked="@drawable/checkbox_inter" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -20,9 +29,9 @@
                 android:id="@+id/filter_genres_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
                 android:drawablePadding="8dp"
-                android:text="Genres"
+                android:padding="8dp"
+                android:text="@string/genres"
                 app:drawableLeftCompat="@drawable/expand_more" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -39,11 +48,11 @@
 
             <TextView
                 android:id="@+id/filter_tags_label"
-                android:drawablePadding="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:drawablePadding="8dp"
                 android:padding="8dp"
-                android:text="Tags"
+                android:text="@string/tags"
                 app:drawableStartCompat="@drawable/expand_more" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -65,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="8dp"
                 android:padding="8dp"
-                android:text="Authors"
+                android:text="@string/authors"
                 app:drawableStartCompat="@drawable/expand_more" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -83,11 +92,11 @@
 
             <TextView
                 android:id="@+id/filter_artists_label"
-                android:drawablePadding="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:drawablePadding="8dp"
                 android:padding="8dp"
-                android:text="Artists"
+                android:text="@string/artists"
                 app:drawableStartCompat="@drawable/expand_more" />
 
             <androidx.recyclerview.widget.RecyclerView

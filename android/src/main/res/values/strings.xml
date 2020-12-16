@@ -329,6 +329,11 @@
     <string name="follow_system_theme">Follow System</string>
     <string name="sort">Sort</string>
     <string name="bookmarked">Bookmarked</string>
+    <string name="genres">Genres</string>
+    <string name="tags">Tags</string>
+    <string name="authors">Authors</string>
+    <string name="artists">Artists</string>
+    <string name="unread_status">Unread status</string>
 
     <array name="application_themes">
         <item>@string/follow_system_theme</item>

@@ -120,6 +120,9 @@ class LibraryViewModel(
 			hashMapOf()
 		)
 	}
+	private val unreadStatusFlow: MutableStateFlow<InclusionState?> by lazy {
+		MutableStateFlow(null)
+	}
 
 	/**
 	 * This is outputed to the UI to display all the novels
@@ -132,6 +135,7 @@ class LibraryViewModel(
 			.combineAuthorFilter()
 			.combineGenreFilter()
 			.combineTagsFilter()
+			.combineUnreadStatus()
 			.combineSortType()
 			.combineSortReverse()
 			.asIOLiveData()
@@ -219,6 +223,7 @@ class LibraryViewModel(
 	private fun Flow<HResult<List<ABookmarkedNovelUI>>>.combineArtistFilter() =
 		applyFilterList(artistFilterFlow) { it.artists }
 
+
 	private fun Flow<HResult<List<ABookmarkedNovelUI>>>.combineSortReverse() =
 		combine(areNovelsReversedFlow) { novelResult, reversed ->
 			novelResult.transform { list ->
@@ -239,6 +244,21 @@ class LibraryViewModel(
 						NovelSortType.BY_UNREAD_COUNT -> list.sortedBy { it.unread }
 						NovelSortType.BY_ID -> list.sortedBy { it.id }
 					}
+				)
+			}
+		}
+
+	private fun Flow<HResult<List<ABookmarkedNovelUI>>>.combineUnreadStatus() =
+		combine(unreadStatusFlow) { novelResult, sortType ->
+			novelResult.transform { list ->
+				successResult(
+					sortType?.let { state ->
+						when (sortType) {
+							INCLUDE -> list.filter { it.unread > 0 }
+							EXCLUDE -> list.filterNot { it.unread > 0 }
+						}
+					} ?: list
+
 				)
 			}
 		}
@@ -352,4 +372,10 @@ class LibraryViewModel(
 		}
 		return map
 	}
+
+	override fun setUnreadFilter(inclusionState: InclusionState?) {
+		unreadStatusFlow.value = inclusionState
+	}
+
+	override fun getUnreadFilter(): InclusionState? = unreadStatusFlow.value
 }

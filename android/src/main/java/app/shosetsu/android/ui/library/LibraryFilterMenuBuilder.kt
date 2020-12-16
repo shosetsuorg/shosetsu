@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
-import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import app.shosetsu.android.view.widget.TriStateButton.State.*
@@ -22,7 +21,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerLibraryBottomMenu0Binding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerLibraryBottomMenu1Binding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottomMenuBinding
-import com.github.doomsdayrs.apps.shosetsu.databinding.TristateCheckboxBinding
+import com.github.doomsdayrs.apps.shosetsu.databinding.TriStateCheckboxBinding
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
@@ -91,11 +90,11 @@ class LibraryFilterMenuBuilder constructor(
 					set(_) {}
 
 				inner class ViewHolder(view: View) :
-					BindViewHolder<FilterModel, TristateCheckboxBinding>(view) {
+					BindViewHolder<FilterModel, TriStateCheckboxBinding>(view) {
 
-					override val binding = TristateCheckboxBinding.bind(view)
+					override val binding = TriStateCheckboxBinding.bind(view)
 
-					override fun TristateCheckboxBinding.bindView(
+					override fun TriStateCheckboxBinding.bindView(
 						item: FilterModel,
 						payloads: List<Any>
 					) {
@@ -117,7 +116,7 @@ class LibraryFilterMenuBuilder constructor(
 						}
 					}
 
-					override fun TristateCheckboxBinding.unbindView(item: FilterModel) {
+					override fun TriStateCheckboxBinding.unbindView(item: FilterModel) {
 						this.root.apply {
 							clearOnStateChangeListener()
 							clearOnClickListeners()
@@ -127,8 +126,8 @@ class LibraryFilterMenuBuilder constructor(
 					}
 				}
 
-				override val layoutRes: Int = R.layout.tristate_checkbox
-				override val type: Int = R.layout.tristate_checkbox
+				override val layoutRes: Int = R.layout.tri_state_checkbox
+				override val type: Int = R.layout.tri_state_checkbox
 				override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 
 				override fun toString(): String =
@@ -146,6 +145,20 @@ class LibraryFilterMenuBuilder constructor(
 			}.root
 
 		private fun ControllerLibraryBottomMenu0Binding.buildView() {
+			unreadStatus.apply {
+				state = when (viewModel.getUnreadFilter()) {
+					INCLUDE -> CHECKED
+					EXCLUDE -> UNCHECKED
+					null -> IGNORED
+				}
+				addOnStateChangeListener {
+					when (it) {
+						IGNORED -> viewModel.setUnreadFilter(null)
+						CHECKED -> viewModel.setUnreadFilter(INCLUDE)
+						UNCHECKED -> viewModel.setUnreadFilter(EXCLUDE)
+					}
+				}
+			}
 			arrayListOf(
 				ListModel(
 					filterGenresLabel,

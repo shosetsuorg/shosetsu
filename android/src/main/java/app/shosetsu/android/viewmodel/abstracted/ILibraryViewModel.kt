@@ -59,6 +59,9 @@ abstract class ILibraryViewModel :
 	 */
 	abstract fun removeFromLibrary(list: List<ABookmarkedNovelUI>)
 
+	abstract fun setUnreadFilter(inclusionState: InclusionState?)
+	abstract fun getUnreadFilter(): InclusionState?
+
 	abstract fun getSortType(): NovelSortType
 	abstract fun setSortType(novelSortType: NovelSortType)
 
