@@ -1,9 +1,14 @@
 {
-  "latestVersion": "1100",
+  "latestVersion": "1103",
   "url": "https://discord.gg/ttSX7gB",
   "releaseNotes": [
-    "- all code now standardized by kotlin syntax",
-    "- added library filtering with new filter button that may or may not work",
-    "- updated codebase for view models for Library and Novel"
+    "- Successfully implemented genre (and more) sorting for library",
+    " - It, Is beautiful.",
+    " - Fixed color selection",
+    " - Fixed dynamic behavior",
+    " - No saving state yet umu",
+    "- Fixed images in library changing scale type and not changing back",
+    "- Fixed other minor bugs",
+    "- Renamed directories in code more so"
   ]
 }
