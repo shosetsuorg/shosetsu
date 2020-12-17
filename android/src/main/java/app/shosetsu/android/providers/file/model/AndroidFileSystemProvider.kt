@@ -1,6 +1,8 @@
 package app.shosetsu.android.providers.file.model
 
 import android.content.Context
+import android.os.Environment.DIRECTORY_DOCUMENTS
+import android.os.Environment.DIRECTORY_DOWNLOADS
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
@@ -39,13 +41,24 @@ import java.io.IOException
 class AndroidFileSystemProvider(
 	private val context: Context
 ) : IFileSystemProvider {
-	private val cacheDirPath by lazy { context.cacheDir.absolutePath }
-	private val filesDirPath by lazy { context.filesDir.absolutePath }
+	private val internalCacheDirPath by lazy { context.cacheDir.absolutePath }
+	private val internalFilesDirPath by lazy { context.filesDir.absolutePath }
+
+	private val externalDirPath by lazy { context.getExternalFilesDir(null) }
+	private val externalDownloadDirPath by lazy { context.getExternalFilesDir(DIRECTORY_DOWNLOADS) }
+	private val externalDocumentDirPath by lazy { context.getExternalFilesDir(DIRECTORY_DOCUMENTS) }
+
 
 	private fun InternalFileDir.path() = when (this) {
-		InternalFileDir.CACHE -> "$cacheDirPath/"
-		InternalFileDir.FILES -> "$filesDirPath/"
-		InternalFileDir.GENERIC -> "$filesDirPath/"
+		InternalFileDir.CACHE -> "$internalCacheDirPath/"
+		InternalFileDir.FILES -> "$internalFilesDirPath/"
+		InternalFileDir.GENERIC -> "$internalFilesDirPath/"
+	}
+
+	private fun ExternalFileDir.path() = when (this) {
+		ExternalFileDir.APP -> "$externalDirPath/"
+		ExternalFileDir.DOWNLOADS -> "$externalDownloadDirPath/"
+		ExternalFileDir.DOCUMENTS -> "$externalDocumentDirPath/"
 	}
 
 	override fun doesInternalFileExist(internalFileDir: InternalFileDir, path: String): HResult<*> {
@@ -53,7 +66,7 @@ class AndroidFileSystemProvider(
 	}
 
 	override fun doesExternalFileExist(externalFileDir: ExternalFileDir, path: String): HResult<*> {
-		TODO("Not yet implemented")
+		return if (!File(externalFileDir.path() + path).exists()) emptyResult() else successResult("")
 	}
 
 	override fun readInternalFile(internalFileDir: InternalFileDir, path: String): HResult<String> {
@@ -65,7 +78,11 @@ class AndroidFileSystemProvider(
 	}
 
 	override fun readExternalFile(externalFileDir: ExternalFileDir, path: String): HResult<String> {
-		TODO("Not yet implemented")
+		val file = File(externalFileDir.path() + path)
+		logV("Reading $path in ${externalFileDir.path()} to $file")
+		if (!file.exists()) return emptyResult()
+		if (!file.canRead()) return errorResult(ERROR_LACK_PERM, "Cannot read file: $file")
+		return successResult(file.readText())
 	}
 
 	override fun deleteInternalFile(internalFileDir: InternalFileDir, path: String): HResult<*> {
@@ -80,7 +97,14 @@ class AndroidFileSystemProvider(
 	}
 
 	override fun deleteExternalFile(externalFileDir: ExternalFileDir, path: String): HResult<*> {
-		TODO("Not yet implemented")
+		val file = File(externalFileDir.path() + path)
+		logV("Deleting $path in ${externalFileDir.path()} to $file")
+
+		if (!file.canWrite() && file.exists()) return errorResult(
+			ERROR_LACK_PERM,
+			"Cannot delete file: $file"
+		)
+		return successResult(file.delete())
 	}
 
 	override fun writeInternalFile(
@@ -109,7 +133,20 @@ class AndroidFileSystemProvider(
 		path: String,
 		content: String
 	): HResult<*> {
-		TODO("Not yet implemented")
+		val file = File(externalFileDir.path() + path)
+
+		logV("Writing $path in ${externalFileDir.path()} to $file")
+		if (!file.canWrite() && file.exists())
+			return errorResult(ERROR_LACK_PERM, "Cannot write file: $file")
+
+		try {
+			if (!file.exists()) file.createNewFile()
+		} catch (e: IOException) {
+			logE("IOException on attempt to create new file: $file", e)
+			return errorResult(ERROR_IO, e)
+		}
+
+		return successResult(file.writeText(content))
 	}
 
 	override fun createInternalDirectory(
@@ -126,6 +163,9 @@ class AndroidFileSystemProvider(
 		externalFileDir: ExternalFileDir,
 		path: String
 	): HResult<*> {
-		TODO("Not yet implemented")
+		val file = File(externalFileDir.path() + path)
+		logV("Creating $path in ${externalFileDir.path()}")
+		// if (!file.canWrite()) return errorResult(ERROR_LACK_PERM, "Cannot write file: $file")
+		return successResult(file.mkdirs())
 	}
 }

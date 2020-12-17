@@ -26,10 +26,7 @@ package app.shosetsu.common.enums
 enum class ExternalFileDir {
     /** Refers to the app specific external dir */
     APP,
-    PICTURES,
-    DOWNLOADS,
-    DOCUMENTS,
-    MUSIC,
-    MOVIES
 
+	DOWNLOADS,
+    DOCUMENTS,
 }

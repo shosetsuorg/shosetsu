@@ -1,6 +1,7 @@
 package app.shosetsu.android
 
 import android.content.Context
+import android.os.Environment
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Before
 import org.junit.Test
@@ -51,8 +52,12 @@ class DirectoryTest {
 		assert(d.canWrite()) { "Cannot write" }
 		println("Yes")
 
-		print("Can create? ")
-		assert(d.mkdirs()) { "Cannot create directories" }
+		print("Can create dir? ")
+		assert(d.mkdir() || d.exists()) { "Cannot create directories" }
+		println("Yes")
+
+		print("Can create dirs? ")
+		assert(d.mkdirs() || d.exists()) { "Cannot create directories" }
 		println("Yes")
 
 		print("Exists? ")
