@@ -43,9 +43,9 @@ open class WriteDebugUpdate : DefaultTask() {
 
 	@Throws(IOException::class)
 	private fun Process.getText(): String =
-			IOGroovyMethods.getText(BufferedReader(java.io.InputStreamReader(inputStream))).also {
-				closeStreams(this)
-			}
+		IOGroovyMethods.getText(BufferedReader(java.io.InputStreamReader(inputStream))).also {
+			closeStreams(this)
+		}
 
 	@Throws(IOException::class)
 	private fun getCommitCount(): String = "git rev-list --count HEAD".execute().getText().trim()
@@ -58,10 +58,13 @@ open class WriteDebugUpdate : DefaultTask() {
 	@TaskAction
 	fun main() {
 		val file = File("android/src/debug/assets/update.json")
-		file.writeText("""
+		// up the commit by one for when shosetsu-preview builds
+		val commitCount = getCommitCount().toInt() + 1
+		file.writeText(
+			"""
 		{
-			"latestVersion":"${getCommitCount()}",
-			"url":"https://discord.gg/ttSX7gB",
+			"latestVersion":"$commitCount",
+			"url":"https://github.com/shosetsuorg/shosetsu-preview/releases/download/r$commitCount/shosetsu-r$commitCount.apk",
 			"releaseNotes":[
 				"${getLatestCommitMsg().replace("\n", "\",\n\t\t\t\t\"")}"
 			]

@@ -1,14 +1,7 @@
 {
-  "latestVersion": "1103",
-  "url": "https://discord.gg/ttSX7gB",
+  "latestVersion": "1113",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1113/shosetsu-r1113.apk",
   "releaseNotes": [
-    "- Successfully implemented genre (and more) sorting for library",
-    " - It, Is beautiful.",
-    " - Fixed color selection",
-    " - Fixed dynamic behavior",
-    " - No saving state yet umu",
-    "- Fixed images in library changing scale type and not changing back",
-    "- Fixed other minor bugs",
-    "- Renamed directories in code more so"
+    "Ignore this"
   ]
 }

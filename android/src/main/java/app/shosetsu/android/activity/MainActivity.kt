@@ -1,12 +1,18 @@
 package app.shosetsu.android.activity
 
 import android.annotation.SuppressLint
+import android.app.DownloadManager
+import android.app.DownloadManager.*
+import android.app.DownloadManager.Request.VISIBILITY_VISIBLE
 import android.app.SearchManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.ACTION_VIEW
 import android.content.IntentFilter
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment.DIRECTORY_DOWNLOADS
 import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -15,6 +21,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.getSystemService
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -23,6 +30,7 @@ import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.collapse
 import app.shosetsu.android.common.utils.expand
+import app.shosetsu.android.domain.model.remote.DebugAppUpdate
 import app.shosetsu.android.ui.browse.BrowseController
 import app.shosetsu.android.ui.library.LibraryController
 import app.shosetsu.android.ui.more.MoreController
@@ -42,6 +50,8 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityMainBinding
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
+import java.io.File
+import android.app.DownloadManager.Request as DownloadRequest
 
 /*
  * This file is part of Shosetsu.
@@ -76,6 +86,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 	private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
 
+	private val downloadManager by lazy { getSystemService<DownloadManager>()!! }
 	override val kodein: Kodein by closestKodein()
 	private val viewModel: IMainViewModel by viewModel()
 
@@ -134,6 +145,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			addAction(ACTION_OPEN_CATALOGUE)
 			addAction(ACTION_OPEN_SEARCH)
 			addAction(ACTION_OPEN_APP_UPDATE)
+			addAction(ACTION_DOWNLOAD_COMPLETE)
 		})
 		registered = true
 		setContentView(ActivityMainBinding.inflate(layoutInflater).also { binding = it }.root)
@@ -317,6 +329,27 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 					logE("Router has a root controller")
 				}
 			}
+			ACTION_DOWNLOAD_COMPLETE -> {
+				val dID = intent.getLongExtra(EXTRA_DOWNLOAD_ID, -1)
+				if (dID == -1L) return
+				val c = downloadManager.query(Query().setFilterById(dID))
+				if (c.moveToFirst()) {
+					val status = c.getInt(c.getColumnIndex(COLUMN_STATUS))
+					if (status == STATUS_SUCCESSFUL) {
+						val uri = c.getString(c.getColumnIndex(COLUMN_LOCAL_URI))
+						startActivity(Intent(ACTION_VIEW).apply {
+							setDataAndType(
+								Uri.fromFile(File(Uri.parse(uri).path)),
+								"application/vnd.android.package-archive"
+							)
+						})
+					} else {
+						toast("Download unsuccesful")
+					}
+				} else {
+					toast("Download unsuccesful")
+				}
+			}
 			else -> if (!router.hasRootController()) {
 				setSelectedDrawerItem(R.id.nav_library)
 			} else {
@@ -327,6 +360,27 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 	private fun setRoot(controller: Controller, id: Int) {
 		router.setRoot(controller.withFadeTransaction().tag(id.toString()))
+	}
+
+	private fun downloadAppUpdate(update: DebugAppUpdate) {
+		downloadManager.apply {
+			enqueue(DownloadRequest(Uri.parse(update.url)).apply {
+				setTitle("Shosetsu App Update")
+				setDescription("Downloading app update ${update.version}")
+
+				File(
+					applicationContext.getExternalFilesDir(DIRECTORY_DOWNLOADS)!!.absolutePath +
+							"/updates/"
+				).mkdirs()
+
+				setDestinationInExternalFilesDir(
+					applicationContext,
+					DIRECTORY_DOWNLOADS,
+					"updates/${update.version}.apk"
+				)
+				setNotificationVisibility(VISIBILITY_VISIBLE)
+			})
+		}
 	}
 
 	private fun setupProcesses() {
@@ -345,10 +399,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 						)
 					)
 					setPositiveButton(R.string.update) { it, _ ->
-						viewModel.share(
-							update.url,
-							if (update.versionCode == -1) "Discord" else "Github"
-						)
+						downloadAppUpdate(update)
 						it.dismiss()
 					}
 					setNegativeButton(R.string.update_not_interested) { it, _ ->
