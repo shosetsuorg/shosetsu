@@ -3,6 +3,11 @@ package app.shosetsu.android.common.ext
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.common.consts.ErrorKeys
+import app.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
+import app.shosetsu.common.consts.ErrorKeys.ERROR_JSON
+import app.shosetsu.common.consts.ErrorKeys.ERROR_LUA_BROKEN
+import app.shosetsu.common.consts.ErrorKeys.ERROR_LUA_GENERAL
+import app.shosetsu.common.consts.ErrorKeys.ERROR_NETWORK
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.errorResult
 import app.shosetsu.lib.exceptions.*
@@ -35,36 +40,31 @@ import java.security.InvalidParameterException
  */
 fun Exception.toHError(): HResult.Error = when (this) {
 	is JsonMissingKeyException -> {
-		errorResult(ErrorKeys.ERROR_JSON, this)
+		errorResult(ERROR_JSON, this)
 	}
 	is MissingExtensionLibrary -> {
-		errorResult(ErrorKeys.ERROR_LUA_GENERAL, this)
+		errorResult(ERROR_LUA_GENERAL, this)
 	}
 	is MissingOrInvalidKeysException -> {
-		errorResult(ErrorKeys.ERROR_LUA_BROKEN, this)
+		errorResult(ERROR_LUA_BROKEN, this)
 	}
 	is InvalidFilterIDException -> {
-		errorResult(ErrorKeys.ERROR_LUA_BROKEN, this)
+		errorResult(ERROR_LUA_BROKEN, this)
 	}
-	is HTTPException -> {
-		logE("HTTP Exception")
-		errorResult(ErrorKeys.ERROR_HTTP_ERROR, message!!, this)
-	}
+	is HTTPException -> errorResult(ErrorKeys.ERROR_HTTP_ERROR, message!!, this)
 	is SocketTimeoutException -> errorResult(this)
 	is IOException -> {
-		logE("Network exception")
-		errorResult(ErrorKeys.ERROR_NETWORK, message ?: "Unknown Network Exception", this)
+		errorResult(ERROR_NETWORK, message ?: "Unknown Network Exception", this)
 	}
 	is LuaError -> {
-		if (cause != null && cause is HTTPException) {
-			logE("HTTP exception")
-			errorResult(ErrorKeys.ERROR_HTTP_ERROR, cause!!.message!!)
-		} else errorResult(ErrorKeys.ERROR_LUA_GENERAL, message ?: "Unknown Lua Error", this)
+		if (cause != null)
+			(cause as Exception).toHError()
+		else errorResult(ERROR_LUA_GENERAL, message ?: "Unknown Lua Error", this)
 	}
 	is NullPointerException -> errorResult(this)
 	is SQLiteException -> errorResult(this)
 	is InvalidParameterException -> errorResult(this)
 	is JSONException -> errorResult(this)
 	is UnknownHostException -> errorResult(this)
-	else -> errorResult(ErrorKeys.ERROR_GENERAL, message ?: "Unknown General Error", this)
+	else -> errorResult(ERROR_GENERAL, message ?: "Unknown General Error", this)
 }
