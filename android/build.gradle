@@ -44,7 +44,7 @@ android {
 			multiDexEnabled true
 		}
 		debug {
-			versionNameSuffix "-r${getCommitCount()}"
+			versionNameSuffix "-r1112"
 			applicationIdSuffix '.debug'
 			debuggable true
 		}

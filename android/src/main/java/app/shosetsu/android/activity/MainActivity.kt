@@ -8,7 +8,7 @@ import android.app.SearchManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.ACTION_VIEW
+import android.content.Intent.*
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
@@ -52,6 +52,7 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import java.io.File
 import android.app.DownloadManager.Request as DownloadRequest
+
 
 /*
  * This file is part of Shosetsu.
@@ -336,18 +337,20 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 				if (c.moveToFirst()) {
 					val status = c.getInt(c.getColumnIndex(COLUMN_STATUS))
 					if (status == STATUS_SUCCESSFUL) {
-						val uri = c.getString(c.getColumnIndex(COLUMN_LOCAL_URI))
+						val fileURI = c.getString(c.getColumnIndex(COLUMN_LOCAL_URI))
+
 						startActivity(Intent(ACTION_VIEW).apply {
 							setDataAndType(
-								Uri.fromFile(File(Uri.parse(uri).path)),
+								File(Uri.parse(fileURI).path!!).getUriCompat(applicationContext),
 								"application/vnd.android.package-archive"
 							)
+							addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_GRANT_READ_URI_PERMISSION)
 						})
 					} else {
 						toast("Download unsuccesful")
 					}
 				} else {
-					toast("Download unsuccesful")
+					toast("Download not found")
 				}
 			}
 			else -> if (!router.hasRootController()) {
@@ -368,8 +371,9 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 				setTitle("Shosetsu App Update")
 				setDescription("Downloading app update ${update.version}")
 
+
 				File(
-					applicationContext.getExternalFilesDir(DIRECTORY_DOWNLOADS)!!.absolutePath +
+					applicationContext.cacheDir.absolutePath +
 							"/updates/"
 				).mkdirs()
 

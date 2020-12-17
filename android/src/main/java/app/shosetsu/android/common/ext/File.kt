@@ -1,7 +1,11 @@
 package app.shosetsu.android.common.ext
 
-import org.json.JSONException
-import org.json.JSONObject
+import android.content.Context
+import android.net.Uri
+import android.os.Build
+import androidx.core.content.FileProvider
+import androidx.core.net.toUri
+import com.github.doomsdayrs.apps.shosetsu.BuildConfig.APPLICATION_ID
 import java.io.File
 
 /*
@@ -29,8 +33,11 @@ import java.io.File
  * @author github.com/doomsdayrs
  */
 
-@Throws(JSONException::class)
-fun File.getMeta(): JSONObject = JSONObject(
-	this.useLines { it.first() }.toString()
-		.replace("--", "").trim()
-)
+
+fun File.getUriCompat(context: Context): Uri {
+	return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+		FileProvider.getUriForFile(context, "$APPLICATION_ID.provider", this)
+	} else {
+		this.toUri()
+	}
+}
