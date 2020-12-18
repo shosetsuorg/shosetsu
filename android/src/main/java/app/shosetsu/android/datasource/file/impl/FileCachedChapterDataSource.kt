@@ -2,7 +2,7 @@ package app.shosetsu.android.datasource.file.impl
 
 import android.util.Log
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.providers.file.base.IFileSystemProvider
+import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import app.shosetsu.common.datasource.file.base.IFileCachedChapterDataSource
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle

@@ -1,4 +1,4 @@
-package app.shosetsu.android.providers.file.base
+package app.shosetsu.common.providers.file.base
 
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.ExternalFileDir

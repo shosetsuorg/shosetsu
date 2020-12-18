@@ -31,8 +31,8 @@ sealed class HResult<out T : Any> {
 
 	/** The operation was a success, here is your data [data] */
 	class Success<out T : Any>(
-			/** Returned data */
-			val data: T,
+		/** Returned data */
+		val data: T,
 	) : app.shosetsu.common.dto.HResult<T>()
 
 	/**
@@ -43,9 +43,9 @@ sealed class HResult<out T : Any> {
 	 */
 	@Suppress("MemberVisibilityCanBePrivate")
 	data class Error(
-			val code: Int,
-			val message: String,
-			val error: Exception? = null,
+		val code: Int,
+		val message: String,
+		val error: Exception? = null,
 	) : app.shosetsu.common.dto.HResult<Nothing>()
 
 	/** This states that the operation is currently pending */
@@ -66,39 +66,43 @@ fun emptyResult(): HResult.Empty = HResult.Empty
 
 /** This is an easy way to create an error*/
 fun errorResult(code: Int, message: String, error: Exception? = null): HResult.Error =
-		HResult.Error(code, message, error)
+	HResult.Error(code, message, error)
 
 
 /** This is an easy way to create an error via its exception */
 fun errorResult(code: Int, error: Exception? = null): HResult.Error =
-		HResult.Error(code, error?.message
-				?: "UnknownException", error)
+	HResult.Error(
+		code, error?.message
+			?: "UnknownException", error
+	)
 
 
 fun errorResult(e: NullPointerException): HResult.Error =
-		HResult.Error(ErrorKeys.ERROR_NPE, e.message
-				?: "UnknownNullException", e)
+	HResult.Error(
+		ErrorKeys.ERROR_NPE, e.message
+			?: "UnknownNullException", e
+	)
 
 /**
  * Used to sequence HResult returning methods together
  */
 inline infix fun <reified I1 : Any, reified I2 : Any> HResult<I1>.and(
-		hResult: HResult<I2>,
+	hResult: HResult<I2>,
 ): HResult<*> {
 	if (this is HResult.Success && hResult is HResult.Success) return successResult("")
 
 	/** Returns the reason why the [HResult] [I1] is not a success */
 	this.handle(
-			onLoading = { return this },
-			onEmpty = { return this },
-			onError = { return this }
+		onLoading = { return this },
+		onEmpty = { return this },
+		onError = { return this }
 	)
 
 	/** Returns the reason why the [HResult] [I2] is not a success */
 	hResult.handle(
-			onLoading = { return hResult },
-			onEmpty = { return hResult },
-			onError = { return hResult }
+		onLoading = { return hResult },
+		onEmpty = { return hResult },
+		onError = { return hResult }
 	)
 
 	/**
@@ -111,10 +115,10 @@ inline infix fun <reified I1 : Any, reified I2 : Any> HResult<I1>.and(
  * Convenience method to easily handle the HResult
  */
 inline fun <reified I : Any> HResult<I>.handle(
-		onLoading: () -> Unit = {},
-		onEmpty: () -> Unit = {},
-		onError: (HResult.Error) -> Unit = {},
-		onSuccess: (I) -> Unit = {}
+	onLoading: () -> Unit = {},
+	onEmpty: () -> Unit = {},
+	onError: (HResult.Error) -> Unit = {},
+	onSuccess: (I) -> Unit = {}
 ) = when (this) {
 	is HResult.Success -> onSuccess(this.data)
 	HResult.Loading -> onLoading()
@@ -144,10 +148,10 @@ inline fun <reified I : Any> HResult<I>.unwrap(): I? = when (this) {
  *  @see transform
  */
 inline fun <reified I : Any, O : Any> HResult<I>.transmogrify(
-		onLoading: () -> O? = { null },
-		onEmpty: () -> O? = { null },
-		onError: (HResult.Error) -> O? = { null },
-		transformSuccess: (I) -> O? = { null }
+	onLoading: () -> O? = { null },
+	onEmpty: () -> O? = { null },
+	onError: (HResult.Error) -> O? = { null },
+	transformSuccess: (I) -> O? = { null }
 ): O? = when (this) {
 	is HResult.Success -> transformSuccess(this.data)
 	HResult.Loading -> onLoading()
@@ -155,11 +159,12 @@ inline fun <reified I : Any, O : Any> HResult<I>.transmogrify(
 	is HResult.Error -> onError(this)
 }
 
+
 /**
  * Transform [this] [HResult] of [I] into a [HResult] of [O]
  */
 inline fun <reified I : Any, O : Any> HResult<I>.transform(
-		transformSuccess: (I) -> HResult<O>
+	transformSuccess: (I) -> HResult<O>
 ): HResult<O> = when (this) {
 	is HResult.Success -> transformSuccess(this.data)
 	HResult.Loading -> this as HResult.Loading
@@ -167,16 +172,17 @@ inline fun <reified I : Any, O : Any> HResult<I>.transform(
 	is HResult.Error -> this
 }
 
+
 /**
  * Transform [this] [HResult] of [I] into a [HResult] of [O]
  *
  * This exposes the methods to apply custom transformations
  */
 inline fun <reified I : Any, O : Any> HResult<I>.transform(
-		onLoading: () -> HResult<O> = { this as HResult.Loading },
-		onEmpty: () -> HResult<O> = { this as HResult.Empty },
-		onError: (HResult.Error) -> HResult<O> = { this as HResult.Error },
-		transformSuccess: (I) -> HResult<O>
+	onLoading: () -> HResult<O> = { this as HResult.Loading },
+	onEmpty: () -> HResult<O> = { this as HResult.Empty },
+	onError: (HResult.Error) -> HResult<O> = { this as HResult.Error },
+	transformSuccess: (I) -> HResult<O>
 ): HResult<O> = when (this) {
 	is HResult.Success -> transformSuccess(this.data)
 	HResult.Loading -> onLoading()

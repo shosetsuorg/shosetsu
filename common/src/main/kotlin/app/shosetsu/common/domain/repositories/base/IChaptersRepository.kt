@@ -25,9 +25,6 @@ import kotlinx.coroutines.flow.Flow
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
  * 30 / 04 / 2020
@@ -47,10 +44,16 @@ interface IChaptersRepository {
 	): HResult<String>
 
 	/** Save the [ChapterEntity] [passage] to memory */
-	suspend fun saveChapterPassageToMemory(chapterEntity: ChapterEntity, passage: String): HResult<*>
+	suspend fun saveChapterPassageToMemory(
+		chapterEntity: ChapterEntity,
+		passage: String
+	): HResult<*>
 
 	/** Save the [ChapterEntity] [passage] to storage */
-	suspend fun saveChapterPassageToStorage(chapterEntity: ChapterEntity, passage: String): HResult<*>
+	suspend fun saveChapterPassageToStorage(
+		chapterEntity: ChapterEntity,
+		passage: String
+	): HResult<*>
 
 	/** Handles chapters for ze novel */
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>): HResult<*>

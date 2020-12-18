@@ -1,16 +1,13 @@
 package app.shosetsu.android.datasource.file.impl
 
 import app.shosetsu.android.common.ext.logV
-import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.android.providers.file.base.IFileSystemProvider
+import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import app.shosetsu.common.datasource.file.base.IFileChapterDataSource
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.emptyResult
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.transform
 import app.shosetsu.common.enums.ExternalFileDir.DOWNLOADS
-import java.io.FileNotFoundException
 
 /*
  * This file is part of shosetsu.
@@ -70,15 +67,8 @@ class FileChapterDataSource(
 		}
 	}
 
-
 	override suspend fun loadChapterPassageFromStorage(chapterEntity: ChapterEntity): HResult<String> =
-		try {
-			iFileSystemProvider.readExternalFile(DOWNLOADS, makePath(chapterEntity))
-		} catch (e: FileNotFoundException) {
-			emptyResult()
-		} catch (e: Exception) {
-			e.toHError()
-		}
+		iFileSystemProvider.readExternalFile(DOWNLOADS, makePath(chapterEntity))
 
 	override suspend fun deleteChapter(chapterEntity: ChapterEntity): HResult<*> =
 		iFileSystemProvider.deleteExternalFile(DOWNLOADS, makePath(chapterEntity))

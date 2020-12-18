@@ -1,11 +1,11 @@
-package app.shosetsu.android.providers.file.model
+package app.shosetsu.android.providers.file.impl
 
 import android.content.Context
 import android.os.Environment.DIRECTORY_DOCUMENTS
 import android.os.Environment.DIRECTORY_DOWNLOADS
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logV
-import app.shosetsu.android.providers.file.base.IFileSystemProvider
+import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import app.shosetsu.common.consts.ErrorKeys.ERROR_IO
 import app.shosetsu.common.consts.ErrorKeys.ERROR_LACK_PERM
 import app.shosetsu.common.dto.HResult

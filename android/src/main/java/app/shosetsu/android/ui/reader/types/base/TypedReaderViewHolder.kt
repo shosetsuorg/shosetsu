@@ -32,11 +32,6 @@ abstract class TypedReaderViewHolder(
 	lateinit var chapter: ReaderChapterUI
 	lateinit var chapterReader: ChapterReader
 
-	fun attachData(chapterUI: ReaderChapterUI, chapterReader: ChapterReader) {
-		this.chapter = chapterUI
-		this.chapterReader = chapterReader
-	}
-
 	/**
 	 * Passes in data
 	 */

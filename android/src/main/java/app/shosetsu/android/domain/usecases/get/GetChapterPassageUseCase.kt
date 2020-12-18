@@ -1,13 +1,10 @@
 package app.shosetsu.android.domain.usecases.get
 
-import android.util.Log
-import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
-import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.errorResult
+import app.shosetsu.common.dto.transform
 
 /*
  * This file is part of shosetsu.
@@ -34,16 +31,11 @@ class GetChapterPassageUseCase(
 	private val iChaptersRepository: IChaptersRepository,
 	private val iExtensionsRepository: IExtensionsRepository,
 ) {
-	suspend operator fun invoke(chapter: ReaderChapterUI): HResult<String> {
-		Log.d(logID(), "Getting chapter entity #${chapter.id}}")
-		val chapterResult = iChaptersRepository.loadChapter(chapter.id)
-		return if (chapterResult is HResult.Success) {
-			Log.d(logID(), "Success")
-			val chapterEntity = chapterResult.data
-			val formatterResult = iExtensionsRepository.loadIExtension(chapterEntity.extensionID)
-			if (formatterResult is HResult.Success) {
-				iChaptersRepository.loadChapterPassage(formatterResult.data, chapterEntity)
-			} else errorResult(ErrorKeys.ERROR_NOT_FOUND, "Formatter not found")
-		} else errorResult(ErrorKeys.ERROR_NOT_FOUND, "Chapter not found")
-	}
+	suspend operator fun invoke(readerChapterUI: ReaderChapterUI): HResult<String> =
+		iChaptersRepository.loadChapter(readerChapterUI.id).transform { chapterEntity ->
+			iExtensionsRepository.loadIExtension(chapterEntity.extensionID)
+				.transform { iExtension ->
+					iChaptersRepository.loadChapterPassage(iExtension, chapterEntity)
+				}
+		}
 }

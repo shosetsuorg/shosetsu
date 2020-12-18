@@ -24,6 +24,9 @@ import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
  * 01 / 10 / 2020
  */
 abstract class AAboutViewModel : ShosetsuViewModel() {
+	/**
+	 * call action to create popup window to open github
+	 */
 	abstract fun openGithub()
 	abstract fun openWebsite()
 	abstract fun appUpdateCheck()

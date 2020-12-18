@@ -4,7 +4,7 @@ import app.shosetsu.android.common.consts.APP_UPDATE_CACHE_FILE
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.domain.model.remote.DebugAppUpdate
-import app.shosetsu.android.providers.file.base.IFileSystemProvider
+import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.InternalFileDir.CACHE

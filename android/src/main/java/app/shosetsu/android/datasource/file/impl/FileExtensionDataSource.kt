@@ -4,7 +4,7 @@ import app.shosetsu.android.common.consts.SCRIPT_DIR
 import app.shosetsu.android.common.consts.SOURCE_DIR
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.android.providers.file.base.IFileSystemProvider
+import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import app.shosetsu.common.consts.ErrorKeys.ERROR_LUA_GENERAL
 import app.shosetsu.common.consts.ErrorKeys.ERROR_NOT_FOUND
 import app.shosetsu.common.datasource.file.base.IFileExtensionDataSource

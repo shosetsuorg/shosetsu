@@ -1,16 +1,16 @@
 package app.shosetsu.common.domain.repositories.impl
 
 import app.shosetsu.common.datasource.database.base.ILocalChaptersDataSource
-import app.shosetsu.common.domain.model.local.ReaderChapterEntity
-import app.shosetsu.common.domain.repositories.base.IChaptersRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.and
 import app.shosetsu.common.datasource.file.base.IFileCachedChapterDataSource
 import app.shosetsu.common.datasource.file.base.IFileChapterDataSource
 import app.shosetsu.common.datasource.memory.base.IMemChaptersDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteChaptersDataSource
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.domain.model.local.ReaderChapterEntity
+import app.shosetsu.common.domain.repositories.base.IChaptersRepository
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.and
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
@@ -44,77 +44,80 @@ import kotlinx.coroutines.flow.Flow
  * @param fileSource Source from storage
  */
 class ChaptersRepository(
-		private val memorySource: IMemChaptersDataSource,
-		private val cacheSource: IFileCachedChapterDataSource,
-		private val dbSource: ILocalChaptersDataSource,
-		private val fileSource: IFileChapterDataSource,
-		private val remoteSource: IRemoteChaptersDataSource,
+	private val memorySource: IMemChaptersDataSource,
+	private val cacheSource: IFileCachedChapterDataSource,
+	private val dbSource: ILocalChaptersDataSource,
+	private val fileSource: IFileChapterDataSource,
+	private val remoteSource: IRemoteChaptersDataSource,
 ) : IChaptersRepository {
 
-	private suspend fun handleReturn(chapterEntity: ChapterEntity, value: HResult<String>) {
+	private suspend fun placeIntoCache(chapterEntity: ChapterEntity, value: HResult<String>) {
 		if (value is HResult.Success)
 			saveChapterPassageToMemory(chapterEntity, value.data)
 	}
 
 	override suspend fun loadChapterPassage(
-			formatter: IExtension,
-			chapterEntity: ChapterEntity,
-	): HResult<String> = memorySource.loadChapterFromCache(chapterEntity.id!!)
+		formatter: IExtension,
+		chapterEntity: ChapterEntity,
+	): HResult<String> =
+		memorySource.loadChapterFromCache(chapterEntity.id!!)
 			.takeIf { it is HResult.Success }
 			?: cacheSource.loadChapterPassage(chapterEntity.id!!)
-					.takeIf { it is HResult.Success }
+				.takeIf { it is HResult.Success }
 			?: fileSource.loadChapterPassageFromStorage(chapterEntity)
-					.takeIf { it is HResult.Success }?.also { handleReturn(chapterEntity, it) }
+				.takeIf { it is HResult.Success }?.also { placeIntoCache(chapterEntity, it) }
 			?: remoteSource.loadChapterPassage(
-					formatter,
-					chapterEntity.url
-			).also { handleReturn(chapterEntity, it) }
+				formatter,
+				chapterEntity.url
+			).also { placeIntoCache(chapterEntity, it) }
 
 	override suspend fun saveChapterPassageToMemory(
-			chapterEntity: ChapterEntity,
-			passage: String,
+		chapterEntity: ChapterEntity,
+		passage: String,
 	): HResult<*> = memorySource.saveChapterInCache(chapterEntity.id!!, passage) and
 			cacheSource.saveChapterInCache(chapterEntity.id!!, passage)
 
 	override suspend fun saveChapterPassageToStorage(
-			chapterEntity: ChapterEntity,
-			passage: String,
+		chapterEntity: ChapterEntity,
+		passage: String,
 	): HResult<*> = saveChapterPassageToMemory(chapterEntity, passage) and
 			fileSource.saveChapterPassageToStorage(chapterEntity, passage) and
 			dbSource.updateChapter(chapterEntity.copy(isSaved = true))
 
 
 	override suspend fun handleChapters(
-			novelEntity: NovelEntity,
-			list: List<Novel.Chapter>,
+		novelEntity: NovelEntity,
+		list: List<Novel.Chapter>,
 	): HResult<*> =
-			dbSource.handleChapters(novelEntity, list)
+		dbSource.handleChapters(novelEntity, list)
 
 	override suspend fun handleChaptersReturn(
-			novelEntity: NovelEntity,
-			list: List<Novel.Chapter>,
+		novelEntity: NovelEntity,
+		list: List<Novel.Chapter>,
 	): HResult<List<ChapterEntity>> =
-			dbSource.handleChapterReturn(novelEntity, list)
+		dbSource.handleChapterReturn(novelEntity, list)
 
 	override suspend fun loadChapters(novelID: Int): Flow<HResult<List<ChapterEntity>>> =
-			dbSource.loadChapters(novelID)
+		dbSource.loadChapters(novelID)
 
 	override suspend fun updateChapter(chapterEntity: ChapterEntity): HResult<*> =
-			dbSource.updateChapter(chapterEntity)
+		dbSource.updateChapter(chapterEntity)
 
 	override suspend fun loadChapter(chapterID: Int): HResult<ChapterEntity> =
-			dbSource.loadChapter(chapterID)
+		dbSource.loadChapter(chapterID)
 
 	override suspend fun loadReaderChapters(
-			novelID: Int,
+		novelID: Int,
 	): Flow<HResult<List<ReaderChapterEntity>>> = dbSource.loadReaderChapters(novelID)
 
 	override suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): HResult<*> =
-			dbSource.updateReaderChapter(readerChapterEntity)
+		dbSource.updateReaderChapter(readerChapterEntity)
 
 	override suspend fun deleteChapterPassage(chapterEntity: ChapterEntity): HResult<*> =
-			dbSource.updateChapter(chapterEntity.copy(
-					isSaved = false
-			)) and fileSource.deleteChapter(chapterEntity)
+		dbSource.updateChapter(
+			chapterEntity.copy(
+				isSaved = false
+			)
+		) and fileSource.deleteChapter(chapterEntity)
 
 }
