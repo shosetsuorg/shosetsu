@@ -30,7 +30,7 @@ import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.collapse
 import app.shosetsu.android.common.utils.expand
-import app.shosetsu.android.domain.model.remote.DebugAppUpdate
+import app.shosetsu.android.domain.model.remote.AppUpdateDTO
 import app.shosetsu.android.ui.browse.BrowseController
 import app.shosetsu.android.ui.library.LibraryController
 import app.shosetsu.android.ui.more.MoreController
@@ -39,6 +39,7 @@ import app.shosetsu.android.ui.updates.UpdatesController
 import app.shosetsu.android.view.controller.*
 import app.shosetsu.android.view.controller.base.*
 import app.shosetsu.android.viewmodel.abstracted.IMainViewModel
+import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.enums.AppThemes.*
 import com.bluelinelabs.conductor.Conductor.attachRouter
@@ -365,7 +366,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		router.setRoot(controller.withFadeTransaction().tag(id.toString()))
 	}
 
-	private fun downloadAppUpdate(update: DebugAppUpdate) {
+	private fun downloadAppUpdate(update: AppUpdateEntity) {
 		downloadManager.apply {
 			enqueue(DownloadRequest(Uri.parse(update.url)).apply {
 				setTitle("Shosetsu App Update")

@@ -1,6 +1,6 @@
 package app.shosetsu.android.datasource.remote.base
 
-import app.shosetsu.android.domain.model.remote.DebugAppUpdate
+import app.shosetsu.android.domain.model.remote.AppUpdateDTO
 import app.shosetsu.common.dto.HResult
 
 /*
@@ -25,5 +25,5 @@ import app.shosetsu.common.dto.HResult
  * 07 / 09 / 2020
  */
 interface IRemoteAppUpdateDataSource {
-	suspend fun loadGitAppUpdate(): HResult<DebugAppUpdate>
+	suspend fun loadGitAppUpdate(): HResult<AppUpdateDTO>
 }

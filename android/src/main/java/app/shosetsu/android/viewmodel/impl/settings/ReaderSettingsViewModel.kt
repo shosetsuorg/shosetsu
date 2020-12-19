@@ -18,6 +18,7 @@ import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.enums.MarkingTypes.*
 import com.github.doomsdayrs.apps.shosetsu.R
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /*
  * This file is part of shosetsu.
@@ -47,6 +48,7 @@ class ReaderSettingsViewModel(
 	val loadReaderThemes: LoadReaderThemes
 ) : AReaderSettingsViewModel(iSettingsRepository) {
 
+	@ExperimentalCoroutinesApi
 	override fun getReaderThemes(): LiveData<List<ColorChoiceUI>> =
 		loadReaderThemes().asIOLiveData()
 

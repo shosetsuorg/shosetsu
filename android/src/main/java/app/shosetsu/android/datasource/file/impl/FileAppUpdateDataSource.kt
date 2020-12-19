@@ -3,7 +3,7 @@ package app.shosetsu.android.datasource.file.impl
 import app.shosetsu.android.common.consts.APP_UPDATE_CACHE_FILE
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.file.base.IFileCachedAppUpdateDataSource
-import app.shosetsu.android.domain.model.remote.DebugAppUpdate
+import app.shosetsu.android.domain.model.remote.AppUpdateDTO
 import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.dto.*
@@ -36,16 +36,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
  * shosetsu
  * 07 / 09 / 2020
  */
-@ExperimentalCoroutinesApi
 class FileAppUpdateDataSource(
 	private val iFileSystemProvider: IFileSystemProvider
 ) : IFileCachedAppUpdateDataSource {
 
-	override val updateAvaLive: MutableStateFlow<HResult<DebugAppUpdate>> by lazy {
+	override val updateAvaLive: MutableStateFlow<HResult<AppUpdateDTO>> by lazy {
 		MutableStateFlow(emptyResult())
 	}
 
-	private fun write(debugAppUpdate: DebugAppUpdate): HResult<*> = try {
+	private fun write(debugAppUpdate: AppUpdateDTO): HResult<*> = try {
 		iFileSystemProvider.writeInternalFile(
 			CACHE,
 			APP_UPDATE_CACHE_FILE,
@@ -57,14 +56,14 @@ class FileAppUpdateDataSource(
 		e.toHError()
 	}
 
-	override suspend fun loadCachedAppUpdate(): HResult<DebugAppUpdate> =
+	override suspend fun loadCachedAppUpdate(): HResult<AppUpdateDTO> =
 		iFileSystemProvider.readInternalFile(
 			CACHE,
 			APP_UPDATE_CACHE_FILE
 		).transform { ObjectMapper().registerKotlinModule().readValue(it) }
 
 	override suspend fun putAppUpdateInCache(
-		debugAppUpdate: DebugAppUpdate,
+		debugAppUpdate: AppUpdateDTO,
 		isUpdate: Boolean
 	): HResult<*> {
 		updateAvaLive.value = if (isUpdate) successResult(debugAppUpdate) else emptyResult()

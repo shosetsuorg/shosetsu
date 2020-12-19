@@ -27,18 +27,47 @@ import app.shosetsu.common.domain.model.local.RepositoryEntity
  */
 interface IExtLibRepository {
 
-	/** Loads extension libraries by its repository */
+	/**
+	 * Loads extension libraries by its repository
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
 	suspend fun loadExtLibByRepo(repositoryEntity: RepositoryEntity): HResult<List<ExtLibEntity>>
 
-	/** Installs an extension library by its repository */
+	/**
+	 * Installs an extension library by its repository
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
 	suspend fun installExtLibrary(
-			repositoryEntity: RepositoryEntity,
-			extLibEntity: ExtLibEntity,
+		repositoryEntity: RepositoryEntity,
+		extLibEntity: ExtLibEntity,
 	): HResult<*>
 
 	/**
 	 * @param name Name of the library requested
-	 * @return [HResult] of [String]
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
 	fun blockingLoadExtLibrary(name: String): HResult<String>
 }

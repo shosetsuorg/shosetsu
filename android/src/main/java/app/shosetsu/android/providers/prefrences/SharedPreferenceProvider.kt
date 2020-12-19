@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
  * 17 / 09 / 2020
  * This class contains all SharedPrefrenceData for shosetsu
  */
-@ExperimentalCoroutinesApi
 class SharedPreferenceProvider(
 	/** Application context for internal use */
 	val context: Context,

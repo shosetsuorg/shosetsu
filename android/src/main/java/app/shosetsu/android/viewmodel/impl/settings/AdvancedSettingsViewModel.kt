@@ -58,7 +58,7 @@ class AdvancedSettingsViewModel(
 				spinnerValue { it }
 			}
 
-			onSpinnerItemSelected { adapter, _, selectedTheme, _ ->
+			onSpinnerItemSelected { _, _, selectedTheme, _ ->
 				launchIO { iSettingsRepository.setInt(AppTheme, selectedTheme) }
 			}
 		},

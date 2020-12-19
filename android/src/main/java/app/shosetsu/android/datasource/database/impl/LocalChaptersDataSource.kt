@@ -9,6 +9,7 @@ import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.ReaderChapterEntity
 import app.shosetsu.common.dto.*
 import app.shosetsu.lib.Novel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -42,6 +43,7 @@ class LocalChaptersDataSource(
 	private val chaptersDao: ChaptersDao,
 ) : ILocalChaptersDataSource {
 
+	@ExperimentalCoroutinesApi
 	override suspend fun loadChapters(
 		novelID: Int,
 	): Flow<HResult<List<ChapterEntity>>> = flow {
@@ -58,6 +60,7 @@ class LocalChaptersDataSource(
 		e.toHError()
 	}
 
+	@ExperimentalCoroutinesApi
 	override suspend fun loadReaderChapters(
 		novelID: Int,
 	): Flow<HResult<List<ReaderChapterEntity>>> = flow {

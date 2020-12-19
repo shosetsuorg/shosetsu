@@ -28,10 +28,7 @@ import app.shosetsu.android.domain.usecases.toast.StringToastUseCase
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.viewmodel.abstracted.IExtensionsViewModel
 import app.shosetsu.common.dto.HResult
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 /**
  * shosetsu
@@ -83,6 +80,7 @@ class ExtensionsViewModel(
 	override fun uninstallExtension(extensionUI: ExtensionUI): Unit =
 		uninstallExtensionUIUseCase(extensionUI)
 
+	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<List<ExtensionUI>>> by lazy {
 		getExtensionsUIUseCase().asIOLiveData()
 	}

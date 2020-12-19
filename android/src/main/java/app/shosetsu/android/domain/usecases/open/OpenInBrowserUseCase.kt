@@ -5,7 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import app.shosetsu.android.common.ext.logID
-import app.shosetsu.android.domain.repository.base.IExtensionsRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.android.domain.usecases.toast.StringToastUseCase
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
@@ -51,7 +51,7 @@ class OpenInBrowserUseCase(
 	}
 
 	suspend operator fun invoke(url: String, formatterID: Int, type: Int) {
-		when (val fR: HResult<IExtension> = repository.loadIExtension(formatterID)) {
+		when (val fR: HResult<IExtension> = repository.getIExtension(formatterID)) {
 			is HResult.Success -> {
 				val formatter = fR.data
 				this(formatter.expandURL(url, type))

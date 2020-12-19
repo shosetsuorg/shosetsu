@@ -1,6 +1,6 @@
-package app.shosetsu.android.datasource.database.base
+package app.shosetsu.common.datasource.database.base
 
-import app.shosetsu.android.domain.model.local.IDTitleImage
+import app.shosetsu.common.domain.model.local.StrippedExtensionEntity
 import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
@@ -34,7 +34,7 @@ interface ILocalExtensionsDataSource {
 	fun loadExtensions(): Flow<HResult<List<ExtensionEntity>>>
 
 	/** Loads LiveData of extension cards that are enabled */
-	fun loadPoweredExtensionsCards(): Flow<HResult<List<IDTitleImage>>>
+	fun loadPoweredExtensionsCards(): Flow<HResult<List<StrippedExtensionEntity>>>
 
 	/** Updates [extensionEntity] */
 	suspend fun updateExtension(extensionEntity: ExtensionEntity): HResult<*>

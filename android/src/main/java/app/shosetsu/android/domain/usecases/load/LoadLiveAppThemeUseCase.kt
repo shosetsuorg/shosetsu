@@ -3,6 +3,7 @@ package app.shosetsu.android.domain.usecases.load
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.enums.AppThemes
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 
@@ -30,6 +31,7 @@ import kotlinx.coroutines.flow.mapLatest
 class LoadLiveAppThemeUseCase(
 	private val iSettingsRepository: ISettingsRepository
 ) {
+	@ExperimentalCoroutinesApi
 	operator fun invoke(): Flow<AppThemes> =
 		iSettingsRepository.observeInt(SettingKey.AppTheme).mapLatest {
 			AppThemes.fromKey(it)

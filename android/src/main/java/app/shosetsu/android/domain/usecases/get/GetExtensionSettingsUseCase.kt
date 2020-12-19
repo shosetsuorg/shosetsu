@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.android.domain.repository.base.IExtensionsRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.loading
 import app.shosetsu.common.dto.successResult

@@ -33,6 +33,7 @@ import app.shosetsu.android.viewmodel.abstracted.IExtensionConfigureViewModel
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.mapLatestResult
 import app.shosetsu.common.dto.successResult
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * shosetsu
@@ -52,6 +53,7 @@ class ExtensionConfigureViewModel(
 	}
 	private var internalID: Int = -1
 
+	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<ExtensionUI>> by lazy {
 		idLive.switchMap {
 			loadExtensionUIUI(it).asIOLiveData()
@@ -64,7 +66,7 @@ class ExtensionConfigureViewModel(
 
 	override val extensionSettings: LiveData<HResult<List<SettingsItemData>>> by lazy {
 		idLive.switchMap {
-			getExtensionSettings(it).mapLatestResult { r ->
+			getExtensionSettings(it).mapLatestResult {
 				successResult(arrayListOf<SettingsItemData>())
 			}.asIOLiveData()
 		}

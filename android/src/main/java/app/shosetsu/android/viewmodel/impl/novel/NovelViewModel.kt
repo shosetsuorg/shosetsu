@@ -24,6 +24,7 @@ import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
 import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.ChapterSortType
 import app.shosetsu.common.enums.ReadingStatus
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
 /*
@@ -68,6 +69,7 @@ class NovelViewModel(
 	private val chapters: ArrayList<ChapterUI>
 		get() = chaptersLive.value?.transmogrify { ArrayList((it)) } ?: arrayListOf()
 
+	@ExperimentalCoroutinesApi
 	override val chaptersLive: LiveData<HResult<List<ChapterUI>>> by lazy {
 		novelIDLive.transformLatest { id: Int ->
 			emitAll(
@@ -80,6 +82,8 @@ class NovelViewModel(
 			)
 		}.asIOLiveData()
 	}
+
+	@ExperimentalCoroutinesApi
 	override val novelLive: LiveData<HResult<NovelUI>> by lazy {
 		novelIDLive.transformLatest {
 			emitAll(loadNovelUIUseCase(it))
@@ -246,6 +250,7 @@ class NovelViewModel(
 		}
 	}
 
+	@ExperimentalCoroutinesApi
 	override fun openBrowser() {
 		launchIO { novelLive.value?.handle { openInBrowserUseCase(it) } }
 	}
@@ -267,6 +272,7 @@ class NovelViewModel(
 		}
 	}
 
+	@ExperimentalCoroutinesApi
 	override fun openWebView() {
 		launchIO { novelLive.value?.handle { openInWebviewUseCase(it) } }
 	}
@@ -308,16 +314,19 @@ class NovelViewModel(
 		novelIDValue = novelID
 	}
 
+	@ExperimentalCoroutinesApi
 	override fun share() {
 		launchIO { novelLive.value?.handle { shareUseCase(it) } }
 	}
 
+	@ExperimentalCoroutinesApi
 	override fun toggleNovelBookmark() {
 		launchIO {
 			novelLive.value?.handle { updateNovelUseCase(it.copy(bookmarked = !it.bookmarked)) }
 		}
 	}
 
+	@ExperimentalCoroutinesApi
 	override fun isBookmarked(): Boolean = novelLive.value?.transmogrify { it.bookmarked }
 		?: false
 

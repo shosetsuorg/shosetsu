@@ -44,7 +44,7 @@ data class UpdateUI(
 	override val type: Int = R.layout.recycler_update_ui
 	override var identifier: Long
 		get() = chapterID.toLong()
-		set(value) {}
+		set(_) {}
 
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 

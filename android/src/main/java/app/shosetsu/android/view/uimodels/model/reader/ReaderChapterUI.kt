@@ -28,7 +28,7 @@ data class ReaderChapterUI(
 ) : Convertible<ReaderChapterEntity>, ReaderUIItem<ReaderChapterUI, TypedReaderViewHolder>() {
 	override var identifier: Long
 		get() = id.toLong()
-		set(value) {}
+		set(_) {}
 
 	var chapterReader: ChapterReader? = null
 		set(value) {

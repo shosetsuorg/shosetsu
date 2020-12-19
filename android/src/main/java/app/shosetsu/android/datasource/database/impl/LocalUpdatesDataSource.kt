@@ -10,6 +10,7 @@ import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.mapLatestListTo
 import app.shosetsu.common.dto.mapLatestToSuccess
 import app.shosetsu.common.dto.successResult
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -38,6 +39,7 @@ import kotlinx.coroutines.flow.flow
 class LocalUpdatesDataSource(
 	private val updatesDao: UpdatesDao,
 ) : ILocalUpdatesDataSource {
+	@ExperimentalCoroutinesApi
 	override suspend fun getUpdates(): Flow<HResult<List<UpdateEntity>>> = flow {
 		try {
 			emitAll(updatesDao.loadUpdates().mapLatestListTo().mapLatestToSuccess())
@@ -52,6 +54,7 @@ class LocalUpdatesDataSource(
 		e.toHError()
 	}
 
+	@ExperimentalCoroutinesApi
 	override suspend fun getCompleteUpdates(
 	): Flow<HResult<List<UpdateCompleteEntity>>> = flow {
 		try {

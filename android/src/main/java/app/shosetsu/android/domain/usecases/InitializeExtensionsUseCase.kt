@@ -2,7 +2,7 @@ package app.shosetsu.android.domain.usecases
 
 import android.util.Log
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.domain.repository.base.IExtensionsRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.domain.model.local.ExtLibEntity
 import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity

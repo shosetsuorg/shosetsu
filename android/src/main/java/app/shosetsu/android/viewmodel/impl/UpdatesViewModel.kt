@@ -7,6 +7,7 @@ import app.shosetsu.android.view.uimodels.model.UpdateUI
 import app.shosetsu.android.viewmodel.abstracted.IUpdatesViewModel
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.ReadingStatus
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /*
  * This file is part of shosetsu.
@@ -36,6 +37,7 @@ class UpdatesViewModel(
 	private val getUpdatesUseCase: LoadUpdatesUseCase,
 	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : IUpdatesViewModel() {
+	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<List<UpdateUI>>> by lazy {
 		getUpdatesUseCase().asIOLiveData()
 	}

@@ -1,5 +1,7 @@
 package app.shosetsu.android.domain.model.remote
 
+import app.shosetsu.common.domain.model.local.AppUpdateEntity
+import app.shosetsu.common.dto.Convertible
 import com.fasterxml.jackson.annotation.JsonProperty
 
 /*
@@ -22,8 +24,10 @@ import com.fasterxml.jackson.annotation.JsonProperty
 /**
  * shosetsu
  * 07 / 09 / 2020
+ *
+ * JSON DTO layer, should be converted to an AppUpdateEntity
  */
-data class DebugAppUpdate(
+data class AppUpdateDTO(
 	@JsonProperty("latestVersion")
 	val version: String,
 	@JsonProperty("versionCode")
@@ -32,4 +36,6 @@ data class DebugAppUpdate(
 	val url: String,
 	@JsonProperty("releaseNotes")
 	val notes: List<String>,
-)
+) : Convertible<AppUpdateEntity> {
+	override fun convertTo() = AppUpdateEntity(version, versionCode, url, notes)
+}

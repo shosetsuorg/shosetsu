@@ -1,10 +1,11 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
-import app.shosetsu.android.domain.model.remote.DebugAppUpdate
+import app.shosetsu.android.domain.model.remote.AppUpdateDTO
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
+import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.AppThemes
 
@@ -36,7 +37,7 @@ abstract class IMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel,
 	abstract fun startDownloadWorker()
 
 
-	abstract fun startUpdateCheck(): LiveData<HResult<DebugAppUpdate>>
+	abstract fun startUpdateCheck(): LiveData<HResult<AppUpdateEntity>>
 
 	/**
 	 * If 0, Bottom

@@ -19,7 +19,7 @@ import app.shosetsu.android.common.consts.WorkerTags.UPDATE_WORK_ID
 import app.shosetsu.android.common.ext.combine
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logID
-import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerUseCase
 import app.shosetsu.android.domain.usecases.get.GetNovelUseCase
 import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase

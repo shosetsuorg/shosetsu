@@ -7,7 +7,7 @@ import androidx.core.os.bundleOf
 import app.shosetsu.android.common.consts.BundleKeys
 import app.shosetsu.android.common.ext.Intent
 import app.shosetsu.android.common.ext.logID
-import app.shosetsu.android.domain.repository.base.IExtensionsRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.android.domain.usecases.toast.StringToastUseCase
 import app.shosetsu.android.ui.webView.WebViewApp
 import app.shosetsu.android.view.uimodels.model.ChapterUI
@@ -59,7 +59,7 @@ class OpenInWebviewUseCase(
 
 
 	suspend operator fun invoke(url: String, formatterID: Int, type: Int) {
-		when (val fR: HResult<IExtension> = repository.loadIExtension(formatterID)) {
+		when (val fR: HResult<IExtension> = repository.getIExtension(formatterID)) {
 			is HResult.Success -> {
 				val formatter = fR.data
 				this(formatter.expandURL(url, type))

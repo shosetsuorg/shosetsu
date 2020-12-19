@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.android.domain.repository.base.IExtensionsRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.IExtension
 
@@ -27,5 +27,5 @@ import app.shosetsu.lib.IExtension
  */
 class GetExtensionUseCase(private val extensionsRepository: IExtensionsRepository) {
 	suspend operator fun invoke(formatterID: Int): HResult<IExtension> =
-		extensionsRepository.loadIExtension(formatterID)
+		extensionsRepository.getIExtension(formatterID)
 }

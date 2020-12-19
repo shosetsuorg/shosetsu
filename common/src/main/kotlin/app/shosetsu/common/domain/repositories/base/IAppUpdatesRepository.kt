@@ -1,6 +1,6 @@
-package app.shosetsu.android.domain.repository.base
+package app.shosetsu.common.domain.repositories.base
 
-import app.shosetsu.android.domain.model.remote.DebugAppUpdate
+import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
@@ -28,7 +28,31 @@ import kotlinx.coroutines.flow.Flow
  * Source of truth for all app updates
  */
 interface IAppUpdatesRepository {
-	fun watchAppUpdates(): Flow<HResult<DebugAppUpdate>>
+	/**
+	 * Flow of app updates
+	 *
+	 * Will only be a Success if a version is found higher then the current
+	 */
+	fun appUpdateFlow(): Flow<HResult<AppUpdateEntity>>
 
-	suspend fun checkForAppUpdate(): HResult<DebugAppUpdate>
+
+	/**
+	 * Set [debugAppUpdate] as the update for the app
+	 */
+	suspend fun setAppUpdate(debugAppUpdate: AppUpdateEntity)
+
+	/**
+	 * Load an app update if present
+	 *
+	 * @return [HResult.Empty] if no app updates are present
+	 * @return [HResult.Success] if an app update is present
+	 */
+	suspend fun loadAppUpdate(): HResult<AppUpdateEntity>
+
+	/**
+	 * Downloads the app update specified by [appUpdateEntity]
+	 *
+	 * @return Path of the apk file, this is messy but it must be done so the intent can work
+	 */
+	suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): HResult<String>
 }

@@ -257,7 +257,7 @@ class LibraryController
 
 	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
 		this.fab = fab
-		fab.setOnClickListener { bottomMenuRetriever?.invoke()?.show() }
+		fab.setOnClickListener { bottomMenuRetriever.invoke()?.show() }
 		fab.setText(R.string.filter)
 		fab.setIconResource(R.drawable.filter)
 	}

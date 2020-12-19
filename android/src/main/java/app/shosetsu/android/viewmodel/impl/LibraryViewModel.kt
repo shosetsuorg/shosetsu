@@ -149,6 +149,7 @@ class LibraryViewModel(
 			loadNovelUIColumnsPUseCase().collectLatest {
 				columnP = it
 			}
+			@Suppress("EXPERIMENTAL_API_USAGE")
 			loadNovelUITypeUseCase().collectLatest {
 				novelUIType = it
 			}
@@ -252,7 +253,7 @@ class LibraryViewModel(
 		combine(unreadStatusFlow) { novelResult, sortType ->
 			novelResult.transform { list ->
 				successResult(
-					sortType?.let { state ->
+					sortType?.let {
 						when (sortType) {
 							INCLUDE -> list.filter { it.unread > 0 }
 							EXCLUDE -> list.filterNot { it.unread > 0 }

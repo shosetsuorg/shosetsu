@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.common.ext.convertTo
-import app.shosetsu.android.domain.repository.base.IExtensionsRepository
-import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
+import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.common.consts.settings.SettingKey
@@ -42,7 +42,7 @@ class GetCatalogueListingDataUseCase(
 	private val iSettingsRepository: ISettingsRepository
 ) {
 	suspend operator fun invoke(
-		formatter: IExtension,
+		iExtension: IExtension,
 		data: Map<Int, Any>
 	): HResult<List<ACatalogNovelUI>> {
 		val cardType = iSettingsRepository.getInt(SettingKey.NovelCardType).transmogrify(
@@ -57,13 +57,13 @@ class GetCatalogueListingDataUseCase(
 		}!!
 
 		return extensionRepository.loadCatalogueData(
-			formatter,
+			iExtension,
 			0,
 			data
 		).transform {
 			val list: List<Novel.Listing> = it
 			successResult(list.map { novelListing ->
-				novelListing.convertTo(formatter)
+				novelListing.convertTo(iExtension)
 			}.mapNotNull { ne ->
 				novelsRepository.insertNovelReturnCard(ne).let { result ->
 					if (result is HResult.Success)

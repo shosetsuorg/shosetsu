@@ -15,7 +15,7 @@ import app.shosetsu.android.common.consts.Notifications.CHANNEL_DOWNLOAD
 import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_DOWNLOAD
 import app.shosetsu.android.common.consts.WorkerTags.DOWNLOAD_WORK_ID
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.domain.repository.base.IExtensionsRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.ChapterEntity
@@ -129,7 +129,7 @@ class DownloadWorker(
 			when (cR) {
 				is HResult.Success -> {
 					val chapterEntity = cR.data
-					extRepo.loadIExtension(chapterEntity.extensionID)
+					extRepo.getIExtension(chapterEntity.extensionID)
 						.let { fR: HResult<IExtension> ->
 							when (fR) {
 								is HResult.Success -> {

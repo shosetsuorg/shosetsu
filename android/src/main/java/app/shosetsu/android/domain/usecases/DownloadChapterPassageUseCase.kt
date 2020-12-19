@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.DownloadEntity

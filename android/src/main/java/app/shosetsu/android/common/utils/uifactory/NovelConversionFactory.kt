@@ -5,6 +5,7 @@ import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.dto.transform
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 
@@ -55,5 +56,6 @@ fun List<NovelEntity>.mapToFactory() =
 fun HResult<List<NovelEntity>>.mapResultWithFactory() =
 	transform { successResult(it.mapToFactory()) }
 
+@ExperimentalCoroutinesApi
 fun Flow<HResult<List<NovelEntity>>>.mapLatestToResultFlowWithFactory() =
 	mapLatest { it.mapResultWithFactory() }

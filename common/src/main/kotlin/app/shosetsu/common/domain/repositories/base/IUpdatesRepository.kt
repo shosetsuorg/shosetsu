@@ -16,8 +16,8 @@ package app.shosetsu.common.domain.repositories.base
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.model.local.UpdateEntity
+import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 
@@ -28,12 +28,45 @@ import kotlinx.coroutines.flow.Flow
  * @author github.com/doomsdayrs
  */
 interface IUpdatesRepository {
-	/** Adds updates */
+	/**
+	 * Adds updates
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
 	suspend fun addUpdates(list: List<UpdateEntity>): HResult<Array<Long>>
 
-	/** Get all LiveData of the updates */
+	/**
+	 * Get all LiveData of the updates
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
 	suspend fun getUpdates(): Flow<HResult<List<UpdateEntity>>>
 
-	/** Get all LiveData of the updates with completion */
+	/**
+	 * Get all LiveData of the updates with completion
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
 	suspend fun getCompleteUpdates(): Flow<HResult<List<UpdateCompleteEntity>>>
 }

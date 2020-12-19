@@ -1,18 +1,17 @@
 package app.shosetsu.android.domain.repository.impl
 
-import android.util.Log
-import app.shosetsu.android.common.ext.logID
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.datasource.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
-import app.shosetsu.android.domain.model.remote.DebugAppUpdate
-import app.shosetsu.android.domain.repository.base.IAppUpdatesRepository
+import app.shosetsu.android.domain.model.remote.AppUpdateDTO
+import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
 import app.shosetsu.common.consts.ErrorKeys.ERROR_DUPLICATE
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.emptyResult
-import app.shosetsu.common.dto.errorResult
-import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.domain.model.local.AppUpdateEntity
+import app.shosetsu.common.dto.*
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -41,11 +40,18 @@ class AppUpdatesRepository(
 ) : IAppUpdatesRepository {
 	private var running = false
 
-	override fun watchAppUpdates(): Flow<HResult<DebugAppUpdate>> =
-		iFileAppUpdateDataSource.updateAvaLive
+
+	@ExperimentalCoroutinesApi
+	override fun appUpdateFlow(): Flow<HResult<AppUpdateEntity>> =
+		iFileAppUpdateDataSource.updateAvaLive.mapLatest { it.convert() }
 
 
-	private fun compareVersion(newVersion: DebugAppUpdate): HResult<DebugAppUpdate> {
+	override suspend fun setAppUpdate(debugAppUpdate: AppUpdateEntity) {
+		TODO("Not yet implemented")
+	}
+
+
+	private fun compareVersion(newVersion: AppUpdateDTO): HResult<AppUpdateEntity> {
 		val currentV: Int
 		val remoteV: Int
 
@@ -59,18 +65,15 @@ class AppUpdatesRepository(
 
 		return when {
 			remoteV < currentV -> {
-				val message = "This a future release compared to $newVersion"
-				Log.i(logID(), message)
+				logI("This a future release compared to $newVersion")
 				emptyResult()
 			}
 			remoteV > currentV -> {
-				val message = "Update found compared to $newVersion"
-				Log.i(logID(), message)
-				successResult(newVersion)
+				logI("Update found compared to $newVersion")
+				successResult(newVersion.convertTo())
 			}
 			remoteV == currentV -> {
-				val message = "This the current release compared to $newVersion"
-				Log.i(logID(), message)
+				logI("This the current release compared to $newVersion")
 				emptyResult()
 			}
 			else -> emptyResult()
@@ -78,23 +81,22 @@ class AppUpdatesRepository(
 	}
 
 	@Synchronized
-	override suspend fun checkForAppUpdate(): HResult<DebugAppUpdate> {
+	override suspend fun loadAppUpdate(): HResult<AppUpdateEntity> {
 		if (running) return errorResult(ERROR_DUPLICATE, "Cannot run duplicate")
 		else running = true
-		Log.d(logID(), "Checking for update")
 
-		val rR = iRemoteAppUpdateDataSource.loadGitAppUpdate().let {
-			if (it is HResult.Error || it is HResult.Empty) return it.also {
-				running = false
-			}
-			if (it is HResult.Success)
-				it.data
-			else null
-		}!!
+		val rR: AppUpdateDTO = iRemoteAppUpdateDataSource.loadGitAppUpdate().unwrap(
+			onEmpty = { return emptyResult().also { running = false } },
+			onError = { return it.also { running = false } }
+		)!!
 
 		return compareVersion(rR).also {
 			iFileAppUpdateDataSource.putAppUpdateInCache(rR, it is HResult.Success)
 			running = false
 		}
+	}
+
+	override suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): HResult<String> {
+		TODO("Not yet implemented")
 	}
 }

@@ -39,6 +39,9 @@ abstract class IChapterReaderViewModel :
 	ShosetsuViewModel(),
 	ErrorReportingViewModel {
 
+	/**
+	 * The current chapter ID that is being read
+	 */
 	abstract var currentChapterID: Int
 
 	/**

@@ -6,6 +6,7 @@ import app.shosetsu.common.domain.repositories.base.IExtRepoRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.loading
 import app.shosetsu.common.dto.mapLatestResultListTo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -34,6 +35,7 @@ import kotlinx.coroutines.flow.flow
 class LoadRepositoriesUseCase(
 	private val iExtRepoRepository: IExtRepoRepository
 ) {
+	@ExperimentalCoroutinesApi
 	operator fun invoke(): Flow<HResult<List<RepositoryUI>>> = flow {
 		emit(loading())
 		emitAll(

@@ -1,7 +1,7 @@
 package app.shosetsu.common.domain.repositories.base
 
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.model.local.RepositoryEntity
+import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.json.RepoIndex
 import kotlinx.coroutines.flow.Flow
 
@@ -32,12 +32,45 @@ import kotlinx.coroutines.flow.Flow
  * @author github.com/doomsdayrs
  */
 interface IExtRepoRepository {
-	/** Loads repository data */
-    suspend fun loadRepoData(repositoryEntity: RepositoryEntity): HResult<RepoIndex>
+	/**
+	 * Loads repository data
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
+	suspend fun loadRepoData(repositoryEntity: RepositoryEntity): HResult<RepoIndex>
 
-	/** Loads all repositories present */
+	/**
+	 * Loads all repositories present
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
 	suspend fun loadRepositories(): HResult<List<RepositoryEntity>>
 
-	/** Loads all repositories present */
+	/**
+	 * Loads all repositories present
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
 	suspend fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>>
 }

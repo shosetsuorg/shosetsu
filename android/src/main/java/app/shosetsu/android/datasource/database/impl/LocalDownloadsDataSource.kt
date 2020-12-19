@@ -8,6 +8,7 @@ import app.shosetsu.common.domain.model.local.DownloadEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.mapLatestListTo
 import app.shosetsu.common.dto.mapLatestToSuccess
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -36,6 +37,7 @@ import kotlinx.coroutines.flow.flow
 class LocalDownloadsDataSource(
 	private val downloadsDao: DownloadsDao,
 ) : ILocalDownloadsDataSource {
+	@ExperimentalCoroutinesApi
 	override fun loadLiveDownloads(): Flow<HResult<List<DownloadEntity>>> = flow {
 		try {
 			emitAll(downloadsDao.loadDownloadItems().mapLatestListTo().mapLatestToSuccess())

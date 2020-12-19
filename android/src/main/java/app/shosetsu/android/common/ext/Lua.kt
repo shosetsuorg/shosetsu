@@ -17,23 +17,4 @@ import org.luaj.vm2.LuaError
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
-
-/**
- * shosetsu
- * 04 / 03 / 2020
- *
- * @author github.com/doomsdayrs
- */
-
-fun LuaError.smallMessage(): String {
-	return this.message?.let { it ->
-		return it.substring(it.lastIndexOf("}").let smallMessage@{
-			return@smallMessage when {
-				it > 0 -> it
-				else -> 0
-			}
-		})
-	} ?: "UNKNOWN ERROR"
-}

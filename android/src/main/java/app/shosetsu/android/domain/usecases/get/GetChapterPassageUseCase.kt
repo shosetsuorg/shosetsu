@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.android.domain.repository.base.IExtensionsRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.common.dto.HResult
@@ -33,7 +33,7 @@ class GetChapterPassageUseCase(
 ) {
 	suspend operator fun invoke(readerChapterUI: ReaderChapterUI): HResult<String> =
 		iChaptersRepository.loadChapter(readerChapterUI.id).transform { chapterEntity ->
-			iExtensionsRepository.loadIExtension(chapterEntity.extensionID)
+			iExtensionsRepository.getIExtension(chapterEntity.extensionID)
 				.transform { iExtension ->
 					iChaptersRepository.loadChapterPassage(iExtension, chapterEntity)
 				}

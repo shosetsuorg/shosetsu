@@ -6,6 +6,7 @@ import app.shosetsu.android.domain.usecases.load.LoadRepositoriesUseCase
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.android.viewmodel.abstracted.ARepositoryViewModel
 import app.shosetsu.common.dto.HResult
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /*
  * This file is part of Shosetsu.
@@ -32,6 +33,12 @@ class RepositoryViewModel(
 	private val loadRepositoriesUseCase: LoadRepositoriesUseCase,
 	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : ARepositoryViewModel() {
+
+	@ExperimentalCoroutinesApi
+	override val liveData: LiveData<HResult<List<RepositoryUI>>> by lazy {
+		loadRepositoriesUseCase().asIOLiveData()
+	}
+
 	override fun addRepository(url: String) {
 	}
 
@@ -44,9 +51,5 @@ class RepositoryViewModel(
 	}
 
 	override fun remove(repositoryInfoUI: RepositoryUI) {
-	}
-
-	override val liveData: LiveData<HResult<List<RepositoryUI>>> by lazy {
-		loadRepositoriesUseCase().asIOLiveData()
 	}
 }

@@ -1,9 +1,4 @@
 package app.shosetsu.common.domain.repositories.base
-
-import app.shosetsu.common.domain.model.local.DownloadEntity
-import app.shosetsu.common.dto.HResult
-import kotlinx.coroutines.flow.Flow
-
 /*
  * This file is part of shosetsu.
  *
@@ -20,6 +15,15 @@ import kotlinx.coroutines.flow.Flow
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
+import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
+import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.domain.model.local.StrippedBookmarkedNovelEntity
+import app.shosetsu.common.domain.model.local.StrippedNovelEntity
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.lib.IExtension
+import app.shosetsu.lib.Novel
+import kotlinx.coroutines.flow.Flow
+
 
 /**
  * shosetsu
@@ -27,10 +31,9 @@ import kotlinx.coroutines.flow.Flow
  *
  * @author github.com/doomsdayrs
  */
-interface IDownloadsRepository {
-
+interface INovelsRepository {
 	/**
-	 * Gets a live view of the downloads
+	 * Gets all bookmarked as live data
 	 *
 	 * @return
 	 * [HResult.Success] TODO RETURN DESCRIPTION
@@ -41,10 +44,10 @@ interface IDownloadsRepository {
 	 *
 	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
-	fun loadLiveDownloads(): Flow<HResult<List<DownloadEntity>>>
+	fun getLiveBookmarked(): Flow<HResult<List<BookmarkedNovelEntity>>>
 
 	/**
-	 * Loads the first download in the list, also starts it
+	 * Gets NovelEntities that are bookmarked
 	 *
 	 * @return
 	 * [HResult.Success] TODO RETURN DESCRIPTION
@@ -55,10 +58,10 @@ interface IDownloadsRepository {
 	 *
 	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
-	suspend fun loadFirstDownload(): HResult<DownloadEntity>
+	suspend fun getBookmarkedNovels(): HResult<List<NovelEntity>>
 
 	/**
-	 * Queries for the download count
+	 * Searches the bookmarked novels and returns a live data of them
 	 *
 	 * @return
 	 * [HResult.Success] TODO RETURN DESCRIPTION
@@ -69,10 +72,10 @@ interface IDownloadsRepository {
 	 *
 	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
-	suspend fun loadDownloadCount(): HResult<Int>
+	suspend fun searchBookmarked(string: String): HResult<List<StrippedBookmarkedNovelEntity>>
 
 	/**
-	 * Gets a download entity by its ID
+	 * Loads the [NovelEntity] by its [novelID]
 	 *
 	 * @return
 	 * [HResult.Success] TODO RETURN DESCRIPTION
@@ -83,10 +86,10 @@ interface IDownloadsRepository {
 	 *
 	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
-	suspend fun loadDownload(chapterID: Int): HResult<DownloadEntity>
+	suspend fun loadNovel(novelID: Int): HResult<NovelEntity>
 
 	/**
-	 * Adds a new download to the repository
+	 * Loads live data of the [NovelEntity] by its [novelID]
 	 *
 	 * @return
 	 * [HResult.Success] TODO RETURN DESCRIPTION
@@ -97,10 +100,10 @@ interface IDownloadsRepository {
 	 *
 	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
-	suspend fun addDownload(download: DownloadEntity): HResult<Long>
+	suspend fun loadNovelLive(novelID: Int): Flow<HResult<NovelEntity>>
 
 	/**
-	 * Updates a download in repository
+	 * Inserts the [novelEntity] and returns a UI version of it
 	 *
 	 * @return
 	 * [HResult.Success] TODO RETURN DESCRIPTION
@@ -111,10 +114,10 @@ interface IDownloadsRepository {
 	 *
 	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
-	suspend fun update(download: DownloadEntity): HResult<*>
+	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): HResult<StrippedNovelEntity>
 
 	/**
-	 * Removes a download from the repository
+	 * Inserts the [novelEntity]
 	 *
 	 * @return
 	 * [HResult.Success] TODO RETURN DESCRIPTION
@@ -125,10 +128,10 @@ interface IDownloadsRepository {
 	 *
 	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
-	suspend fun deleteEntity(download: DownloadEntity): HResult<*>
+	suspend fun insertNovel(novelEntity: NovelEntity): HResult<*>
 
 	/**
-	 * Orders database to set all values back to pending
+	 * Updates the [novelEntity]
 	 *
 	 * @return
 	 * [HResult.Success] TODO RETURN DESCRIPTION
@@ -139,5 +142,52 @@ interface IDownloadsRepository {
 	 *
 	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
-	suspend fun resetList(): HResult<*>
+	suspend fun updateNovel(novelEntity: NovelEntity): HResult<*>
+
+	/**
+	 * Updates a novel entity with new data
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
+	suspend fun updateNovelData(novelEntity: NovelEntity, novelInfo: Novel.Info): HResult<*>
+
+	/**
+	 * Updates a list of bookmarked novels
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
+	suspend fun updateBookmarkedNovelData(list: List<BookmarkedNovelEntity>): HResult<*>
+
+	/**
+	 * Retrieves NovelInfo from it's source
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
+	suspend fun retrieveNovelInfo(
+		formatter: IExtension,
+		novelEntity: NovelEntity,
+		loadChapters: Boolean,
+	): HResult<Novel.Info>
+
 }

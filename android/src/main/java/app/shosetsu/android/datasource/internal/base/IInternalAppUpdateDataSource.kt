@@ -1,6 +1,6 @@
 package app.shosetsu.android.datasource.internal.base
 
-import app.shosetsu.android.domain.model.remote.DebugAppUpdate
+import app.shosetsu.android.domain.model.remote.AppUpdateDTO
 import app.shosetsu.common.dto.HResult
 
 /*
@@ -27,5 +27,5 @@ import app.shosetsu.common.dto.HResult
  * Loads the internal app update
  */
 interface IInternalAppUpdateDataSource {
-	suspend fun loadInternalAppUpdate(): HResult<DebugAppUpdate>
+	suspend fun loadInternalAppUpdate(): HResult<AppUpdateDTO>
 }

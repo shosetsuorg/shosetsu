@@ -11,6 +11,7 @@ import app.shosetsu.common.consts.settings.SettingKey.ReaderUserThemes
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.convertList
 import com.github.doomsdayrs.apps.shosetsu.R
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 
@@ -39,6 +40,7 @@ class LoadReaderThemes(
 	private val iSettingsRepository: ISettingsRepository,
 	private val context: Context
 ) {
+	@ExperimentalCoroutinesApi
 	operator fun invoke(): Flow<List<ColorChoiceUI>> {
 		return iSettingsRepository.observeStringSet(ReaderUserThemes)
 			.mapLatest { set: Set<String> ->

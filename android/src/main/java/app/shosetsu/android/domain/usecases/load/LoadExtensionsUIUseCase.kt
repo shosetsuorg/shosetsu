@@ -1,11 +1,12 @@
 package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.android.common.utils.uifactory.mapLatestToResultFlowWithFactory
-import app.shosetsu.android.domain.repository.base.IExtensionsRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.loading
 import app.shosetsu.common.dto.mapLatestResultListTo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -34,6 +35,7 @@ import kotlinx.coroutines.flow.flow
 class LoadExtensionsUIUseCase(
 	private val extensionsRepository: IExtensionsRepository,
 ) {
+	@ExperimentalCoroutinesApi
 	operator fun invoke(): Flow<HResult<List<ExtensionUI>>> = flow {
 		loading()
 		emitAll(

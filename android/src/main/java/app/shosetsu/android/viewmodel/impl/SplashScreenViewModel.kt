@@ -5,6 +5,7 @@ import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.viewmodel.abstracted.ASplashScreenViewModel
 import app.shosetsu.common.consts.settings.SettingKey.FirstTime
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.dto.unwrap
 import kotlinx.coroutines.flow.collectLatest
 
 /*
@@ -42,7 +43,9 @@ class SplashScreenViewModel(
 		}
 	}
 
-	override fun showIntro(): Boolean = showIntro
+	override suspend fun showIntro(): Boolean =
+		settingsRepository.getBoolean(FirstTime).unwrap() ?: FirstTime.default
+
 
 	override fun toggleShowIntro() {
 		launchIO {

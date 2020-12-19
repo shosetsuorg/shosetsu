@@ -5,7 +5,11 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import app.shosetsu.android.domain.model.database.DBNovelEntity
-import app.shosetsu.android.domain.model.local.*
+import app.shosetsu.android.domain.model.database.DBStrippedNovelEntity
+import app.shosetsu.android.domain.model.local.BooleanChapterIDTuple
+import app.shosetsu.android.domain.model.local.CountIDTuple
+import app.shosetsu.android.domain.model.local.IDTitleImage
+import app.shosetsu.android.domain.model.local.URLImageTitle
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
 import kotlinx.coroutines.flow.Flow
@@ -105,12 +109,12 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT id,title,imageURL,bookmarked FROM novels WHERE _rowid_ = :rowID LIMIT 1")
-	fun loadIDTitleImageBook(rowID: Long): IDTitleImageBook
+	fun loadDBStrippedNovelEntity(rowID: Long): DBStrippedNovelEntity
 
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT id,title,imageURL,bookmarked FROM novels WHERE id = :id LIMIT 1")
-	fun loadIDTitleImageBook(id: Int): IDTitleImageBook
+	fun loadDBStrippedNovelEntity(id: Int): DBStrippedNovelEntity
 
 
 	@Throws(SQLiteException::class)
@@ -126,13 +130,13 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 
 	@Transaction
 	@Throws(SQLiteException::class)
-	suspend fun insertNovelReturnCard(DBNovelEntity: DBNovelEntity): IDTitleImageBook {
+	suspend fun insertNovelReturnCard(DBNovelEntity: DBNovelEntity): DBStrippedNovelEntity {
 		val has = hasNovel(DBNovelEntity.url)
 		return if (has.boolean) {
-			loadIDTitleImageBook(has.id)
+			loadDBStrippedNovelEntity(has.id)
 		} else {
 			val rowID = insertAbort(DBNovelEntity)
-			loadIDTitleImageBook(rowID)
+			loadDBStrippedNovelEntity(rowID)
 		}
 	}
 

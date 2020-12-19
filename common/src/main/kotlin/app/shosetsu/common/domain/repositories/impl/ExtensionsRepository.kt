@@ -1,18 +1,17 @@
-package app.shosetsu.android.domain.repository.impl
+package app.shosetsu.common.domain.repositories.impl
 
-import app.shosetsu.android.common.ext.logError
-import app.shosetsu.android.datasource.database.base.ILocalExtensionsDataSource
-import app.shosetsu.android.domain.model.local.IDTitleImage
-import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
 import app.shosetsu.common.consts.ErrorKeys.ERROR_LUA_BROKEN
 import app.shosetsu.common.datasource.database.base.ILocalExtRepoDataSource
+import app.shosetsu.common.datasource.database.base.ILocalExtensionsDataSource
 import app.shosetsu.common.datasource.file.base.IFileExtensionDataSource
 import app.shosetsu.common.datasource.memory.base.IMemExtensionsDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteCatalogueDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteExtensionDataSource
 import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.domain.model.local.StrippedExtensionEntity
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.dto.*
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
@@ -90,13 +89,12 @@ class ExtensionsRepository(
 						databaseSource.updateExtension(extensionEntity)
 						return successResult("")
 					} catch (e: IllegalArgumentException) {
-						return errorResult(ERROR_LUA_BROKEN, e).also { logError { it } }
+						return errorResult(ERROR_LUA_BROKEN, e)
 					} catch (e: Exception) {
-						return errorResult(ERROR_GENERAL, e).also { logError { it } }
+						return errorResult(ERROR_GENERAL, e)
 					}
 				}
 				is HResult.Error -> {
-					logError { result }
 					return result
 				}
 			}
@@ -120,7 +118,7 @@ class ExtensionsRepository(
 	override suspend fun updateExtensionEntity(extensionEntity: ExtensionEntity): HResult<*> =
 		databaseSource.updateExtension(extensionEntity)
 
-	override suspend fun loadIExtension(extensionEntity: ExtensionEntity): HResult<IExtension> {
+	override suspend fun getIExtension(extensionEntity: ExtensionEntity): HResult<IExtension> {
 		memorySource.loadExtensionFromMemory(extensionEntity.id)
 			.takeIf { it is HResult.Success }?.let { return it }
 
@@ -135,29 +133,31 @@ class ExtensionsRepository(
 		return fileResult
 	}
 
-	override suspend fun loadIExtension(formatterID: Int): HResult<IExtension> =
-		databaseSource.loadExtension(formatterID).transform { loadIExtension(it) }
+	override suspend fun getIExtension(extensionID: Int): HResult<IExtension> =
+		databaseSource.loadExtension(extensionID).transform { getIExtension(it) }
 
-	override fun getCards(): Flow<HResult<List<IDTitleImage>>> =
+	override fun getCards(): Flow<HResult<List<StrippedExtensionEntity>>> =
 		databaseSource.loadPoweredExtensionsCards()
 
 
 	override suspend fun loadCatalogueSearch(
-		formatter: IExtension,
+		ext: IExtension,
 		query: String,
 		data: Map<Int, Any>
 	): HResult<List<Novel.Listing>> =
 		remoteCatalogueDataSource.search(
-			formatter, query, data
+			ext, query, data
 		)
 
 	override suspend fun loadCatalogueData(
-		formatter: IExtension,
+		ext: IExtension,
 		listing: Int,
 		data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>> =
-		remoteCatalogueDataSource.loadListing(formatter, listing, data)
+		remoteCatalogueDataSource.loadListing(ext, listing, data)
 
 	override suspend fun removeExtension(it: ExtensionEntity): HResult<*> =
-		databaseSource.deleteExtension(it)
+		databaseSource.deleteExtension(it) and
+				fileSource.deleteExtension(it.fileName) and
+				memorySource.removeExtensionFromMemory(it.id)
 }

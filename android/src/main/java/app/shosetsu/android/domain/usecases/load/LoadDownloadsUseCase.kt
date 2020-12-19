@@ -5,6 +5,7 @@ import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.mapLatestResultListTo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -34,6 +35,7 @@ import kotlinx.coroutines.flow.flow
 class LoadDownloadsUseCase(
 	private val iDownloadsRepository: IDownloadsRepository,
 ) {
+	@ExperimentalCoroutinesApi
 	operator fun invoke(): Flow<HResult<List<DownloadUI>>> = flow {
 		emitAll(
 			iDownloadsRepository.loadLiveDownloads().mapLatestToResultFlowWithFactory()

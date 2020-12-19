@@ -139,7 +139,26 @@ inline fun <reified I : Any> HResult<I>.unwrap(): I? = when (this) {
 }
 
 /**
- *  [unwrap], but
+ * If [this] is an [HResult.Success], returns [I]
+ * But if [this] is not an [HResult.Success], returns a null
+ *
+ * Unlike the default form of [unwrap] with no parameters,
+ * this one allows you to intercept the other results
+ */
+inline fun <reified I : Any> HResult<I>.unwrap(
+	onLoading: () -> I? = { null },
+	onEmpty: () -> I? = { null },
+	onError: (HResult.Error) -> I? = { null },
+): I? = when (this) {
+	is HResult.Success -> this.data
+	HResult.Loading -> onLoading()
+	HResult.Empty -> onEmpty()
+	is HResult.Error -> onError(this)
+}
+
+
+/**
+ *  similar to [unwrap], but
  *  opens up process to allow custom values for when [this] is not an [HResult.Success]
  *
  *  Shares similarities with [transform]

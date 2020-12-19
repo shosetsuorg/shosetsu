@@ -2,12 +2,14 @@ package app.shosetsu.android.datasource.database.impl
 
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.android.datasource.database.base.ILocalNovelsDataSource
+import app.shosetsu.common.datasource.database.base.ILocalNovelsDataSource
 import app.shosetsu.android.domain.model.local.IDTitleImageBook
 import app.shosetsu.android.providers.database.dao.NovelsDao
 import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.domain.model.local.StrippedNovelEntity
 import app.shosetsu.common.dto.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -36,6 +38,7 @@ import kotlinx.coroutines.flow.flow
 class LocalNovelsDataSource(
 	private val novelsDao: NovelsDao,
 ) : ILocalNovelsDataSource {
+	@ExperimentalCoroutinesApi
 	override suspend fun loadLiveBookmarkedNovels(): Flow<HResult<List<NovelEntity>>> = flow {
 		try {
 			emitAll(novelsDao.loadListBookmarkedNovels().mapLatestListTo().mapLatestToSuccess())
@@ -50,6 +53,7 @@ class LocalNovelsDataSource(
 		e.toHError()
 	}
 
+	@ExperimentalCoroutinesApi
 	override fun loadLiveBookmarkedNovelsAndCount(
 	): Flow<HResult<List<BookmarkedNovelEntity>>> = flow {
 		try {
@@ -65,6 +69,7 @@ class LocalNovelsDataSource(
 		e.toHError()
 	}
 
+	@ExperimentalCoroutinesApi
 	override suspend fun loadNovelLive(novelID: Int): Flow<HResult<NovelEntity>> = flow {
 		try {
 			emitAll(novelsDao.loadNovelLive(novelID).mapLatestTo().mapLatestToSuccess())
@@ -89,8 +94,8 @@ class LocalNovelsDataSource(
 
 	override suspend fun insertNovelReturnCard(
 		novelEntity: NovelEntity,
-	): HResult<IDTitleImageBook> = try {
-		successResult(novelsDao.insertNovelReturnCard(novelEntity.toDB()))
+	): HResult<StrippedNovelEntity> = try {
+		successResult(novelsDao.insertNovelReturnCard(novelEntity.toDB()).convertTo())
 	} catch (e: Exception) {
 		e.toHError()
 	}

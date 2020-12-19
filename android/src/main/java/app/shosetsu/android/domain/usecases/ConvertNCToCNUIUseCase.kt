@@ -4,6 +4,7 @@ import app.shosetsu.android.domain.model.local.IDTitleImageBook
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.CompactCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
+import app.shosetsu.common.domain.model.local.StrippedNovelEntity
 
 /*
  * This file is part of shosetsu.
@@ -27,7 +28,7 @@ import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
  * 08 / 09 / 2020
  */
 class ConvertNCToCNUIUseCase {
-	operator fun invoke(idTitleImageBook: IDTitleImageBook, cardType: Int): ACatalogNovelUI =
+	operator fun invoke(idTitleImageBook: StrippedNovelEntity, cardType: Int): ACatalogNovelUI =
 		idTitleImageBook.let { (id, title, imageURL, bookmarked) ->
 			if (cardType == 0)
 				FullCatalogNovelUI(id, title, imageURL, bookmarked)

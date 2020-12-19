@@ -1,10 +1,11 @@
 package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.common.utils.uifactory.NovelConversionFactory
-import app.shosetsu.android.domain.repository.base.IExtensionsRepository
-import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
+import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.common.dto.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -35,6 +36,7 @@ class GetNovelUIUseCase(
 	private val novelsRepository: INovelsRepository,
 	private val extensionRepository: IExtensionsRepository
 ) {
+	@ExperimentalCoroutinesApi
 	operator fun invoke(novelID: Int): Flow<HResult<NovelUI>> = flow {
 		emit(loading())
 		if (novelID != -1)

@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import app.shosetsu.android.activity.MainActivity
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.common.ext.requestPerms
 import app.shosetsu.android.ui.intro.IntroductionActivity
 import app.shosetsu.android.viewmodel.abstracted.ASplashScreenViewModel
@@ -57,15 +59,21 @@ class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
 
 		this.requestPerms()
 		super.onCreate(savedInstanceState)
-		// Settings setup
-		if (viewModel.showIntro())
-			startActivityForResult(
-				Intent(
-					this,
-					IntroductionActivity::class.java
-				), INTRO_CODE
-			)
-		else startBoot()
+
+		launchIO {
+
+			// Settings setup
+			if (viewModel.showIntro())
+				launchUI {
+					startActivityForResult(
+						Intent(
+							this@SplashScreen,
+							IntroductionActivity::class.java
+						), INTRO_CODE
+					)
+				}
+			else launchUI { startBoot() }
+		}
 	}
 
 	private fun startBoot() {

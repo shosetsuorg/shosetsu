@@ -52,8 +52,14 @@ abstract class ICatalogViewModel :
 	 */
 	abstract val listingItemsLive: LiveData<HResult<List<ACatalogNovelUI>>>
 
+	/**
+	 * TODO, Finish creating UI elements for this
+	 */
 	abstract val filterItemsLive: LiveData<HResult<List<Filter<*>>>>
 
+	/**
+	 * enable or disable searching
+	 */
 	abstract val hasSearchLive: LiveData<HResult<Boolean>>
 
 	/**

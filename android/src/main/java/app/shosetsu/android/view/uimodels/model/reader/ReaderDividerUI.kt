@@ -17,7 +17,7 @@ data class ReaderDividerUI(
 ) : ReaderUIItem<ReaderDividerUI, ReaderDividerUI.ViewHolder>() {
 	override var identifier: Long
 		get() = (prev.hashCode() + next.hashCode()).toLong()
-		set(value) {}
+		set(_) {}
 
 	override val layoutRes: Int = R.layout.chapter_divider
 	override val type: Int = R.layout.chapter_divider

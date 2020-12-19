@@ -1,12 +1,12 @@
-package app.shosetsu.android.domain.repository.impl
+package app.shosetsu.common.domain.repositories.impl
 
-import app.shosetsu.android.datasource.database.base.ILocalNovelsDataSource
-import app.shosetsu.android.domain.model.local.IDTitleImage
-import app.shosetsu.android.domain.model.local.IDTitleImageBook
-import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.common.datasource.database.base.ILocalNovelsDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteNovelDataSource
 import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.domain.model.local.StrippedBookmarkedNovelEntity
+import app.shosetsu.common.domain.model.local.StrippedNovelEntity
+import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.emptyResult
 import app.shosetsu.common.dto.successResult
@@ -52,20 +52,23 @@ class NovelsRepository(
 		database.updateNovel(novelEntity)
 
 
-	override suspend fun insertNovelReturnCard(novelEntity: NovelEntity): HResult<IDTitleImageBook> =
+	override suspend fun insertNovelReturnCard(novelEntity: NovelEntity): HResult<StrippedNovelEntity> =
 		database.insertNovelReturnCard(novelEntity)
 
 	override suspend fun insertNovel(novelEntity: NovelEntity): HResult<*> =
 		database.insertNovel(novelEntity)
 
 
-	override suspend fun searchBookmarked(string: String): HResult<List<IDTitleImage>> =
+	/**
+	 * TODO this operation is resource intensive, create a low level DB object
+	 */
+	override suspend fun searchBookmarked(string: String): HResult<List<StrippedBookmarkedNovelEntity>> =
 		getBookmarkedNovels().let { result ->
 			result.transform { list: List<NovelEntity> ->
 				if (list.isEmpty()) emptyResult()
 				successResult(list.filter { it.title.contains(string, false) }
 					.map { (id, _, _, _, _, _, t, imageURL, _, _, _, _, _, _, _) ->
-						IDTitleImage(id!!, t, imageURL)
+						StrippedBookmarkedNovelEntity(id!!, t, imageURL)
 					})
 			}
 		}

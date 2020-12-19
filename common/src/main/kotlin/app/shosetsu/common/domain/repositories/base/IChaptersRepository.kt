@@ -1,9 +1,9 @@
 package app.shosetsu.common.domain.repositories.base
 
-import app.shosetsu.common.domain.model.local.ReaderChapterEntity
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.domain.model.local.ReaderChapterEntity
+import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
@@ -37,48 +37,167 @@ interface IChaptersRepository {
 	 * First checks memory
 	 * Then checks storage
 	 * Then checks network
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
 	suspend fun loadChapterPassage(
-			formatter: IExtension,
-			chapterEntity: ChapterEntity,
+		formatter: IExtension,
+		chapterEntity: ChapterEntity,
 	): HResult<String>
 
-	/** Save the [ChapterEntity] [passage] to memory */
+	/**
+	 * Save the [ChapterEntity] [passage] to memory
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
 	suspend fun saveChapterPassageToMemory(
 		chapterEntity: ChapterEntity,
 		passage: String
 	): HResult<*>
 
-	/** Save the [ChapterEntity] [passage] to storage */
+	/**
+	 * Save the [ChapterEntity] [passage] to storage
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
 	suspend fun saveChapterPassageToStorage(
 		chapterEntity: ChapterEntity,
 		passage: String
 	): HResult<*>
 
-	/** Handles chapters for ze novel */
+	/**
+	 * Handles chapters for ze novel
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>): HResult<*>
 
-	/** Handles chapters return, but returns the chapters that are new */
+	/**
+	 * Handles chapters return, but returns the chapters that are new
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
 	suspend fun handleChaptersReturn(
-			novelEntity: NovelEntity,
-			list: List<Novel.Chapter>,
+		novelEntity: NovelEntity,
+		list: List<Novel.Chapter>,
 	): HResult<List<ChapterEntity>>
 
-	/** Loads [ChapterEntity]s matching [novelID] */
+	/**
+	 * Loads [ChapterEntity]s matching [novelID]
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
 	suspend fun loadChapters(novelID: Int): Flow<HResult<List<ChapterEntity>>>
 
-	/** Loads a [ChapterEntity] by its [chapterID] */
+	/**
+	 * Loads a [ChapterEntity] by its [chapterID]
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
 	suspend fun loadChapter(chapterID: Int): HResult<ChapterEntity>
 
-	/** Update [chapterEntity] in database */
+	/**
+	 * Update [chapterEntity] in database
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
 	suspend fun updateChapter(chapterEntity: ChapterEntity): HResult<*>
 
-	/** Loads [ReaderChapterEntity]s by it's [novelID] */
+	/**
+	 * Loads [ReaderChapterEntity]s by it's [novelID]
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
 	suspend fun loadReaderChapters(novelID: Int): Flow<HResult<List<ReaderChapterEntity>>>
 
-	/** Update [readerChapterEntity] in database */
+	/**
+	 * Update [readerChapterEntity] in database
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
 	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): HResult<*>
 
-	/** Delete the chapter passage from storage */
+	/**
+	 * Delete the chapter passage from storage
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 */
 	suspend fun deleteChapterPassage(chapterEntity: ChapterEntity): HResult<*>
 }

@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.common.ext.convertTo
-import app.shosetsu.android.domain.repository.base.IExtensionsRepository
-import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
+import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.common.consts.settings.SettingKey
@@ -45,7 +45,7 @@ class GetCatalogueQueryDataUseCase(
 		extID: Int,
 		query: String,
 		filters: Map<Int, Any>
-	) = extensionRepository.loadIExtension(extID).transform {
+	) = extensionRepository.getIExtension(extID).transform {
 		invoke(it, query, filters)
 	}
 

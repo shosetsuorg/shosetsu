@@ -1,9 +1,8 @@
-package app.shosetsu.android.datasource.database.base
+package app.shosetsu.common.datasource.database.base
 
-import androidx.lifecycle.LiveData
-import app.shosetsu.android.domain.model.local.IDTitleImageBook
 import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.domain.model.local.StrippedNovelEntity
 import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
@@ -44,7 +43,7 @@ interface ILocalNovelsDataSource {
 	/** Loads a [NovelEntity] by its [novelID] */
 	suspend fun loadNovel(novelID: Int): HResult<NovelEntity>
 
-	/** Loads a [LiveData] of a [NovelEntity] by its [novelID] */
+	/** Loads a [Flow] of a [NovelEntity] by its [novelID] */
 	suspend fun loadNovelLive(novelID: Int): Flow<HResult<NovelEntity>>
 
 	/** Updates a [NovelEntity] */
@@ -53,8 +52,8 @@ interface ILocalNovelsDataSource {
 	/** Updates a list of [BookmarkedNovelEntity] */
 	suspend fun updateBookmarkedNovels(list: List<BookmarkedNovelEntity>): HResult<*>
 
-	/** Inserts a [NovelEntity] then returns its [IDTitleImageBook] */
-	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): HResult<IDTitleImageBook>
+	/** Inserts a [NovelEntity] then returns its [StrippedNovelEntity] */
+	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): HResult<StrippedNovelEntity>
 
 	/** Inserts a [NovelEntity] */
 	suspend fun insertNovel(novelEntity: NovelEntity): HResult<*>

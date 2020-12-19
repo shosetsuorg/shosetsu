@@ -3,7 +3,7 @@ package app.shosetsu.android.datasource.remote.impl
 import app.shosetsu.android.common.consts.SHOSETSU_UPDATE_URL
 import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
-import app.shosetsu.android.domain.model.remote.DebugAppUpdate
+import app.shosetsu.android.domain.model.remote.AppUpdateDTO
 import app.shosetsu.common.consts.ErrorKeys.ERROR_HTTP_ERROR
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.errorResult
@@ -38,7 +38,7 @@ import okhttp3.OkHttpClient
 class RemoteAppUpdateDataSource(
 	private val okHttpClient: OkHttpClient
 ) : IRemoteAppUpdateDataSource {
-	override suspend fun loadGitAppUpdate(): HResult<DebugAppUpdate> {
+	override suspend fun loadGitAppUpdate(): HResult<AppUpdateDTO> {
 		val response = okHttpClient.quickie(SHOSETSU_UPDATE_URL)
 		response.takeIf { it.code == 200 }?.let { r ->
 			@Suppress("BlockingMethodInNonBlockingContext")

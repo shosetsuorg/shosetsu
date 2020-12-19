@@ -1,6 +1,4 @@
-package app.shosetsu.android.viewmodel.abstracted
-
-import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
+package app.shosetsu.common.domain.model.local
 
 /*
  * This file is part of Shosetsu.
@@ -21,13 +19,11 @@ import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 
 /**
  * shosetsu
- * 08 / 12 / 2020
+ * 19 / 12 / 2020
  */
-abstract class ASplashScreenViewModel : ShosetsuViewModel() {
-
-	/** If the application should show the show splash screen */
-	abstract suspend fun showIntro(): Boolean
-
-	/** Toggle the state if show intro or not*/
-	abstract fun toggleShowIntro()
-}
+data class StrippedNovelEntity(
+	val id: Int,
+	val title: String,
+	val imageURL: String,
+	var bookmarked: Boolean,
+)
