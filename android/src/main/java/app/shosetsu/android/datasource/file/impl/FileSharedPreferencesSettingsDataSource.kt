@@ -82,27 +82,30 @@ class FileSharedPreferencesSettingsDataSource(
 		successResult(provider.getFloat(key))
 
 	@ExperimentalCoroutinesApi
-	override suspend fun setLong(key: SettingKey<Long>, value: Long) =
-		provider.setLong(key, value)
+	override suspend fun setLong(key: SettingKey<Long>, value: Long): HResult<*> =
+		successResult(provider.setLong(key, value))
 
 	@ExperimentalCoroutinesApi
-	override suspend fun setString(key: SettingKey<String>, value: String) =
-		provider.setString(key, value)
+	override suspend fun setString(key: SettingKey<String>, value: String): HResult<*> =
+		successResult(provider.setString(key, value))
 
 	@ExperimentalCoroutinesApi
-	override suspend fun setInt(key: SettingKey<Int>, value: Int) =
-		provider.setInt(key, value)
+	override suspend fun setInt(key: SettingKey<Int>, value: Int): HResult<*> =
+		successResult(provider.setInt(key, value))
 
 	@ExperimentalCoroutinesApi
-	override suspend fun setBoolean(key: SettingKey<Boolean>, value: Boolean) =
-		provider.setBoolean(key, value)
+	override suspend fun setBoolean(key: SettingKey<Boolean>, value: Boolean): HResult<*> =
+		successResult(provider.setBoolean(key, value))
 
 	@ExperimentalCoroutinesApi
-	override suspend fun setStringSet(key: SettingKey<Set<String>>, value: Set<String>) =
-		provider.setStringSet(key, value)
+	override suspend fun setStringSet(
+		key: SettingKey<Set<String>>,
+		value: Set<String>
+	): HResult<*> =
+		successResult(provider.setStringSet(key, value))
 
 	@ExperimentalCoroutinesApi
-	override suspend fun setFloat(key: SettingKey<Float>, value: Float) =
-		provider.setFloat(key, value)
+	override suspend fun setFloat(key: SettingKey<Float>, value: Float): HResult<*> =
+		successResult(provider.setFloat(key, value))
 
 }

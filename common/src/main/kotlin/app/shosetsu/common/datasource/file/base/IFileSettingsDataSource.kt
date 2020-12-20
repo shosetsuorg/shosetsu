@@ -53,16 +53,16 @@ interface IFileSettingsDataSource {
 	suspend fun getFloat(key: SettingKey<Float>): HResult<Float>
 
 
-	suspend fun setLong(key: SettingKey<Long>, value: Long)
+	suspend fun setLong(key: SettingKey<Long>, value: Long): HResult<*>
 
-	suspend fun setString(key: SettingKey<String>, value: String)
+	suspend fun setString(key: SettingKey<String>, value: String): HResult<*>
 
-	suspend fun setInt(key: SettingKey<Int>, value: Int)
+	suspend fun setInt(key: SettingKey<Int>, value: Int): HResult<*>
 
-	suspend fun setBoolean(key: SettingKey<Boolean>, value: Boolean)
+	suspend fun setBoolean(key: SettingKey<Boolean>, value: Boolean): HResult<*>
 
-	suspend fun setStringSet(key: SettingKey<Set<String>>, value: Set<String>)
+	suspend fun setStringSet(key: SettingKey<Set<String>>, value: Set<String>): HResult<*>
 
-	suspend fun setFloat(key: SettingKey<Float>, value: Float)
+	suspend fun setFloat(key: SettingKey<Float>, value: Float): HResult<*>
 
 }

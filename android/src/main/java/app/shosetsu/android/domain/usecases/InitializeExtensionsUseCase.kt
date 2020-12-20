@@ -94,7 +94,7 @@ class InitializeExtensionsUseCase(
 		progressUpdate: (String) -> Unit,
 	) {
 		// Libraries in database
-		val repoResult = extLibRepo.loadExtLibByRepo(repo)
+		val repoResult = extLibRepo.loadExtLibByRepo(repo.id)
 		repoResult.takeIf { it is Success }?.let { (it as Success).data }
 			?.let { libEntities ->
 				// Libraries not installed or needs update
@@ -133,7 +133,7 @@ class InitializeExtensionsUseCase(
 				// For each library not present, installs
 				libsNotPresent.forEach {
 					progressUpdate("Updating/Installing ${it.scriptName}")
-					extLibRepo.installExtLibrary(repo, it)
+					extLibRepo.installExtLibrary(repo.url, it)
 				}
 			}
 			?: repoResult.takeIf { it is Error }?.let { it as Error }

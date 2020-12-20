@@ -156,8 +156,8 @@ class ExtensionsRepository(
 	): HResult<List<Novel.Listing>> =
 		remoteCatalogueDataSource.loadListing(ext, listing, data)
 
-	override suspend fun removeExtension(it: ExtensionEntity): HResult<*> =
-		databaseSource.deleteExtension(it) and
-				fileSource.deleteExtension(it.fileName) and
-				memorySource.removeExtensionFromMemory(it.id)
+	override suspend fun removeExtension(extensionEntity: ExtensionEntity): HResult<*> =
+		databaseSource.deleteExtension(extensionEntity) and
+				fileSource.deleteExtension(extensionEntity.fileName) and
+				memorySource.removeExtensionFromMemory(extensionEntity.id)
 }

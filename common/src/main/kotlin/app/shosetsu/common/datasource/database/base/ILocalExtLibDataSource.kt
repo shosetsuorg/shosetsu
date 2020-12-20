@@ -35,6 +35,6 @@ interface ILocalExtLibDataSource {
 	/** Update or insert an [extLibEntity] */
 	suspend fun updateOrInsert(extLibEntity: ExtLibEntity): HResult<*>
 
-	/** Loads a [List] of [ExtLibEntity] by its [repositoryEntity] */
-	suspend fun loadExtLibByRepo(repositoryEntity: RepositoryEntity): HResult<List<ExtLibEntity>>
+	/** Loads a [List] of [ExtLibEntity] by its [repoID] */
+	suspend fun loadExtLibByRepo(repoID: Int): HResult<List<ExtLibEntity>>
 }

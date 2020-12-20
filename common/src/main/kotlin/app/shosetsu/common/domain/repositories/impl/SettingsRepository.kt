@@ -60,29 +60,32 @@ class SettingsRepository(
 
 
 	override suspend fun getBoolean(key: SettingKey<Boolean>): HResult<Boolean> =
-			iLocalSettingsDataSource.getBoolean(key)
+		iLocalSettingsDataSource.getBoolean(key)
 
 	override suspend fun getStringSet(key: SettingKey<Set<String>>): HResult<Set<String>> =
-			iLocalSettingsDataSource.getStringSet(key)
+		iLocalSettingsDataSource.getStringSet(key)
 
 	override suspend fun getFloat(key: SettingKey<Float>) =
-			iLocalSettingsDataSource.getFloat(key)
+		iLocalSettingsDataSource.getFloat(key)
 
-	override suspend fun setLong(key: SettingKey<Long>, value: Long) =
-			iLocalSettingsDataSource.setLong(key, value)
+	override suspend fun setLong(key: SettingKey<Long>, value: Long): HResult<*> =
+		iLocalSettingsDataSource.setLong(key, value)
 
-	override suspend fun setString(key: SettingKey<String>, value: String) =
-			iLocalSettingsDataSource.setString(key, value)
+	override suspend fun setString(key: SettingKey<String>, value: String): HResult<*> =
+		iLocalSettingsDataSource.setString(key, value)
 
-	override suspend fun setInt(key: SettingKey<Int>, value: Int) =
-			iLocalSettingsDataSource.setInt(key, value)
+	override suspend fun setInt(key: SettingKey<Int>, value: Int): HResult<*> =
+		iLocalSettingsDataSource.setInt(key, value)
 
-	override suspend fun setBoolean(key: SettingKey<Boolean>, value: Boolean) =
-			iLocalSettingsDataSource.setBoolean(key, value)
+	override suspend fun setBoolean(key: SettingKey<Boolean>, value: Boolean): HResult<*> =
+		iLocalSettingsDataSource.setBoolean(key, value)
 
-	override suspend fun setStringSet(key: SettingKey<Set<String>>, value: Set<String>) =
-			iLocalSettingsDataSource.setStringSet(key, value)
+	override suspend fun setStringSet(
+		key: SettingKey<Set<String>>,
+		value: Set<String>
+	): HResult<*> =
+		iLocalSettingsDataSource.setStringSet(key, value)
 
-	override suspend fun setFloat(key: SettingKey<Float>, value: Float) =
-			iLocalSettingsDataSource.setFloat(key, value)
+	override suspend fun setFloat(key: SettingKey<Float>, value: Float): HResult<*> =
+		iLocalSettingsDataSource.setFloat(key, value)
 }

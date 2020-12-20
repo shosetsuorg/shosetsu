@@ -124,7 +124,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Error] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] never
 	 *
 	 * [HResult.Loading] never
 	 */
@@ -138,7 +138,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Error] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] never
 	 *
 	 * [HResult.Loading] never
 	 */
@@ -152,7 +152,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Error] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] never
 	 *
 	 * [HResult.Loading] never
 	 */
@@ -166,7 +166,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Error] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] never
 	 *
 	 * [HResult.Loading] never
 	 */

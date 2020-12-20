@@ -39,7 +39,7 @@ interface IExtLibRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun loadExtLibByRepo(repositoryEntity: RepositoryEntity): HResult<List<ExtLibEntity>>
+	suspend fun loadExtLibByRepo(repoID: Int): HResult<List<ExtLibEntity>>
 
 	/**
 	 * Installs an extension library by its repository
@@ -49,12 +49,12 @@ interface IExtLibRepository {
 	 *
 	 * [HResult.Error] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] never
 	 *
 	 * [HResult.Loading] never
 	 */
 	suspend fun installExtLibrary(
-		repositoryEntity: RepositoryEntity,
+		repoURL: String,
 		extLibEntity: ExtLibEntity,
 	): HResult<*>
 

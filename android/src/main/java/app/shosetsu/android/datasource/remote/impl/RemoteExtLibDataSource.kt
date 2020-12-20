@@ -5,7 +5,6 @@ import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.common.datasource.remote.base.IRemoteExtLibDataSource
 import app.shosetsu.common.domain.model.local.ExtLibEntity
-import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.successResult
 import okhttp3.OkHttpClient
@@ -34,17 +33,17 @@ import okhttp3.OkHttpClient
 class RemoteExtLibDataSource(
 	private val client: OkHttpClient,
 ) : IRemoteExtLibDataSource {
-	private fun makeLibraryURL(repo: RepositoryEntity, le: ExtLibEntity): String =
-		"${repo.url}$REPO_DIR_STRUCT/lib/${le.scriptName}.lua"
+	private fun makeLibraryURL(repo: String, le: ExtLibEntity): String =
+		"${repo}$REPO_DIR_STRUCT/lib/${le.scriptName}.lua"
 
 	override fun downloadLibrary(
-		repo: RepositoryEntity,
+		repoURL: String,
 		extLibEntity: ExtLibEntity,
 	): HResult<String> = try {
 		successResult(
 			client.quickie(
 				makeLibraryURL(
-					repo,
+					repoURL,
 					extLibEntity
 				)
 			).body!!.string()

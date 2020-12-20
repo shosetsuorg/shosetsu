@@ -32,41 +32,41 @@ interface IUpdatesRepository {
 	 * Adds updates
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] Added, returning rowIDs
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Something went wrong adding
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] never
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun addUpdates(list: List<UpdateEntity>): HResult<Array<Long>>
 
 	/**
-	 * Get all LiveData of the updates
+	 * [HResult] [Flow] of [List] of [UpdateEntity] of all entities present
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] Successfully retrieved updates
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Something went wrong getting the updates
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] No updates
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] Initial value
 	 */
 	suspend fun getUpdatesFlow(): Flow<HResult<List<UpdateEntity>>>
 
 	/**
-	 * Get all LiveData of the updates with completion
+	 * [HResult] [Flow] of [List] of [UpdateCompleteEntity] of all entities present
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] Successfully retrieved fleshed out updates
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Something went wrong getting the updates
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] No updates
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] Initial value
 	 */
 	suspend fun getCompleteUpdatesFlow(): Flow<HResult<List<UpdateCompleteEntity>>>
 }

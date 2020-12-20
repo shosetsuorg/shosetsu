@@ -11,10 +11,9 @@
 android/release
 android/debug
 
-.android/build/*
-.android/build/intermediates/*
-
+android/build/*
+android/build/intermediates/*
+android/schemas/*
 
 common/build/*
 common/build/intermediates/*
-

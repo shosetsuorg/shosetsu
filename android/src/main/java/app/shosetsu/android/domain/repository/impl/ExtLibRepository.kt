@@ -6,14 +6,12 @@ import app.shosetsu.common.datasource.file.base.IFileExtLibDataSource
 import app.shosetsu.common.datasource.memory.base.IMemExtLibDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteExtLibDataSource
 import app.shosetsu.common.domain.model.local.ExtLibEntity
-import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.IExtLibRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.lib.Version
 import app.shosetsu.lib.json.J_VERSION
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -45,16 +43,16 @@ class ExtLibRepository(
 	private val memSource: IMemExtLibDataSource,
 ) : IExtLibRepository {
 	override suspend fun loadExtLibByRepo(
-		repositoryEntity: RepositoryEntity,
+		repoID: Int,
 	): HResult<List<ExtLibEntity>> =
-		databaseSource.loadExtLibByRepo(repositoryEntity)
+		databaseSource.loadExtLibByRepo(repoID)
 
 	@Throws(JSONException::class)
 	override suspend fun installExtLibrary(
-		repositoryEntity: RepositoryEntity,
+		repoURL: String,
 		extLibEntity: ExtLibEntity,
 	): HResult<*> {
-		remoteSource.downloadLibrary(repositoryEntity, extLibEntity).handle {
+		remoteSource.downloadLibrary(repoURL, extLibEntity).handle {
 			val data = it
 			val json = JSONObject(data.substring(0, data.indexOf("\n")).replace("--", "").trim())
 			try {

@@ -5,7 +5,6 @@ import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.providers.database.dao.ExtensionLibraryDao
 import app.shosetsu.common.datasource.database.base.ILocalExtLibDataSource
 import app.shosetsu.common.domain.model.local.ExtLibEntity
-import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.convertList
 import app.shosetsu.common.dto.successResult
@@ -47,9 +46,9 @@ class LocalExtLibDataSource(
 	}
 
 	override suspend fun loadExtLibByRepo(
-		repositoryEntity: RepositoryEntity,
+		repoID: Int,
 	): HResult<List<ExtLibEntity>> = try {
-		successResult(extensionLibraryDao.loadLibByRepoID(repositoryEntity.id).convertList())
+		successResult(extensionLibraryDao.loadLibByRepoID(repoID).convertList())
 	} catch (e: Exception) {
 		e.toHError()
 	}

@@ -36,11 +36,11 @@ interface IExtRepoRepository {
 	 * Loads repository data
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] Loaded
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Error Loading
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] No data found
 	 *
 	 * [HResult.Loading] never
 	 */
@@ -50,11 +50,11 @@ interface IExtRepoRepository {
 	 * Loads all repositories present
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] Loaded entities
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Something went wrong loading entities
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] Should never happen
 	 *
 	 * [HResult.Loading] never
 	 */
@@ -64,13 +64,13 @@ interface IExtRepoRepository {
 	 * Loads all repositories present
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] Successfully loaded entities
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Something went wrong loading
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] Should never happen
 	 *
-	 * [HResult.Loading] Inital value
+	 * [HResult.Loading] Initial value
 	 */
 	suspend fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>>
 }

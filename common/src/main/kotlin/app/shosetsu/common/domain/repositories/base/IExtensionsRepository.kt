@@ -111,9 +111,9 @@ interface IExtensionsRepository {
 	 * Updates the source that the [extensionEntity] is not installed
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] Updated
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Error
 	 *
 	 * [HResult.Empty] never
 	 *
@@ -127,9 +127,9 @@ interface IExtensionsRepository {
 	 * Safe call to not cause duplicate entities
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] Inserted or Updated
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Something went wrong
 	 *
 	 * [HResult.Empty] never
 	 *
@@ -181,13 +181,13 @@ interface IExtensionsRepository {
 	 * as compared to calling for all the [ExtensionEntity]s and just mapping them
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] Successfully loaded
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Error occurred loading
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] No extensions
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] Initial value
 	 */
 	fun loadStrippedExtensionEntityFlow(): Flow<HResult<List<StrippedExtensionEntity>>>
 
@@ -203,7 +203,7 @@ interface IExtensionsRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun getCatalogueSearch(
 		ext: IExtension,
@@ -217,13 +217,13 @@ interface IExtensionsRepository {
 	 * TODO Consider delegation to some other class
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] Data successfully loaded
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Error loading data
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] ?
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun getCatalogueData(
 		ext: IExtension,
@@ -237,13 +237,13 @@ interface IExtensionsRepository {
 	 * This will also remove it from memory, and the file system. Releasing the resources
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] [extensionEntity] removed
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Error removing [extensionEntity]
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] never
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
-	suspend fun removeExtension(it: ExtensionEntity): HResult<*>
+	suspend fun removeExtension(extensionEntity: ExtensionEntity): HResult<*>
 }

@@ -2,7 +2,6 @@ package app.shosetsu.common.datasource.remote.base
 
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.model.local.ExtLibEntity
-import app.shosetsu.common.domain.model.local.RepositoryEntity
 
 /*
  * This file is part of shosetsu.
@@ -29,11 +28,11 @@ interface IRemoteExtLibDataSource {
 
 	/**
 	 * Downloads an extension library
-	 * @param repo Repository of the extension
+	 * @param repoURL URL of the repository
 	 * @param extLibEntity The library to download
 	 */
 	fun downloadLibrary(
-			repo: RepositoryEntity,
-			extLibEntity: ExtLibEntity,
+		repoURL: String,
+		extLibEntity: ExtLibEntity,
 	): HResult<String>
 }

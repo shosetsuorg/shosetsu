@@ -75,11 +75,11 @@ interface IDownloadsRepository {
 	 * Gets a download entity by its ID
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] Found Entity
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Something went wrong finding the entity
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] No entities found
 	 *
 	 * [HResult.Loading] never
 	 */
@@ -89,11 +89,11 @@ interface IDownloadsRepository {
 	 * Adds a new download to the repository
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] Successfully added, Provides the row ID
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Something went wrong adding the download
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] never
 	 *
 	 * [HResult.Loading] never
 	 */
@@ -103,25 +103,25 @@ interface IDownloadsRepository {
 	 * Updates a download in repository
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] Updated
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Something went wrong
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] never
 	 *
 	 * [HResult.Loading] never
 	 */
 	suspend fun update(download: DownloadEntity): HResult<*>
 
 	/**
-	 * Removes a download from the repository
+	 * Removes the [download] from the repository
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] [download] deleted
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Something went wrong deleting the [download]
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] never
 	 *
 	 * [HResult.Loading] never
 	 */
