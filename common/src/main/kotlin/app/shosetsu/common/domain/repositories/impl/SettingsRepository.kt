@@ -31,32 +31,32 @@ class SettingsRepository(
 		private val iLocalSettingsDataSource: IFileSettingsDataSource
 ) : ISettingsRepository {
 
-	override fun observeLong(key: SettingKey<Long>): Flow<Long> =
-			iLocalSettingsDataSource.observeLong(key)
+	override fun getLongFlow(key: SettingKey<Long>): Flow<Long> =
+		iLocalSettingsDataSource.observeLong(key)
 
-	override fun observeString(key: SettingKey<String>): Flow<String> =
-			iLocalSettingsDataSource.observeString(key)
+	override fun getStringFlow(key: SettingKey<String>): Flow<String> =
+		iLocalSettingsDataSource.observeString(key)
 
-	override fun observeInt(key: SettingKey<Int>): Flow<Int> =
-			iLocalSettingsDataSource.observeInt(key)
+	override fun getIntFlow(key: SettingKey<Int>): Flow<Int> =
+		iLocalSettingsDataSource.observeInt(key)
 
-	override fun observeBoolean(key: SettingKey<Boolean>): Flow<Boolean> =
-			iLocalSettingsDataSource.observeBoolean(key)
+	override fun getBooleanFlow(key: SettingKey<Boolean>): Flow<Boolean> =
+		iLocalSettingsDataSource.observeBoolean(key)
 
-	override fun observeStringSet(key: SettingKey<Set<String>>): Flow<Set<String>> =
-			iLocalSettingsDataSource.observeStringSet(key)
+	override fun getStringSetFlow(key: SettingKey<Set<String>>): Flow<Set<String>> =
+		iLocalSettingsDataSource.observeStringSet(key)
 
-	override fun observeFloat(key: SettingKey<Float>): Flow<Float> =
-			iLocalSettingsDataSource.observeFloat(key)
+	override fun getFloatFlow(key: SettingKey<Float>): Flow<Float> =
+		iLocalSettingsDataSource.observeFloat(key)
 
 	override suspend fun getLong(key: SettingKey<Long>): HResult<Long> =
-			iLocalSettingsDataSource.getLong(key)
+		iLocalSettingsDataSource.getLong(key)
 
 	override suspend fun getString(key: SettingKey<String>): HResult<String> =
-			iLocalSettingsDataSource.getString(key)
+		iLocalSettingsDataSource.getString(key)
 
 	override suspend fun getInt(key: SettingKey<Int>): HResult<Int> =
-			iLocalSettingsDataSource.getInt(key)
+		iLocalSettingsDataSource.getInt(key)
 
 
 	override suspend fun getBoolean(key: SettingKey<Boolean>): HResult<Boolean> =

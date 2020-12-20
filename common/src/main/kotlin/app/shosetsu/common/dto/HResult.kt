@@ -48,7 +48,10 @@ sealed class HResult<out T : Any> {
 		val error: Exception? = null,
 	) : app.shosetsu.common.dto.HResult<Nothing>()
 
-	/** This states that the operation is currently pending */
+	/**
+	 * This states that the operation is currently pending
+	 * Ideally only ever used in [kotlinx.coroutines.flow.Flow]
+	 */
 	object Loading : app.shosetsu.common.dto.HResult<Nothing>()
 
 	/** This states that the operation has returned nothing */

@@ -27,5 +27,5 @@ import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 class LoadNovelUIColumnsPUseCase(
 	private val iSettingsRepository: ISettingsRepository
 ) {
-	operator fun invoke() = iSettingsRepository.observeInt(ChapterColumnsInPortait)
+	operator fun invoke() = iSettingsRepository.getIntFlow(ChapterColumnsInPortait)
 }

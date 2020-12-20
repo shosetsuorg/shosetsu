@@ -42,11 +42,11 @@ class AppUpdatesRepository(
 
 
 	@ExperimentalCoroutinesApi
-	override fun appUpdateFlow(): Flow<HResult<AppUpdateEntity>> =
+	override fun loadAppUpdateFlow(): Flow<HResult<AppUpdateEntity>> =
 		iFileAppUpdateDataSource.updateAvaLive.mapLatest { it.convert() }
 
 
-	override suspend fun setAppUpdate(debugAppUpdate: AppUpdateEntity) {
+	override suspend fun setAppUpdate(debugAppUpdate: AppUpdateEntity): HResult<*> {
 		TODO("Not yet implemented")
 	}
 

@@ -42,9 +42,9 @@ interface IExtRepoRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
-	suspend fun loadRepoData(repositoryEntity: RepositoryEntity): HResult<RepoIndex>
+	suspend fun getRepoData(repositoryEntity: RepositoryEntity): HResult<RepoIndex>
 
 	/**
 	 * Loads all repositories present
@@ -56,7 +56,7 @@ interface IExtRepoRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun loadRepositories(): HResult<List<RepositoryEntity>>
 
@@ -70,7 +70,7 @@ interface IExtRepoRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] Inital value
 	 */
 	suspend fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>>
 }

@@ -56,7 +56,7 @@ class ChaptersRepository(
 			saveChapterPassageToMemory(chapterEntity, value.data)
 	}
 
-	override suspend fun loadChapterPassage(
+	override suspend fun getChapterPassage(
 		formatter: IExtension,
 		chapterEntity: ChapterEntity,
 	): HResult<String> =
@@ -97,16 +97,16 @@ class ChaptersRepository(
 	): HResult<List<ChapterEntity>> =
 		dbSource.handleChapterReturn(novelEntity, list)
 
-	override suspend fun loadChapters(novelID: Int): Flow<HResult<List<ChapterEntity>>> =
+	override suspend fun getChapters(novelID: Int): Flow<HResult<List<ChapterEntity>>> =
 		dbSource.loadChapters(novelID)
 
 	override suspend fun updateChapter(chapterEntity: ChapterEntity): HResult<*> =
 		dbSource.updateChapter(chapterEntity)
 
-	override suspend fun loadChapter(chapterID: Int): HResult<ChapterEntity> =
+	override suspend fun getChapter(chapterID: Int): HResult<ChapterEntity> =
 		dbSource.loadChapter(chapterID)
 
-	override suspend fun loadReaderChapters(
+	override suspend fun getReaderChaptersFlow(
 		novelID: Int,
 	): Flow<HResult<List<ReaderChapterEntity>>> = dbSource.loadReaderChapters(novelID)
 

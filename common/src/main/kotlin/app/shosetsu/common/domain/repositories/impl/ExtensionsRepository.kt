@@ -49,11 +49,11 @@ class ExtensionsRepository(
 	private val repositorySource: ILocalExtRepoDataSource,
 	private val remoteCatalogueDataSource: IRemoteCatalogueDataSource,
 ) : IExtensionsRepository {
-	override fun loadExtensionEntitiesLive(): Flow<HResult<List<ExtensionEntity>>> =
+	override fun loadExtensionEntitiesFLow(): Flow<HResult<List<ExtensionEntity>>> =
 		databaseSource.loadExtensions()
 
 
-	override fun getExtensionEntityLive(id: Int): Flow<HResult<ExtensionEntity>> =
+	override fun getExtensionEntityFlow(id: Int): Flow<HResult<ExtensionEntity>> =
 		databaseSource.loadExtensionLive(id)
 
 	override suspend fun getExtensionEntity(id: Int): HResult<ExtensionEntity> =
@@ -136,11 +136,11 @@ class ExtensionsRepository(
 	override suspend fun getIExtension(extensionID: Int): HResult<IExtension> =
 		databaseSource.loadExtension(extensionID).transform { getIExtension(it) }
 
-	override fun getCards(): Flow<HResult<List<StrippedExtensionEntity>>> =
+	override fun loadStrippedExtensionEntityFlow(): Flow<HResult<List<StrippedExtensionEntity>>> =
 		databaseSource.loadPoweredExtensionsCards()
 
 
-	override suspend fun loadCatalogueSearch(
+	override suspend fun getCatalogueSearch(
 		ext: IExtension,
 		query: String,
 		data: Map<Int, Any>
@@ -149,7 +149,7 @@ class ExtensionsRepository(
 			ext, query, data
 		)
 
-	override suspend fun loadCatalogueData(
+	override suspend fun getCatalogueData(
 		ext: IExtension,
 		listing: Int,
 		data: Map<Int, Any>,

@@ -33,7 +33,7 @@ class LoadLiveAppThemeUseCase(
 ) {
 	@ExperimentalCoroutinesApi
 	operator fun invoke(): Flow<AppThemes> =
-		iSettingsRepository.observeInt(SettingKey.AppTheme).mapLatest {
+		iSettingsRepository.getIntFlow(SettingKey.AppTheme).mapLatest {
 			AppThemes.fromKey(it)
 		}
 }

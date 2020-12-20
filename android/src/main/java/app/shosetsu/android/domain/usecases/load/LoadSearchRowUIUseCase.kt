@@ -10,17 +10,18 @@ import kotlinx.coroutines.flow.Flow
 class LoadSearchRowUIUseCase(
 	private val iExtensionsRepository: IExtensionsRepository
 ) {
-	operator fun invoke(): Flow<HResult<List<SearchRowUI>>> = iExtensionsRepository.getCards()
-		.mapLatestResult {
-			successResult(ArrayList(
-				it.map { (id, title, imageURL) ->
-					SearchRowUI(id, title, imageURL)
-				}
-			))
-		}
-		.mapLatestResult {
-			successResult((it).apply {
-				add(0, SearchRowUI(-1, "My Library", ""))
-			}.toList())
+	operator fun invoke(): Flow<HResult<List<SearchRowUI>>> =
+		iExtensionsRepository.loadStrippedExtensionEntityFlow()
+			.mapLatestResult {
+				successResult(ArrayList(
+					it.map { (id, title, imageURL) ->
+						SearchRowUI(id, title, imageURL)
+					}
+				))
+			}
+			.mapLatestResult {
+				successResult((it).apply {
+					add(0, SearchRowUI(-1, "My Library", ""))
+				}.toList())
 		}
 }

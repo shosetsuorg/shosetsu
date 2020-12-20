@@ -28,5 +28,5 @@ import kotlinx.coroutines.flow.Flow
 class LoadNavigationStyleUseCase(
 	private val iSettingsRepository: ISettingsRepository
 ) {
-	operator fun invoke(): Flow<Int> = iSettingsRepository.observeInt(SettingKey.NavStyle)
+	operator fun invoke(): Flow<Int> = iSettingsRepository.getIntFlow(SettingKey.NavStyle)
 }

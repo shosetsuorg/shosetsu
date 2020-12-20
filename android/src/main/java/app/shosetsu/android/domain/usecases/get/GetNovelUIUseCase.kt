@@ -40,7 +40,7 @@ class GetNovelUIUseCase(
 	operator fun invoke(novelID: Int): Flow<HResult<NovelUI>> = flow {
 		emit(loading())
 		if (novelID != -1)
-			emitAll(novelsRepository.loadNovelLive(novelID).mapLatest {
+			emitAll(novelsRepository.getNovelFlow(novelID).mapLatest {
 				it.transform {
 					successResult(NovelConversionFactory(it))
 				}

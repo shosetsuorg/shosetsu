@@ -125,7 +125,7 @@ class DownloadWorker(
 
 
 	private suspend fun download(downloadEntity: DownloadEntity): HResult<*> =
-		chapRepo.loadChapter(downloadEntity.chapterID).let { cR: HResult<ChapterEntity> ->
+		chapRepo.getChapter(downloadEntity.chapterID).let { cR: HResult<ChapterEntity> ->
 			when (cR) {
 				is HResult.Success -> {
 					val chapterEntity = cR.data
@@ -134,7 +134,7 @@ class DownloadWorker(
 							when (fR) {
 								is HResult.Success -> {
 									val formatterEntity = fR.data
-									chapRepo.loadChapterPassage(formatterEntity, chapterEntity)
+									chapRepo.getChapterPassage(formatterEntity, chapterEntity)
 										.let {
 											when (it) {
 												is HResult.Success -> {

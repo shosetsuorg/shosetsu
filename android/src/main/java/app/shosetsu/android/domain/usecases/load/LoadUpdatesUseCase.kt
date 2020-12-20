@@ -37,7 +37,7 @@ class LoadUpdatesUseCase(
 	@ExperimentalCoroutinesApi
 	operator fun invoke(): Flow<HResult<List<UpdateUI>>> = flow {
 		emitAll(
-			updatesRepository.getCompleteUpdates().mapLatestToResultFlowWithFactory()
+			updatesRepository.getCompleteUpdatesFlow().mapLatestToResultFlowWithFactory()
 				.mapLatestResultListTo()
 		)
 	}

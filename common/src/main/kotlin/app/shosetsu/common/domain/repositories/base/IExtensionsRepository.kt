@@ -43,7 +43,7 @@ interface IExtensionsRepository {
 	 *
 	 * [HResult.Empty] Should never occur?
 	 */
-	fun loadExtensionEntitiesLive(): Flow<HResult<List<ExtensionEntity>>>
+	fun loadExtensionEntitiesFLow(): Flow<HResult<List<ExtensionEntity>>>
 
 	/**
 	 * [Flow] of the [ExtensionEntity] with an [ExtensionEntity.id] matching [id]
@@ -57,7 +57,7 @@ interface IExtensionsRepository {
 	 *
 	 * [HResult.Empty] If no [ExtensionEntity] matches [id]
 	 */
-	fun getExtensionEntityLive(id: Int): Flow<HResult<ExtensionEntity>>
+	fun getExtensionEntityFlow(id: Int): Flow<HResult<ExtensionEntity>>
 
 	/**
 	 * Gets the [ExtensionEntity] that has an [ExtensionEntity.id] matching [id]
@@ -115,9 +115,9 @@ interface IExtensionsRepository {
 	 *
 	 * [HResult.Error] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] never
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun uninstallExtension(extensionEntity: ExtensionEntity): HResult<*>
 
@@ -131,9 +131,9 @@ interface IExtensionsRepository {
 	 *
 	 * [HResult.Error] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] never
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<*>
 
@@ -189,7 +189,7 @@ interface IExtensionsRepository {
 	 *
 	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
-	fun getCards(): Flow<HResult<List<StrippedExtensionEntity>>>
+	fun loadStrippedExtensionEntityFlow(): Flow<HResult<List<StrippedExtensionEntity>>>
 
 	/**
 	 * Queries the [IExtension] for a search result
@@ -205,7 +205,7 @@ interface IExtensionsRepository {
 	 *
 	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
-	suspend fun loadCatalogueSearch(
+	suspend fun getCatalogueSearch(
 		ext: IExtension,
 		query: String,
 		data: Map<Int, Any>
@@ -225,7 +225,7 @@ interface IExtensionsRepository {
 	 *
 	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
-	suspend fun loadCatalogueData(
+	suspend fun getCatalogueData(
 		ext: IExtension,
 		listing: Int,
 		data: Map<Int, Any>,

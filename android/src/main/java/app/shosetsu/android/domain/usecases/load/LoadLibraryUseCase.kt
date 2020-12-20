@@ -38,8 +38,8 @@ class LoadLibraryUseCase(
 	private val settings: ISettingsRepository,
 ) {
 	operator fun invoke(): Flow<HResult<List<ABookmarkedNovelUI>>> =
-		iNovelsRepository.getLiveBookmarked()
-			.combine(settings.observeInt(NovelCardType)) { origin, cardType ->
+		iNovelsRepository.getBookmarkedNovelsFlow()
+			.combine(settings.getIntFlow(NovelCardType)) { origin, cardType ->
 				origin.transform {
 					val list = it
 					val newList = list.map { (id, title, imageURL, bookmarked, unread,

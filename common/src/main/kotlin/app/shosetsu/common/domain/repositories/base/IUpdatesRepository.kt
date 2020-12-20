@@ -54,7 +54,7 @@ interface IUpdatesRepository {
 	 *
 	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
-	suspend fun getUpdates(): Flow<HResult<List<UpdateEntity>>>
+	suspend fun getUpdatesFlow(): Flow<HResult<List<UpdateEntity>>>
 
 	/**
 	 * Get all LiveData of the updates with completion
@@ -68,5 +68,5 @@ interface IUpdatesRepository {
 	 *
 	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
-	suspend fun getCompleteUpdates(): Flow<HResult<List<UpdateCompleteEntity>>>
+	suspend fun getCompleteUpdatesFlow(): Flow<HResult<List<UpdateCompleteEntity>>>
 }

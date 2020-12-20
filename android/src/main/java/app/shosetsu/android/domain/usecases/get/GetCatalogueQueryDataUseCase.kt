@@ -53,7 +53,7 @@ class GetCatalogueQueryDataUseCase(
 		ext: IExtension,
 		query: String,
 		filters: Map<Int, Any>
-	): HResult<List<ACatalogNovelUI>> = extensionRepository.loadCatalogueSearch(
+	): HResult<List<ACatalogNovelUI>> = extensionRepository.getCatalogueSearch(
 		ext,
 		query,
 		filters

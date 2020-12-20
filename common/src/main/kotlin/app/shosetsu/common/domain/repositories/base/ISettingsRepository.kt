@@ -27,17 +27,17 @@ import kotlinx.coroutines.flow.Flow
  */
 interface ISettingsRepository {
 
-	fun observeLong(key: SettingKey<Long>): Flow<Long>
+	fun getLongFlow(key: SettingKey<Long>): Flow<Long>
 
-	fun observeString(key: SettingKey<String>): Flow<String>
+	fun getStringFlow(key: SettingKey<String>): Flow<String>
 
-	fun observeInt(key: SettingKey<Int>): Flow<Int>
+	fun getIntFlow(key: SettingKey<Int>): Flow<Int>
 
-	fun observeBoolean(key: SettingKey<Boolean>): Flow<Boolean>
+	fun getBooleanFlow(key: SettingKey<Boolean>): Flow<Boolean>
 
-	fun observeStringSet(key: SettingKey<Set<String>>): Flow<Set<String>>
+	fun getFloatFlow(key: SettingKey<Float>): Flow<Float>
 
-	fun observeFloat(key: SettingKey<Float>): Flow<Float>
+	fun getStringSetFlow(key: SettingKey<Set<String>>): Flow<Set<String>>
 
 
 	suspend fun getLong(key: SettingKey<Long>): HResult<Long>

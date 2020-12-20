@@ -56,6 +56,7 @@ class LocalNovelsDataSource(
 	@ExperimentalCoroutinesApi
 	override fun loadLiveBookmarkedNovelsAndCount(
 	): Flow<HResult<List<BookmarkedNovelEntity>>> = flow {
+		emit(loading())
 		try {
 			emitAll(novelsDao.loadBookmarkedNovelsCount().mapLatestToSuccess())
 		} catch (e: Exception) {

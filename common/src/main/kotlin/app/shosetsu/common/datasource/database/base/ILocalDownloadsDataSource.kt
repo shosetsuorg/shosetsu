@@ -44,8 +44,6 @@ interface ILocalDownloadsDataSource {
 	/** Deletes a [DownloadEntity] */
 	suspend fun deleteDownload(downloadEntity: DownloadEntity): HResult<*>
 
-	/** Clear all downloads */
-	suspend fun clearDownloads(): HResult<*>
 
 	/** Loads a [DownloadEntity] via its [chapterID] */
 	suspend fun loadDownload(chapterID: Int): HResult<DownloadEntity>

@@ -37,7 +37,7 @@ interface IExtLibRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun loadExtLibByRepo(repositoryEntity: RepositoryEntity): HResult<List<ExtLibEntity>>
 
@@ -51,7 +51,7 @@ interface IExtLibRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun installExtLibrary(
 		repositoryEntity: RepositoryEntity,
@@ -67,7 +67,7 @@ interface IExtLibRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	fun blockingLoadExtLibrary(name: String): HResult<String>
 }

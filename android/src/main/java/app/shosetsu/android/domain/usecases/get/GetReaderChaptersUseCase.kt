@@ -38,7 +38,7 @@ class GetReaderChaptersUseCase(
 	operator fun invoke(novelID: Int): Flow<HResult<List<ReaderChapterUI>>> =
 		flow {
 			emit(loading())
-			emitAll(iChaptersRepository.loadReaderChapters(novelID).mapLatestResult {
+			emitAll(iChaptersRepository.getReaderChaptersFlow(novelID).mapLatestResult {
 				successResult(it.map { (id, url, title, readingPosition, readingStatus, bookmarked) ->
 					ReaderChapterUI(
 						id,

@@ -88,7 +88,7 @@ class GetNovelUseCase(
 	suspend operator fun invoke(
 		novelID: Int,
 		loadChapters: Boolean
-	): HResult<Any> = nR.loadNovel(novelID).transform { novel ->
+	): HResult<Any> = nR.getNovel(novelID).transform { novel ->
 		main(novel, loadChapters)
 	}
 

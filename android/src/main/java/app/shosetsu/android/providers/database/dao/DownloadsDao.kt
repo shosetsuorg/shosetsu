@@ -59,7 +59,4 @@ interface DownloadsDao : BaseDao<DBDownloadEntity> {
 	@Query("SELECT * FROM downloads WHERE chapterID = :chapterID LIMIT 1")
 	suspend fun loadDownload(chapterID: Int): DBDownloadEntity
 
-	@Query("DELETE FROM downloads")
-	@Throws(SQLiteException::class)
-	suspend fun clearData()
 }

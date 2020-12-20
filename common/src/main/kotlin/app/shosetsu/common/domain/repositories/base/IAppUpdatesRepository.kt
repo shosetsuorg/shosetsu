@@ -32,20 +32,32 @@ interface IAppUpdatesRepository {
 	 * Flow of app updates
 	 *
 	 * Will only be a Success if a version is found higher then the current
+	 *
+	 * @return
+	 * [HResult.Success] There is an update
+	 *
+	 * [HResult.Error] Something went wrong loading updates
+	 *
+	 * [HResult.Empty] No updates found
+	 *
+	 * [HResult.Loading] Initial value
 	 */
-	fun appUpdateFlow(): Flow<HResult<AppUpdateEntity>>
+	fun loadAppUpdateFlow(): Flow<HResult<AppUpdateEntity>>
 
 
 	/**
 	 * Set [debugAppUpdate] as the update for the app
+	 *
 	 */
-	suspend fun setAppUpdate(debugAppUpdate: AppUpdateEntity)
+	suspend fun setAppUpdate(debugAppUpdate: AppUpdateEntity): HResult<*>
 
 	/**
 	 * Load an app update if present
 	 *
-	 * @return [HResult.Empty] if no app updates are present
-	 * @return [HResult.Success] if an app update is present
+	 * @return
+	 * [HResult.Empty] if no app updates are present
+	 *
+	 * [HResult.Success] if an app update is present
 	 */
 	suspend fun loadAppUpdate(): HResult<AppUpdateEntity>
 

@@ -37,7 +37,7 @@ class DownloadChapterPassageUseCase(
 	private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
 ) {
 	suspend operator fun invoke(chapterUI: ChapterEntity) {
-		novelRepo.loadNovel(chapterUI.novelID).let {
+		novelRepo.getNovel(chapterUI.novelID).let {
 			if (it is HResult.Success) {
 				val novel = it.data
 				downloadsRepository.addDownload(

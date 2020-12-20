@@ -36,7 +36,7 @@ class SplashScreenViewModel(
 
 	init {
 		launchIO {
-			settingsRepository.observeBoolean(FirstTime).collectLatest {
+			settingsRepository.getBooleanFlow(FirstTime).collectLatest {
 				logV("Collected $it")
 				showIntro = it
 			}

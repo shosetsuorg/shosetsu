@@ -42,7 +42,7 @@ class NovelsRepository(
 	private val database: ILocalNovelsDataSource,
 	private val remoteSource: IRemoteNovelDataSource,
 ) : INovelsRepository {
-	override fun getLiveBookmarked(): Flow<HResult<List<BookmarkedNovelEntity>>> =
+	override fun getBookmarkedNovelsFlow(): Flow<HResult<List<BookmarkedNovelEntity>>> =
 		database.loadLiveBookmarkedNovelsAndCount()
 
 	override suspend fun getBookmarkedNovels(): HResult<List<NovelEntity>> =
@@ -74,10 +74,10 @@ class NovelsRepository(
 		}
 
 
-	override suspend fun loadNovel(novelID: Int): HResult<NovelEntity> =
+	override suspend fun getNovel(novelID: Int): HResult<NovelEntity> =
 		database.loadNovel(novelID)
 
-	override suspend fun loadNovelLive(novelID: Int): Flow<HResult<NovelEntity>> =
+	override suspend fun getNovelFlow(novelID: Int): Flow<HResult<NovelEntity>> =
 		database.loadNovelLive(novelID)
 
 	override suspend fun updateNovelData(

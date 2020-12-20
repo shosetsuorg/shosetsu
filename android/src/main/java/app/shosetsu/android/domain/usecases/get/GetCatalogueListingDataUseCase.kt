@@ -56,7 +56,7 @@ class GetCatalogueListingDataUseCase(
 			it
 		}!!
 
-		return extensionRepository.loadCatalogueData(
+		return extensionRepository.getCatalogueData(
 			iExtension,
 			0,
 			data

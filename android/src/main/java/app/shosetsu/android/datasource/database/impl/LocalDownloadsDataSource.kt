@@ -5,9 +5,7 @@ import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.providers.database.dao.DownloadsDao
 import app.shosetsu.common.datasource.database.base.ILocalDownloadsDataSource
 import app.shosetsu.common.domain.model.local.DownloadEntity
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.mapLatestListTo
-import app.shosetsu.common.dto.mapLatestToSuccess
+import app.shosetsu.common.dto.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
@@ -39,6 +37,7 @@ class LocalDownloadsDataSource(
 ) : ILocalDownloadsDataSource {
 	@ExperimentalCoroutinesApi
 	override fun loadLiveDownloads(): Flow<HResult<List<DownloadEntity>>> = flow {
+		emit(loading())
 		try {
 			emitAll(downloadsDao.loadDownloadItems().mapLatestListTo().mapLatestToSuccess())
 		} catch (e: Exception) {
@@ -47,45 +46,39 @@ class LocalDownloadsDataSource(
 	}
 
 	override suspend fun loadDownloadCount(): HResult<Int> = try {
-		app.shosetsu.common.dto.successResult(downloadsDao.loadDownloadCount())
+		successResult(downloadsDao.loadDownloadCount())
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
 	override suspend fun loadFirstDownload(): HResult<DownloadEntity> = try {
 		downloadsDao.loadFirstDownload()?.convertTo()
-			?.let { app.shosetsu.common.dto.successResult(it) }
-			?: app.shosetsu.common.dto.emptyResult()
+			?.let { successResult(it) }
+			?: emptyResult()
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
 	override suspend fun insertDownload(downloadEntity: DownloadEntity): HResult<Long> = try {
-		app.shosetsu.common.dto.successResult(downloadsDao.insertIgnore(downloadEntity.toDB()))
+		successResult(downloadsDao.insertIgnore(downloadEntity.toDB()))
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
 	override suspend fun updateDownload(downloadEntity: DownloadEntity): HResult<*> = try {
-		app.shosetsu.common.dto.successResult(downloadsDao.suspendedUpdate(downloadEntity.toDB()))
+		successResult(downloadsDao.suspendedUpdate(downloadEntity.toDB()))
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
 	override suspend fun deleteDownload(downloadEntity: DownloadEntity): HResult<*> = try {
-		app.shosetsu.common.dto.successResult(downloadsDao.suspendedDelete(downloadEntity.toDB()))
-	} catch (e: Exception) {
-		e.toHError()
-	}
-
-	override suspend fun clearDownloads(): HResult<*> = try {
-		app.shosetsu.common.dto.successResult(downloadsDao.clearData())
+		successResult(downloadsDao.suspendedDelete(downloadEntity.toDB()))
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
 	override suspend fun loadDownload(chapterID: Int): HResult<DownloadEntity> = try {
-		app.shosetsu.common.dto.successResult(downloadsDao.loadDownload(chapterID).convertTo())
+		successResult(downloadsDao.loadDownload(chapterID).convertTo())
 	} catch (e: Exception) {
 		e.toHError()
 	}

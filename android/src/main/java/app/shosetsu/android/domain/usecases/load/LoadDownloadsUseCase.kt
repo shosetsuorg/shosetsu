@@ -38,7 +38,7 @@ class LoadDownloadsUseCase(
 	@ExperimentalCoroutinesApi
 	operator fun invoke(): Flow<HResult<List<DownloadUI>>> = flow {
 		emitAll(
-			iDownloadsRepository.loadLiveDownloads().mapLatestToResultFlowWithFactory()
+			iDownloadsRepository.loadDownloadsFlow().mapLatestToResultFlowWithFactory()
 				.mapLatestResultListTo()
 		)
 	}

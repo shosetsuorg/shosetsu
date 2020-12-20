@@ -39,7 +39,7 @@ class LoadExtensionsUIUseCase(
 	operator fun invoke(): Flow<HResult<List<ExtensionUI>>> = flow {
 		loading()
 		emitAll(
-			extensionsRepository.loadExtensionEntitiesLive().mapLatestToResultFlowWithFactory()
+			extensionsRepository.loadExtensionEntitiesFLow().mapLatestToResultFlowWithFactory()
 				.mapLatestResultListTo()
 		)
 	}

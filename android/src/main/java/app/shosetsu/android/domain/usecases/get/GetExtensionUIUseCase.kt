@@ -37,7 +37,7 @@ class GetExtensionUIUseCase(
 	operator fun invoke(id: Int): Flow<HResult<ExtensionUI>> = flow {
 		emit(loading())
 		if (id != -1)
-			emitAll(iExtensionsRepository.getExtensionEntityLive(id).mapLatestResult {
+			emitAll(iExtensionsRepository.getExtensionEntityFlow(id).mapLatestResult {
 				successResult(ExtensionConversionFactory(it))
 			}.mapLatestResultTo())
 	}

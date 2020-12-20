@@ -33,7 +33,7 @@ class LoadNovelUITypeUseCase(
 ) {
 	@ExperimentalCoroutinesApi
 	operator fun invoke(): Flow<NovelUIType> {
-		return repository.observeInt(SettingKey.NovelCardType).mapLatest {
+		return repository.getIntFlow(SettingKey.NovelCardType).mapLatest {
 			NovelUIType.fromInt(it)
 		}
 	}

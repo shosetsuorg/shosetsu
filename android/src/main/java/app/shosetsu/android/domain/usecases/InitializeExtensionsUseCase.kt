@@ -57,7 +57,7 @@ class InitializeExtensionsUseCase(
 
 					progressUpdate("Checking $repoName")
 					// gets the latest list for the repo
-					val result = extRepoRepo.loadRepoData(repo)
+					val result = extRepoRepo.getRepoData(repo)
 					result.takeIf { it is Success }
 						?.let { (it as Success).data }
 						?.let { repoIndex ->

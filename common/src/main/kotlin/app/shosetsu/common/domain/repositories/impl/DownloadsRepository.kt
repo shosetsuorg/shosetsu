@@ -32,28 +32,26 @@ import kotlinx.coroutines.flow.Flow
 class DownloadsRepository(
 		private val iLocalDownloadsDataSource: ILocalDownloadsDataSource,
 ) : IDownloadsRepository {
-	override fun loadLiveDownloads(): Flow<HResult<List<DownloadEntity>>> =
-			iLocalDownloadsDataSource.loadLiveDownloads()
+	override fun loadDownloadsFlow(): Flow<HResult<List<DownloadEntity>>> =
+		iLocalDownloadsDataSource.loadLiveDownloads()
 
 	override suspend fun loadFirstDownload(): HResult<DownloadEntity> =
-			iLocalDownloadsDataSource.loadFirstDownload()
+		iLocalDownloadsDataSource.loadFirstDownload()
 
 	override suspend fun loadDownloadCount(): HResult<Int> =
-			iLocalDownloadsDataSource.loadDownloadCount()
+		iLocalDownloadsDataSource.loadDownloadCount()
 
-	override suspend fun loadDownload(chapterID: Int): HResult<DownloadEntity> =
-			iLocalDownloadsDataSource.loadDownload(chapterID)
+	override suspend fun getDownload(chapterID: Int): HResult<DownloadEntity> =
+		iLocalDownloadsDataSource.loadDownload(chapterID)
 
 	override suspend fun addDownload(download: DownloadEntity): HResult<Long> =
-			iLocalDownloadsDataSource.insertDownload(download)
+		iLocalDownloadsDataSource.insertDownload(download)
 
 	override suspend fun update(download: DownloadEntity): HResult<*> =
-			iLocalDownloadsDataSource.updateDownload(download)
+		iLocalDownloadsDataSource.updateDownload(download)
 
 	override suspend fun deleteEntity(download: DownloadEntity): HResult<*> =
-			iLocalDownloadsDataSource.deleteDownload(download)
+		iLocalDownloadsDataSource.deleteDownload(download)
 
-	override suspend fun resetList(): HResult<*> =
-			iLocalDownloadsDataSource.clearDownloads()
 
 }

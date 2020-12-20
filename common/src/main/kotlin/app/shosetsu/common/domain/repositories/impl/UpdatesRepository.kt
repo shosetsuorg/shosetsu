@@ -36,11 +36,11 @@ class UpdatesRepository(
 ) : IUpdatesRepository {
 
 	override suspend fun addUpdates(list: List<UpdateEntity>): HResult<Array<Long>> =
-			iLocalUpdatesDataSource.insertUpdates(list)
+		iLocalUpdatesDataSource.insertUpdates(list)
 
-	override suspend fun getUpdates(): Flow<HResult<List<UpdateEntity>>> =
-			iLocalUpdatesDataSource.getUpdates()
+	override suspend fun getUpdatesFlow(): Flow<HResult<List<UpdateEntity>>> =
+		iLocalUpdatesDataSource.getUpdates()
 
-	override suspend fun getCompleteUpdates(): Flow<HResult<List<UpdateCompleteEntity>>> =
-			iLocalUpdatesDataSource.getCompleteUpdates()
+	override suspend fun getCompleteUpdatesFlow(): Flow<HResult<List<UpdateCompleteEntity>>> =
+		iLocalUpdatesDataSource.getCompleteUpdates()
 }

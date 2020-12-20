@@ -32,10 +32,10 @@ class GetChapterPassageUseCase(
 	private val iExtensionsRepository: IExtensionsRepository,
 ) {
 	suspend operator fun invoke(readerChapterUI: ReaderChapterUI): HResult<String> =
-		iChaptersRepository.loadChapter(readerChapterUI.id).transform { chapterEntity ->
+		iChaptersRepository.getChapter(readerChapterUI.id).transform { chapterEntity ->
 			iExtensionsRepository.getIExtension(chapterEntity.extensionID)
 				.transform { iExtension ->
-					iChaptersRepository.loadChapterPassage(iExtension, chapterEntity)
+					iChaptersRepository.getChapterPassage(iExtension, chapterEntity)
 				}
 		}
 }

@@ -2,7 +2,6 @@ package app.shosetsu.android.viewmodel.impl
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.liveDataIO
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerUseCase
@@ -16,6 +15,8 @@ import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.DownloadStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 
 /*
  * This file is part of shosetsu.
@@ -64,12 +65,12 @@ class DownloadsViewModel(
 
 	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<List<DownloadUI>>> by lazy {
-		liveDataIO {
+		flow {
 			emit(loading())
-			emitSource(getDownloadsUseCase().mapLatestResult { list ->
+			emitAll(getDownloadsUseCase().mapLatestResult { list ->
 				successResult(list.sort())
-			}.asIOLiveData())
-		}
+			})
+		}.asIOLiveData()
 	}
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
@@ -79,7 +80,7 @@ class DownloadsViewModel(
 	override fun isOnline(): Boolean = isOnlineUseCase()
 
 	override val isDownloadPaused: LiveData<Boolean> by lazy {
-		settings.observeBoolean(IsDownloadPaused).asIOLiveData()
+		settings.getBooleanFlow(IsDownloadPaused).asIOLiveData()
 	}
 
 	override fun togglePause() {

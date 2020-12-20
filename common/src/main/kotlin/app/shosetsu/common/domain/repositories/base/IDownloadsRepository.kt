@@ -30,30 +30,30 @@ import kotlinx.coroutines.flow.Flow
 interface IDownloadsRepository {
 
 	/**
-	 * Gets a live view of the downloads
+	 * Gets a flow of the downloads
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] Successfully loaded list of entities
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Something went wrong loading entities
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] If no results were found
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] Initial value
 	 */
-	fun loadLiveDownloads(): Flow<HResult<List<DownloadEntity>>>
+	fun loadDownloadsFlow(): Flow<HResult<List<DownloadEntity>>>
 
 	/**
-	 * Loads the first download in the list, also starts it
+	 * Loads the first download
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] Found the first download
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Something went wrong loading
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] Nothing was found
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun loadFirstDownload(): HResult<DownloadEntity>
 
@@ -61,13 +61,13 @@ interface IDownloadsRepository {
 	 * Queries for the download count
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] Download count
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Something went wrong
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] never?
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun loadDownloadCount(): HResult<Int>
 
@@ -81,9 +81,9 @@ interface IDownloadsRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
-	suspend fun loadDownload(chapterID: Int): HResult<DownloadEntity>
+	suspend fun getDownload(chapterID: Int): HResult<DownloadEntity>
 
 	/**
 	 * Adds a new download to the repository
@@ -95,7 +95,7 @@ interface IDownloadsRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun addDownload(download: DownloadEntity): HResult<Long>
 
@@ -109,7 +109,7 @@ interface IDownloadsRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun update(download: DownloadEntity): HResult<*>
 
@@ -123,21 +123,9 @@ interface IDownloadsRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun deleteEntity(download: DownloadEntity): HResult<*>
 
-	/**
-	 * Orders database to set all values back to pending
-	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
-	 */
-	suspend fun resetList(): HResult<*>
+
 }

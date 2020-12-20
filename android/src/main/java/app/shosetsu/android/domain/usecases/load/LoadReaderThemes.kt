@@ -42,7 +42,7 @@ class LoadReaderThemes(
 ) {
 	@ExperimentalCoroutinesApi
 	operator fun invoke(): Flow<List<ColorChoiceUI>> {
-		return iSettingsRepository.observeStringSet(ReaderUserThemes)
+		return iSettingsRepository.getStringSetFlow(ReaderUserThemes)
 			.mapLatest { set: Set<String> ->
 
 				(if (set.isNotEmpty())

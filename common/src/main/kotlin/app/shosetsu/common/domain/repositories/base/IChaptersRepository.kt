@@ -49,7 +49,7 @@ interface IChaptersRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun loadChapterPassage(
+	suspend fun getChapterPassage(
 		formatter: IExtension,
 		chapterEntity: ChapterEntity,
 	): HResult<String>
@@ -57,7 +57,7 @@ interface IChaptersRepository {
 	/**
 	 * Save the [ChapterEntity] [passage] to storage
 	 *
-	 * Will not save into any caches, as is assuming content retrieved from [loadChapterPassage]
+	 * Will not save into any caches, as is assuming content retrieved from [getChapterPassage]
 	 *
 	 * @return
 	 * [HResult.Success] Chapter saved to storage scornfully
@@ -119,7 +119,7 @@ interface IChaptersRepository {
 	 *
 	 * [HResult.Loading] Initial
 	 */
-	suspend fun loadChapters(novelID: Int): Flow<HResult<List<ChapterEntity>>>
+	suspend fun getChapters(novelID: Int): Flow<HResult<List<ChapterEntity>>>
 
 	/**
 	 * Loads a [ChapterEntity] by its [chapterID]
@@ -133,7 +133,7 @@ interface IChaptersRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun loadChapter(chapterID: Int): HResult<ChapterEntity>
+	suspend fun getChapter(chapterID: Int): HResult<ChapterEntity>
 
 	/**
 	 * Update [chapterEntity] in database
@@ -161,7 +161,7 @@ interface IChaptersRepository {
 	 *
 	 * [HResult.Loading] Initial value
 	 */
-	suspend fun loadReaderChapters(novelID: Int): Flow<HResult<List<ReaderChapterEntity>>>
+	suspend fun getReaderChaptersFlow(novelID: Int): Flow<HResult<List<ReaderChapterEntity>>>
 
 	/**
 	 * Update [readerChapterEntity] in database

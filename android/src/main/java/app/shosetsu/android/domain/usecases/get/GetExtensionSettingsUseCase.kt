@@ -32,10 +32,11 @@ import kotlinx.coroutines.flow.flow
 class GetExtensionSettingsUseCase(
 	private val iExtensionsRepository: IExtensionsRepository
 ) {
-	operator fun invoke(id: Int): Flow<HResult<List<Filter<*>>>> = flow {
-		emit(loading())
-		if (id != -1)
-			emit(successResult(arrayListOf()))
-		//TODO Create livedata for settings for extensions via [ShosetsuSettings] as source
-	}
+	operator fun invoke(id: Int): Flow<HResult<List<Filter<*>>>> =
+		flow<HResult<ArrayList<Filter<*>>>> {
+			emit(loading())
+			if (id != -1)
+				emit(successResult(arrayListOf()))
+			//TODO Create livedata for settings for extensions via [ShosetsuSettings] as source
+		}
 }

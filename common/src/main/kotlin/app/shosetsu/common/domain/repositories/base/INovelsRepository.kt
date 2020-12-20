@@ -42,9 +42,9 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] Initial Value
 	 */
-	fun getLiveBookmarked(): Flow<HResult<List<BookmarkedNovelEntity>>>
+	fun getBookmarkedNovelsFlow(): Flow<HResult<List<BookmarkedNovelEntity>>>
 
 	/**
 	 * Gets NovelEntities that are bookmarked
@@ -56,7 +56,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun getBookmarkedNovels(): HResult<List<NovelEntity>>
 
@@ -70,7 +70,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun searchBookmarked(string: String): HResult<List<StrippedBookmarkedNovelEntity>>
 
@@ -84,9 +84,9 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
-	suspend fun loadNovel(novelID: Int): HResult<NovelEntity>
+	suspend fun getNovel(novelID: Int): HResult<NovelEntity>
 
 	/**
 	 * Loads live data of the [NovelEntity] by its [novelID]
@@ -98,9 +98,9 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] Initial value
 	 */
-	suspend fun loadNovelLive(novelID: Int): Flow<HResult<NovelEntity>>
+	suspend fun getNovelFlow(novelID: Int): Flow<HResult<NovelEntity>>
 
 	/**
 	 * Inserts the [novelEntity] and returns a UI version of it
@@ -112,7 +112,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): HResult<StrippedNovelEntity>
 
@@ -126,7 +126,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun insertNovel(novelEntity: NovelEntity): HResult<*>
 
@@ -140,7 +140,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun updateNovel(novelEntity: NovelEntity): HResult<*>
 
@@ -154,7 +154,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun updateNovelData(novelEntity: NovelEntity, novelInfo: Novel.Info): HResult<*>
 
@@ -168,7 +168,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun updateBookmarkedNovelData(list: List<BookmarkedNovelEntity>): HResult<*>
 
@@ -182,7 +182,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Empty] TODO RETURN DESCRIPTION
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun retrieveNovelInfo(
 		formatter: IExtension,

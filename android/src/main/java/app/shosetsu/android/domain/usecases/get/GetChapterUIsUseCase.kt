@@ -40,7 +40,7 @@ class GetChapterUIsUseCase(
 		emit(loading())
 		if (novelID != -1)
 			emitAll(
-				chapters.loadChapters(novelID).mapLatestToResultFlowWithFactory()
+				chapters.getChapters(novelID).mapLatestToResultFlowWithFactory()
 					.mapLatestResultListTo()
 			)
 	}
