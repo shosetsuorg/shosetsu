@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlinx-serialization'
 
 ext {
 	kodein_version = "6.5.5"
@@ -109,7 +110,7 @@ dependencies {
 	// Core libraries
 	implementation 'org.luaj:luaj-jse:3.0.1'
 	implementation 'com.github.shosetsuorg:kotlin-lib:v1.0.0-rc49'
-
+	implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1"
 
 	// Image loading
 	implementation 'com.squareup.picasso:picasso:2.71828'
@@ -137,8 +138,8 @@ dependencies {
 	implementation 'com.squareup.okhttp3:okhttp:4.9.0'
 
 	// Kotlin libraries
-	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.20"
-	implementation "org.jetbrains.kotlin:kotlin-reflect:1.4.20"
+	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.21"
+	implementation "org.jetbrains.kotlin:kotlin-reflect:1.4.21"
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2'
 
 	// Async controller
@@ -175,7 +176,7 @@ dependencies {
 	implementation 'com.xw.repo:bubbleseekbar:3.20'
 
 	// Room
-	def room_version = "2.2.5"
+	def room_version = "2.2.6"
 	implementation "androidx.room:room-runtime:$room_version"
 	kapt "androidx.room:room-compiler:$room_version"
 
@@ -208,8 +209,5 @@ dependencies {
 	implementation "androidx.room:room-ktx:$room_version"
 	implementation "androidx.work:work-runtime-ktx:2.4.0"
 	implementation "androidx.collection:collection-ktx:1.1.0"
-
-	// FasterXML
-	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3'
 
 }

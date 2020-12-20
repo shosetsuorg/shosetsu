@@ -28,6 +28,7 @@ import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.common.enums.ReadingStatus.READ
 import app.shosetsu.common.enums.ReadingStatus.READING
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
@@ -117,6 +118,7 @@ class ChapterReaderViewModel(
 			.map { MarkingTypes.valueOf(it) }
 	}
 
+	@ExperimentalCoroutinesApi
 	override val liveThemes: LiveData<List<ColorChoiceUI>> by lazy {
 		loadReadersThemes().asIOLiveData()
 	}

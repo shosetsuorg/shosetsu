@@ -47,6 +47,7 @@ class LocalChaptersDataSource(
 	override suspend fun loadChapters(
 		novelID: Int,
 	): Flow<HResult<List<ChapterEntity>>> = flow {
+		emit(loading())
 		try {
 			emitAll(chaptersDao.loadLiveChapters(novelID).mapLatestListTo().mapLatestToSuccess())
 		} catch (e: Exception) {
@@ -64,6 +65,7 @@ class LocalChaptersDataSource(
 	override suspend fun loadReaderChapters(
 		novelID: Int,
 	): Flow<HResult<List<ReaderChapterEntity>>> = flow {
+		emit(loading())
 		try {
 			emitAll(chaptersDao.loadLiveReaderChapters(novelID).mapLatestToSuccess())
 		} catch (e: Exception) {

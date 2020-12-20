@@ -23,6 +23,7 @@ import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.PAGE_INDEX
 import app.shosetsu.lib.mapify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
@@ -48,6 +49,7 @@ import kotlinx.coroutines.flow.collectLatest
  * shosetsu
  * 01 / 05 / 2020
  */
+@ExperimentalCoroutinesApi
 class CatalogViewModel(
 	private val getExtensionUseCase: GetExtensionUseCase,
 	private val backgroundAddUseCase: NovelBackgroundAddUseCase,

@@ -2,7 +2,8 @@ package app.shosetsu.android.domain.model.remote
 
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.dto.Convertible
-import com.fasterxml.jackson.annotation.JsonProperty
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /*
  * This file is part of shosetsu.
@@ -27,14 +28,15 @@ import com.fasterxml.jackson.annotation.JsonProperty
  *
  * JSON DTO layer, should be converted to an AppUpdateEntity
  */
+@Serializable
 data class AppUpdateDTO(
-	@JsonProperty("latestVersion")
+	@SerialName("latestVersion")
 	val version: String,
-	@JsonProperty("versionCode")
+	@SerialName("versionCode")
 	val versionCode: Int = -1,
-	@JsonProperty("url")
+	@SerialName("url")
 	val url: String,
-	@JsonProperty("releaseNotes")
+	@SerialName("releaseNotes")
 	val notes: List<String>,
 ) : Convertible<AppUpdateEntity> {
 	override fun convertTo() = AppUpdateEntity(version, versionCode, url, notes)

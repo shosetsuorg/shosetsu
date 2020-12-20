@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		viewModel.navigationStyle()
 		viewModel.appTheme().observe(this) {
-			when (it) {
+			when (it!!) {
 				FOLLOW_SYSTEM -> {
 					delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 				}

@@ -65,6 +65,7 @@ class NovelViewModel(
 	private val deleteChapterPassageUseCase: DeleteChapterPassageUseCase,
 	private val isChaptersResumeFirstUnread: LoadChaptersResumeFirstUnreadUseCase,
 ) : INovelViewModel() {
+	@ExperimentalCoroutinesApi
 	@get:Synchronized
 	private val chapters: ArrayList<ChapterUI>
 		get() = chaptersLive.value?.transmogrify { ArrayList((it)) } ?: arrayListOf()
@@ -209,6 +210,7 @@ class NovelViewModel(
 		TODO("Not yet implemented")
 	}
 
+	@ExperimentalCoroutinesApi
 	override fun destroy() {
 		chapters.clear()
 
@@ -370,6 +372,7 @@ class NovelViewModel(
 		}
 	}
 
+	@ExperimentalCoroutinesApi
 	override fun downloadNextChapter() {
 		launchIO {
 			val array = chapters.sortedBy { it.order }
@@ -378,6 +381,7 @@ class NovelViewModel(
 		}
 	}
 
+	@ExperimentalCoroutinesApi
 	override fun downloadNextCustomChapters(max: Int) {
 		launchIO {
 			val array = chapters.sortedBy { it.order }
@@ -395,10 +399,13 @@ class NovelViewModel(
 		}
 	}
 
+	@ExperimentalCoroutinesApi
 	override fun downloadNext5Chapters() = downloadNextCustomChapters(5)
 
+	@ExperimentalCoroutinesApi
 	override fun downloadNext10Chapters() = downloadNextCustomChapters(10)
 
+	@ExperimentalCoroutinesApi
 	override fun downloadAllUnreadChapters() {
 		launchIO {
 			downloadChapter(*chapters.filter { it.readingStatus == ReadingStatus.UNREAD }
@@ -406,6 +413,7 @@ class NovelViewModel(
 		}
 	}
 
+	@ExperimentalCoroutinesApi
 	override fun downloadAllChapters() {
 		launchIO {
 			downloadChapter(*chapters.toTypedArray())

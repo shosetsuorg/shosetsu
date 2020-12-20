@@ -25,6 +25,7 @@ import app.shosetsu.lib.lua.ShosetsuLuaLib
 import app.shosetsu.lib.lua.shosetsuGlobals
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import okhttp3.OkHttpClient
 import org.acra.ACRA
 import org.acra.annotation.AcraCore
@@ -72,6 +73,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 	private val okHttpClient by instance<OkHttpClient>()
 	private val initializeExtensionsUseCase: InitializeExtensionsUseCase by instance()
 
+	@ExperimentalCoroutinesApi
 	override val kodein: Kodein by Kodein.lazy {
 		bind<ViewModelFactory>() with singleton { ViewModelFactory(applicationContext) }
 		import(othersModule)

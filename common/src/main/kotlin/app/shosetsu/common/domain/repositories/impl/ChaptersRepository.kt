@@ -71,7 +71,7 @@ class ChaptersRepository(
 				chapterEntity.url
 			).also { placeIntoCache(chapterEntity, it) }
 
-	override suspend fun saveChapterPassageToMemory(
+	suspend fun saveChapterPassageToMemory(
 		chapterEntity: ChapterEntity,
 		passage: String,
 	): HResult<*> = memorySource.saveChapterInCache(chapterEntity.id!!, passage) and

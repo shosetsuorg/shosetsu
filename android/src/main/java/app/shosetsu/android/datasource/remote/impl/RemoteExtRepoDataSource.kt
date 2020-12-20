@@ -39,7 +39,7 @@ class RemoteExtRepoDataSource(
 	): HResult<RepoIndex> = try {
 		@Suppress("BlockingMethodInNonBlockingContext")
 		(successResult(
-			RepoIndex(
+			RepoIndex.fromString(
 				client.quickie(
 					"${repo.url}${REPO_DIR_STRUCT}index.json"
 				).body!!.string()

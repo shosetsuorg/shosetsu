@@ -15,6 +15,7 @@ import app.shosetsu.common.consts.settings.SettingKey.IsDownloadPaused
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.DownloadStatus
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /*
  * This file is part of shosetsu.
@@ -61,6 +62,7 @@ class DownloadsViewModel(
 		it.status == DownloadStatus.DOWNLOADING
 	})
 
+	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<List<DownloadUI>>> by lazy {
 		liveDataIO {
 			emit(loading())

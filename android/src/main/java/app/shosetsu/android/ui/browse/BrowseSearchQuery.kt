@@ -5,6 +5,8 @@ import androidx.core.os.bundleOf
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
 import app.shosetsu.android.ui.search.SearchController
 import com.bluelinelabs.conductor.Controller
+import org.json.JSONArray
+import org.json.JSONObject
 
 /*
  * This file is part of Shosetsu.

@@ -38,14 +38,16 @@ interface IChaptersRepository {
 	 * Then checks storage
 	 * Then checks network
 	 *
+	 * Saves successful passages into caches
+	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] Chapter successfully retrieved
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Something went wrong loading the chapter
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] Nothing was found for the chapter
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun loadChapterPassage(
 		formatter: IExtension,
@@ -53,33 +55,18 @@ interface IChaptersRepository {
 	): HResult<String>
 
 	/**
-	 * Save the [ChapterEntity] [passage] to memory
-	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
-	 */
-	suspend fun saveChapterPassageToMemory(
-		chapterEntity: ChapterEntity,
-		passage: String
-	): HResult<*>
-
-	/**
 	 * Save the [ChapterEntity] [passage] to storage
 	 *
+	 * Will not save into any caches, as is assuming content retrieved from [loadChapterPassage]
+	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] Chapter saved to storage scornfully
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Something went wrong saving to storage
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] never
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun saveChapterPassageToStorage(
 		chapterEntity: ChapterEntity,
@@ -98,6 +85,7 @@ interface IChaptersRepository {
 	 *
 	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
+	@Deprecated("Remove foreign entity")
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>): HResult<*>
 
 	/**
@@ -112,22 +100,24 @@ interface IChaptersRepository {
 	 *
 	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
+	@Deprecated("Remove foreign entity")
 	suspend fun handleChaptersReturn(
 		novelEntity: NovelEntity,
 		list: List<Novel.Chapter>,
 	): HResult<List<ChapterEntity>>
 
 	/**
-	 * Loads [ChapterEntity]s matching [novelID]
+	 * Loads [ChapterEntity]s matching [novelID] in a [Flow] of [HResult]
 	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * @return [Flow] of
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Success] Chapters found and returned
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Something went wrong loading the chapters
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] never?
+	 *
+	 * [HResult.Loading] Initial
 	 */
 	suspend fun loadChapters(novelID: Int): Flow<HResult<List<ChapterEntity>>>
 
@@ -135,13 +125,13 @@ interface IChaptersRepository {
 	 * Loads a [ChapterEntity] by its [chapterID]
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] Chapter successfully loaded
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Exception occurred loading entity
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] No such chapter exists
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun loadChapter(chapterID: Int): HResult<ChapterEntity>
 
@@ -149,13 +139,13 @@ interface IChaptersRepository {
 	 * Update [chapterEntity] in database
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] [ChapterEntity] updated properly
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Exception occurred when saving
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] never
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun updateChapter(chapterEntity: ChapterEntity): HResult<*>
 
@@ -163,13 +153,13 @@ interface IChaptersRepository {
 	 * Loads [ReaderChapterEntity]s by it's [novelID]
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] [List] of [ReaderChapterEntity]
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Exception occurred loading
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] No entities found
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] Initial value
 	 */
 	suspend fun loadReaderChapters(novelID: Int): Flow<HResult<List<ReaderChapterEntity>>>
 
@@ -177,27 +167,28 @@ interface IChaptersRepository {
 	 * Update [readerChapterEntity] in database
 	 *
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] [readerChapterEntity] successfully updated
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Something went wrong
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] never
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): HResult<*>
 
 	/**
 	 * Delete the chapter passage from storage
 	 *
+	 * Also deletes from memory and cache
 	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 * [HResult.Success] [chapterEntity]s passage deleted
 	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 * [HResult.Error] Something went wrong attempting to save
 	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 * [HResult.Empty] never
 	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
+	 * [HResult.Loading] never
 	 */
 	suspend fun deleteChapterPassage(chapterEntity: ChapterEntity): HResult<*>
 }

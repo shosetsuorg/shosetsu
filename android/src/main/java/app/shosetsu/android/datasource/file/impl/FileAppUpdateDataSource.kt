@@ -4,16 +4,16 @@ import app.shosetsu.android.common.consts.APP_UPDATE_CACHE_FILE
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.domain.model.remote.AppUpdateDTO
-import app.shosetsu.common.providers.file.base.IFileSystemProvider
-import app.shosetsu.common.consts.ErrorKeys
-import app.shosetsu.common.dto.*
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.emptyResult
+import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.transform
 import app.shosetsu.common.enums.InternalFileDir.CACHE
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 /*
  * This file is part of shosetsu.
@@ -48,10 +48,8 @@ class FileAppUpdateDataSource(
 		iFileSystemProvider.writeInternalFile(
 			CACHE,
 			APP_UPDATE_CACHE_FILE,
-			ObjectMapper().registerKotlinModule().writeValueAsString(debugAppUpdate)
+			Json.encodeToString(debugAppUpdate)
 		)
-	} catch (e: JsonProcessingException) {
-		errorResult(ErrorKeys.ERROR_IO, e)
 	} catch (e: Exception) {
 		e.toHError()
 	}
@@ -60,7 +58,7 @@ class FileAppUpdateDataSource(
 		iFileSystemProvider.readInternalFile(
 			CACHE,
 			APP_UPDATE_CACHE_FILE
-		).transform { ObjectMapper().registerKotlinModule().readValue(it) }
+		).transform { Json.decodeFromString(it) }
 
 	override suspend fun putAppUpdateInCache(
 		debugAppUpdate: AppUpdateDTO,

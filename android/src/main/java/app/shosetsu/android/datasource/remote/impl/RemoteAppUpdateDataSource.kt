@@ -5,13 +5,13 @@ import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.android.domain.model.remote.AppUpdateDTO
 import app.shosetsu.common.consts.ErrorKeys.ERROR_HTTP_ERROR
+import app.shosetsu.common.consts.ErrorKeys.ERROR_NETWORK
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.errorResult
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.lib.exceptions.HTTPException
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 
 /*
@@ -42,10 +42,12 @@ class RemoteAppUpdateDataSource(
 		val response = okHttpClient.quickie(SHOSETSU_UPDATE_URL)
 		response.takeIf { it.code == 200 }?.let { r ->
 			@Suppress("BlockingMethodInNonBlockingContext")
-			return successResult(
-				ObjectMapper().registerKotlinModule()
-					.readValue(r.body!!.string())
-			)
+			val body = r.body
+			return body?.let {
+				successResult(
+					Json.decodeFromString(it.string())
+				)
+			} ?: errorResult(ERROR_NETWORK, "Response body null")
 		}
 		return errorResult(ERROR_HTTP_ERROR, HTTPException(response.code))
 	}

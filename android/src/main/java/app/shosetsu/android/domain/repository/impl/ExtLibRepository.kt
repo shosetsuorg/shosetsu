@@ -13,6 +13,7 @@ import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.lib.Version
 import app.shosetsu.lib.json.J_VERSION
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
