@@ -116,7 +116,7 @@ dependencies {
 
 	// Core libraries
 	implementation 'org.luaj:luaj-jse:3.0.1'
-	implementation 'com.github.shosetsuorg:kotlin-lib:v1.0.0-rc49'
+	implementation 'com.github.shosetsuorg:kotlin-lib:v1.0.0-rc51'
 	implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1"
 
 	// Image loading

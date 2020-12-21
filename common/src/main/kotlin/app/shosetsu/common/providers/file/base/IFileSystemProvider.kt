@@ -75,6 +75,9 @@ interface IFileSystemProvider {
 	): HResult<*>
 
 
+	fun createInternalFile(internalFileDir: InternalFileDir, path: String): HResult<*>
+	fun createExternalFile(externalFileDir: ExternalFileDir, path: String): HResult<*>
+
 	/**
 	 * Creates an internal directory, will avoid if not present
 	 */

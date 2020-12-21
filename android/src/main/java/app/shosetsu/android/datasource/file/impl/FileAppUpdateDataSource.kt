@@ -1,6 +1,7 @@
 package app.shosetsu.android.datasource.file.impl
 
 import app.shosetsu.android.common.consts.APP_UPDATE_CACHE_FILE
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.saveTo
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.file.base.IFileCachedAppUpdateDataSource
@@ -75,13 +76,16 @@ class FileAppUpdateDataSource(
 	override fun saveAPK(
 		appUpdate: AppUpdateEntity,
 		bufferedSource: BufferedSource
-	): HResult<String> =
-		iFileSystemProvider
-			.retrieveInternalPath(CACHE, "updates/${appUpdate.version}.apk")
+	): HResult<String> {
+		iFileSystemProvider.createInternalFile(CACHE, "updates/update.apk")
+		return iFileSystemProvider
+			.retrieveInternalPath(CACHE, "updates/update.apk")
 			.transform {
+				logV("Saving")
 				bufferedSource.saveTo(File(it))
 				successResult(it)
 			}
+	}
 
 
 }

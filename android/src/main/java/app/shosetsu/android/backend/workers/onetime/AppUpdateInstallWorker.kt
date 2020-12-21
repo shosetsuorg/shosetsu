@@ -18,6 +18,7 @@ import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_INSTALL_WORK_ID
 import app.shosetsu.android.common.ext.getUriCompat
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
 import app.shosetsu.common.dto.handle
@@ -154,9 +155,10 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 				)
 
 				// Launch app update installer
+				logV("Starting install activity")
 				applicationContext.startActivity(Intent(ACTION_VIEW).apply {
 					setDataAndType(
-						File(Uri.parse(path).path!!).getUriCompat(applicationContext),
+						File(path).getUriCompat(applicationContext),
 						"application/vnd.android.package-archive"
 					)
 					addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_GRANT_READ_URI_PERMISSION)

@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.repository.impl
 
 import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.datasource.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.android.domain.model.remote.AppUpdateDTO
@@ -12,6 +13,7 @@ import app.shosetsu.common.dto.*
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlin.math.log
 
 /*
  * This file is part of shosetsu.
@@ -96,14 +98,13 @@ class AppUpdatesRepository(
 		}
 	}
 
-	override suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): HResult<String> {
-		return iRemoteAppUpdateDataSource.downloadGitUpdate(appUpdateEntity).transform { response ->
+	override suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): HResult<String> =
+		iRemoteAppUpdateDataSource.downloadGitUpdate(appUpdateEntity).transform { response ->
+			logV("Retrieved response")
 			if (response.isSuccessful) {
 				response.body?.let { body ->
 					iFileAppUpdateDataSource.saveAPK(appUpdateEntity, body.source())
 				} ?: errorResult(ErrorKeys.ERROR_NETWORK, "Empty response body")
-				emptyResult()
 			} else errorResult(ErrorKeys.ERROR_NETWORK, "Failed to download")
 		}
-	}
 }

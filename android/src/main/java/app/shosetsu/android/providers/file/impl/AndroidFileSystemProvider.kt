@@ -5,6 +5,7 @@ import android.os.Environment.DIRECTORY_DOCUMENTS
 import android.os.Environment.DIRECTORY_DOWNLOADS
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logV
+import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.common.consts.ErrorKeys.ERROR_IO
 import app.shosetsu.common.consts.ErrorKeys.ERROR_LACK_PERM
 import app.shosetsu.common.dto.HResult
@@ -185,5 +186,29 @@ class AndroidFileSystemProvider(
 		val file = File(externalFileDir.path() + path)
 		if (!file.exists()) return emptyResult()
 		return successResult(file.absolutePath)
+	}
+
+	override fun createInternalFile(internalFileDir: InternalFileDir, path: String): HResult<*> {
+		val file = File(internalFileDir.path() + path)
+		return try {
+			val t = file.createNewFile()
+			if (t) {
+				successResult(t)
+			} else emptyResult()
+		} catch (e: IOException) {
+			e.toHError()
+		}
+	}
+
+	override fun createExternalFile(externalFileDir: ExternalFileDir, path: String): HResult<*> {
+		val file = File(externalFileDir.path() + path)
+		return try {
+			val t = file.createNewFile()
+			if (t) {
+				successResult(t)
+			} else emptyResult()
+		} catch (e: IOException) {
+			e.toHError()
+		}
 	}
 }
