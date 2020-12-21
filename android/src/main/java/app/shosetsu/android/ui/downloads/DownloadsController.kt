@@ -44,7 +44,6 @@ import com.mikepenz.fastadapter.utils.AdapterPredicate
  *
  * @author github.com/doomsdayrs
  */
-//TODO selection mechanic with options to delete,  pause,  and more
 class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<DownloadUI>(),
 	PushCapableController, ExtendedFABController {
 
