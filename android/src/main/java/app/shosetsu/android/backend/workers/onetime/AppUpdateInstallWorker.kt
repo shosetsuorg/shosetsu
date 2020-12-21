@@ -5,12 +5,12 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.*
-import android.net.Uri
 import android.os.Build
 import androidx.annotation.StringRes
 import androidx.core.content.getSystemService
 import androidx.work.*
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
+import app.shosetsu.android.common.consts.APK_MIME
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_APP_UPDATE
 import app.shosetsu.android.common.consts.Notifications.ID_APP_UPDATE_INSTALL
@@ -156,13 +156,13 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 
 				// Launch app update installer
 				logV("Starting install activity")
-				applicationContext.startActivity(Intent(ACTION_VIEW).apply {
-					setDataAndType(
-						File(path).getUriCompat(applicationContext),
-						"application/vnd.android.package-archive"
-					)
-					addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_GRANT_READ_URI_PERMISSION)
-				})
+				val uri = File(path).getUriCompat(applicationContext)
+				logV("uri $uri")
+				val install = Intent(ACTION_VIEW).apply {
+					setDataAndType(uri, APK_MIME)
+					flags = FLAG_ACTIVITY_NEW_TASK or FLAG_GRANT_READ_URI_PERMISSION
+				}
+				applicationContext.startActivity(install)
 			}
 		}
 		return Result.success()

@@ -13,7 +13,6 @@ import app.shosetsu.common.dto.*
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlin.math.log
 
 /*
  * This file is part of shosetsu.
@@ -83,7 +82,7 @@ class AppUpdatesRepository(
 	}
 
 	@Synchronized
-	override suspend fun loadAppUpdate(): HResult<AppUpdateEntity> {
+	override suspend fun loadGitAppUpdate(): HResult<AppUpdateEntity> {
 		if (running) return errorResult(ERROR_DUPLICATE, "Cannot run duplicate")
 		else running = true
 
@@ -97,6 +96,9 @@ class AppUpdatesRepository(
 			running = false
 		}
 	}
+
+	override suspend fun loadAppUpdate(): HResult<AppUpdateEntity> =
+		iFileAppUpdateDataSource.loadCachedAppUpdate()
 
 	override suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): HResult<String> =
 		iRemoteAppUpdateDataSource.downloadGitUpdate(appUpdateEntity).transform { response ->

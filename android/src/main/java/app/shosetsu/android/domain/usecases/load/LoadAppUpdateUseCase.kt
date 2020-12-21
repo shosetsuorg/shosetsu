@@ -1,6 +1,5 @@
 package app.shosetsu.android.domain.usecases.load
 
-import app.shosetsu.android.domain.model.remote.AppUpdateDTO
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
 import app.shosetsu.common.dto.HResult
@@ -30,5 +29,5 @@ class LoadAppUpdateUseCase(
 	private val iAppUpdatesRepository: IAppUpdatesRepository
 ) {
 	suspend operator fun invoke(): HResult<AppUpdateEntity> =
-		iAppUpdatesRepository.loadAppUpdate()
+		iAppUpdatesRepository.loadGitAppUpdate()
 }

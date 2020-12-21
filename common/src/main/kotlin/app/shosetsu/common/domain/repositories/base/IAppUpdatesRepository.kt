@@ -59,6 +59,16 @@ interface IAppUpdatesRepository {
 	 *
 	 * [HResult.Success] if an app update is present
 	 */
+	suspend fun loadGitAppUpdate(): HResult<AppUpdateEntity>
+
+	/**
+	 * Load an app update if present
+	 *
+	 * @return
+	 * [HResult.Empty] if no app updates are present
+	 *
+	 * [HResult.Success] if an app update is present
+	 */
 	suspend fun loadAppUpdate(): HResult<AppUpdateEntity>
 
 	/**

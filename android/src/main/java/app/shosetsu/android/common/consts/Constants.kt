@@ -69,3 +69,5 @@ const val VISIBLE: Int = View.VISIBLE
 const val GONE: Int = View.GONE
 
 const val READER_BAR_ALPHA: Float = 0.8F
+
+const val APK_MIME = "application/vnd.android.package-archive"

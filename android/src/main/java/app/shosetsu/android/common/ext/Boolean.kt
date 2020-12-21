@@ -33,8 +33,11 @@ fun Boolean.toInt(): Int = if (this) 1 else 0
  * toggles the field
  * If true, sets to false
  * If false, sets to true
+ *
+ * Suppress the inlineing because of private accessor issues
  */
-fun KMutableProperty<Boolean>.toggle() {
+@Suppress("NOTHING_TO_INLINE")
+inline fun KMutableProperty<Boolean>.toggle() {
 	this.setter.call(!this.getter.call())
 }
 
