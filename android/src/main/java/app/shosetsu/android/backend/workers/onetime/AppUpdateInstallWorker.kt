@@ -2,9 +2,11 @@ package app.shosetsu.android.backend.workers.onetime
 
 import android.app.Notification
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.*
+import android.graphics.drawable.Icon
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.StringRes
 import androidx.core.content.getSystemService
@@ -18,7 +20,6 @@ import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_INSTALL_WORK_ID
 import app.shosetsu.android.common.ext.getUriCompat
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
 import app.shosetsu.common.dto.handle
@@ -69,7 +70,6 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 		}.apply {
 			setContentTitle(applicationContext.getString(R.string.notification_app_update_install_title))
 			setSmallIcon(R.drawable.app_update)
-			setOnlyAlertOnce(true)
 			setProgress(0, 0, true)
 		}
 	}
@@ -103,8 +103,8 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 				notificationManager.notify(
 					ID_APP_UPDATE_INSTALL,
 					pr.apply {
-						setContentText("Empty result")
-						setSubText("Received empty return, Was there even an update?")
+						setSubText("Empty result")
+						setContentText("Received empty return, Was there even an update?")
 						setOngoing(false)
 						setProgress(0, 0, false)
 					}.build()
@@ -136,8 +136,8 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 					notificationManager.notify(
 						ID_APP_UPDATE_INSTALL,
 						pr.apply {
-							setContentText("Empty result")
-							setSubText("Received empty return, Did the download fail?")
+							setSubText("Empty result")
+							setContentText("Received empty return, Did the download fail?")
 							setOngoing(false)
 							setProgress(0, 0, false)
 						}.build()
@@ -145,27 +145,54 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 					return Result.failure()
 				}
 			) { path ->
+				val uri = File(path).getUriCompat(applicationContext)
+
 				notificationManager.notify(
 					ID_APP_UPDATE_INSTALL,
 					pr.apply {
 						setOngoing(false)
 						setProgress(0, 0, false)
-						setContentText(R.string.notification_app_update_installing)
+						setContentText(R.string.notification_app_update_install)
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+							addAction(
+								Notification.Action.Builder(
+									Icon.createWithResource(
+										applicationContext,
+										R.drawable.app_update
+									),
+									applicationContext.getString(R.string.install),
+									installApkPendingActivity(applicationContext, uri)
+								).build()
+							)
+						} else {
+							// Older API call
+							@Suppress("DEPRECATION")
+							addAction(
+								R.drawable.app_update,
+								applicationContext.getString(R.string.install),
+								installApkPendingActivity(applicationContext, uri)
+							)
+						}
 					}.build()
 				)
 
-				// Launch app update installer
-				logV("Starting install activity")
-				val uri = File(path).getUriCompat(applicationContext)
-				logV("uri $uri")
-				val install = Intent(ACTION_VIEW).apply {
-					setDataAndType(uri, APK_MIME)
-					flags = FLAG_ACTIVITY_NEW_TASK or FLAG_GRANT_READ_URI_PERMISSION
-				}
-				applicationContext.startActivity(install)
 			}
 		}
 		return Result.success()
+	}
+
+	/**
+	 * Returns [PendingIntent] that prompts user with apk install intent
+	 *
+	 * @param context context
+	 * @param uri uri of apk that is installed
+	 */
+	fun installApkPendingActivity(context: Context, uri: Uri): PendingIntent {
+		val intent = Intent(Intent.ACTION_VIEW).apply {
+			setDataAndType(uri, APK_MIME)
+			flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
+		}
+		return PendingIntent.getActivity(context, 0, intent, 0)
 	}
 
 	class Manager(context: Context) : CoroutineWorkerManager(context) {

@@ -1,6 +1,7 @@
 package app.shosetsu.android.datasource.file.impl
 
 import app.shosetsu.android.common.consts.APP_UPDATE_CACHE_FILE
+import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.saveTo
 import app.shosetsu.android.common.ext.toHError
@@ -45,6 +46,12 @@ class FileAppUpdateDataSource(
 	private val iFileSystemProvider: IFileSystemProvider
 ) : IFileCachedAppUpdateDataSource {
 
+	init {
+		launchIO {
+			iFileSystemProvider.createInternalDirectory(CACHE, "/updates/")
+		}
+	}
+
 	override val updateAvaLive: MutableStateFlow<HResult<AppUpdateEntity>> by lazy {
 		MutableStateFlow(emptyResult())
 	}
@@ -60,10 +67,11 @@ class FileAppUpdateDataSource(
 	}
 
 	override suspend fun loadCachedAppUpdate(): HResult<AppUpdateEntity> =
-		iFileSystemProvider.readInternalFile(
-			CACHE,
-			APP_UPDATE_CACHE_FILE
-		).transform { Json.decodeFromString(it) }
+		updateAvaLive.value.takeIf { it is HResult.Success }
+			?: iFileSystemProvider.readInternalFile(
+				CACHE,
+				APP_UPDATE_CACHE_FILE
+			).transform { successResult(Json.decodeFromString<AppUpdateDTO>(it).convertTo()) }
 
 	override suspend fun putAppUpdateInCache(
 		appUpdate: AppUpdateEntity,
@@ -77,6 +85,7 @@ class FileAppUpdateDataSource(
 		appUpdate: AppUpdateEntity,
 		bufferedSource: BufferedSource
 	): HResult<String> {
+		logV("Saving APK")
 		iFileSystemProvider.createInternalFile(CACHE, "updates/update.apk")
 		return iFileSystemProvider
 			.retrieveInternalPath(CACHE, "updates/update.apk")

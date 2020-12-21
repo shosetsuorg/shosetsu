@@ -162,7 +162,7 @@
     <string name="notification_app_update_install_title">App Update Install</string>
     <string name="notification_app_update_loading">Loading app update</string>
     <string name="notification_app_update_downloading">Downloading app update</string>
-    <string name="notification_app_update_installing">Installing app update</string>
+    <string name="notification_app_update_install">Install app update</string>
 
 
     <string name="check_out_latest_app">Check out the latest version available of the app!</string>
