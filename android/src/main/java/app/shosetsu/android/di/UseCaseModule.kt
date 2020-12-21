@@ -157,5 +157,8 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<LoadNovelUIColumnsPUseCase>() with provider { LoadNovelUIColumnsPUseCase(instance()) }
 	bind<LoadNovelUIColumnsHUseCase>() with provider { LoadNovelUIColumnsHUseCase(instance()) }
 	bind<LoadNovelUITypeUseCase>() with provider { LoadNovelUITypeUseCase(instance()) }
+	bind<StartAppUpdateInstallWorkerUseCase>() with provider {
+		StartAppUpdateInstallWorkerUseCase(instance())
+	}
 
 }

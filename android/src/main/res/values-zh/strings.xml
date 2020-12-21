@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="accept">接受</string>
-	<string name="accept_all">接受一切</string>
-	<string name="accept_temp">暂时</string>
-	<string name="action">动作</string>
-	<string name="action_global_search_hint">搜索全部</string>
-	<string name="app_update_available">有更新</string>
-	<string name="app_name">小说</string>
-	<string name="app_update_unavaliable">没有更新</string>
-	<string name="artist_s">画家</string>
-	<string name="author">作者</string>
-	<string name="backup_now">备用</string>
-	<string name="bookmark">书签</string>
-	<string name="browser">浏览器</string>
-	<string name="catalogue">目录</string>
-	<string name="chapters_unread_label">还没读</string>
-	<string name="check_out_latest_app">最新版本</string>
+    <string name="accept">接受</string>
+    <string name="accept_all">接受一切</string>
+    <string name="accept_temp">暂时</string>
+    <string name="action">动作</string>
+    <string name="action_global_search_hint">搜索全部</string>
+    <string name="notification_app_update_available">有更新</string>
+    <string name="app_name">小说</string>
+    <string name="app_update_unavaliable">没有更新</string>
+    <string name="artist_s">画家</string>
+    <string name="author">作者</string>
+    <string name="backup_now">备用</string>
+    <string name="bookmark">书签</string>
+    <string name="browser">浏览器</string>
+    <string name="catalogue">目录</string>
+    <string name="chapters_unread_label">还没读</string>
+    <string name="check_out_latest_app">最新版本</string>
 	<string name="check_updates_later">没有版本更新</string>
 	<string name="completed">完成</string>
 	<string name="configure_parsers">配置解析器</string>

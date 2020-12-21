@@ -5,7 +5,6 @@ import android.os.Environment.DIRECTORY_DOCUMENTS
 import android.os.Environment.DIRECTORY_DOWNLOADS
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logV
-import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import app.shosetsu.common.consts.ErrorKeys.ERROR_IO
 import app.shosetsu.common.consts.ErrorKeys.ERROR_LACK_PERM
 import app.shosetsu.common.dto.HResult
@@ -14,6 +13,7 @@ import app.shosetsu.common.dto.errorResult
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.enums.ExternalFileDir
 import app.shosetsu.common.enums.InternalFileDir
+import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import java.io.File
 import java.io.IOException
 
@@ -167,5 +167,23 @@ class AndroidFileSystemProvider(
 		logV("Creating $path in ${externalFileDir.path()}")
 		// if (!file.canWrite()) return errorResult(ERROR_LACK_PERM, "Cannot write file: $file")
 		return successResult(file.mkdirs())
+	}
+
+	override fun retrieveInternalPath(
+		internalFileDir: InternalFileDir,
+		path: String
+	): HResult<String> {
+		val file = File(internalFileDir.path() + path)
+		if (!file.exists()) return emptyResult()
+		return successResult(file.absolutePath)
+	}
+
+	override fun retrieveExternalPath(
+		externalFileDir: ExternalFileDir,
+		path: String
+	): HResult<String> {
+		val file = File(externalFileDir.path() + path)
+		if (!file.exists()) return emptyResult()
+		return successResult(file.absolutePath)
 	}
 }

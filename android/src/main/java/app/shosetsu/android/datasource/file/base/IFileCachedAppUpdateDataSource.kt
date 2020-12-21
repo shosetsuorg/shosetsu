@@ -1,8 +1,9 @@
 package app.shosetsu.android.datasource.file.base
 
-import app.shosetsu.android.domain.model.remote.AppUpdateDTO
+import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
+import okio.BufferedSource
 
 /*
  * This file is part of shosetsu.
@@ -29,14 +30,15 @@ interface IFileCachedAppUpdateDataSource {
 	/**
 	 * Live data of the current update
 	 */
-	val updateAvaLive: Flow<HResult<AppUpdateDTO>>
+	val updateAvaLive: Flow<HResult<AppUpdateEntity>>
 
 	/**
 	 * Accessor method to read the current cached update
 	 */
-	suspend fun loadCachedAppUpdate(): HResult<AppUpdateDTO>
+	suspend fun loadCachedAppUpdate(): HResult<AppUpdateEntity>
 
 	/** Puts an update into cache */
-	suspend fun putAppUpdateInCache(debugAppUpdate: AppUpdateDTO, isUpdate: Boolean): HResult<*>
+	suspend fun putAppUpdateInCache(debugAppUpdate: AppUpdateEntity, isUpdate: Boolean): HResult<*>
 
+	fun saveAPK(appUpdateEntity: AppUpdateEntity, bufferedSource: BufferedSource): HResult<String>
 }

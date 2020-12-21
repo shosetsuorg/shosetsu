@@ -39,6 +39,7 @@ object Notifications {
 
 	const val CHANNEL_APP_UPDATE: String = "shosetsu_app_update"
 	const val ID_APP_UPDATE: Int = 1991
+	const val ID_APP_UPDATE_INSTALL: Int = 1944
 
 
 	fun createChannels(context: Context) {

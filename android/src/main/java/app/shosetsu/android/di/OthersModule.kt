@@ -1,9 +1,10 @@
 package app.shosetsu.android.di
 
-import app.shosetsu.android.backend.workers.onetime.AppUpdateWorker
+import app.shosetsu.android.backend.workers.onetime.AppUpdateCheckWorker
+import app.shosetsu.android.backend.workers.onetime.AppUpdateInstallWorker
 import app.shosetsu.android.backend.workers.onetime.DownloadWorker
 import app.shosetsu.android.backend.workers.onetime.UpdateWorker
-import app.shosetsu.android.backend.workers.perodic.AppUpdateCycleWorker
+import app.shosetsu.android.backend.workers.perodic.AppUpdateCheckCycleWorker
 import app.shosetsu.android.backend.workers.perodic.UpdateCycleWorker
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
@@ -38,12 +39,17 @@ val othersModule = Kodein.Module("others") {
 
 	// - onetime
 	bind<DownloadWorker.Manager>() with singleton { DownloadWorker.Manager(instance()) }
-	bind<AppUpdateWorker.Manager>() with singleton { AppUpdateWorker.Manager(instance()) }
+	bind<AppUpdateCheckWorker.Manager>() with singleton { AppUpdateCheckWorker.Manager(instance()) }
 	bind<UpdateWorker.Manager>() with singleton { UpdateWorker.Manager(instance()) }
+	bind<AppUpdateInstallWorker.Manager>() with singleton { AppUpdateInstallWorker.Manager(instance()) }
 
 
 	// - perodic
-	bind<AppUpdateCycleWorker.Manager>() with singleton { AppUpdateCycleWorker.Manager(instance()) }
+	bind<AppUpdateCheckCycleWorker.Manager>() with singleton {
+		AppUpdateCheckCycleWorker.Manager(
+			instance()
+		)
+	}
 	bind<UpdateCycleWorker.Manager>() with singleton { UpdateCycleWorker.Manager(instance()) }
 
 }

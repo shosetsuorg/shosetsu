@@ -85,4 +85,14 @@ interface IFileSystemProvider {
 	 */
 	fun createExternalDirectory(externalFileDir: ExternalFileDir, path: String): HResult<*>
 
+	/**
+	 * Get filesystem path to a file
+	 */
+	fun retrieveInternalPath(internalFileDir: InternalFileDir, path: String): HResult<String>
+
+	/**
+	 * Get filesystem path to a file
+	 */
+	fun retrieveExternalPath(externalFileDir: ExternalFileDir, path: String): HResult<String>
+
 }

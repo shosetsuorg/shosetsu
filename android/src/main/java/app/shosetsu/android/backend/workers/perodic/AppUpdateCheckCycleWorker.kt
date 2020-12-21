@@ -6,7 +6,7 @@ import androidx.work.*
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
-import app.shosetsu.android.backend.workers.onetime.AppUpdateWorker
+import app.shosetsu.android.backend.workers.onetime.AppUpdateCheckWorker
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.WorkerTags
 import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_CYCLE_WORK_ID
@@ -39,20 +39,20 @@ import java.util.concurrent.TimeUnit
  * shosetsu
  * 06 / 09 / 2020
  */
-class AppUpdateCycleWorker(
+class AppUpdateCheckCycleWorker(
 	appContext: Context,
 	params: WorkerParameters
 ) : CoroutineWorker(appContext, params) {
 
 	override suspend fun doWork(): Result {
 		logI(LogConstants.SERVICE_EXECUTE)
-		AppUpdateWorker.Manager(applicationContext).apply { if (!isRunning()) start() }
+		AppUpdateCheckWorker.Manager(applicationContext).apply { if (!isRunning()) start() }
 		return Result.success()
 	}
 
 
 	/**
-	 * Manager of [AppUpdateCycleWorker]
+	 * Manager of [AppUpdateCheckCycleWorker]
 	 */
 	class Manager(context: Context) : CoroutineWorkerManager(context) {
 		private val iSettingsRepository: ISettingsRepository by instance()
@@ -100,7 +100,7 @@ class AppUpdateCycleWorker(
 				workerManager.enqueueUniquePeriodicWork(
 					APP_UPDATE_CYCLE_WORK_ID,
 					ExistingPeriodicWorkPolicy.REPLACE,
-					PeriodicWorkRequestBuilder<AppUpdateCycleWorker>(
+					PeriodicWorkRequestBuilder<AppUpdateCheckCycleWorker>(
 						appUpdateCycle(),
 						TimeUnit.HOURS
 					).setConstraints(

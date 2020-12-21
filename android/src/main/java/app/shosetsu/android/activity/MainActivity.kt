@@ -3,16 +3,13 @@ package app.shosetsu.android.activity
 import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.app.DownloadManager.*
-import android.app.DownloadManager.Request.VISIBILITY_VISIBLE
 import android.app.SearchManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.*
 import android.content.IntentFilter
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment.DIRECTORY_DOWNLOADS
 import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -30,7 +27,6 @@ import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.collapse
 import app.shosetsu.android.common.utils.expand
-import app.shosetsu.android.domain.model.remote.AppUpdateDTO
 import app.shosetsu.android.ui.browse.BrowseController
 import app.shosetsu.android.ui.library.LibraryController
 import app.shosetsu.android.ui.more.MoreController
@@ -39,7 +35,6 @@ import app.shosetsu.android.ui.updates.UpdatesController
 import app.shosetsu.android.view.controller.*
 import app.shosetsu.android.view.controller.base.*
 import app.shosetsu.android.viewmodel.abstracted.IMainViewModel
-import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.enums.AppThemes.*
 import com.bluelinelabs.conductor.Conductor.attachRouter
@@ -51,8 +46,6 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityMainBinding
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
-import java.io.File
-import android.app.DownloadManager.Request as DownloadRequest
 
 
 /*
@@ -324,34 +317,11 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 					)
 				)
 			}
-			Intent.ACTION_MAIN -> {
+			ACTION_MAIN -> {
 				if (!router.hasRootController()) {
 					setSelectedDrawerItem(R.id.nav_library)
 				} else {
 					logE("Router has a root controller")
-				}
-			}
-			ACTION_DOWNLOAD_COMPLETE -> {
-				val dID = intent.getLongExtra(EXTRA_DOWNLOAD_ID, -1)
-				if (dID == -1L) return
-				val c = downloadManager.query(Query().setFilterById(dID))
-				if (c.moveToFirst()) {
-					val status = c.getInt(c.getColumnIndex(COLUMN_STATUS))
-					if (status == STATUS_SUCCESSFUL) {
-						val fileURI = c.getString(c.getColumnIndex(COLUMN_LOCAL_URI))
-
-						startActivity(Intent(ACTION_VIEW).apply {
-							setDataAndType(
-								File(Uri.parse(fileURI).path!!).getUriCompat(applicationContext),
-								"application/vnd.android.package-archive"
-							)
-							addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_GRANT_READ_URI_PERMISSION)
-						})
-					} else {
-						toast("Download unsuccesful")
-					}
-				} else {
-					toast("Download not found")
 				}
 			}
 			else -> if (!router.hasRootController()) {
@@ -364,28 +334,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 	private fun setRoot(controller: Controller, id: Int) {
 		router.setRoot(controller.withFadeTransaction().tag(id.toString()))
-	}
-
-	private fun downloadAppUpdate(update: AppUpdateEntity) {
-		downloadManager.apply {
-			enqueue(DownloadRequest(Uri.parse(update.url)).apply {
-				setTitle("Shosetsu App Update")
-				setDescription("Downloading app update ${update.version}")
-
-
-				File(
-					applicationContext.cacheDir.absolutePath +
-							"/updates/"
-				).mkdirs()
-
-				setDestinationInExternalFilesDir(
-					applicationContext,
-					DIRECTORY_DOWNLOADS,
-					"updates/${update.version}.apk"
-				)
-				setNotificationVisibility(VISIBILITY_VISIBLE)
-			})
-		}
 	}
 
 	private fun setupProcesses() {
@@ -404,7 +352,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 						)
 					)
 					setPositiveButton(R.string.update) { it, _ ->
-						downloadAppUpdate(update)
+						viewModel.downloadAppUpdate()
 						it.dismiss()
 					}
 					setNegativeButton(R.string.update_not_interested) { it, _ ->

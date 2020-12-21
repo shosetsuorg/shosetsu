@@ -3,7 +3,7 @@ package app.shosetsu.android.viewmodel.impl
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import app.shosetsu.android.backend.workers.onetime.AppUpdateWorker
+import app.shosetsu.android.backend.workers.onetime.AppUpdateCheckWorker
 import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
 import app.shosetsu.android.viewmodel.abstracted.AAboutViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -32,7 +32,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 class AboutViewModel(
 	private val openInWebviewUseCase: OpenInWebviewUseCase,
 	private val context: Context,
-	private val manager: AppUpdateWorker.Manager,
+	private val manager: AppUpdateCheckWorker.Manager,
 ) : AAboutViewModel() {
 
 	override fun openGithub() {

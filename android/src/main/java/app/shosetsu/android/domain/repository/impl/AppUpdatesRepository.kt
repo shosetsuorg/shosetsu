@@ -4,14 +4,14 @@ import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.datasource.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.android.domain.model.remote.AppUpdateDTO
-import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
+import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.consts.ErrorKeys.ERROR_DUPLICATE
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
+import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
 import app.shosetsu.common.dto.*
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -43,7 +43,7 @@ class AppUpdatesRepository(
 
 	@ExperimentalCoroutinesApi
 	override fun loadAppUpdateFlow(): Flow<HResult<AppUpdateEntity>> =
-		iFileAppUpdateDataSource.updateAvaLive.mapLatest { it.convert() }
+		iFileAppUpdateDataSource.updateAvaLive
 
 
 	override suspend fun setAppUpdate(debugAppUpdate: AppUpdateEntity): HResult<*> {
@@ -91,12 +91,19 @@ class AppUpdatesRepository(
 		)!!
 
 		return compareVersion(rR).also {
-			iFileAppUpdateDataSource.putAppUpdateInCache(rR, it is HResult.Success)
+			iFileAppUpdateDataSource.putAppUpdateInCache(rR.convertTo(), it is HResult.Success)
 			running = false
 		}
 	}
 
 	override suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): HResult<String> {
-		TODO("Not yet implemented")
+		return iRemoteAppUpdateDataSource.downloadGitUpdate(appUpdateEntity).transform { response ->
+			if (response.isSuccessful) {
+				response.body?.let { body ->
+					iFileAppUpdateDataSource.saveAPK(appUpdateEntity, body.source())
+				} ?: errorResult(ErrorKeys.ERROR_NETWORK, "Empty response body")
+				emptyResult()
+			} else errorResult(ErrorKeys.ERROR_NETWORK, "Failed to download")
+		}
 	}
 }

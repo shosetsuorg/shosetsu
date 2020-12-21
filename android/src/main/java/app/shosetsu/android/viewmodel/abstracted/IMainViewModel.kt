@@ -46,4 +46,5 @@ abstract class IMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel,
 	abstract fun navigationStyle(): Int
 
 	abstract fun appTheme(): LiveData<AppThemes>
+	abstract fun downloadAppUpdate()
 }

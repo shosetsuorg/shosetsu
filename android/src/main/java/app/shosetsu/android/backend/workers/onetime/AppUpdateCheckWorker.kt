@@ -14,7 +14,6 @@ import app.shosetsu.android.common.consts.ACTION_OPEN_APP_UPDATE
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.Notifications.ID_APP_UPDATE
-import app.shosetsu.android.common.consts.WorkerTags
 import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_WORK_ID
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
@@ -52,8 +51,10 @@ import org.kodein.di.generic.instance
 /**
  * shosetsu
  * 06 / 09 / 2020
+ *
+ * Checks for an app update with a notification representing progress
  */
-class AppUpdateWorker(
+class AppUpdateCheckWorker(
 	appContext: Context,
 	params: WorkerParameters
 ) : CoroutineWorker(appContext, params), KodeinAware {
@@ -75,7 +76,7 @@ class AppUpdateWorker(
 			@Suppress("DEPRECATION")
 			Notification.Builder(appContext)
 		}
-			.setContentTitle(applicationContext.getString(R.string.app_update_check))
+			.setContentTitle(applicationContext.getString(R.string.notification_app_update_check))
 			.setSmallIcon(R.drawable.app_update)
 			.setOnlyAlertOnce(true)
 	}
@@ -94,7 +95,7 @@ class AppUpdateWorker(
 			notificationManager.notify(ID_APP_UPDATE, pr.build())
 		}) {
 			pr.setContentText(
-				applicationContext.getString(R.string.app_update_available)
+				applicationContext.getString(R.string.notification_app_update_available)
 						+ " " + it.version
 			)
 			notificationManager.notify(ID_APP_UPDATE, pr.build())
@@ -104,7 +105,7 @@ class AppUpdateWorker(
 
 
 	/**
-	 * Manager of [AppUpdateWorker]
+	 * Manager of [AppUpdateCheckWorker]
 	 */
 	class Manager(context: Context) : CoroutineWorkerManager(context) {
 		private val iSettingsRepository: ISettingsRepository by instance()
@@ -126,8 +127,13 @@ class AppUpdateWorker(
 		 * @return true if the service is running, false otherwise.
 		 */
 		override fun isRunning(): Boolean = try {
-			workerManager.getWorkInfosForUniqueWork(WorkerTags.UPDATE_CYCLE_WORK_ID)
-				.get()[0].state == WorkInfo.State.RUNNING
+			// Is this running
+			val a = (workerManager.getWorkInfosForUniqueWork(APP_UPDATE_WORK_ID)
+				.get()[0].state == WorkInfo.State.RUNNING)
+
+			// Don't run if update is being installed
+			val b = !AppUpdateInstallWorker.Manager(context).isRunning()
+			a && b
 		} catch (e: Exception) {
 			false
 		}
@@ -142,7 +148,7 @@ class AppUpdateWorker(
 				workerManager.enqueueUniqueWork(
 					APP_UPDATE_WORK_ID,
 					ExistingWorkPolicy.REPLACE,
-					OneTimeWorkRequestBuilder<AppUpdateWorker>(
+					OneTimeWorkRequestBuilder<AppUpdateCheckWorker>(
 					).setConstraints(
 						Constraints.Builder().apply {
 							setRequiredNetworkType(

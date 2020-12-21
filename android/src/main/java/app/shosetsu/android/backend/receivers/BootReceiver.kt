@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import app.shosetsu.android.backend.workers.perodic.AppUpdateCycleWorker
+import app.shosetsu.android.backend.workers.perodic.AppUpdateCheckCycleWorker
 import app.shosetsu.android.backend.workers.perodic.UpdateCycleWorker
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logID
@@ -48,7 +48,7 @@ class BootReceiver : BroadcastReceiver() {
 
 	internal class AutoStartAppUpdateWorker(val context: Context) : KodeinAware {
 		override val kodein: Kodein by kodein(context)
-		private val manager: AppUpdateCycleWorker.Manager by instance()
+		private val manager: AppUpdateCheckCycleWorker.Manager by instance()
 		private val iSettingsRepository: ISettingsRepository by instance()
 		operator fun invoke() {
 			launchIO {

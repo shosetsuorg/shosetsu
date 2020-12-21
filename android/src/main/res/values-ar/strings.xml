@@ -121,8 +121,8 @@
     <string name="chapters_unread_label">الفصول غير المقروءة: </string>
     <string name="remove_novel_cache">أزل التخزين المؤقت للرواية</string>
     <!-- App Update -->
-    <string name="app_update_check">التحقق من وجود تحديث للتطبيق</string>
-    <string name="app_update_available">يتوفر تحديث للتطبيق</string>
+    <string name="notification_app_update_check">التحقق من وجود تحديث للتطبيق</string>
+    <string name="notification_app_update_available">يتوفر تحديث للتطبيق</string>
     <string name="check_out_latest_app">تحقق من آخر إصدار متوفر للتطبيق!</string>
     <string name="app_update_unavaliable">لا يتوافر تحديث للتطبيق</string>
     <string name="check_updates_later">لا يتوافر تحديث للتطبيق. تحقق لاحقا!</string>

@@ -40,4 +40,13 @@ data class AppUpdateDTO(
 	val notes: List<String>,
 ) : Convertible<AppUpdateEntity> {
 	override fun convertTo() = AppUpdateEntity(version, versionCode, url, notes)
+
+	companion object {
+		fun fromEntity(appUpdateEntity: AppUpdateEntity) = AppUpdateDTO(
+			appUpdateEntity.version,
+			appUpdateEntity.versionCode,
+			appUpdateEntity.url,
+			appUpdateEntity.notes
+		)
+	}
 }

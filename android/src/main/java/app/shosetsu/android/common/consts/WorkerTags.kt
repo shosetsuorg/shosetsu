@@ -25,7 +25,7 @@ object WorkerTags {
 	const val DOWNLOAD_WORK_ID: String = "shosetsu_downloads"
 	const val UPDATE_WORK_ID: String = "shosetsu_updates"
 	const val APP_UPDATE_WORK_ID: String = "shosetsu_app_update"
-
+	const val APP_UPDATE_INSTALL_WORK_ID: String = "shosetsu_app_update_install"
 
 	const val UPDATE_CYCLE_WORK_ID: String = "shosetsu_updates_cycle"
 	const val APP_UPDATE_CYCLE_WORK_ID: String = "shosetsu_app_update_cycle"

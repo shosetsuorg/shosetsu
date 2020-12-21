@@ -3,9 +3,9 @@ package app.shosetsu.android.viewmodel.impl
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.ReportExceptionUseCase
-import app.shosetsu.android.domain.model.remote.AppUpdateDTO
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.ShareUseCase
+import app.shosetsu.android.domain.usecases.StartAppUpdateInstallWorkerUseCase
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerUseCase
 import app.shosetsu.android.domain.usecases.load.LoadAppUpdateLiveUseCase
 import app.shosetsu.android.domain.usecases.load.LoadLiveAppThemeUseCase
@@ -45,7 +45,8 @@ class MainViewModel(
 	private val shareUseCase: ShareUseCase,
 	private val loadNavigationStyleUseCase: LoadNavigationStyleUseCase,
 	private val reportExceptionUseCase: ReportExceptionUseCase,
-	private var loadLiveAppThemeUseCase: LoadLiveAppThemeUseCase
+	private var loadLiveAppThemeUseCase: LoadLiveAppThemeUseCase,
+	private val startInstallWorker: StartAppUpdateInstallWorkerUseCase
 ) : IMainViewModel() {
 	private var navigationStyle = 0
 
@@ -78,4 +79,5 @@ class MainViewModel(
 
 	@ExperimentalCoroutinesApi
 	override fun appTheme(): LiveData<AppThemes> = loadLiveAppThemeUseCase().asIOLiveData()
+	override fun downloadAppUpdate() = startInstallWorker()
 }

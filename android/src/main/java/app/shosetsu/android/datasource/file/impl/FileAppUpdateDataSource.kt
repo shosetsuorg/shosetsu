@@ -1,9 +1,11 @@
 package app.shosetsu.android.datasource.file.impl
 
 import app.shosetsu.android.common.consts.APP_UPDATE_CACHE_FILE
+import app.shosetsu.android.common.ext.saveTo
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.domain.model.remote.AppUpdateDTO
+import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.emptyResult
 import app.shosetsu.common.dto.successResult
@@ -14,6 +16,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import okio.BufferedSource
+import java.io.File
 
 /*
  * This file is part of shosetsu.
@@ -40,7 +44,7 @@ class FileAppUpdateDataSource(
 	private val iFileSystemProvider: IFileSystemProvider
 ) : IFileCachedAppUpdateDataSource {
 
-	override val updateAvaLive: MutableStateFlow<HResult<AppUpdateDTO>> by lazy {
+	override val updateAvaLive: MutableStateFlow<HResult<AppUpdateEntity>> by lazy {
 		MutableStateFlow(emptyResult())
 	}
 
@@ -54,17 +58,30 @@ class FileAppUpdateDataSource(
 		e.toHError()
 	}
 
-	override suspend fun loadCachedAppUpdate(): HResult<AppUpdateDTO> =
+	override suspend fun loadCachedAppUpdate(): HResult<AppUpdateEntity> =
 		iFileSystemProvider.readInternalFile(
 			CACHE,
 			APP_UPDATE_CACHE_FILE
 		).transform { Json.decodeFromString(it) }
 
 	override suspend fun putAppUpdateInCache(
-		debugAppUpdate: AppUpdateDTO,
+		appUpdate: AppUpdateEntity,
 		isUpdate: Boolean
 	): HResult<*> {
-		updateAvaLive.value = if (isUpdate) successResult(debugAppUpdate) else emptyResult()
-		return write(debugAppUpdate)
+		updateAvaLive.value = if (isUpdate) successResult(appUpdate) else emptyResult()
+		return write(AppUpdateDTO.fromEntity(appUpdate))
 	}
+
+	override fun saveAPK(
+		appUpdateEntity: AppUpdateEntity,
+		bufferedSource: BufferedSource
+	): HResult<String> =
+		iFileSystemProvider
+			.retrieveInternalPath(CACHE, "updates/${appUpdateEntity.version}.apk")
+			.transform {
+				bufferedSource.saveTo(File(it))
+				successResult(it)
+			}
+
+
 }
