@@ -1,7 +1,13 @@
 {
-  "latestVersion": "1113",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1113/shosetsu-r1113.apk",
+  "latestVersion": "2.0.0",
+  "versionCode": 29,
+  "url": "https://github.com/Doomsdayrs/shosetsu/releases",
   "releaseNotes": [
-    " Please ignore this, I am testing in app updates once again"
+    "- Complete rewrite",
+    "- New theme",
+    "- Kotlin coroutines",
+    "- Lua extensions for sources",
+    "- Repository system for lua extensions",
+    "- New update service"
   ]
 }

@@ -1,9 +1,7 @@
 {
-  "latestVersion": "1100",
-  "url": "https://discord.gg/ttSX7gB",
+  "latestVersion": "1113",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1113/shosetsu-r1113.apk",
   "releaseNotes": [
-    "- all code now standardized by kotlin syntax",
-    "- added library filtering with new filter button that may or may not work",
-    "- updated codebase for view models for Library and Novel"
+    " Please ignore this, I am testing in app updates once again"
   ]
 }

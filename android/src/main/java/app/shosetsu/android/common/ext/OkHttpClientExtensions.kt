@@ -24,7 +24,7 @@ import okhttp3.Response
 /**
  * shosetsu
  * 13 / 05 / 2020
+ * A stupid quick way to use a URL -> Response
  */
-
 fun OkHttpClient.quickie(url: String): Response =
 	newCall(Request.Builder().url(url).build()).execute()

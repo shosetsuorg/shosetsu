@@ -6,6 +6,7 @@ import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.android.domain.model.remote.AppUpdateDTO
 import app.shosetsu.common.consts.ErrorKeys.ERROR_HTTP_ERROR
 import app.shosetsu.common.consts.ErrorKeys.ERROR_NETWORK
+import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.errorResult
 import app.shosetsu.common.dto.successResult
@@ -13,6 +14,7 @@ import app.shosetsu.lib.exceptions.HTTPException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
+import okhttp3.Response
 
 /*
  * This file is part of shosetsu.
@@ -51,4 +53,7 @@ class RemoteAppUpdateDataSource(
 		}
 		return errorResult(ERROR_HTTP_ERROR, HTTPException(response.code))
 	}
+
+	override suspend fun downloadGitUpdate(update: AppUpdateEntity): HResult<Response> =
+		successResult(okHttpClient.quickie(update.url))
 }
