@@ -1,7 +1,9 @@
 {
-  "latestVersion": "1113",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1113/shosetsu-r1113.apk",
+  "latestVersion": "1128",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1127/shosetsu-r1127.apk",
   "releaseNotes": [
-    " Please ignore this, I am testing in app updates once again"
+    "- New in-app updater :D",
+    "- Minor fixes and improvements",
+    "- I forgot whatever rest I did"
   ]
 }
