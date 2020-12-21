@@ -73,11 +73,11 @@ class FileAppUpdateDataSource(
 	}
 
 	override fun saveAPK(
-		appUpdateEntity: AppUpdateEntity,
+		appUpdate: AppUpdateEntity,
 		bufferedSource: BufferedSource
 	): HResult<String> =
 		iFileSystemProvider
-			.retrieveInternalPath(CACHE, "updates/${appUpdateEntity.version}.apk")
+			.retrieveInternalPath(CACHE, "updates/${appUpdate.version}.apk")
 			.transform {
 				bufferedSource.saveTo(File(it))
 				successResult(it)

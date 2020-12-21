@@ -38,7 +38,7 @@ interface IFileCachedAppUpdateDataSource {
 	suspend fun loadCachedAppUpdate(): HResult<AppUpdateEntity>
 
 	/** Puts an update into cache */
-	suspend fun putAppUpdateInCache(debugAppUpdate: AppUpdateEntity, isUpdate: Boolean): HResult<*>
+	suspend fun putAppUpdateInCache(appUpdate: AppUpdateEntity, isUpdate: Boolean): HResult<*>
 
-	fun saveAPK(appUpdateEntity: AppUpdateEntity, bufferedSource: BufferedSource): HResult<String>
+	fun saveAPK(appUpdate: AppUpdateEntity, bufferedSource: BufferedSource): HResult<String>
 }
