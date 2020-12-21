@@ -4,7 +4,6 @@ import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.datasource.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
-import app.shosetsu.android.domain.model.remote.AppUpdateDTO
 import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.consts.ErrorKeys.ERROR_DUPLICATE
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
@@ -52,7 +51,7 @@ class AppUpdatesRepository(
 	}
 
 
-	private fun compareVersion(newVersion: AppUpdateDTO): HResult<AppUpdateEntity> {
+	private fun compareVersion(newVersion: AppUpdateEntity): HResult<AppUpdateEntity> {
 		val currentV: Int
 		val remoteV: Int
 
@@ -71,7 +70,7 @@ class AppUpdatesRepository(
 			}
 			remoteV > currentV -> {
 				logI("Update found compared to $newVersion")
-				successResult(newVersion.convertTo())
+				successResult(newVersion)
 			}
 			remoteV == currentV -> {
 				logI("This the current release compared to $newVersion")
@@ -86,13 +85,13 @@ class AppUpdatesRepository(
 		if (running) return errorResult(ERROR_DUPLICATE, "Cannot run duplicate")
 		else running = true
 
-		val rR: AppUpdateDTO = iRemoteAppUpdateDataSource.loadGitAppUpdate().unwrap(
+		val rR = iRemoteAppUpdateDataSource.loadGitAppUpdate().unwrap(
 			onEmpty = { return emptyResult().also { running = false } },
 			onError = { return it.also { running = false } }
 		)!!
 
 		return compareVersion(rR).also {
-			iFileAppUpdateDataSource.putAppUpdateInCache(rR.convertTo(), it is HResult.Success)
+			iFileAppUpdateDataSource.putAppUpdateInCache(rR, it is HResult.Success)
 			running = false
 		}
 	}

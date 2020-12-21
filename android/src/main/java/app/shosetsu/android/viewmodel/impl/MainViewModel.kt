@@ -79,5 +79,7 @@ class MainViewModel(
 
 	@ExperimentalCoroutinesApi
 	override fun appTheme(): LiveData<AppThemes> = loadLiveAppThemeUseCase().asIOLiveData()
-	override fun downloadAppUpdate() = startInstallWorker()
+	override fun handleAppUpdate() {
+		startInstallWorker()
+	}
 }

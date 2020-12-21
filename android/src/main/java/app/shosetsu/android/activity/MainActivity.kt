@@ -352,7 +352,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 						)
 					)
 					setPositiveButton(R.string.update) { it, _ ->
-						viewModel.downloadAppUpdate()
+						viewModel.handleAppUpdate()
 						it.dismiss()
 					}
 					setNegativeButton(R.string.update_not_interested) { it, _ ->

@@ -8,8 +8,11 @@
 /captures
 .externalNativeBuild
 
-android/release
-android/debug
+# hide releases
+android/standard/*
+android/playstore/*
+android/fdroid/*
+android/uptodown/*
 
 android/build/*
 android/build/intermediates/*

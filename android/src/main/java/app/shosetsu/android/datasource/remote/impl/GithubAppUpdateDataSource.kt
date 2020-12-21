@@ -37,17 +37,17 @@ import okhttp3.Response
  * shosetsu
  * 07 / 09 / 2020
  */
-class RemoteAppUpdateDataSource(
+class GithubAppUpdateDataSource(
 	private val okHttpClient: OkHttpClient
 ) : IRemoteAppUpdateDataSource {
-	override suspend fun loadGitAppUpdate(): HResult<AppUpdateDTO> {
+	override suspend fun loadGitAppUpdate(): HResult<AppUpdateEntity> {
 		val response = okHttpClient.quickie(SHOSETSU_UPDATE_URL)
 		response.takeIf { it.code == 200 }?.let { r ->
 			@Suppress("BlockingMethodInNonBlockingContext")
 			val body = r.body
 			return body?.let {
 				successResult(
-					Json.decodeFromString(it.string())
+					Json.decodeFromString<AppUpdateDTO>(it.string()).convertTo()
 				)
 			} ?: errorResult(ERROR_NETWORK, "Response body null")
 		}

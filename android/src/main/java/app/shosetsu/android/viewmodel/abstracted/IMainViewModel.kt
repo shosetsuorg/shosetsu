@@ -1,7 +1,6 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
-import app.shosetsu.android.domain.model.remote.AppUpdateDTO
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
@@ -46,5 +45,15 @@ abstract class IMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel,
 	abstract fun navigationStyle(): Int
 
 	abstract fun appTheme(): LiveData<AppThemes>
-	abstract fun downloadAppUpdate()
+
+	/**
+	 * The user requests to update the app
+	 *
+	 * If preview, will use in-app update for preview
+	 * If stable-git, will use in-app update for stable
+	 * If stable-goo, will open up google play store
+	 * If stable-utd, will open up up-to-down
+	 * If stable-fdr, will open up f-droid
+	 */
+	abstract fun handleAppUpdate()
 }
