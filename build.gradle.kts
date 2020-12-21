@@ -61,7 +61,7 @@ open class WriteDebugUpdate : DefaultTask() {
 	fun main() {
 		val file = File("android/src/debug/assets/update.json")
 		// up the commit by one for when shosetsu-preview builds
-		val commitCount = getCommitCount().toInt() + 1
+		val commitCount = getCommitCount().toInt()
 		file.writeText(
 			"""
 		{
