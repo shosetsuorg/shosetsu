@@ -1,12 +1,9 @@
 {
-  "latestVersion": "1092",
-  "url": "https://discord.gg/ttSX7gB",
+  "latestVersion": "1128",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1128/shosetsu-r1128.apk",
   "releaseNotes": [
-    "- Added filter menu into novel info UI, Missing order filtering",
-    "- Fixed random crashes on older versions of android (6 and below)",
-    "- Code abstracted more, common created inorder to prepare for multi-platform",
-    "- kotlin-lib updated, providing greater stability and error handling",
-    "- Renamed app to android, preparing for multi-platform kotlin",
-    "- other bug fixes and improvements"
+    "- New in-app updater :D",
+    "- Minor fixes and improvements",
+    "- I forgot whatever rest I did"
   ]
 }
