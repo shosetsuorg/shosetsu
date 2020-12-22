@@ -1,9 +1,8 @@
 {
-  "latestVersion": "1128",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1128/shosetsu-r1128.apk",
+  "latestVersion": "1134",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1134/shosetsu-r1134.apk",
   "releaseNotes": [
-    "- New in-app updater :D",
-    "- Minor fixes and improvements",
-    "- I forgot whatever rest I did"
+    "- updated version name",
+    "- updated kotlin lib to fix issues"
   ]
 }

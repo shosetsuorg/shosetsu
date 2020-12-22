@@ -65,11 +65,11 @@ open class WriteDebugUpdate : DefaultTask() {
 		file.writeText(
 			"""
 		{
-			"latestVersion":"$commitCount",
-			"url":"https://github.com/shosetsuorg/shosetsu-preview/releases/download/r$commitCount/shosetsu-r$commitCount.apk",
-			"releaseNotes":[
-				"${getLatestCommitMsg().replace("\n", "\",\n\t\t\t\t\"")}"
-			]
+		  "latestVersion":"$commitCount",
+		  "url":"https://github.com/shosetsuorg/shosetsu-preview/releases/download/r$commitCount/shosetsu-r$commitCount.apk",
+		  "releaseNotes":[
+		    "${getLatestCommitMsg().replace("\n", "\",\n\t\t\t\t\"")}"
+		  ]
 		}
 		""".trimIndent()
 		)
