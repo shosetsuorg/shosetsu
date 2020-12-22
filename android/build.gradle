@@ -27,7 +27,7 @@ android {
         minSdkVersion 22
         targetSdkVersion 30
         versionCode 26
-        versionName "v1.2.0"
+        versionName "2.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
@@ -48,11 +48,11 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            versionNameSuffix ''
+            versionNameSuffix ""
             multiDexEnabled true
         }
         debug {
-            versionNameSuffix "-r${getCommitCount()}"
+            versionNameSuffix "-${getCommitCount()}"
             applicationIdSuffix '.debug'
             debuggable true
         }
@@ -87,9 +87,27 @@ android {
 }
 
 android.applicationVariants.all { variant ->
+
     variant.outputs.all {
         def appName = 'shosetsu'
-        outputFileName = appName + "-${variant.versionName}.apk"
+        def versionName = variant.versionName
+        def versionCode = variant.versionCode
+        def flavorName = variant.flavorName
+        def buildType = variant.buildType.name
+        def variantName = variant.name
+        def gitCount = getCommitCount()
+
+        println("==== " + flavorName)
+        println(appName)
+        println(versionName)
+        println(versionCode)
+        println(buildType)
+        println(variantName)
+        println()
+
+        if (buildType.toString() == "debug" && flavorName.toString() == "standard") {
+            outputFileName = "${appName}-${gitCount}.apk"
+        } else outputFileName = "${appName}-${versionName}.apk"
     }
 }
 
