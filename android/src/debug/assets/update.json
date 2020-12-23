@@ -1,8 +1,11 @@
 {
-  "latestVersion": "1134",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1134/shosetsu-r1134.apk",
+  "latestVersion": "1136",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1136/shosetsu-r1136.apk",
   "releaseNotes": [
-    "- updated version name",
-    "- updated kotlin lib to fix issues"
+    "### The in-app updater may or may not work, If it does not go here https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1136/shosetsu-r1136.apk",
+    "- Added use cases for more advanced handling of UI",
+    "- Added new data sources for fdroid, uptodown & playstore releases",
+    "- Trying to figure out issue with timeout exceptions",
+    "- Minor update to in-app updater"
   ]
 }
