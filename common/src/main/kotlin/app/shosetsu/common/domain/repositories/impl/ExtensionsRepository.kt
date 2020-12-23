@@ -127,7 +127,7 @@ class ExtensionsRepository(
 			return errorResult(ErrorKeys.ERROR_NOT_FOUND, "Extension file not found")
 
 		if (!fileResult.data.exMetaData.libVersion.isCompatible())
-			return errorResult(ErrorKeys.ERROR_INCOMPATIBLE)
+			return errorResult(ErrorKeys.ERROR_EXT_INCOMPATIBLE)
 
 		memorySource.putExtensionInMemory(fileResult.data)
 		return fileResult

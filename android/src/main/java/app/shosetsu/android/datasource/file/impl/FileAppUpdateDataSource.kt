@@ -2,7 +2,6 @@ package app.shosetsu.android.datasource.file.impl
 
 import app.shosetsu.android.common.consts.APP_UPDATE_CACHE_FILE
 import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.saveTo
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.file.base.IFileCachedAppUpdateDataSource
@@ -45,15 +44,14 @@ import java.io.File
 class FileAppUpdateDataSource(
 	private val iFileSystemProvider: IFileSystemProvider
 ) : IFileCachedAppUpdateDataSource {
+	override val updateAvaLive: MutableStateFlow<HResult<AppUpdateEntity>> by lazy {
+		MutableStateFlow(emptyResult())
+	}
 
 	init {
 		launchIO {
-			iFileSystemProvider.createInternalDirectory(CACHE, "/updates/")
+			iFileSystemProvider.createInternalDirectory(CACHE, updatesPath)
 		}
-	}
-
-	override val updateAvaLive: MutableStateFlow<HResult<AppUpdateEntity>> by lazy {
-		MutableStateFlow(emptyResult())
 	}
 
 	private fun write(debugAppUpdate: AppUpdateDTO): HResult<*> = try {
@@ -84,16 +82,20 @@ class FileAppUpdateDataSource(
 	override fun saveAPK(
 		appUpdate: AppUpdateEntity,
 		bufferedSource: BufferedSource
-	): HResult<String> {
-		logV("Saving APK")
-		iFileSystemProvider.createInternalFile(CACHE, "updates/update.apk")
-		return iFileSystemProvider
-			.retrieveInternalPath(CACHE, "updates/update.apk")
-			.transform {
-				logV("Saving")
-				bufferedSource.saveTo(File(it))
-				successResult(it)
+	): HResult<String> = iFileSystemProvider.doesInternalFileExist(CACHE, updatesCPath)
+		.transform { doesFileExist ->
+			if (doesFileExist) iFileSystemProvider.deleteInternalFile(CACHE, updatesCPath)
+			iFileSystemProvider.createInternalFile(CACHE, updatesCPath)
+			iFileSystemProvider.retrieveInternalPath(CACHE, updatesCPath).transform { path ->
+				bufferedSource.saveTo(File(path))
+				successResult(path)
 			}
+		}
+
+	companion object {
+		const val updatesPath = "/updates/"
+		const val updatesFile = "/update.apk"
+		const val updatesCPath = "$updatesPath$updatesFile"
 	}
 
 

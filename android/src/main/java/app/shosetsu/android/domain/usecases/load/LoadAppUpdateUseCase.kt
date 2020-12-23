@@ -1,33 +1,31 @@
 package app.shosetsu.android.domain.usecases.load
 
-import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
-import app.shosetsu.common.dto.HResult
 
 /*
- * This file is part of shosetsu.
+ * This file is part of Shosetsu.
  *
- * shosetsu is free software: you can redistribute it and/or modify
+ * Shosetsu is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * shosetsu is distributed in the hope that it will be useful,
+ * Shosetsu is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
+ * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /**
- * shosetsu
- * 20 / 06 / 2020
+ * 22 / 12 / 2020
+ *
+ * Loads the app update, without calling network
  */
 class LoadAppUpdateUseCase(
-	private val iAppUpdatesRepository: IAppUpdatesRepository
+	private val repo: IAppUpdatesRepository
 ) {
-	suspend operator fun invoke(): HResult<AppUpdateEntity> =
-		iAppUpdatesRepository.loadGitAppUpdate()
+	suspend operator fun invoke() = repo.loadAppUpdate()
 }

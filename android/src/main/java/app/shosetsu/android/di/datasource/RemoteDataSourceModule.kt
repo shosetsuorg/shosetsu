@@ -1,7 +1,13 @@
 package app.shosetsu.android.di.datasource
 
+import app.shosetsu.android.common.enums.ProductFlavors
+import app.shosetsu.android.common.utils.flavor
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.impl.*
+import app.shosetsu.android.datasource.remote.impl.update.FDroidAppUpdateDataSource
+import app.shosetsu.android.datasource.remote.impl.update.GithubAppUpdateDataSource
+import app.shosetsu.android.datasource.remote.impl.update.PlayAppUpdateDataSource
+import app.shosetsu.android.datasource.remote.impl.update.UpToDownAppUpdateDataSource
 import app.shosetsu.common.datasource.remote.base.*
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
@@ -43,5 +49,12 @@ val remoteDataSouceModule: Kodein.Module = Kodein.Module("remote_data_source_mod
 
 	bind<IRemoteExtLibDataSource>() with singleton { RemoteExtLibDataSource(instance()) }
 
-	bind<IRemoteAppUpdateDataSource>() with singleton { GithubAppUpdateDataSource(instance()) }
+	bind<IRemoteAppUpdateDataSource>() with singleton {
+		when (flavor()) {
+			ProductFlavors.PLAY_STORE -> PlayAppUpdateDataSource()
+			ProductFlavors.F_DROID -> FDroidAppUpdateDataSource()
+			ProductFlavors.UP_TO_DOWN -> UpToDownAppUpdateDataSource()
+			ProductFlavors.STANDARD -> GithubAppUpdateDataSource(instance())
+		}
+	}
 }

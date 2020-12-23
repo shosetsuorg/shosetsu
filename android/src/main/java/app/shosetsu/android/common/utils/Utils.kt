@@ -4,6 +4,8 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams
 import android.view.animation.Animation
 import android.view.animation.Transformation
+import app.shosetsu.android.common.enums.ProductFlavors
+import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 
 
 /*
@@ -77,3 +79,5 @@ fun View.collapse() {
 	a.duration = ((initialHeight / context.resources.displayMetrics.density) * 5).toInt().toLong()
 	startAnimation(a)
 }
+
+fun flavor(): ProductFlavors = ProductFlavors.fromKey(BuildConfig.FLAVOR)

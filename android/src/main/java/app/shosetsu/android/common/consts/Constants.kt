@@ -26,20 +26,6 @@ import com.github.doomsdayrs.apps.shosetsu.BuildConfig
  * 04 / 05 / 2020
  */
 
-val SHOSETSU_UPDATE_URL: String =
-	"https://raw.githubusercontent.com/Doomsdayrs/shosetsu/${
-		if (BuildConfig.DEBUG)
-			"development"
-		else "master"
-	}/android/src/${
-		if (BuildConfig.DEBUG)
-			"debug"
-		else "master"
-	}/assets/update.${
-		if (BuildConfig.DEBUG)
-			"json"
-		else "xml"
-	}"
 
 const val SELECTED_STROKE_WIDTH: Int = 8
 

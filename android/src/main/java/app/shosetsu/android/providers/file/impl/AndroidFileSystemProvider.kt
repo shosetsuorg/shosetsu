@@ -62,13 +62,17 @@ class AndroidFileSystemProvider(
 		ExternalFileDir.DOCUMENTS -> "$externalDocumentDirPath/"
 	}
 
-	override fun doesInternalFileExist(internalFileDir: InternalFileDir, path: String): HResult<*> {
-		return if (!File(internalFileDir.path() + path).exists()) emptyResult() else successResult("")
-	}
+	override fun doesInternalFileExist(
+		internalFileDir: InternalFileDir,
+		path: String
+	): HResult<Boolean> = if (!File(internalFileDir.path() + path).exists())
+		successResult(false) else successResult(true)
 
-	override fun doesExternalFileExist(externalFileDir: ExternalFileDir, path: String): HResult<*> {
-		return if (!File(externalFileDir.path() + path).exists()) emptyResult() else successResult("")
-	}
+	override fun doesExternalFileExist(
+		externalFileDir: ExternalFileDir,
+		path: String
+	): HResult<Boolean> = if (!File(externalFileDir.path() + path).exists())
+		successResult(false) else successResult(true)
 
 	override fun readInternalFile(internalFileDir: InternalFileDir, path: String): HResult<String> {
 		val file = File(internalFileDir.path() + path)

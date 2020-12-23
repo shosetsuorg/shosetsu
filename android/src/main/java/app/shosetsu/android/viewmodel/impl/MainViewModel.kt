@@ -3,16 +3,15 @@ package app.shosetsu.android.viewmodel.impl
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.ReportExceptionUseCase
-import app.shosetsu.android.domain.usecases.IsOnlineUseCase
-import app.shosetsu.android.domain.usecases.ShareUseCase
-import app.shosetsu.android.domain.usecases.StartAppUpdateInstallWorkerUseCase
-import app.shosetsu.android.domain.usecases.StartDownloadWorkerUseCase
-import app.shosetsu.android.domain.usecases.load.LoadAppUpdateLiveUseCase
+import app.shosetsu.android.domain.usecases.*
+import app.shosetsu.android.domain.usecases.load.LoadAppUpdateFlowLiveUseCase
+import app.shosetsu.android.domain.usecases.load.LoadAppUpdateUseCase
 import app.shosetsu.android.domain.usecases.load.LoadLiveAppThemeUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadNavigationStyleUseCase
 import app.shosetsu.android.viewmodel.abstracted.IMainViewModel
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.handle
 import app.shosetsu.common.enums.AppThemes
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -40,13 +39,15 @@ import kotlinx.coroutines.flow.collect
  */
 class MainViewModel(
 	private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
-	private val loadAppUpdateUseCase: LoadAppUpdateLiveUseCase,
+	private val loadAppUpdateFlowLiveUseCase: LoadAppUpdateFlowLiveUseCase,
 	private val isOnlineUseCase: IsOnlineUseCase,
 	private val shareUseCase: ShareUseCase,
 	private val loadNavigationStyleUseCase: LoadNavigationStyleUseCase,
 	private val reportExceptionUseCase: ReportExceptionUseCase,
 	private var loadLiveAppThemeUseCase: LoadLiveAppThemeUseCase,
-	private val startInstallWorker: StartAppUpdateInstallWorkerUseCase
+	private val startInstallWorker: StartAppUpdateInstallWorkerUseCase,
+	private val canAppSelfUpdateUseCase: CanAppSelfUpdateUseCase,
+	private val loadAppUpdateUseCase: LoadAppUpdateUseCase
 ) : IMainViewModel() {
 	private var navigationStyle = 0
 
@@ -71,7 +72,7 @@ class MainViewModel(
 	}
 
 	override fun startUpdateCheck(): LiveData<HResult<AppUpdateEntity>> =
-		loadAppUpdateUseCase().asIOLiveData()
+		loadAppUpdateFlowLiveUseCase().asIOLiveData()
 
 	override fun navigationStyle(): Int = navigationStyle
 
@@ -79,7 +80,22 @@ class MainViewModel(
 
 	@ExperimentalCoroutinesApi
 	override fun appTheme(): LiveData<AppThemes> = loadLiveAppThemeUseCase().asIOLiveData()
+
 	override fun handleAppUpdate() {
-		startInstallWorker()
+		canAppSelfUpdateUseCase().handle(
+			onError = {
+				reportExceptionUseCase(it)
+			}
+		) { canSelfUpdate ->
+			if (canSelfUpdate) {
+				startInstallWorker()
+			} else {
+				launchIO {
+					loadAppUpdateUseCase().handle {
+						shareUseCase(it.url, it.version)
+					}
+				}
+			}
+		}
 	}
 }

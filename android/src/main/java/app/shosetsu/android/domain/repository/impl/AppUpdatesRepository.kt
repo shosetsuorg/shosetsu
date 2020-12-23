@@ -55,8 +55,9 @@ class AppUpdatesRepository(
 		val currentV: Int
 		val remoteV: Int
 
-		if (newVersion.versionCode == -1) {
-			currentV = BuildConfig.VERSION_NAME.substringAfter("r").toInt()
+		// Assuming update will return a dev update for debug
+		if (BuildConfig.DEBUG) {
+			currentV = BuildConfig.VERSION_NAME.substringAfter("-").toInt()
 			remoteV = newVersion.version.toInt()
 		} else {
 			currentV = BuildConfig.VERSION_CODE
@@ -81,11 +82,11 @@ class AppUpdatesRepository(
 	}
 
 	@Synchronized
-	override suspend fun loadGitAppUpdate(): HResult<AppUpdateEntity> {
+	override suspend fun loadRemoteUpdate(): HResult<AppUpdateEntity> {
 		if (running) return errorResult(ERROR_DUPLICATE, "Cannot run duplicate")
 		else running = true
 
-		val rR = iRemoteAppUpdateDataSource.loadGitAppUpdate().unwrap(
+		val rR = iRemoteAppUpdateDataSource.loadAppUpdate().unwrap(
 			onEmpty = { return emptyResult().also { running = false } },
 			onError = { return it.also { running = false } }
 		)!!
@@ -99,13 +100,18 @@ class AppUpdatesRepository(
 	override suspend fun loadAppUpdate(): HResult<AppUpdateEntity> =
 		iFileAppUpdateDataSource.loadCachedAppUpdate()
 
+	override fun canSelfUpdate(): HResult<Boolean> =
+		successResult(iRemoteAppUpdateDataSource is IRemoteAppUpdateDataSource.Downloadable)
+
 	override suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): HResult<String> =
-		iRemoteAppUpdateDataSource.downloadGitUpdate(appUpdateEntity).transform { response ->
-			logV("Retrieved response")
-			if (response.isSuccessful) {
-				response.body?.let { body ->
-					iFileAppUpdateDataSource.saveAPK(appUpdateEntity, body.source())
-				} ?: errorResult(ErrorKeys.ERROR_NETWORK, "Empty response body")
-			} else errorResult(ErrorKeys.ERROR_NETWORK, "Failed to download")
-		}
+		if (iRemoteAppUpdateDataSource is IRemoteAppUpdateDataSource.Downloadable)
+			iRemoteAppUpdateDataSource.downloadAppUpdate(appUpdateEntity).transform { response ->
+				logV("Retrieved response")
+				if (response.isSuccessful) {
+					response.body?.let { body ->
+						iFileAppUpdateDataSource.saveAPK(appUpdateEntity, body.source())
+					} ?: errorResult(ErrorKeys.ERROR_NETWORK, "Empty response body")
+				} else errorResult(ErrorKeys.ERROR_NETWORK, "Failed to download")
+			}
+		else errorResult(ErrorKeys.ERROR_INVALID_FEATURE, "This flavor cannot self update")
 }

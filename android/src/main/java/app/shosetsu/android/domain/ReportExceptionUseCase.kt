@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain
 
 import app.shosetsu.android.common.HResultException
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
 import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
@@ -64,6 +65,7 @@ class ReportExceptionUseCase(
 			}
 
 			ErrorKeys.ERROR_LUA_GENERAL -> {
+				logE("This is the lua error $result")
 				report(result)
 			}
 
@@ -111,7 +113,7 @@ class ReportExceptionUseCase(
 				report(result, isSilent)
 			}
 
-			ErrorKeys.ERROR_INCOMPATIBLE -> {
+			ErrorKeys.ERROR_EXT_INCOMPATIBLE -> {
 				toast(result)
 			}
 
@@ -129,6 +131,11 @@ class ReportExceptionUseCase(
 
 			ErrorKeys.ERROR_TIMEOUT -> {
 				toast(result)
+			}
+
+			ErrorKeys.ERROR_INVALID_FEATURE -> {
+				toast(result)
+				report(result, isSilent)
 			}
 		}
 	}

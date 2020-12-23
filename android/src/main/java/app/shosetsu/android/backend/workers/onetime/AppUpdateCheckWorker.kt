@@ -18,7 +18,9 @@ import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_WORK_ID
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.domain.usecases.load.LoadAppUpdateUseCase
+import app.shosetsu.android.common.ext.toHError
+import app.shosetsu.android.domain.ReportExceptionUseCase
+import app.shosetsu.android.domain.usecases.load.LoadRemoteAppUpdateUseCase
 import app.shosetsu.android.ui.splash.SplashScreen
 import app.shosetsu.common.consts.settings.SettingKey.AppUpdateOnMeteredConnection
 import app.shosetsu.common.consts.settings.SettingKey.AppUpdateOnlyWhenIdle
@@ -64,9 +66,9 @@ class AppUpdateCheckWorker(
 			action = ACTION_OPEN_APP_UPDATE
 		}
 
-	private val appUpdateUseCase by instance<LoadAppUpdateUseCase>()
+	private val loadRemoteAppUpdateUseCase by instance<LoadRemoteAppUpdateUseCase>()
 	private val notificationManager: NotificationManager by lazy { appContext.getSystemService()!! }
-
+	private val reportExceptionUseCase by instance<ReportExceptionUseCase>()
 
 	private val progressNotification by lazy {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -82,25 +84,30 @@ class AppUpdateCheckWorker(
 	}
 
 	override suspend fun doWork(): Result {
-		val pr = progressNotification
-		pr.setOngoing(true)
-		notificationManager.notify(ID_APP_UPDATE, pr.build())
-		val result = appUpdateUseCase()
-		pr.setOngoing(false)
-		result.handle(onEmpty = {
-			notificationManager.cancel(ID_APP_UPDATE)
-		}, onError = {
-			logE("Error!", it.error)
-			pr.setContentText("Error! ${it.code} | ${it.message}")
+		try {
+			val pr = progressNotification
+			pr.setOngoing(true)
 			notificationManager.notify(ID_APP_UPDATE, pr.build())
-		}) {
-			pr.setContentText(
-				applicationContext.getString(R.string.notification_app_update_available)
-						+ " " + it.version
-			)
-			notificationManager.notify(ID_APP_UPDATE, pr.build())
+			val result = loadRemoteAppUpdateUseCase()
+			pr.setOngoing(false)
+			result.handle(onEmpty = {
+				notificationManager.cancel(ID_APP_UPDATE)
+			}, onError = {
+				logE("Error!", it.error)
+				pr.setContentText("Error! ${it.code} | ${it.message}")
+				notificationManager.notify(ID_APP_UPDATE, pr.build())
+			}) {
+				pr.setContentText(
+					applicationContext.getString(R.string.notification_app_update_available)
+							+ " " + it.version
+				)
+				notificationManager.notify(ID_APP_UPDATE, pr.build())
+			}
+			return Result.success()
+		} catch (e: Exception) {
+			reportExceptionUseCase(e.toHError())
 		}
-		return Result.success()
+		return Result.failure()
 	}
 
 

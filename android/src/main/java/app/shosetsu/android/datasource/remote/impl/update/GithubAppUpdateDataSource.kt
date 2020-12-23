@@ -1,6 +1,6 @@
-package app.shosetsu.android.datasource.remote.impl
+package app.shosetsu.android.datasource.remote.impl.update
 
-import app.shosetsu.android.common.consts.SHOSETSU_UPDATE_URL
+import app.shosetsu.android.common.ext.ifSo
 import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.android.domain.model.remote.AppUpdateDTO
@@ -11,6 +11,7 @@ import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.errorResult
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.lib.exceptions.HTTPException
+import com.github.doomsdayrs.apps.shosetsu.BuildConfig.DEBUG
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
@@ -36,24 +37,37 @@ import okhttp3.Response
 /**
  * shosetsu
  * 07 / 09 / 2020
+ *
+ * For standard releases
  */
 class GithubAppUpdateDataSource(
 	private val okHttpClient: OkHttpClient
-) : IRemoteAppUpdateDataSource {
-	override suspend fun loadGitAppUpdate(): HResult<AppUpdateEntity> {
-		val response = okHttpClient.quickie(SHOSETSU_UPDATE_URL)
-		response.takeIf { it.code == 200 }?.let { r ->
-			@Suppress("BlockingMethodInNonBlockingContext")
-			val body = r.body
-			return body?.let {
-				successResult(
-					Json.decodeFromString<AppUpdateDTO>(it.string()).convertTo()
-				)
-			} ?: errorResult(ERROR_NETWORK, "Response body null")
-		}
-		return errorResult(ERROR_HTTP_ERROR, HTTPException(response.code))
+) : IRemoteAppUpdateDataSource, IRemoteAppUpdateDataSource.Downloadable {
+	private val SHOSETSU_GIT_UPDATE_URL: String by lazy {
+		"https://raw.githubusercontent.com/shosetsuorg/android-app/${
+			DEBUG ifSo "development" ?: "master"
+		}/android/src/${
+			DEBUG ifSo "debug" ?: "master"
+		}/assets/update.${
+			DEBUG ifSo "json" ?: "xml"
+		}"
 	}
 
-	override suspend fun downloadGitUpdate(update: AppUpdateEntity): HResult<Response> =
+	override suspend fun loadAppUpdate(): HResult<AppUpdateEntity> {
+		okHttpClient.quickie(SHOSETSU_GIT_UPDATE_URL)
+			.use { gitResponse ->
+				gitResponse.takeIf { it.code == 200 }?.use {
+					return gitResponse.body?.use { responseBody ->
+						successResult(
+							Json.decodeFromString<AppUpdateDTO>(responseBody.string()).convertTo()
+						)
+					} ?: errorResult(ERROR_NETWORK, "Response body null")
+				}
+				return errorResult(ERROR_HTTP_ERROR, HTTPException(gitResponse.code))
+			}
+	}
+
+	override suspend fun downloadAppUpdate(update: AppUpdateEntity): HResult<Response> =
 		successResult(okHttpClient.quickie(update.url))
+
 }

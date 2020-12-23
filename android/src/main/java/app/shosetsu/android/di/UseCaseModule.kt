@@ -102,7 +102,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 		StartUpdateWorkerUseCase(instance())
 	}
 
-	bind<LoadAppUpdateUseCase>() with provider { LoadAppUpdateUseCase(instance()) }
+	bind<LoadRemoteAppUpdateUseCase>() with provider { LoadRemoteAppUpdateUseCase(instance()) }
 	bind<UpdateDownloadUseCase>() with provider { UpdateDownloadUseCase(instance()) }
 	bind<DeleteDownloadUseCase>() with provider { DeleteDownloadUseCase(instance()) }
 
@@ -132,7 +132,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<ToastErrorUseCase>() with provider { ToastErrorUseCase(instance()) }
 	bind<IsOnlineUseCase>() with provider { IsOnlineUseCase(instance()) }
 
-	bind<LoadAppUpdateLiveUseCase>() with provider { LoadAppUpdateLiveUseCase(instance()) }
+	bind<LoadAppUpdateFlowLiveUseCase>() with provider { LoadAppUpdateFlowLiveUseCase(instance()) }
 
 	bind<GetCatalogueQueryDataUseCase>() with provider {
 		GetCatalogueQueryDataUseCase(instance(), instance(), instance(), instance())
@@ -159,6 +159,12 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<LoadNovelUITypeUseCase>() with provider { LoadNovelUITypeUseCase(instance()) }
 	bind<StartAppUpdateInstallWorkerUseCase>() with provider {
 		StartAppUpdateInstallWorkerUseCase(instance())
+	}
+	bind<CanAppSelfUpdateUseCase>() with provider {
+		CanAppSelfUpdateUseCase(instance())
+	}
+	bind<LoadAppUpdateUseCase>() with provider {
+		LoadAppUpdateUseCase(instance())
 	}
 
 }

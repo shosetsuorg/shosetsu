@@ -1,34 +1,27 @@
-package app.shosetsu.android.domain.usecases.load
+package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
 import app.shosetsu.common.dto.HResult
-import kotlinx.coroutines.flow.Flow
 
 /*
- * This file is part of shosetsu.
+ * This file is part of Shosetsu.
  *
- * shosetsu is free software: you can redistribute it and/or modify
+ * Shosetsu is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * shosetsu is distributed in the hope that it will be useful,
+ * Shosetsu is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
+ * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * shosetsu
- * 07 / 09 / 2020
- */
-class LoadAppUpdateLiveUseCase(
+class CanAppSelfUpdateUseCase(
 	private val iAppUpdatesRepository: IAppUpdatesRepository
 ) {
-	operator fun invoke(): Flow<HResult<AppUpdateEntity>> =
-		iAppUpdatesRepository.loadAppUpdateFlow()
+	operator fun invoke(): HResult<Boolean> = iAppUpdatesRepository.canSelfUpdate()
 }

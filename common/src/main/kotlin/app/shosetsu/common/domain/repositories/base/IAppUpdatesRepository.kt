@@ -59,7 +59,7 @@ interface IAppUpdatesRepository {
 	 *
 	 * [HResult.Success] if an app update is present
 	 */
-	suspend fun loadGitAppUpdate(): HResult<AppUpdateEntity>
+	suspend fun loadRemoteUpdate(): HResult<AppUpdateEntity>
 
 	/**
 	 * Load an app update if present
@@ -70,6 +70,20 @@ interface IAppUpdatesRepository {
 	 * [HResult.Success] if an app update is present
 	 */
 	suspend fun loadAppUpdate(): HResult<AppUpdateEntity>
+
+	/**
+	 * Can the app self update itself
+	 *
+	 * @return
+	 * [HResult.Success] boolean true if the app can self update, false otherwise
+	 *
+	 * [HResult.Error] something went wrong
+	 *
+	 * [HResult.Empty] never
+	 *
+	 * [HResult.Loading] never
+	 */
+	fun canSelfUpdate(): HResult<Boolean>
 
 	/**
 	 * Downloads the app update specified by [appUpdateEntity]

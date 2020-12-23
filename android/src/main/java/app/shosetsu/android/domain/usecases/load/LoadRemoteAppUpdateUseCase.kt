@@ -1,8 +1,8 @@
-package app.shosetsu.android.datasource.remote.base
+package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
+import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
 import app.shosetsu.common.dto.HResult
-import okhttp3.Response
 
 /*
  * This file is part of shosetsu.
@@ -23,18 +23,11 @@ import okhttp3.Response
 
 /**
  * shosetsu
- * 07 / 09 / 2020
- *
- * A class to see if there is an app update ava
+ * 20 / 06 / 2020
  */
-interface IRemoteAppUpdateDataSource {
-	suspend fun loadAppUpdate(): HResult<AppUpdateEntity>
-
-
-	/**
-	 * Specifies that this [IRemoteAppUpdateDataSource] can download the app update itself
-	 */
-	interface Downloadable : IRemoteAppUpdateDataSource {
-		suspend fun downloadAppUpdate(update: AppUpdateEntity): HResult<Response>
-	}
+class LoadRemoteAppUpdateUseCase(
+	private val iAppUpdatesRepository: IAppUpdatesRepository
+) {
+	suspend operator fun invoke(): HResult<AppUpdateEntity> =
+		iAppUpdatesRepository.loadRemoteUpdate()
 }
