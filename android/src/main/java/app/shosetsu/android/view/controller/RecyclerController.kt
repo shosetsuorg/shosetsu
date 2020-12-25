@@ -43,9 +43,13 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding
  *     A simple controller that is just a recyclerView.
  *     Default will fill with a LinearLayoutManager
  * </p>
+ *
+ * @param AD RecyclerView adapter type
+ * @param IT Item the [AD] uses to make the UI
+ * @param VB ViewBinding of the UI
  */
-abstract class RecyclerController<T, V, VB> : ViewedController<VB>
-		where T : RecyclerView.Adapter<*>,
+abstract class RecyclerController<AD, IT, VB> : ViewedController<VB>
+		where AD : RecyclerView.Adapter<*>,
 		      VB : ViewBinding {
 
 
@@ -54,12 +58,12 @@ abstract class RecyclerController<T, V, VB> : ViewedController<VB>
 	/**
 	 * Adapter of the RecyclerView
 	 */
-	open var adapter: T? = null
+	open var adapter: AD? = null
 
 	/**
 	 * Recycler array
 	 */
-	open var recyclerArray: ArrayList<V> = arrayListOf()
+	open var recyclerArray: ArrayList<IT> = arrayListOf()
 
 	constructor() : super()
 	constructor(args: Bundle) : super(args)
@@ -77,7 +81,7 @@ abstract class RecyclerController<T, V, VB> : ViewedController<VB>
 	}
 
 	/** @param result [HResult], if [HResult.Success] then updates UI */
-	open fun handleRecyclerUpdate(result: HResult<List<V>>) {
+	open fun handleRecyclerUpdate(result: HResult<List<IT>>) {
 		when (result) {
 			is HResult.Loading -> showLoading()
 			is HResult.Success -> updateUI(result.data)
@@ -99,6 +103,16 @@ abstract class RecyclerController<T, V, VB> : ViewedController<VB>
 		recyclerView.adapter = adapter
 	}
 
+	/**
+	 * Convenience method to change the layout manager of the recyclerview post UI create
+	 *
+	 * Applies the [layoutManager] and the same old [adapter] to the [recyclerView]
+	 */
+	fun updateLayoutManager(layoutManager: LinearLayoutManager) {
+		recyclerView.layoutManager = layoutManager
+		recyclerView.adapter = adapter
+	}
+
 	open fun showEmpty() {}
 	open fun hideEmpty() {}
 
@@ -110,7 +124,7 @@ abstract class RecyclerController<T, V, VB> : ViewedController<VB>
 	/**
 	 * Creates the adapter for the recycler view to use
 	 */
-	abstract fun createRecyclerAdapter(): T
+	abstract fun createRecyclerAdapter(): AD
 
 	/**
 	 * The data for this view is loading
@@ -123,7 +137,7 @@ abstract class RecyclerController<T, V, VB> : ViewedController<VB>
 	/**
 	 * Updates the UI with a new list
 	 */
-	open fun updateUI(newList: List<V>) {
+	open fun updateUI(newList: List<IT>) {
 		if (newList.isEmpty()) showEmpty() else hideEmpty()
 		adapter?.let {
 			DiffUtil.calculateDiff(
@@ -140,14 +154,14 @@ abstract class RecyclerController<T, V, VB> : ViewedController<VB>
 	/**
 	 * If the contents of two items are the same
 	 */
-	open fun difAreContentsTheSame(oldItem: V, newItem: V): Boolean =
+	open fun difAreContentsTheSame(oldItem: IT, newItem: IT): Boolean =
 		//Log.d(logID(), "$oldItem v $newItem = $b")
 		oldItem == newItem
 
 	/**
 	 * If the identification of two items are the same
 	 */
-	abstract fun difAreItemsTheSame(oldItem: V, newItem: V): Boolean
+	abstract fun difAreItemsTheSame(oldItem: IT, newItem: IT): Boolean
 
 
 	abstract class BasicRecyclerController<T : RecyclerView.Adapter<*>, V>
@@ -179,8 +193,8 @@ abstract class RecyclerController<T, V, VB> : ViewedController<VB>
 	 * @param newList New List
 	 */
 	inner class RecyclerDiffToolCallBack(
-		private val newList: List<V> = arrayListOf(),
-		private val oldList: List<V> = recyclerArray,
+		private val newList: List<IT> = arrayListOf(),
+		private val oldList: List<IT> = recyclerArray,
 	) : DiffUtil.Callback() {
 		override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
 			this@RecyclerController.difAreContentsTheSame(

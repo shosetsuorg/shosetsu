@@ -1,7 +1,6 @@
 package app.shosetsu.android.ui.library
 
 import android.content.res.Configuration
-import android.util.Log
 import android.view.*
 import android.widget.SearchView
 import androidx.core.os.bundleOf
@@ -23,8 +22,8 @@ import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.view.widget.SlidingUpBottomMenu
 import app.shosetsu.android.viewmodel.abstracted.ILibraryViewModel
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.enums.NovelUIType.COMPRESSED
+import app.shosetsu.common.enums.NovelUIType
+import app.shosetsu.common.enums.NovelUIType.*
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerLibraryBinding
@@ -70,9 +69,6 @@ class LibraryController
 	/***/
 	val viewModel: ILibraryViewModel by viewModel()
 
-	/** Inflater */
-	val inflater: MenuInflater = MenuInflater(applicationContext)
-
 	init {
 		setHasOptionsMenu(true)
 	}
@@ -80,40 +76,41 @@ class LibraryController
 	override fun bindView(inflater: LayoutInflater): ControllerLibraryBinding =
 		ControllerLibraryBinding.inflate(inflater).also { recyclerView = it.recyclerView }
 
-	override fun createLayoutManager(): RecyclerView.LayoutManager {
-		return when (viewModel.getNovelUIType()) {
-			COMPRESSED -> LinearLayoutManager(
-				applicationContext,
-				LinearLayoutManager.VERTICAL,
-				false
-			)
-			else -> GridLayoutManager(
-				applicationContext,
-				context!!.resources.let {
-					val density = it.displayMetrics.density
-					val widthPixels = it.displayMetrics.widthPixels
-					when (it.configuration.orientation) {
-						Configuration.ORIENTATION_LANDSCAPE -> {
-							viewModel.calculateHColumnCount(
-								widthPixels,
-								density,
-								200f
-							)
-						}
-						else -> {
-							viewModel.calculatePColumnCount(
-								widthPixels,
-								density,
-								200f
-							)
-						}
+	private fun NovelUIType.manager() = when (this) {
+		COMPRESSED -> LinearLayoutManager(
+			applicationContext,
+			LinearLayoutManager.VERTICAL,
+			false
+		)
+		else -> GridLayoutManager(
+			applicationContext,
+			context!!.resources.let {
+				val density = it.displayMetrics.density
+				val widthPixels = it.displayMetrics.widthPixels
+				when (it.configuration.orientation) {
+					Configuration.ORIENTATION_LANDSCAPE -> {
+						viewModel.calculateHColumnCount(
+							widthPixels,
+							density,
+							200f
+						)
 					}
-				},
-				RecyclerView.VERTICAL,
-				false
-			)
-		}
+					else -> {
+						viewModel.calculatePColumnCount(
+							widthPixels,
+							density,
+							200f
+						)
+					}
+				}
+			},
+			RecyclerView.VERTICAL,
+			false
+		)
 	}
+
+	override fun createLayoutManager(): RecyclerView.LayoutManager =
+		viewModel.getNovelUIType().manager()
 
 	override fun onViewCreated(view: View) {
 		showEmpty()
@@ -180,16 +177,15 @@ class LibraryController
 	}
 
 	private fun setObservers() {
-		viewModel.liveData.observe(this) {
-			it.handle { logV("${it.size}") }
-			handleRecyclerUpdate(it)
+		viewModel.liveData.observe(this) { handleRecyclerUpdate(it) }
+		viewModel.novelUITypeLiveData.observe(this) {
+			updateLayoutManager(it.manager())
 		}
 	}
 
 	/***/
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		if (fastAdapter.getSelectExtension().selectedItems.isEmpty()) {
-			Log.d(logID(), "Creating default menu")
 			inflater.inflate(R.menu.toolbar_library, menu)
 			val searchView =
 				menu.findItem(R.id.library_search).actionView as SearchView?
@@ -199,7 +195,6 @@ class LibraryController
 				return@setOnCloseListener v is HResult.Success
 			}
 		} else {
-			Log.d(logID(), "Creating selected menu")
 			inflater.inflate(R.menu.toolbar_library_selected, menu)
 		}
 	}
@@ -239,8 +234,16 @@ class LibraryController
 				)
 				return true
 			}
+			R.id.view_type_normal -> {
+				viewModel.setViewType(NORMAL)
+				return true
+			}
+			R.id.view_type_comp -> {
+				viewModel.setViewType(COMPRESSED)
+				return true
+			}
+			else -> return false
 		}
-		return false
 	}
 
 	override fun hideEmpty() {
@@ -254,16 +257,11 @@ class LibraryController
 		binding.emptyDataView.show("You don't have any novels, Go to \"Browse\" and add some!")
 	}
 
-
 	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
 		this.fab = fab
 		fab.setOnClickListener { bottomMenuRetriever.invoke()?.show() }
 		fab.setText(R.string.filter)
 		fab.setIconResource(R.drawable.filter)
-	}
-
-	override fun onDestroy() {
-		super.onDestroy()
 	}
 
 	override fun getBottomMenuView(): View =

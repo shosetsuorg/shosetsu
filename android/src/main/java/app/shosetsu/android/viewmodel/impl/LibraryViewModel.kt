@@ -27,6 +27,7 @@ import app.shosetsu.android.domain.usecases.load.LoadLibraryUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUIColumnsHUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUIColumnsPUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUITypeUseCase
+import app.shosetsu.android.domain.usecases.settings.SetNovelUITypeUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateBookmarkedNovelUseCase
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ILibraryViewModel
@@ -59,6 +60,7 @@ class LibraryViewModel(
 	private val loadNovelUITypeUseCase: LoadNovelUITypeUseCase,
 	private val loadNovelUIColumnsHUseCase: LoadNovelUIColumnsHUseCase,
 	private val loadNovelUIColumnsPUseCase: LoadNovelUIColumnsPUseCase,
+	private val setNovelUITypeUseCase: SetNovelUITypeUseCase
 ) : ILibraryViewModel() {
 
 
@@ -71,23 +73,26 @@ class LibraryViewModel(
 	private val librarySourceFlow: Flow<HResult<List<ABookmarkedNovelUI>>> = libraryAsCardsUseCase()
 
 	@ExperimentalCoroutinesApi
-	override val genresFlow: LiveData<List<String>> by lazy {
+	override val genresLiveData: LiveData<List<String>> by lazy {
 		stripOutList { it.genres }
 	}
 
 	@ExperimentalCoroutinesApi
-	override val tagsFlow: LiveData<List<String>> by lazy {
+	override val tagsLiveData: LiveData<List<String>> by lazy {
 		stripOutList { it.tags }
 	}
 
 	@ExperimentalCoroutinesApi
-	override val authorsFlow: LiveData<List<String>> by lazy {
+	override val authorsLiveData: LiveData<List<String>> by lazy {
 		stripOutList { it.authors }
 	}
 
 	@ExperimentalCoroutinesApi
-	override val artistsFlow: LiveData<List<String>> by lazy {
+	override val artistsLiveData: LiveData<List<String>> by lazy {
 		stripOutList { it.artists }
+	}
+	override val novelUITypeLiveData: LiveData<NovelUIType> by lazy {
+		loadNovelUITypeUseCase().asIOLiveData()
 	}
 
 	private val novelSortTypeFlow: MutableStateFlow<NovelSortType> by lazy {
@@ -372,6 +377,10 @@ class LibraryViewModel(
 			map[k] = v
 		}
 		return map
+	}
+
+	override fun setViewType(uiType: NovelUIType) {
+		launchIO { setNovelUITypeUseCase(uiType) }
 	}
 
 	override fun setUnreadFilter(inclusionState: InclusionState?) {

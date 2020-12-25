@@ -41,16 +41,18 @@ abstract class ILibraryViewModel :
 	ColumnCalculator {
 
 	/** All genres from all [ABookmarkedNovelUI] combined*/
-	abstract val genresFlow: LiveData<List<String>>
+	abstract val genresLiveData: LiveData<List<String>>
 
 	/** All tags from all [ABookmarkedNovelUI] combined*/
-	abstract val tagsFlow: LiveData<List<String>>
+	abstract val tagsLiveData: LiveData<List<String>>
 
 	/** All authors from all [ABookmarkedNovelUI] combined*/
-	abstract val authorsFlow: LiveData<List<String>>
+	abstract val authorsLiveData: LiveData<List<String>>
 
 	/** All artists from all [ABookmarkedNovelUI] combined*/
-	abstract val artistsFlow: LiveData<List<String>>
+	abstract val artistsLiveData: LiveData<List<String>>
+
+	abstract val novelUITypeLiveData: LiveData<NovelUIType>
 
 	abstract fun getNovelUIType(): NovelUIType
 
@@ -85,5 +87,6 @@ abstract class ILibraryViewModel :
 	abstract fun getFilterTags(): HashMap<String, InclusionState>
 
 	abstract fun resetSortAndFilters()
+	abstract fun setViewType(uiType: NovelUIType)
 
 }

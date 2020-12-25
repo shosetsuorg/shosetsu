@@ -10,6 +10,7 @@ import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
 import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadChaptersResumeFirstUnreadUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadNavigationStyleUseCase
+import app.shosetsu.android.domain.usecases.settings.SetNovelUITypeUseCase
 import app.shosetsu.android.domain.usecases.toast.StringToastUseCase
 import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
 import app.shosetsu.android.domain.usecases.update.*
@@ -166,5 +167,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<LoadAppUpdateUseCase>() with provider {
 		LoadAppUpdateUseCase(instance())
 	}
-
+	bind<SetNovelUITypeUseCase>() with provider {
+		SetNovelUITypeUseCase(instance())
+	}
 }
