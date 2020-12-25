@@ -40,9 +40,9 @@ class GuavaMemChaptersDataSource : IMemChaptersDataSource {
 		.expireAfterWrite(MEMORY_EXPIRE_CHAPTER_TIME, MINUTES)
 		.build()
 
-	override suspend fun saveChapterInCache(chapterID: Int, passage: String): HResult<*> =
+	override fun saveChapterInCache(chapterID: Int, passage: String): HResult<*> =
 		successResult(chapters.set(chapterID, passage))
 
-	override suspend fun loadChapterFromCache(chapterID: Int): HResult<String> =
+	override fun loadChapterFromCache(chapterID: Int): HResult<String> =
 		chapters[chapterID]?.let { successResult(it) } ?: emptyResult()
 }

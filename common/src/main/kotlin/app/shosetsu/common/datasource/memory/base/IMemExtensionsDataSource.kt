@@ -26,11 +26,11 @@ import app.shosetsu.lib.IExtension
  */
 interface IMemExtensionsDataSource {
     /** Load formatter from memory */
-    suspend fun loadExtensionFromMemory(extensionID: Int): HResult<IExtension>
+    fun loadExtensionFromMemory(extensionID: Int): HResult<IExtension>
 
-    /** Put formatter in memory */
-    suspend fun putExtensionInMemory(iExtension: IExtension): HResult<*>
+	/** Put formatter in memory */
+	fun putExtensionInMemory(iExtension: IExtension): HResult<*>
 
-    /** Remove formatter by ID from cache*/
-    suspend fun removeExtensionFromMemory(extensionID: Int): HResult<*>
+	/** Remove formatter by ID from cache*/
+	fun removeExtensionFromMemory(extensionID: Int): HResult<*>
 }

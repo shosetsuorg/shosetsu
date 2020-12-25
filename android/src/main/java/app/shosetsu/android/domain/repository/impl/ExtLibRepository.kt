@@ -68,9 +68,9 @@ class ExtLibRepository(
 	}
 
 	override fun blockingLoadExtLibrary(name: String): HResult<String> =
-		memSource.blockingLoadLibrary(name).takeIf { it is HResult.Success }
+		memSource.loadLibrary(name).takeIf { it is HResult.Success }
 			?: fileSource.blockingLoadLib(name).also {
 				if (it is HResult.Success)
-					memSource.blockingSetLibrary(name, it.data)
+					memSource.setLibrary(name, it.data)
 			}
 }

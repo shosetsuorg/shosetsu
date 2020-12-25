@@ -2,10 +2,8 @@ package app.shosetsu.common.datasource.memory.impl
 
 import app.shosetsu.common.consts.MEMORY_EXPIRE_CHAPTER_TIME
 import app.shosetsu.common.consts.MEMORY_MAX_CHAPTERS
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.emptyResult
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.datasource.memory.base.IMemChaptersDataSource
+import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of Shosetsu.
@@ -28,34 +26,16 @@ import app.shosetsu.common.datasource.memory.base.IMemChaptersDataSource
  * shosetsu
  * 19 / 11 / 2020
  */
-class GenericMemChaptersDataSource : IMemChaptersDataSource {
-	private val chapters = HashMap<Int, Pair<Long, String>>()
-		get() {
-			recycle(field)
-			return field
-		}
+class GenericMemChaptersDataSource : IMemChaptersDataSource,
+	AbstractMemoryDataSource<Int, String>() {
 
-	private fun recycle(hashMap: HashMap<Int, Pair<Long, String>>) {
-		val keys = hashMap.keys
-		for (i in keys) {
-			val (time) = hashMap[i] ?: continue
-			if (time + ((MEMORY_EXPIRE_CHAPTER_TIME * 1000) * 60) <= System.currentTimeMillis())
-				hashMap.remove(i)
-		}
-	}
+	override val expireTime = MEMORY_EXPIRE_CHAPTER_TIME * 1000 * 60
+	override val maxSize = MEMORY_MAX_CHAPTERS
 
-	override suspend fun saveChapterInCache(chapterID: Int, passage: String): HResult<*> {
-		val chapters = chapters
-		if (chapters.size > MEMORY_MAX_CHAPTERS) chapters.remove(chapters.keys.first())
-		chapters[chapterID] = System.currentTimeMillis() to passage
-		return successResult("")
-	}
+	override fun saveChapterInCache(chapterID: Int, passage: String): HResult<*> =
+		put(chapterID, passage)
 
-	override suspend fun loadChapterFromCache(chapterID: Int): HResult<String> {
-		val chapters = chapters
-		return if (chapters.containsKey(chapterID))
-			chapters[chapterID]?.let { successResult(it.second) }
-					?: emptyResult() else emptyResult()
-	}
+	override fun loadChapterFromCache(chapterID: Int): HResult<String> =
+		get(chapterID)
 
 }

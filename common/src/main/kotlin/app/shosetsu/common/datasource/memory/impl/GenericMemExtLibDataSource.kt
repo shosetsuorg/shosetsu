@@ -1,11 +1,9 @@
 package app.shosetsu.common.datasource.memory.impl
 
-import app.shosetsu.common.consts.MEMORY_EXPIRE_CHAPTER_TIME
-import app.shosetsu.common.consts.MEMORY_MAX_CHAPTERS
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.emptyResult
-import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.consts.MEMORY_EXPIRE_EXT_LIB_TIME
+import app.shosetsu.common.consts.MEMORY_MAX_EXT_LIBS
 import app.shosetsu.common.datasource.memory.base.IMemExtLibDataSource
+import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of Shosetsu.
@@ -28,45 +26,17 @@ import app.shosetsu.common.datasource.memory.base.IMemExtLibDataSource
  * shosetsu
  * 19 / 11 / 2020
  */
-class GenericMemExtLibDataSource : IMemExtLibDataSource {
-	private val extLibs = HashMap<String, Pair<Long, String>>()
-		get() {
-			recycle(field)
-			return field
-		}
+class GenericMemExtLibDataSource : IMemExtLibDataSource,
+	AbstractMemoryDataSource<String, String>() {
 
-	private fun recycle(hashMap: HashMap<String, Pair<Long, String>>) {
-		val keys = hashMap.keys
-		for (i in keys) {
-			val (time) = hashMap[i] ?: continue
-			if (time + ((MEMORY_EXPIRE_CHAPTER_TIME * 1000) * 60) <= System.currentTimeMillis())
-				hashMap.remove(i)
-		}
-	}
+	override val maxSize = MEMORY_MAX_EXT_LIBS
+	override val expireTime = MEMORY_EXPIRE_EXT_LIB_TIME * 1000 * 60
 
-	override suspend fun loadLibrary(name: String): HResult<String> = blockingLoadLibrary(name)
+	override fun loadLibrary(name: String): HResult<String> = get(name)
 
-	override fun blockingLoadLibrary(name: String): HResult<String> {
-		val chapters = extLibs
-		return if (chapters.containsKey(name))
-			chapters[name]?.let { successResult(it.second) }
-					?: emptyResult() else emptyResult()
-	}
+	override fun setLibrary(name: String, data: String): HResult<*> =
+		put(name, data)
 
-	override suspend fun setLibrary(name: String, data: String): HResult<*> =
-			blockingSetLibrary(name, data)
-
-	override fun blockingSetLibrary(name: String, data: String): HResult<*> {
-		val chapters = extLibs
-		if (chapters.size > MEMORY_MAX_CHAPTERS) chapters.remove(chapters.keys.first())
-		chapters[name] = System.currentTimeMillis() to data
-		return successResult("")
-	}
-
-	override suspend fun removeLibrary(name: String): HResult<*> =
-			if (!extLibs.containsKey(name)) emptyResult()
-			else {
-				extLibs.remove(name)
-				successResult("")
-			}
+	override fun removeLibrary(name: String): HResult<*> =
+		remove(name)
 }

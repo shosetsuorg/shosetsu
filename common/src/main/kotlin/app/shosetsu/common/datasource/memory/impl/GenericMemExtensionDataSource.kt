@@ -2,10 +2,8 @@ package app.shosetsu.common.datasource.memory.impl
 
 import app.shosetsu.common.consts.MEMORY_EXPIRE_EXTENSION_TIME
 import app.shosetsu.common.consts.MEMORY_MAX_EXTENSIONS
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.emptyResult
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.datasource.memory.base.IMemExtensionsDataSource
+import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.IExtension
 
 /*
@@ -29,41 +27,19 @@ import app.shosetsu.lib.IExtension
  * shosetsu
  * 19 / 11 / 2020
  */
-class GenericMemExtensionDataSource : IMemExtensionsDataSource {
-	private val extensions = HashMap<Int, Pair<Long, IExtension>>()
-		get() {
-			recycle(field)
-			return field
-		}
+class GenericMemExtensionDataSource : IMemExtensionsDataSource,
+	AbstractMemoryDataSource<Int, IExtension>() {
 
-	private fun recycle(hashMap: HashMap<Int, Pair<Long, IExtension>>) {
-		val keys = hashMap.keys
-		for (i in keys) {
-			val (time) = hashMap[i] ?: continue
-			if (time + ((MEMORY_EXPIRE_EXTENSION_TIME * 1000) * 60) <= System.currentTimeMillis())
-				hashMap.remove(i)
-		}
-	}
+	override val maxSize = MEMORY_MAX_EXTENSIONS
+	override val expireTime = MEMORY_EXPIRE_EXTENSION_TIME * 1000 * 60 * 60
 
-	override suspend fun loadExtensionFromMemory(extensionID: Int): HResult<IExtension> {
-		val extension = extensions
-		return if (extension.containsKey(extensionID))
-			extension[extensionID]?.let { successResult(it.second) }
-				?: emptyResult() else emptyResult()
-	}
+	override fun loadExtensionFromMemory(extensionID: Int): HResult<IExtension> =
+		get(extensionID)
 
-	override suspend fun putExtensionInMemory(iExtension: IExtension): HResult<*> {
-		val extension = extensions
-		if (extension.size > MEMORY_MAX_EXTENSIONS) extension.remove(extension.keys.first())
-		extension[iExtension.formatterID] = System.currentTimeMillis() to iExtension
-		return successResult("")
-	}
+	override fun putExtensionInMemory(iExtension: IExtension): HResult<*> =
+		put(iExtension.formatterID, iExtension)
 
-	override suspend fun removeExtensionFromMemory(extensionID: Int): HResult<*> =
-		if (!extensions.containsKey(extensionID)) emptyResult()
-		else {
-			extensions.remove(extensionID)
-			successResult("")
-		}
+	override fun removeExtensionFromMemory(extensionID: Int): HResult<*> =
+		remove(extensionID)
 
 }

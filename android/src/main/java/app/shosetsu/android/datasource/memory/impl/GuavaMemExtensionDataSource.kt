@@ -42,17 +42,17 @@ class GuavaMemExtensionDataSource : IMemExtensionsDataSource {
 		.expireAfterAccess(MEMORY_EXPIRE_EXT_LIB_TIME, MINUTES)
 		.build()
 
-	override suspend fun loadExtensionFromMemory(extensionID: Int): HResult<IExtension> {
+	override fun loadExtensionFromMemory(extensionID: Int): HResult<IExtension> {
 		logV("Loading formatter $extensionID from memory")
 		return extensionsCache[extensionID]?.let { successResult(it) } ?: emptyResult()
 	}
 
-	override suspend fun putExtensionInMemory(iExtension: IExtension): HResult<*> {
+	override fun putExtensionInMemory(iExtension: IExtension): HResult<*> {
 		logV("Putting formatter ${iExtension.formatterID} into memory")
 		return successResult(extensionsCache.set(iExtension.formatterID, iExtension))
 	}
 
-	override suspend fun removeExtensionFromMemory(extensionID: Int): HResult<*> {
+	override fun removeExtensionFromMemory(extensionID: Int): HResult<*> {
 		logV("Removing formatter $extensionID from memory")
 		return successResult(extensionsCache.invalidate(extensionID))
 	}

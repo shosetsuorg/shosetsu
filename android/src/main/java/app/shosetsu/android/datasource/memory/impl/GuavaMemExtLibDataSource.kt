@@ -41,24 +41,18 @@ class GuavaMemExtLibDataSource : IMemExtLibDataSource {
 		.expireAfterWrite(MEMORY_EXPIRE_EXTENSION_TIME, HOURS)
 		.build()
 
-	override suspend fun loadLibrary(name: String): HResult<String> =
-		blockingLoadLibrary(name)
-
-	override fun blockingLoadLibrary(name: String): HResult<String> {
+	override fun loadLibrary(name: String): HResult<String> {
 		val result = libraries[name]
 		logV("Loading $name from memory (success?: ${result != null})")
 		return result?.let { successResult(it) } ?: emptyResult()
 	}
 
-	override suspend fun setLibrary(name: String, data: String): HResult<*> =
-		blockingSetLibrary(name, data)
-
-	override fun blockingSetLibrary(name: String, data: String): HResult<*> {
+	override fun setLibrary(name: String, data: String): HResult<*> {
 		logV("Putting $name into memory")
 		libraries[name] = data
 		return successResult("")
 	}
 
-	override suspend fun removeLibrary(name: String): HResult<*> =
+	override fun removeLibrary(name: String): HResult<*> =
 		successResult(libraries.invalidate(name))
 }

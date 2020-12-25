@@ -25,17 +25,13 @@ import app.shosetsu.common.dto.HResult
  */
 interface IMemExtLibDataSource {
     /** Load Library from memory */
-    suspend fun loadLibrary(name: String): HResult<String>
+    fun loadLibrary(name: String): HResult<String>
 
-    /** Load Library from memory */
-    fun blockingLoadLibrary(name: String): HResult<String>
 
-    /** Put Library in memory */
-    suspend fun setLibrary(name: String, data: String): HResult<*>
+	/** Put Library in memory */
+	fun setLibrary(name: String, data: String): HResult<*>
 
-    /** Put Library in memory */
-    fun blockingSetLibrary(name: String, data: String): HResult<*>
 
-    /** Remove Library by ID from cache*/
-    suspend fun removeLibrary(name: String): HResult<*>
+	/** Remove Library by ID from cache*/
+	fun removeLibrary(name: String): HResult<*>
 }
