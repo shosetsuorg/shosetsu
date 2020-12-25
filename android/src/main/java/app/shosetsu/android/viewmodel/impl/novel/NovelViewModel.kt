@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.liveDataIO
 import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.common.ext.toggle
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
@@ -285,11 +284,17 @@ class NovelViewModel(
 			emit(loadNovelUseCase(novelIDValue, true))
 		}
 
-	override fun reverseChapters() = ::_isSortReversed.toggle()
+	override fun reverseChapters() {
+		_isSortReversed != _isSortReversed
+	}
 
-	override fun toggleOnlyDownloaded() = ::_showOnlyDownloaded.toggle()
+	override fun toggleOnlyDownloaded() {
+		_showOnlyDownloaded != _showOnlyDownloaded
+	}
 
-	override fun toggleOnlyBookmarked() = ::_showOnlyBookmarked.toggle()
+	override fun toggleOnlyBookmarked() {
+		_showOnlyBookmarked != _showOnlyBookmarked
+	}
 
 	override fun setChapterSortType(sortType: ChapterSortType) {
 		_chapterSortType = sortType

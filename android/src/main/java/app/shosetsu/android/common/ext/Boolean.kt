@@ -29,16 +29,4 @@ import kotlin.reflect.KMutableProperty
 
 fun Boolean.toInt(): Int = if (this) 1 else 0
 
-/**
- * toggles the field
- * If true, sets to false
- * If false, sets to true
- *
- * Suppress the inlineing because of private accessor issues
- */
-@Suppress("NOTHING_TO_INLINE")
-inline fun KMutableProperty<Boolean>.toggle() {
-	this.setter.call(!this.getter.call())
-}
-
 infix fun <T> Boolean.ifSo(action: T): T? = if (this) action else null
