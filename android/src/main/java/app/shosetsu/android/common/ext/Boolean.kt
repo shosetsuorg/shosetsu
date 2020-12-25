@@ -1,7 +1,5 @@
 package app.shosetsu.android.common.ext
 
-import kotlin.reflect.KMutableProperty
-
 /*
  * This file is part of shosetsu.
  *
