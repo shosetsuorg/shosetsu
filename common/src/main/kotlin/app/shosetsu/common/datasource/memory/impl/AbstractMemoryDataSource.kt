@@ -3,7 +3,6 @@ package app.shosetsu.common.datasource.memory.impl
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.emptyResult
 import app.shosetsu.common.dto.successResult
-import kotlin.time.TimeSource
 
 /*
  * This file is part of Shosetsu.
@@ -63,7 +62,9 @@ abstract class AbstractMemoryDataSource<K, V : Any> {
 		}
 
 	fun put(key: K, value: V): HResult<*> {
-		if (_hashMap.size > maxSize) _hashMap.remove(_hashMap.keys.first())
+		if (_hashMap.size > maxSize) {
+			_hashMap.remove(_hashMap.keys.first())
+		}
 
 		_hashMap[key] = System.currentTimeMillis() to value
 		return successResult("")
