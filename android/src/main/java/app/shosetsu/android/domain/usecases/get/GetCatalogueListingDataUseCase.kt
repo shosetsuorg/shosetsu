@@ -45,7 +45,7 @@ class GetCatalogueListingDataUseCase(
 		iExtension: IExtension,
 		data: Map<Int, Any>
 	): HResult<List<ACatalogNovelUI>> {
-		val cardType = iSettingsRepository.getInt(SettingKey.NovelCardType).transmogrify(
+		val cardType = iSettingsRepository.getInt(SettingKey.SelectedNovelCardType).transmogrify(
 			onError = {
 				return it
 			},

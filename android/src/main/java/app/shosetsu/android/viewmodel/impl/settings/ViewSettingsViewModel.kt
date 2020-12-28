@@ -71,12 +71,12 @@ class ViewSettingsViewModel(
 		spinnerSettingData(3) {
 			title { R.string.novel_card_type_selector_title }
 			description { R.string.novel_card_type_selector_desc }
-			iSettingsRepository.getInt(NovelCardType).handle {
+			iSettingsRepository.getInt(SelectedNovelCardType).handle {
 				spinnerValue { it }
 			}
 			onSpinnerItemSelected { _, _, position, _ ->
 				launchIO {
-					iSettingsRepository.setInt(NovelCardType, position)
+					iSettingsRepository.setInt(SelectedNovelCardType, position)
 				}
 			}
 			try {

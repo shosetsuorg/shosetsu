@@ -6,7 +6,7 @@ import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.enums.NovelUIType
+import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
 import kotlinx.coroutines.Job
@@ -92,7 +92,7 @@ abstract class ICatalogViewModel :
 	 * If [inSearch] it rejects the action
 	 * Else loads more default data
 	 */
-	abstract fun getNovelUIType(): NovelUIType
+	abstract fun getNovelUIType(): NovelCardType
 
 	abstract fun loadMore()
 

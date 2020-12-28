@@ -20,6 +20,8 @@ package app.shosetsu.common.enums
 /**
  * shosetsu
  * 12 / 12 / 2020
+ *
+ * How to sort novels in a list
  */
 enum class NovelSortType {
 	BY_TITLE,

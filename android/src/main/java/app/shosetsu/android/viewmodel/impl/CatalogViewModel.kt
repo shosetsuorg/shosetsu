@@ -18,7 +18,7 @@ import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.loading
 import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.enums.NovelUIType
+import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.PAGE_INDEX
@@ -60,7 +60,8 @@ class CatalogViewModel(
 	private val loadNovelUIColumnsHUseCase: LoadNovelUIColumnsHUseCase,
 	private val loadNovelUIColumnsPUseCase: LoadNovelUIColumnsPUseCase,
 ) : ICatalogViewModel() {
-	private var novelUIType: NovelUIType = NovelUIType.fromInt(SettingKey.NovelCardType.default)
+	private var novelCardType: NovelCardType =
+		NovelCardType.fromInt(SettingKey.SelectedNovelCardType.default)
 	private var columnP: Int = SettingKey.ChapterColumnsInPortait.default
 	private var columnH: Int = SettingKey.ChapterColumnsInLandscape.default
 	private var iExtension: IExtension? = null
@@ -95,7 +96,7 @@ class CatalogViewModel(
 				columnP = it
 			}
 			loadNovelUITypeUseCase().collectLatest {
-				novelUIType = it
+				novelCardType = it
 			}
 		}
 	}
@@ -229,7 +230,7 @@ class CatalogViewModel(
 
 	override fun getColumnsInP(): Int = columnP
 	override fun getColumnsInH(): Int = columnH
-	override fun getNovelUIType(): NovelUIType = novelUIType
+	override fun getNovelUIType(): NovelCardType = novelCardType
 
 }
 

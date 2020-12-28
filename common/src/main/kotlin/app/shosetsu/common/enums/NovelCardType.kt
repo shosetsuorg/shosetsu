@@ -21,8 +21,8 @@ package app.shosetsu.common.enums
  * shosetsu
  * 08 / 12 / 2020
  */
-enum class NovelUIType(
-		private val code: Int
+enum class NovelCardType(
+	private val code: Int
 ) {
 	NORMAL(0),
 	COMPRESSED(1),
@@ -31,6 +31,6 @@ enum class NovelUIType(
 	fun toInt(): Int = code
 
 	companion object {
-		fun fromInt(code: Int): NovelUIType = values().find { it.code == code }!!
+		fun fromInt(code: Int): NovelCardType = values().find { it.code == code }!!
 	}
 }

@@ -2,7 +2,7 @@ package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.enums.NovelUIType
+import app.shosetsu.common.enums.NovelCardType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
@@ -32,9 +32,9 @@ class LoadNovelUITypeUseCase(
 	private val repository: ISettingsRepository
 ) {
 	@ExperimentalCoroutinesApi
-	operator fun invoke(): Flow<NovelUIType> {
-		return repository.getIntFlow(SettingKey.NovelCardType).mapLatest {
-			NovelUIType.fromInt(it)
+	operator fun invoke(): Flow<NovelCardType> {
+		return repository.getIntFlow(SettingKey.SelectedNovelCardType).mapLatest {
+			NovelCardType.fromInt(it)
 		}
 	}
 }

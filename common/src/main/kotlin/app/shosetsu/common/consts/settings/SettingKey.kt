@@ -86,9 +86,10 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	// App Update Options
 	object AppUpdateOnStartup : SettingKey<Boolean>("appUpdateOnStartup", true)
 	object AppUpdateOnMeteredConnection : SettingKey<Boolean>(
-			"appUpdateMetered",
-			false
+		"appUpdateMetered",
+		false
 	)
+
 	object AppUpdateOnlyWhenIdle : SettingKey<Boolean>("appUpdateIdle", false)
 	object AppUpdateCycle : SettingKey<Int>("appUpdateCycle", 1)
 
@@ -96,7 +97,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	// View options
 	object ChapterColumnsInPortait : SettingKey<Int>("columnsInNovelsViewP", 3)
 	object ChapterColumnsInLandscape : SettingKey<Int>("columnsInNovelsViewH", 6)
-	object NovelCardType : SettingKey<Int>("novelCardType", 0)
+	object SelectedNovelCardType : SettingKey<Int>("novelCardType", 0)
 	object NavStyle : SettingKey<Int>("navigationStyle", 0)
 
 	// Backup Options
@@ -124,72 +125,72 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	companion object {
 		private val KEYS: ArrayList<SettingKey<*>> by lazy {
 			arrayListOf(
-					ReaderTheme,
-					FirstTime,
+				ReaderTheme,
+				FirstTime,
 
 
-					// How things look in Reader
-					ReaderUserThemes,
+				// How things look in Reader
+				ReaderUserThemes,
 
 
-					ReaderTextSize,
-					ReaderParagraphSpacing,
-					ReaderIndentSize,
+				ReaderTextSize,
+				ReaderParagraphSpacing,
+				ReaderIndentSize,
 
-					//- How things act in Reader
-					ReaderIsTapToScroll,
-					ReaderVolumeScroll,
-					ReaderIsInvertedSwipe,
-					ReadingMarkingType,
-					ReaderMarkReadAsReading,
-
-
-					//- Some things
-					ChaptersResumeFirstUnread,
-
-					// Download options
-					IsDownloadPaused,
-
-					DeleteReadChapter,
-					DownloadOnLowStorage,
-					DownloadOnLowBattery,
-					DownloadOnMeteredConnection,
-					DownloadOnlyWhenIdle,
-
-					// Update options
-					IsDownloadOnUpdate,
-					OnlyUpdateOngoing,
-					UpdateOnStartup,
-					UpdateCycle,
-					UpdateOnLowStorage,
-					UpdateOnLowBattery,
-					UpdateOnMeteredConnection,
-					UpdateOnlyWhenIdle,
-
-					// App Update Options
-					AppUpdateOnStartup,
-					AppUpdateOnMeteredConnection,
-					AppUpdateOnlyWhenIdle,
-					AppUpdateCycle,
+				//- How things act in Reader
+				ReaderIsTapToScroll,
+				ReaderVolumeScroll,
+				ReaderIsInvertedSwipe,
+				ReadingMarkingType,
+				ReaderMarkReadAsReading,
 
 
-					// View options
-					ChapterColumnsInPortait,
-					ChapterColumnsInLandscape,
-					NovelCardType,
-					NavStyle,
+				//- Some things
+				ChaptersResumeFirstUnread,
 
-					// Backup Options
-					BackupChapters,
-					BackupSettings,
-					BackupQuick,
+				// Download options
+				IsDownloadPaused,
 
-					// Download Options
-					CustomExportDirectory,
+				DeleteReadChapter,
+				DownloadOnLowStorage,
+				DownloadOnLowBattery,
+				DownloadOnMeteredConnection,
+				DownloadOnlyWhenIdle,
 
-					DownloadThreadPool,
-					DownloadExtThreads,
-					AppTheme
+				// Update options
+				IsDownloadOnUpdate,
+				OnlyUpdateOngoing,
+				UpdateOnStartup,
+				UpdateCycle,
+				UpdateOnLowStorage,
+				UpdateOnLowBattery,
+				UpdateOnMeteredConnection,
+				UpdateOnlyWhenIdle,
+
+				// App Update Options
+				AppUpdateOnStartup,
+				AppUpdateOnMeteredConnection,
+				AppUpdateOnlyWhenIdle,
+				AppUpdateCycle,
+
+
+				// View options
+				ChapterColumnsInPortait,
+				ChapterColumnsInLandscape,
+				SelectedNovelCardType,
+				NavStyle,
+
+				// Backup Options
+				BackupChapters,
+				BackupSettings,
+				BackupQuick,
+
+				// Download Options
+				CustomExportDirectory,
+
+				DownloadThreadPool,
+				DownloadExtThreads,
+				AppTheme
 			)
 		}
 
@@ -197,18 +198,3 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 				KEYS.find { it.name == key } ?: throw NullPointerException("Cannot find $key")
 	}
 }
-
-// Constant keys
-const val FIRST_TIME: String = "first_time"
-
-
-// How things look in Reader
-const val READER_THEME: String = "readerTheme"
-const val READER_USER_THEMES: String = "readerThemes"
-
-
-// View options
-const val C_IN_NOVELS_P: String = "columnsInNovelsViewP"
-const val C_IN_NOVELS_H: String = "columnsInNovelsViewH"
-const val NOVEL_CARD_TYPE: String = "novelCardType"
-const val NAVIGATION_STYLE: String = "navigationStyle"

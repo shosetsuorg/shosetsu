@@ -2,7 +2,7 @@ package app.shosetsu.android.domain.usecases.settings
 
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.enums.NovelUIType
+import app.shosetsu.common.enums.NovelCardType
 
 /*
  * This file is part of Shosetsu.
@@ -27,7 +27,7 @@ import app.shosetsu.common.enums.NovelUIType
 class SetNovelUITypeUseCase(
 	private val settingsRepo: ISettingsRepository
 ) {
-	suspend operator fun invoke(novelUIType: NovelUIType) =
-		settingsRepo.setInt(SettingKey.NovelCardType, novelUIType.toInt())
+	suspend operator fun invoke(novelCardType: NovelCardType) =
+		settingsRepo.setInt(SettingKey.SelectedNovelCardType, novelCardType.toInt())
 
 }

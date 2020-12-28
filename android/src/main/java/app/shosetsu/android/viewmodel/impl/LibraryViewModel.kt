@@ -40,7 +40,7 @@ import app.shosetsu.common.enums.InclusionState
 import app.shosetsu.common.enums.InclusionState.EXCLUDE
 import app.shosetsu.common.enums.InclusionState.INCLUDE
 import app.shosetsu.common.enums.NovelSortType
-import app.shosetsu.common.enums.NovelUIType
+import app.shosetsu.common.enums.NovelCardType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import java.util.Locale.getDefault as LGD
@@ -64,7 +64,7 @@ class LibraryViewModel(
 ) : ILibraryViewModel() {
 
 
-	private var novelUIType: NovelUIType = NovelUIType.fromInt(NovelCardType.default)
+	private var novelCardType: NovelCardType = NovelCardType.fromInt(NovelCardType.default)
 
 	private var columnP: Int = ChapterColumnsInPortait.default
 
@@ -91,7 +91,7 @@ class LibraryViewModel(
 	override val artistsLiveData: LiveData<List<String>> by lazy {
 		stripOutList { it.artists }
 	}
-	override val novelUITypeLiveData: LiveData<NovelUIType> by lazy {
+	override val novelCardTypeLiveData: LiveData<NovelCardType> by lazy {
 		loadNovelUITypeUseCase().asIOLiveData()
 	}
 
@@ -156,7 +156,7 @@ class LibraryViewModel(
 			}
 			@Suppress("EXPERIMENTAL_API_USAGE")
 			loadNovelUITypeUseCase().collectLatest {
-				novelUIType = it
+				novelCardType = it
 			}
 		}
 	}
@@ -277,7 +277,7 @@ class LibraryViewModel(
 
 	override fun getColumnsInH(): Int = columnH
 
-	override fun getNovelUIType(): NovelUIType = novelUIType
+	override fun getNovelUIType(): NovelCardType = novelCardType
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
 
@@ -379,8 +379,8 @@ class LibraryViewModel(
 		return map
 	}
 
-	override fun setViewType(uiType: NovelUIType) {
-		launchIO { setNovelUITypeUseCase(uiType) }
+	override fun setViewType(cardType: NovelCardType) {
+		launchIO { setNovelUITypeUseCase(cardType) }
 	}
 
 	override fun setUnreadFilter(inclusionState: InclusionState?) {

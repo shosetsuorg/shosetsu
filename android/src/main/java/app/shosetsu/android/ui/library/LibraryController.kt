@@ -22,8 +22,8 @@ import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.view.widget.SlidingUpBottomMenu
 import app.shosetsu.android.viewmodel.abstracted.ILibraryViewModel
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.enums.NovelUIType
-import app.shosetsu.common.enums.NovelUIType.*
+import app.shosetsu.common.enums.NovelCardType
+import app.shosetsu.common.enums.NovelCardType.*
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerLibraryBinding
@@ -76,7 +76,7 @@ class LibraryController
 	override fun bindView(inflater: LayoutInflater): ControllerLibraryBinding =
 		ControllerLibraryBinding.inflate(inflater).also { recyclerView = it.recyclerView }
 
-	private fun NovelUIType.manager() = when (this) {
+	private fun NovelCardType.manager() = when (this) {
 		COMPRESSED -> LinearLayoutManager(
 			applicationContext,
 			LinearLayoutManager.VERTICAL,
@@ -178,7 +178,7 @@ class LibraryController
 
 	private fun setObservers() {
 		viewModel.liveData.observe(this) { handleRecyclerUpdate(it) }
-		viewModel.novelUITypeLiveData.observe(this) {
+		viewModel.novelCardTypeLiveData.observe(this) {
 			updateLayoutManager(it.manager())
 		}
 	}

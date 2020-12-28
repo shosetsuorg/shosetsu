@@ -59,7 +59,7 @@ class GetCatalogueQueryDataUseCase(
 		filters
 	).transform {
 		val data: List<Novel.Listing> = it
-		iSettingsRepository.getInt(SettingKey.NovelCardType).transform { cardType ->
+		iSettingsRepository.getInt(SettingKey.SelectedNovelCardType).transform { cardType ->
 			successResult(data.map { novelListing ->
 				novelListing.convertTo(ext)
 			}.mapNotNull { ne ->

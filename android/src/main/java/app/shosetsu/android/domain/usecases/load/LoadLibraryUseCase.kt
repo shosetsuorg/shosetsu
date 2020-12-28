@@ -3,14 +3,14 @@ package app.shosetsu.android.domain.usecases.load
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.view.uimodels.model.library.CommpressedBookmarkedNovelUI
 import app.shosetsu.android.view.uimodels.model.library.NormalBookmarkedNovelUI
-import app.shosetsu.common.consts.settings.SettingKey.NovelCardType
+import app.shosetsu.common.consts.settings.SettingKey.SelectedNovelCardType
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.dto.transform
-import app.shosetsu.common.enums.NovelUIType
-import app.shosetsu.common.enums.NovelUIType.*
+import app.shosetsu.common.enums.NovelCardType
+import app.shosetsu.common.enums.NovelCardType.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapLatest
@@ -42,8 +42,8 @@ class LoadLibraryUseCase(
 ) {
 	operator fun invoke(): Flow<HResult<List<ABookmarkedNovelUI>>> =
 		novelsRepo.getBookmarkedNovelsFlow()
-			.combine(settingsRepo.getIntFlow(NovelCardType).mapLatest {
-				NovelUIType.fromInt(it)
+			.combine(settingsRepo.getIntFlow(SelectedNovelCardType).mapLatest {
+				NovelCardType.fromInt(it)
 			}) { origin, cardType ->
 				origin.transform {
 					val list = it

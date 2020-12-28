@@ -6,7 +6,7 @@ import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.viewmodel.base.*
 import app.shosetsu.common.enums.InclusionState
 import app.shosetsu.common.enums.NovelSortType
-import app.shosetsu.common.enums.NovelUIType
+import app.shosetsu.common.enums.NovelCardType
 
 /*
  * This file is part of shosetsu.
@@ -52,9 +52,9 @@ abstract class ILibraryViewModel :
 	/** All artists from all [ABookmarkedNovelUI] combined*/
 	abstract val artistsLiveData: LiveData<List<String>>
 
-	abstract val novelUITypeLiveData: LiveData<NovelUIType>
+	abstract val novelCardTypeLiveData: LiveData<NovelCardType>
 
-	abstract fun getNovelUIType(): NovelUIType
+	abstract fun getNovelUIType(): NovelCardType
 
 	/**
 	 * Remove the following from the library
@@ -87,6 +87,6 @@ abstract class ILibraryViewModel :
 	abstract fun getFilterTags(): HashMap<String, InclusionState>
 
 	abstract fun resetSortAndFilters()
-	abstract fun setViewType(uiType: NovelUIType)
+	abstract fun setViewType(cardType: NovelCardType)
 
 }
