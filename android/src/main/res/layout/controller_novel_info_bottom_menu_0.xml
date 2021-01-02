@@ -12,20 +12,20 @@
         android:layout_height="wrap_content">
 
         <RadioButton
-            android:id="@+id/all"
+            android:id="@+id/all_radio_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/all" />
 
         <RadioButton
-            android:id="@+id/read"
+            android:id="@+id/read_radio_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/read" />
 
 
         <RadioButton
-            android:id="@+id/unread"
+            android:id="@+id/unread_radio_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/unread" />

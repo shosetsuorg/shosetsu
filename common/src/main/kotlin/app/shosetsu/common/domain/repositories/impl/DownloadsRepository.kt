@@ -19,7 +19,7 @@ package app.shosetsu.common.domain.repositories.impl
 
 import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.datasource.database.base.ILocalDownloadsDataSource
+import app.shosetsu.common.datasource.database.base.IDBDownloadsDataSource
 import app.shosetsu.common.domain.model.local.DownloadEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.Flow
  * @author github.com/doomsdayrs
  */
 class DownloadsRepository(
-		private val iLocalDownloadsDataSource: ILocalDownloadsDataSource,
+	private val iLocalDownloadsDataSource: IDBDownloadsDataSource,
 ) : IDownloadsRepository {
 	override fun loadDownloadsFlow(): Flow<HResult<List<DownloadEntity>>> =
 		iLocalDownloadsDataSource.loadLiveDownloads()

@@ -7,8 +7,8 @@ import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.enums.ChapterSortType
 import app.shosetsu.common.enums.ReadingStatus
+import app.shosetsu.common.view.uimodel.NovelSettingUI
 import javax.security.auth.Destroyable
 
 /*
@@ -40,6 +40,7 @@ abstract class INovelViewModel
 
 	abstract val novelLive: LiveData<HResult<NovelUI>>
 	abstract val chaptersLive: LiveData<HResult<List<ChapterUI>>>
+	abstract val novelSettingFlow: LiveData<HResult<NovelSettingUI>>
 
 	/** Set's the value to be loaded */
 	abstract fun setNovelID(novelID: Int)
@@ -86,34 +87,6 @@ abstract class INovelViewModel
 	 * Opens the chapter in the browser
 	 */
 	abstract fun openBrowser(chapterUI: ChapterUI)
-
-
-	abstract fun reverseChapters()
-
-	/**
-	 * Display only downloaded chapters
-	 */
-	abstract fun toggleOnlyDownloaded()
-
-	/**
-	 * Display only bookmarked chapters
-	 */
-	abstract fun toggleOnlyBookmarked()
-
-	/**
-	 * Sort by [sortType]
-	 */
-	abstract fun setChapterSortType(sortType: ChapterSortType)
-
-	/**
-	 * Display only chapters matching [status]
-	 */
-	abstract fun showOnlyStatus(status: ReadingStatus?)
-
-	/**
-	 * Reverse the displayed chapters
-	 */
-	abstract fun setReverse(b: Boolean)
 
 	/**
 	 * Deletes a chapter
@@ -165,13 +138,7 @@ abstract class INovelViewModel
 	/** Download all chapters */
 	abstract fun downloadAllChapters()
 
-	// Chapters Filtering and sorting
+	abstract fun updateNovelSetting(novelSettingUI: NovelSettingUI)
 
-
-	abstract fun getSortReadingStatusOf(): ReadingStatus?
-	abstract fun showOnlyDownloadedChapters(): Boolean
-	abstract fun showOnlyBookmarkedChapters(): Boolean
-	abstract fun getSortType(): ChapterSortType
-	abstract fun isReversedSortOrder(): Boolean
 
 }

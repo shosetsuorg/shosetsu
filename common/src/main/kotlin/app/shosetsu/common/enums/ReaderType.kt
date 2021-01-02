@@ -76,5 +76,9 @@ enum class ReaderType(val key: Int, val chapterType: ChapterType) {
 	 *
 	 * @see app.shosetsu.lib.Novel.ChapterType.MARKDOWN
 	 */
-	MARK_DOWN(4, ChapterType.MARKDOWN)
+	MARK_DOWN(4, ChapterType.MARKDOWN);
+
+	companion object {
+		fun fromKey(key: Int) = values().find { it.key == key }!!
+	}
 }

@@ -10,12 +10,14 @@ import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.ShareUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.get.GetChapterUIsUseCase
+import app.shosetsu.android.domain.usecases.get.GetNovelSettingFlowUseCase
 import app.shosetsu.android.domain.usecases.get.GetNovelUIUseCase
 import app.shosetsu.android.domain.usecases.get.GetNovelUseCase
 import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
 import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadChaptersResumeFirstUnreadUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateChapterUseCase
+import app.shosetsu.android.domain.usecases.update.UpdateNovelSettingUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
@@ -23,6 +25,7 @@ import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
 import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.ChapterSortType
 import app.shosetsu.common.enums.ReadingStatus
+import app.shosetsu.common.view.uimodel.NovelSettingUI
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
@@ -63,6 +66,8 @@ class NovelViewModel(
 	private val downloadChapterPassageUseCase: DownloadChapterPassageUseCase,
 	private val deleteChapterPassageUseCase: DeleteChapterPassageUseCase,
 	private val isChaptersResumeFirstUnread: LoadChaptersResumeFirstUnreadUseCase,
+	private val getNovelSettingFlowUseCase: GetNovelSettingFlowUseCase,
+	private val updateNovelSettingUseCase: UpdateNovelSettingUseCase
 ) : INovelViewModel() {
 	@ExperimentalCoroutinesApi
 	@get:Synchronized
@@ -84,60 +89,47 @@ class NovelViewModel(
 	}
 
 	@ExperimentalCoroutinesApi
+	override val novelSettingFlow: LiveData<HResult<NovelSettingUI>> by lazy {
+		novelSettingsFlow.asIOLiveData()
+	}
+
+	@ExperimentalCoroutinesApi
 	override val novelLive: LiveData<HResult<NovelUI>> by lazy {
 		novelIDLive.transformLatest {
 			emitAll(loadNovelUIUseCase(it))
 		}.asIOLiveData()
 	}
 
+	@ExperimentalCoroutinesApi
+	private val novelSettingsFlow: Flow<HResult<NovelSettingUI>> by lazy {
+		novelIDLive.transformLatest { emitAll(getNovelSettingFlowUseCase(it)) }
+	}
+
 	private val novelIDLive: MutableStateFlow<Int> by lazy { MutableStateFlow(novelIDValue) }
 	private var novelIDValue = -1
 
-	private var _showOnlyStatusOf: ReadingStatus? = null
-		set(value) {
-			field = value
-			_showOnlyStatusOfFlow.tryEmit(value)
-		}
 
-	private var _showOnlyDownloaded: Boolean = false
-		set(value) {
-			field = value
-			_onlyDownloadedFlow.tryEmit(value)
-		}
+	@ExperimentalCoroutinesApi
+	private val _showOnlyStatusOfFlow: Flow<ReadingStatus?> =
+		novelSettingsFlow.mapLatest { it.transmogrify { it.showOnlyReadingStatusOf } }
 
-	private var _showOnlyBookmarked: Boolean = false
-		set(value) {
-			field = value
-			_onlyBookmarkedFlow.tryEmit(value)
-		}
+	@ExperimentalCoroutinesApi
+	private val _onlyDownloadedFlow: Flow<Boolean> =
+		novelSettingsFlow.mapLatest { it.transmogrify { it.showOnlyDownloaded } ?: false }
 
-	private var _chapterSortType: ChapterSortType = ChapterSortType.SOURCE
-		set(value) {
-			field = value
-			_sortTypeFlow.tryEmit(value)
-		}
+	@ExperimentalCoroutinesApi
+	private val _onlyBookmarkedFlow: Flow<Boolean> =
+		novelSettingsFlow.mapLatest { it.transmogrify { it.showOnlyDownloaded } ?: false }
 
-	private var _isSortReversed: Boolean = false
-		set(value) {
-			field = value
-			_reversedSortFlow.tryEmit(value)
-		}
+	@ExperimentalCoroutinesApi
+	private val _sortTypeFlow: Flow<ChapterSortType> =
+		novelSettingsFlow.mapLatest { it.transmogrify { it.sortType } ?: ChapterSortType.SOURCE }
 
-	private val _showOnlyStatusOfFlow: MutableStateFlow<ReadingStatus?> =
-		MutableStateFlow(_showOnlyStatusOf)
+	@ExperimentalCoroutinesApi
+	private val _reversedSortFlow: Flow<Boolean> =
+		novelSettingsFlow.mapLatest { it.transmogrify { it.showOnlyDownloaded } ?: false }
 
-	private val _onlyDownloadedFlow: MutableStateFlow<Boolean> =
-		MutableStateFlow(_showOnlyDownloaded)
-
-	private val _onlyBookmarkedFlow: MutableStateFlow<Boolean> =
-		MutableStateFlow(_showOnlyBookmarked)
-
-	private val _sortTypeFlow: MutableStateFlow<ChapterSortType> =
-		MutableStateFlow(_chapterSortType)
-
-	private val _reversedSortFlow: MutableStateFlow<Boolean> =
-		MutableStateFlow(_isSortReversed)
-
+	@ExperimentalCoroutinesApi
 	private fun Flow<HResult<List<ChapterUI>>>.combineBookmarked(): Flow<HResult<List<ChapterUI>>> =
 		combine(_onlyBookmarkedFlow) { result, onlyBookmarked ->
 			if (onlyBookmarked)
@@ -147,6 +139,7 @@ class NovelViewModel(
 			else result
 		}
 
+	@ExperimentalCoroutinesApi
 	private fun Flow<HResult<List<ChapterUI>>>.combineDownloaded(): Flow<HResult<List<ChapterUI>>> =
 		combine(_onlyDownloadedFlow) { result, onlyDownloaded ->
 			if (onlyDownloaded)
@@ -156,6 +149,7 @@ class NovelViewModel(
 			else result
 		}
 
+	@ExperimentalCoroutinesApi
 	private fun Flow<HResult<List<ChapterUI>>>.combineStatus(): Flow<HResult<List<ChapterUI>>> =
 		combine(_showOnlyStatusOfFlow) { result, readingStatusOf ->
 			readingStatusOf?.let { status ->
@@ -172,6 +166,7 @@ class NovelViewModel(
 			} ?: result
 		}
 
+	@ExperimentalCoroutinesApi
 	private fun Flow<HResult<List<ChapterUI>>>.combineSort(): Flow<HResult<List<ChapterUI>>> =
 		combine(_sortTypeFlow) { result, sortType ->
 			result.transform { chapters ->
@@ -186,6 +181,7 @@ class NovelViewModel(
 			}
 		}
 
+	@ExperimentalCoroutinesApi
 	private fun Flow<HResult<List<ChapterUI>>>.combineReverse(): Flow<HResult<List<ChapterUI>>> =
 		combine(_reversedSortFlow) { result, reverse ->
 			if (reverse)
@@ -214,11 +210,6 @@ class NovelViewModel(
 		chapters.clear()
 
 		// resets filters
-		_showOnlyStatusOf = null
-		_showOnlyDownloaded = false
-		_showOnlyBookmarked = false
-		_chapterSortType = ChapterSortType.SOURCE
-		_isSortReversed = false
 
 		novelIDValue = -1
 		novelIDLive.tryEmit(-1)
@@ -278,35 +269,11 @@ class NovelViewModel(
 		launchIO { novelLive.value?.handle { openInWebviewUseCase(it) } }
 	}
 
-	override fun refresh(): LiveData<HResult<Any>> =
+	override fun refresh(): LiveData<HResult<*>> =
 		liveDataIO {
 			emit(loading())
 			emit(loadNovelUseCase(novelIDValue, true))
 		}
-
-	override fun reverseChapters() {
-		_isSortReversed != _isSortReversed
-	}
-
-	override fun toggleOnlyDownloaded() {
-		_showOnlyDownloaded != _showOnlyDownloaded
-	}
-
-	override fun toggleOnlyBookmarked() {
-		_showOnlyBookmarked != _showOnlyBookmarked
-	}
-
-	override fun setChapterSortType(sortType: ChapterSortType) {
-		_chapterSortType = sortType
-	}
-
-	override fun showOnlyStatus(status: ReadingStatus?) {
-		_showOnlyStatusOf = status
-	}
-
-	override fun setReverse(b: Boolean) {
-		_isSortReversed = b
-	}
 
 	override fun setNovelID(novelID: Int) {
 		when {
@@ -425,6 +392,10 @@ class NovelViewModel(
 		}
 	}
 
+	override fun updateNovelSetting(novelSettingUI: NovelSettingUI) {
+		updateNovelSettingUseCase(novelSettingUI)
+	}
+
 	override fun bookmarkChapters(vararg chapterUI: ChapterUI) {
 		launchIO {
 			chapterUI.forEach {
@@ -440,14 +411,4 @@ class NovelViewModel(
 			}
 		}
 	}
-
-	override fun getSortReadingStatusOf(): ReadingStatus? = _showOnlyStatusOf
-
-	override fun showOnlyDownloadedChapters(): Boolean = _showOnlyDownloaded
-
-	override fun showOnlyBookmarkedChapters(): Boolean = _showOnlyBookmarked
-
-	override fun getSortType(): ChapterSortType = _chapterSortType
-
-	override fun isReversedSortOrder(): Boolean = _isSortReversed
 }

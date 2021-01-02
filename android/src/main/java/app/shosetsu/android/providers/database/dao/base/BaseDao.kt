@@ -58,7 +58,7 @@ interface BaseDao<T> {
 
 	@Update
 	@Throws(SQLiteException::class)
-	suspend fun suspendedUpdate(data: T)
+	suspend fun update(data: T)
 
 	@Update
 	@Throws(SQLiteException::class)
@@ -66,5 +66,5 @@ interface BaseDao<T> {
 
 	@Delete
 	@Throws(SQLiteException::class)
-	suspend fun suspendedDelete(data: T)
+	suspend fun delete(data: T)
 }

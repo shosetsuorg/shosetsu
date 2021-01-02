@@ -53,5 +53,5 @@ interface INovelSettingsRepository {
 	/**
 	 * Updates the settings for novels
 	 */
-	fun updateNovelSettings(novelSettingEntity: NovelSettingEntity): HResult<NovelSettingEntity>
+	fun updateNovelSettings(novelSettingEntity: NovelSettingEntity): HResult<*>
 }

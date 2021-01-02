@@ -98,7 +98,7 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 		selectedNovels.forEach { targetID ->
 			entities.find { it.id == targetID }?.let { DBNovel ->
 				DBNovel.bookmarked = false
-				suspendedUpdate(DBNovel)
+				update(DBNovel)
 			}
 		}
 	}
@@ -153,7 +153,7 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 	@Throws(SQLiteException::class)
 	suspend fun updateBookmarked(list: List<BookmarkedNovelEntity>) {
 		list.forEach { bookMarked ->
-			blockingUpdate(
+			update(
 				loadNovel(bookMarked.id).copy(
 					bookmarked = bookMarked.bookmarked
 				)

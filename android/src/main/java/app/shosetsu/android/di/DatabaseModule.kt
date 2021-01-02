@@ -34,11 +34,13 @@ import org.kodein.di.generic.singleton
 
 val databaseModule: Kodein.Module = Kodein.Module("database_module") {
 	bind<ShosetsuDatabase>() with singleton { getRoomDatabase(instance()) }
-	bind<ChaptersDao>() with singleton { instance<ShosetsuDatabase>().chaptersDao() }
-	bind<NovelsDao>() with singleton { instance<ShosetsuDatabase>().novelsDao() }
-	bind<DownloadsDao>() with singleton { instance<ShosetsuDatabase>().downloadsDao() }
-	bind<UpdatesDao>() with singleton { instance<ShosetsuDatabase>().updatesDao() }
-	bind<ExtensionLibraryDao>() with singleton { instance<ShosetsuDatabase>().scriptLibDao() }
-	bind<RepositoryDao>() with singleton { instance<ShosetsuDatabase>().repositoryDao() }
-	bind<ExtensionsDao>() with singleton { instance<ShosetsuDatabase>().extensionsDao() }
+
+	bind<ChaptersDao>() with singleton { instance<ShosetsuDatabase>().chaptersDao }
+	bind<DownloadsDao>() with singleton { instance<ShosetsuDatabase>().downloadsDao }
+	bind<ExtensionLibraryDao>() with singleton { instance<ShosetsuDatabase>().extensionLibraryDao }
+	bind<ExtensionsDao>() with singleton { instance<ShosetsuDatabase>().extensionsDao }
+	bind<NovelsDao>() with singleton { instance<ShosetsuDatabase>().novelsDao }
+	bind<NovelSettingsDao>() with singleton { instance<ShosetsuDatabase>().novelSettingsDao }
+	bind<RepositoryDao>() with singleton { instance<ShosetsuDatabase>().repositoryDao }
+	bind<UpdatesDao>() with singleton { instance<ShosetsuDatabase>().updatesDao }
 }

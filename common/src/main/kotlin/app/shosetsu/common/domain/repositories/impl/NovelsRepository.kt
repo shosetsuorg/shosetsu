@@ -1,6 +1,6 @@
 package app.shosetsu.common.domain.repositories.impl
 
-import app.shosetsu.common.datasource.database.base.ILocalNovelsDataSource
+import app.shosetsu.common.datasource.database.base.IDBNovelsDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteNovelDataSource
 import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
@@ -39,7 +39,7 @@ import kotlinx.coroutines.flow.Flow
  * @author github.com/doomsdayrs
  */
 class NovelsRepository(
-	private val database: ILocalNovelsDataSource,
+	private val database: IDBNovelsDataSource,
 	private val remoteSource: IRemoteNovelDataSource,
 ) : INovelsRepository {
 	override fun getBookmarkedNovelsFlow(): Flow<HResult<List<BookmarkedNovelEntity>>> =

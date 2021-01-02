@@ -38,23 +38,26 @@ import kotlinx.coroutines.launch
 @Fts4
 @Database(
 	entities = [
-		DBExtensionEntity::class,
-		DBRepositoryEntity::class,
-		DBExtLibEntity::class,
-		DBDownloadEntity::class,
-		DBUpdate::class,
 		DBChapterEntity::class,
-		DBNovelEntity::class
+		DBDownloadEntity::class,
+		DBExtensionEntity::class,
+		DBExtLibEntity::class,
+		DBNovelEntity::class,
+		DBNovelSettingsEntity::class,
+		DBRepositoryEntity::class,
+		DBUpdate::class,
 	],
 	version = 2
 )
 @TypeConverters(
+	ChapterSortTypeConverter::class,
+	DownloadStatusConverter::class,
+	ListConverter::class,
+	NovelStatusConverter::class,
+	ReaderTypeConverter::class,
 	ReadingStatusConverter::class,
 	StringArrayConverters::class,
-	NovelStatusConverter::class,
-	DownloadStatusConverter::class,
 	VersionConverter::class,
-	ListConverter::class,
 )
 abstract class ShosetsuDatabase : RoomDatabase() {
 	companion object {
@@ -77,7 +80,7 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 				).build()
 			GlobalScope.launch {
 				try {
-					databaseShosetsu.repositoryDao().initializeData()
+					databaseShosetsu.repositoryDao.initializeData()
 				} catch (e: SQLiteException) {
 					e.printStackTrace()
 				}
@@ -86,11 +89,12 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 		}
 	}
 
-	abstract fun extensionsDao(): ExtensionsDao
-	abstract fun repositoryDao(): RepositoryDao
-	abstract fun scriptLibDao(): ExtensionLibraryDao
-	abstract fun updatesDao(): UpdatesDao
-	abstract fun downloadsDao(): DownloadsDao
-	abstract fun chaptersDao(): ChaptersDao
-	abstract fun novelsDao(): NovelsDao
+	abstract val chaptersDao: ChaptersDao
+	abstract val downloadsDao: DownloadsDao
+	abstract val extensionLibraryDao: ExtensionLibraryDao
+	abstract val extensionsDao: ExtensionsDao
+	abstract val novelsDao: NovelsDao
+	abstract val novelSettingsDao: NovelSettingsDao
+	abstract val repositoryDao: RepositoryDao
+	abstract val updatesDao: UpdatesDao
 }

@@ -170,4 +170,11 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<SetNovelUITypeUseCase>() with provider {
 		SetNovelUITypeUseCase(instance())
 	}
+
+	bind<GetNovelSettingFlowUseCase>() with provider {
+		GetNovelSettingFlowUseCase(instance(), instance(), instance())
+	}
+	bind<UpdateNovelSettingUseCase>() with provider {
+		UpdateNovelSettingUseCase(instance())
+	}
 }

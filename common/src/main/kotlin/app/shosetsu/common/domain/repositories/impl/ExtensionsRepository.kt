@@ -3,8 +3,8 @@ package app.shosetsu.common.domain.repositories.impl
 import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
 import app.shosetsu.common.consts.ErrorKeys.ERROR_LUA_BROKEN
-import app.shosetsu.common.datasource.database.base.ILocalExtRepoDataSource
-import app.shosetsu.common.datasource.database.base.ILocalExtensionsDataSource
+import app.shosetsu.common.datasource.database.base.IDBExtRepoDataSource
+import app.shosetsu.common.datasource.database.base.IDBExtensionsDataSource
 import app.shosetsu.common.datasource.file.base.IFileExtensionDataSource
 import app.shosetsu.common.datasource.memory.base.IMemExtensionsDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteCatalogueDataSource
@@ -43,10 +43,10 @@ import kotlinx.coroutines.flow.Flow
  */
 class ExtensionsRepository(
 	private val memorySource: IMemExtensionsDataSource,
-	private val databaseSource: ILocalExtensionsDataSource,
+	private val databaseSource: IDBExtensionsDataSource,
 	private val fileSource: IFileExtensionDataSource,
 	private val remoteSource: IRemoteExtensionDataSource,
-	private val repositorySource: ILocalExtRepoDataSource,
+	private val repositorySource: IDBExtRepoDataSource,
 	private val remoteCatalogueDataSource: IRemoteCatalogueDataSource,
 ) : IExtensionsRepository {
 	override fun loadExtensionEntitiesFLow(): Flow<HResult<List<ExtensionEntity>>> =

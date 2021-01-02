@@ -1,7 +1,7 @@
 package app.shosetsu.common.domain.repositories.impl
 
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.datasource.database.base.ILocalExtRepoDataSource
+import app.shosetsu.common.datasource.database.base.IDBExtRepoDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteExtRepoDataSource
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.IExtRepoRepository
@@ -30,8 +30,8 @@ import kotlinx.coroutines.flow.Flow
  * 12 / 05 / 2020
  */
 class ExtRepoRepository(
-		private val databaseSource: ILocalExtRepoDataSource,
-		private val remoteSource: IRemoteExtRepoDataSource
+	private val databaseSource: IDBExtRepoDataSource,
+	private val remoteSource: IRemoteExtRepoDataSource
 ) : IExtRepoRepository {
     override suspend fun getRepoData(repositoryEntity: RepositoryEntity): HResult<RepoIndex> =
 	    remoteSource.downloadRepoData(repositoryEntity)

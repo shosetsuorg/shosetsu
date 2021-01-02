@@ -13,10 +13,10 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.di.*
-import app.shosetsu.android.di.datasource.cacheDataSourceModule
-import app.shosetsu.android.di.datasource.fileDataSourceModule
-import app.shosetsu.android.di.datasource.localDataSouceModule
-import app.shosetsu.android.di.datasource.remoteDataSouceModule
+import app.shosetsu.android.datasource.local.memory.memoryDataSourceModule
+import app.shosetsu.android.datasource.local.file.fileDataSourceModule
+import app.shosetsu.android.datasource.local.localDataSourceModule
+import app.shosetsu.android.datasource.remote.remoteDataSouceModule
 import app.shosetsu.android.domain.usecases.InitializeExtensionsUseCase
 import app.shosetsu.android.viewmodel.factory.ViewModelFactory
 import app.shosetsu.common.domain.repositories.base.IExtLibRepository
@@ -78,10 +78,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 		bind<ViewModelFactory>() with singleton { ViewModelFactory(applicationContext) }
 		import(othersModule)
 		import(providersModule)
-		import(cacheDataSourceModule)
-		import(localDataSouceModule)
-		import(remoteDataSouceModule)
-		import(fileDataSourceModule)
+		import(dataSourceModule)
 		import(networkModule)
 		import(databaseModule)
 		import(repositoryModule)

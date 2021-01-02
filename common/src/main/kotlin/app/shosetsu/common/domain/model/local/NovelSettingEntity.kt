@@ -28,11 +28,11 @@ data class NovelSettingEntity(
 	val novelID: Int,
 
 	// how chapters are sorted
-	var sortType: ChapterSortType,
-	var showOnlyReadingStatusOf: ReadingStatus?,
-	var showOnlyBookmarked: Boolean,
-	var showOnlyDownloaded: Boolean,
-	var reverseOrder: Boolean,
+	var sortType: ChapterSortType = ChapterSortType.SOURCE,
+	var showOnlyReadingStatusOf: ReadingStatus? = null,
+	var showOnlyBookmarked: Boolean = false,
+	var showOnlyDownloaded: Boolean = false,
+	var reverseOrder: Boolean = false,
 
 	// how the reader is set-up
 

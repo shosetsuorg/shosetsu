@@ -1,6 +1,6 @@
 package app.shosetsu.common.domain.repositories.impl
 
-import app.shosetsu.common.datasource.database.base.ILocalUpdatesDataSource
+import app.shosetsu.common.datasource.database.base.IDBUpdatesDataSource
 import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.common.domain.repositories.base.IUpdatesRepository
 import app.shosetsu.common.dto.HResult
@@ -32,15 +32,15 @@ import kotlinx.coroutines.flow.Flow
  * @author github.com/doomsdayrs
  */
 class UpdatesRepository(
-		private val iLocalUpdatesDataSource: ILocalUpdatesDataSource,
+	private val IDBUpdatesDataSource: IDBUpdatesDataSource,
 ) : IUpdatesRepository {
 
 	override suspend fun addUpdates(list: List<UpdateEntity>): HResult<Array<Long>> =
-		iLocalUpdatesDataSource.insertUpdates(list)
+		IDBUpdatesDataSource.insertUpdates(list)
 
 	override suspend fun getUpdatesFlow(): Flow<HResult<List<UpdateEntity>>> =
-		iLocalUpdatesDataSource.getUpdates()
+		IDBUpdatesDataSource.getUpdates()
 
 	override suspend fun getCompleteUpdatesFlow(): Flow<HResult<List<UpdateCompleteEntity>>> =
-		iLocalUpdatesDataSource.getCompleteUpdates()
+		IDBUpdatesDataSource.getCompleteUpdates()
 }

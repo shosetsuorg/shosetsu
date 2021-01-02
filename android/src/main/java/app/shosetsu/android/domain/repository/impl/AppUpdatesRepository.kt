@@ -2,7 +2,7 @@ package app.shosetsu.android.domain.repository.impl
 
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
-import app.shosetsu.android.datasource.file.base.IFileCachedAppUpdateDataSource
+import app.shosetsu.android.datasource.local.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.consts.ErrorKeys.ERROR_DUPLICATE

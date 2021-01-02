@@ -28,5 +28,5 @@ interface Convertible<T> {
 /**
  * Converts a list of [Convertible] from their [I] form to their [O] form
  */
-inline fun <reified O : Any, reified I : Convertible<O>> List<I>.convertList(): List<O> =
-		this.map { it.convertTo() }
+inline fun <reified O, reified I : Convertible<O>> List<I>.convertList(): List<O> =
+	this.map { it.convertTo() }

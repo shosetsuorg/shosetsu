@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.repository.impl
 
 import app.shosetsu.android.common.dto.errorResult
-import app.shosetsu.common.datasource.database.base.ILocalExtLibDataSource
+import app.shosetsu.common.datasource.database.base.IDBExtLibDataSource
 import app.shosetsu.common.datasource.file.base.IFileExtLibDataSource
 import app.shosetsu.common.datasource.memory.base.IMemExtLibDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteExtLibDataSource
@@ -38,7 +38,7 @@ import org.json.JSONObject
  */
 class ExtLibRepository(
 	private val fileSource: IFileExtLibDataSource,
-	private val databaseSource: ILocalExtLibDataSource,
+	private val databaseSource: IDBExtLibDataSource,
 	private val remoteSource: IRemoteExtLibDataSource,
 	private val memSource: IMemExtLibDataSource,
 ) : IExtLibRepository {

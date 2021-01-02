@@ -1,6 +1,6 @@
 package app.shosetsu.common.domain.repositories.impl
 
-import app.shosetsu.common.datasource.database.base.ILocalChaptersDataSource
+import app.shosetsu.common.datasource.database.base.IDBChaptersDataSource
 import app.shosetsu.common.datasource.file.base.IFileCachedChapterDataSource
 import app.shosetsu.common.datasource.file.base.IFileChapterDataSource
 import app.shosetsu.common.datasource.memory.base.IMemChaptersDataSource
@@ -46,7 +46,7 @@ import kotlinx.coroutines.flow.Flow
 class ChaptersRepository(
 	private val memorySource: IMemChaptersDataSource,
 	private val cacheSource: IFileCachedChapterDataSource,
-	private val dbSource: ILocalChaptersDataSource,
+	private val dbSource: IDBChaptersDataSource,
 	private val fileSource: IFileChapterDataSource,
 	private val remoteSource: IRemoteChaptersDataSource,
 ) : IChaptersRepository {

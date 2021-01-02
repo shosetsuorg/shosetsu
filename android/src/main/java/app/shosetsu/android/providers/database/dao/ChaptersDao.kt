@@ -5,17 +5,11 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import app.shosetsu.android.common.ext.entity
-import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.domain.model.database.DBChapterEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
-import app.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.ReaderChapterEntity
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.errorResult
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
 
@@ -89,7 +83,7 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 			readingPosition = readerDBChapter.readingPosition,
 			readingStatus = readerDBChapter.readingStatus,
 			bookmarked = readerDBChapter.bookmarked
-		).let { suspendedUpdate(it) }
+		).let { update(it) }
 
 	@Transaction
 	@Throws(SQLiteException::class)
@@ -107,23 +101,19 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 	suspend fun handleChaptersReturnNew(
 		novelEntity: NovelEntity,
 		list: List<Novel.Chapter>,
-	): HResult<List<DBChapterEntity>> {
+	): List<DBChapterEntity> {
 		val newChapters = ArrayList<DBChapterEntity>()
 		val databaseChapterEntities: List<DBChapterEntity> = loadChapters(novelEntity.id!!)
 		list.forEach { novelChapter: Novel.Chapter ->
 			databaseChapterEntities.find { it.url == novelChapter.link }?.let {
 				handleUpdate(it, novelChapter)
 			} ?: run {
-				insertReturn(novelEntity, novelChapter).handle(
-					onError = {
-						logE(it.toString())
-					}
-				) {
+				insertReturn(novelEntity, novelChapter).let {
 					newChapters.add(it)
 				}
 			}
 		}
-		return successResult(newChapters)
+		return newChapters
 	}
 
 	@Throws(SQLiteException::class)
@@ -132,19 +122,15 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 		loadChapter(insertReplace(DBChapterEntity))
 
 
+	@Throws(IndexOutOfBoundsException::class)
 	private suspend fun insertReturn(
 		novelEntity: NovelEntity,
 		novelChapter: Novel.Chapter,
-	): HResult<DBChapterEntity> {
-		try {
-			val row = handleAbortInsert(novelChapter, novelEntity)
-			if (row < 0) return errorResult(ERROR_GENERAL, "Aborted")
-			val c = loadChapter(row)
-			return successResult(c)
-		} catch (e: Exception) {
-			return errorResult(ERROR_GENERAL, "Unprecedented error")
+	): DBChapterEntity =
+		handleAbortInsert(novelChapter, novelEntity).let { rowID ->
+			if (rowID < 0) throw IndexOutOfBoundsException("Insertion aborted")
+			loadChapter(rowID)
 		}
-	}
 
 	@Throws(SQLiteException::class)
 	private suspend fun handleAbortInsert(novelChapter: Novel.Chapter, novelEntity: NovelEntity) =
@@ -155,7 +141,7 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 		DBChapterEntity: DBChapterEntity,
 		novelChapter: Novel.Chapter
 	) {
-		suspendedUpdate(
+		update(
 			DBChapterEntity.copy(
 				title = novelChapter.title,
 				releaseDate = novelChapter.release,

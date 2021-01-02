@@ -62,9 +62,7 @@ class LibraryViewModel(
 	private val loadNovelUIColumnsPUseCase: LoadNovelUIColumnsPUseCase,
 	private val setNovelUITypeUseCase: SetNovelUITypeUseCase
 ) : ILibraryViewModel() {
-
-
-	private var novelCardType: NovelCardType = NovelCardType.fromInt(NovelCardType.default)
+	private var novelCardType: NovelCardType = NovelCardType.fromInt(SelectedNovelCardType.default)
 
 	private var columnP: Int = ChapterColumnsInPortait.default
 

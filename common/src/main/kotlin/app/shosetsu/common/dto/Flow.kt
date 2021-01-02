@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.mapLatest
 /**
  * Maps the latest result of a Flow<HResult<*>>
  */
-inline fun <reified I : Any, O : Any> Flow<HResult<I>>.mapLatestResult(
+inline fun <reified I, O> Flow<HResult<I>>.mapLatestResult(
 	noinline onLoading: suspend () -> HResult<O> = { loading() },
 	noinline onEmpty: suspend () -> HResult<O> = { emptyResult() },
 	noinline onError: suspend (HResult.Error) -> HResult<O> = { it },
@@ -43,7 +43,7 @@ inline fun <reified I : Any, O : Any> Flow<HResult<I>>.mapLatestResult(
 
 /** Converts each [Convertible] emitted by the [Flow] from its [O] form to its [I] form */
 @ExperimentalCoroutinesApi
-inline fun <reified I : Convertible<O>, reified O : Any> Flow<I>.mapLatestTo()
+inline fun <reified I : Convertible<O>, reified O> Flow<I>.mapLatestTo()
 		: Flow<O> = mapLatest { it.convertTo() }
 
 /** Converts each [List] of [Convertible] emitted by the [Flow] from its [O] form to its [I] form */
@@ -53,7 +53,7 @@ inline fun <reified I : Convertible<O>, reified O : Any> Flow<List<I>>.mapLatest
 
 /** Converts each value emitted by the [Flow] as an [HResult.Success] */
 @ExperimentalCoroutinesApi
-inline fun <reified I : Any> Flow<I>.mapLatestToSuccess(): Flow<HResult<I>> =
+inline fun <reified I> Flow<I>.mapLatestToSuccess(): Flow<HResult<I>> =
 	mapLatest { successResult(it) }
 
 /** Converts a [HResult.Success] of a [List] of [Convertible]s from its [I] form to its [O] form */

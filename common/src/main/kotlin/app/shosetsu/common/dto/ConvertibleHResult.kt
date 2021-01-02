@@ -22,13 +22,14 @@ package app.shosetsu.common.dto
  * maintaining itself in an [HResult]
  */
 inline fun <reified O, reified I> HResult<List<I>>.convertList(): HResult<List<O>>
-		where  O : Any,
-		       I : Convertible<O> =
-		this.transform { successResult(it.convertList()) }
+		where I : Convertible<O> =
+	this.transform { successResult(it.convertList()) }
 
 /**
  * Converts a [Convertible] from their [I] form to their [O] form while
  * maintaining itself in an [HResult]
  */
-inline fun <reified O : Any, reified I : Convertible<O>> HResult<I>.convert()
-		: HResult<O> = this.transform { successResult(it.convertTo()) }
+inline fun <reified O, reified I : Convertible<O>> HResult<I>.convert(): HResult<O> =
+	this.transform<I, O> { it: I ->
+		successResult(it.convertTo())
+	}

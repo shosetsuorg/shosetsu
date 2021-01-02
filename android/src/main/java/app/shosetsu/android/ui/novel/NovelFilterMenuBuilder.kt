@@ -4,10 +4,12 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.viewpager.widget.PagerAdapter
 import app.shosetsu.android.view.widget.TriStateButton.State.CHECKED
 import app.shosetsu.android.view.widget.TriStateButton.State.UNCHECKED
 import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
+import app.shosetsu.common.dto.handle
 import app.shosetsu.common.enums.ChapterSortType.SOURCE
 import app.shosetsu.common.enums.ChapterSortType.UPLOAD
 import app.shosetsu.common.enums.ReadingStatus.READ
@@ -40,7 +42,8 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottom
  *
  * Creates the bottom menu for Novel Controller
  */
-class NovelFilterMenuBuilder constructor(
+class NovelFilterMenuBuilder(
+	private val novelControllerLifeCycle: LifecycleOwner,
 	private val inflater: LayoutInflater,
 	private val viewModel: INovelViewModel
 ) {
@@ -49,13 +52,100 @@ class NovelFilterMenuBuilder constructor(
 			inflater
 		).also { binding ->
 			binding.viewPager.apply {
-				this.adapter = MenuAdapter(binding.root.context)
+				val menAda = MenuAdapter(binding.root.context)
+				this.adapter = menAda
+				var isInitalSetup = true
+				viewModel.novelSettingFlow.observe(novelControllerLifeCycle) { result ->
+					result.handle { settings ->
+						if (isInitalSetup) {
+							isInitalSetup = false
+							menAda.controllerNovelInfoBottomMenu0Binding?.apply {
+								bookmarked.isChecked = settings.showOnlyBookmarked
+								downloaded.isChecked = settings.showOnlyDownloaded
+								when (settings.showOnlyReadingStatusOf) {
+									UNREAD -> unreadRadioButton.isChecked = true
+									READ -> readRadioButton.isChecked = true
+									else -> allRadioButton.isChecked = true
+								}
+							}
+							menAda.controllerNovelInfoBottomMenu1Binding?.apply {
+								val reversed = settings.reverseOrder
+
+								when (settings.sortType) {
+									SOURCE -> bySource::state
+									UPLOAD -> byDate::state
+								}.set(if (!reversed) CHECKED else UNCHECKED)
+							}
+						}
+						menAda.controllerNovelInfoBottomMenu0Binding?.apply {
+							bookmarked.setOnCheckedChangeListener { _, state ->
+								viewModel.updateNovelSetting(
+									settings.copy(
+										showOnlyBookmarked = state
+									)
+								)
+							}
+
+							downloaded.setOnCheckedChangeListener { _, state ->
+								viewModel.updateNovelSetting(
+									settings.copy(
+										showOnlyDownloaded = state
+									)
+								)
+							}
+
+							radioGroup.setOnCheckedChangeListener { _, checkedId ->
+								when (checkedId) {
+									R.id.all_radio_button -> viewModel.updateNovelSetting(
+										settings.copy(
+											showOnlyReadingStatusOf = null
+										)
+									)
+
+									R.id.read_radio_button -> viewModel.updateNovelSetting(
+										settings.copy(
+											showOnlyReadingStatusOf = READ
+										)
+									)
+
+									R.id.unread_radio_button -> viewModel.updateNovelSetting(
+										settings.copy(
+											showOnlyReadingStatusOf = UNREAD
+										)
+									)
+
+								}
+							}
+
+						}
+						menAda.controllerNovelInfoBottomMenu1Binding?.apply {
+							triStateGroup.addOnStateChangeListener { id, state ->
+								viewModel.updateNovelSetting(
+									settings.copy(
+										sortType = when (id) {
+											R.id.by_date -> UPLOAD
+											R.id.by_source -> SOURCE
+											else -> UPLOAD
+										},
+										reverseOrder = state != CHECKED
+									)
+								)
+							}
+						}
+
+					}
+				}
+
 			}
+
 		}.root
 
 	inner class MenuAdapter(
 		private val context: Context
 	) : PagerAdapter() {
+		var controllerNovelInfoBottomMenu0Binding: ControllerNovelInfoBottomMenu0Binding? = null
+		var controllerNovelInfoBottomMenu1Binding: ControllerNovelInfoBottomMenu1Binding? = null
+
 		override fun getCount(): Int = 2
 		override fun getPageTitle(position: Int): CharSequence? = when (position) {
 			0 -> context.getString(R.string.filter)
@@ -72,37 +162,7 @@ class NovelFilterMenuBuilder constructor(
 						inflater,
 						container,
 						false
-					).also {
-						it.bookmarked.isChecked = viewModel.showOnlyBookmarkedChapters()
-
-						it.bookmarked.setOnCheckedChangeListener { _, _ ->
-							viewModel.toggleOnlyBookmarked()
-						}
-
-						it.downloaded.isChecked = viewModel.showOnlyDownloadedChapters()
-
-						it.downloaded.setOnCheckedChangeListener { _, _ ->
-							viewModel.toggleOnlyDownloaded()
-						}
-
-						when (viewModel.getSortReadingStatusOf()) {
-							UNREAD -> it.unread.isChecked = true
-							READ -> it.read.isChecked = true
-							else -> it.all.isChecked = true
-						}
-
-						it.radioGroup.setOnCheckedChangeListener { group, checkedId ->
-							when (checkedId) {
-								R.id.all -> viewModel.showOnlyStatus(null)
-
-								R.id.read -> viewModel.showOnlyStatus(READ)
-
-								R.id.unread -> viewModel.showOnlyStatus(UNREAD)
-
-							}
-						}
-
-					}.root
+					).root
 					container.addView(view)
 					return view
 				}
@@ -112,22 +172,9 @@ class NovelFilterMenuBuilder constructor(
 						container,
 						false
 					).also {
-						val reversed = viewModel.isReversedSortOrder()
-						when (viewModel.getSortType()) {
-							SOURCE -> it.bySource::state
-							UPLOAD -> it.byDate::state
-						}.set(if (!reversed) CHECKED else UNCHECKED)
+						controllerNovelInfoBottomMenu1Binding = it
 
-						it.triStateGroup.addOnStateChangeListener { id, state ->
-							viewModel.setChapterSortType(
-								when (id) {
-									R.id.by_date -> UPLOAD
-									R.id.by_source -> SOURCE
-									else -> UPLOAD
-								}
-							)
-							viewModel.setReverse(state != CHECKED)
-						}
+
 					}.root
 					container.addView(view)
 					return view
