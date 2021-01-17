@@ -111,8 +111,13 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 								)
 							}
 
+							// Drop
+							database.execSQL("DROP TABLE $repositoryTableName")
+
+							// Rename new table to fill in
 							database.execSQL("ALTER TABLE `${repositoryTableName}_new` RENAME TO `${repositoryTableName}`")
 
+							// Do generated migration, because it can't handle everything
 							ShosetsuDatabase_Migration_2_3.migrate(database)
 						}
 					}
