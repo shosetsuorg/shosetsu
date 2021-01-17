@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.Flow
  * 27 / 12 / 2020
  *
  * Each novels may have their own specific preferences that users may like
- * Such as sort types or reader type
+ * Such as sort types
  */
 interface INovelSettingsRepository {
 
@@ -39,7 +39,7 @@ interface INovelSettingsRepository {
 	 *
 	 * [HResult.Empty] If no novel settings were found
 	 */
-	fun getNovelSettings(novelID: Int): HResult<NovelSettingEntity>
+	suspend fun getNovelSettings(novelID: Int): HResult<NovelSettingEntity>
 
 
 	/**
@@ -53,5 +53,5 @@ interface INovelSettingsRepository {
 	/**
 	 * Updates the settings for novels
 	 */
-	fun updateNovelSettings(novelSettingEntity: NovelSettingEntity): HResult<*>
+	suspend fun updateNovelSettings(novelSettingEntity: NovelSettingEntity): HResult<*>
 }

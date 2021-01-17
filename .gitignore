@@ -14,9 +14,11 @@ android/playstore/*
 android/fdroid/*
 android/uptodown/*
 
+
 android/build/*
 android/build/intermediates/*
 android/schemas/*
+android/database
 
 common/build/*
 common/build/intermediates/*

@@ -1,9 +1,5 @@
 package app.shosetsu.common.domain.model.local
 
-import app.shosetsu.common.enums.ChapterSortType
-import app.shosetsu.common.enums.ReaderType
-import app.shosetsu.common.enums.ReadingStatus
-
 /*
  * This file is part of Shosetsu.
  *
@@ -22,15 +18,10 @@ import app.shosetsu.common.enums.ReadingStatus
  */
 
 /**
- * 25 / 12 / 2020
+ * 17 / 01 / 2021
+ *
+ * @param content Content of the file
  */
-data class NovelSettingEntity(
-	val novelID: Int,
-
-	// how chapters are sorted
-	var sortType: ChapterSortType = ChapterSortType.SOURCE,
-	var showOnlyReadingStatusOf: ReadingStatus? = null,
-	var showOnlyBookmarked: Boolean = false,
-	var showOnlyDownloaded: Boolean = false,
-	var reverseOrder: Boolean = false,
+data class BackupEntity(
+	val content: String
 )
