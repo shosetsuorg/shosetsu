@@ -9,6 +9,7 @@ import app.shosetsu.android.domain.model.database.*
 import app.shosetsu.android.providers.database.converters.*
 import app.shosetsu.android.providers.database.dao.*
 import app.shosetsu.android.providers.database.migrations.RemoveMigration
+import dev.matrix.roomigrant.GenerateRoomMigrations
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -60,6 +61,7 @@ import kotlinx.coroutines.launch
 	StringArrayConverters::class,
 	VersionConverter::class,
 )
+@GenerateRoomMigrations
 abstract class ShosetsuDatabase : RoomDatabase() {
 	companion object {
 		@Volatile
@@ -77,13 +79,8 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 						override fun migrate(database: SupportSQLiteDatabase) {
 							deleteColumnFromTable(database, "chapters", "savePath")
 						}
-					},
-					object : Migration(2, 3) {
-						override fun migrate(database: SupportSQLiteDatabase) {
-							database.execSQL("CREATE TABLE IF NOT EXISTS novel_settings (`novelID` INTEGER NOT NULL, `sortType` TEXT NOT NULL, `showOnlyReadingStatusOf` INTEGER, `showOnlyBookmarked` INTEGER NOT NULL, `showOnlyDownloaded` INTEGER NOT NULL, `reverseOrder` INTEGER NOT NULL, PRIMARY KEY(`novelID`), FOREIGN KEY(`novelID`) REFERENCES `novels`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )")
-						}
 					}
-				).build()
+				).addMigrations(ShosetsuDatabase_Migration_2_3).build()
 			GlobalScope.launch {
 				try {
 					databaseShosetsu.repositoryDao.initializeData()
