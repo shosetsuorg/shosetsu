@@ -1,6 +1,8 @@
 package app.shosetsu.android.providers.database
 
+import android.content.ContentValues
 import android.content.Context
+import android.database.SQLException
 import android.database.sqlite.SQLiteException
 import androidx.room.*
 import androidx.room.migration.Migration
@@ -81,16 +83,37 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 						}
 					}
 				).addMigrations(
-					ShosetsuDatabase_Migration_2_3,
 					object : Migration(2, 3) {
+						@Throws(SQLException::class)
 						override fun migrate(database: SupportSQLiteDatabase) {
 							val repositoryTableName = "repositories"
 
 							// Delete the old table
-							database.execSQL("DROP TABLE `$repositoryTableName`")
 
 							// Creates new table
-							database.execSQL("CREATE TABLE IF NOT EXISTS `$repositoryTableName` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `url` TEXT NOT NULL, `name` TEXT NOT NULL)")
+							database.execSQL("CREATE TABLE IF NOT EXISTS `${repositoryTableName}_new` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `url` TEXT NOT NULL, `name` TEXT NOT NULL)")
+
+							val cursor = database.query("SELECT * FROM $repositoryTableName")
+							while (cursor.moveToNext()) {
+								database.insert("${repositoryTableName}_new",
+									OnConflictStrategy.ABORT,
+									ContentValues().apply {
+										val keyID = "id"
+										val keyURL = "url"
+										val keyName = "name"
+										put(keyID, cursor.getInt(cursor.getColumnIndex(keyID)))
+										put(keyURL, cursor.getString(cursor.getColumnIndex(keyURL)))
+										put(
+											keyName,
+											cursor.getString(cursor.getColumnIndex(keyName))
+										)
+									}
+								)
+							}
+
+							database.execSQL("ALTER TABLE `${repositoryTableName}_new` RENAME TO `${repositoryTableName}`")
+
+							ShosetsuDatabase_Migration_2_3.migrate(database)
 						}
 					}
 				).build()
