@@ -80,7 +80,20 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 							deleteColumnFromTable(database, "chapters", "savePath")
 						}
 					}
-				).addMigrations(ShosetsuDatabase_Migration_2_3).build()
+				).addMigrations(
+					ShosetsuDatabase_Migration_2_3,
+					object : Migration(2, 3) {
+						override fun migrate(database: SupportSQLiteDatabase) {
+							val repositoryTableName = "repositories"
+
+							// Delete the old table
+							database.execSQL("DROP TABLE `$repositoryTableName`")
+
+							// Creates new table
+							database.execSQL("CREATE TABLE IF NOT EXISTS `$repositoryTableName` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `url` TEXT NOT NULL, `name` TEXT NOT NULL)")
+						}
+					}
+				).build()
 			GlobalScope.launch {
 				try {
 					databaseShosetsu.repositoryDao.initializeData()

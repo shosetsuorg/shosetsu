@@ -83,6 +83,7 @@ interface RepositoryDao : BaseDao<DBRepositoryEntity> {
 		val branch = if (BuildConfig.DEBUG) "dev" else "master"
 		val name = if (BuildConfig.DEBUG) "Development" else "Stable"
 		val repo = DBRepositoryEntity(
+			null,
 			url = "https://raw.githubusercontent.com/shosetsuorg/extensions/$branch",
 			name = name
 		)

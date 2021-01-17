@@ -29,7 +29,7 @@ import app.shosetsu.common.dto.Convertible
 @Entity(tableName = "repositories")
 data class DBRepositoryEntity(
 	@PrimaryKey(autoGenerate = true)
-	var id: Int? = null,
+	var id: Int?,
 	val url: String,
 	var name: String,
 ) : Convertible<RepositoryEntity> {
