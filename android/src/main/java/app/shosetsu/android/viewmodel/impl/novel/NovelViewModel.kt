@@ -393,7 +393,9 @@ class NovelViewModel(
 	}
 
 	override fun updateNovelSetting(novelSettingUI: NovelSettingUI) {
-		updateNovelSettingUseCase(novelSettingUI)
+		launchIO {
+			updateNovelSettingUseCase(novelSettingUI)
+		}
 	}
 
 	override fun bookmarkChapters(vararg chapterUI: ChapterUI) {

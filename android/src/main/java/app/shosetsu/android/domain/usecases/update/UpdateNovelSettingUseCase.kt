@@ -28,9 +28,9 @@ import app.shosetsu.common.view.uimodel.NovelSettingUI
 class UpdateNovelSettingUseCase(
 	private val novelSettingsRepository: INovelSettingsRepository
 ) {
-	operator fun invoke(novelSettingUI: NovelSettingUI): HResult<*> =
+	suspend operator fun invoke(novelSettingUI: NovelSettingUI): HResult<*> =
 		invoke(novelSettingUI.convertTo())
 
-	operator fun invoke(novelSettingEntity: NovelSettingEntity): HResult<*> =
+	suspend operator fun invoke(novelSettingEntity: NovelSettingEntity): HResult<*> =
 		novelSettingsRepository.updateNovelSettings(novelSettingEntity)
 }
