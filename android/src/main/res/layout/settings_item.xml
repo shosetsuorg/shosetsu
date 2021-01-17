@@ -9,11 +9,11 @@
     android:padding="8dp">
 
     <TextView
-        android:id="@+id/settings_item_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/todo"
-		android:textSize="20sp"
+		android:id="@+id/settings_item_title"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:text="@string/todo"
+		android:textSize="16sp"
 		app:layout_constraintEnd_toStartOf="@+id/rightField"
 		app:layout_constraintHorizontal_bias="0.0"
 		app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +23,6 @@
         android:id="@+id/settings_item_desc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:text="@string/todo"
         android:alpha="@integer/sub_text_float"
         android:textSize="@dimen/sub_text_size"
