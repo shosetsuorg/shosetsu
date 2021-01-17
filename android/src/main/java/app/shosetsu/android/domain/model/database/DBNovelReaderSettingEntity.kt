@@ -5,11 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import app.shosetsu.common.domain.model.local.NovelSettingEntity
-import app.shosetsu.common.dto.Convertible
-import app.shosetsu.common.enums.ChapterSortType
 import app.shosetsu.common.enums.ReaderType
-import app.shosetsu.common.enums.ReadingStatus
+import app.shosetsu.common.enums.TextSizes
 
 /*
  * This file is part of Shosetsu.
@@ -29,10 +26,10 @@ import app.shosetsu.common.enums.ReadingStatus
  */
 
 /**
- * 02 / 01 / 2021
+ * 03 / 01 / 2021
  */
 @Entity(
-	tableName = "novel_settings",
+	tableName = "novel_reader_settings",
 	foreignKeys = [
 		ForeignKey(
 			entity = DBNovelEntity::class,
@@ -42,35 +39,30 @@ import app.shosetsu.common.enums.ReadingStatus
 		),
 	],
 	indices = [Index("novelID", unique = true)]
-
 )
-data class DBNovelSettingsEntity(
+data class DBNovelReaderSettingEntity(
 	@PrimaryKey
 	val novelID: Int,
 
-	// how chapters are sorted
+	// how the reader is set-up
 	@NonNull
-	var sortType: ChapterSortType,
-
-	var showOnlyReadingStatusOf: ReadingStatus?,
+	var type: ReaderType,
 
 	@NonNull
-	var showOnlyBookmarked: Boolean = false,
+	var themeChoice: Int,
 
 	@NonNull
-	var showOnlyDownloaded: Boolean = false,
+	var textSize: TextSizes,
 
 	@NonNull
-	var reverseOrder: Boolean = false,
+	var paragraphIndentSize: Int,
 
+	@NonNull
+	var paragraphSpacingSize: Int,
 
-) : Convertible<NovelSettingEntity> {
-	override fun convertTo(): NovelSettingEntity = NovelSettingEntity(
-		novelID,
-		sortType,
-		showOnlyReadingStatusOf,
-		showOnlyBookmarked,
-		showOnlyDownloaded,
-		reverseOrder,
-	)
-}
+	@NonNull
+	var volumeScrolling: Boolean,
+
+	@NonNull
+	var tapToScroll: Boolean
+)

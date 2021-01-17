@@ -1,13 +1,13 @@
 package app.shosetsu.android.datasource.local.database.impl
 
+import android.database.sqlite.SQLiteException
+import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.android.common.ext.toHError
+import app.shosetsu.android.domain.model.database.DBRepositoryEntity
 import app.shosetsu.android.providers.database.dao.RepositoryDao
 import app.shosetsu.common.datasource.database.base.IDBExtRepoDataSource
 import app.shosetsu.common.domain.model.local.RepositoryEntity
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.convertList
-import app.shosetsu.common.dto.mapLatestListTo
-import app.shosetsu.common.dto.mapLatestToSuccess
+import app.shosetsu.common.dto.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
@@ -46,17 +46,34 @@ class DBExtRepoDataSource(
 		}
 	}
 
-	override fun loadRepositories(): HResult<List<RepositoryEntity>> = try {
-		app.shosetsu.common.dto.successResult(repositoryDao.loadRepositories().convertList())
+	override suspend fun loadRepositories(): HResult<List<RepositoryEntity>> = try {
+		successResult(repositoryDao.loadRepositories().convertList())
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
-	override fun loadRepository(repoID: Int): HResult<RepositoryEntity> = try {
-		app.shosetsu.common.dto.successResult(
+	override suspend fun loadRepository(repoID: Int): HResult<RepositoryEntity> = try {
+		successResult(
 			repositoryDao.loadRepositoryFromID(repoID).convertTo()
 		)
 	} catch (e: Exception) {
 		e.toHError()
 	}
+
+	override suspend fun addRepository(repositoryEntity: RepositoryEntity): HResult<*> =
+		try {
+			successResult(repositoryDao.insertAbort(repositoryEntity.toDB()))
+		} catch (e: SQLiteException) {
+			errorResult(e)
+		}
+
+	override suspend fun remove(entity: RepositoryEntity): HResult<*> = try {
+		successResult(repositoryDao.delete(entity.toDB()))
+	} catch (e: SQLiteException) {
+		errorResult(e)
+	}
+
+	fun RepositoryEntity.toDB() = DBRepositoryEntity(id, url, name)
+
+	fun List<RepositoryEntity>.toDB() = map { it.toDB() }
 }

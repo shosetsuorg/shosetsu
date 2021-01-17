@@ -1,10 +1,10 @@
 package app.shosetsu.common.domain.repositories.impl
 
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.datasource.database.base.IDBExtRepoDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteExtRepoDataSource
 import app.shosetsu.common.domain.model.local.RepositoryEntity
-import app.shosetsu.common.domain.repositories.base.IExtRepoRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
+import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.json.RepoIndex
 import kotlinx.coroutines.flow.Flow
 
@@ -32,14 +32,20 @@ import kotlinx.coroutines.flow.Flow
 class ExtRepoRepository(
 	private val databaseSource: IDBExtRepoDataSource,
 	private val remoteSource: IRemoteExtRepoDataSource
-) : IExtRepoRepository {
-    override suspend fun getRepoData(repositoryEntity: RepositoryEntity): HResult<RepoIndex> =
-	    remoteSource.downloadRepoData(repositoryEntity)
+) : IExtensionRepoRepository {
+	override suspend fun getRepoData(entity: RepositoryEntity): HResult<RepoIndex> =
+		remoteSource.downloadRepoData(entity)
 
-    override suspend fun loadRepositories(): HResult<List<RepositoryEntity>> =
-            databaseSource.loadRepositories()
+	override suspend fun loadRepositories(): HResult<List<RepositoryEntity>> =
+		databaseSource.loadRepositories()
 
-    override suspend fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>> =
-            databaseSource.loadRepositoriesLive()
+	override fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>> =
+		databaseSource.loadRepositoriesLive()
+
+	override suspend fun addRepository(entity: RepositoryEntity): HResult<*> =
+		databaseSource.addRepository(entity)
+
+	override suspend fun remove(entity: RepositoryEntity): HResult<*> =
+		databaseSource.remove(entity)
 
 }

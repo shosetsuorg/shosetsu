@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.Flow
  *
  * @author github.com/doomsdayrs
  */
-interface IExtRepoRepository {
+interface IExtensionRepoRepository {
 	/**
 	 * Loads repository data
 	 *
@@ -44,7 +44,7 @@ interface IExtRepoRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun getRepoData(repositoryEntity: RepositoryEntity): HResult<RepoIndex>
+	suspend fun getRepoData(entity: RepositoryEntity): HResult<RepoIndex>
 
 	/**
 	 * Loads all repositories present
@@ -72,5 +72,11 @@ interface IExtRepoRepository {
 	 *
 	 * [HResult.Loading] Initial value
 	 */
-	suspend fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>>
+	fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>>
+
+
+	suspend fun addRepository(entity: RepositoryEntity): HResult<*>
+
+	suspend fun remove(entity: RepositoryEntity): HResult<*>
+
 }

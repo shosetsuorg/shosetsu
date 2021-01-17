@@ -3,7 +3,6 @@ package app.shosetsu.common.view.uimodel
 import app.shosetsu.common.domain.model.local.NovelSettingEntity
 import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.enums.ChapterSortType
-import app.shosetsu.common.enums.ReaderType
 import app.shosetsu.common.enums.ReadingStatus
 
 /*
@@ -34,10 +33,7 @@ data class NovelSettingUI(
 	var showOnlyReadingStatusOf: ReadingStatus? = null,
 	var showOnlyBookmarked: Boolean = false,
 	var showOnlyDownloaded: Boolean = false,
-	var reverseOrder: Boolean = false,
-
-	// how the reader is set-up
-	var readerType: ReaderType
+	var reverseOrder: Boolean = false
 ) : Convertible<NovelSettingEntity> {
 	override fun convertTo(): NovelSettingEntity = NovelSettingEntity(
 		novelID,
@@ -46,6 +42,5 @@ data class NovelSettingUI(
 		showOnlyBookmarked,
 		showOnlyDownloaded,
 		reverseOrder,
-		readerType
 	)
 }

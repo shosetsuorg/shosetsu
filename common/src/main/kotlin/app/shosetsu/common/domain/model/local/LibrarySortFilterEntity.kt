@@ -1,7 +1,6 @@
-package app.shosetsu.android.common.ext
+package app.shosetsu.common.domain.model.local
 
-import app.shosetsu.android.domain.model.database.DBRepositoryEntity
-import app.shosetsu.common.domain.model.local.RepositoryEntity
+import app.shosetsu.common.enums.NovelSortType
 
 /*
  * This file is part of Shosetsu.
@@ -21,6 +20,9 @@ import app.shosetsu.common.domain.model.local.RepositoryEntity
  */
 
 /**
- * shosetsu
- * 05 / 12 / 2020
+ * 03 / 01 / 2021
  */
+data class LibrarySortFilterEntity(
+	val sortType: NovelSortType,
+	val reversedSort: Boolean
+)

@@ -1,7 +1,10 @@
-package app.shosetsu.android
+package app.shosetsu.android.providers.database.dao
 
-import app.shosetsu.android.common.ext.ifSo
-import org.junit.Test
+import androidx.room.Dao
+import androidx.room.Query
+import app.shosetsu.android.domain.model.database.DBNovelReaderSettingEntity
+import app.shosetsu.android.providers.database.dao.base.BaseDao
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of Shosetsu.
@@ -21,19 +24,10 @@ import org.junit.Test
  */
 
 /**
- * shosetsu
- * 15 / 12 / 2020
+ * 03 / 01 / 2021
  */
-class TernaryTest {
-
-	@Test
-	fun main() {
-		println("Running")
-
-		false ifSo println("Hello") ?: println("Oh well")
-
-
-		println("Ending")
-
-	}
+@Dao
+interface NovelReaderSettingsDao : BaseDao<DBNovelReaderSettingEntity> {
+	@Query("SELECT * FROM novel_settings WHERE novelID == :novelID")
+	fun getFlow(novelID: Int): Flow<DBNovelReaderSettingEntity>
 }

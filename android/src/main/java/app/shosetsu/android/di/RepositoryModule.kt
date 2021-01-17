@@ -53,7 +53,7 @@ val repositoryModule: Kodein.Module = Kodein.Module("repository_module") {
 		ExtLibRepository(instance(), instance(), instance(), instance())
 	}
 
-	bind<IExtRepoRepository>() with singleton { ExtRepoRepository(instance(), instance()) }
+	bind<IExtensionRepoRepository>() with singleton { ExtRepoRepository(instance(), instance()) }
 
 	bind<INovelsRepository>() with singleton { NovelsRepository(instance(), instance()) }
 

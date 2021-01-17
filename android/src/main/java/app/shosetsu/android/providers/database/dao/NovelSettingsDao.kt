@@ -30,6 +30,6 @@ import kotlinx.coroutines.flow.Flow
 interface NovelSettingsDao : BaseDao<DBNovelSettingsEntity> {
 
 	@Query("SELECT * FROM novel_settings WHERE novelID == :novelID")
-	fun getNovelSettingFlow(novelID: Int): Flow<DBNovelSettingsEntity>
+	fun getFlow(novelID: Int): Flow<DBNovelSettingsEntity>
 
 }

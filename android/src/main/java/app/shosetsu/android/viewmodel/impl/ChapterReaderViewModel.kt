@@ -63,6 +63,9 @@ class ChapterReaderViewModel(
 	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : IChapterReaderViewModel() {
 
+	/**
+	 * TODO Memory management here
+	 */
 	private val hashMap: HashMap<Int, Flow<*>> = hashMapOf()
 
 	override val liveData: LiveData<HResult<List<ReaderUIItem<*, *>>>> by lazy {

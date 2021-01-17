@@ -1,7 +1,7 @@
 package app.shosetsu.common.datasource.database.base
 
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.model.local.RepositoryEntity
+import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -30,8 +30,12 @@ interface IDBExtRepoDataSource {
 	fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>>
 
 	/** Loads a list of the repositories */
-	fun loadRepositories(): HResult<List<RepositoryEntity>>
+	suspend fun loadRepositories(): HResult<List<RepositoryEntity>>
 
 	/** Loads a [RepositoryEntity] by its [repoID] */
-	fun loadRepository(repoID: Int): HResult<RepositoryEntity>
+	suspend fun loadRepository(repoID: Int): HResult<RepositoryEntity>
+
+	suspend fun addRepository(repositoryEntity: RepositoryEntity): HResult<*>
+
+	suspend fun remove(entity: RepositoryEntity): HResult<*>
 }

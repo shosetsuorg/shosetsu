@@ -34,7 +34,5 @@ data class NovelSettingEntity(
 	var showOnlyDownloaded: Boolean = false,
 	var reverseOrder: Boolean = false,
 
-	// how the reader is set-up
 
-	var readerType: ReaderType
 )

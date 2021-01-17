@@ -7,7 +7,6 @@ import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.dto.transform
-import app.shosetsu.common.enums.ReaderType
 import app.shosetsu.common.view.uimodel.NovelSettingUI
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -43,7 +42,7 @@ class GetNovelSettingFlowUseCase(
 		iNovelSettingsRepository.getNovelSettingsFlow(novelID).map { settingsResult ->
 			settingsResult.transform(
 				onLoading = {
-					successResult(NovelSettingUI(novelID, readerType = ReaderType.BASIC_TEXT))
+					successResult(NovelSettingUI(novelID))
 				}
 			) {
 				successResult(NovelSettingConversionFactory(it).convertTo())

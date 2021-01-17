@@ -1,12 +1,6 @@
-package app.shosetsu.android.domain.usecases.load
+package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.android.common.utils.uifactory.mapLatestToResultFlowWithFactory
-import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.mapLatestResultListTo
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of Shosetsu.
@@ -26,14 +20,9 @@ import kotlinx.coroutines.flow.Flow
  */
 
 /**
- * shosetsu
- * 16 / 09 / 2020
+ * 13 / 01 / 2021
  */
-class LoadRepositoriesUseCase(
-	private val iExtRepoRepository: IExtensionRepoRepository
+class AddRepositoryUseCase(
+	private val iRepositoryRepository: IExtensionRepoRepository
 ) {
-	@ExperimentalCoroutinesApi
-	operator fun invoke(): Flow<HResult<List<RepositoryUI>>> =
-		iExtRepoRepository.loadRepositoriesLive().mapLatestToResultFlowWithFactory()
-			.mapLatestResultListTo()
 }

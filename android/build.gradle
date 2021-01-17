@@ -255,4 +255,5 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:2.4.0"
     implementation "androidx.collection:collection-ktx:1.1.0"
 
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.2"
 }

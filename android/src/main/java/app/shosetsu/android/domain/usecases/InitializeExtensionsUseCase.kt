@@ -7,7 +7,7 @@ import app.shosetsu.common.domain.model.local.ExtLibEntity
 import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.IExtLibRepository
-import app.shosetsu.common.domain.repositories.base.IExtRepoRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.HResult.Error
 import app.shosetsu.common.dto.HResult.Success
@@ -42,7 +42,7 @@ import app.shosetsu.lib.json.RepoLibrary
  */
 class InitializeExtensionsUseCase(
 	private val extRepo: IExtensionsRepository,
-	private val extRepoRepo: IExtRepoRepository,
+	private val extRepoRepo: IExtensionRepoRepository,
 	private val extLibRepo: IExtLibRepository,
 	private var isOnlineUseCase: IsOnlineUseCase,
 ) {

@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.common.domain.repositories.base.IExtRepoRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
 
 /*
  * This file is part of shosetsu.
@@ -24,7 +24,7 @@ import app.shosetsu.common.domain.repositories.base.IExtRepoRepository
  * 13 / 05 / 2020
  */
 class RefreshRepositoryUseCase(
-	val repository: IExtRepoRepository,
+	val repository: IExtensionRepoRepository,
 ) : (() -> Unit) {
 	override fun invoke() {
 		TODO("Not yet implemented")

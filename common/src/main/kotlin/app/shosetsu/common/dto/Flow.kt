@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.mapLatest
 /**
  * Maps the latest result of a Flow<HResult<*>>
  */
+@ExperimentalCoroutinesApi
 inline fun <reified I, O> Flow<HResult<I>>.mapLatestResult(
 	noinline onLoading: suspend () -> HResult<O> = { loading() },
 	noinline onEmpty: suspend () -> HResult<O> = { emptyResult() },

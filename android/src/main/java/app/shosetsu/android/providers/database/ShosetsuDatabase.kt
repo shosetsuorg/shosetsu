@@ -3,6 +3,7 @@ package app.shosetsu.android.providers.database
 import android.content.Context
 import android.database.sqlite.SQLiteException
 import androidx.room.*
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import app.shosetsu.android.domain.model.database.*
 import app.shosetsu.android.providers.database.converters.*
@@ -47,7 +48,7 @@ import kotlinx.coroutines.launch
 		DBRepositoryEntity::class,
 		DBUpdate::class,
 	],
-	version = 2
+	version = 3
 )
 @TypeConverters(
 	ChapterSortTypeConverter::class,
@@ -75,6 +76,11 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 					object : RemoveMigration(1, 2) {
 						override fun migrate(database: SupportSQLiteDatabase) {
 							deleteColumnFromTable(database, "chapters", "savePath")
+						}
+					},
+					object : Migration(2, 3) {
+						override fun migrate(database: SupportSQLiteDatabase) {
+							database.execSQL("CREATE TABLE IF NOT EXISTS novel_settings (`novelID` INTEGER NOT NULL, `sortType` TEXT NOT NULL, `showOnlyReadingStatusOf` INTEGER, `showOnlyBookmarked` INTEGER NOT NULL, `showOnlyDownloaded` INTEGER NOT NULL, `reverseOrder` INTEGER NOT NULL, PRIMARY KEY(`novelID`), FOREIGN KEY(`novelID`) REFERENCES `novels`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )")
 						}
 					}
 				).build()
