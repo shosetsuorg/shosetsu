@@ -75,7 +75,15 @@ class ExtensionRepositoryTest : KodeinAware {
 				name = "Temporary test"
 			)
 
-			requireNotNull(repo.addRepository(tempRepoValue).unwrap()) { "Failed to add" }
+			val result = repo.addRepository(tempRepoValue)
+			result.handle(
+				onError = {
+					it.exception?.printStackTrace()
+				}
+			) {
+				println("Added successfully")
+			}
+			requireNotNull(result.unwrap()) { "Failed to add" }
 
 			println("With new element")
 			printEntites()

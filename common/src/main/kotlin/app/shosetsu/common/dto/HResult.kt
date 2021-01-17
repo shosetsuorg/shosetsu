@@ -39,13 +39,13 @@ sealed class HResult<out T> {
 	 * This states that the operation has failed
 	 * @param code ERROR code
 	 * @param message ERROR message
-	 * @param error ERROR Cause
+	 * @param exception ERROR Cause
 	 */
 	@Suppress("MemberVisibilityCanBePrivate")
 	data class Error(
 		val code: Int,
 		val message: String,
-		val error: Exception? = null,
+		val exception: Exception? = null,
 	) : HResult<Nothing>()
 
 	/**

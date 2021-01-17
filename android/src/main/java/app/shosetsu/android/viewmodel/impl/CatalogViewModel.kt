@@ -170,7 +170,7 @@ class CatalogViewModel(
 
 		getDataLoaderAndLoad().handle(onError = {
 			reportError(it)
-			logE("Error: ${it.code}|${it.message}", it.error)
+			logE("Error: ${it.code}|${it.message}", it.exception)
 		}) { newList ->
 			listingItemsLive.postValue(successResult(values + newList))
 			listingItems = values.apply { addAll(newList) }

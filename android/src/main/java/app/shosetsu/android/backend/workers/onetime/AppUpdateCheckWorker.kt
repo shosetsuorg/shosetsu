@@ -93,7 +93,7 @@ class AppUpdateCheckWorker(
 			result.handle(onEmpty = {
 				notificationManager.cancel(ID_APP_UPDATE)
 			}, onError = {
-				logE("Error!", it.error)
+				logE("Error!", it.exception)
 				pr.setContentText("Error! ${it.code} | ${it.message}")
 				notificationManager.notify(ID_APP_UPDATE, pr.build())
 			}) {

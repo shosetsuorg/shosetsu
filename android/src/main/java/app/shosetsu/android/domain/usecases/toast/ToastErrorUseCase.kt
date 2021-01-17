@@ -36,7 +36,7 @@ class ToastErrorUseCase(
 		duration: Int = Toast.LENGTH_LONG
 	) {
 		app.shosetsu.android.common.ext.launchUI {
-			val exception = error.error
+			val exception = error.exception
 
 			var errorMessage = R::class.simpleName ?: "UnknownSource"
 

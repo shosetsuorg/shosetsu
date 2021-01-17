@@ -2,12 +2,12 @@ package app.shosetsu.android.domain.usecases
 
 import android.util.Log
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.domain.model.local.ExtLibEntity
 import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.IExtLibRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.HResult.Error
 import app.shosetsu.common.dto.HResult.Success
@@ -69,7 +69,7 @@ class InitializeExtensionsUseCase(
 							?.let {
 								logE(
 									"Exception! ${it.code} : ${it.message}",
-									it.error
+									it.exception
 								)
 							}
 
@@ -94,7 +94,7 @@ class InitializeExtensionsUseCase(
 		progressUpdate: (String) -> Unit,
 	) {
 		// Libraries in database
-		val repoResult = extLibRepo.loadExtLibByRepo(repo.id)
+		val repoResult = extLibRepo.loadExtLibByRepo(repo.id!!)
 		repoResult.takeIf { it is Success }?.let { (it as Success).data }
 			?.let { libEntities ->
 				// Libraries not installed or needs update
@@ -124,7 +124,7 @@ class InitializeExtensionsUseCase(
 							extensionLibraryEntity ?: ExtLibEntity(
 								scriptName = repoName,
 								version = version,
-								repoID = repo.id
+								repoID = repo.id!!
 							)
 						)
 
@@ -148,7 +148,7 @@ class InitializeExtensionsUseCase(
 			extRepo.insertOrUpdate(
 				ExtensionEntity(
 					id = id,
-					repoID = repo.id,
+					repoID = repo.id!!,
 					name = name,
 					fileName = fileName,
 					imageURL = imageURL,
@@ -159,7 +159,7 @@ class InitializeExtensionsUseCase(
 			)
 			presentExtensions.add(id)
 		}
-		extRepo.getExtensionEntities(repo.id).handle { r ->
+		extRepo.getExtensionEntities(repo.id!!).handle { r ->
 			r.filterNot { presentExtensions.contains(it.id) }.forEach {
 				if (it.installed)
 					extRepo.updateExtensionEntity(

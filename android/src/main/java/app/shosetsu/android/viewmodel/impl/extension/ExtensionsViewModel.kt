@@ -67,10 +67,10 @@ class ExtensionsViewModel(
 					}
 				}
 				is HResult.Error -> {
-					result.error?.printStackTrace()
+					result.exception?.printStackTrace()
 					stringToastUseCase {
 						"Cannot install due to error ${result.code} by ${result.message} due to " +
-								"${result.error?.let { it::class.simpleName }}"
+								"${result.exception?.let { it::class.simpleName }}"
 					}
 				}
 			}

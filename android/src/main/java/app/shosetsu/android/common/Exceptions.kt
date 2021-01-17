@@ -30,5 +30,5 @@ class IncorrectDateException(message: String?) : Exception(message)
 
 class HResultException(hResult: HResult.Error) : Exception(
 	"${hResult.code} ${hResult.message}",
-	hResult.error
+	hResult.exception
 )

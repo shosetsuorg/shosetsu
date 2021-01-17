@@ -26,7 +26,7 @@ package app.shosetsu.common.domain.model.local
  * @author github.com/doomsdayrs
  */
 data class RepositoryEntity(
-		val id: Int = -1,
-		val url: String,
-		var name: String,
+	val id: Int? = null,
+	val url: String,
+	var name: String,
 )

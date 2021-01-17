@@ -13,10 +13,6 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.di.*
-import app.shosetsu.android.datasource.local.memory.memoryDataSourceModule
-import app.shosetsu.android.datasource.local.file.fileDataSourceModule
-import app.shosetsu.android.datasource.local.localDataSourceModule
-import app.shosetsu.android.datasource.remote.remoteDataSouceModule
 import app.shosetsu.android.domain.usecases.InitializeExtensionsUseCase
 import app.shosetsu.android.viewmodel.factory.ViewModelFactory
 import app.shosetsu.common.domain.repositories.base.IExtLibRepository
@@ -109,7 +105,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 				}
 				else -> {
 					if (result is HResult.Error)
-						logE("[${result.code}]\t${result.message}", result.error)
+						logE("[${result.code}]\t${result.message}", result.exception)
 					null
 				}
 			}
