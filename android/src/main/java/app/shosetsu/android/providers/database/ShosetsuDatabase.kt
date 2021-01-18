@@ -115,6 +115,7 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 
 							// Rename new table to fill in
 							database.execSQL("ALTER TABLE `${repositoryTableName}_new` RENAME TO `${repositoryTableName}`")
+							database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_${repositoryTableName}_url` ON `${repositoryTableName}` (`url`)")
 
 							// Migration to create novel_settings
 							database.execSQL("CREATE TABLE IF NOT EXISTS `novel_settings` (`novelID` INTEGER NOT NULL, `sortType` TEXT NOT NULL, `showOnlyReadingStatusOf` INTEGER, `showOnlyBookmarked` INTEGER NOT NULL, `showOnlyDownloaded` INTEGER NOT NULL, `reverseOrder` INTEGER NOT NULL, PRIMARY KEY(`novelID`), FOREIGN KEY(`novelID`) REFERENCES `novels`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )")
