@@ -5,7 +5,7 @@ import app.shosetsu.android.common.ext.*
 import app.shosetsu.common.domain.model.local.ExtLibEntity
 import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
-import app.shosetsu.common.domain.repositories.base.IExtLibRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionLibrariesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.dto.HResult
@@ -43,7 +43,7 @@ import app.shosetsu.lib.json.RepoLibrary
 class InitializeExtensionsUseCase(
 	private val extRepo: IExtensionsRepository,
 	private val extRepoRepo: IExtensionRepoRepository,
-	private val extLibRepo: IExtLibRepository,
+	private val extensionLibrariesRepo: IExtensionLibrariesRepository,
 	private var isOnlineUseCase: IsOnlineUseCase,
 ) {
 	suspend operator fun invoke(progressUpdate: (String) -> Unit) {
@@ -94,7 +94,7 @@ class InitializeExtensionsUseCase(
 		progressUpdate: (String) -> Unit,
 	) {
 		// Libraries in database
-		val repoResult = extLibRepo.loadExtLibByRepo(repo.id!!)
+		val repoResult = extensionLibrariesRepo.loadExtLibByRepo(repo.id!!)
 		repoResult.takeIf { it is Success }?.let { (it as Success).data }
 			?.let { libEntities ->
 				// Libraries not installed or needs update
@@ -133,7 +133,7 @@ class InitializeExtensionsUseCase(
 				// For each library not present, installs
 				libsNotPresent.forEach {
 					progressUpdate("Updating/Installing ${it.scriptName}")
-					extLibRepo.installExtLibrary(repo.url, it)
+					extensionLibrariesRepo.installExtLibrary(repo.url, it)
 				}
 			}
 			?: repoResult.takeIf { it is Error }?.let { it as Error }

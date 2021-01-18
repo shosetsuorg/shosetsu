@@ -1,6 +1,8 @@
 package app.shosetsu.android.domain.model.database
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.dto.Convertible
@@ -25,11 +27,19 @@ import app.shosetsu.common.dto.Convertible
 /**
  * shosetsu
  * 05 / 12 / 2020
+ *
+ * @param url must be unique
  */
-@Entity(tableName = "repositories")
+@Entity(
+	tableName = "repositories",
+	indices = [
+		Index("url", unique = true)
+	]
+)
 data class DBRepositoryEntity(
 	@PrimaryKey(autoGenerate = true)
 	var id: Int?,
+	@ColumnInfo
 	val url: String,
 	var name: String,
 ) : Convertible<RepositoryEntity> {

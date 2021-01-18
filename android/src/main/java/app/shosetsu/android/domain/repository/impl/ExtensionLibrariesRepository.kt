@@ -6,7 +6,7 @@ import app.shosetsu.common.datasource.file.base.IFileExtLibDataSource
 import app.shosetsu.common.datasource.memory.base.IMemExtLibDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteExtLibDataSource
 import app.shosetsu.common.domain.model.local.ExtLibEntity
-import app.shosetsu.common.domain.repositories.base.IExtLibRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionLibrariesRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.successResult
@@ -36,12 +36,12 @@ import org.json.JSONObject
  * shosetsu
  * 12 / 05 / 2020
  */
-class ExtLibRepository(
+class ExtensionLibrariesRepository(
 	private val fileSource: IFileExtLibDataSource,
 	private val databaseSource: IDBExtLibDataSource,
 	private val remoteSource: IRemoteExtLibDataSource,
 	private val memSource: IMemExtLibDataSource,
-) : IExtLibRepository {
+) : IExtensionLibrariesRepository {
 	override suspend fun loadExtLibByRepo(
 		repoID: Int,
 	): HResult<List<ExtLibEntity>> =

@@ -1,9 +1,11 @@
 package app.shosetsu.android.viewmodel.abstracted
 
+import androidx.lifecycle.LiveData
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
+import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of Shosetsu.
@@ -33,7 +35,7 @@ abstract class ARepositoryViewModel
 	 *
 	 * @param url THe URL of the repository
 	 */
-	abstract fun addRepository(url: String)
+	abstract fun addRepository(name: String, url: String)
 
 	/**
 	 * Checks if the string provided is a valid URL
@@ -43,5 +45,5 @@ abstract class ARepositoryViewModel
 	/**
 	 * Remove the repo from the app
 	 */
-	abstract fun remove(repositoryInfoUI: RepositoryUI)
+	abstract fun remove(repositoryInfoUI: RepositoryUI): LiveData<HResult<*>>
 }

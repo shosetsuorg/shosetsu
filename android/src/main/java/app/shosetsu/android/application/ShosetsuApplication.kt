@@ -15,7 +15,7 @@ import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.di.*
 import app.shosetsu.android.domain.usecases.InitializeExtensionsUseCase
 import app.shosetsu.android.viewmodel.factory.ViewModelFactory
-import app.shosetsu.common.domain.repositories.base.IExtLibRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionLibrariesRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.lua.ShosetsuLuaLib
 import app.shosetsu.lib.lua.shosetsuGlobals
@@ -65,7 +65,7 @@ import org.kodein.di.generic.singleton
 	resTheme = R.style.AppTheme_CrashReport
 )
 class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
-	private val extLibRepository by instance<IExtLibRepository>()
+	private val extLibRepository by instance<IExtensionLibrariesRepository>()
 	private val okHttpClient by instance<OkHttpClient>()
 	private val initializeExtensionsUseCase: InitializeExtensionsUseCase by instance()
 

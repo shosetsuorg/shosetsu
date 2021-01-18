@@ -61,6 +61,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:background="@android:color/transparent"
+            android:contentDescription="@string/todo"
             android:src="@drawable/close" />
 
     </RelativeLayout>

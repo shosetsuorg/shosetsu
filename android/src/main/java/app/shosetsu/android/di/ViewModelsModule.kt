@@ -134,7 +134,7 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 			i()
 		)
 	}
-	bind<ARepositoryViewModel>() with provider { RepositoryViewModel(i(), i()) }
+	bind<ARepositoryViewModel>() with provider { RepositoryViewModel(i(), i(), i(), i()) }
 
 
 	// Settings

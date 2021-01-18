@@ -4,7 +4,7 @@ import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.android.domain.repository.impl.AppUpdatesRepository
-import app.shosetsu.android.domain.repository.impl.ExtLibRepository
+import app.shosetsu.android.domain.repository.impl.ExtensionLibrariesRepository
 import app.shosetsu.common.domain.repositories.impl.ExtensionsRepository
 import app.shosetsu.common.domain.repositories.impl.NovelsRepository
 import app.shosetsu.common.domain.repositories.base.*
@@ -49,8 +49,8 @@ val repositoryModule: Kodein.Module = Kodein.Module("repository_module") {
 		ExtensionsRepository(instance(), instance(), instance(), instance(), instance(), instance())
 	}
 
-	bind<IExtLibRepository>() with singleton {
-		ExtLibRepository(instance(), instance(), instance(), instance())
+	bind<IExtensionLibrariesRepository>() with singleton {
+		ExtensionLibrariesRepository(instance(), instance(), instance(), instance())
 	}
 
 	bind<IExtensionRepoRepository>() with singleton { ExtRepoRepository(instance(), instance()) }

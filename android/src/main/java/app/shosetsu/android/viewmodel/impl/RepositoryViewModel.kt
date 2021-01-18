@@ -2,11 +2,14 @@ package app.shosetsu.android.viewmodel.impl
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.domain.ReportExceptionUseCase
+import app.shosetsu.android.domain.usecases.AddRepositoryUseCase
+import app.shosetsu.android.domain.usecases.delete.DeleteRepositoryUseCase
 import app.shosetsu.android.domain.usecases.load.LoadRepositoriesUseCase
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.android.viewmodel.abstracted.ARepositoryViewModel
 import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
 
 /*
  * This file is part of Shosetsu.
@@ -31,7 +34,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  */
 class RepositoryViewModel(
 	private val loadRepositoriesUseCase: LoadRepositoriesUseCase,
-	private val reportExceptionUseCase: ReportExceptionUseCase
+	private val reportExceptionUseCase: ReportExceptionUseCase,
+	private val addRepositoryUseCase: AddRepositoryUseCase,
+	private val deleteRepositoryUseCase: DeleteRepositoryUseCase
 ) : ARepositoryViewModel() {
 
 	@ExperimentalCoroutinesApi
@@ -39,7 +44,8 @@ class RepositoryViewModel(
 		loadRepositoriesUseCase().asIOLiveData()
 	}
 
-	override fun addRepository(url: String) {
+	override fun addRepository(name: String, url: String) {
+
 	}
 
 	override fun isURL(string: String): Boolean {
@@ -50,6 +56,7 @@ class RepositoryViewModel(
 		reportExceptionUseCase(error)
 	}
 
-	override fun remove(repositoryInfoUI: RepositoryUI) {
-	}
+	override fun remove(repositoryInfoUI: RepositoryUI) = flow {
+		emit(deleteRepositoryUseCase(repositoryInfoUI))
+	}.asIOLiveData()
 }

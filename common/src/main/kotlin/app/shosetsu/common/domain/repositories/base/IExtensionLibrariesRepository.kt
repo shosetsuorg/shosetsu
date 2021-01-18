@@ -25,7 +25,7 @@ import app.shosetsu.common.domain.model.local.RepositoryEntity
  * shosetsu
  * 01 / 05 / 2020
  */
-interface IExtLibRepository {
+interface IExtensionLibrariesRepository {
 
 	/**
 	 * Loads extension libraries by its repository

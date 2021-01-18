@@ -91,17 +91,16 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 							// Delete the old table
 
 							// Creates new table
-							database.execSQL("CREATE TABLE IF NOT EXISTS `${repositoryTableName}_new` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `url` TEXT NOT NULL, `name` TEXT NOT NULL)")
+							database.execSQL("CREATE TABLE IF NOT EXISTS `${repositoryTableName}_new` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `url` TEXT NOT NULL UNIQUE, `name` TEXT NOT NULL)")
 
 							val cursor = database.query("SELECT * FROM $repositoryTableName")
 							while (cursor.moveToNext()) {
-								database.insert("${repositoryTableName}_new",
+								database.insert(
+									"${repositoryTableName}_new",
 									OnConflictStrategy.ABORT,
 									ContentValues().apply {
-										val keyID = "id"
 										val keyURL = "url"
 										val keyName = "name"
-										put(keyID, cursor.getInt(cursor.getColumnIndex(keyID)))
 										put(keyURL, cursor.getString(cursor.getColumnIndex(keyURL)))
 										put(
 											keyName,
