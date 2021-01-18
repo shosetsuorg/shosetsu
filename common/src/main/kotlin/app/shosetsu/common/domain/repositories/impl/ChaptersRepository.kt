@@ -97,8 +97,12 @@ class ChaptersRepository(
 	): HResult<List<ChapterEntity>> =
 		dbSource.handleChapterReturn(novelEntity, list)
 
-	override suspend fun getChapters(novelID: Int): Flow<HResult<List<ChapterEntity>>> =
+	override suspend fun getChaptersLive(novelID: Int): Flow<HResult<List<ChapterEntity>>> =
 		dbSource.loadChapters(novelID)
+
+	override suspend fun getChapters(novelID: Int): HResult<List<ChapterEntity>> {
+		TODO("Create load chapters standard for dbSource")
+	}
 
 	override suspend fun updateChapter(chapterEntity: ChapterEntity): HResult<*> =
 		dbSource.updateChapter(chapterEntity)

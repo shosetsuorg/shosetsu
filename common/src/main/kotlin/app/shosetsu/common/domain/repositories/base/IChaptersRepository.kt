@@ -119,7 +119,9 @@ interface IChaptersRepository {
 	 *
 	 * [HResult.Loading] Initial
 	 */
-	suspend fun getChapters(novelID: Int): Flow<HResult<List<ChapterEntity>>>
+	suspend fun getChaptersLive(novelID: Int): Flow<HResult<List<ChapterEntity>>>
+
+	suspend fun getChapters(novelID: Int): HResult<List<ChapterEntity>>
 
 	/**
 	 * Loads a [ChapterEntity] by its [chapterID]
