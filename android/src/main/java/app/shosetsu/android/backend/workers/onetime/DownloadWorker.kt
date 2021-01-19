@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
-import android.util.Log
 import androidx.core.content.getSystemService
 import androidx.work.*
 import androidx.work.NetworkType.CONNECTED
@@ -14,27 +13,24 @@ import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_DOWNLOAD
 import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_DOWNLOAD
 import app.shosetsu.android.common.consts.WorkerTags.DOWNLOAD_WORK_ID
-import app.shosetsu.android.common.ext.*
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.consts.ErrorKeys
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.launchUI
+import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.toast
 import app.shosetsu.common.consts.settings.SettingKey.*
-import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.DownloadEntity
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.DownloadStatus
-import app.shosetsu.lib.IExtension
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.delay
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
-import app.shosetsu.common.dto.HResult.Error as HError
 
 /*
  * This file is part of shosetsu.
@@ -97,62 +93,31 @@ class DownloadWorker(
 
 	/** Retrieves the setting for if the download system is paused or not */
 	private suspend fun isDownloadPaused(): Boolean =
-		settingRepo.getBoolean(IsDownloadPaused).let {
-			if (it is HResult.Success)
-				it.data
-			else IsDownloadPaused.default
-		}
+		settingRepo.getBoolean(IsDownloadPaused).unwrap() ?: IsDownloadPaused.default
 
 	/** Retrieves the setting for simultaneous download threads allowed */
 	private suspend fun getDownloadThreads(): Int =
-		settingRepo.getInt(DownloadThreadPool).let {
-			if (it is HResult.Success)
-				it.data
-			else DownloadThreadPool.default
-		}
+		settingRepo.getInt(DownloadThreadPool).unwrap() ?: DownloadThreadPool.default
 
 	/** Retrieves the setting for simultaneous download threads allowed per extension */
 	private suspend fun getDownloadThreadsPerExtension(): Int =
-		settingRepo.getInt(DownloadExtThreads).let {
-			if (it is HResult.Success)
-				it.data
-			else DownloadExtThreads.default
-		}
+		settingRepo.getInt(DownloadExtThreads).unwrap() ?: DownloadExtThreads.default
 
 	/** Loads the download count that is present currently */
 	private suspend fun getDownloadCount(): Int =
-		downloadsRepo.loadDownloadCount().let { if (it is HResult.Success) it.data else -1 }
+		downloadsRepo.loadDownloadCount().unwrap() ?: -1
 
 
 	private suspend fun download(downloadEntity: DownloadEntity): HResult<*> =
-		chapRepo.getChapter(downloadEntity.chapterID).let { cR: HResult<ChapterEntity> ->
-			when (cR) {
-				is HResult.Success -> {
-					val chapterEntity = cR.data
-					extRepo.getIExtension(chapterEntity.extensionID)
-						.let { fR: HResult<IExtension> ->
-							when (fR) {
-								is HResult.Success -> {
-									val formatterEntity = fR.data
-									chapRepo.getChapterPassage(formatterEntity, chapterEntity)
-										.let {
-											when (it) {
-												is HResult.Success -> {
-													chapRepo.saveChapterPassageToStorage(
-														chapterEntity,
-														it.data
-													)
-													successResult("Chapter Loaded")
-												}
-												else -> it
-											}
-										}
-								}
-								else -> HError(ErrorKeys.ERROR_NOT_FOUND, "Formatter not found")
-							}
-						}
+		chapRepo.getChapter(downloadEntity.chapterID).transform { chapterEntity ->
+			extRepo.getIExtension(chapterEntity.extensionID).transform { formatterEntity ->
+				chapRepo.getChapterPassage(formatterEntity, chapterEntity).transform { passage ->
+					chapRepo.saveChapterPassageToStorage(
+						chapterEntity,
+						passage
+					)
+					successResult("Chapter Loaded")
 				}
-				else -> HError(ErrorKeys.ERROR_NOT_FOUND, "Chapter Entity not found")
 			}
 		}
 
@@ -210,19 +175,18 @@ class DownloadWorker(
 			activeJobs++
 
 			logI("Downloading $downloadEntity")
-			when (val downloadResult = download(downloadEntity)) {
-				is HResult.Success -> downloadsRepo.deleteEntity(downloadEntity)
-				is HError -> {
+			download(downloadEntity).handle(
+				onError = {
 					downloadsRepo.update(
 						downloadEntity.copy(
 							status = DownloadStatus.ERROR
 						)
 					)
 					launchUI {
-						toast { downloadResult.message }
+						toast { it.message }
 					}
-				}
-				is HResult.Empty -> {
+				},
+				onEmpty = {
 					downloadsRepo.update(
 						downloadEntity.copy(
 							status = DownloadStatus.ERROR
@@ -231,20 +195,23 @@ class DownloadWorker(
 					launchUI {
 						toast { "Empty Error" }
 					}
-				}
-				is HResult.Loading -> {
+				},
+				onLoading = {
 					throw Exception("Should not be loading")
 				}
+			) {
+				downloadsRepo.deleteEntity(downloadEntity)
 			}
+
 			activeJobs-- // Drops active job count once completed task
 			activeExtensions.remove(downloadEntity.extensionID)
 		}
 	}
 
 	override suspend fun doWork(): Result {
-		Log.i(logID(), "Starting loop")
+		logI("Starting loop")
 		if (isDownloadPaused())
-			Log.i(logID(), "Loop Paused")
+			logI("Loop Paused")
 		else {
 			// Notifies the application is downloading chapters
 			notificationManager.notify(ID_CHAPTER_DOWNLOAD, progressNotification.build())
@@ -261,7 +228,7 @@ class DownloadWorker(
 			// Downloads the chapters
 			notificationManager.cancel(ID_CHAPTER_DOWNLOAD)
 		}
-		Log.i(logID(), "Completed download loop")
+		logI("Completed download loop")
 		return Result.success()
 	}
 
