@@ -62,18 +62,6 @@ class BackupSettingsViewModel(
 				}
 			}
 		},
-		checkBoxSettingData(2) {
-			title { R.string.backup_quick_option }
-			description { R.string.backup_quick_option_desc }
-			iSettingsRepository.getBoolean(SettingKey.BackupQuick).handle {
-				isChecked = it
-			}
-			onChecked { _: CompoundButton?, iC: Boolean ->
-				launchIO {
-					iSettingsRepository.setBoolean(SettingKey.BackupQuick, iC)
-				}
-			}
-		},
 		buttonSettingData(3) {
 			title { R.string.backup_now }
 			text { R.string.restore_now }

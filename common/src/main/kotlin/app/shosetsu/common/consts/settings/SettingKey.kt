@@ -50,8 +50,8 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 	//- Some things
 	object ChaptersResumeFirstUnread : SettingKey<Boolean>(
-			"readerResumeFirstUnread",
-			false
+		"readerResumeFirstUnread",
+		false
 	)
 
 	// Download options
@@ -68,9 +68,10 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object DownloadOnLowStorage : SettingKey<Boolean>("downloadNotLowStorage", false)
 	object DownloadOnLowBattery : SettingKey<Boolean>("downloadNotLowBattery", false)
 	object DownloadOnMeteredConnection : SettingKey<Boolean>(
-			"downloadNotMetered",
-			false
+		"downloadNotMetered",
+		false
 	)
+
 	object DownloadOnlyWhenIdle : SettingKey<Boolean>("downloadIdle", false)
 
 	// Update options
@@ -103,7 +104,10 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	// Backup Options
 	object BackupChapters : SettingKey<Boolean>("backupChapters", true)
 	object BackupSettings : SettingKey<Boolean>("backupSettings", false)
-	object BackupQuick : SettingKey<Boolean>("backupQuick", false)
+	object BackupCycle : SettingKey<Int>("backupCycle", 3)
+	object BackupOnLowStorage : SettingKey<Boolean>("backupLowStorage", false)
+	object BackupOnLowBattery : SettingKey<Boolean>("backupLowBattery", false)
+	object BackupOnlyWhenIdle : SettingKey<Boolean>("backupIdle", false)
 
 	// Download Options
 	object CustomExportDirectory : SettingKey<String>("downloadDirectory", "")
@@ -116,8 +120,8 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 	/** If the reader can mark a read chapter as reading when its opened / scrolled */
 	object ReaderMarkReadAsReading : SettingKey<Boolean>(
-			"readerMarkReadAsReading",
-			false
+		"readerMarkReadAsReading",
+		false
 	)
 
 	object AppTheme : SettingKey<Int>("selectedAppTheme", 0)
@@ -183,7 +187,11 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 				// Backup Options
 				BackupChapters,
 				BackupSettings,
-				BackupQuick,
+
+				BackupCycle,
+				BackupOnLowBattery,
+				BackupOnLowStorage,
+				BackupOnlyWhenIdle,
 
 				// Download Options
 				CustomExportDirectory,
@@ -195,6 +203,6 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 		}
 
 		fun getKey(key: String): SettingKey<*> =
-				KEYS.find { it.name == key } ?: throw NullPointerException("Cannot find $key")
+			KEYS.find { it.name == key } ?: throw NullPointerException("Cannot find $key")
 	}
 }
