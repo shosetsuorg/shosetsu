@@ -16,10 +16,8 @@ import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.view.widget.SlidingUpBottomMenu
 import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
+import app.shosetsu.common.consts.ErrorKeys
+import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.id
@@ -79,6 +77,8 @@ class NovelController(bundle: Bundle) :
 	private var resume: FloatingActionButton? = null
 	private val novelUIAdapter by lazy { ItemAdapter<NovelUI>() }
 	private val chapterUIAdapter by lazy { ItemAdapter<ChapterUI>() }
+
+	@Suppress("UNCHECKED_CAST")
 	override val fastAdapter: FastAdapter<AbstractItem<*>> by lazy {
 		FastAdapter<AbstractItem<*>>().apply {
 			addAdapter(0, novelUIAdapter as ItemAdapter<AbstractItem<*>>)
@@ -167,6 +167,7 @@ class NovelController(bundle: Bundle) :
 			this.recyclerView = it.recyclerView
 		}
 
+	@Suppress("unused")
 	fun migrateOpen() {
 		parentController?.router?.pushController(
 			MigrationController(
@@ -356,14 +357,14 @@ class NovelController(bundle: Bundle) :
 	}
 
 	internal fun openFilterMenu() {
-		bottomMenuRetriever?.invoke()?.show()
+		bottomMenuRetriever.invoke()?.show()
 	}
 
 	override fun onDestroy() {
 		try {
 			viewModel.destroy()
 		} catch (e: DestroyFailedException) {
-			TODO("Add error handling here")
+			viewModel.reportError(errorResult(ErrorKeys.ERROR_IMPOSSIBLE, e))
 		}
 		actionMode?.finish()
 		super.onDestroy()
