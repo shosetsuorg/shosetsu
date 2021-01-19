@@ -1,7 +1,5 @@
 package app.shosetsu.android.common.ext
 
-import org.luaj.vm2.LuaError
-
 /*
  * This file is part of shosetsu.
  *

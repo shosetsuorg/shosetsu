@@ -8,7 +8,6 @@ import androidx.room.PrimaryKey
 import app.shosetsu.common.domain.model.local.NovelSettingEntity
 import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.enums.ChapterSortType
-import app.shosetsu.common.enums.ReaderType
 import app.shosetsu.common.enums.ReadingStatus
 
 /*

@@ -1,9 +1,9 @@
 package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.common.utils.uifactory.NovelConversionFactory
+import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
-import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.common.dto.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -41,8 +41,8 @@ class GetNovelUIUseCase(
 		emit(loading())
 		if (novelID != -1)
 			emitAll(novelsRepository.getNovelFlow(novelID).mapLatest {
-				it.transform {
-					successResult(NovelConversionFactory(it))
+				it.transform { novelEntity ->
+					successResult(NovelConversionFactory(novelEntity))
 				}
 			}.mapLatestResultTo().mapLatestResult { novelUI ->
 				extensionRepository.getExtensionEntity(novelUI.extID).transform { ext ->

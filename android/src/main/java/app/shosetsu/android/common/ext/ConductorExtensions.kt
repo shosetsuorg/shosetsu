@@ -45,11 +45,9 @@ fun Controller.withFadeTransaction(): RouterTransaction = RouterTransaction.with
 val Controller.context: Context?
 	get() = applicationContext
 
-fun Controller.getString(@StringRes resId: Int, default: String = "NULL"): String {
-	try {
-		return resources?.getString(resId) ?: default
-	} catch (e: Resources.NotFoundException) {
-		Log.d(logID(), "Could not find string resource: $resId")
-		return default
-	}
+fun Controller.getString(@StringRes resId: Int, default: String = "NULL"): String = try {
+	resources?.getString(resId) ?: default
+} catch (e: Resources.NotFoundException) {
+	Log.d(logID(), "Could not find string resource: $resId")
+	default
 }

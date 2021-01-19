@@ -1,9 +1,13 @@
 package app.shosetsu.android.datasource.local.database.impl
 
+import android.database.sqlite.SQLiteException
+import app.shosetsu.android.common.dto.errorResult
+import app.shosetsu.android.domain.model.database.DBNovelSettingsEntity
 import app.shosetsu.android.providers.database.dao.NovelSettingsDao
 import app.shosetsu.common.datasource.database.base.IDBNovelSettingsDataSource
 import app.shosetsu.common.domain.model.local.NovelSettingEntity
-import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -29,15 +33,32 @@ import kotlinx.coroutines.flow.Flow
 class DBNovelSettingsDataSource(
 	private val dao: NovelSettingsDao
 ) : IDBNovelSettingsDataSource {
-	override fun getNovelSettingsFlow(novelID: Int): Flow<HResult<NovelSettingEntity>> {
-		TODO("Not yet implemented")
+
+	@ExperimentalCoroutinesApi
+	override fun getNovelSettingsFlow(novelID: Int): Flow<HResult<NovelSettingEntity>> =
+		dao.getFlow(novelID).mapLatestTo().mapLatestToSuccess()
+
+	override suspend fun updateNovelSettings(novelSettingEntity: NovelSettingEntity): HResult<*> =
+		try {
+			successResult(dao.update(novelSettingEntity.toDB()))
+		} catch (e: SQLiteException) {
+			errorResult(e)
+		}
+
+	override suspend fun getNovelSettings(novelID: Int): HResult<NovelSettingEntity> = try {
+		dao.get(novelID).convert()
+	} catch (e: SQLiteException) {
+		errorResult(e)
 	}
 
-	override fun updateNovelSettings(novelSettingEntity: NovelSettingEntity): HResult<*> {
-		TODO("Not yet implemented")
-	}
-
-	override fun getNovelSettings(novelID: Int): HResult<NovelSettingEntity> {
-		TODO("Not yet implemented")
-	}
+	private fun NovelSettingEntity.toDB(): DBNovelSettingsEntity =
+		DBNovelSettingsEntity(
+			novelID,
+			sortType,
+			showOnlyReadingStatusOf,
+			showOnlyBookmarked,
+			showOnlyDownloaded,
+			reverseOrder
+		)
 }
+

@@ -1,16 +1,5 @@
 package app.shosetsu.android.common.ext
 
-import android.R
-import android.content.Context
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import app.shosetsu.android.view.builder.SDViewBuilder
-import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.*
-import app.shosetsu.lib.Filter
-import app.shosetsu.lib.IExtension
-
 /*
  * This file is part of shosetsu.
  *

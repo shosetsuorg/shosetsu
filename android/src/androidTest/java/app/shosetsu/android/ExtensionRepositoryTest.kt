@@ -104,8 +104,8 @@ class ExtensionRepositoryTest : KodeinAware {
 
 			// Clean up
 			repo.remove(handle).handle(
-				onError = {
-					it.exception?.let {
+				onError = { error ->
+					error.exception?.let {
 						throw it
 					}
 				}

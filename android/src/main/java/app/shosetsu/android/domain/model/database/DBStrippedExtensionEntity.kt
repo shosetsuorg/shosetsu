@@ -1,6 +1,5 @@
 package app.shosetsu.android.domain.model.database
 
-import androidx.room.ColumnInfo
 import app.shosetsu.common.domain.model.local.StrippedExtensionEntity
 import app.shosetsu.common.dto.Convertible
 

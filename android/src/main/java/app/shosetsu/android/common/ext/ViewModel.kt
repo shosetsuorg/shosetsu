@@ -1,7 +1,7 @@
 package app.shosetsu.android.common.ext
 
 import androidx.lifecycle.*
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlin.experimental.ExperimentalTypeInference
 
 /*
@@ -30,3 +30,34 @@ import kotlin.experimental.ExperimentalTypeInference
 fun <T> ViewModel.liveDataIO(
 	@BuilderInference block: suspend LiveDataScope<T>.() -> Unit
 ): LiveData<T> = liveData(viewModelScope.coroutineContext + Dispatchers.IO) { block() }
+
+
+fun ViewModel.launchUI(block: suspend CoroutineScope.() -> Unit): Job =
+	GlobalScope.launch(
+		viewModelScope.coroutineContext + Dispatchers.Main,
+		CoroutineStart.DEFAULT,
+		block
+	)
+
+fun ViewModel.launchIO(block: suspend CoroutineScope.() -> Unit): Job =
+	GlobalScope.launch(
+		viewModelScope.coroutineContext + Dispatchers.IO,
+		CoroutineStart.DEFAULT,
+		block
+	)
+
+@ExperimentalCoroutinesApi
+fun ViewModel.launchAsync(block: suspend CoroutineScope.() -> Unit): Job =
+	GlobalScope.launch(
+		viewModelScope.coroutineContext + Dispatchers.Default,
+		CoroutineStart.UNDISPATCHED,
+		block
+	)
+
+@ExperimentalCoroutinesApi
+fun ViewModel.launchFree(block: suspend CoroutineScope.() -> Unit): Job =
+	GlobalScope.launch(
+		viewModelScope.coroutineContext + Dispatchers.Unconfined,
+		CoroutineStart.UNDISPATCHED,
+		block
+	)

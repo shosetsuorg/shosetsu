@@ -16,7 +16,7 @@
         <item name="appBarLayoutStyle">@style/AppTheme.Widget.AppBarLayout</item>
     </style>
 
-    <style name="ChipStyle" parent="AppTheme.Main"></style>
+    <style name="ChipStyle" parent="AppTheme.Main" />
 
     <style name="AppTheme.CrashReport" parent="Theme.MaterialComponents.DayNight.Dialog" />
 </resources>

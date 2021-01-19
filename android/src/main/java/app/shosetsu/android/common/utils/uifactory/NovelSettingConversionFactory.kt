@@ -1,13 +1,7 @@
 package app.shosetsu.android.common.utils.uifactory
 
 import app.shosetsu.common.domain.model.local.NovelSettingEntity
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
 import app.shosetsu.common.view.uimodel.NovelSettingUI
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of Shosetsu.

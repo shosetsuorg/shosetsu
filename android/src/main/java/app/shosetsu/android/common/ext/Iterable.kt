@@ -20,8 +20,9 @@ package app.shosetsu.android.common.ext
 /**
  * shosetsu
  * 30 / 09 / 2020
+ *
+ * TODO Figure out what is happening
  */
-
 fun combine(separator: String): String = StringBuilder().apply {
 	forEach { append(it).append(separator) }
 }.toString()

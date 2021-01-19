@@ -3,9 +3,9 @@ package app.shosetsu.android.view
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.RadioGroup
-import android.widget.Switch
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatSpinner
+import androidx.appcompat.widget.SwitchCompat
 
 /*
  * This file is part of shosetsu.
@@ -52,7 +52,7 @@ class SDSpinner(context: Context, attributeSet: AttributeSet) :
 	override fun getValue(): Int = selectedItemPosition
 }
 
-class SDSwitch(context: Context, attributeSet: AttributeSet) : Switch(context, attributeSet),
+class SDSwitch(context: Context, attributeSet: AttributeSet) : SwitchCompat(context, attributeSet),
 	SDItem<Boolean> {
 	override fun getValue(): Boolean = isChecked
 }

@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 interface IDBNovelSettingsDataSource {
 	fun getNovelSettingsFlow(novelID: Int): Flow<HResult<NovelSettingEntity>>
 
-	fun updateNovelSettings(novelSettingEntity: NovelSettingEntity): HResult<*>
+	suspend fun updateNovelSettings(novelSettingEntity: NovelSettingEntity): HResult<*>
 
-	fun getNovelSettings(novelID: Int): HResult<NovelSettingEntity>
+	suspend fun getNovelSettings(novelID: Int): HResult<NovelSettingEntity>
 }

@@ -6,8 +6,8 @@ import androidx.room.Ignore
 import androidx.room.Query
 import androidx.room.Transaction
 import app.shosetsu.android.domain.model.database.DBExtensionEntity
+import app.shosetsu.android.domain.model.database.DBStrippedExtensionEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
-import app.shosetsu.common.domain.model.local.StrippedExtensionEntity
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -45,7 +45,7 @@ interface ExtensionsDao : BaseDao<DBExtensionEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT id, name, imageURL FROM extensions WHERE installed = 1 AND enabled = 1")
-	fun loadPoweredExtensionsBasic(): Flow<List<StrippedExtensionEntity>>
+	fun loadPoweredExtensionsBasic(): Flow<List<DBStrippedExtensionEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions WHERE id = :formatterID LIMIT 1")

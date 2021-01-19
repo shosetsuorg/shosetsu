@@ -2,7 +2,6 @@ package app.shosetsu.android.common.utils.uifactory
 
 import app.shosetsu.android.view.uimodels.model.IDTitleImageUI
 import app.shosetsu.common.domain.model.local.StrippedBookmarkedNovelEntity
-import app.shosetsu.common.domain.model.local.StrippedNovelEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.dto.transform

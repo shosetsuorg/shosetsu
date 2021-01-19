@@ -224,9 +224,7 @@ class ChapterReader
 		}
 
 		viewModel.liveThemes.observe(this) { list ->
-			colorItemAdapterUI.add(list.apply {
-				forEach { it.inReader = true }
-			})
+			colorItemAdapterUI.add(list.onEach { it.inReader = true })
 		}
 
 		viewModel.liveVolumeScroll.observe(this) {

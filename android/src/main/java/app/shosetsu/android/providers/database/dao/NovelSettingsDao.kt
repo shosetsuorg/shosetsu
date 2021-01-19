@@ -1,9 +1,11 @@
 package app.shosetsu.android.providers.database.dao
 
+import android.database.sqlite.SQLiteException
 import androidx.room.Dao
 import androidx.room.Query
 import app.shosetsu.android.domain.model.database.DBNovelSettingsEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
+import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -29,7 +31,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface NovelSettingsDao : BaseDao<DBNovelSettingsEntity> {
 
-	@Query("SELECT * FROM novel_settings WHERE novelID == :novelID")
+	@Query("SELECT * FROM novel_settings WHERE novelID == :novelID LIMIT 1")
 	fun getFlow(novelID: Int): Flow<DBNovelSettingsEntity>
 
+	@Query("SELECT * FROM novel_reader_settings WHERE novelID == :novelID LIMIT 1")
+	@Throws(SQLiteException::class)
+	suspend fun get(novelID: Int): HResult<DBNovelSettingsEntity>
 }

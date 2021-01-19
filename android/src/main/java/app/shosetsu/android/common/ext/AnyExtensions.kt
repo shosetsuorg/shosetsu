@@ -1,14 +1,10 @@
 package app.shosetsu.android.common.ext
 
 import android.util.Base64
-import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.ObjectOutputStream
-import java.util.concurrent.TimeUnit
 
 /*
  * This file is part of shosetsu.
@@ -67,49 +63,6 @@ fun Array<String>.convertArrayToString(): String {
 
 @Suppress("unused")
 inline fun <reified T : Any> T.logID(): String = T::class.java.simpleName
-
-/**
- * Freezes the thread for x time
- *
- * @param time time, default in MS
- */
-inline fun <reified T : Any> T.wait(time: Int, unit: TimeUnit = TimeUnit.MILLISECONDS): Any =
-	try {
-		unit.sleep(time.toLong())
-	} catch (e: InterruptedException) {
-		Log.e(logID(), "Failed to wait", e)
-	}
-
-
-fun ViewModel.launchUI(block: suspend CoroutineScope.() -> Unit): Job =
-	GlobalScope.launch(
-		viewModelScope.coroutineContext + Dispatchers.Main,
-		CoroutineStart.DEFAULT,
-		block
-	)
-
-fun ViewModel.launchIO(block: suspend CoroutineScope.() -> Unit): Job =
-	GlobalScope.launch(
-		viewModelScope.coroutineContext + Dispatchers.IO,
-		CoroutineStart.DEFAULT,
-		block
-	)
-
-@ExperimentalCoroutinesApi
-fun ViewModel.launchAsync(block: suspend CoroutineScope.() -> Unit): Job =
-	GlobalScope.launch(
-		viewModelScope.coroutineContext + Dispatchers.Default,
-		CoroutineStart.UNDISPATCHED,
-		block
-	)
-
-@ExperimentalCoroutinesApi
-fun ViewModel.launchFree(block: suspend CoroutineScope.() -> Unit): Job =
-	GlobalScope.launch(
-		viewModelScope.coroutineContext + Dispatchers.Unconfined,
-		CoroutineStart.UNDISPATCHED,
-		block
-	)
 
 fun launchUI(block: suspend CoroutineScope.() -> Unit): Job =
 	GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT, block)

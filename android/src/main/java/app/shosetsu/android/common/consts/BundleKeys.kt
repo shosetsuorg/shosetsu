@@ -29,9 +29,7 @@ object BundleKeys {
 	const val BUNDLE_ACTION: String = "action"
 	const val BUNDLE_EXTENSION: String = "extension"
 
-	const val BUNDLE_NOVEL_URL: String = "novelURL"
 	const val BUNDLE_NOVEL_ID: String = "novelID"
 	const val BUNDLE_CHAPTER_ID: String = "chapterID"
 	const val BUNDLE_QUERY: String = "query"
-	const val BUNDLE_DATE: String = "date"
 }

@@ -1,6 +1,5 @@
 package app.shosetsu.android.datasource.remote.impl
 
-import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.common.datasource.remote.base.IRemoteCatalogueDataSource
 import app.shosetsu.common.dto.HResult

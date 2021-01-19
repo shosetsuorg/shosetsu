@@ -57,13 +57,13 @@ class BackupTest : KodeinAware {
 
 	private val backupRepository by instance<IBackupRepository>()
 
-	val randomInt
+	private val randomInt
 		get() = Random.nextInt() % 100 + 10
 
-	val randomLong
+	private val randomLong
 		get() = Random.nextLong() % 10000
 
-	val randomString
+	private val randomString
 		get() = randomLong.toHexString()
 
 	private fun randomRepositories() = ArrayList<SimpleRepositoryEntity>().apply {

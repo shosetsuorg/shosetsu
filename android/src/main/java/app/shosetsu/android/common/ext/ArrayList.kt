@@ -18,17 +18,3 @@ package app.shosetsu.android.common.ext
  *
  * 14 / 12 / 2020
  */
-
-/**
- * 14 / 12 / 2020
- *
- * Removes the first element matching the [predicate]
- */
-fun <T> ArrayList<T>.removeFirst(predicate: (T) -> Boolean): Boolean {
-	for (i in size - 1 downTo 0)
-		if (predicate(get(i))) {
-			removeAt(i)
-			return true
-		}
-	return false
-}

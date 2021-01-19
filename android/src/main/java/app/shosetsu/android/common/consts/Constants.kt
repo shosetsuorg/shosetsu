@@ -1,7 +1,6 @@
 package app.shosetsu.android.common.consts
 
 import android.view.View
-import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 
 /*
  * This file is part of shosetsu.

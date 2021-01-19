@@ -295,7 +295,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			ACTION_OPEN_CATALOGUE -> setSelectedDrawerItem(R.id.nav_browse)
 			ACTION_OPEN_UPDATES -> setSelectedDrawerItem(R.id.nav_updates)
 			ACTION_OPEN_LIBRARY -> setSelectedDrawerItem(R.id.nav_library)
-			Intent.ACTION_SEARCH -> {
+			ACTION_SEARCH -> {
 				if (!router.hasRootController()) setSelectedDrawerItem(R.id.nav_library)
 
 				transitionView(

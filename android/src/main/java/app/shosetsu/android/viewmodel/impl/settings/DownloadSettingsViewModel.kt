@@ -1,6 +1,5 @@
 package app.shosetsu.android.viewmodel.impl.settings
 
-import android.content.Context
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
@@ -34,7 +33,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * 31 / 08 / 2020
  */
 class DownloadSettingsViewModel(
-	private val context: Context,
 	iSettingsRepository: ISettingsRepository,
 	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : ADownloadSettingsViewModel(iSettingsRepository) {

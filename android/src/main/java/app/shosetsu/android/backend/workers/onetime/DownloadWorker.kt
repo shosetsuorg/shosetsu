@@ -343,7 +343,4 @@ class DownloadWorker(
 		override fun stop(): Operation = workerManager.cancelUniqueWork(DOWNLOAD_WORK_ID)
 	}
 
-	companion object {
-		private const val MAX_CHAPTER_DOWNLOAD_PROGRESS = 3
-	}
 }

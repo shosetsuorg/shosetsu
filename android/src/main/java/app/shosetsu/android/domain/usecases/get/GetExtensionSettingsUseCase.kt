@@ -33,7 +33,7 @@ class GetExtensionSettingsUseCase(
 	private val iExtensionsRepository: IExtensionsRepository
 ) {
 	operator fun invoke(id: Int): Flow<HResult<List<Filter<*>>>> =
-		flow<HResult<ArrayList<Filter<*>>>> {
+		flow {
 			emit(loading())
 			if (id != -1)
 				emit(successResult(arrayListOf()))

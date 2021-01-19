@@ -113,9 +113,13 @@ class AppUpdateCheckCycleWorker(
 						}.build()
 					).build()
 				)
-				workerManager.getWorkInfosForUniqueWork(APP_UPDATE_CYCLE_WORK_ID).await()[0].let {
-					logI("Worker State ${it.state}")
-				}
+				logI(
+					"Worker State ${
+						workerManager.getWorkInfosForUniqueWork(
+							APP_UPDATE_CYCLE_WORK_ID
+						).await()[0].state
+					}"
+				)
 			}
 		}
 

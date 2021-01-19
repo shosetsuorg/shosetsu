@@ -2,10 +2,10 @@ package app.shosetsu.android.datasource.local.database.impl
 
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.common.datasource.database.base.IDBExtensionsDataSource
 import app.shosetsu.android.providers.database.dao.ExtensionsDao
-import app.shosetsu.common.domain.model.local.StrippedExtensionEntity
+import app.shosetsu.common.datasource.database.base.IDBExtensionsDataSource
 import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.domain.model.local.StrippedExtensionEntity
 import app.shosetsu.common.dto.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -61,7 +61,9 @@ class DBExtensionsDataSource(
 	override fun loadPoweredExtensionsCards(): Flow<HResult<List<StrippedExtensionEntity>>> = flow {
 		emit(loading())
 		try {
-			emitAll(extensionsDao.loadPoweredExtensionsBasic().mapLatestToSuccess())
+			emitAll(
+				extensionsDao.loadPoweredExtensionsBasic().mapLatestListTo().mapLatestToSuccess()
+			)
 		} catch (e: Exception) {
 			emit(e.toHError())
 		}

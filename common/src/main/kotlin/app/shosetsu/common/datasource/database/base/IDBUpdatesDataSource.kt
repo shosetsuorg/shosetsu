@@ -31,12 +31,12 @@ import kotlinx.coroutines.flow.Flow
  */
 interface IDBUpdatesDataSource {
 
-	/** Loads [LiveData] of a [List] of [UpdateEntity] */
+	/** Loads [Flow] of a [List] of [UpdateEntity] */
 	suspend fun getUpdates(): Flow<HResult<List<UpdateEntity>>>
 
 	/** Insert a [List] of [UpdateEntity] and returns an [HResult] of [Array] of [Long] */
 	suspend fun insertUpdates(list: List<UpdateEntity>): HResult<Array<Long>>
 
-	/** Loads [LiveData] of a [List] of [UpdateCompleteEntity] */
+	/** Loads [Flow] of a [List] of [UpdateCompleteEntity] */
 	suspend fun getCompleteUpdates(): Flow<HResult<List<UpdateCompleteEntity>>>
 }

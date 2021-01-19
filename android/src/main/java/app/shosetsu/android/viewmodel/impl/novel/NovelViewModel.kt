@@ -24,6 +24,7 @@ import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
 import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.ChapterSortType
+import app.shosetsu.common.enums.ChapterSortType.SOURCE
 import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.common.view.uimodel.NovelSettingUI
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -111,23 +112,23 @@ class NovelViewModel(
 
 	@ExperimentalCoroutinesApi
 	private val _showOnlyStatusOfFlow: Flow<ReadingStatus?> =
-		novelSettingsFlow.mapLatest { it.transmogrify { it.showOnlyReadingStatusOf } }
+		novelSettingsFlow.mapLatest { it.transmogrify { ui -> ui.showOnlyReadingStatusOf } }
 
 	@ExperimentalCoroutinesApi
 	private val _onlyDownloadedFlow: Flow<Boolean> =
-		novelSettingsFlow.mapLatest { it.transmogrify { it.showOnlyDownloaded } ?: false }
+		novelSettingsFlow.mapLatest { it.transmogrify { ui -> ui.showOnlyDownloaded } ?: false }
 
 	@ExperimentalCoroutinesApi
 	private val _onlyBookmarkedFlow: Flow<Boolean> =
-		novelSettingsFlow.mapLatest { it.transmogrify { it.showOnlyDownloaded } ?: false }
+		novelSettingsFlow.mapLatest { it.transmogrify { ui -> ui.showOnlyDownloaded } ?: false }
 
 	@ExperimentalCoroutinesApi
 	private val _sortTypeFlow: Flow<ChapterSortType> =
-		novelSettingsFlow.mapLatest { it.transmogrify { it.sortType } ?: ChapterSortType.SOURCE }
+		novelSettingsFlow.mapLatest { it.transmogrify { ui -> ui.sortType } ?: SOURCE }
 
 	@ExperimentalCoroutinesApi
 	private val _reversedSortFlow: Flow<Boolean> =
-		novelSettingsFlow.mapLatest { it.transmogrify { it.showOnlyDownloaded } ?: false }
+		novelSettingsFlow.mapLatest { it.transmogrify { ui -> ui.showOnlyDownloaded } ?: false }
 
 	@ExperimentalCoroutinesApi
 	private fun Flow<HResult<List<ChapterUI>>>.combineBookmarked(): Flow<HResult<List<ChapterUI>>> =
@@ -171,7 +172,7 @@ class NovelViewModel(
 		combine(_sortTypeFlow) { result, sortType ->
 			result.transform { chapters ->
 				successResult(when (sortType) {
-					ChapterSortType.SOURCE -> {
+					SOURCE -> {
 						chapters.sortedBy { it.order }
 					}
 					ChapterSortType.UPLOAD -> {

@@ -2,7 +2,6 @@ package app.shosetsu.common.dto
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.mapLatest
 
 /*

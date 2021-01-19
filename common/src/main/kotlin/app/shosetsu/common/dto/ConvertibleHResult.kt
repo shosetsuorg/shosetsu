@@ -30,6 +30,6 @@ inline fun <reified O, reified I> HResult<List<I>>.convertList(): HResult<List<O
  * maintaining itself in an [HResult]
  */
 inline fun <reified O, reified I : Convertible<O>> HResult<I>.convert(): HResult<O> =
-	this.transform<I, O> { it: I ->
+	this.transform {
 		successResult(it.convertTo())
 	}

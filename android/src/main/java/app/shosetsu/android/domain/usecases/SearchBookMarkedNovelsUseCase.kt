@@ -34,6 +34,6 @@ class SearchBookMarkedNovelsUseCase(
 ) {
 	suspend operator fun invoke(p1: String): HResult<List<IDTitleImageUI>> =
 		iNovelsRepository.searchBookmarked(p1)
-			.transform { successResult(it.map { StrippedNovelConversionFactory(it) }) }
+			.transform { list -> successResult(list.map { StrippedNovelConversionFactory(it) }) }
 			.convertList()
 }

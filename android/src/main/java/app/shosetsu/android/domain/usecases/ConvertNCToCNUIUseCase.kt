@@ -1,6 +1,5 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.android.domain.model.local.IDTitleImageBook
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.CompactCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI

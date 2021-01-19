@@ -140,7 +140,7 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	// Settings
 	bind<AAdvancedSettingsViewModel>() with provider { AdvancedSettingsViewModel(i(), i(), i()) }
 	bind<ABackupSettingsViewModel>() with provider { BackupSettingsViewModel(i(), i()) }
-	bind<ADownloadSettingsViewModel>() with provider { DownloadSettingsViewModel(i(), i(), i()) }
+	bind<ADownloadSettingsViewModel>() with provider { DownloadSettingsViewModel(i(), i()) }
 	bind<AReaderSettingsViewModel>() with provider { ReaderSettingsViewModel(i(), i(), i(), i()) }
 	bind<AUpdateSettingsViewModel>() with provider { UpdateSettingsViewModel(i(), i()) }
 	bind<AViewSettingsViewModel>() with provider { ViewSettingsViewModel(i(), i(), i()) }

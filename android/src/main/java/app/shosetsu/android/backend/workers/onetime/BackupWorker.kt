@@ -48,6 +48,10 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 
 	override val kodein: Kodein by closestKodein(appContext)
 	private val novelRepository by instance<INovelsRepository>()
+
+	/**
+	 * TODO add settings backup
+	 */
 	private val novelSettingsRepository by instance<INovelSettingsRepository>()
 	private val extensionsRepository by instance<IExtensionsRepository>()
 	private val chaptersRepository by instance<IChaptersRepository>()

@@ -1,7 +1,6 @@
 package app.shosetsu.common.domain.model.local
 
 import app.shosetsu.common.enums.ChapterSortType
-import app.shosetsu.common.enums.ReaderType
 import app.shosetsu.common.enums.ReadingStatus
 
 /*

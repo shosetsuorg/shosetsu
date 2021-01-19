@@ -20,22 +20,6 @@ import app.shosetsu.common.domain.model.local.ExtLibEntity
  * ====================================================================
  */
 
-/**
- * shosetsu
- * 20 / 04 / 2020
- *
- * @author github.com/doomsdayrs
- */
-
-fun Array<ExtLibEntity>.containsName(name: String): Int {
-	forEachIndexed { index, (scriptName) ->
-		if (scriptName == name) {
-			return index
-		}
-	}
-	return -1
-}
-
 
 fun List<ExtLibEntity>.containsName(name: String): Int {
 	forEachIndexed { index, (scriptName) ->
@@ -44,10 +28,4 @@ fun List<ExtLibEntity>.containsName(name: String): Int {
 		}
 	}
 	return -1
-}
-
-fun <T> Array<T>.toArrayList(): ArrayList<T> {
-	val arrayList = ArrayList<T>()
-	arrayList.addAll(this)
-	return arrayList
 }

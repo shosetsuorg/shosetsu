@@ -1,8 +1,7 @@
 package app.shosetsu.common.datasource.database.base
 
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.model.local.ExtLibEntity
-import app.shosetsu.common.domain.model.local.RepositoryEntity
+import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.

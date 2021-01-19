@@ -25,7 +25,6 @@ class BootReceiver : BroadcastReceiver() {
 	 */
 	override fun onReceive(context: Context, intent: Intent) {
 		Log.i(logID(), "Received BOOT_COMPLETED signal")
-
 		// Starts perodic workers
 		AutoStartUpdateWorker(context).invoke()
 		AutoStartAppUpdateWorker(context).invoke()
