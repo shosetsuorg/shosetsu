@@ -5,7 +5,6 @@ import android.util.Base64
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import app.shosetsu.common.domain.model.local.BackupEntity
-import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.unwrap
@@ -17,6 +16,10 @@ import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.util.zip.GZIPInputStream
+import java.util.zip.GZIPOutputStream
 
 /*
  * This file is part of Shosetsu.
@@ -42,8 +45,8 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 	appContext,
 	params,
 ), KodeinAware {
-	override val kodein: Kodein by closestKodein(appContext)
 
+	override val kodein: Kodein by closestKodein(appContext)
 	private val novelRepository by instance<INovelsRepository>()
 	private val novelSettingsRepository by instance<INovelSettingsRepository>()
 	private val extensionsRepository by instance<IExtensionsRepository>()
@@ -51,57 +54,24 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 	private val extensionRepoRepository by instance<IExtensionRepoRepository>()
 	private val backupRepository by instance<IBackupRepository>()
 
-	/**
-	 * @param repos that must be added
-	 * @param extensions is a tree to lower redundant data duplication
-	 */
-	@Serializable
-	private data class FleshedBackupEntity(
-		val repos: List<SimpleRepositoryEntity>,
-		val extensions: List<SimpleExtensionEntity>,
-	)
 
-	@Serializable
-	private data class SimpleRepositoryEntity(
-		val url: String,
-		val name: String,
-	)
+	@Throws(IOException::class)
+	fun gzip(content: String): ByteArray {
+		val bos = ByteArrayOutputStream()
+		GZIPOutputStream(bos).bufferedWriter().use { it.write(content) }
+		return bos.toByteArray()
+	}
 
-	/**
-	 * Each extension that needs to be installed
-	 * @param novels novels to add after word
-	 */
-	@Serializable
-	private data class SimpleExtensionEntity(
-		val id: Int,
-		val novels: List<SimpleNovelEntity>,
-	)
+	@Throws(IOException::class)
+	fun ungzip(content: ByteArray): String =
+		GZIPInputStream(content.inputStream()).bufferedReader().use { it.readText() }
 
-	@Serializable
-	private data class SimpleNovelEntity(
-		val url: String,
-		val name: String,
-		val imageURL: String,
-		val chapters: List<SimpleChapterEntity>,
-	)
-
-	/**
-	 * @param rS ReadingStatus
-	 * @param rP Reading position
-	 */
-	@Serializable
-	private data class SimpleChapterEntity(
-		val url: String,
-		val name: String,
-		val bookmarked: Boolean,
-		val rS: ReadingStatus,
-		val rP: Int
-	)
-
+	@Throws(IOException::class)
 	override suspend fun doWork(): Result {
+		// Load novels
 		novelRepository.getBookmarkedNovels().handle { novels ->
 			// Novels to their chapters
-			val novelsToChapters: List<Pair<NovelEntity, List<SimpleChapterEntity>>> = novels.map {
+			val novelsToChapters = novels.map {
 				it to (chaptersRepository.getChapters(it.id!!).unwrap()?.map { chapterEntity ->
 					SimpleChapterEntity(
 						chapterEntity.url,
@@ -152,8 +122,10 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 			)
 
 			val stringBackup = Json {}.encodeToString(backup)
-			val bytes = stringBackup.toByteArray()
-			val base64Bytes = Base64.encodeToString(bytes, Base64.DEFAULT)
+
+			val zippedBytes = gzip(stringBackup)
+
+			val base64Bytes = Base64.encodeToString(zippedBytes, Base64.DEFAULT)
 
 			backupRepository.saveBackup(
 				BackupEntity(
@@ -164,4 +136,51 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 		}
 		return Result.failure()
 	}
+
+	/**
+	 * @param repos that must be added
+	 * @param extensions is a tree to lower redundant data duplication
+	 */
+	@Serializable
+	private data class FleshedBackupEntity(
+		val repos: List<SimpleRepositoryEntity>,
+		val extensions: List<SimpleExtensionEntity>,
+	)
+
+	@Serializable
+	private data class SimpleRepositoryEntity(
+		val url: String,
+		val name: String,
+	)
+
+	/**
+	 * Each extension that needs to be installed
+	 * @param novels novels to add after word
+	 */
+	@Serializable
+	private data class SimpleExtensionEntity(
+		val id: Int,
+		val novels: List<SimpleNovelEntity>,
+	)
+
+	@Serializable
+	private data class SimpleNovelEntity(
+		val url: String,
+		val name: String,
+		val imageURL: String,
+		val chapters: List<SimpleChapterEntity>,
+	)
+
+	/**
+	 * @param rS ReadingStatus
+	 * @param rP Reading position
+	 */
+	@Serializable
+	private data class SimpleChapterEntity(
+		val url: String,
+		val name: String,
+		val bookmarked: Boolean,
+		val rS: ReadingStatus,
+		val rP: Int
+	)
 }

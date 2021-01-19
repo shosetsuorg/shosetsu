@@ -30,7 +30,7 @@ import app.shosetsu.common.consts.ErrorKeys
 sealed class HResult<out T> {
 
 	/** The operation was a success, here is your data [data] */
-	class Success<out T>(
+	data class Success<out T>(
 		/** Returned data */
 		val data: T,
 	) : HResult<T>()

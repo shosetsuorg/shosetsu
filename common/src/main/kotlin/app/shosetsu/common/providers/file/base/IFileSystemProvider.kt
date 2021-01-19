@@ -31,7 +31,11 @@ import app.shosetsu.common.enums.InternalFileDir
  */
 interface IFileSystemProvider {
 
+	fun listInternalFiles(internalFileDir: InternalFileDir, path: String): HResult<List<String>>
+	fun listExternalFiles(externalFileDir: ExternalFileDir, path: String): HResult<List<String>>
+
 	fun doesInternalFileExist(internalFileDir: InternalFileDir, path: String): HResult<Boolean>
+
 	fun doesExternalFileExist(externalFileDir: ExternalFileDir, path: String): HResult<Boolean>
 
 

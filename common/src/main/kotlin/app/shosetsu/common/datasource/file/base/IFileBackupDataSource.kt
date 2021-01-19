@@ -1,4 +1,7 @@
-package app.shosetsu.common.enums
+package app.shosetsu.common.datasource.file.base
+
+import app.shosetsu.common.domain.model.local.BackupEntity
+import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of Shosetsu.
@@ -18,14 +21,13 @@ package app.shosetsu.common.enums
  */
 
 /**
- * shosetsu
- * 23 / 10 / 2020
- *
- * Defines the 'type' of directory the file should be pulled from
+ * 18 / 01 / 2021
  */
-enum class ExternalFileDir {
-    /** Refers to the app specific external dir */
-    APP,
-	DOWNLOADS,
-    DOCUMENTS,
+interface IFileBackupDataSource {
+
+	suspend fun loadBackup(backupName: String): HResult<BackupEntity>
+
+	suspend fun saveBackup(backupEntity: BackupEntity): HResult<*>
+
+	suspend fun loadBackups(): HResult<List<String>>
 }

@@ -48,6 +48,14 @@ data class ChapterUI(
 	var bookmarked: Boolean,
 	var isSaved: Boolean,
 ) : BaseRecyclerItem<ChapterUI.ViewHolder>(), Convertible<ChapterEntity> {
+	override val layoutRes: Int = R.layout.recycler_novel_chapter
+
+	override val type: Int = R.layout.recycler_novel_chapter
+
+	override var identifier: Long
+		get() = id.toLong()
+		set(@Suppress("UNUSED_PARAMETER") value) {}
+
 	override fun convertTo(): ChapterEntity =
 		ChapterEntity(
 			id,
@@ -62,14 +70,6 @@ data class ChapterUI(
 			bookmarked,
 			isSaved
 		)
-
-	override val layoutRes: Int = R.layout.recycler_novel_chapter
-
-	override val type: Int = R.layout.recycler_novel_chapter
-
-	override var identifier: Long
-		get() = id.toLong()
-		set(@Suppress("UNUSED_PARAMETER") value) {}
 
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 

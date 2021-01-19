@@ -55,4 +55,5 @@ val fileDataSourceModule: Kodein.Module = Kodein.Module("file_data_source") {
 			instance()
 		)
 	}
+	bind<IFileBackupDataSource>() with singleton { FileBackupDataSource(instance()) }
 }

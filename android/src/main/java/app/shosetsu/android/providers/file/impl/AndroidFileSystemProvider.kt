@@ -45,6 +45,14 @@ class AndroidFileSystemProvider(
 	private val internalCacheDirPath by lazy { context.cacheDir.absolutePath }
 	private val internalFilesDirPath by lazy { context.filesDir.absolutePath }
 
+	private val internalGenericDirPath by lazy {
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+			context.dataDir.absolutePath
+		} else {
+			context.filesDir.absolutePath
+		}
+	}
+
 	private val externalDirPath by lazy { context.getExternalFilesDir(null) }
 	private val externalDownloadDirPath by lazy { context.getExternalFilesDir(DIRECTORY_DOWNLOADS) }
 	private val externalDocumentDirPath by lazy { context.getExternalFilesDir(DIRECTORY_DOCUMENTS) }
@@ -53,7 +61,7 @@ class AndroidFileSystemProvider(
 	private fun InternalFileDir.path() = when (this) {
 		InternalFileDir.CACHE -> "$internalCacheDirPath/"
 		InternalFileDir.FILES -> "$internalFilesDirPath/"
-		InternalFileDir.GENERIC -> "$internalFilesDirPath/"
+		InternalFileDir.GENERIC -> "$internalGenericDirPath/"
 	}
 
 	private fun ExternalFileDir.path() = when (this) {
@@ -61,6 +69,18 @@ class AndroidFileSystemProvider(
 		ExternalFileDir.DOWNLOADS -> "$externalDownloadDirPath/"
 		ExternalFileDir.DOCUMENTS -> "$externalDocumentDirPath/"
 	}
+
+	override fun listInternalFiles(
+		internalFileDir: InternalFileDir,
+		path: String
+	): HResult<List<String>> =
+		successResult(File(internalFileDir.path() + path).list()?.toList().orEmpty())
+
+	override fun listExternalFiles(
+		externalFileDir: ExternalFileDir,
+		path: String
+	): HResult<List<String>> =
+		successResult(File(externalFileDir.path() + path).list()?.toList().orEmpty())
 
 	override fun doesInternalFileExist(
 		internalFileDir: InternalFileDir,
@@ -76,7 +96,9 @@ class AndroidFileSystemProvider(
 
 	override fun readInternalFile(internalFileDir: InternalFileDir, path: String): HResult<String> {
 		val file = File(internalFileDir.path() + path)
+
 		logV("Reading $path in ${internalFileDir.path()} to $file")
+
 		if (!file.exists()) return emptyResult()
 		if (!file.canRead()) return errorResult(ERROR_LACK_PERM, "Cannot read file: $file")
 		return successResult(file.readText())
@@ -84,7 +106,9 @@ class AndroidFileSystemProvider(
 
 	override fun readExternalFile(externalFileDir: ExternalFileDir, path: String): HResult<String> {
 		val file = File(externalFileDir.path() + path)
+
 		logV("Reading $path in ${externalFileDir.path()} to $file")
+
 		if (!file.exists()) return emptyResult()
 		if (!file.canRead()) return errorResult(ERROR_LACK_PERM, "Cannot read file: $file")
 		return successResult(file.readText())
@@ -141,13 +165,16 @@ class AndroidFileSystemProvider(
 		val file = File(externalFileDir.path() + path)
 
 		logV("Writing $path in ${externalFileDir.path()} to $file")
+
 		if (!file.canWrite() && file.exists())
 			return errorResult(ERROR_LACK_PERM, "Cannot write file: $file")
 
 		try {
 			if (!file.exists()) file.createNewFile()
 		} catch (e: IOException) {
+
 			logE("IOException on attempt to create new file: $file", e)
+
 			return errorResult(ERROR_IO, e)
 		}
 
@@ -159,7 +186,9 @@ class AndroidFileSystemProvider(
 		path: String
 	): HResult<*> {
 		val file = File(internalFileDir.path() + path)
+
 		logV("Creating $path in ${internalFileDir.path()}")
+
 		// if (!file.canWrite()) return errorResult(ERROR_LACK_PERM, "Cannot write file: $file")
 		return successResult(file.mkdirs())
 	}
@@ -169,7 +198,9 @@ class AndroidFileSystemProvider(
 		path: String
 	): HResult<*> {
 		val file = File(externalFileDir.path() + path)
+
 		logV("Creating $path in ${externalFileDir.path()}")
+
 		// if (!file.canWrite()) return errorResult(ERROR_LACK_PERM, "Cannot write file: $file")
 		return successResult(file.mkdirs())
 	}
@@ -179,7 +210,9 @@ class AndroidFileSystemProvider(
 		path: String
 	): HResult<String> {
 		val file = File(internalFileDir.path() + path)
+
 		if (!file.exists()) return emptyResult()
+
 		return successResult(file.absolutePath)
 	}
 
@@ -188,18 +221,17 @@ class AndroidFileSystemProvider(
 		path: String
 	): HResult<String> {
 		val file = File(externalFileDir.path() + path)
+
 		if (!file.exists()) return emptyResult()
+
 		return successResult(file.absolutePath)
 	}
 
 	override fun createInternalFile(internalFileDir: InternalFileDir, path: String): HResult<*> {
 		val file = File(internalFileDir.path() + path)
 		return try {
-
 			val t = file.createNewFile()
-			if (t) {
-				successResult(t)
-			} else emptyResult()
+			if (t) successResult(t) else emptyResult()
 		} catch (e: IOException) {
 			e.toHError()
 		}
@@ -208,11 +240,8 @@ class AndroidFileSystemProvider(
 	override fun createExternalFile(externalFileDir: ExternalFileDir, path: String): HResult<*> {
 		val file = File(externalFileDir.path() + path)
 		return try {
-
 			val t = file.createNewFile()
-			if (t) {
-				successResult(t)
-			} else emptyResult()
+			if (t) successResult(t) else emptyResult()
 		} catch (e: IOException) {
 			e.toHError()
 		}
