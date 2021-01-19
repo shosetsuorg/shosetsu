@@ -5,7 +5,7 @@ import app.shosetsu.android.backend.workers.onetime.AppUpdateInstallWorker
 import app.shosetsu.android.backend.workers.onetime.DownloadWorker
 import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker
 import app.shosetsu.android.backend.workers.perodic.AppUpdateCheckCycleWorker
-import app.shosetsu.android.backend.workers.perodic.UpdateCycleWorker
+import app.shosetsu.android.backend.workers.perodic.NovelUpdateCycleWorker
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
@@ -50,6 +50,6 @@ val othersModule = Kodein.Module("others") {
 			instance()
 		)
 	}
-	bind<UpdateCycleWorker.Manager>() with singleton { UpdateCycleWorker.Manager(instance()) }
+	bind<NovelUpdateCycleWorker.Manager>() with singleton { NovelUpdateCycleWorker.Manager(instance()) }
 
 }

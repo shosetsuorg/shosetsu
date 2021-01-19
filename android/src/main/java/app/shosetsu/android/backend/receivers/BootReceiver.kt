@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import app.shosetsu.android.backend.workers.perodic.AppUpdateCheckCycleWorker
-import app.shosetsu.android.backend.workers.perodic.UpdateCycleWorker
+import app.shosetsu.android.backend.workers.perodic.NovelUpdateCycleWorker
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.common.consts.settings.SettingKey
@@ -33,7 +33,7 @@ class BootReceiver : BroadcastReceiver() {
 	internal class AutoStartUpdateWorker(val context: Context) : KodeinAware {
 		override val kodein: Kodein by kodein(context)
 		private val iSettingsRepository: ISettingsRepository by instance()
-		private val manager: UpdateCycleWorker.Manager by instance()
+		private val manager: NovelUpdateCycleWorker.Manager by instance()
 		operator fun invoke() {
 			launchIO {
 				val b = iSettingsRepository.getBoolean(SettingKey.UpdateOnStartup)

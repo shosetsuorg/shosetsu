@@ -3,7 +3,6 @@ package app.shosetsu.android.backend.workers.perodic
 import android.content.Context
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
-import android.util.Log
 import androidx.work.*
 import androidx.work.ExistingPeriodicWorkPolicy.REPLACE
 import androidx.work.NetworkType.CONNECTED
@@ -13,11 +12,12 @@ import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.WorkerTags.UPDATE_CYCLE_WORK_ID
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.common.ext.logID
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
+import app.shosetsu.common.domain.repositories.base.getIntOrDefault
 import org.kodein.di.generic.instance
 import java.util.concurrent.TimeUnit.HOURS
 import androidx.work.PeriodicWorkRequestBuilder as PWRB
@@ -47,50 +47,37 @@ import androidx.work.PeriodicWorkRequestBuilder as PWRB
  *     Handles update requests for the entire application
  * </p>
  */
-class UpdateCycleWorker(
+class NovelUpdateCycleWorker(
 	appContext: Context,
 	params: WorkerParameters,
 ) : CoroutineWorker(appContext, params) {
+	override suspend fun doWork(): Result {
+		logI(LogConstants.SERVICE_EXECUTE)
+		NovelUpdateWorker.Manager(applicationContext).apply { if (!isRunning()) start() }
+		return Result.success()
+	}
+
 	/**
-	 * Manager of [UpdateCycleWorker]
+	 * Manager of [NovelUpdateCycleWorker]
 	 */
 	class Manager(context: Context) : CoroutineWorkerManager(context) {
 		private val iSettingsRepository by instance<ISettingsRepository>()
 
 
-		private suspend fun updateCycle(): Long = iSettingsRepository.getInt(UpdateCycle).let {
-			if (it is HResult.Success)
-				it.data.toLong()
-			else UpdateCycle.default.toLong()
-		}
+		private suspend fun updateCycle(): Long =
+			iSettingsRepository.getIntOrDefault(UpdateCycle).toLong()
 
 		private suspend fun updateOnMetered(): Boolean =
-			iSettingsRepository.getBoolean(UpdateOnMeteredConnection).let {
-				if (it is HResult.Success)
-					it.data
-				else UpdateOnMeteredConnection.default
-			}
+			iSettingsRepository.getBooleanOrDefault(UpdateOnMeteredConnection)
 
 		private suspend fun updateOnLowStorage(): Boolean =
-			iSettingsRepository.getBoolean(UpdateOnLowStorage).let {
-				if (it is HResult.Success)
-					it.data
-				else UpdateOnLowStorage.default
-			}
+			iSettingsRepository.getBooleanOrDefault(UpdateOnLowStorage)
 
 		private suspend fun updateOnLowBattery(): Boolean =
-			iSettingsRepository.getBoolean(UpdateOnLowBattery).let {
-				if (it is HResult.Success)
-					it.data
-				else UpdateOnLowBattery.default
-			}
+			iSettingsRepository.getBooleanOrDefault(UpdateOnLowBattery)
 
 		private suspend fun updateOnlyIdle(): Boolean =
-			iSettingsRepository.getBoolean(UpdateOnlyWhenIdle).let {
-				if (it is HResult.Success)
-					it.data
-				else UpdateOnlyWhenIdle.default
-			}
+			iSettingsRepository.getBooleanOrDefault(UpdateOnlyWhenIdle)
 
 		/**
 		 * Returns the status of the service.
@@ -110,11 +97,11 @@ class UpdateCycleWorker(
 		 */
 		override fun start() {
 			launchIO {
-				Log.i(logID(), LogConstants.SERVICE_NEW)
+				logI(LogConstants.SERVICE_NEW)
 				workerManager.enqueueUniquePeriodicWork(
 					UPDATE_CYCLE_WORK_ID,
 					REPLACE,
-					PWRB<UpdateCycleWorker>(
+					PWRB<NovelUpdateCycleWorker>(
 						updateCycle(),
 						HOURS
 					).setConstraints(
@@ -133,7 +120,7 @@ class UpdateCycleWorker(
 						.build()
 				)
 				workerManager.getWorkInfosForUniqueWork(UPDATE_CYCLE_WORK_ID).await()[0].let {
-					Log.d(logID(), "State ${it.state}")
+					logD("State ${it.state}")
 				}
 			}
 		}
@@ -142,12 +129,5 @@ class UpdateCycleWorker(
 		 * Stops the service.
 		 */
 		override fun stop(): Operation = workerManager.cancelUniqueWork(UPDATE_CYCLE_WORK_ID)
-	}
-
-
-	override suspend fun doWork(): Result {
-		logI(LogConstants.SERVICE_EXECUTE)
-		NovelUpdateWorker.Manager(applicationContext).apply { if (!isRunning()) start() }
-		return Result.success()
 	}
 }

@@ -19,10 +19,7 @@ import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.toast
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.DownloadEntity
-import app.shosetsu.common.domain.repositories.base.IChaptersRepository
-import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.DownloadStatus
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -93,15 +90,15 @@ class DownloadWorker(
 
 	/** Retrieves the setting for if the download system is paused or not */
 	private suspend fun isDownloadPaused(): Boolean =
-		settingRepo.getBoolean(IsDownloadPaused).unwrap() ?: IsDownloadPaused.default
+		settingRepo.getBooleanOrDefault(IsDownloadPaused)
 
 	/** Retrieves the setting for simultaneous download threads allowed */
 	private suspend fun getDownloadThreads(): Int =
-		settingRepo.getInt(DownloadThreadPool).unwrap() ?: DownloadThreadPool.default
+		settingRepo.getIntOrDefault(DownloadThreadPool)
 
 	/** Retrieves the setting for simultaneous download threads allowed per extension */
 	private suspend fun getDownloadThreadsPerExtension(): Int =
-		settingRepo.getInt(DownloadExtThreads).unwrap() ?: DownloadExtThreads.default
+		settingRepo.getIntOrDefault(DownloadExtThreads)
 
 	/** Loads the download count that is present currently */
 	private suspend fun getDownloadCount(): Int =
@@ -239,32 +236,16 @@ class DownloadWorker(
 		private val iSettingsRepository by instance<ISettingsRepository>()
 
 		private suspend fun downloadOnMetered(): Boolean =
-			iSettingsRepository.getBoolean(DownloadOnMeteredConnection).let {
-				if (it is HResult.Success)
-					it.data
-				else DownloadOnMeteredConnection.default
-			}
+			iSettingsRepository.getBooleanOrDefault(DownloadOnMeteredConnection)
 
 		private suspend fun downloadOnLowStorage(): Boolean =
-			iSettingsRepository.getBoolean(DownloadOnLowStorage).let {
-				if (it is HResult.Success)
-					it.data
-				else DownloadOnLowStorage.default
-			}
+			iSettingsRepository.getBooleanOrDefault(DownloadOnLowStorage)
 
 		private suspend fun downloadOnLowBattery(): Boolean =
-			iSettingsRepository.getBoolean(DownloadOnLowBattery).let {
-				if (it is HResult.Success)
-					it.data
-				else DownloadOnLowBattery.default
-			}
+			iSettingsRepository.getBooleanOrDefault(DownloadOnLowBattery)
 
 		private suspend fun downloadOnlyIdle(): Boolean =
-			iSettingsRepository.getBoolean(DownloadOnlyWhenIdle).let {
-				if (it is HResult.Success)
-					it.data
-				else DownloadOnlyWhenIdle.default
-			}
+			iSettingsRepository.getBooleanOrDefault(DownloadOnlyWhenIdle)
 
 		/**
 		 * Returns the status of the service.

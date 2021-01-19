@@ -27,10 +27,10 @@ import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.dto.transform
-import app.shosetsu.common.dto.unwrap
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.Kodein
@@ -89,10 +89,10 @@ class NovelUpdateWorker(
 	private val iSettingsRepository: ISettingsRepository by instance()
 
 	private suspend fun onlyUpdateOngoing(): Boolean =
-		iSettingsRepository.getBoolean(OnlyUpdateOngoing).unwrap() ?: OnlyUpdateOngoing.default
+		iSettingsRepository.getBooleanOrDefault(OnlyUpdateOngoing)
 
 	private suspend fun downloadOnUpdate(): Boolean =
-		iSettingsRepository.getBoolean(IsDownloadOnUpdate).unwrap() ?: IsDownloadPaused.default
+		iSettingsRepository.getBooleanOrDefault(IsDownloadOnUpdate)
 
 	override suspend fun doWork(): Result {
 		logI(LogConstants.SERVICE_EXECUTE)
@@ -157,20 +157,16 @@ class NovelUpdateWorker(
 		private val iSettingsRepository by instance<ISettingsRepository>()
 
 		private suspend fun updateOnMetered(): Boolean =
-			iSettingsRepository.getBoolean(UpdateOnMeteredConnection).unwrap()
-				?: UpdateOnMeteredConnection.default
+			iSettingsRepository.getBooleanOrDefault(UpdateOnMeteredConnection)
 
 		private suspend fun updateOnLowStorage(): Boolean =
-			iSettingsRepository.getBoolean(UpdateOnLowStorage).unwrap()
-				?: UpdateOnLowStorage.default
+			iSettingsRepository.getBooleanOrDefault(UpdateOnLowStorage)
 
 		private suspend fun updateOnLowBattery(): Boolean =
-			iSettingsRepository.getBoolean(UpdateOnLowBattery).unwrap()
-				?: UpdateOnLowBattery.default
+			iSettingsRepository.getBooleanOrDefault(UpdateOnLowBattery)
 
 		private suspend fun updateOnlyIdle(): Boolean =
-			iSettingsRepository.getBoolean(UpdateOnlyWhenIdle).unwrap()
-				?: UpdateOnlyWhenIdle.default
+			iSettingsRepository.getBooleanOrDefault(UpdateOnlyWhenIdle)
 
 		/**
 		 * Returns the status of the service.

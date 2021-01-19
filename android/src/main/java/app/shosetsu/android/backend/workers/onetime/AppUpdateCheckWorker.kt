@@ -25,8 +25,8 @@ import app.shosetsu.android.ui.splash.SplashScreen
 import app.shosetsu.common.consts.settings.SettingKey.AppUpdateOnMeteredConnection
 import app.shosetsu.common.consts.settings.SettingKey.AppUpdateOnlyWhenIdle
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
 import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.transmogrify
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -118,15 +118,11 @@ class AppUpdateCheckWorker(
 		private val iSettingsRepository: ISettingsRepository by instance()
 
 		private suspend fun appUpdateOnMetered(): Boolean =
-			iSettingsRepository.getBoolean(AppUpdateOnMeteredConnection).transmogrify {
-				it
-			} ?: AppUpdateOnMeteredConnection.default
+			iSettingsRepository.getBooleanOrDefault(AppUpdateOnMeteredConnection)
 
 
 		private suspend fun appUpdateOnlyIdle(): Boolean =
-			iSettingsRepository.getBoolean(AppUpdateOnlyWhenIdle).transmogrify {
-				it
-			} ?: AppUpdateOnlyWhenIdle.default
+			iSettingsRepository.getBooleanOrDefault(AppUpdateOnlyWhenIdle)
 
 		/**
 		 * Returns the status of the service.
