@@ -1,11 +1,17 @@
 package app.shosetsu.android.backend.workers.onetime
 
 import android.content.Context
+import android.os.Build
 import android.util.Base64
-import androidx.work.CoroutineWorker
-import androidx.work.WorkerParameters
+import androidx.work.*
+import app.shosetsu.android.backend.workers.CoroutineWorkerManager
+import app.shosetsu.android.common.consts.LogConstants
+import app.shosetsu.android.common.consts.WorkerTags
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.utils.backupJSON
 import app.shosetsu.android.domain.model.local.backup.*
+import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.BackupEntity
 import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.dto.handle
@@ -47,6 +53,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 
 	override val kodein: Kodein by closestKodein(appContext)
 	private val novelRepository by instance<INovelsRepository>()
+	private val iSettingsRepository by instance<ISettingsRepository>()
 
 	/**
 	 * TODO add settings backup
@@ -56,6 +63,13 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 	private val chaptersRepository by instance<IChaptersRepository>()
 	private val extensionRepoRepository by instance<IExtensionRepoRepository>()
 	private val backupRepository by instance<IBackupRepository>()
+
+
+	private suspend fun backupChapters() =
+		iSettingsRepository.getBooleanOrDefault(BackupChapters)
+
+	private suspend fun backupSettings() =
+		iSettingsRepository.getBooleanOrDefault(BackupSettings)
 
 
 	@Throws(IOException::class)
@@ -69,13 +83,11 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 	fun ungzip(content: ByteArray): String =
 		GZIPInputStream(content.inputStream()).bufferedReader().use { it.readText() }
 
-	@Throws(IOException::class)
-	override suspend fun doWork(): Result {
-		// Load novels
-		novelRepository.getBookmarkedNovels().handle { novels ->
-			// Novels to their chapters
-			val novelsToChapters = novels.map {
-				it to (chaptersRepository.getChapters(it.id!!).unwrap()?.map { chapterEntity ->
+
+	private suspend fun getBackupChapters(novelID: Int): List<BackupChapterEntity> {
+		if (backupChapters())
+			chaptersRepository.getChapters(novelID).handle {
+				return it.map { chapterEntity ->
 					BackupChapterEntity(
 						chapterEntity.url,
 						chapterEntity.title,
@@ -83,8 +95,17 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 						chapterEntity.readingStatus,
 						chapterEntity.readingPosition
 					)
-				} ?: listOf())
+				}
 			}
+		return listOf()
+	}
+
+	@Throws(IOException::class)
+	override suspend fun doWork(): Result {
+		// Load novels
+		novelRepository.getBookmarkedNovels().handle { novels ->
+			// Novels to their chapters
+			val novelsToChapters = novels.map { it to getBackupChapters(it.id!!) }
 
 			// Extensions each novel requires
 			// Distinct, with no duplicates
@@ -140,5 +161,72 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 		return Result.failure()
 	}
 
+	/**
+	 * Manager of [BackupWorker]
+	 */
+	class Manager(context: Context) : CoroutineWorkerManager(context) {
+		private val iSettingsRepository: ISettingsRepository by instance()
 
+		private suspend fun requiresBackupOnIdle(): Boolean =
+			iSettingsRepository.getBooleanOrDefault(BackupOnlyWhenIdle)
+
+		private suspend fun allowsBackupOnLowStorage(): Boolean =
+			iSettingsRepository.getBooleanOrDefault(BackupOnLowStorage)
+
+		private suspend fun allowsBackupOnLowBattery(): Boolean =
+			iSettingsRepository.getBooleanOrDefault(BackupOnLowBattery)
+
+		/**
+		 * Returns the status of the service.
+		 *
+		 * @return true if the service is running, false otherwise.
+		 */
+		override fun isRunning(): Boolean = try {
+			// Is this running
+			val a = (workerManager.getWorkInfosForUniqueWork(WorkerTags.APP_UPDATE_WORK_ID)
+				.get()[0].state == WorkInfo.State.RUNNING)
+
+			// Don't run if update is being installed
+			val b = !AppUpdateInstallWorker.Manager(context).isRunning()
+			a && b
+		} catch (e: Exception) {
+			false
+		}
+
+		/**
+		 * Starts the service. It will be started only if there isn't another instance already
+		 * running.
+		 */
+		override fun start() {
+			launchIO {
+				logI(LogConstants.SERVICE_NEW)
+				workerManager.enqueueUniqueWork(
+					WorkerTags.APP_UPDATE_WORK_ID,
+					ExistingWorkPolicy.REPLACE,
+					OneTimeWorkRequestBuilder<AppUpdateCheckWorker>(
+					).setConstraints(
+						Constraints.Builder().apply {
+							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+								setRequiresDeviceIdle(requiresBackupOnIdle())
+
+							setRequiresStorageNotLow(allowsBackupOnLowStorage())
+							setRequiresBatteryNotLow(allowsBackupOnLowBattery())
+						}.build()
+					).build()
+				)
+				logI(
+					"Worker State ${
+						workerManager.getWorkInfosForUniqueWork(WorkerTags.APP_UPDATE_WORK_ID)
+							.await()[0].state
+					}"
+				)
+			}
+		}
+
+		/**
+		 * Stops the service.
+		 */
+		override fun stop(): Operation =
+			workerManager.cancelUniqueWork(WorkerTags.APP_UPDATE_WORK_ID)
+	}
 }

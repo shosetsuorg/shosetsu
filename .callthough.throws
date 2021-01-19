@@ -4,3 +4,5 @@ kotlin.apply block
 kotlin.apply block
 kotlin.collections.forEach action
 kotlin.let block
+kotlin.io.use block
+app.shosetsu.common.dto.handle onLoading

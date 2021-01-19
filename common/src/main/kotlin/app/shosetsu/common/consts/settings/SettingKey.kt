@@ -105,6 +105,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object BackupChapters : SettingKey<Boolean>("backupChapters", true)
 	object BackupSettings : SettingKey<Boolean>("backupSettings", false)
 	object BackupCycle : SettingKey<Int>("backupCycle", 3)
+
 	object BackupOnLowStorage : SettingKey<Boolean>("backupLowStorage", false)
 	object BackupOnLowBattery : SettingKey<Boolean>("backupLowBattery", false)
 	object BackupOnlyWhenIdle : SettingKey<Boolean>("backupIdle", false)
