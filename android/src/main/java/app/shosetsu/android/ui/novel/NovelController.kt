@@ -118,7 +118,9 @@ class NovelController(bundle: Bundle) :
 
 	override fun setupRecyclerView() {
 		recyclerView.setHasFixedSize(false)
-		syncFABWithRecyclerView(recyclerView, resume!!)
+		resume?.let {
+			syncFABWithRecyclerView(recyclerView, it)
+		}
 		super.setupRecyclerView()
 	}
 
