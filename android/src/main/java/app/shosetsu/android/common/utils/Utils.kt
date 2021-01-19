@@ -6,6 +6,7 @@ import android.view.animation.Animation
 import android.view.animation.Transformation
 import app.shosetsu.android.common.enums.ProductFlavors
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
+import kotlinx.serialization.json.Json
 
 
 /*
@@ -81,3 +82,9 @@ fun View.collapse() {
 }
 
 fun flavor(): ProductFlavors = ProductFlavors.fromKey(BuildConfig.FLAVOR)
+
+
+val backupJSON
+	get() = Json {
+		encodeDefaults = true
+	}

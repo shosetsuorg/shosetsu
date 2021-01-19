@@ -4,14 +4,13 @@ import android.content.Context
 import android.util.Base64
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import app.shosetsu.android.common.utils.backupJSON
+import app.shosetsu.android.domain.model.local.backup.*
 import app.shosetsu.common.domain.model.local.BackupEntity
 import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.unwrap
-import app.shosetsu.common.enums.ReadingStatus
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -77,7 +76,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 			// Novels to their chapters
 			val novelsToChapters = novels.map {
 				it to (chaptersRepository.getChapters(it.id!!).unwrap()?.map { chapterEntity ->
-					SimpleChapterEntity(
+					BackupChapterEntity(
 						chapterEntity.url,
 						chapterEntity.title,
 						chapterEntity.bookmarked,
@@ -102,19 +101,19 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 							extensionEntity.repoID == repositoryEntity.id
 						}
 					}.map { (_, url, name) ->
-						SimpleRepositoryEntity(url, name)
+						BackupRepositoryEntity(url, name)
 					}
 
 			val backup = FleshedBackupEntity(
-				repositoriesRequired,
+				repos = repositoriesRequired,
 				// Creates the trees
-				extensions.map { extensionEntity ->
-					SimpleExtensionEntity(
+				extensions = extensions.map { extensionEntity ->
+					BackupExtensionEntity(
 						extensionEntity.id,
 						novelsToChapters.filter { (novel, _) ->
 							novel.extensionID == extensionEntity.id
 						}.map { (novel, chapters) ->
-							SimpleNovelEntity(
+							BackupNovelEntity(
 								novel.url,
 								novel.title,
 								novel.imageURL,
@@ -125,7 +124,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 				}
 			)
 
-			val stringBackup = Json {}.encodeToString(backup)
+			val stringBackup = backupJSON.encodeToString(backup)
 
 			val zippedBytes = gzip(stringBackup)
 
@@ -141,50 +140,5 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 		return Result.failure()
 	}
 
-	/**
-	 * @param repos that must be added
-	 * @param extensions is a tree to lower redundant data duplication
-	 */
-	@Serializable
-	private data class FleshedBackupEntity(
-		val repos: List<SimpleRepositoryEntity>,
-		val extensions: List<SimpleExtensionEntity>,
-	)
 
-	@Serializable
-	private data class SimpleRepositoryEntity(
-		val url: String,
-		val name: String,
-	)
-
-	/**
-	 * Each extension that needs to be installed
-	 * @param novels novels to add after word
-	 */
-	@Serializable
-	private data class SimpleExtensionEntity(
-		val id: Int,
-		val novels: List<SimpleNovelEntity>,
-	)
-
-	@Serializable
-	private data class SimpleNovelEntity(
-		val url: String,
-		val name: String,
-		val imageURL: String,
-		val chapters: List<SimpleChapterEntity>,
-	)
-
-	/**
-	 * @param rS ReadingStatus
-	 * @param rP Reading position
-	 */
-	@Serializable
-	private data class SimpleChapterEntity(
-		val url: String,
-		val name: String,
-		val bookmarked: Boolean,
-		val rS: ReadingStatus,
-		val rP: Int
-	)
 }

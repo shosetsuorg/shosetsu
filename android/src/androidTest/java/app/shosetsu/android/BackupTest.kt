@@ -3,15 +3,15 @@ package app.shosetsu.android
 import android.content.Context
 import android.util.Base64
 import androidx.test.platform.app.InstrumentationRegistry
+import app.shosetsu.android.common.utils.backupJSON
+import app.shosetsu.android.domain.model.local.backup.*
 import app.shosetsu.common.domain.model.local.BackupEntity
 import app.shosetsu.common.domain.repositories.base.IBackupRepository
 import app.shosetsu.common.dto.unwrap
 import app.shosetsu.common.enums.ReadingStatus
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.future.future
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import okhttp3.internal.toHexString
 import org.junit.Test
 import org.kodein.di.Kodein
@@ -66,20 +66,20 @@ class BackupTest : KodeinAware {
 	private val randomString
 		get() = randomLong.toHexString()
 
-	private fun randomRepositories() = ArrayList<SimpleRepositoryEntity>().apply {
+	private fun randomRepositories() = ArrayList<BackupRepositoryEntity>().apply {
 		for (i in 0 until randomInt) {
 			add(
-				SimpleRepositoryEntity(
+				BackupRepositoryEntity(
 					randomString, randomString
 				)
 			)
 		}
 	}
 
-	private fun randomChapters() = ArrayList<SimpleChapterEntity>().apply {
+	private fun randomChapters() = ArrayList<BackupChapterEntity>().apply {
 		for (i in 0 until randomInt) {
 			add(
-				SimpleChapterEntity(
+				BackupChapterEntity(
 					randomString, randomString,
 					Random.nextBoolean(),
 					ReadingStatus.fromInt(Random.nextInt() % 3 + 1),
@@ -89,10 +89,10 @@ class BackupTest : KodeinAware {
 		}
 	}
 
-	private fun randomNovels() = ArrayList<SimpleNovelEntity>().apply {
+	private fun randomNovels() = ArrayList<BackupNovelEntity>().apply {
 		for (i in 0 until randomInt) {
 			add(
-				SimpleNovelEntity(
+				BackupNovelEntity(
 					randomString,
 					randomString,
 					randomString,
@@ -102,10 +102,10 @@ class BackupTest : KodeinAware {
 		}
 	}
 
-	private fun randomExtensions() = ArrayList<SimpleExtensionEntity>().apply {
+	private fun randomExtensions() = ArrayList<BackupExtensionEntity>().apply {
 		for (i in 0 until randomInt) {
 			add(
-				SimpleExtensionEntity(
+				BackupExtensionEntity(
 					randomInt,
 					randomNovels()
 				)
@@ -115,8 +115,8 @@ class BackupTest : KodeinAware {
 
 	private val backup by lazy {
 		FleshedBackupEntity(
-			randomRepositories(),
-			randomExtensions()
+			repos = randomRepositories(),
+			extensions = randomExtensions()
 		)
 	}
 
@@ -163,7 +163,7 @@ class BackupTest : KodeinAware {
 				}
 			}
 
-			val stringBackup = measureTimedValue { Json {}.encodeToString(backup) }.also {
+			val stringBackup = measureTimedValue { backupJSON.encodeToString(backup) }.also {
 				println("Serialized backup in ${it.duration.inMilliseconds}ms")
 			}.value
 
@@ -190,50 +190,5 @@ class BackupTest : KodeinAware {
 		}.join()
 	}
 
-	/**
-	 * @param repos that must be added
-	 * @param extensions is a tree to lower redundant data duplication
-	 */
-	@Serializable
-	private data class FleshedBackupEntity(
-		val repos: List<SimpleRepositoryEntity>,
-		val extensions: List<SimpleExtensionEntity>,
-	)
 
-	@Serializable
-	private data class SimpleRepositoryEntity(
-		val url: String,
-		val name: String,
-	)
-
-	/**
-	 * Each extension that needs to be installed
-	 * @param novels novels to add after word
-	 */
-	@Serializable
-	private data class SimpleExtensionEntity(
-		val id: Int,
-		val novels: List<SimpleNovelEntity>,
-	)
-
-	@Serializable
-	private data class SimpleNovelEntity(
-		val url: String,
-		val name: String,
-		val imageURL: String,
-		val chapters: List<SimpleChapterEntity>,
-	)
-
-	/**
-	 * @param rS ReadingStatus
-	 * @param rP Reading position
-	 */
-	@Serializable
-	private data class SimpleChapterEntity(
-		val url: String,
-		val name: String,
-		val bookmarked: Boolean,
-		val rS: ReadingStatus,
-		val rP: Int
-	)
 }
