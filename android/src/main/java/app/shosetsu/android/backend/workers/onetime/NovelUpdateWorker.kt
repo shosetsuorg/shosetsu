@@ -18,16 +18,19 @@ import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags.UPDATE_WORK_ID
 import app.shosetsu.android.common.ext.combine
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logID
-import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerUseCase
 import app.shosetsu.android.domain.usecases.get.GetNovelUseCase
 import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
+import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.transform
+import app.shosetsu.common.dto.unwrap
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.Kodein
@@ -60,51 +63,114 @@ import org.kodein.di.generic.instance
  *     Handles update requests for the entire application
  * </p>
  */
-class UpdateWorker(
+class NovelUpdateWorker(
 	appContext: Context,
 	params: WorkerParameters,
 ) : CoroutineWorker(appContext, params), KodeinAware {
-	companion object {
-		const val KEY_TARGET: String = "Target"
-		const val KEY_CHAPTERS: String = "Novels"
 
-		const val KEY_NOVELS: Int = 0x00
-		const val KEY_CATEGORY: Int = 0x01
+	private val notificationManager by lazy { appContext.getSystemService<NotificationManager>()!! }
+	private val progressNotification by lazy {
+		if (SDK_INT >= VERSION_CODES.O) {
+			Notification.Builder(appContext, CHANNEL_UPDATE)
+		} else {
+			// Suppressed due to lower API
+			@Suppress("DEPRECATION")
+			Notification.Builder(appContext)
+		}
+			.setSmallIcon(R.drawable.refresh)
+			.setContentText("Update in progress")
+			.setOnlyAlertOnce(true)
+	}
+	override val kodein: Kodein by closestKodein(appContext)
+	private val iNovelsRepository: INovelsRepository by instance()
+	private val loadNovelUseCase: GetNovelUseCase by instance()
+	private val toastErrorUseCase: ToastErrorUseCase by instance()
+	private val startDownloadWorker: StartDownloadWorkerUseCase by instance()
+	private val iSettingsRepository: ISettingsRepository by instance()
+
+	private suspend fun onlyUpdateOngoing(): Boolean =
+		iSettingsRepository.getBoolean(OnlyUpdateOngoing).unwrap() ?: OnlyUpdateOngoing.default
+
+	private suspend fun downloadOnUpdate(): Boolean =
+		iSettingsRepository.getBoolean(IsDownloadOnUpdate).unwrap() ?: IsDownloadPaused.default
+
+	override suspend fun doWork(): Result {
+		logI(LogConstants.SERVICE_EXECUTE)
+		val pr = progressNotification
+		pr.setContentTitle(applicationContext.getString(R.string.update))
+		pr.setOngoing(true)
+		notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
+
+		val updateNovels = arrayListOf<NovelEntity>()
+		iNovelsRepository.getBookmarkedNovels().transform { list ->
+			successResult(
+				if (onlyUpdateOngoing())
+					list.filter { it.status == Novel.Status.PUBLISHING }
+				else list
+			)
+		}.handle(
+			onError = { return Result.failure() },
+			onLoading = { return Result.failure() },
+			onEmpty = { return Result.failure() },
+		) { novels ->
+			var progress = 0
+
+			novels.forEach { nE ->
+				pr.setContentText(applicationContext.getString(R.string.updating) + nE.title)
+				pr.setProgress(novels.size, progress, false)
+				notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
+				loadNovelUseCase(nE, true) {
+					updateNovels.add(nE)
+				}.handle(onError = { toastErrorUseCase<NovelUpdateWorker>(it) })
+				progress++
+			}
+
+
+			notificationManager.notify(
+				ID_CHAPTER_UPDATE,
+				pr.apply {
+					setContentTitle(applicationContext.getString(R.string.update))
+					setContentText(
+						applicationContext.getString(R.string.update_complete) + "\n" +
+								combine(",\n")
+					)
+					setOngoing(false)
+					setProgress(0, 0, false)
+				}.build()
+			)
+
+			if (updateNovels.isEmpty()) notificationManager.cancel(ID_CHAPTER_UPDATE)
+
+		}
+
+		// Will update only if downloadOnUpdate is enabled and there have been chapters
+		if (downloadOnUpdate() && updateNovels.isNotEmpty())
+			startDownloadWorker()
+
+		return Result.success()
 	}
 
 	/**
-	 * Manager of [UpdateWorker]
+	 * Manager of [NovelUpdateWorker]
 	 */
 	class Manager(context: Context) : CoroutineWorkerManager(context) {
 		private val iSettingsRepository by instance<ISettingsRepository>()
 
 		private suspend fun updateOnMetered(): Boolean =
-			iSettingsRepository.getBoolean(UpdateOnMeteredConnection).let {
-				if (it is HResult.Success)
-					it.data
-				else UpdateOnMeteredConnection.default
-			}
+			iSettingsRepository.getBoolean(UpdateOnMeteredConnection).unwrap()
+				?: UpdateOnMeteredConnection.default
 
 		private suspend fun updateOnLowStorage(): Boolean =
-			iSettingsRepository.getBoolean(UpdateOnLowStorage).let {
-				if (it is HResult.Success)
-					it.data
-				else UpdateOnLowStorage.default
-			}
+			iSettingsRepository.getBoolean(UpdateOnLowStorage).unwrap()
+				?: UpdateOnLowStorage.default
 
 		private suspend fun updateOnLowBattery(): Boolean =
-			iSettingsRepository.getBoolean(UpdateOnLowBattery).let {
-				if (it is HResult.Success)
-					it.data
-				else UpdateOnLowBattery.default
-			}
+			iSettingsRepository.getBoolean(UpdateOnLowBattery).unwrap()
+				?: UpdateOnLowBattery.default
 
 		private suspend fun updateOnlyIdle(): Boolean =
-			iSettingsRepository.getBoolean(UpdateOnlyWhenIdle).let {
-				if (it is HResult.Success)
-					it.data
-				else UpdateOnlyWhenIdle.default
-			}
+			iSettingsRepository.getBoolean(UpdateOnlyWhenIdle).unwrap()
+				?: UpdateOnlyWhenIdle.default
 
 		/**
 		 * Returns the status of the service.
@@ -124,11 +190,11 @@ class UpdateWorker(
 		 */
 		override fun start() {
 			launchIO {
-				Log.i(logID(), LogConstants.SERVICE_NEW)
+				logI(LogConstants.SERVICE_NEW)
 				workerManager.enqueueUniqueWork(
 					UPDATE_WORK_ID,
 					REPLACE,
-					OneTimeWorkRequestBuilder<UpdateWorker>().setConstraints(
+					OneTimeWorkRequestBuilder<NovelUpdateWorker>().setConstraints(
 						Constraints.Builder().apply {
 							setRequiredNetworkType(
 								if (updateOnMetered()) {
@@ -154,92 +220,11 @@ class UpdateWorker(
 		override fun stop(): Operation = workerManager.cancelUniqueWork(UPDATE_WORK_ID)
 	}
 
-	private val notificationManager by lazy { appContext.getSystemService<NotificationManager>()!! }
+	companion object {
+		const val KEY_TARGET: String = "Target"
+		const val KEY_CHAPTERS: String = "Novels"
 
-	private val progressNotification by lazy {
-		if (SDK_INT >= VERSION_CODES.O) {
-			Notification.Builder(appContext, CHANNEL_UPDATE)
-		} else {
-			// Suppressed due to lower API
-			@Suppress("DEPRECATION")
-			Notification.Builder(appContext)
-		}
-			.setSmallIcon(R.drawable.refresh)
-			.setContentText("Update in progress")
-			.setOnlyAlertOnce(true)
-	}
-
-	override val kodein: Kodein by closestKodein(appContext)
-	private val iNovelsRepository: INovelsRepository by instance()
-	private val loadNovelUseCase: GetNovelUseCase by instance()
-	private val toastErrorUseCase: ToastErrorUseCase by instance()
-	private val startDownloadWorker: StartDownloadWorkerUseCase by instance()
-	private val iSettingsRepository: ISettingsRepository by instance()
-
-	private suspend fun onlyUpdateOngoing(): Boolean =
-		iSettingsRepository.getBoolean(OnlyUpdateOngoing).let {
-			if (it is HResult.Success)
-				it.data
-			else OnlyUpdateOngoing.default
-		}
-
-	private suspend fun downloadOnUpdate(): Boolean =
-		iSettingsRepository.getBoolean(IsDownloadOnUpdate).let {
-			if (it is HResult.Success)
-				it.data
-			else IsDownloadOnUpdate.default
-		}
-
-	override suspend fun doWork(): Result {
-		Log.i(logID(), LogConstants.SERVICE_EXECUTE)
-		val pr = progressNotification
-		pr.setContentTitle(applicationContext.getString(R.string.update))
-		pr.setOngoing(true)
-		notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
-
-		val updateNovels = arrayListOf<NovelEntity>()
-
-		iNovelsRepository.getBookmarkedNovels().let { hNovels ->
-			when (hNovels) {
-				is HResult.Success -> {
-					val novels = hNovels.data.let { list: List<NovelEntity> ->
-						if (onlyUpdateOngoing())
-							list.filter { it.status == Novel.Status.PUBLISHING }
-						else list
-					}
-					var progress = 0
-
-					novels.forEach { nE ->
-						pr.setContentText(applicationContext.getString(R.string.updating) + nE.title)
-						pr.setProgress(novels.size, progress, false)
-						notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
-						loadNovelUseCase(nE, true) {
-							updateNovels.add(nE)
-						}.handle(onError = { toastErrorUseCase<UpdateWorker>(it) })
-						progress++
-					}
-
-					pr.setContentTitle(applicationContext.getString(R.string.update))
-					pr.setContentText(
-						applicationContext.getString(R.string.update_complete) + "\n" +
-								combine(",\n")
-					)
-					pr.setOngoing(false)
-					pr.setProgress(0, 0, false)
-					notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
-
-					if (updateNovels.isEmpty()) notificationManager.cancel(ID_CHAPTER_UPDATE)
-				}
-				else -> {
-					return Result.failure()
-				}
-			}
-		}
-
-		// Will update only if downloadOnUpdate is enabled and there have been chapters
-		if (downloadOnUpdate() && updateNovels.isNotEmpty())
-			startDownloadWorker()
-
-		return Result.success()
+		const val KEY_NOVELS: Int = 0x00
+		const val KEY_CATEGORY: Int = 0x01
 	}
 }

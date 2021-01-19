@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.android.backend.workers.onetime.UpdateWorker.Manager
+import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker.Manager
 
 /*
  * This file is part of shosetsu.

@@ -9,7 +9,7 @@ import androidx.work.ExistingPeriodicWorkPolicy.REPLACE
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
-import app.shosetsu.android.backend.workers.onetime.UpdateWorker
+import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.WorkerTags.UPDATE_CYCLE_WORK_ID
 import app.shosetsu.android.common.ext.launchIO
@@ -147,7 +147,7 @@ class UpdateCycleWorker(
 
 	override suspend fun doWork(): Result {
 		logI(LogConstants.SERVICE_EXECUTE)
-		UpdateWorker.Manager(applicationContext).apply { if (!isRunning()) start() }
+		NovelUpdateWorker.Manager(applicationContext).apply { if (!isRunning()) start() }
 		return Result.success()
 	}
 }
