@@ -9,9 +9,11 @@ import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
+import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.consts.settings.SettingKey.AppTheme
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.errorResult
 import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
 
@@ -51,7 +53,7 @@ class AdvancedSettingsViewModel(
 					context.resources.getStringArray(R.array.application_themes)
 				)
 			} catch (e: Resources.NotFoundException) {
-				TODO("Add error handling here")
+				reportExceptionUseCase(errorResult(ErrorKeys.ERROR_IMPOSSIBLE, e))
 			}
 
 			iSettingsRepository.getInt(AppTheme).handle {

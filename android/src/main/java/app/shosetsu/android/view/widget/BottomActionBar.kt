@@ -12,6 +12,7 @@ import android.widget.FrameLayout
 import androidx.annotation.IdRes
 import androidx.annotation.MenuRes
 import androidx.core.view.isVisible
+import app.shosetsu.android.common.ext.logE
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.BottomActionBarBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.BottomActionBarBinding.inflate
@@ -67,7 +68,7 @@ class BottomActionBar @JvmOverloads constructor(
 			val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.bottom_slide_up)
 			binding.bottomActionBar.startAnimation(bottomAnimation)
 		} catch (e: Resources.NotFoundException) {
-			TODO("Add error handling here")
+			logE("Resource failed to be loaded", e)
 		}
 	}
 
@@ -81,7 +82,7 @@ class BottomActionBar @JvmOverloads constructor(
 			})
 			binding.bottomActionBar.startAnimation(bottomAnimation)
 		} catch (e: Resources.NotFoundException) {
-			TODO("Add error handling here")
+			logE("Resource failed to be loaded", e)
 		}
 	}
 }

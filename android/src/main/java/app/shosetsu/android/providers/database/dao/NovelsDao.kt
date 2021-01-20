@@ -6,10 +6,6 @@ import androidx.room.Query
 import androidx.room.Transaction
 import app.shosetsu.android.domain.model.database.DBNovelEntity
 import app.shosetsu.android.domain.model.database.DBStrippedNovelEntity
-import app.shosetsu.android.domain.model.local.BooleanChapterIDTuple
-import app.shosetsu.android.domain.model.local.CountIDTuple
-import app.shosetsu.android.domain.model.local.IDTitleImage
-import app.shosetsu.android.domain.model.local.URLImageTitle
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
 import kotlinx.coroutines.flow.Flow
@@ -39,18 +35,13 @@ import kotlinx.coroutines.flow.Flow
  */
 @Dao
 interface NovelsDao : BaseDao<DBNovelEntity> {
-
-	@Throws(SQLiteException::class)
-	@Query("SELECT * FROM novels")
-	fun loadNovels(): Flow<List<DBNovelEntity>>
-
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels WHERE bookmarked = 1")
 	fun loadBookmarkedNovels(): List<DBNovelEntity>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels WHERE bookmarked = 1")
-	fun loadListBookmarkedNovels(): Flow<List<DBNovelEntity>>
+	fun loadLiveBookmarkedNovels(): Flow<List<DBNovelEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
@@ -58,15 +49,7 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
-	fun loadNovelLive(novelID: Int): Flow<DBNovelEntity>
-
-	@Throws(SQLiteException::class)
-	@Query("SELECT url,imageURL,title FROM novels WHERE id = :novelID LIMIT 1")
-	fun loadURLImageTitle(novelID: Int): URLImageTitle
-
-	@Throws(SQLiteException::class)
-	@Query("SELECT id,title,imageURL FROM novels")
-	fun loadIDImageTitle(): Flow<List<IDTitleImage>>
+	fun loadLiveNovel(novelID: Int): Flow<DBNovelEntity>
 
 	@Throws(SQLiteException::class)
 	@Query(
@@ -89,65 +72,23 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 	fun loadBookmarkedNovelsCount(): Flow<List<BookmarkedNovelEntity>>
 
 	@Throws(SQLiteException::class)
-	@Query("SELECT id FROM novels")
-	fun loadBookmarkedIDs(): List<Int>
-
-	@Throws(SQLiteException::class)
-	@Transaction
-	suspend fun unBookmarkNovels(selectedNovels: List<Int>, entities: List<DBNovelEntity>) {
-		selectedNovels.forEach { targetID ->
-			entities.find { it.id == targetID }?.let { DBNovel ->
-				DBNovel.bookmarked = false
-				update(DBNovel)
-			}
-		}
-	}
-
-	@Throws(SQLiteException::class)
-	@Query("SELECT * FROM novels WHERE _rowid_ = :rowID LIMIT 1")
-	fun loadNovel(rowID: Long): DBNovelEntity
-
-	@Throws(SQLiteException::class)
 	@Query("SELECT id,title,imageURL,bookmarked FROM novels WHERE _rowid_ = :rowID LIMIT 1")
-	fun loadDBStrippedNovelEntity(rowID: Long): DBStrippedNovelEntity
+	fun loadDBStrippedNovelEntityViaRow(rowID: Long): DBStrippedNovelEntity
 
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT id,title,imageURL,bookmarked FROM novels WHERE id = :id LIMIT 1")
 	fun loadDBStrippedNovelEntity(id: Int): DBStrippedNovelEntity
 
-
-	@Throws(SQLiteException::class)
-	@Query("SELECT COUNT(*),id FROM novels WHERE url = :novelURL")
-	fun loadCountByURL(novelURL: String): CountIDTuple
-
-
-	@Throws(SQLiteException::class)
-	fun hasNovel(novelURL: String): BooleanChapterIDTuple {
-		val n = loadCountByURL(novelURL)
-		return BooleanChapterIDTuple(n.count > 0, n.id)
-	}
+	@Query("SELECT id FROM novels WHERE url = :novelURL AND formatterID = :extensionID LIMIT 1")
+	fun loadNovelID(novelURL: String, extensionID: Int): Int?
 
 	@Transaction
 	@Throws(SQLiteException::class)
-	suspend fun insertNovelReturnCard(DBNovelEntity: DBNovelEntity): DBStrippedNovelEntity {
-		val has = hasNovel(DBNovelEntity.url)
-		return if (has.boolean) {
-			loadDBStrippedNovelEntity(has.id)
-		} else {
-			val rowID = insertAbort(DBNovelEntity)
-			loadDBStrippedNovelEntity(rowID)
-		}
-	}
-
-	@Transaction
-	@Throws(SQLiteException::class)
-	suspend fun insertAndReturn(DBNovelEntity: DBNovelEntity): DBNovelEntity =
-		loadNovel(insertIgnore(DBNovelEntity))
-
-	@Throws(SQLiteException::class)
-	@Query("UPDATE novels SET bookmarked = :bookmarked WHERE id = :novelID")
-	suspend fun setNovelBookmark(novelID: Int, bookmarked: Int)
+	suspend fun insertNovelReturnCard(entity: DBNovelEntity): DBStrippedNovelEntity =
+		loadNovelID(entity.url, entity.extensionID)?.let { id ->
+			loadDBStrippedNovelEntity(id)
+		} ?: loadDBStrippedNovelEntityViaRow(insertAbort(entity))
 
 	@Transaction
 	@Throws(SQLiteException::class)
@@ -160,6 +101,10 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 			)
 		}
 	}
+
+	@Throws(SQLiteException::class)
+	@Query("DELETE FROM novels WHERE bookmarked = 0")
+	fun clearUnBookmarkedNovels()
 
 	//@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
 	//fun loadNovelWithChapters(novelID: Int): DBNovelWithChapters

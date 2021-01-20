@@ -8,10 +8,10 @@ import okhttp3.Response
 class UpToDownAppUpdateDataSource : IRemoteAppUpdateDataSource,
 	IRemoteAppUpdateDataSource.Downloadable {
 	override suspend fun loadAppUpdate(): HResult<AppUpdateEntity> {
-		TODO("Not yet implemented")
+		TODO("Add up-to-down update source")
 	}
 
 	override suspend fun downloadAppUpdate(update: AppUpdateEntity): HResult<Response> {
-		TODO("Not yet implemented")
+		TODO("Add up-to-down update source")
 	}
 }

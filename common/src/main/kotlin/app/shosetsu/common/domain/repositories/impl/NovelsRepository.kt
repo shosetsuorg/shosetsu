@@ -108,4 +108,9 @@ class NovelsRepository(
 		loadChapters: Boolean,
 	): HResult<Novel.Info> =
 		remoteSource.loadNovel(formatter, novelEntity.url, loadChapters)
+
+	override suspend fun clearUnBookmarkedNovels(): HResult<*> =
+		database.clearUnBookmarkedNovels()
+
+
 }

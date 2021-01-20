@@ -7,11 +7,13 @@ import okhttp3.Response
 
 class FDroidAppUpdateDataSource : IRemoteAppUpdateDataSource,
 	IRemoteAppUpdateDataSource.Downloadable {
+
 	override suspend fun loadAppUpdate(): HResult<AppUpdateEntity> {
-		TODO("Not yet implemented")
+		TODO("Add F-DROID update source")
 	}
 
 	override suspend fun downloadAppUpdate(update: AppUpdateEntity): HResult<Response> {
-		TODO("Not yet implemented")
+		TODO("Add F-DROID update source")
 	}
+
 }

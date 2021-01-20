@@ -6,7 +6,10 @@ import app.shosetsu.android.domain.model.database.DBNovelSettingsEntity
 import app.shosetsu.android.providers.database.dao.NovelSettingsDao
 import app.shosetsu.common.datasource.database.base.IDBNovelSettingsDataSource
 import app.shosetsu.common.domain.model.local.NovelSettingEntity
-import app.shosetsu.common.dto.*
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.mapLatestTo
+import app.shosetsu.common.dto.mapLatestToSuccess
+import app.shosetsu.common.dto.successResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
@@ -46,7 +49,7 @@ class DBNovelSettingsDataSource(
 		}
 
 	override suspend fun getNovelSettings(novelID: Int): HResult<NovelSettingEntity> = try {
-		dao.get(novelID).convert()
+		successResult(dao.get(novelID).convertTo())
 	} catch (e: SQLiteException) {
 		errorResult(e)
 	}

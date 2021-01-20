@@ -190,4 +190,10 @@ interface INovelsRepository {
 		loadChapters: Boolean,
 	): HResult<Novel.Info>
 
+
+	/**
+	 *  Removes all novels that are not bookmarked
+	 *  This should cascade and delete all their chapters as well
+	 */
+	suspend fun clearUnBookmarkedNovels(): HResult<*>
 }

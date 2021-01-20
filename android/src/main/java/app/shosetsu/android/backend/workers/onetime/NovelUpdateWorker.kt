@@ -16,7 +16,6 @@ import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_UPDATE
 import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags.UPDATE_WORK_ID
-import app.shosetsu.android.common.ext.combine
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logID
@@ -131,8 +130,7 @@ class NovelUpdateWorker(
 				pr.apply {
 					setContentTitle(applicationContext.getString(R.string.update))
 					setContentText(
-						applicationContext.getString(R.string.update_complete) + "\n" +
-								combine(",\n")
+						applicationContext.getString(R.string.update_complete) + "\n"
 					)
 					setOngoing(false)
 					setProgress(0, 0, false)

@@ -40,16 +40,9 @@ class AppUpdatesRepository(
 ) : IAppUpdatesRepository {
 	private var running = false
 
-
 	@ExperimentalCoroutinesApi
 	override fun loadAppUpdateFlow(): Flow<HResult<AppUpdateEntity>> =
 		iFileAppUpdateDataSource.updateAvaLive
-
-
-	override suspend fun setAppUpdate(debugAppUpdate: AppUpdateEntity): HResult<*> {
-		TODO("Not yet implemented")
-	}
-
 
 	private fun compareVersion(newVersion: AppUpdateEntity): HResult<AppUpdateEntity> {
 		val currentV: Int

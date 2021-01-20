@@ -1,4 +1,6 @@
-package app.shosetsu.android.common.ext
+package app.shosetsu.android.domain.usecases
+
+import app.shosetsu.common.domain.repositories.base.INovelsRepository
 
 /*
  * This file is part of Shosetsu.
@@ -18,11 +20,13 @@ package app.shosetsu.android.common.ext
  */
 
 /**
- * shosetsu
- * 30 / 09 / 2020
+ * 20 / 01 / 2021
  *
- * TODO Figure out what is happening
+ * Deletes all novels that are not bookmarked from the apps database
  */
-fun combine(separator: String): String = StringBuilder().apply {
-	forEach { append(it).append(separator) }
-}.toString()
+class PurgeNovelCacheUseCase(
+	private val iNovelsRepository: INovelsRepository
+) {
+	operator fun invoke() {
+	}
+}

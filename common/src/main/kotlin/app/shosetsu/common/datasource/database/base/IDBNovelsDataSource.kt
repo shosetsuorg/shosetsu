@@ -57,4 +57,9 @@ interface IDBNovelsDataSource {
 
 	/** Inserts a [NovelEntity] */
 	suspend fun insertNovel(novelEntity: NovelEntity): HResult<*>
+
+	/**
+	 * Clears out novels that have not been bookmarked
+	 */
+	suspend fun clearUnBookmarkedNovels(): HResult<*>
 }

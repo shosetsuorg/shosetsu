@@ -72,7 +72,7 @@ class LoadLibraryUseCase(
 								artists = artists,
 								tags = tags
 							)
-							COZY -> TODO()
+							COZY -> TODO("Create a comfortable UI for novel cards")
 						}
 					}
 					successResult(newList)

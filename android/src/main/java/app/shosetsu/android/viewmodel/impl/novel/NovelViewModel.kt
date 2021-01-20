@@ -203,7 +203,7 @@ class NovelViewModel(
 	}
 
 	override fun deletePrevious() {
-		TODO("Not yet implemented")
+		TODO("Implementation to delete chapters that are downloaded and read")
 	}
 
 	@ExperimentalCoroutinesApi

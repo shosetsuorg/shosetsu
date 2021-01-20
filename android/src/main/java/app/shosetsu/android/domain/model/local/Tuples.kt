@@ -37,11 +37,6 @@ data class CountIDTuple(
 	@ColumnInfo(name = "COUNT(*)") val count: Int,
 ) : Serializable
 
-data class BooleanChapterIDTuple(
-	var boolean: Boolean,
-	@ColumnInfo(name = "chapterID") val id: Int,
-) : Serializable
-
 data class URLImageTitle(
 	var url: String,
 	var imageURL: String,

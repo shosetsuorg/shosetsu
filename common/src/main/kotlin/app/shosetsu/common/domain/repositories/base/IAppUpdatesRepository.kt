@@ -44,13 +44,6 @@ interface IAppUpdatesRepository {
 	 */
 	fun loadAppUpdateFlow(): Flow<HResult<AppUpdateEntity>>
 
-
-	/**
-	 * Set [debugAppUpdate] as the update for the app
-	 *
-	 */
-	suspend fun setAppUpdate(debugAppUpdate: AppUpdateEntity): HResult<*>
-
 	/**
 	 * Load an app update if present
 	 *

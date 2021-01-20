@@ -1,9 +1,10 @@
 package app.shosetsu.android.datasource.local.database.impl
 
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.common.datasource.database.base.IDBNovelsDataSource
 import app.shosetsu.android.providers.database.dao.NovelsDao
+import app.shosetsu.common.datasource.database.base.IDBNovelsDataSource
 import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.StrippedNovelEntity
@@ -40,7 +41,7 @@ class DBNovelsDataSource(
 	@ExperimentalCoroutinesApi
 	override suspend fun loadLiveBookmarkedNovels(): Flow<HResult<List<NovelEntity>>> = flow {
 		try {
-			emitAll(novelsDao.loadListBookmarkedNovels().mapLatestListTo().mapLatestToSuccess())
+			emitAll(novelsDao.loadLiveBookmarkedNovels().mapLatestListTo().mapLatestToSuccess())
 		} catch (e: Exception) {
 			emit(e.toHError())
 		}
@@ -72,7 +73,7 @@ class DBNovelsDataSource(
 	@ExperimentalCoroutinesApi
 	override suspend fun loadNovelLive(novelID: Int): Flow<HResult<NovelEntity>> = flow {
 		try {
-			emitAll(novelsDao.loadNovelLive(novelID).mapLatestTo().mapLatestToSuccess())
+			emitAll(novelsDao.loadLiveNovel(novelID).mapLatestTo().mapLatestToSuccess())
 		} catch (e: Exception) {
 			emit(e.toHError())
 		}
@@ -103,6 +104,12 @@ class DBNovelsDataSource(
 	override suspend fun insertNovel(novelEntity: NovelEntity): HResult<*> = try {
 		successResult(novelsDao.insertIgnore(novelEntity.toDB()))
 	} catch (e: Exception) {
+		e.toHError()
+	}
+
+	override suspend fun clearUnBookmarkedNovels(): HResult<*> = try {
+		successResult(novelsDao.clearUnBookmarkedNovels())
+	} catch (e: SQLiteException) {
 		e.toHError()
 	}
 }
