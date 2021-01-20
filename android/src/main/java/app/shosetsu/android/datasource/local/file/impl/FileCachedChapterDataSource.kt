@@ -2,13 +2,13 @@ package app.shosetsu.android.datasource.local.file.impl
 
 import android.util.Log
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import app.shosetsu.common.datasource.file.base.IFileCachedChapterDataSource
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.dto.transmogrify
 import app.shosetsu.common.enums.InternalFileDir.CACHE
+import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -66,7 +66,11 @@ class FileCachedChapterDataSource(
 				null
 			}
 		) {
-			JSONArray(it)
+			try {
+				JSONArray(it)
+			} catch (e: Exception) {
+				JSONArray()
+			}
 		} ?: JSONArray()
 	}
 
