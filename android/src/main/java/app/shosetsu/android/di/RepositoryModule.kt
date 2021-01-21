@@ -1,12 +1,7 @@
 package app.shosetsu.android.di
 
-import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.android.domain.repository.impl.AppUpdatesRepository
 import app.shosetsu.android.domain.repository.impl.ExtensionLibrariesRepository
-import app.shosetsu.common.domain.repositories.impl.ExtensionsRepository
-import app.shosetsu.common.domain.repositories.impl.NovelsRepository
 import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.domain.repositories.impl.*
 import org.kodein.di.Kodein
@@ -64,4 +59,6 @@ val repositoryModule: Kodein.Module = Kodein.Module("repository_module") {
 	bind<ISettingsRepository>() with singleton { SettingsRepository(instance()) }
 
 	bind<IBackupRepository>() with singleton { BackupRepository(instance()) }
+
+	bind<INovelSettingsRepository>() with singleton { TempNovelSettingsRepository() }
 }

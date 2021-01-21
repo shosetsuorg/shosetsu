@@ -40,7 +40,7 @@ class FileCachedChapterDataSource(
 
 	init {
 		logV("Creating required directories")
-		iFileSystemProvider.createInternalDirectory(CACHE, chaptersCacheDir).handle(
+		iFileSystemProvider.createDirectory(CACHE, chaptersCacheDir).handle(
 			onError = {
 				logV("Error on creation of directories $it")
 			},
@@ -52,13 +52,13 @@ class FileCachedChapterDataSource(
 
 	@get:Synchronized
 	private val chaptersCacheInstruction: JSONArray by lazy {
-		iFileSystemProvider.readInternalFile(
+		iFileSystemProvider.readFile(
 			CACHE,
 			mapFile
 		).transmogrify(
 			onError = {
 				logE("Error on reading cache chapters index, Writing empty one")
-				iFileSystemProvider.writeInternalFile(
+				iFileSystemProvider.writeFile(
 					CACHE,
 					mapFile,
 					JSONArray().toString()
@@ -86,7 +86,7 @@ class FileCachedChapterDataSource(
 	 * Writes the instruct file
 	 */
 	private fun writeFile() {
-		iFileSystemProvider.writeInternalFile(
+		iFileSystemProvider.writeFile(
 			CACHE,
 			mapFile,
 			chaptersCacheInstruction.toString(1)
@@ -116,7 +116,7 @@ class FileCachedChapterDataSource(
 			chaptersCacheInstruction.remove(0)
 			val id = obj.getInt(CHAPTER_KEY)
 			logD("#### REMOVING $id FROM FILE CACHE DUE TO OVERFLOW ####")
-			iFileSystemProvider.deleteInternalFile(CACHE, "$chaptersCacheDir/$id.txt")
+			iFileSystemProvider.deleteFile(CACHE, "$chaptersCacheDir/$id.txt")
 		}
 
 		// Filters out expired data
@@ -128,7 +128,7 @@ class FileCachedChapterDataSource(
 			if (time < (System.currentTimeMillis() - (3600000 * CACHE_TIME))) {
 				val id = obj.getInt(CHAPTER_KEY)
 				Log.d(logID(), "#### REMOVING $id FROM FILE CACHE ####")
-				iFileSystemProvider.deleteInternalFile(CACHE, "$chaptersCacheDir/$id.txt")
+				iFileSystemProvider.deleteFile(CACHE, "$chaptersCacheDir/$id.txt")
 				chaptersCacheInstruction.remove(i)
 				continue
 			}
@@ -149,7 +149,7 @@ class FileCachedChapterDataSource(
 				val obj = chaptersCacheInstruction.getJSONObject(i)
 				val id = obj.getInt(CHAPTER_KEY)
 				if (id == chapterID) {
-					iFileSystemProvider.writeInternalFile(
+					iFileSystemProvider.writeFile(
 						CACHE,
 						createFilePath(chapterID),
 						passage
@@ -162,7 +162,7 @@ class FileCachedChapterDataSource(
 
 			// Writes data to txt file then updates the chapterInstruction json
 
-			iFileSystemProvider.writeInternalFile(
+			iFileSystemProvider.writeFile(
 				CACHE,
 				createFilePath(chapterID),
 				passage
@@ -184,7 +184,7 @@ class FileCachedChapterDataSource(
 	@Synchronized
 	override suspend fun loadChapterPassage(chapterID: Int): HResult<String> {
 		launchIO { launchCleanUp() } // Launch cleanup separately
-		return iFileSystemProvider.readInternalFile(CACHE, createFilePath(chapterID))
+		return iFileSystemProvider.readFile(CACHE, createFilePath(chapterID))
 	}
 
 	companion object {

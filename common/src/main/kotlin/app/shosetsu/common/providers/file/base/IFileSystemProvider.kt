@@ -31,12 +31,12 @@ import app.shosetsu.common.enums.InternalFileDir
  */
 interface IFileSystemProvider {
 
-	fun listInternalFiles(internalFileDir: InternalFileDir, path: String): HResult<List<String>>
-	fun listExternalFiles(externalFileDir: ExternalFileDir, path: String): HResult<List<String>>
+	fun listFiles(internalFileDir: InternalFileDir, path: String): HResult<List<String>>
+	fun listFiles(externalFileDir: ExternalFileDir, path: String): HResult<List<String>>
 
-	fun doesInternalFileExist(internalFileDir: InternalFileDir, path: String): HResult<Boolean>
+	fun doesFileExist(internalFileDir: InternalFileDir, path: String): HResult<Boolean>
 
-	fun doesExternalFileExist(externalFileDir: ExternalFileDir, path: String): HResult<Boolean>
+	fun doesFileExist(externalFileDir: ExternalFileDir, path: String): HResult<Boolean>
 
 
 	/**
@@ -45,25 +45,25 @@ interface IFileSystemProvider {
 	 *
 	 * @return file content
 	 */
-	fun readInternalFile(internalFileDir: InternalFileDir, path: String): HResult<String>
+	fun readFile(internalFileDir: InternalFileDir, path: String): HResult<String>
 
 	/**
 	 * Loads a file from the user directories (Pictures, Downloads, Etc)
 	 *
 	 * @return file content
 	 */
-	fun readExternalFile(externalFileDir: ExternalFileDir, path: String): HResult<String>
+	fun readFile(externalFileDir: ExternalFileDir, path: String): HResult<String>
 
 
-	fun deleteInternalFile(internalFileDir: InternalFileDir, path: String): HResult<*>
+	fun deleteFile(internalFileDir: InternalFileDir, path: String): HResult<*>
 
-	fun deleteExternalFile(externalFileDir: ExternalFileDir, path: String): HResult<*>
+	fun deleteFile(externalFileDir: ExternalFileDir, path: String): HResult<*>
 
 
 	/**
 	 * Writes a file to the internal file directory
 	 */
-	fun writeInternalFile(
+	fun writeFile(
 		internalFileDir: InternalFileDir,
 		path: String,
 		content: String
@@ -72,34 +72,34 @@ interface IFileSystemProvider {
 	/**
 	 * Writes a file to the external file directory
 	 */
-	fun writeExternalFile(
+	fun writeFile(
 		externalFileDir: ExternalFileDir,
 		path: String,
 		content: String
 	): HResult<*>
 
 
-	fun createInternalFile(internalFileDir: InternalFileDir, path: String): HResult<*>
-	fun createExternalFile(externalFileDir: ExternalFileDir, path: String): HResult<*>
+	fun createFile(internalFileDir: InternalFileDir, path: String): HResult<*>
+	fun createFile(externalFileDir: ExternalFileDir, path: String): HResult<*>
 
 	/**
 	 * Creates an internal directory, will avoid if not present
 	 */
-	fun createInternalDirectory(internalFileDir: InternalFileDir, path: String): HResult<*>
+	fun createDirectory(internalFileDir: InternalFileDir, path: String): HResult<*>
 
 	/**
 	 * Creates an external directory, will avoid if not present
 	 */
-	fun createExternalDirectory(externalFileDir: ExternalFileDir, path: String): HResult<*>
+	fun createDirectory(externalFileDir: ExternalFileDir, path: String): HResult<*>
 
 	/**
 	 * Get filesystem path to a file
 	 */
-	fun retrieveInternalPath(internalFileDir: InternalFileDir, path: String): HResult<String>
+	fun retrievePath(internalFileDir: InternalFileDir, path: String): HResult<String>
 
 	/**
 	 * Get filesystem path to a file
 	 */
-	fun retrieveExternalPath(externalFileDir: ExternalFileDir, path: String): HResult<String>
+	fun retrievePath(externalFileDir: ExternalFileDir, path: String): HResult<String>
 
 }

@@ -41,7 +41,7 @@ class FileExtensionDataSource(
 ) : IFileExtensionDataSource {
 	init {
 		logV("Creating required directories")
-		iFileSystemProvider.createInternalDirectory(FILES, "$SOURCE_DIR$SCRIPT_DIR").handle(
+		iFileSystemProvider.createDirectory(FILES, "$SOURCE_DIR$SCRIPT_DIR").handle(
 			onError = {
 				logV("Error on creation of directories $it")
 			},
@@ -56,7 +56,7 @@ class FileExtensionDataSource(
 
 
 	override suspend fun loadExtension(fileName: String): HResult<IExtension> = try {
-		iFileSystemProvider.readInternalFile(FILES, makeExtensionFileURL(fileName)).transform {
+		iFileSystemProvider.readFile(FILES, makeExtensionFileURL(fileName)).transform {
 			try {
 				successResult(LuaExtension(it, fileName))
 			} catch (e: Exception) {
@@ -76,10 +76,10 @@ class FileExtensionDataSource(
 	}
 
 	override suspend fun writeExtension(fileName: String, data: String): HResult<*> =
-		iFileSystemProvider.writeInternalFile(FILES, makeExtensionFileURL(fileName), data)
+		iFileSystemProvider.writeFile(FILES, makeExtensionFileURL(fileName), data)
 
 
 	override suspend fun deleteExtension(fileName: String): HResult<*> =
-		iFileSystemProvider.deleteInternalFile(FILES, makeExtensionFileURL(fileName))
+		iFileSystemProvider.deleteFile(FILES, makeExtensionFileURL(fileName))
 
 }

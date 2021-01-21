@@ -35,7 +35,7 @@ class FileExtLibDataSource(
 ) : IFileExtLibDataSource {
 	init {
 		logV("Creating required directories")
-		iFileSystemProvider.createInternalDirectory(FILES, "$SOURCE_DIR$LIBRARY_DIR").handle(
+		iFileSystemProvider.createDirectory(FILES, "$SOURCE_DIR$LIBRARY_DIR").handle(
 			onError = {
 				logV("Error on creation of directories $it")
 			},
@@ -50,7 +50,7 @@ class FileExtLibDataSource(
 		"$SOURCE_DIR$LIBRARY_DIR$fileName.lua"
 
 	override suspend fun writeExtLib(fileName: String, data: String): HResult<*> =
-		iFileSystemProvider.writeInternalFile(
+		iFileSystemProvider.writeFile(
 			FILES,
 			makeLibraryFile(fileName),
 			data
@@ -60,8 +60,8 @@ class FileExtLibDataSource(
 		blockingLoadLib(fileName)
 
 	override fun blockingLoadLib(fileName: String): HResult<String> =
-		iFileSystemProvider.readInternalFile(FILES, makeLibraryFile(fileName))
+		iFileSystemProvider.readFile(FILES, makeLibraryFile(fileName))
 
 	override suspend fun deleteExtLib(fileName: String): HResult<*> =
-		iFileSystemProvider.deleteInternalFile(FILES, makeLibraryFile(fileName))
+		iFileSystemProvider.deleteFile(FILES, makeLibraryFile(fileName))
 }

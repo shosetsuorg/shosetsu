@@ -39,25 +39,25 @@ class FileBackupDataSource(
 
 	init {
 		launchIO {
-			iFileSystemProvider.createExternalDirectory(APP, BACKUP_DIRECTORY)
+			iFileSystemProvider.createDirectory(APP, BACKUP_DIRECTORY)
 		}
 	}
 
 	override suspend fun loadBackup(backupName: String): HResult<BackupEntity> =
-		iFileSystemProvider.readExternalFile(APP, "$BACKUP_DIRECTORY/${backupName}.sbk")
+		iFileSystemProvider.readFile(APP, "$BACKUP_DIRECTORY/${backupName}.sbk")
 			.transform {
 				successResult(BackupEntity(it))
 			}
 
 	override suspend fun saveBackup(backupEntity: BackupEntity): HResult<*> =
-		iFileSystemProvider.writeExternalFile(
+		iFileSystemProvider.writeFile(
 			APP,
 			"$BACKUP_DIRECTORY/shosetsu-backup-${currentDate}.sbk",
 			backupEntity.content
 		)
 
 	override suspend fun loadBackups(): HResult<List<String>> =
-		iFileSystemProvider.listExternalFiles(APP, BACKUP_DIRECTORY)
+		iFileSystemProvider.listFiles(APP, BACKUP_DIRECTORY)
 
 	companion object {
 		private const val BACKUP_DIRECTORY = "Backups"

@@ -1,13 +1,13 @@
 package app.shosetsu.android.datasource.local.file.impl
 
 import app.shosetsu.android.common.ext.logV
-import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import app.shosetsu.common.datasource.file.base.IFileChapterDataSource
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.transform
 import app.shosetsu.common.enums.ExternalFileDir.DOWNLOADS
+import app.shosetsu.common.providers.file.base.IFileSystemProvider
 
 /*
  * This file is part of shosetsu.
@@ -35,7 +35,7 @@ class FileChapterDataSource(
 ) : IFileChapterDataSource {
 	init {
 		logV("Creating required directories")
-		iFileSystemProvider.createExternalDirectory(DOWNLOADS, "chapters").handle(
+		iFileSystemProvider.createDirectory(DOWNLOADS, "chapters").handle(
 			onError = {
 				logV("Error on creation of directories $it")
 			},
@@ -55,11 +55,11 @@ class FileChapterDataSource(
 		passage: String,
 	): HResult<*> {
 		val path = makePath(chapterEntity)
-		return iFileSystemProvider.createExternalDirectory(
+		return iFileSystemProvider.createDirectory(
 			DOWNLOADS,
 			path.substringBeforeLast("/")
 		).transform {
-			iFileSystemProvider.writeExternalFile(
+			iFileSystemProvider.writeFile(
 				DOWNLOADS,
 				path,
 				passage
@@ -68,8 +68,8 @@ class FileChapterDataSource(
 	}
 
 	override suspend fun loadChapterPassageFromStorage(chapterEntity: ChapterEntity): HResult<String> =
-		iFileSystemProvider.readExternalFile(DOWNLOADS, makePath(chapterEntity))
+		iFileSystemProvider.readFile(DOWNLOADS, makePath(chapterEntity))
 
 	override suspend fun deleteChapter(chapterEntity: ChapterEntity): HResult<*> =
-		iFileSystemProvider.deleteExternalFile(DOWNLOADS, makePath(chapterEntity))
+		iFileSystemProvider.deleteFile(DOWNLOADS, makePath(chapterEntity))
 }

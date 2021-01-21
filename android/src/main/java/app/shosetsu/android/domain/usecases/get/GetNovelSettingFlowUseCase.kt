@@ -43,6 +43,10 @@ class GetNovelSettingFlowUseCase(
 			settingsResult.transform(
 				onLoading = {
 					successResult(NovelSettingUI(novelID))
+				}, onEmpty = {
+					successResult(NovelSettingUI(novelID))
+				}, onError = {
+					successResult(NovelSettingUI(novelID))
 				}
 			) {
 				successResult(NovelSettingConversionFactory(it).convertTo())

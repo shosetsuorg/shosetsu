@@ -50,12 +50,12 @@ class FileAppUpdateDataSource(
 
 	init {
 		launchIO {
-			iFileSystemProvider.createInternalDirectory(CACHE, updatesPath)
+			iFileSystemProvider.createDirectory(CACHE, updatesPath)
 		}
 	}
 
 	private fun write(debugAppUpdate: AppUpdateDTO): HResult<*> = try {
-		iFileSystemProvider.writeInternalFile(
+		iFileSystemProvider.writeFile(
 			CACHE,
 			APP_UPDATE_CACHE_FILE,
 			Json.encodeToString(debugAppUpdate)
@@ -66,7 +66,7 @@ class FileAppUpdateDataSource(
 
 	override suspend fun loadCachedAppUpdate(): HResult<AppUpdateEntity> =
 		updateAvaLive.value.takeIf { it is HResult.Success }
-			?: iFileSystemProvider.readInternalFile(
+			?: iFileSystemProvider.readFile(
 				CACHE,
 				APP_UPDATE_CACHE_FILE
 			).transform { successResult(Json.decodeFromString<AppUpdateDTO>(it).convertTo()) }
@@ -82,11 +82,11 @@ class FileAppUpdateDataSource(
 	override fun saveAPK(
 		appUpdate: AppUpdateEntity,
 		bufferedSource: BufferedSource
-	): HResult<String> = iFileSystemProvider.doesInternalFileExist(CACHE, updatesCPath)
+	): HResult<String> = iFileSystemProvider.doesFileExist(CACHE, updatesCPath)
 		.transform { doesFileExist ->
-			if (doesFileExist) iFileSystemProvider.deleteInternalFile(CACHE, updatesCPath)
-			iFileSystemProvider.createInternalFile(CACHE, updatesCPath)
-			iFileSystemProvider.retrieveInternalPath(CACHE, updatesCPath).transform { path ->
+			if (doesFileExist) iFileSystemProvider.deleteFile(CACHE, updatesCPath)
+			iFileSystemProvider.createFile(CACHE, updatesCPath)
+			iFileSystemProvider.retrievePath(CACHE, updatesCPath).transform { path ->
 				bufferedSource.saveTo(File(path))
 				successResult(path)
 			}

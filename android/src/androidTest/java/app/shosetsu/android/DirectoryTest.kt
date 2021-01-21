@@ -43,11 +43,11 @@ class DirectoryTest : KodeinAware {
 	@Test
 	fun test() {
 		InternalFileDir.values().forEach {
-			println("### Internal Path: " + iFileSystemProvider.retrieveInternalPath(it, ""))
+			println("### Internal Path: " + iFileSystemProvider.retrievePath(it, ""))
 		}
 
 		ExternalFileDir.values().forEach {
-			println("### External Path: " + iFileSystemProvider.retrieveExternalPath(it, ""))
+			println("### External Path: " + iFileSystemProvider.retrievePath(it, ""))
 		}
 	}
 }

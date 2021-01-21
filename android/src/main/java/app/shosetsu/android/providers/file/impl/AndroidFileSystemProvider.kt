@@ -70,31 +70,31 @@ class AndroidFileSystemProvider(
 		ExternalFileDir.DOCUMENTS -> "$externalDocumentDirPath/"
 	}
 
-	override fun listInternalFiles(
+	override fun listFiles(
 		internalFileDir: InternalFileDir,
 		path: String
 	): HResult<List<String>> =
 		successResult(File(internalFileDir.path() + path).list()?.toList().orEmpty())
 
-	override fun listExternalFiles(
+	override fun listFiles(
 		externalFileDir: ExternalFileDir,
 		path: String
 	): HResult<List<String>> =
 		successResult(File(externalFileDir.path() + path).list()?.toList().orEmpty())
 
-	override fun doesInternalFileExist(
+	override fun doesFileExist(
 		internalFileDir: InternalFileDir,
 		path: String
 	): HResult<Boolean> = if (!File(internalFileDir.path() + path).exists())
 		successResult(false) else successResult(true)
 
-	override fun doesExternalFileExist(
+	override fun doesFileExist(
 		externalFileDir: ExternalFileDir,
 		path: String
 	): HResult<Boolean> = if (!File(externalFileDir.path() + path).exists())
 		successResult(false) else successResult(true)
 
-	override fun readInternalFile(internalFileDir: InternalFileDir, path: String): HResult<String> {
+	override fun readFile(internalFileDir: InternalFileDir, path: String): HResult<String> {
 		val file = File(internalFileDir.path() + path)
 
 		logV("Reading $path in ${internalFileDir.path()} to $file")
@@ -104,7 +104,7 @@ class AndroidFileSystemProvider(
 		return successResult(file.readText())
 	}
 
-	override fun readExternalFile(externalFileDir: ExternalFileDir, path: String): HResult<String> {
+	override fun readFile(externalFileDir: ExternalFileDir, path: String): HResult<String> {
 		val file = File(externalFileDir.path() + path)
 
 		logV("Reading $path in ${externalFileDir.path()} to $file")
@@ -114,7 +114,7 @@ class AndroidFileSystemProvider(
 		return successResult(file.readText())
 	}
 
-	override fun deleteInternalFile(internalFileDir: InternalFileDir, path: String): HResult<*> {
+	override fun deleteFile(internalFileDir: InternalFileDir, path: String): HResult<*> {
 		val file = File(internalFileDir.path() + path)
 		logV("Deleting $path in ${internalFileDir.path()} to $file")
 
@@ -125,7 +125,7 @@ class AndroidFileSystemProvider(
 		return successResult(file.delete())
 	}
 
-	override fun deleteExternalFile(externalFileDir: ExternalFileDir, path: String): HResult<*> {
+	override fun deleteFile(externalFileDir: ExternalFileDir, path: String): HResult<*> {
 		val file = File(externalFileDir.path() + path)
 		logV("Deleting $path in ${externalFileDir.path()} to $file")
 
@@ -136,7 +136,7 @@ class AndroidFileSystemProvider(
 		return successResult(file.delete())
 	}
 
-	override fun writeInternalFile(
+	override fun writeFile(
 		internalFileDir: InternalFileDir,
 		path: String,
 		content: String
@@ -157,7 +157,7 @@ class AndroidFileSystemProvider(
 		return successResult(file.writeText(content))
 	}
 
-	override fun writeExternalFile(
+	override fun writeFile(
 		externalFileDir: ExternalFileDir,
 		path: String,
 		content: String
@@ -181,7 +181,7 @@ class AndroidFileSystemProvider(
 		return successResult(file.writeText(content))
 	}
 
-	override fun createInternalDirectory(
+	override fun createDirectory(
 		internalFileDir: InternalFileDir,
 		path: String
 	): HResult<*> {
@@ -193,7 +193,7 @@ class AndroidFileSystemProvider(
 		return successResult(file.mkdirs())
 	}
 
-	override fun createExternalDirectory(
+	override fun createDirectory(
 		externalFileDir: ExternalFileDir,
 		path: String
 	): HResult<*> {
@@ -205,7 +205,7 @@ class AndroidFileSystemProvider(
 		return successResult(file.mkdirs())
 	}
 
-	override fun retrieveInternalPath(
+	override fun retrievePath(
 		internalFileDir: InternalFileDir,
 		path: String
 	): HResult<String> {
@@ -216,7 +216,7 @@ class AndroidFileSystemProvider(
 		return successResult(file.absolutePath)
 	}
 
-	override fun retrieveExternalPath(
+	override fun retrievePath(
 		externalFileDir: ExternalFileDir,
 		path: String
 	): HResult<String> {
@@ -227,7 +227,7 @@ class AndroidFileSystemProvider(
 		return successResult(file.absolutePath)
 	}
 
-	override fun createInternalFile(internalFileDir: InternalFileDir, path: String): HResult<*> {
+	override fun createFile(internalFileDir: InternalFileDir, path: String): HResult<*> {
 		val file = File(internalFileDir.path() + path)
 		return try {
 			val t = file.createNewFile()
@@ -237,7 +237,7 @@ class AndroidFileSystemProvider(
 		}
 	}
 
-	override fun createExternalFile(externalFileDir: ExternalFileDir, path: String): HResult<*> {
+	override fun createFile(externalFileDir: ExternalFileDir, path: String): HResult<*> {
 		val file = File(externalFileDir.path() + path)
 		return try {
 			val t = file.createNewFile()
