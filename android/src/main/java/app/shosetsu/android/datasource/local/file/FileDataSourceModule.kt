@@ -44,6 +44,7 @@ val fileDataSourceModule: Kodein.Module = Kodein.Module("file_data_source") {
 
 	bind<IFileCachedChapterDataSource>() with singleton {
 		FileCachedChapterDataSource(instance())
+//		QueuedFileCacheChapterDataSource(instance())
 	}
 
 	bind<IFileCachedAppUpdateDataSource>() with singleton {

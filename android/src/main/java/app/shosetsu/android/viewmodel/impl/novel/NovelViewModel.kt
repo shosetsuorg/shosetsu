@@ -217,11 +217,7 @@ class NovelViewModel(
 	}
 
 	override fun downloadChapter(vararg chapterUI: ChapterUI) {
-		launchIO {
-			chapterUI.forEach {
-				downloadChapterPassageUseCase(it)
-			}
-		}
+		launchIO { downloadChapterPassageUseCase(*chapterUI) }
 	}
 
 	override fun isOnline(): Boolean = isOnlineUseCase()

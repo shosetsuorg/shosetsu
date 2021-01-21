@@ -136,7 +136,6 @@ class FileCachedChapterDataSource(
 		writeFile()
 		running = false
 		Log.i(logID(), "Finished cleaning up")
-
 	}
 
 	@Throws(JSONException::class)

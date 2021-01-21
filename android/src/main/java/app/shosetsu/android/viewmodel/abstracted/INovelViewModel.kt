@@ -139,6 +139,4 @@ abstract class INovelViewModel
 	abstract fun downloadAllChapters()
 
 	abstract fun updateNovelSetting(novelSettingUI: NovelSettingUI)
-
-
 }

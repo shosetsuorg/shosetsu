@@ -1,10 +1,11 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.common.domain.repositories.base.INovelsRepository
+import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.DownloadEntity
 import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
+import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.dto.HResult
 
 /*
@@ -56,4 +57,12 @@ class DownloadChapterPassageUseCase(
 	}
 
 	suspend operator fun invoke(chapterUI: ChapterUI) = invoke(chapterUI.convertTo())
+
+	operator fun invoke(vararg chapterUI: ChapterUI) {
+		launchIO {
+			chapterUI.forEach {
+				invoke(it)
+			}
+		}
+	}
 }
