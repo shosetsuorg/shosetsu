@@ -101,7 +101,7 @@ class NovelUpdateWorker(
 		notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
 
 		val updateNovels = arrayListOf<NovelEntity>()
-		iNovelsRepository.getBookmarkedNovels().transform { list ->
+		iNovelsRepository.loadBookmarkedNovelEntities().transform { list ->
 			successResult(
 				if (onlyUpdateOngoing())
 					list.filter { it.status == Novel.Status.PUBLISHING }

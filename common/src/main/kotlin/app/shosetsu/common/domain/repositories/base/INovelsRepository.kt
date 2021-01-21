@@ -58,7 +58,10 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun getBookmarkedNovels(): HResult<List<NovelEntity>>
+	suspend fun loadBookmarkedNovelEntities(): HResult<List<NovelEntity>>
+
+
+	suspend fun loadNovels(): HResult<List<NovelEntity>>
 
 	/**
 	 * Searches the bookmarked novels and returns a live data of them

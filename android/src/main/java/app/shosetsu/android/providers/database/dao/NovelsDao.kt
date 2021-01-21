@@ -8,6 +8,7 @@ import app.shosetsu.android.domain.model.database.DBNovelEntity
 import app.shosetsu.android.domain.model.database.DBStrippedNovelEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
+import app.shosetsu.common.domain.model.local.NovelEntity
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -105,6 +106,10 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 	@Throws(SQLiteException::class)
 	@Query("DELETE FROM novels WHERE bookmarked = 0")
 	fun clearUnBookmarkedNovels()
+
+
+	@Query("SELECT * FROM novels")
+	fun loadNovels(): List<NovelEntity>
 
 	//@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
 	//fun loadNovelWithChapters(novelID: Int): DBNovelWithChapters

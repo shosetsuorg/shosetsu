@@ -45,8 +45,11 @@ class NovelsRepository(
 	override fun getBookmarkedNovelsFlow(): Flow<HResult<List<BookmarkedNovelEntity>>> =
 		database.loadLiveBookmarkedNovelsAndCount()
 
-	override suspend fun getBookmarkedNovels(): HResult<List<NovelEntity>> =
+	override suspend fun loadBookmarkedNovelEntities(): HResult<List<NovelEntity>> =
 		database.loadBookmarkedNovels()
+
+	override suspend fun loadNovels(): HResult<List<NovelEntity>> =
+		database.loadNovels()
 
 	override suspend fun updateNovel(novelEntity: NovelEntity): HResult<*> =
 		database.updateNovel(novelEntity)
@@ -63,12 +66,12 @@ class NovelsRepository(
 	 * TODO this operation is resource intensive, create a low level DB object
 	 */
 	override suspend fun searchBookmarked(string: String): HResult<List<StrippedBookmarkedNovelEntity>> =
-		getBookmarkedNovels().let { result ->
+		loadBookmarkedNovelEntities().let { result ->
 			result.transform { list: List<NovelEntity> ->
 				if (list.isEmpty()) emptyResult()
 				successResult(list.filter { it.title.contains(string, false) }
-					.map { (id, _, _, _, _, _, t, imageURL, _, _, _, _, _, _, _) ->
-						StrippedBookmarkedNovelEntity(id!!, t, imageURL)
+					.map { (id, url, extensionID, bookmarked, loaded, readerType, title, imageURL, description, language, genres, authors, artists, tags, status) ->
+						StrippedBookmarkedNovelEntity(id!!, title, imageURL)
 					})
 			}
 		}

@@ -23,7 +23,6 @@ import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 
 /*
@@ -79,10 +78,6 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 		return bos.toByteArray()
 	}
 
-	@Throws(IOException::class)
-	fun ungzip(content: ByteArray): String =
-		GZIPInputStream(content.inputStream()).bufferedReader().use { it.readText() }
-
 
 	private suspend fun getBackupChapters(novelID: Int): List<BackupChapterEntity> {
 		if (backupChapters())
@@ -103,7 +98,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 	@Throws(IOException::class)
 	override suspend fun doWork(): Result {
 		// Load novels
-		novelRepository.getBookmarkedNovels().handle { novels ->
+		novelRepository.loadBookmarkedNovelEntities().handle { novels ->
 			// Novels to their chapters
 			val novelsToChapters = novels.map { it to getBackupChapters(it.id!!) }
 

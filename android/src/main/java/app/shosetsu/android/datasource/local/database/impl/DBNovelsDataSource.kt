@@ -112,4 +112,10 @@ class DBNovelsDataSource(
 	} catch (e: SQLiteException) {
 		e.toHError()
 	}
+
+	override fun loadNovels(): HResult<List<NovelEntity>> = try {
+		successResult(novelsDao.loadNovels())
+	} catch (e: SQLiteException) {
+		e.toHError()
+	}
 }
