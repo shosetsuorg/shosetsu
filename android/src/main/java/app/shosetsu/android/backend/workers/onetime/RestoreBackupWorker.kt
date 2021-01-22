@@ -4,14 +4,17 @@ import android.content.Context
 import android.util.Base64
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import app.shosetsu.android.common.ext.asEntity
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.utils.backupJSON
 import app.shosetsu.android.domain.model.local.backup.FleshedBackupEntity
 import app.shosetsu.android.domain.usecases.InitializeExtensionsUseCase
+import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.unwrap
+import app.shosetsu.lib.IExtension
 import kotlinx.serialization.decodeFromString
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -89,21 +92,23 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 			initializeExtensionsUseCase.invoke { }
 
 			// Install the extensions
-			val presentNovels = novelsRepo.loadNovels().unwrap()!!
+			val presentNovels: List<NovelEntity> = novelsRepo.loadNovels().unwrap()!!
 
-			backup.extensions.forEach { (id, novels) ->
-				extensionsRepo.getExtensionEntity(id).handle { extensionEntity ->
+			backup.extensions.forEach { (extensionID, novels) ->
+				extensionsRepo.getExtensionEntity(extensionID).handle { extensionEntity ->
 					// Install the extension
 					if (!extensionEntity.installed)
 						extensionsRepo.installExtension(extensionEntity)
+					val iExt = extensionsRepo.getIExtension(extensionEntity).unwrap()!!
 
 					novels.forEach { (url, name, imageURL, chapters) ->
 						// If none match the extension ID and URL, time to load it up
 						if (presentNovels.none { it.extensionID == extensionEntity.id && it.url == url }) {
-
+							val expandedURL = iExt.expandURL(url, IExtension.KEY_NOVEL_URL)
+							val siteNovel = iExt.parseNovel(expandedURL, true)
+							novelsRepo.insert(siteNovel.asEntity(url, extensionID)).handle {
+							}
 						}
-
-
 					}
 				}
 			}

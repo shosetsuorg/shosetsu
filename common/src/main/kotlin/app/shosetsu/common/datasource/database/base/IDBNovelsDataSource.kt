@@ -31,36 +31,35 @@ import kotlinx.coroutines.flow.Flow
  * 04 / 05 / 2020
  */
 interface IDBNovelsDataSource {
-	/** load list of novels that are to be bookmarked */
-	suspend fun loadLiveBookmarkedNovels(): Flow<HResult<List<NovelEntity>>>
+	/** Loads a [List] of [NovelEntity]s present */
+	fun loadNovels(): HResult<List<NovelEntity>>
 
-	/** Load list of bookmarked [NovelEntity] */
+	/** Load a [List] of [NovelEntity]s that are bookmarked */
 	suspend fun loadBookmarkedNovels(): HResult<List<NovelEntity>>
 
-	/** Loads a [List] of [BookmarkedNovelEntity] that are in the library */
-	fun loadLiveBookmarkedNovelsAndCount(): Flow<HResult<List<BookmarkedNovelEntity>>>
+	/** Loads a [List] okf [BookmarkedNovelEntity] */
+	fun loadBookmarkedNovelsFlow(): Flow<HResult<List<BookmarkedNovelEntity>>>
 
 	/** Loads a [NovelEntity] by its [novelID] */
-	suspend fun loadNovel(novelID: Int): HResult<NovelEntity>
+	suspend fun getNovel(novelID: Int): HResult<NovelEntity>
 
 	/** Loads a [Flow] of a [NovelEntity] by its [novelID] */
-	suspend fun loadNovelLive(novelID: Int): Flow<HResult<NovelEntity>>
+	suspend fun getNovelFlow(novelID: Int): Flow<HResult<NovelEntity>>
 
 	/** Updates a [NovelEntity] */
-	suspend fun updateNovel(novelEntity: NovelEntity): HResult<*>
+	suspend fun update(novelEntity: NovelEntity): HResult<*>
 
 	/** Updates a list of [BookmarkedNovelEntity] */
-	suspend fun updateBookmarkedNovels(list: List<BookmarkedNovelEntity>): HResult<*>
+	suspend fun update(list: List<BookmarkedNovelEntity>): HResult<*>
 
 	/** Inserts a [NovelEntity] then returns its [StrippedNovelEntity] */
-	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): HResult<StrippedNovelEntity>
+	suspend fun insertReturnStripped(novelEntity: NovelEntity): HResult<StrippedNovelEntity>
 
 	/** Inserts a [NovelEntity] */
-	suspend fun insertNovel(novelEntity: NovelEntity): HResult<*>
+	suspend fun insert(novelEntity: NovelEntity): HResult<*>
 
 	/**
 	 * Clears out novels that have not been bookmarked
 	 */
 	suspend fun clearUnBookmarkedNovels(): HResult<*>
-	fun loadNovels(): HResult<List<NovelEntity>>
 }

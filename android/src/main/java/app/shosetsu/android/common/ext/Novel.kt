@@ -40,9 +40,24 @@ fun Novel.Chapter.entity(novelEntity: NovelEntity): ChapterEntity =
 		order = this.order
 	)
 
-fun Novel.Listing.convertTo(formatter: IExtension): NovelEntity = NovelEntity(
+fun Novel.Listing.convertTo(extension: IExtension): NovelEntity = NovelEntity(
 	url = this.link,
 	imageURL = this.imageURL,
 	title = this.title,
-	extensionID = formatter.formatterID
+	extensionID = extension.formatterID
+)
+
+fun Novel.Info.asEntity(link: String, extensionID: Int): NovelEntity = NovelEntity(
+	url = link,
+	imageURL = this.imageURL,
+	description = this.description,
+	extensionID = extensionID,
+	loaded = true,
+	title = this.title,
+	artists = this.artists.toList(),
+	authors = this.authors.toList(),
+	language = this.language,
+	genres = this.genres.toList(),
+	tags = this.tags.toList(),
+	status = this.status
 )

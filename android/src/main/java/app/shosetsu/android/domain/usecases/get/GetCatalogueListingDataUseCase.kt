@@ -1,18 +1,17 @@
 package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.common.ext.convertTo
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.common.consts.settings.SettingKey
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
+import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.dto.transform
 import app.shosetsu.common.dto.transmogrify
 import app.shosetsu.lib.IExtension
-import app.shosetsu.lib.Novel
 
 /*
  * This file is part of shosetsu.
@@ -60,15 +59,12 @@ class GetCatalogueListingDataUseCase(
 			iExtension,
 			0,
 			data
-		).transform {
-			val list: List<Novel.Listing> = it
+		).transform { list ->
 			successResult(list.map { novelListing ->
 				novelListing.convertTo(iExtension)
 			}.mapNotNull { ne ->
-				novelsRepository.insertNovelReturnCard(ne).let { result ->
-					if (result is HResult.Success)
-						convertNCToCNUIUseCase(result.data, cardType)
-					else null
+				novelsRepository.insertReturnStripped(ne).transmogrify { result ->
+					convertNCToCNUIUseCase(result, cardType)
 				}
 			})
 		}

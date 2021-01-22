@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.Flow
  */
 interface INovelsRepository {
 	/**
-	 * Gets all bookmarked as live data
+	 * Loads all [NovelEntity]s that are bookmarked in a flow
 	 *
 	 * @return
 	 * [HResult.Success] TODO RETURN DESCRIPTION
@@ -44,10 +44,10 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Loading] Initial Value
 	 */
-	fun getBookmarkedNovelsFlow(): Flow<HResult<List<BookmarkedNovelEntity>>>
+	fun loadBookmarkedNovelFlow(): Flow<HResult<List<BookmarkedNovelEntity>>>
 
 	/**
-	 * Gets NovelEntities that are bookmarked
+	 * Loads all [NovelEntity]s that are bookmarked
 	 *
 	 * @return
 	 * [HResult.Success] TODO RETURN DESCRIPTION
@@ -60,7 +60,18 @@ interface INovelsRepository {
 	 */
 	suspend fun loadBookmarkedNovelEntities(): HResult<List<NovelEntity>>
 
-
+	/**
+	 * Loads all [NovelEntity]s that are in the repository
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] never
+	 */
 	suspend fun loadNovels(): HResult<List<NovelEntity>>
 
 	/**
@@ -117,7 +128,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun insertNovelReturnCard(novelEntity: NovelEntity): HResult<StrippedNovelEntity>
+	suspend fun insertReturnStripped(novelEntity: NovelEntity): HResult<StrippedNovelEntity>
 
 	/**
 	 * Inserts the [novelEntity]
@@ -131,7 +142,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun insertNovel(novelEntity: NovelEntity): HResult<*>
+	suspend fun insert(novelEntity: NovelEntity): HResult<*>
 
 	/**
 	 * Updates the [novelEntity]
@@ -145,7 +156,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun updateNovel(novelEntity: NovelEntity): HResult<*>
+	suspend fun update(novelEntity: NovelEntity): HResult<*>
 
 	/**
 	 * Updates a novel entity with new data

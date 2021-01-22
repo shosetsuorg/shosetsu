@@ -33,5 +33,5 @@ class UpdateNovelUseCase(
 		this(novelUI.convertTo())
 
 	suspend operator fun invoke(novelEntity: NovelEntity): HResult<*> =
-		chaptersRepository.updateNovel(novelEntity)
+		chaptersRepository.update(novelEntity)
 }

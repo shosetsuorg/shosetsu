@@ -63,7 +63,7 @@ class GetCatalogueQueryDataUseCase(
 			successResult(data.map { novelListing ->
 				novelListing.convertTo(ext)
 			}.mapNotNull { ne ->
-				novelsRepository.insertNovelReturnCard(ne).transmogrify { card ->
+				novelsRepository.insertReturnStripped(ne).transmogrify { card ->
 					convertNCToCNUIUseCase(card, cardType)
 				}
 			})

@@ -38,15 +38,6 @@ import kotlinx.coroutines.flow.flow
 class DBNovelsDataSource(
 	private val novelsDao: NovelsDao,
 ) : IDBNovelsDataSource {
-	@ExperimentalCoroutinesApi
-	override suspend fun loadLiveBookmarkedNovels(): Flow<HResult<List<NovelEntity>>> = flow {
-		try {
-			emitAll(novelsDao.loadLiveBookmarkedNovels().mapLatestListTo().mapLatestToSuccess())
-		} catch (e: Exception) {
-			emit(e.toHError())
-		}
-	}
-
 	override suspend fun loadBookmarkedNovels(): HResult<List<NovelEntity>> = try {
 		successResult(novelsDao.loadBookmarkedNovels().convertList())
 	} catch (e: Exception) {
@@ -54,55 +45,55 @@ class DBNovelsDataSource(
 	}
 
 	@ExperimentalCoroutinesApi
-	override fun loadLiveBookmarkedNovelsAndCount(
+	override fun loadBookmarkedNovelsFlow(
 	): Flow<HResult<List<BookmarkedNovelEntity>>> = flow {
 		emit(loading())
 		try {
-			emitAll(novelsDao.loadBookmarkedNovelsCount().mapLatestToSuccess())
+			emitAll(novelsDao.loadBookmarkedNovelsFlow().mapLatestToSuccess())
 		} catch (e: Exception) {
 			emit(e.toHError())
 		}
 	}
 
-	override suspend fun loadNovel(novelID: Int): HResult<NovelEntity> = try {
-		successResult(novelsDao.loadNovel(novelID).convertTo())
+	override suspend fun getNovel(novelID: Int): HResult<NovelEntity> = try {
+		successResult(novelsDao.getNovel(novelID).convertTo())
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
 	@ExperimentalCoroutinesApi
-	override suspend fun loadNovelLive(novelID: Int): Flow<HResult<NovelEntity>> = flow {
+	override suspend fun getNovelFlow(novelID: Int): Flow<HResult<NovelEntity>> = flow {
 		try {
-			emitAll(novelsDao.loadLiveNovel(novelID).mapLatestTo().mapLatestToSuccess())
+			emitAll(novelsDao.getNovelFlow(novelID).mapLatestTo().mapLatestToSuccess())
 		} catch (e: Exception) {
 			emit(e.toHError())
 		}
 	}
 
-	override suspend fun updateNovel(novelEntity: NovelEntity): HResult<*> = try {
+	override suspend fun update(novelEntity: NovelEntity): HResult<*> = try {
 		successResult(novelsDao.update(novelEntity.toDB()))
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
-	override suspend fun updateBookmarkedNovels(
+	override suspend fun update(
 		list: List<BookmarkedNovelEntity>
 	): HResult<*> = try {
-		successResult(novelsDao.updateBookmarked(list))
+		successResult(novelsDao.update(list))
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
-	override suspend fun insertNovelReturnCard(
+	override suspend fun insertReturnStripped(
 		novelEntity: NovelEntity,
 	): HResult<StrippedNovelEntity> = try {
-		successResult(novelsDao.insertNovelReturnCard(novelEntity.toDB()).convertTo())
+		successResult(novelsDao.insertReturnStripped(novelEntity.toDB()).convertTo())
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
-	override suspend fun insertNovel(novelEntity: NovelEntity): HResult<*> = try {
-		successResult(novelsDao.insertIgnore(novelEntity.toDB()))
+	override suspend fun insert(novelEntity: NovelEntity): HResult<*> = try {
+		successResult(novelsDao.insertAbort(novelEntity.toDB()))
 	} catch (e: Exception) {
 		e.toHError()
 	}

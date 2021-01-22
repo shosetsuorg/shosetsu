@@ -42,8 +42,8 @@ class NovelsRepository(
 	private val database: IDBNovelsDataSource,
 	private val remoteSource: IRemoteNovelDataSource,
 ) : INovelsRepository {
-	override fun getBookmarkedNovelsFlow(): Flow<HResult<List<BookmarkedNovelEntity>>> =
-		database.loadLiveBookmarkedNovelsAndCount()
+	override fun loadBookmarkedNovelFlow(): Flow<HResult<List<BookmarkedNovelEntity>>> =
+		database.loadBookmarkedNovelsFlow()
 
 	override suspend fun loadBookmarkedNovelEntities(): HResult<List<NovelEntity>> =
 		database.loadBookmarkedNovels()
@@ -51,15 +51,15 @@ class NovelsRepository(
 	override suspend fun loadNovels(): HResult<List<NovelEntity>> =
 		database.loadNovels()
 
-	override suspend fun updateNovel(novelEntity: NovelEntity): HResult<*> =
-		database.updateNovel(novelEntity)
+	override suspend fun update(novelEntity: NovelEntity): HResult<*> =
+		database.update(novelEntity)
 
 
-	override suspend fun insertNovelReturnCard(novelEntity: NovelEntity): HResult<StrippedNovelEntity> =
-		database.insertNovelReturnCard(novelEntity)
+	override suspend fun insertReturnStripped(novelEntity: NovelEntity): HResult<StrippedNovelEntity> =
+		database.insertReturnStripped(novelEntity)
 
-	override suspend fun insertNovel(novelEntity: NovelEntity): HResult<*> =
-		database.insertNovel(novelEntity)
+	override suspend fun insert(novelEntity: NovelEntity): HResult<*> =
+		database.insert(novelEntity)
 
 
 	/**
@@ -78,16 +78,16 @@ class NovelsRepository(
 
 
 	override suspend fun getNovel(novelID: Int): HResult<NovelEntity> =
-		database.loadNovel(novelID)
+		database.getNovel(novelID)
 
 	override suspend fun getNovelFlow(novelID: Int): Flow<HResult<NovelEntity>> =
-		database.loadNovelLive(novelID)
+		database.getNovelFlow(novelID)
 
 	override suspend fun updateNovelData(
 		novelEntity: NovelEntity,
 		novelInfo: Novel.Info
 	): HResult<*> =
-		database.updateNovel(
+		database.update(
 			novelEntity.copy(
 				title = novelInfo.title,
 				imageURL = novelInfo.imageURL,
@@ -103,14 +103,14 @@ class NovelsRepository(
 		)
 
 	override suspend fun updateBookmarkedNovelData(list: List<BookmarkedNovelEntity>): HResult<*> =
-		database.updateBookmarkedNovels(list)
+		database.update(list)
 
 	override suspend fun retrieveNovelInfo(
-		formatter: IExtension,
+		iExtension: IExtension,
 		novelEntity: NovelEntity,
 		loadChapters: Boolean,
 	): HResult<Novel.Info> =
-		remoteSource.loadNovel(formatter, novelEntity.url, loadChapters)
+		remoteSource.loadNovel(iExtension, novelEntity.url, loadChapters)
 
 	override suspend fun clearUnBookmarkedNovels(): HResult<*> =
 		database.clearUnBookmarkedNovels()

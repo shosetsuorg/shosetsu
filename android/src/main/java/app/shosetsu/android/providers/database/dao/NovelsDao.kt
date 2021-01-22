@@ -46,11 +46,11 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
-	fun loadNovel(novelID: Int): DBNovelEntity
+	fun getNovel(novelID: Int): DBNovelEntity
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
-	fun loadLiveNovel(novelID: Int): Flow<DBNovelEntity>
+	fun getNovelFlow(novelID: Int): Flow<DBNovelEntity>
 
 	@Throws(SQLiteException::class)
 	@Query(
@@ -70,7 +70,7 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 						novels.tags
 					FROM novels WHERE novels.bookmarked = 1"""
 	)
-	fun loadBookmarkedNovelsCount(): Flow<List<BookmarkedNovelEntity>>
+	fun loadBookmarkedNovelsFlow(): Flow<List<BookmarkedNovelEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT id,title,imageURL,bookmarked FROM novels WHERE _rowid_ = :rowID LIMIT 1")
@@ -86,17 +86,17 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 
 	@Transaction
 	@Throws(SQLiteException::class)
-	suspend fun insertNovelReturnCard(entity: DBNovelEntity): DBStrippedNovelEntity =
+	suspend fun insertReturnStripped(entity: DBNovelEntity): DBStrippedNovelEntity =
 		loadNovelID(entity.url, entity.extensionID)?.let { id ->
 			loadDBStrippedNovelEntity(id)
 		} ?: loadDBStrippedNovelEntityViaRow(insertAbort(entity))
 
 	@Transaction
 	@Throws(SQLiteException::class)
-	suspend fun updateBookmarked(list: List<BookmarkedNovelEntity>) {
+	suspend fun update(list: List<BookmarkedNovelEntity>) {
 		list.forEach { bookMarked ->
 			update(
-				loadNovel(bookMarked.id).copy(
+				getNovel(bookMarked.id).copy(
 					bookmarked = bookMarked.bookmarked
 				)
 			)
