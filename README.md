@@ -1,4 +1,4 @@
-tal [![Dev Status](https://travis-ci.com/shosetsuorg/android-app.svg?branch=development)](https://travis-ci.com/shosetsuorg/android-app)
+[![Dev Status](https://travis-ci.com/shosetsuorg/android-app.svg?branch=development)](https://travis-ci.com/shosetsuorg/android-app)
 [![Master Status](https://travis-ci.com/shosetsuorg/android-app.svg?branch=master)](https://travis-ci.com/shosetsuorg/android-app)
 
 # ![logo](https://github.com/shosetsuorg/android-app/blob/development/android/src/main/res/mipmap-hdpi/ic_launcher.png) Shosetsu
