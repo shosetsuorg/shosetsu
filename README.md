@@ -6,19 +6,14 @@ tal [![Dev Status](https://travis-ci.com/shosetsuorg/android-app.svg?branch=deve
 A free and open source android application for reading novels.  
 Use at your own discretion as this app is currently in beta and may have bugs. 
 We appreciate any help in improving the app, so let us know by either [opening an issue](../../issues/new) or via Discord.
+  
+Don't Download Stable! | Download Development! | Download from F-Droid | Download from, UpToDown
+---------------------- | --------------------- | --------------------- | -----------------------
+<a href="https://github.com/shosetsuorg/android-app/releases/latest"><img src="https://raw.githubusercontent.com/shosetsuorg/android-app/development/android/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="Get it directly!" height="80"></a> | <a href="https://github.com/shosetsuorg/shosetsu-preview/releases/latest"><img src="https://github.com/shosetsuorg/android-app/blob/development/android/src/debug/res/mipmap-xxxhdpi/ic_launcher.png" alt="Get it directly!" height="80"></a> | <a href="https://f-droid.org/packages/com.github.doomsdayrs.apps.shosetsu/"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid!" height="80"></a> | <a href="https://shosetsu.uptodown.com/android"><img src="https://stc.utdstc.com/img/logo.svg" alt="UpToDown" width=240px></a>
 
-Download Shosetsu from F-Droid:  
-<a href="https://f-droid.org/packages/com.github.doomsdayrs.apps.shosetsu/">
-    <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-    alt="Get it on F-Droid!"
-    height="80">
-</a>
-
-Join us on our Discord server:  
+Join us on our Discord server:
 <a href="https://discord.gg/ttSX7gB">
-    <img src="https://discordapp.com/assets/e4923594e694a21542a489471ecffa50.svg"
-    alt="Discord Channel"
-    width=240px>
+    <img src="https://discordapp.com/assets/e4923594e694a21542a489471ecffa50.svg" alt="Discord Channel" width=240px>
 </a>
 
 ## Capabilities:
