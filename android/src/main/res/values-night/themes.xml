@@ -13,8 +13,8 @@
         <item name="android:windowBackground">@color/grey_B_10</item>
         <item name="android:colorBackground">@color/grey_B_10</item>
 
-
         <item name="floatingActionButtonStyle">@style/AppTheme.Widget.FAB</item>
+        <item name="extendedFloatingActionButtonStyle">@style/AppTheme.Widget.ExtendedFAB</item>
         <item name="appBarLayoutStyle">@style/AppTheme.Widget.AppBarLayout</item>
         <item name="buttonStyle">@style/AppTheme.Widget.Button</item>
         <item name="android:statusBarColor">@color/grey_B_15</item>

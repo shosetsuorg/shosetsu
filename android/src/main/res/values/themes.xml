@@ -14,6 +14,8 @@
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/black_trans</item>
         <item name="appBarLayoutStyle">@style/AppTheme.Widget.AppBarLayout</item>
+        <item name="floatingActionButtonStyle">@style/AppTheme.Widget.FAB</item>
+        <item name="extendedFloatingActionButtonStyle">@style/AppTheme.Widget.ExtendedFAB</item>
     </style>
 
     <style name="ChipStyle" parent="AppTheme.Main" />
