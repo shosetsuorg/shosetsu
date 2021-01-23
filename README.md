@@ -1,7 +1,7 @@
 tal [![Dev Status](https://travis-ci.com/shosetsuorg/android-app.svg?branch=development)](https://travis-ci.com/shosetsuorg/android-app)
 [![Master Status](https://travis-ci.com/shosetsuorg/android-app.svg?branch=master)](https://travis-ci.com/shosetsuorg/android-app)
 
-# ![logo](https://github.com/shosetsuorg/android-app/raw/master/app/src/main/res/mipmap-hdpi/ic_launcher.png) Shosetsu
+# ![logo](https://raw.githubusercontent.com/shosetsuorg/android-app/android/src/main/res/mipmap-xxxhdpi/ic_launcher.png) Shosetsu
 
 A free and open source android application for reading novels.  
 Use at your own discretion as this app is currently in beta and may have bugs. 
