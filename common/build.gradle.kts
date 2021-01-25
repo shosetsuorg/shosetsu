@@ -13,4 +13,6 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
 	implementation("com.github.shosetsuorg:kotlin-lib:v1.0.0-rc53")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
+	testImplementation(kotlin("test"))
+	testImplementation(kotlin("test-junit"))
 }
