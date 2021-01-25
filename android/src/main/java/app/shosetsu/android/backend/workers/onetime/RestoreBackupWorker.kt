@@ -2,10 +2,14 @@ package app.shosetsu.android.backend.workers.onetime
 
 import android.content.Context
 import android.util.Base64
-import androidx.work.CoroutineWorker
-import androidx.work.WorkerParameters
+import androidx.work.*
+import app.shosetsu.android.backend.workers.CoroutineWorkerManager
+import app.shosetsu.android.common.consts.LogConstants
+import app.shosetsu.android.common.consts.WorkerTags.RESTORE_WORK_ID
 import app.shosetsu.android.common.ext.asEntity
+import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.utils.backupJSON
 import app.shosetsu.android.domain.model.local.backup.FleshedBackupEntity
 import app.shosetsu.android.domain.usecases.InitializeExtensionsUseCase
@@ -172,6 +176,56 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		return Result.success()
 	}
 
+	/**
+	 * Manager of [BackupWorker]
+	 */
+	class Manager(context: Context) : CoroutineWorkerManager(context) {
+
+		/**
+		 * Returns the status of the service.
+		 *
+		 * @return true if the service is running, false otherwise.
+		 */
+		override fun isRunning(): Boolean = try {
+			// Is this running
+			val a = (workerManager.getWorkInfosForUniqueWork(RESTORE_WORK_ID)
+				.get()[0].state == WorkInfo.State.RUNNING)
+
+			// Don't run if update is being installed
+			val b = !AppUpdateInstallWorker.Manager(context).isRunning()
+			a && b
+		} catch (e: Exception) {
+			false
+		}
+
+		/**
+		 * Starts the service. It will be started only if there isn't another instance already
+		 * running.
+		 */
+		override fun start() {
+			launchIO {
+				logI(LogConstants.SERVICE_NEW)
+				workerManager.enqueueUniqueWork(
+					RESTORE_WORK_ID,
+					ExistingWorkPolicy.REPLACE,
+					OneTimeWorkRequestBuilder<AppUpdateCheckWorker>(
+					).build()
+				)
+				logI(
+					"Worker State ${
+						workerManager.getWorkInfosForUniqueWork(RESTORE_WORK_ID)
+							.await()[0].state
+					}"
+				)
+			}
+		}
+
+		/**
+		 * Stops the service.
+		 */
+		override fun stop(): Operation =
+			workerManager.cancelUniqueWork(RESTORE_WORK_ID)
+	}
 
 	companion object {
 		const val SUPPORTED_VERSION = "1.0.0"

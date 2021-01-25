@@ -73,7 +73,7 @@ class AppUpdateCheckCycleWorker(
 		 * @return true if the service is running, false otherwise.
 		 */
 		override fun isRunning(): Boolean = try {
-			workerManager.getWorkInfosForUniqueWork(WorkerTags.UPDATE_CYCLE_WORK_ID)
+			workerManager.getWorkInfosForUniqueWork(WorkerTags.APP_UPDATE_CYCLE_WORK_ID)
 				.get()[0].state == WorkInfo.State.RUNNING
 		} catch (e: Exception) {
 			false

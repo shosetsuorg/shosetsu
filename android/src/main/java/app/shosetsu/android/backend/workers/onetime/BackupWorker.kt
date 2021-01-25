@@ -6,7 +6,7 @@ import android.util.Base64
 import androidx.work.*
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.common.consts.LogConstants
-import app.shosetsu.android.common.consts.WorkerTags
+import app.shosetsu.android.common.consts.WorkerTags.BACKUP_WORK_ID
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.utils.backupJSON
@@ -178,7 +178,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 		 */
 		override fun isRunning(): Boolean = try {
 			// Is this running
-			val a = (workerManager.getWorkInfosForUniqueWork(WorkerTags.APP_UPDATE_WORK_ID)
+			val a = (workerManager.getWorkInfosForUniqueWork(BACKUP_WORK_ID)
 				.get()[0].state == WorkInfo.State.RUNNING)
 
 			// Don't run if update is being installed
@@ -196,7 +196,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 			launchIO {
 				logI(LogConstants.SERVICE_NEW)
 				workerManager.enqueueUniqueWork(
-					WorkerTags.APP_UPDATE_WORK_ID,
+					BACKUP_WORK_ID,
 					ExistingWorkPolicy.REPLACE,
 					OneTimeWorkRequestBuilder<AppUpdateCheckWorker>(
 					).setConstraints(
@@ -211,7 +211,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 				)
 				logI(
 					"Worker State ${
-						workerManager.getWorkInfosForUniqueWork(WorkerTags.APP_UPDATE_WORK_ID)
+						workerManager.getWorkInfosForUniqueWork(BACKUP_WORK_ID)
 							.await()[0].state
 					}"
 				)
@@ -222,6 +222,6 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 		 * Stops the service.
 		 */
 		override fun stop(): Operation =
-			workerManager.cancelUniqueWork(WorkerTags.APP_UPDATE_WORK_ID)
+			workerManager.cancelUniqueWork(BACKUP_WORK_ID)
 	}
 }
