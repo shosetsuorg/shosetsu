@@ -14,8 +14,10 @@ import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.unwrap
-import app.shosetsu.lib.IExtension
-import kotlinx.serialization.decodeFromString
+import app.shosetsu.common.enums.ReadingStatus
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -72,11 +74,26 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 			},
 			onError = { (code, message, exception) ->
 				logE("$code $message", exception)
+				return Result.failure()
 			}
 		) { backupEntity ->
+			// Decode
 			val decodedBytes: ByteArray = Base64.decode(backupEntity.content, Base64.DEFAULT)
+
+			// Unzip
 			val unzippedString: String = unGZip(decodedBytes)
-			val backup = backupJSON.decodeFromString<FleshedBackupEntity>(unzippedString)
+
+
+			// Verifies the version is compatible and then parses it to a backup object
+			val backup = backupJSON.decodeFromJsonElement<FleshedBackupEntity>(
+				backupJSON.parseToJsonElement(
+					unzippedString
+				).jsonObject.also { jsonObject ->
+					if (jsonObject.containsKey("version")) {
+						if (jsonObject["version"]!!.jsonPrimitive.toString() != SUPPORTED_VERSION)
+							return Result.failure()
+					} else return Result.failure()
+				})
 
 			// Adds the repositories
 			backup.repos.forEach { (url, name) ->
@@ -92,7 +109,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 			initializeExtensionsUseCase.invoke { }
 
 			// Install the extensions
-			val presentNovels: List<NovelEntity> = novelsRepo.loadNovels().unwrap()!!
+			val repoNovels: List<NovelEntity> = novelsRepo.loadNovels().unwrap()!!
 
 			backup.extensions.forEach { (extensionID, novels) ->
 				extensionsRepo.getExtensionEntity(extensionID).handle { extensionEntity ->
@@ -101,23 +118,63 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 						extensionsRepo.installExtension(extensionEntity)
 					val iExt = extensionsRepo.getIExtension(extensionEntity).unwrap()!!
 
-					novels.forEach { (url, name, imageURL, chapters) ->
+					novels.forEach novelLoop@{ (novelURL, _, _, chapters) ->
 						// If none match the extension ID and URL, time to load it up
-						if (presentNovels.none { it.extensionID == extensionEntity.id && it.url == url }) {
-							val expandedURL = iExt.expandURL(url, IExtension.KEY_NOVEL_URL)
-							val siteNovel = iExt.parseNovel(expandedURL, true)
-							novelsRepo.insert(siteNovel.asEntity(url, extensionID)).handle {
+						var targetNovelID = -1
+						if (repoNovels.none { it.extensionID == extensionEntity.id && it.url == novelURL }) {
+							val siteNovel = iExt.parseNovel(novelURL, true)
+							novelsRepo.insertReturnStripped(
+								siteNovel.asEntity(
+									novelURL,
+									extensionID
+								)
+							).handle { (id) ->
+								targetNovelID = id
+							}
+						} else {
+							// Get the novelID from the present novels, or just end this update
+							repoNovels.find { it.extensionID == extensionEntity.id && it.url == novelURL }?.id?.let { it ->
+								targetNovelID = it
+							} ?: return@novelLoop
+						}
+
+						// if the ID is still -1, return
+						if (targetNovelID == -1) return@novelLoop
+
+						// get the chapters
+						val repoChapters =
+							chaptersRepo.getChapters(targetNovelID).unwrap() ?: listOf()
+
+						// Go through the chapters updating them
+						chapters.forEach { (chapterURL, chapterName, bookmarked, rS, rP) ->
+							repoChapters.find { it.url == chapterURL }?.let { chapterEntity ->
+								chaptersRepo.updateChapter(
+									chapterEntity.copy(
+										title = chapterName,
+										bookmarked = bookmarked,
+									).let {
+										when (it.readingStatus) {
+											ReadingStatus.READING -> it
+											ReadingStatus.READ -> it
+											else -> it.copy(
+												readingStatus = rS,
+												readingPosition = rP
+											)
+										}
+									}
+								)
 							}
 						}
 					}
 				}
 			}
 		}
-		return Result.failure()
+		return Result.success()
 	}
 
 
 	companion object {
+		const val SUPPORTED_VERSION = "1.0.0"
 		const val BACKUP_DATA_KEY = "BACKUP_NAME"
 	}
 }
