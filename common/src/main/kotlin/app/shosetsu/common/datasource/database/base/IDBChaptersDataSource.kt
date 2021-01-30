@@ -1,9 +1,9 @@
 package app.shosetsu.common.datasource.database.base
 
-import app.shosetsu.common.domain.model.local.ReaderChapterEntity
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.domain.model.local.ReaderChapterEntity
+import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
 
@@ -33,21 +33,23 @@ import kotlinx.coroutines.flow.Flow
  */
 interface IDBChaptersDataSource {
 	/** Get the chapters of a novel */
-	suspend fun loadChapters(novelID: Int): Flow<HResult<List<ChapterEntity>>>
+	suspend fun getChaptersFlow(novelID: Int): Flow<HResult<List<ChapterEntity>>>
+
+	suspend fun getChapters(novelID: Int): HResult<List<ChapterEntity>>
 
 	/** Loads a chapter by its ID */
-	suspend fun loadChapter(chapterID: Int): HResult<ChapterEntity>
+	suspend fun getChapter(chapterID: Int): HResult<ChapterEntity>
 
 	/** Loads chapters by novelID */
-	suspend fun loadReaderChapters(novelID: Int): Flow<HResult<List<ReaderChapterEntity>>>
+	suspend fun getReaderChapters(novelID: Int): Flow<HResult<List<ReaderChapterEntity>>>
 
 	/** Handles chapters from a remote source */
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>): HResult<*>
 
 	/** Handles chapters from a remote source, then returns the new chapters */
 	suspend fun handleChapterReturn(
-			novelEntity: NovelEntity,
-			list: List<Novel.Chapter>,
+		novelEntity: NovelEntity,
+		list: List<Novel.Chapter>,
 	): HResult<List<ChapterEntity>>
 
 	/** Updates a [chapterEntity] */

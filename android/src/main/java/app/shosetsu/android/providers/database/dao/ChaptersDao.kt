@@ -48,26 +48,26 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM chapters WHERE novelID = :novelID")
-	fun loadLiveChapters(novelID: Int): Flow<List<DBChapterEntity>>
+	fun getChaptersFlow(novelID: Int): Flow<List<DBChapterEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM chapters WHERE novelID = :novelID")
-	suspend fun loadChapters(novelID: Int): List<DBChapterEntity>
+	suspend fun getChapters(novelID: Int): List<DBChapterEntity>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT id, url, title, readingPosition, readingStatus, bookmarked FROM chapters WHERE novelID = :novelID")
-	fun loadLiveReaderChapters(novelID: Int): Flow<List<ReaderChapterEntity>>
+	fun getReaderChaptersFlow(novelID: Int): Flow<List<ReaderChapterEntity>>
 
 
 	//## Single result queries
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM chapters WHERE id = :chapterID LIMIT 1")
-	suspend fun loadChapter(chapterID: Int): DBChapterEntity
+	suspend fun getChapter(chapterID: Int): DBChapterEntity
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM chapters WHERE _rowid_ = :rowID LIMIT 1")
-	suspend fun loadChapter(rowID: Long): DBChapterEntity
+	suspend fun getChapter(rowID: Long): DBChapterEntity
 
 
 	@Query("SELECT COUNT(*) FROM chapters WHERE readingStatus != 2")
@@ -79,7 +79,7 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 	@Transaction
 	@Throws(SQLiteException::class)
 	suspend fun updateReaderChapter(readerDBChapter: ReaderChapterEntity): Unit =
-		loadChapter(readerDBChapter.id).copy(
+		getChapter(readerDBChapter.id).copy(
 			readingPosition = readerDBChapter.readingPosition,
 			readingStatus = readerDBChapter.readingStatus,
 			bookmarked = readerDBChapter.bookmarked
@@ -88,7 +88,7 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 	@Transaction
 	@Throws(SQLiteException::class)
 	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>) {
-		val databaseChapterEntities: List<DBChapterEntity> = loadChapters(novelEntity.id!!)
+		val databaseChapterEntities: List<DBChapterEntity> = getChapters(novelEntity.id!!)
 		list.forEach { novelChapter: Novel.Chapter ->
 			databaseChapterEntities.find { it.url == novelChapter.link }?.let {
 				handleUpdate(it, novelChapter)
@@ -103,7 +103,7 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 		list: List<Novel.Chapter>,
 	): List<DBChapterEntity> {
 		val newChapters = ArrayList<DBChapterEntity>()
-		val databaseChapterEntities: List<DBChapterEntity> = loadChapters(novelEntity.id!!)
+		val databaseChapterEntities: List<DBChapterEntity> = getChapters(novelEntity.id!!)
 		list.forEach { novelChapter: Novel.Chapter ->
 			databaseChapterEntities.find { it.url == novelChapter.link }?.let {
 				handleUpdate(it, novelChapter)
@@ -119,7 +119,7 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 	@Throws(SQLiteException::class)
 	@Transaction
 	suspend fun insertAndReturnDBChapter(DBChapterEntity: DBChapterEntity): DBChapterEntity =
-		loadChapter(insertReplace(DBChapterEntity))
+		getChapter(insertReplace(DBChapterEntity))
 
 
 	@Throws(IndexOutOfBoundsException::class)
@@ -129,7 +129,7 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 	): DBChapterEntity =
 		handleAbortInsert(novelChapter, novelEntity).let { rowID ->
 			if (rowID < 0) throw IndexOutOfBoundsException("Insertion aborted")
-			loadChapter(rowID)
+			getChapter(rowID)
 		}
 
 	@Throws(SQLiteException::class)

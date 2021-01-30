@@ -42,30 +42,36 @@ class DBChaptersDataSource(
 ) : IDBChaptersDataSource {
 
 	@ExperimentalCoroutinesApi
-	override suspend fun loadChapters(
+	override suspend fun getChaptersFlow(
 		novelID: Int,
 	): Flow<HResult<List<ChapterEntity>>> = flow {
 		emit(loading())
 		try {
-			emitAll(chaptersDao.loadLiveChapters(novelID).mapLatestListTo().mapLatestToSuccess())
+			emitAll(chaptersDao.getChaptersFlow(novelID).mapLatestListTo().mapLatestToSuccess())
 		} catch (e: Exception) {
 			emit(e.toHError())
 		}
 	}
 
-	override suspend fun loadChapter(chapterID: Int): HResult<ChapterEntity> = try {
-		successResult(chaptersDao.loadChapter(chapterID).convertTo())
+	override suspend fun getChapters(novelID: Int): HResult<List<ChapterEntity>> = try {
+		successResult(chaptersDao.getChapters(novelID).convertList())
+	} catch (e: Exception) {
+		e.toHError()
+	}
+
+	override suspend fun getChapter(chapterID: Int): HResult<ChapterEntity> = try {
+		successResult(chaptersDao.getChapter(chapterID).convertTo())
 	} catch (e: Exception) {
 		e.toHError()
 	}
 
 	@ExperimentalCoroutinesApi
-	override suspend fun loadReaderChapters(
+	override suspend fun getReaderChapters(
 		novelID: Int,
 	): Flow<HResult<List<ReaderChapterEntity>>> = flow {
 		emit(loading())
 		try {
-			emitAll(chaptersDao.loadLiveReaderChapters(novelID).mapLatestToSuccess())
+			emitAll(chaptersDao.getReaderChaptersFlow(novelID).mapLatestToSuccess())
 		} catch (e: Exception) {
 			emit(e.toHError())
 		}

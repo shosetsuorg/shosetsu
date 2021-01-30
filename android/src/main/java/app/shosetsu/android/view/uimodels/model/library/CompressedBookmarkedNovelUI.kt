@@ -21,7 +21,7 @@ package app.shosetsu.android.view.uimodels.model.library
  * shosetsu
  * 23 / 08 / 2020
  */
-data class CommpressedBookmarkedNovelUI(
+data class CompressedBookmarkedNovelUI(
 	override val id: Int,
 	override val title: String,
 	override val imageURL: String,

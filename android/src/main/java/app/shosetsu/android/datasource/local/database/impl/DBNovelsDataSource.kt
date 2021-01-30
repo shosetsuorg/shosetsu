@@ -105,7 +105,7 @@ class DBNovelsDataSource(
 	}
 
 	override fun loadNovels(): HResult<List<NovelEntity>> = try {
-		successResult(novelsDao.loadNovels())
+		successResult(novelsDao.loadNovels().convertList())
 	} catch (e: SQLiteException) {
 		e.toHError()
 	}

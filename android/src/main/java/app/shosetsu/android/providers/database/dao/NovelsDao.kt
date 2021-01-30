@@ -8,7 +8,6 @@ import app.shosetsu.android.domain.model.database.DBNovelEntity
 import app.shosetsu.android.domain.model.database.DBStrippedNovelEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
-import app.shosetsu.common.domain.model.local.NovelEntity
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -109,7 +108,7 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 
 
 	@Query("SELECT * FROM novels")
-	fun loadNovels(): List<NovelEntity>
+	fun loadNovels(): List<DBNovelEntity>
 
 	//@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
 	//fun loadNovelWithChapters(novelID: Int): DBNovelWithChapters

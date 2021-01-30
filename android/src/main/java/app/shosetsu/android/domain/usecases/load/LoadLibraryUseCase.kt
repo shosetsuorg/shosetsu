@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
-import app.shosetsu.android.view.uimodels.model.library.CommpressedBookmarkedNovelUI
+import app.shosetsu.android.view.uimodels.model.library.CompressedBookmarkedNovelUI
 import app.shosetsu.android.view.uimodels.model.library.NormalBookmarkedNovelUI
 import app.shosetsu.common.consts.settings.SettingKey.SelectedNovelCardType
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
@@ -61,7 +61,7 @@ class LoadLibraryUseCase(
 								artists = artists,
 								tags = tags
 							)
-							COMPRESSED -> CommpressedBookmarkedNovelUI(
+							COMPRESSED -> CompressedBookmarkedNovelUI(
 								id = id,
 								title = title,
 								imageURL = imageURL,
