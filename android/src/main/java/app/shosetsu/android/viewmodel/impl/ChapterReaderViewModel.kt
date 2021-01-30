@@ -65,6 +65,8 @@ class ChapterReaderViewModel(
 
 	/**
 	 * TODO Memory management here
+	 *
+	 * ChapterID to the data flow for it
 	 */
 	private val hashMap: HashMap<Int, Flow<*>> = hashMapOf()
 

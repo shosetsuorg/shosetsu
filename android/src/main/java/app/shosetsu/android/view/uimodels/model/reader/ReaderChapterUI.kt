@@ -73,7 +73,7 @@ data class ReaderChapterUI(
 	override fun getViewHolder(v: View): TypedReaderViewHolder {
 		return when (chapterType) {
 			ChapterType.STRING -> StringReader(v)
-			else -> TODO()
+			else -> TODO("Not implemented")
 		}.also { reader = it }
 	}
 

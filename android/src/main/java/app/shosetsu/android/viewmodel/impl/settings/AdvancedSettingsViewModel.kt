@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.res.Resources
 import android.widget.ArrayAdapter
 import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.toast
 import app.shosetsu.android.domain.ReportExceptionUseCase
+import app.shosetsu.android.domain.usecases.PurgeNovelCacheUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
@@ -41,7 +41,8 @@ import com.github.doomsdayrs.apps.shosetsu.R
 class AdvancedSettingsViewModel(
 	iSettingsRepository: ISettingsRepository,
 	private val context: Context,
-	private val reportExceptionUseCase: ReportExceptionUseCase
+	private val reportExceptionUseCase: ReportExceptionUseCase,
+	private val purgeNovelCacheUseCase: PurgeNovelCacheUseCase
 ) : AAdvancedSettingsViewModel(iSettingsRepository) {
 	override suspend fun settings(): List<SettingsItemData> = listOf(
 		spinnerSettingData(1) {
@@ -67,12 +68,7 @@ class AdvancedSettingsViewModel(
 		buttonSettingData(2) {
 			title { R.string.remove_novel_cache }
 			onButtonClicked {
-				try {
-					// TODO purge
-				} catch (e: android.database.SQLException) {
-					context.toast("SQLITE Error")
-					android.util.Log.e("AdvancedSettings", "DatabaseError", e)
-				}
+				purgeNovelCacheUseCase()
 			}
 		}
 	)

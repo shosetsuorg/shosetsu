@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.widget.ArrayAdapter
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
@@ -86,7 +87,7 @@ class ViewSettingsViewModel(
 					context.resources!!.getStringArray(R.array.novel_card_types)
 				)
 			} catch (e: Resources.NotFoundException) {
-				TODO("Add error handling here")
+				reportExceptionUseCase.invoke(e.toHError())
 			}
 		},
 		switchSettingData(4) {

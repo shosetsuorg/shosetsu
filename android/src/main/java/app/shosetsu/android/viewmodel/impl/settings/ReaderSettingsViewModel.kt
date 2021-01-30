@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.load.LoadReaderThemes
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
@@ -65,7 +66,7 @@ class ReaderSettingsViewModel(
 					context.resources!!.getStringArray(R.array.sizes_with_none)
 				)
 			} catch (e: NotFoundException) {
-				TODO("Add error handling here")
+				reportExceptionUseCase.invoke(e.toHError())
 			}
 			iSettingsRepository.getInt(ReaderParagraphSpacing).handle {
 				spinnerValue { it }
@@ -85,7 +86,7 @@ class ReaderSettingsViewModel(
 					context.resources!!.getStringArray(R.array.sizes_no_none)
 				)
 			} catch (e: NotFoundException) {
-				TODO("Add error handling here")
+				reportExceptionUseCase.invoke(e.toHError())
 			}
 			iSettingsRepository.getFloat(ReaderTextSize).handle {
 				spinnerValue {
@@ -123,7 +124,7 @@ class ReaderSettingsViewModel(
 					context.resources!!.getStringArray(R.array.sizes_with_none)
 				)
 			} catch (e: NotFoundException) {
-				TODO("Add error handling here")
+				reportExceptionUseCase.invoke(e.toHError())
 			}
 			iSettingsRepository.getInt(ReaderIndentSize).handle {
 				spinnerValue { it }
@@ -182,7 +183,7 @@ class ReaderSettingsViewModel(
 					context.resources!!.getStringArray(R.array.marking_names)
 				)
 			} catch (e: NotFoundException) {
-				TODO("Add error handling here")
+				reportExceptionUseCase.invoke(e.toHError())
 			}
 			iSettingsRepository.getString(ReadingMarkingType).handle {
 				valueOf(it).let {

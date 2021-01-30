@@ -22,6 +22,8 @@ import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
 /**
  * shosetsu
  * 13 / 05 / 2020
+ *
+ * TODO Load new data from repository and update it, maybe should be a worker?
  */
 class RefreshRepositoryUseCase(
 	val repository: IExtensionRepoRepository,
