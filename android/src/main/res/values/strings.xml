@@ -253,6 +253,7 @@
 
     <string name="normal">Normal</string>
     <string name="compressed">Compressed</string>
+    <string name="comfy">Comfy</string>
     <string name="novel_card_type_selector_title">Novel card type</string>
     <string name="novel_card_type_selector_desc">Swap between a grid or list for displaying novels</string>
     <string name="library_update">Updating Library</string>
@@ -368,6 +369,7 @@
     <array name="novel_card_types">
         <item>@string/normal</item>
         <item>@string/compressed</item>
+        <item>@string/comfy</item>
     </array>
 </resources>
 

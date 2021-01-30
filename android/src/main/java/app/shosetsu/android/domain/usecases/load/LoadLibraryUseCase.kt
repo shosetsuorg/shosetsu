@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
+import app.shosetsu.android.view.uimodels.model.library.ComfyBookmarkedNovelUI
 import app.shosetsu.android.view.uimodels.model.library.CompressedBookmarkedNovelUI
 import app.shosetsu.android.view.uimodels.model.library.NormalBookmarkedNovelUI
 import app.shosetsu.common.consts.settings.SettingKey.SelectedNovelCardType
@@ -72,7 +73,17 @@ class LoadLibraryUseCase(
 								artists = artists,
 								tags = tags
 							)
-							COZY -> TODO("Create a comfortable UI for novel cards")
+							COZY -> ComfyBookmarkedNovelUI(
+								id = id,
+								title = title,
+								imageURL = imageURL,
+								bookmarked = bookmarked,
+								unread = unread,
+								genres = genres,
+								authors = authors,
+								artists = artists,
+								tags = tags
+							)
 						}
 					}
 					successResult(newList)

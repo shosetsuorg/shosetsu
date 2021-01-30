@@ -87,7 +87,7 @@ abstract class ABookmarkedNovelUI
 
 	class ViewHolder(itemView: View) : TitleImageFViewHolder<ABookmarkedNovelUI>(itemView) {
 		private val materialCardView: MaterialCardView = itemView.findViewById(R.id.novel_item_card)
-		private val chip: Chip = itemView.findViewById(R.id.novel_item_left_to_read)
+		private val chip: Chip = itemView.findViewById(R.id.left_to_read_chip)
 
 		override fun bindView(item: ABookmarkedNovelUI, payloads: List<Any>) {
 			super.bindView(item, payloads)

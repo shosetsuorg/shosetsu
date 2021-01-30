@@ -39,8 +39,8 @@ import app.shosetsu.common.dto.transform
 import app.shosetsu.common.enums.InclusionState
 import app.shosetsu.common.enums.InclusionState.EXCLUDE
 import app.shosetsu.common.enums.InclusionState.INCLUDE
-import app.shosetsu.common.enums.NovelSortType
 import app.shosetsu.common.enums.NovelCardType
+import app.shosetsu.common.enums.NovelSortType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import java.util.Locale.getDefault as LGD
@@ -89,6 +89,8 @@ class LibraryViewModel(
 	override val artistsLiveData: LiveData<List<String>> by lazy {
 		stripOutList { it.artists }
 	}
+
+	@ExperimentalCoroutinesApi
 	override val novelCardTypeLiveData: LiveData<NovelCardType> by lazy {
 		loadNovelUITypeUseCase().asIOLiveData()
 	}

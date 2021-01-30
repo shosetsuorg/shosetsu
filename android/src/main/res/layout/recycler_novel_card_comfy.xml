@@ -10,8 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
-        app:layout_constraintDimensionRatio="2:3"
         app:strokeColor="@color/colorPrimary">
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint"
@@ -19,6 +19,7 @@
             android:layout_height="match_parent">
 
             <FrameLayout
+                android:id="@+id/frameLayout"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="0dp"
@@ -29,6 +30,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
+
 
                 <ImageView
                     android:id="@+id/imageView"
@@ -44,25 +46,22 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/novel_card_gradient" />
 
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@android:color/transparent"
-                    android:gravity="center_horizontal"
-                    android:paddingStart="2dp"
-                    android:paddingEnd="2dp"
-                    android:textColor="@color/white_trans"
-                    android:textIsSelectable="false"
-                    android:textStyle="bold"
-                    tools:text="This is a novel"
-                    tools:visibility="visible" />
 
             </FrameLayout>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@android:color/transparent"
+                android:gravity="center_horizontal"
+                android:textIsSelectable="false"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/frameLayout"
+                tools:text="This is a novel"
+                tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
