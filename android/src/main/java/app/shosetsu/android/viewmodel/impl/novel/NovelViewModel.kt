@@ -13,6 +13,7 @@ import app.shosetsu.android.domain.usecases.get.GetChapterUIsUseCase
 import app.shosetsu.android.domain.usecases.get.GetNovelSettingFlowUseCase
 import app.shosetsu.android.domain.usecases.get.GetNovelUIUseCase
 import app.shosetsu.android.domain.usecases.get.GetNovelUseCase
+import app.shosetsu.android.domain.usecases.load.LoadDeletePreviousChapterUseCase
 import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
 import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadChaptersResumeFirstUnreadUseCase
@@ -68,7 +69,8 @@ class NovelViewModel(
 	private val deleteChapterPassageUseCase: DeleteChapterPassageUseCase,
 	private val isChaptersResumeFirstUnread: LoadChaptersResumeFirstUnreadUseCase,
 	private val getNovelSettingFlowUseCase: GetNovelSettingFlowUseCase,
-	private val updateNovelSettingUseCase: UpdateNovelSettingUseCase
+	private val updateNovelSettingUseCase: UpdateNovelSettingUseCase,
+	private val loadDeletePreviousChapterUseCase: LoadDeletePreviousChapterUseCase
 ) : INovelViewModel() {
 	@ExperimentalCoroutinesApi
 	@get:Synchronized
@@ -202,8 +204,33 @@ class NovelViewModel(
 		}
 	}
 
+	@ExperimentalCoroutinesApi
 	override fun deletePrevious() {
-		TODO("Implementation to delete chapters that are downloaded and read")
+		launchIO {
+			loadDeletePreviousChapterUseCase().handle { chaptersBackToDelete ->
+				if (chaptersBackToDelete != -1) {
+					/**
+					 * [chapters] filters so that it is unread and downloaded
+					 * Iterate through these to delete the previous
+					 */
+					val savedAndUnread =
+						chapters.filter { it.readingStatus == ReadingStatus.READ && it.isSaved }
+
+					/**
+					 * Don't delete if the size of savedAndUnread is smaller then the [chaptersBackToDelete]
+					 */
+					if (savedAndUnread.size <= chaptersBackToDelete)
+						return@handle
+
+					/**
+					 * Iterate through the chapters and delete previous chapters
+					 */
+					for (index in 0 until savedAndUnread.size - chaptersBackToDelete)
+						deleteChapterPassageUseCase(savedAndUnread[index])
+				}
+			}
+
+		}
 	}
 
 	@ExperimentalCoroutinesApi

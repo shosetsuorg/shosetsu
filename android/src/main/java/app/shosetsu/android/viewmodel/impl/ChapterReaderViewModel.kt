@@ -53,6 +53,8 @@ import kotlinx.coroutines.withContext
 /**
  * shosetsu
  * 06 / 05 / 2020
+ *
+ * TODO delete previous chapter
  */
 class ChapterReaderViewModel(
 	private val iSettingsRepository: ISettingsRepository,
@@ -70,6 +72,7 @@ class ChapterReaderViewModel(
 	 */
 	private val hashMap: HashMap<Int, Flow<*>> = hashMapOf()
 
+	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<List<ReaderUIItem<*, *>>>> by lazy {
 		loadReaderChaptersUseCase(nID).mapLatestResult {
 			withContext(viewModelScope.coroutineContext + Dispatchers.IO) {

@@ -65,6 +65,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	 * If 1+, deletes the chapter of READ CHAPTER - [deletePreviousChapter]
 	 */
 	object DeleteReadChapter : SettingKey<Int>("deleteReadChapter", -1)
+
 	object DownloadOnLowStorage : SettingKey<Boolean>("downloadNotLowStorage", false)
 	object DownloadOnLowBattery : SettingKey<Boolean>("downloadNotLowBattery", false)
 	object DownloadOnMeteredConnection : SettingKey<Boolean>(

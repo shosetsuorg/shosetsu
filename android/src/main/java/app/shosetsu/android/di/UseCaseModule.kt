@@ -177,4 +177,9 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<UpdateNovelSettingUseCase>() with provider {
 		UpdateNovelSettingUseCase(instance())
 	}
+	bind<LoadDeletePreviousChapterUseCase>() with provider {
+		LoadDeletePreviousChapterUseCase(instance())
+	}
+
+
 }
