@@ -33,7 +33,7 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.TriStateButtonBinding
  * shosetsu
  * 23 / 11 / 2020
  */
-class TriStateButton @JvmOverloads constructor(
+open class TriStateButton @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
 	defStyleAttr: Int = 0
