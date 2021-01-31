@@ -61,7 +61,7 @@ inline fun SpinnerSettingData.onSpinnerItemSelected(
 
 @SettingsItemDSL
 inline fun SpinnerSettingData.spinnerValue(
-	crossinline value: SpinnerSettingData.() -> Int,
+	value: SpinnerSettingData.() -> Int,
 ): Unit = value().let { spinnerSelection = it }
 
 @SettingsItemDSL

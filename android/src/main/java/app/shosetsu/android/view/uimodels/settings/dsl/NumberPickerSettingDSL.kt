@@ -64,7 +64,7 @@ inline fun NumberPickerSettingData.onValuePicked(
 
 @SettingsItemDSL
 inline fun NumberPickerSettingData.initalValue(
-	crossinline value: NumberPickerSettingData.() -> Int,
+	value: NumberPickerSettingData.() -> Int,
 ): Unit = value().let { numberPickerValue = it }
 
 @SettingsItemDSL

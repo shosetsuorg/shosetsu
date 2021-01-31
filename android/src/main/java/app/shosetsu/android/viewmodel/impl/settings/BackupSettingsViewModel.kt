@@ -8,8 +8,8 @@ import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.ABackupSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -41,9 +41,7 @@ class BackupSettingsViewModel(
 		checkBoxSettingData(0) {
 			title { R.string.backup_chapters_option }
 			description { R.string.backup_chapters_option_description }
-			iSettingsRepository.getBoolean(SettingKey.BackupChapters).handle {
-				isChecked = it
-			}
+			isChecked = iSettingsRepository.getBooleanOrDefault(SettingKey.BackupChapters)
 			onChecked { _: CompoundButton?, iC: Boolean ->
 				launchIO {
 					iSettingsRepository.setBoolean(SettingKey.BackupChapters, iC)
@@ -53,9 +51,7 @@ class BackupSettingsViewModel(
 		checkBoxSettingData(1) {
 			title { R.string.backup_settings_option }
 			description { R.string.backup_settings_option_desc }
-			iSettingsRepository.getBoolean(SettingKey.BackupSettings).handle {
-				isChecked = it
-			}
+			isChecked = iSettingsRepository.getBooleanOrDefault(SettingKey.BackupSettings)
 			onChecked { _: CompoundButton?, iC: Boolean ->
 				launchIO {
 					iSettingsRepository.setBoolean(SettingKey.BackupSettings, iC)

@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.dto.errorResult
 import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.consts.ErrorKeys.ERROR_GENERAL
+import app.shosetsu.common.consts.ErrorKeys.ERROR_IMPOSSIBLE
 import app.shosetsu.common.consts.ErrorKeys.ERROR_JSON
 import app.shosetsu.common.consts.ErrorKeys.ERROR_LUA_BROKEN
 import app.shosetsu.common.consts.ErrorKeys.ERROR_LUA_GENERAL
@@ -66,5 +67,6 @@ fun Exception.toHError(): HResult.Error = when (this) {
 	is InvalidParameterException -> errorResult(this)
 	is JSONException -> errorResult(this)
 	is UnknownHostException -> errorResult(this)
+	is android.content.res.Resources.NotFoundException -> errorResult(ERROR_IMPOSSIBLE, this)
 	else -> errorResult(ERROR_GENERAL, message ?: "Unknown General Error", this)
 }

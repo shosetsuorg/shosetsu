@@ -11,8 +11,8 @@ import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AViewSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.domain.repositories.base.getIntOrDefault
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -46,9 +46,7 @@ class ViewSettingsViewModel(
 		numberPickerSettingData(1) {
 			title { R.string.columns_of_novel_listing_p }
 			description { (R.string.columns_zero_automatic) }
-			iSettingsRepository.getInt(ChapterColumnsInPortait).handle {
-				initalValue { it }
-			}
+			initalValue { iSettingsRepository.getIntOrDefault(ChapterColumnsInPortait) }
 			onValuePicked { _, _, newVal ->
 				launchIO {
 					iSettingsRepository.setInt(ChapterColumnsInPortait, newVal)
@@ -59,9 +57,7 @@ class ViewSettingsViewModel(
 		numberPickerSettingData(2) {
 			title { R.string.columns_of_novel_listing_h }
 			description { (R.string.columns_zero_automatic) }
-			iSettingsRepository.getInt(ChapterColumnsInLandscape).handle {
-				initalValue { it }
-			}
+			initalValue { iSettingsRepository.getIntOrDefault(ChapterColumnsInLandscape) }
 			onValuePicked { _, _, newVal ->
 				launchIO {
 					iSettingsRepository.setInt(ChapterColumnsInLandscape, newVal)
@@ -72,9 +68,7 @@ class ViewSettingsViewModel(
 		spinnerSettingData(3) {
 			title { R.string.novel_card_type_selector_title }
 			description { R.string.novel_card_type_selector_desc }
-			iSettingsRepository.getInt(SelectedNovelCardType).handle {
-				spinnerValue { it }
-			}
+			spinnerValue { iSettingsRepository.getIntOrDefault(SelectedNovelCardType) }
 			onSpinnerItemSelected { _, _, position, _ ->
 				launchIO {
 					iSettingsRepository.setInt(SelectedNovelCardType, position)
@@ -93,9 +87,7 @@ class ViewSettingsViewModel(
 		switchSettingData(4) {
 			title { "Legacy navigation" }
 			description { "Disableds bottom navigation, enables drawer" }
-			iSettingsRepository.getInt(NavStyle).handle {
-				isChecked = it == 1
-			}
+			isChecked = iSettingsRepository.getIntOrDefault(NavStyle) == 1
 		}
 	)
 

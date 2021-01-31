@@ -14,10 +14,11 @@ import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AReaderSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.enums.MarkingTypes.*
+import app.shosetsu.common.enums.MarkingTypes
+import app.shosetsu.common.enums.MarkingTypes.ONSCROLL
+import app.shosetsu.common.enums.MarkingTypes.ONVIEW
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -66,11 +67,9 @@ class ReaderSettingsViewModel(
 					context.resources!!.getStringArray(R.array.sizes_with_none)
 				)
 			} catch (e: NotFoundException) {
-				reportExceptionUseCase.invoke(e.toHError())
+				reportExceptionUseCase(e.toHError())
 			}
-			iSettingsRepository.getInt(ReaderParagraphSpacing).handle {
-				spinnerValue { it }
-			}
+			spinnerValue { iSettingsRepository.getIntOrDefault(ReaderParagraphSpacing) }
 			onSpinnerItemSelected { _, _, position, _ ->
 				launchIO {
 					iSettingsRepository.setInt(ReaderParagraphSpacing, position)
@@ -86,16 +85,14 @@ class ReaderSettingsViewModel(
 					context.resources!!.getStringArray(R.array.sizes_no_none)
 				)
 			} catch (e: NotFoundException) {
-				reportExceptionUseCase.invoke(e.toHError())
+				reportExceptionUseCase(e.toHError())
 			}
-			iSettingsRepository.getFloat(ReaderTextSize).handle {
-				spinnerValue {
-					when (it) {
-						14f -> 0
-						17f -> 1
-						20f -> 2
-						else -> 0
-					}
+			spinnerValue {
+				when (iSettingsRepository.getFloatOrDefault(ReaderTextSize)) {
+					14f -> 0
+					17f -> 1
+					20f -> 2
+					else -> 0
 				}
 			}
 			onSpinnerItemSelected { adapterView, _, i, _ ->
@@ -124,11 +121,9 @@ class ReaderSettingsViewModel(
 					context.resources!!.getStringArray(R.array.sizes_with_none)
 				)
 			} catch (e: NotFoundException) {
-				reportExceptionUseCase.invoke(e.toHError())
+				reportExceptionUseCase(e.toHError())
 			}
-			iSettingsRepository.getInt(ReaderIndentSize).handle {
-				spinnerValue { it }
-			}
+			spinnerValue { iSettingsRepository.getIntOrDefault(ReaderIndentSize) }
 			onSpinnerItemSelected { _, _, position, _ ->
 				launchIO {
 					iSettingsRepository.setInt(ReaderIndentSize, position)
@@ -140,9 +135,7 @@ class ReaderSettingsViewModel(
 		},
 		switchSettingData(6) {
 			title { R.string.inverted_swipe }
-			iSettingsRepository.getBoolean(ReaderIsInvertedSwipe).handle {
-				isChecked = it
-			}
+			isChecked = iSettingsRepository.getBooleanOrDefault(ReaderIsInvertedSwipe)
 			onChecked { _, isChecked ->
 				launchIO {
 					iSettingsRepository.setBoolean(ReaderIsInvertedSwipe, isChecked)
@@ -151,9 +144,7 @@ class ReaderSettingsViewModel(
 		},
 		switchSettingData(7) {
 			title { R.string.tap_to_scroll }
-			iSettingsRepository.getBoolean(ReaderIsTapToScroll).handle {
-				isChecked = it
-			}
+			isChecked = iSettingsRepository.getBooleanOrDefault(ReaderIsTapToScroll)
 			onChecked { _, isChecked ->
 				launchIO {
 					iSettingsRepository.setBoolean(ReaderIsTapToScroll, isChecked)
@@ -164,9 +155,7 @@ class ReaderSettingsViewModel(
 		switchSettingData(6) {
 			title { R.string.mark_read_as_reading }
 			description { R.string.mark_read_as_reading_desc }
-			iSettingsRepository.getBoolean(ReaderMarkReadAsReading).handle {
-				isChecked = it
-			}
+			isChecked = iSettingsRepository.getBooleanOrDefault(ReaderMarkReadAsReading)
 			onChecked { _, isChecked ->
 				launchIO {
 					iSettingsRepository.setBoolean(ReaderMarkReadAsReading, isChecked)
@@ -185,15 +174,10 @@ class ReaderSettingsViewModel(
 			} catch (e: NotFoundException) {
 				reportExceptionUseCase.invoke(e.toHError())
 			}
-			iSettingsRepository.getString(ReadingMarkingType).handle {
-				valueOf(it).let {
-					spinnerValue {
-						when (it) {
-							ONSCROLL -> 1
-							ONVIEW -> 0
-						}
-					}
-
+			spinnerValue {
+				when (MarkingTypes.valueOf(iSettingsRepository.getStringOrDefault(ReadingMarkingType))) {
+					ONSCROLL -> 1
+					ONVIEW -> 0
 				}
 			}
 			onSpinnerItemSelected { _, _, position, _ ->
@@ -213,9 +197,7 @@ class ReaderSettingsViewModel(
 				"Instead of resuming the first chapter reading/unread, " +
 						"the app will open the first unread chapter"
 			}
-			iSettingsRepository.getBoolean(ChaptersResumeFirstUnread).handle {
-				isChecked = it
-			}
+			isChecked = iSettingsRepository.getBooleanOrDefault(ChaptersResumeFirstUnread)
 			onChecked { _, isChecked ->
 				launchIO {
 					iSettingsRepository.setBoolean(ChaptersResumeFirstUnread, isChecked)

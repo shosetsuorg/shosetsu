@@ -125,9 +125,7 @@ class DownloadSettingsViewModel(
 		},
 		switchSettingData(2) {
 			title { "Allow downloading on metered connection" }
-			iSettingsRepository.getBoolean(DownloadOnMeteredConnection).handle {
-				isChecked = it
-			}
+			isChecked = iSettingsRepository.getBooleanOrDefault(DownloadOnMeteredConnection)
 			onChecked { _, isChecked ->
 				launchIO {
 					iSettingsRepository.setBoolean(DownloadOnMeteredConnection, isChecked)
@@ -136,9 +134,7 @@ class DownloadSettingsViewModel(
 		},
 		switchSettingData(3) {
 			title { "Download on low battery" }
-			iSettingsRepository.getBoolean(DownloadOnLowBattery).handle {
-				isChecked = it
-			}
+			isChecked = iSettingsRepository.getBooleanOrDefault(DownloadOnLowBattery)
 			onChecked { _, isChecked ->
 				launchIO {
 					iSettingsRepository.setBoolean(DownloadOnLowBattery, isChecked)
@@ -147,9 +143,7 @@ class DownloadSettingsViewModel(
 		},
 		switchSettingData(4) {
 			title { "Download on low storage" }
-			iSettingsRepository.getBoolean(DownloadOnLowStorage).handle {
-				isChecked = it
-			}
+			isChecked = iSettingsRepository.getBooleanOrDefault(DownloadOnLowStorage)
 			onChecked { _, isChecked ->
 				launchIO {
 					iSettingsRepository.setBoolean(DownloadOnLowStorage, isChecked)
@@ -159,9 +153,7 @@ class DownloadSettingsViewModel(
 		switchSettingData(5) {
 			title { "Download only when idle" }
 			requiredVersion { android.os.Build.VERSION_CODES.M }
-			iSettingsRepository.getBoolean(DownloadOnlyWhenIdle).handle {
-				isChecked = it
-			}
+			isChecked = iSettingsRepository.getBooleanOrDefault(DownloadOnlyWhenIdle)
 			onChecked { _, isChecked ->
 				launchIO {
 					iSettingsRepository.setBoolean(DownloadOnlyWhenIdle, isChecked)
