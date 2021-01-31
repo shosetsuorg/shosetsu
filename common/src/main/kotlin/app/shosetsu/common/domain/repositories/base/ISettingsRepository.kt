@@ -67,20 +67,44 @@ interface ISettingsRepository {
 	suspend fun setFloat(key: SettingKey<Float>, value: Float): HResult<*>
 }
 
+/**
+ * Integrates with [unwrap] for an [HResult]
+ * If [unwrap] returns a null, will return to the [key]s [SettingKey.default]
+ */
 suspend fun ISettingsRepository.getLongOrDefault(key: SettingKey<Long>) =
 	getLong(key).unwrap() ?: key.default
 
+/**
+ * Integrates with [unwrap] for an [HResult]
+ * If [unwrap] returns a null, will return to the [key]s [SettingKey.default]
+ */
 suspend fun ISettingsRepository.getStringOrDefault(key: SettingKey<String>) =
 	getString(key).unwrap() ?: key.default
 
+/**
+ * Integrates with [unwrap] for an [HResult]
+ * If [unwrap] returns a null, will return to the [key]s [SettingKey.default]
+ */
 suspend fun ISettingsRepository.getIntOrDefault(key: SettingKey<Int>) =
 	getInt(key).unwrap() ?: key.default
 
+/**
+ * Integrates with [unwrap] for an [HResult]
+ * If [unwrap] returns a null, will return to the [key]s [SettingKey.default]
+ */
 suspend fun ISettingsRepository.getBooleanOrDefault(key: SettingKey<Boolean>) =
 	getBoolean(key).unwrap() ?: key.default
 
+/**
+ * Integrates with [unwrap] for an [HResult]
+ * If [unwrap] returns a null, will return to the [key]s [SettingKey.default]
+ */
 suspend fun ISettingsRepository.getStringSetOrDefault(key: SettingKey<Set<String>>) =
 	getStringSet(key).unwrap() ?: key.default
 
+/**
+ * Integrates with [unwrap] for an [HResult]
+ * If [unwrap] returns a null, will return to the [key]s [SettingKey.default]
+ */
 suspend fun ISettingsRepository.getFloatOrDefault(key: SettingKey<Float>) =
 	getFloat(key).unwrap() ?: key.default
