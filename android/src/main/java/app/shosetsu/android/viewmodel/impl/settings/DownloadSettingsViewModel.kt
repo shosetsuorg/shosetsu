@@ -7,6 +7,7 @@ import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.ADownloadSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -167,6 +168,16 @@ class DownloadSettingsViewModel(
 				}
 			}
 		},
+		switchSettingData(6) {
+			title { "Bookmarked novel on download" }
+			description { "If a novel is not bookmarked when a chapter is downloaded, this will" }
+			isChecked = iSettingsRepository.getBooleanOrDefault(BookmarkOnDownload)
+			onChecked { _, isChecked ->
+				launchIO {
+					iSettingsRepository.setBoolean(BookmarkOnDownload, isChecked)
+				}
+			}
+		}
 	)
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {

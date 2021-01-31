@@ -75,6 +75,9 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 	object DownloadOnlyWhenIdle : SettingKey<Boolean>("downloadIdle", false)
 
+	/** Bookmark a novel if it is not bookmarked when a chapter from it is downloaded */
+	object BookmarkOnDownload : SettingKey<Boolean>("bookmarkOnDownload", false)
+
 	// Update options
 	object IsDownloadOnUpdate : SettingKey<Boolean>("isDownloadOnUpdate", false)
 	object OnlyUpdateOngoing : SettingKey<Boolean>("onlyUpdateOngoing", false)

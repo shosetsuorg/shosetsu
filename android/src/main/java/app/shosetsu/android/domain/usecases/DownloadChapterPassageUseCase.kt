@@ -1,12 +1,15 @@
 package app.shosetsu.android.domain.usecases
 
+import app.shosetsu.android.common.ext.ifSo
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.view.uimodels.model.ChapterUI
+import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.DownloadEntity
 import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
-import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.dto.handle
 
 /*
  * This file is part of shosetsu.
@@ -36,23 +39,30 @@ class DownloadChapterPassageUseCase(
 	private val novelRepo: INovelsRepository,
 	private val downloadsRepository: IDownloadsRepository,
 	private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
+	private var iSettingsRepository: ISettingsRepository
 ) {
 	suspend operator fun invoke(chapterUI: ChapterEntity) {
-		novelRepo.getNovel(chapterUI.novelID).let {
-			if (it is HResult.Success) {
-				val novel = it.data
-				downloadsRepository.addDownload(
-					DownloadEntity(
-						chapterUI.id!!,
-						chapterUI.novelID,
-						chapterUI.url,
-						chapterUI.title,
-						novel.title,
-						chapterUI.extensionID
-					)
+		novelRepo.getNovel(chapterUI.novelID).handle { novel ->
+			downloadsRepository.addDownload(
+				DownloadEntity(
+					chapterUI.id!!,
+					chapterUI.novelID,
+					chapterUI.url,
+					chapterUI.title,
+					novel.title,
+					chapterUI.extensionID
 				)
-				startDownloadWorkerUseCase()
-			}
+			)
+			startDownloadWorkerUseCase()
+
+			if (!novel.bookmarked)
+				iSettingsRepository.getBoolean(SettingKey.BookmarkOnDownload).handle {
+					it ifSo novelRepo.update(
+						novel.copy(
+							bookmarked = true
+						)
+					)
+				}
 		}
 	}
 
