@@ -7,7 +7,6 @@ import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.ADownloadSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -106,69 +105,34 @@ class DownloadSettingsViewModel(
 		textSettingData(1) {
 			title { R.string.download_directory }
 			iSettingsRepository.getString(CustomExportDirectory).handle {
-				text {
-					it
-				}
+				text { it }
 			}
 			//onClicked { performFileSearch() }
 		},
 		switchSettingData(3) {
 			title { R.string.download_chapter_updates }
-			iSettingsRepository.getBoolean(IsDownloadOnUpdate).handle {
-				isChecked = it
-			}
-			onChecked { _, isChecked ->
-				launchIO {
-					iSettingsRepository.setBoolean(IsDownloadOnUpdate, isChecked)
-				}
-			}
+			checkSettingValue(IsDownloadOnUpdate)
 		},
 		switchSettingData(2) {
 			title { "Allow downloading on metered connection" }
-			isChecked = iSettingsRepository.getBooleanOrDefault(DownloadOnMeteredConnection)
-			onChecked { _, isChecked ->
-				launchIO {
-					iSettingsRepository.setBoolean(DownloadOnMeteredConnection, isChecked)
-				}
-			}
+			checkSettingValue(DownloadOnMeteredConnection)
 		},
 		switchSettingData(3) {
 			title { "Download on low battery" }
-			isChecked = iSettingsRepository.getBooleanOrDefault(DownloadOnLowBattery)
-			onChecked { _, isChecked ->
-				launchIO {
-					iSettingsRepository.setBoolean(DownloadOnLowBattery, isChecked)
-				}
-			}
+			checkSettingValue(DownloadOnLowBattery)
 		},
 		switchSettingData(4) {
 			title { "Download on low storage" }
-			isChecked = iSettingsRepository.getBooleanOrDefault(DownloadOnLowStorage)
-			onChecked { _, isChecked ->
-				launchIO {
-					iSettingsRepository.setBoolean(DownloadOnLowStorage, isChecked)
-				}
-			}
+			checkSettingValue(DownloadOnLowStorage)
 		},
 		switchSettingData(5) {
 			title { "Download only when idle" }
 			requiredVersion { android.os.Build.VERSION_CODES.M }
-			isChecked = iSettingsRepository.getBooleanOrDefault(DownloadOnlyWhenIdle)
-			onChecked { _, isChecked ->
-				launchIO {
-					iSettingsRepository.setBoolean(DownloadOnlyWhenIdle, isChecked)
-				}
-			}
+			checkSettingValue(DownloadOnlyWhenIdle)
 		},
 		switchSettingData(6) {
 			title { "Bookmarked novel on download" }
 			description { "If a novel is not bookmarked when a chapter is downloaded, this will" }
-			isChecked = iSettingsRepository.getBooleanOrDefault(BookmarkOnDownload)
-			onChecked { _, isChecked ->
-				launchIO {
-					iSettingsRepository.setBoolean(BookmarkOnDownload, isChecked)
-				}
-			}
 		}
 	)
 

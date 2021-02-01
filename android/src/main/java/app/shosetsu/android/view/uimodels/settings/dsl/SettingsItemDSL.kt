@@ -60,7 +60,7 @@ inline fun SettingsItemData.title(value: SettingsItemData.() -> Any): Unit =
 		when (it) {
 			is String -> titleText = it
 			is Int -> titleID = it
-			else -> throw IllegalArgumentException("Input must be either an int or string")
+			else -> titleText = it.toString()
 		}
 	}
 
@@ -70,7 +70,7 @@ inline fun SettingsItemData.description(value: SettingsItemData.() -> Any): Unit
 		when (it) {
 			is String -> descText = it
 			is Int -> descID = it
-			else -> throw IllegalArgumentException("Input must be either an int or string")
+			else -> titleText = it.toString()
 		}
 	}
 

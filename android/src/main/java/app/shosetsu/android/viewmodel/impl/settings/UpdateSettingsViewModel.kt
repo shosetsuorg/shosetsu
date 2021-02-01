@@ -7,7 +7,6 @@ import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AUpdateSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
 import app.shosetsu.common.domain.repositories.base.getIntOrDefault
 import app.shosetsu.common.dto.HResult
 
@@ -92,61 +91,29 @@ class UpdateSettingsViewModel(
 		// Download on update
 		switchSettingData(0) {
 			title { "Download on update" }
-			isChecked = iSettingsRepository.getBooleanOrDefault(SettingKey.IsDownloadOnUpdate)
-			onChecked { _, isChecked ->
-				launchIO {
-					iSettingsRepository.setBoolean(SettingKey.IsDownloadOnUpdate, isChecked)
-				}
-			}
+			checkSettingValue(SettingKey.IsDownloadOnUpdate)
 		},
 		// Update only ongoing
 		switchSettingData(1) {
 			title { "Only update ongoing" }
-			isChecked = iSettingsRepository.getBooleanOrDefault(SettingKey.OnlyUpdateOngoing)
-			onChecked { _, isChecked ->
-				launchIO {
-					iSettingsRepository.setBoolean(SettingKey.OnlyUpdateOngoing, isChecked)
-				}
-			}
+			checkSettingValue(SettingKey.OnlyUpdateOngoing)
 		},
 		switchSettingData(2) {
 			title { "Allow updating on metered connection" }
-			isChecked =
-				iSettingsRepository.getBooleanOrDefault(SettingKey.UpdateOnMeteredConnection)
-			onChecked { _, isChecked ->
-				launchIO {
-					iSettingsRepository.setBoolean(SettingKey.UpdateOnMeteredConnection, isChecked)
-				}
-			}
-
+			checkSettingValue(SettingKey.UpdateOnMeteredConnection)
 		},
 		switchSettingData(3) {
 			title { "Update on low battery" }
-			isChecked = iSettingsRepository.getBooleanOrDefault(SettingKey.UpdateOnLowBattery)
-			onChecked { _, isChecked ->
-				launchIO {
-					iSettingsRepository.setBoolean(SettingKey.UpdateOnLowBattery, isChecked)
-				}
-			}
+			checkSettingValue(SettingKey.UpdateOnLowBattery)
 		},
 		switchSettingData(4) {
 			title { "Update on low storage" }
-			isChecked = iSettingsRepository.getBooleanOrDefault(SettingKey.UpdateOnLowStorage)
-			onChecked { _, isChecked ->
-				launchIO {
-					iSettingsRepository.setBoolean(SettingKey.UpdateOnLowStorage, isChecked)
-				}
-			}
+			checkSettingValue(SettingKey.UpdateOnLowStorage)
 		},
 		switchSettingData(5) {
 			title { "Update only when idle" }
 			requiredVersion { android.os.Build.VERSION_CODES.M }
-			isChecked = iSettingsRepository.getBooleanOrDefault(SettingKey.UpdateOnlyWhenIdle)
-			onChecked { _, isChecked ->
-				launchIO {
-					iSettingsRepository.setBoolean(SettingKey.UpdateOnlyWhenIdle, isChecked)
-				}
-			}
+			checkSettingValue(SettingKey.UpdateOnlyWhenIdle)
 		}
 	)
 

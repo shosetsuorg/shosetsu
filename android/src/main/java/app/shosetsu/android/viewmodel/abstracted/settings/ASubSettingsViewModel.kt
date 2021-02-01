@@ -1,12 +1,21 @@
 package app.shosetsu.android.viewmodel.abstracted.settings
 
+import android.widget.NumberPicker
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.view.uimodels.settings.NumberPickerSettingData
+import app.shosetsu.android.view.uimodels.settings.SpinnerSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
+import app.shosetsu.android.view.uimodels.settings.base.ToggleableStateSettingData
+import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
+import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
+import app.shosetsu.common.domain.repositories.base.getIntOrDefault
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.loading
 import app.shosetsu.common.dto.successResult
@@ -38,9 +47,63 @@ abstract class ASubSettingsViewModel(
 ) : ShosetsuViewModel(), ErrorReportingViewModel {
 	abstract suspend fun settings(): List<SettingsItemData>
 
+	@SettingsItemDSL
+	suspend fun NumberPickerSettingData.settingValue(
+		key: SettingKey<Int>,
+		action: suspend (
+			@ParameterName("picker") NumberPicker?,
+			@ParameterName("oldVal") Int,
+			@ParameterName("newVal") Int,
+		) -> Unit = { _, _, newVal ->
+			iSettingsRepository.setInt(key, newVal)
+		},
+	) {
+		initalValue { iSettingsRepository.getIntOrDefault(key) }
+		onValuePicked { picker, oldVal, newVal ->
+			launchIO { action(picker, oldVal, newVal) }
+		}
+	}
+
+	/**
+	 * Generic function for [SpinnerSettingData]
+	 */
+	@SettingsItemDSL
+	suspend inline fun SpinnerSettingData.spinnerSettingValue(
+		key: SettingKey<Int>
+	) {
+		spinnerValue { iSettingsRepository.getIntOrDefault(key) }
+		onSpinnerItemSelected { _, _, position, _ ->
+			launchIO {
+				iSettingsRepository.setInt(key, position)
+			}
+		}
+	}
+
+	/**
+	 * Generic function for [ToggleableStateSettingData]
+	 */
+	@SettingsItemDSL
+	suspend inline fun ToggleableStateSettingData.checkSettingValue(
+		key: SettingKey<Boolean>
+	) {
+		isChecked = iSettingsRepository.getBooleanOrDefault(key)
+		onChecked { _, isChecked ->
+			launchIO {
+				iSettingsRepository.setBoolean(key, isChecked)
+			}
+		}
+	}
+
+	@SettingsItemDSL
+	inline fun SpinnerSettingData.spinnerValue(
+		value: SpinnerSettingData.() -> Int,
+	): Unit = value().let { spinnerSelection = it }
+
 	fun getSettings(): LiveData<HResult<List<SettingsItemData>>> =
 		liveData(context = viewModelScope.coroutineContext + IO) {
 			emit(loading())
 			emit(successResult(settings()))
 		}
+
+
 }

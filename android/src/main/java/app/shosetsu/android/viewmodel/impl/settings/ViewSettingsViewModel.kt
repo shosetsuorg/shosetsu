@@ -3,7 +3,6 @@ package app.shosetsu.android.viewmodel.impl.settings
 import android.content.Context
 import android.content.res.Resources
 import android.widget.ArrayAdapter
-import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
@@ -46,34 +45,21 @@ class ViewSettingsViewModel(
 		numberPickerSettingData(1) {
 			title { R.string.columns_of_novel_listing_p }
 			description { (R.string.columns_zero_automatic) }
-			initalValue { iSettingsRepository.getIntOrDefault(ChapterColumnsInPortait) }
-			onValuePicked { _, _, newVal ->
-				launchIO {
-					iSettingsRepository.setInt(ChapterColumnsInPortait, newVal)
-				}
-			}
+			settingValue(ChapterColumnsInPortait)
 			range { 0 to 10 }
 		},
 		numberPickerSettingData(2) {
 			title { R.string.columns_of_novel_listing_h }
 			description { (R.string.columns_zero_automatic) }
-			initalValue { iSettingsRepository.getIntOrDefault(ChapterColumnsInLandscape) }
-			onValuePicked { _, _, newVal ->
-				launchIO {
-					iSettingsRepository.setInt(ChapterColumnsInLandscape, newVal)
-				}
-			}
+			settingValue(ChapterColumnsInLandscape)
 			range { 0 to 10 }
 		},
 		spinnerSettingData(3) {
 			title { R.string.novel_card_type_selector_title }
 			description { R.string.novel_card_type_selector_desc }
-			spinnerValue { iSettingsRepository.getIntOrDefault(SelectedNovelCardType) }
-			onSpinnerItemSelected { _, _, position, _ ->
-				launchIO {
-					iSettingsRepository.setInt(SelectedNovelCardType, position)
-				}
-			}
+
+			spinnerSettingValue(SelectedNovelCardType)
+
 			try {
 				arrayAdapter = ArrayAdapter(
 					context,

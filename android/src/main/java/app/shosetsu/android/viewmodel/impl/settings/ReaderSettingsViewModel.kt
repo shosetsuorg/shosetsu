@@ -14,7 +14,9 @@ import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AReaderSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
-import app.shosetsu.common.domain.repositories.base.*
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.domain.repositories.base.getFloatOrDefault
+import app.shosetsu.common.domain.repositories.base.getStringOrDefault
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.MarkingTypes
 import app.shosetsu.common.enums.MarkingTypes.ONSCROLL
@@ -69,12 +71,7 @@ class ReaderSettingsViewModel(
 			} catch (e: NotFoundException) {
 				reportExceptionUseCase(e.toHError())
 			}
-			spinnerValue { iSettingsRepository.getIntOrDefault(ReaderParagraphSpacing) }
-			onSpinnerItemSelected { _, _, position, _ ->
-				launchIO {
-					iSettingsRepository.setInt(ReaderParagraphSpacing, position)
-				}
-			}
+			spinnerSettingValue(ReaderParagraphSpacing)
 		},
 		spinnerSettingData(3) {
 			title { R.string.text_size }
@@ -123,46 +120,25 @@ class ReaderSettingsViewModel(
 			} catch (e: NotFoundException) {
 				reportExceptionUseCase(e.toHError())
 			}
-			spinnerValue { iSettingsRepository.getIntOrDefault(ReaderIndentSize) }
-			onSpinnerItemSelected { _, _, position, _ ->
-				launchIO {
-					iSettingsRepository.setInt(ReaderIndentSize, position)
-				}
-			}
+			spinnerSettingValue(ReaderIndentSize)
 		},
 		customBottomSettingData(5) {
 			title { R.string.reader_theme }
 		},
 		switchSettingData(6) {
 			title { R.string.inverted_swipe }
-			isChecked = iSettingsRepository.getBooleanOrDefault(ReaderIsInvertedSwipe)
-			onChecked { _, isChecked ->
-				launchIO {
-					iSettingsRepository.setBoolean(ReaderIsInvertedSwipe, isChecked)
-				}
-			}
+			description { "Invert the chapter swipe" }
+			checkSettingValue(ReaderIsInvertedSwipe)
 		},
 		switchSettingData(7) {
 			title { R.string.tap_to_scroll }
-			isChecked = iSettingsRepository.getBooleanOrDefault(ReaderIsTapToScroll)
-			onChecked { _, isChecked ->
-				launchIO {
-					iSettingsRepository.setBoolean(ReaderIsTapToScroll, isChecked)
-				}
-			}
+			checkSettingValue(ReaderIsTapToScroll)
 		},
-
 		switchSettingData(6) {
 			title { R.string.mark_read_as_reading }
 			description { R.string.mark_read_as_reading_desc }
-			isChecked = iSettingsRepository.getBooleanOrDefault(ReaderMarkReadAsReading)
-			onChecked { _, isChecked ->
-				launchIO {
-					iSettingsRepository.setBoolean(ReaderMarkReadAsReading, isChecked)
-				}
-			}
+			checkSettingValue(ReaderMarkReadAsReading)
 		},
-
 		spinnerSettingData(0) {
 			title { R.string.marking_mode }
 			try {
@@ -197,12 +173,7 @@ class ReaderSettingsViewModel(
 				"Instead of resuming the first chapter reading/unread, " +
 						"the app will open the first unread chapter"
 			}
-			isChecked = iSettingsRepository.getBooleanOrDefault(ChaptersResumeFirstUnread)
-			onChecked { _, isChecked ->
-				launchIO {
-					iSettingsRepository.setBoolean(ChaptersResumeFirstUnread, isChecked)
-				}
-			}
+			checkSettingValue(ChaptersResumeFirstUnread)
 		},
 	)
 
