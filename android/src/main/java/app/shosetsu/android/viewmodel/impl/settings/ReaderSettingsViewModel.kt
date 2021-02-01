@@ -85,7 +85,7 @@ class ReaderSettingsViewModel(
 				reportExceptionUseCase(e.toHError())
 			}
 			spinnerValue {
-				when (iSettingsRepository.getFloatOrDefault(ReaderTextSize)) {
+				when (settingsRepo.getFloatOrDefault(ReaderTextSize)) {
 					14f -> 0
 					17f -> 1
 					20f -> 2
@@ -102,7 +102,7 @@ class ReaderSettingsViewModel(
 						2 -> size = 20
 					}
 					launchIO {
-						iSettingsRepository.setFloat(ReaderTextSize, size.toFloat())
+						settingsRepo.setFloat(ReaderTextSize, size.toFloat())
 					}
 
 					adapterView?.setSelection(i)
@@ -151,7 +151,7 @@ class ReaderSettingsViewModel(
 				reportExceptionUseCase.invoke(e.toHError())
 			}
 			spinnerValue {
-				when (MarkingTypes.valueOf(iSettingsRepository.getStringOrDefault(ReadingMarkingType))) {
+				when (MarkingTypes.valueOf(settingsRepo.getStringOrDefault(ReadingMarkingType))) {
 					ONSCROLL -> 1
 					ONVIEW -> 0
 				}
@@ -159,8 +159,8 @@ class ReaderSettingsViewModel(
 			onSpinnerItemSelected { _, _, position, _ ->
 				launchIO {
 					when (position) {
-						0 -> iSettingsRepository.setString(ReadingMarkingType, ONVIEW.name)
-						1 -> iSettingsRepository.setString(ReadingMarkingType, ONSCROLL.name)
+						0 -> settingsRepo.setString(ReadingMarkingType, ONVIEW.name)
+						1 -> settingsRepo.setString(ReadingMarkingType, ONSCROLL.name)
 						else -> Log.e("MarkingMode", "UnknownType")
 					}
 				}

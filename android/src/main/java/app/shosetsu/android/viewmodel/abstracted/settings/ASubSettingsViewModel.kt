@@ -43,7 +43,7 @@ import kotlinx.coroutines.Dispatchers.IO
  * 31 / 08 / 2020
  */
 abstract class ASubSettingsViewModel(
-	val iSettingsRepository: ISettingsRepository
+	val settingsRepo: ISettingsRepository
 ) : ShosetsuViewModel(), ErrorReportingViewModel {
 	abstract suspend fun settings(): List<SettingsItemData>
 
@@ -55,10 +55,10 @@ abstract class ASubSettingsViewModel(
 			@ParameterName("oldVal") Int,
 			@ParameterName("newVal") Int,
 		) -> Unit = { _, _, newVal ->
-			iSettingsRepository.setInt(key, newVal)
+			settingsRepo.setInt(key, newVal)
 		},
 	) {
-		initalValue { iSettingsRepository.getIntOrDefault(key) }
+		initalValue { settingsRepo.getIntOrDefault(key) }
 		onValuePicked { picker, oldVal, newVal ->
 			launchIO { action(picker, oldVal, newVal) }
 		}
@@ -71,10 +71,10 @@ abstract class ASubSettingsViewModel(
 	suspend inline fun SpinnerSettingData.spinnerSettingValue(
 		key: SettingKey<Int>
 	) {
-		spinnerValue { iSettingsRepository.getIntOrDefault(key) }
+		spinnerValue { settingsRepo.getIntOrDefault(key) }
 		onSpinnerItemSelected { _, _, position, _ ->
 			launchIO {
-				iSettingsRepository.setInt(key, position)
+				settingsRepo.setInt(key, position)
 			}
 		}
 	}
@@ -86,10 +86,10 @@ abstract class ASubSettingsViewModel(
 	suspend inline fun ToggleableStateSettingData.checkSettingValue(
 		key: SettingKey<Boolean>
 	) {
-		isChecked = iSettingsRepository.getBooleanOrDefault(key)
+		isChecked = settingsRepo.getBooleanOrDefault(key)
 		onChecked { _, isChecked ->
 			launchIO {
-				iSettingsRepository.setBoolean(key, isChecked)
+				settingsRepo.setBoolean(key, isChecked)
 			}
 		}
 	}

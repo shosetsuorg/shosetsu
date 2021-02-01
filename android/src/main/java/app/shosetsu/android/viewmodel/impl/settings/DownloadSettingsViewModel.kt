@@ -41,7 +41,7 @@ class DownloadSettingsViewModel(
 			title { "Download thread pool size" }
 			description { "How many simultaneous downloads occur at once" }
 			range { 1F to 6F }
-			iSettingsRepository.getInt(DownloadThreadPool).handle {
+			settingsRepo.getInt(DownloadThreadPool).handle {
 				progressValue = it.toFloat()
 			}
 			showSectionMark = true
@@ -65,7 +65,7 @@ class DownloadSettingsViewModel(
 			}
 			onProgressChanged { _, progress, _, fromUser ->
 				if (fromUser) launchIO {
-					iSettingsRepository.setInt(DownloadThreadPool, progress)
+					settingsRepo.setInt(DownloadThreadPool, progress)
 				}
 			}
 		},
@@ -74,7 +74,7 @@ class DownloadSettingsViewModel(
 			title { "Download threads per Extension" }
 			description { "How many simultaneous downloads per extension that can occur at once" }
 			range { 1F to 6F }
-			iSettingsRepository.getInt(DownloadExtThreads).handle {
+			settingsRepo.getInt(DownloadExtThreads).handle {
 				progressValue = it.toFloat()
 			}
 			showSectionMark = true
@@ -98,13 +98,13 @@ class DownloadSettingsViewModel(
 			}
 			onProgressChanged { _, progress, _, fromUser ->
 				if (fromUser) launchIO {
-					iSettingsRepository.setInt(DownloadExtThreads, progress)
+					settingsRepo.setInt(DownloadExtThreads, progress)
 				}
 			}
 		},
 		textSettingData(1) {
 			title { R.string.download_directory }
-			iSettingsRepository.getString(CustomExportDirectory).handle {
+			settingsRepo.getString(CustomExportDirectory).handle {
 				text { it }
 			}
 			//onClicked { performFileSearch() }

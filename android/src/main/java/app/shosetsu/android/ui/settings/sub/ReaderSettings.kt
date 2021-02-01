@@ -67,7 +67,7 @@ class ReaderSettings : SettingsSubController() {
 				recycler.adapter = fastAdapter
 				fastAdapter.setOnClickListener { _, _, item, _ ->
 					launchIO {
-						viewModel.iSettingsRepository.setInt(
+						viewModel.settingsRepo.setInt(
 							SettingKey.ReaderTheme,
 							item.identifier.toInt()
 						)
@@ -89,7 +89,7 @@ class ReaderSettings : SettingsSubController() {
 				viewModel.getReaderThemes().observe(this@ReaderSettings) { list ->
 					itemAdapter.clear()
 					launchIO {
-						val v = viewModel.iSettingsRepository.getInt(SettingKey.ReaderTheme)
+						val v = viewModel.settingsRepo.getInt(SettingKey.ReaderTheme)
 							.transmogrify { it }!!
 						list.find {
 							it.identifier == v.toLong()

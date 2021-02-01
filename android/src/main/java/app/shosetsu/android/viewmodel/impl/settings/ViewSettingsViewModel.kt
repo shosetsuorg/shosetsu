@@ -73,7 +73,7 @@ class ViewSettingsViewModel(
 		switchSettingData(4) {
 			title { "Legacy navigation" }
 			description { "Disableds bottom navigation, enables drawer" }
-			isChecked = iSettingsRepository.getIntOrDefault(NavStyle) == 1
+			isChecked = settingsRepo.getIntOrDefault(NavStyle) == 1
 		}
 	)
 

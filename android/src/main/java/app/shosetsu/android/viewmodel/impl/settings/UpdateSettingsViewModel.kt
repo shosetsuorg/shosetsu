@@ -41,7 +41,7 @@ class UpdateSettingsViewModel(
 		seekBarSettingData(6) {
 			title { "Update frequency" }
 			range { 0F to 6F }
-			progressValue = when (iSettingsRepository.getIntOrDefault(SettingKey.UpdateCycle)) {
+			progressValue = when (settingsRepo.getIntOrDefault(SettingKey.UpdateCycle)) {
 				1 -> 0F
 				2 -> 1F
 				4 -> 2F
@@ -63,7 +63,7 @@ class UpdateSettingsViewModel(
 			onProgressChanged { _, progress, _, fromUser ->
 				if (fromUser) {
 					launchIO {
-						iSettingsRepository.setInt(
+						settingsRepo.setInt(
 							SettingKey.UpdateCycle, when (progress) {
 								0 -> 1
 								1 -> 2
