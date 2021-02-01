@@ -43,68 +43,62 @@ import kotlinx.coroutines.flow.Flow
  */
 class ExtensionsRepository(
 	private val memorySource: IMemExtensionsDataSource,
-	private val databaseSource: IDBExtensionsDataSource,
+	private val dbSource: IDBExtensionsDataSource,
 	private val fileSource: IFileExtensionDataSource,
 	private val remoteSource: IRemoteExtensionDataSource,
-	private val repositorySource: IDBExtRepoDataSource,
+	private val dbRepoSource: IDBExtRepoDataSource,
 	private val remoteCatalogueDataSource: IRemoteCatalogueDataSource,
 ) : IExtensionsRepository {
 	override fun loadExtensionEntitiesFLow(): Flow<HResult<List<ExtensionEntity>>> =
-		databaseSource.loadExtensions()
+		dbSource.loadExtensions()
 
 
 	override fun getExtensionEntityFlow(id: Int): Flow<HResult<ExtensionEntity>> =
-		databaseSource.loadExtensionLive(id)
+		dbSource.loadExtensionLive(id)
 
 	override suspend fun getExtensionEntity(id: Int): HResult<ExtensionEntity> =
-		databaseSource.loadExtension(id)
+		dbSource.loadExtension(id)
 
 	override suspend fun getExtensionEntities(repoID: Int): HResult<List<ExtensionEntity>> =
-		databaseSource.getExtensions(repoID)
+		dbSource.getExtensions(repoID)
 
-	override suspend fun installExtension(extensionEntity: ExtensionEntity): HResult<*> {
-		val repo = repositorySource.loadRepository(extensionEntity.repoID)
-		if (repo is HResult.Success)
-			when (val result = remoteSource.downloadExtension(
-				repo.data,
+	override suspend fun installExtension(extensionEntity: ExtensionEntity): HResult<*> =
+		dbRepoSource.loadRepository(extensionEntity.repoID).transform { repo ->
+			remoteSource.downloadExtension(
+				repo,
 				extensionEntity
-			)) {
-				is HResult.Success -> {
-					try {
-						val formatter = LuaExtension(result.data)
+			).transform { extensionContent ->
+				try {
+					val formatter = LuaExtension(extensionContent)
 
-						// Write to storage/cache
-						memorySource.putExtensionInMemory(formatter)
-						fileSource.writeExtension(extensionEntity.fileName, result.data)
+					// Write to storage/cache
+					memorySource.putExtensionInMemory(formatter)
+					fileSource.writeExtension(extensionEntity.fileName, extensionContent)
 
-						// Update database info
-						formatter.exMetaData.let { meta ->
-							extensionEntity.installedVersion = meta.version
-							extensionEntity.repositoryVersion = meta.version
-						}
-						extensionEntity.name = formatter.name
-						extensionEntity.imageURL = formatter.imageURL
-						extensionEntity.installed = true
-						extensionEntity.enabled = true
-						databaseSource.updateExtension(extensionEntity)
-						return successResult("")
-					} catch (e: IllegalArgumentException) {
-						return errorResult(ERROR_LUA_BROKEN, e)
-					} catch (e: Exception) {
-						return errorResult(ERROR_GENERAL, e)
+					// Update database info
+					formatter.exMetaData.let { meta ->
+						extensionEntity.installedVersion = meta.version
+						extensionEntity.repositoryVersion = meta.version
 					}
-				}
-				is HResult.Error -> {
-					return result
+					extensionEntity.name = formatter.name
+					extensionEntity.imageURL = formatter.imageURL
+					extensionEntity.installed = true
+					extensionEntity.enabled = true
+					dbSource.updateExtension(extensionEntity)
+					successResult("")
+				} catch (e: IllegalArgumentException) {
+					errorResult(ERROR_LUA_BROKEN, e)
+				} catch (e: Exception) {
+					errorResult(ERROR_GENERAL, e)
 				}
 			}
-		return emptyResult()
-	}
+		}
+
 
 	override suspend fun uninstallExtension(extensionEntity: ExtensionEntity): HResult<*> =
 		memorySource.removeExtensionFromMemory(extensionEntity.id) and
 				fileSource.deleteExtension(extensionEntity.fileName) and
-				databaseSource.updateExtension(
+				dbSource.updateExtension(
 					extensionEntity.copy(
 						enabled = false,
 						installed = false,
@@ -113,16 +107,17 @@ class ExtensionsRepository(
 				)
 
 	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<*> =
-		databaseSource.insertOrUpdate(extensionEntity)
+		dbSource.insertOrUpdate(extensionEntity)
 
 	override suspend fun updateExtensionEntity(extensionEntity: ExtensionEntity): HResult<*> =
-		databaseSource.updateExtension(extensionEntity)
+		dbSource.updateExtension(extensionEntity)
 
 	override suspend fun getIExtension(extensionEntity: ExtensionEntity): HResult<IExtension> {
-		memorySource.loadExtensionFromMemory(extensionEntity.id)
-			.takeIf { it is HResult.Success }?.let { return it }
-
+		memorySource.loadExtensionFromMemory(extensionEntity.id).handle {
+			return successResult(it)
+		}
 		val fileResult = fileSource.loadExtension(extensionEntity.fileName)
+
 		if (fileResult !is HResult.Success)
 			return errorResult(ErrorKeys.ERROR_NOT_FOUND, "Extension file not found")
 
@@ -134,30 +129,26 @@ class ExtensionsRepository(
 	}
 
 	override suspend fun getIExtension(extensionID: Int): HResult<IExtension> =
-		databaseSource.loadExtension(extensionID).transform { getIExtension(it) }
+		dbSource.loadExtension(extensionID).transform { getIExtension(it) }
 
 	override fun loadStrippedExtensionEntityFlow(): Flow<HResult<List<StrippedExtensionEntity>>> =
-		databaseSource.loadPoweredExtensionsCards()
+		dbSource.loadPoweredExtensionsCards()
 
 
 	override suspend fun getCatalogueSearch(
 		ext: IExtension,
 		query: String,
 		data: Map<Int, Any>
-	): HResult<List<Novel.Listing>> =
-		remoteCatalogueDataSource.search(
-			ext, query, data
-		)
+	): HResult<List<Novel.Listing>> = remoteCatalogueDataSource.search(ext, query, data)
 
 	override suspend fun getCatalogueData(
 		ext: IExtension,
 		listing: Int,
 		data: Map<Int, Any>,
-	): HResult<List<Novel.Listing>> =
-		remoteCatalogueDataSource.loadListing(ext, listing, data)
+	): HResult<List<Novel.Listing>> = remoteCatalogueDataSource.loadListing(ext, listing, data)
 
 	override suspend fun removeExtension(extensionEntity: ExtensionEntity): HResult<*> =
-		databaseSource.deleteExtension(extensionEntity) and
+		dbSource.deleteExtension(extensionEntity) and
 				fileSource.deleteExtension(extensionEntity.fileName) and
 				memorySource.removeExtensionFromMemory(extensionEntity.id)
 }
