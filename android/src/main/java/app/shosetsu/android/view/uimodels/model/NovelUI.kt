@@ -66,25 +66,6 @@ data class NovelUI(
 
 	var status: Novel.Status,
 ) : BaseRecyclerItem<ViewHolder>(), Convertible<NovelEntity> {
-	companion object {
-		fun instance() = NovelUI(
-			id = -1,
-			novelURL = "",
-			extID = -1,
-			bookmarked = false,
-			readerType = -1,
-			title = "",
-			imageURL = "",
-			description = "",
-			loaded = true,
-			language = "",
-			genres = listOf(),
-			authors = listOf(),
-			artists = listOf(),
-			tags = listOf(),
-			status = Novel.Status.UNKNOWN
-		)
-	}
 
 	override val layoutRes: Int = R.layout.controller_novel_info_header
 	override val type: Int = R.layout.controller_novel_info_header
@@ -93,9 +74,7 @@ data class NovelUI(
 	 * Identifier made negative to avoid conflicts with [ChapterUI]
 	 */
 	override var identifier: Long = -1091
-
 	override var isSelectable: Boolean = false
-
 	override fun convertTo(): NovelEntity = NovelEntity(
 		id = id,
 		url = novelURL,
@@ -115,7 +94,6 @@ data class NovelUI(
 	)
 
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
-
 	class ViewHolder(view: View) : BindViewHolder<NovelUI, ControllerNovelInfoHeaderBinding>(view) {
 		override val binding: ControllerNovelInfoHeaderBinding by lazy {
 			ControllerNovelInfoHeaderBinding.bind(view)
@@ -190,5 +168,25 @@ data class NovelUI(
 			novelSite.text = null
 			novelTitle.text = null
 		}
+	}
+
+	companion object {
+		fun instance() = NovelUI(
+			id = -1,
+			novelURL = "",
+			extID = -1,
+			bookmarked = false,
+			readerType = -1,
+			title = "",
+			imageURL = "",
+			description = "",
+			loaded = true,
+			language = "",
+			genres = listOf(),
+			authors = listOf(),
+			artists = listOf(),
+			tags = listOf(),
+			status = Novel.Status.UNKNOWN
+		)
 	}
 }

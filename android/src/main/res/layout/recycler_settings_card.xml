@@ -13,7 +13,7 @@
     app:cardForegroundColor="@android:color/transparent">
 
     <TextView
-        android:id="@+id/recycler_settings_title"
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="16dp"

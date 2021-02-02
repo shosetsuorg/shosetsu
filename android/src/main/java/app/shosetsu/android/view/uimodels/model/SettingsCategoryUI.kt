@@ -41,6 +41,9 @@ data class SettingsCategoryUI(
 	@DrawableRes
 	val image: Int
 ) : BaseRecyclerItem<SettingsCategoryUI.ViewHolder>() {
+	override val layoutRes: Int = R.layout.recycler_settings_card
+	override val type: Int = R.layout.recycler_settings_card
+	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 
 	class ViewHolder(view: View) :
 		BindViewHolder<SettingsCategoryUI, RecyclerSettingsCardBinding>(view) {
@@ -50,8 +53,8 @@ data class SettingsCategoryUI(
 			item: SettingsCategoryUI,
 			payloads: List<Any>
 		) {
-			recyclerSettingsTitle.setText(item.title)
-			recyclerSettingsTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
+			title.setText(item.title)
+			title.setCompoundDrawablesRelativeWithIntrinsicBounds(
 				item.image,
 				0,
 				0,
@@ -60,8 +63,8 @@ data class SettingsCategoryUI(
 		}
 
 		override fun RecyclerSettingsCardBinding.unbindView(item: SettingsCategoryUI) {
-			recyclerSettingsTitle.text = null
-			recyclerSettingsTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(
+			title.text = null
+			title.setCompoundDrawablesRelativeWithIntrinsicBounds(
 				R.drawable.broken_image,
 				0,
 				0,
@@ -69,9 +72,4 @@ data class SettingsCategoryUI(
 			)
 		}
 	}
-
-	override val layoutRes: Int = R.layout.recycler_settings_card
-	override val type: Int = R.layout.recycler_settings_card
-
-	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 }
