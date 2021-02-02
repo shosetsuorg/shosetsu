@@ -263,7 +263,7 @@ class DownloadWorker(
 		 * Starts the service. It will be started only if there isn't another instance already
 		 * running.
 		 */
-		override fun start() {
+		override fun start(data: Data) {
 			launchIO {
 				workerManager.enqueueUniqueWork(
 					DOWNLOAD_WORK_ID,

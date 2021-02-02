@@ -8,6 +8,8 @@ import app.shosetsu.android.domain.usecases.load.LoadAppUpdateFlowLiveUseCase
 import app.shosetsu.android.domain.usecases.load.LoadAppUpdateUseCase
 import app.shosetsu.android.domain.usecases.load.LoadLiveAppThemeUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadNavigationStyleUseCase
+import app.shosetsu.android.domain.usecases.start.StartAppUpdateInstallWorkerUseCase
+import app.shosetsu.android.domain.usecases.start.StartDownloadWorkerUseCase
 import app.shosetsu.android.viewmodel.abstracted.IMainViewModel
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.dto.HResult

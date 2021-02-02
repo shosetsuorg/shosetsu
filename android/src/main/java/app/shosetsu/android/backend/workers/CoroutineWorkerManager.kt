@@ -1,6 +1,7 @@
 package app.shosetsu.android.backend.workers
 
 import android.content.Context
+import androidx.work.Data
 import androidx.work.Operation
 import androidx.work.WorkManager
 import androidx.work.WorkManager.getInstance
@@ -41,6 +42,8 @@ abstract class CoroutineWorkerManager(
 	val workerManager: WorkManager by lazy { getInstance(context) }
 
 	abstract fun isRunning(): Boolean
-	abstract fun start()
+
+	abstract fun start(data: Data = Data.EMPTY)
+
 	abstract fun stop(): Operation
 }

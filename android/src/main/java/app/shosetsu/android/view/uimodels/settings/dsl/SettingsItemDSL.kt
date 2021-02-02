@@ -34,6 +34,7 @@ annotation class SettingsItemDSL
 
 
 @SettingsItemDSL
+@Deprecated("Not fun to code")
 inline fun checkBoxSettingData(
 	id: Int,
 	action: CheckBoxSettingData.() -> Unit,

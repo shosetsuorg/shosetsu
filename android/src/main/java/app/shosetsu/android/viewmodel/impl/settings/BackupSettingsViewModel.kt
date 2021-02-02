@@ -35,24 +35,25 @@ class BackupSettingsViewModel(
 	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : ABackupSettingsViewModel(iSettingsRepository) {
 	override suspend fun settings(): List<SettingsItemData> = listOf(
-		checkBoxSettingData(0) {
+		switchSettingData(0) {
 			title { R.string.backup_chapters_option }
 			description { R.string.backup_chapters_option_description }
 			checkSettingValue(SettingKey.BackupChapters)
 		},
-		checkBoxSettingData(1) {
+		switchSettingData(1) {
 			title { R.string.backup_settings_option }
 			description { R.string.backup_settings_option_desc }
 			checkSettingValue(SettingKey.BackupSettings)
 		},
 		buttonSettingData(3) {
 			title { R.string.backup_now }
-			text { R.string.restore_now }
-			onButtonClicked { it.post { } }
+			text { R.string.backup_now }
+			onButtonClicked { }
 		},
 		buttonSettingData(4) {
 			title { R.string.restore_now }
 			text { R.string.restore_now }
+			onButtonClicked { }
 		}
 	)
 

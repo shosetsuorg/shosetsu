@@ -1,4 +1,4 @@
-package app.shosetsu.android.domain.usecases
+package app.shosetsu.android.domain.usecases.start
 
 import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker.Manager
 

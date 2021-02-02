@@ -145,7 +145,7 @@ class AppUpdateCheckWorker(
 		 * Starts the service. It will be started only if there isn't another instance already
 		 * running.
 		 */
-		override fun start() {
+		override fun start(data: Data) {
 			launchIO {
 				logI(LogConstants.SERVICE_NEW)
 				workerManager.enqueueUniqueWork(

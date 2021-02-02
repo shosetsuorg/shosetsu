@@ -11,6 +11,9 @@ import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadChaptersResumeFirstUnreadUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadNavigationStyleUseCase
 import app.shosetsu.android.domain.usecases.settings.SetNovelUITypeUseCase
+import app.shosetsu.android.domain.usecases.start.StartAppUpdateInstallWorkerUseCase
+import app.shosetsu.android.domain.usecases.start.StartDownloadWorkerUseCase
+import app.shosetsu.android.domain.usecases.start.StartUpdateWorkerUseCase
 import app.shosetsu.android.domain.usecases.toast.StringToastUseCase
 import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
 import app.shosetsu.android.domain.usecases.update.*
@@ -77,7 +80,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	}
 
 	bind<GetCatalogueListingDataUseCase>() with provider {
-		GetCatalogueListingDataUseCase(instance(), instance(), instance(), instance())
+		GetCatalogueListingDataUseCase(instance(), instance(), instance())
 	}
 
 	bind<GetChapterUIsUseCase>() with provider { GetChapterUIsUseCase(instance()) }
@@ -92,7 +95,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	}
 
 	bind<DownloadChapterPassageUseCase>() with provider {
-		DownloadChapterPassageUseCase(instance(), instance(), instance())
+		DownloadChapterPassageUseCase(instance(), instance(), instance(), instance())
 	}
 	bind<DeleteChapterPassageUseCase>() with provider { DeleteChapterPassageUseCase(instance()) }
 
@@ -181,5 +184,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 		LoadDeletePreviousChapterUseCase(instance())
 	}
 
-
+	bind<PurgeNovelCacheUseCase>() with provider {
+		PurgeNovelCacheUseCase(instance())
+	}
 }
