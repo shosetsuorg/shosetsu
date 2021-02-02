@@ -1,6 +1,7 @@
 package app.shosetsu.common.domain.repositories.impl
 
 import app.shosetsu.common.datasource.database.base.IDBNovelsDataSource
+import app.shosetsu.common.datasource.remote.base.IRemoteCatalogueDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteNovelDataSource
 import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
@@ -41,6 +42,7 @@ import kotlinx.coroutines.flow.Flow
 class NovelsRepository(
 	private val database: IDBNovelsDataSource,
 	private val remoteSource: IRemoteNovelDataSource,
+	private val remoteCatalogueDataSource: IRemoteCatalogueDataSource,
 ) : INovelsRepository {
 	override fun loadBookmarkedNovelFlow(): Flow<HResult<List<BookmarkedNovelEntity>>> =
 		database.loadBookmarkedNovelsFlow()
@@ -115,5 +117,16 @@ class NovelsRepository(
 	override suspend fun clearUnBookmarkedNovels(): HResult<*> =
 		database.clearUnBookmarkedNovels()
 
+	override suspend fun getCatalogueSearch(
+		ext: IExtension,
+		query: String,
+		data: Map<Int, Any>
+	): HResult<List<Novel.Listing>> = remoteCatalogueDataSource.search(ext, query, data)
+
+	override suspend fun getCatalogueData(
+		ext: IExtension,
+		listing: Int,
+		data: Map<Int, Any>,
+	): HResult<List<Novel.Listing>> = remoteCatalogueDataSource.loadListing(ext, listing, data)
 
 }

@@ -1,11 +1,11 @@
 package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.common.ext.convertTo
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.common.consts.settings.SettingKey
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
+import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.successResult
@@ -53,7 +53,7 @@ class GetCatalogueQueryDataUseCase(
 		ext: IExtension,
 		query: String,
 		filters: Map<Int, Any>
-	): HResult<List<ACatalogNovelUI>> = extensionRepository.getCatalogueSearch(
+	): HResult<List<ACatalogNovelUI>> = novelsRepository.getCatalogueSearch(
 		ext,
 		query,
 		filters

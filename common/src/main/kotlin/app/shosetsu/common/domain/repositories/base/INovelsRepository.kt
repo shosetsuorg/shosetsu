@@ -210,4 +210,41 @@ interface INovelsRepository {
 	 *  This should cascade and delete all their chapters as well
 	 */
 	suspend fun clearUnBookmarkedNovels(): HResult<*>
+
+
+	/**
+	 * Queries the [IExtension] for a search result
+	 *
+	 * @return
+	 * [HResult.Success] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Error] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Empty] TODO RETURN DESCRIPTION
+	 *
+	 * [HResult.Loading] never
+	 */
+	suspend fun getCatalogueSearch(
+		ext: IExtension,
+		query: String,
+		data: Map<Int, Any>
+	): HResult<List<Novel.Listing>>
+
+	/**
+	 * Loads catalogue data of an [IExtension]
+	 *
+	 * @return
+	 * [HResult.Success] Data successfully loaded
+	 *
+	 * [HResult.Error] Error loading data
+	 *
+	 * [HResult.Empty] ?
+	 *
+	 * [HResult.Loading] never
+	 */
+	suspend fun getCatalogueData(
+		ext: IExtension,
+		listing: Int,
+		data: Map<Int, Any>,
+	): HResult<List<Novel.Listing>>
 }

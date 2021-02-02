@@ -4,7 +4,6 @@ import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.domain.model.local.StrippedExtensionEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.IExtension
-import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -191,45 +190,7 @@ interface IExtensionsRepository {
 	 */
 	fun loadStrippedExtensionEntityFlow(): Flow<HResult<List<StrippedExtensionEntity>>>
 
-	/**
-	 * Queries the [IExtension] for a search result
-	 *
-	 * TODO Consider delegation to some other class
-	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Loading] never
-	 */
-	suspend fun getCatalogueSearch(
-		ext: IExtension,
-		query: String,
-		data: Map<Int, Any>
-	): HResult<List<Novel.Listing>>
 
-	/**
-	 * Loads catalogue data of an [IExtension]
-	 *
-	 * TODO Consider delegation to some other class
-	 *
-	 * @return
-	 * [HResult.Success] Data successfully loaded
-	 *
-	 * [HResult.Error] Error loading data
-	 *
-	 * [HResult.Empty] ?
-	 *
-	 * [HResult.Loading] never
-	 */
-	suspend fun getCatalogueData(
-		ext: IExtension,
-		listing: Int,
-		data: Map<Int, Any>,
-	): HResult<List<Novel.Listing>>
 
 	/**
 	 * Removes an [ExtensionEntity] entirely, completely removing it from shosetsu code

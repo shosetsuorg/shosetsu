@@ -7,14 +7,12 @@ import app.shosetsu.common.datasource.database.base.IDBExtRepoDataSource
 import app.shosetsu.common.datasource.database.base.IDBExtensionsDataSource
 import app.shosetsu.common.datasource.file.base.IFileExtensionDataSource
 import app.shosetsu.common.datasource.memory.base.IMemExtensionsDataSource
-import app.shosetsu.common.datasource.remote.base.IRemoteCatalogueDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteExtensionDataSource
 import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.domain.model.local.StrippedExtensionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.dto.*
 import app.shosetsu.lib.IExtension
-import app.shosetsu.lib.Novel
 import app.shosetsu.lib.lua.LuaExtension
 import kotlinx.coroutines.flow.Flow
 
@@ -47,7 +45,6 @@ class ExtensionsRepository(
 	private val fileSource: IFileExtensionDataSource,
 	private val remoteSource: IRemoteExtensionDataSource,
 	private val dbRepoSource: IDBExtRepoDataSource,
-	private val remoteCatalogueDataSource: IRemoteCatalogueDataSource,
 ) : IExtensionsRepository {
 	override fun loadExtensionEntitiesFLow(): Flow<HResult<List<ExtensionEntity>>> =
 		dbSource.loadExtensions()
@@ -135,17 +132,6 @@ class ExtensionsRepository(
 		dbSource.loadPoweredExtensionsCards()
 
 
-	override suspend fun getCatalogueSearch(
-		ext: IExtension,
-		query: String,
-		data: Map<Int, Any>
-	): HResult<List<Novel.Listing>> = remoteCatalogueDataSource.search(ext, query, data)
-
-	override suspend fun getCatalogueData(
-		ext: IExtension,
-		listing: Int,
-		data: Map<Int, Any>,
-	): HResult<List<Novel.Listing>> = remoteCatalogueDataSource.loadListing(ext, listing, data)
 
 	override suspend fun removeExtension(extensionEntity: ExtensionEntity): HResult<*> =
 		dbSource.deleteExtension(extensionEntity) and

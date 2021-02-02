@@ -41,7 +41,7 @@ val repositoryModule: Kodein.Module = Kodein.Module("repository_module") {
 	bind<IDownloadsRepository>() with singleton { DownloadsRepository(instance()) }
 
 	bind<IExtensionsRepository>() with singleton {
-		ExtensionsRepository(instance(), instance(), instance(), instance(), instance(), instance())
+		ExtensionsRepository(instance(), instance(), instance(), instance(), instance())
 	}
 
 	bind<IExtensionLibrariesRepository>() with singleton {
@@ -50,7 +50,13 @@ val repositoryModule: Kodein.Module = Kodein.Module("repository_module") {
 
 	bind<IExtensionRepoRepository>() with singleton { ExtRepoRepository(instance(), instance()) }
 
-	bind<INovelsRepository>() with singleton { NovelsRepository(instance(), instance()) }
+	bind<INovelsRepository>() with singleton {
+		NovelsRepository(
+			instance(),
+			instance(),
+			instance()
+		)
+	}
 
 	bind<IUpdatesRepository>() with singleton { UpdatesRepository(instance()) }
 
