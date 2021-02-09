@@ -2,7 +2,9 @@ package app.shosetsu.android.viewmodel.impl
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.domain.ReportExceptionUseCase
+import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.load.LoadUpdatesUseCase
+import app.shosetsu.android.domain.usecases.start.StartUpdateWorkerUseCase
 import app.shosetsu.android.view.uimodels.model.UpdateUI
 import app.shosetsu.android.viewmodel.abstracted.IUpdatesViewModel
 import app.shosetsu.common.dto.HResult
@@ -35,7 +37,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  */
 class UpdatesViewModel(
 	private val getUpdatesUseCase: LoadUpdatesUseCase,
-	private val reportExceptionUseCase: ReportExceptionUseCase
+	private val reportExceptionUseCase: ReportExceptionUseCase,
+	private val startUpdateWorkerUseCase: StartUpdateWorkerUseCase,
+	private val isOnlineUseCase: IsOnlineUseCase
 ) : IUpdatesViewModel() {
 	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<List<UpdateUI>>> by lazy {
@@ -45,6 +49,10 @@ class UpdatesViewModel(
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
 		reportExceptionUseCase(error)
 	}
+
+	override fun startUpdateManager() = startUpdateWorkerUseCase()
+
+	override fun isOnline(): Boolean = isOnlineUseCase()
 
 	override suspend fun updateChapter(updateUI: UpdateUI, readingStatus: ReadingStatus) {
 	}

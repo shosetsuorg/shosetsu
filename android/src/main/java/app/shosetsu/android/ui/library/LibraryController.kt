@@ -26,7 +26,6 @@ import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.common.enums.NovelCardType.*
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerLibraryBinding
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.mikepenz.fastadapter.select.getSelectExtension
 import com.mikepenz.fastadapter.select.selectExtension
@@ -56,7 +55,7 @@ import com.mikepenz.fastadapter.select.selectExtension
  * @author github.com/doomsdayrs
  */
 class LibraryController
-	: FastAdapterRecyclerController<ControllerLibraryBinding, ABookmarkedNovelUI>(),
+	: FastAdapterRefreshableRecyclerController<ABookmarkedNovelUI>(),
 	PushCapableController, ExtendedFABController, BottomMenuController {
 	override var pushController: (Controller) -> Unit = {}
 
@@ -73,55 +72,42 @@ class LibraryController
 		setHasOptionsMenu(true)
 	}
 
-	override fun bindView(inflater: LayoutInflater): ControllerLibraryBinding =
-		ControllerLibraryBinding.inflate(inflater).also { recyclerView = it.recyclerView }
-
-	private fun NovelCardType.manager() = when (this) {
-		COMPRESSED -> LinearLayoutManager(
-			applicationContext,
-			LinearLayoutManager.VERTICAL,
-			false
-		)
-		else -> GridLayoutManager(
-			applicationContext,
-			context!!.resources.let {
-				val density = it.displayMetrics.density
-				val widthPixels = it.displayMetrics.widthPixels
-				when (it.configuration.orientation) {
-					Configuration.ORIENTATION_LANDSCAPE -> {
-						viewModel.calculateHColumnCount(
-							widthPixels,
-							density,
-							200f
-						)
+	private val NovelCardType.manager: LinearLayoutManager
+		get() = when (this) {
+			COMPRESSED -> LinearLayoutManager(
+				applicationContext,
+				LinearLayoutManager.VERTICAL,
+				false
+			)
+			else -> GridLayoutManager(
+				applicationContext,
+				context!!.resources.let {
+					val density = it.displayMetrics.density
+					val widthPixels = it.displayMetrics.widthPixels
+					when (it.configuration.orientation) {
+						Configuration.ORIENTATION_LANDSCAPE -> {
+							viewModel.calculateHColumnCount(
+								widthPixels,
+								density,
+								200f
+							)
+						}
+						else -> {
+							viewModel.calculatePColumnCount(
+								widthPixels,
+								density,
+								200f
+							)
+						}
 					}
-					else -> {
-						viewModel.calculatePColumnCount(
-							widthPixels,
-							density,
-							200f
-						)
-					}
-				}
-			},
-			RecyclerView.VERTICAL,
-			false
-		)
-	}
+				},
+				RecyclerView.VERTICAL,
+				false
+			)
+		}
 
 	override fun createLayoutManager(): RecyclerView.LayoutManager =
-		viewModel.getNovelUIType().manager()
-
-	override fun onViewCreated(view: View) {
-		showEmpty()
-		binding.swipeRefreshLayout.setOnRefreshListener {
-			if (viewModel.isOnline())
-				viewModel.startUpdateManager()
-			else toast(R.string.you_not_online)
-
-			binding.swipeRefreshLayout.isRefreshing = false
-		}
-	}
+		viewModel.getNovelUIType().manager
 
 	override fun setupRecyclerView() {
 		recyclerView.setHasFixedSize(false)
@@ -179,7 +165,7 @@ class LibraryController
 	private fun setObservers() {
 		viewModel.liveData.observe(this) { handleRecyclerUpdate(it) }
 		viewModel.novelCardTypeLiveData.observe(this) {
-			updateLayoutManager(it.manager())
+			updateLayoutManager(it.manager)
 		}
 	}
 
@@ -266,5 +252,11 @@ class LibraryController
 
 	override fun getBottomMenuView(): View =
 		LibraryFilterMenuBuilder(this, viewModel).build()
+
+	override fun onRefresh() {
+		if (viewModel.isOnline())
+			viewModel.startUpdateManager()
+		else toast(R.string.you_not_online)
+	}
 
 }

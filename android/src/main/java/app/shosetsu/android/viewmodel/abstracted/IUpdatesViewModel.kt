@@ -1,9 +1,7 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import app.shosetsu.android.view.uimodels.model.UpdateUI
-import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
-import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
-import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
+import app.shosetsu.android.viewmodel.base.*
 import app.shosetsu.common.enums.ReadingStatus
 
 /*
@@ -31,6 +29,9 @@ import app.shosetsu.common.enums.ReadingStatus
  * @author github.com/doomsdayrs
  */
 abstract class IUpdatesViewModel
-	: ShosetsuViewModel(), SubscribeHandleViewModel<List<UpdateUI>>, ErrorReportingViewModel {
+	: ShosetsuViewModel(),
+	SubscribeHandleViewModel<List<UpdateUI>>,
+	ErrorReportingViewModel,
+	StartUpdateManagerViewModel, IsOnlineCheckViewModel {
 	abstract suspend fun updateChapter(updateUI: UpdateUI, readingStatus: ReadingStatus)
 }

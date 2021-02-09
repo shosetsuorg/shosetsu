@@ -203,7 +203,8 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 			false
 		}
 
-		override fun start() {
+
+		override fun start(data: Data) {
 			launchIO {
 				logI(LogConstants.SERVICE_NEW)
 				workerManager.enqueueUniqueWork(

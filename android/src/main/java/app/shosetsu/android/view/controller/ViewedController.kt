@@ -19,7 +19,6 @@ import com.bluelinelabs.conductor.archlifecycle.LifecycleController
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
-import kotlin.reflect.KMutableProperty
 
 /*
  * This file is part of shosetsu.
@@ -62,7 +61,6 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 	 * Should this be attached to root
 	 */
 	open val attachToRoot: Boolean = false
-	private var attachedFields = ArrayList<KMutableProperty<*>>()
 
 	lateinit var binding: VB
 
@@ -95,21 +93,6 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 
 	private fun Controller.instance(): String {
 		return "${javaClass.simpleName}@${Integer.toHexString(hashCode())}"
-	}
-
-	/**
-	 * Function run when destroying the UI
-	 */
-	@CallSuper
-	override fun onDestroyView(view: View) {
-		val s = StringBuilder()
-		attachedFields.forEachIndexed { index, kMutableProperty ->
-			s.append(kMutableProperty.name)
-			if (index + 1 != attachedFields.size) s.append(", ")
-			kMutableProperty.setter.call(this, null)
-		}
-		Log.d(logID(), "Destroyed:\t$s")
-		attachedFields = ArrayList()
 	}
 
 	@CallSuper

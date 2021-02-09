@@ -19,8 +19,8 @@ package app.shosetsu.android.ui.updates
 
 import android.view.View
 import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.view.controller.FastAdapterRefreshableRecyclerController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
-import app.shosetsu.android.view.controller.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
 import app.shosetsu.android.view.decoration.StickyHeaderDecor
 import app.shosetsu.android.view.uimodels.model.UpdateUI
 import app.shosetsu.android.viewmodel.abstracted.IUpdatesViewModel
@@ -34,7 +34,7 @@ import org.joda.time.DateTime
  *
  * @author github.com/doomsdayrs
  */
-class UpdatesController : BasicFastAdapterRecyclerController<UpdateUI>(),
+class UpdatesController : FastAdapterRefreshableRecyclerController<UpdateUI>(),
 	CollapsedToolBarController {
 	val viewModel: IUpdatesViewModel by viewModel()
 	override val viewTitleRes: Int = R.string.updates
@@ -43,8 +43,10 @@ class UpdatesController : BasicFastAdapterRecyclerController<UpdateUI>(),
 
 	override fun setupRecyclerView() {
 		super.setupRecyclerView()
-		recyclerView.setPadding(0, 0, 0, 8)
-		recyclerView.addItemDecoration(StickyHeaderDecor(recyclerView.context, UpdateCallback()))
+		recyclerView.apply {
+			setPadding(0, 0, 0, 8)
+			addItemDecoration(StickyHeaderDecor(recyclerView.context, UpdateCallback()))
+		}
 	}
 
 	override fun setupFastAdapter() {
@@ -101,5 +103,11 @@ class UpdatesController : BasicFastAdapterRecyclerController<UpdateUI>(),
 			}
 			return "No Bogga"
 		}
+	}
+
+	override fun onRefresh() {
+		if (viewModel.isOnline())
+			viewModel.startUpdateManager()
+		else toast(R.string.you_not_online)
 	}
 }

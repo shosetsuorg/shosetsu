@@ -62,7 +62,7 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 		DownloadsViewModel(i(), i(), i(), i(), i(), i(), i())
 	}
 	bind<ISearchViewModel>() with provider { SearchViewModel(i(), i(), i(), i()) }
-	bind<IUpdatesViewModel>() with provider { UpdatesViewModel(i(), i()) }
+	bind<IUpdatesViewModel>() with provider { UpdatesViewModel(i(), i(), i(), i()) }
 
 	bind<AAboutViewModel>() with provider { AboutViewModel(i(), i(), i()) }
 
