@@ -271,14 +271,14 @@ class NovelController(bundle: Bundle) :
 		}
 	}
 
-	override fun setupFastAdapter() {
-		fastAdapter.selectExtension {
+	override fun FastAdapter<AbstractItem<*>>.setupFastAdapter() {
+		selectExtension {
 			isSelectable = true
 			multiSelect = true
 			selectOnLongClick = true
 			setSelectionListener { item, _ ->
 				// Recreates the item view
-				fastAdapter.notifyItemChanged(fastAdapter.getPosition(item))
+				this@setupFastAdapter.notifyItemChanged(this@setupFastAdapter.getPosition(item))
 
 				// Updates action mode
 				calculateBottomSelectionMenuChanges()
@@ -288,9 +288,9 @@ class NovelController(bundle: Bundle) :
 				if (size == 1) startSelectionAction() else if (size == 0) finishSelectionAction()
 			}
 		}
-		fastAdapter.setOnPreClickListener FastAdapterClick@{ _, _, item, position ->
+		setOnPreClickListener FastAdapterClick@{ _, _, item, position ->
 			// Handles one click select when in selection mode
-			fastAdapter.selectExtension {
+			selectExtension {
 				if (selectedItems.isNotEmpty()) {
 					if (!item.isSelected) {
 						select(
@@ -305,13 +305,13 @@ class NovelController(bundle: Bundle) :
 			}
 			false
 		}
-		fastAdapter.setOnClickListener { _, _, item, _ ->
+		setOnClickListener { _, _, item, _ ->
 			if (item !is ChapterUI) return@setOnClickListener false
 			activity?.openChapter(item)
 			true
 		}
 
-		fastAdapter.addEventHook(object : ClickEventHook<NovelUI>() {
+		addEventHook(object : ClickEventHook<NovelUI>() {
 			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? =
 				if (viewHolder is NovelUI.ViewHolder) viewHolder.binding.inLibrary else null
 
@@ -325,7 +325,7 @@ class NovelController(bundle: Bundle) :
 			}
 		})
 
-		fastAdapter.addEventHook(object : ClickEventHook<NovelUI>() {
+		addEventHook(object : ClickEventHook<NovelUI>() {
 			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? =
 				if (viewHolder is NovelUI.ViewHolder) viewHolder.binding.webView else null
 
@@ -339,7 +339,7 @@ class NovelController(bundle: Bundle) :
 			}
 		})
 
-		fastAdapter.addEventHook(object : ClickEventHook<NovelUI>() {
+		addEventHook(object : ClickEventHook<NovelUI>() {
 			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? =
 				if (viewHolder is NovelUI.ViewHolder) viewHolder.binding.filterChip else null
 

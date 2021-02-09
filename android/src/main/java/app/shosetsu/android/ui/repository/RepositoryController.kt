@@ -3,8 +3,8 @@ package app.shosetsu.android.ui.repository
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.view.controller.GenericFastAdapterRecyclerController
 import app.shosetsu.android.view.controller.base.FABController
-import app.shosetsu.android.view.controller.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.android.viewmodel.abstracted.ARepositoryViewModel
 import app.shosetsu.common.dto.HResult
@@ -34,7 +34,7 @@ import com.mikepenz.fastadapter.listeners.ClickEventHook
  * shosetsu
  * 16 / 09 / 2020
  */
-class RepositoryController : BasicFastAdapterRecyclerController<RepositoryUI>(), FABController {
+class RepositoryController : GenericFastAdapterRecyclerController<RepositoryUI>(), FABController {
 	private val viewModel: ARepositoryViewModel by viewModel()
 
 	override val viewTitleRes: Int = R.string.repositories
@@ -57,8 +57,8 @@ class RepositoryController : BasicFastAdapterRecyclerController<RepositoryUI>(),
 		viewModel.reportError(e)
 	}
 
-	override fun setupFastAdapter() {
-		fastAdapter.addEventHook(object : ClickEventHook<RepositoryUI>() {
+	override fun FastAdapter<RepositoryUI>.setupFastAdapter() {
+		addEventHook(object : ClickEventHook<RepositoryUI>() {
 			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? =
 				if (viewHolder is RepositoryUI.ViewHolder)
 					viewHolder.binding.removeButton

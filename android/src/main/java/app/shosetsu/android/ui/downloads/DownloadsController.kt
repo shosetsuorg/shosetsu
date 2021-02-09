@@ -23,7 +23,7 @@ import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.common.ext.setOnPreClickListener
 import app.shosetsu.android.common.ext.setSelectionListener
 import app.shosetsu.android.common.ext.viewModel
-import app.shosetsu.android.view.controller.FastAdapterRecyclerController.BottomMenuBasicFastAdapterRecyclerController
+import app.shosetsu.android.view.controller.BottomMenuBasicFastAdapterRecyclerController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.DownloadUI
@@ -33,6 +33,7 @@ import app.shosetsu.common.enums.DownloadStatus.*
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.IAdapter
 import com.mikepenz.fastadapter.select.getSelectExtension
 import com.mikepenz.fastadapter.select.selectExtension
@@ -84,8 +85,8 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 		}
 	}
 
-	override fun setupFastAdapter() {
-		fastAdapter.selectExtension {
+	override fun FastAdapter<DownloadUI>.setupFastAdapter() {
+		selectExtension {
 			isSelectable = true
 			multiSelect = true
 			selectOnLongClick = true
@@ -101,9 +102,9 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 				if (size == 1) startSelectionAction() else if (size == 0) actionMode?.finish()
 			}
 		}
-		fastAdapter.setOnPreClickListener FastAdapterClick@{ _, _, item, position ->
+		setOnPreClickListener FastAdapterClick@{ _, _, item, position ->
 			// Handles one click select when in selection mode
-			fastAdapter.selectExtension {
+			selectExtension {
 				if (selectedItems.isNotEmpty()) {
 					if (!item.isSelected) {
 						select(

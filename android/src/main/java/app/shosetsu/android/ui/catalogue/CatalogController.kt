@@ -127,8 +127,7 @@ class CatalogController(
 		}
 	}
 
-	override fun setupFastAdapter() {
-		super.setupFastAdapter()
+	override fun FastAdapter<ACatalogNovelUI>.setupFastAdapter() {
 		fastAdapter.apply {
 			setOnClickListener { _, _, item, _ ->
 				pushController(

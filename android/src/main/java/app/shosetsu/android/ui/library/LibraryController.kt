@@ -27,6 +27,7 @@ import app.shosetsu.common.enums.NovelCardType.*
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.select.getSelectExtension
 import com.mikepenz.fastadapter.select.selectExtension
 
@@ -118,8 +119,8 @@ class LibraryController
 		setObservers()
 	}
 
-	override fun setupFastAdapter() {
-		fastAdapter.selectExtension {
+	override fun FastAdapter<ABookmarkedNovelUI>.setupFastAdapter() {
+		selectExtension {
 			isSelectable = true
 			multiSelect = true
 			selectOnLongClick = true
@@ -135,9 +136,9 @@ class LibraryController
 		itemAdapter.itemFilter.filterPredicate = { item, constraint ->
 			item.title.contains(constraint.toString(), ignoreCase = true)
 		}
-		fastAdapter.setOnPreClickListener FastAdapterClick@{ _, _, item, position ->
+		setOnPreClickListener FastAdapterClick@{ _, _, item, position ->
 			// Handles one click select when in selection mode
-			fastAdapter.selectExtension {
+			selectExtension {
 				if (selectedItems.isNotEmpty()) {
 					if (!item.isSelected)
 						select(
@@ -152,7 +153,7 @@ class LibraryController
 			false
 		}
 
-		fastAdapter.setOnClickListener { _, _, item, _ ->
+		setOnClickListener { _, _, item, _ ->
 			pushController(
 				NovelController(
 					bundleOf(BundleKeys.BUNDLE_NOVEL_ID to item.id)

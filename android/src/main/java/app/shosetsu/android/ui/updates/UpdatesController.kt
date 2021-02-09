@@ -26,6 +26,7 @@ import app.shosetsu.android.view.uimodels.model.UpdateUI
 import app.shosetsu.android.viewmodel.abstracted.IUpdatesViewModel
 import app.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.mikepenz.fastadapter.FastAdapter
 import org.joda.time.DateTime
 
 /**
@@ -49,8 +50,8 @@ class UpdatesController : FastAdapterRefreshableRecyclerController<UpdateUI>(),
 		}
 	}
 
-	override fun setupFastAdapter() {
-		fastAdapter.setOnClickListener { _, _, (chapterID, novelID), _ ->
+	override fun FastAdapter<UpdateUI>.setupFastAdapter() {
+		setOnClickListener { _, _, (chapterID, novelID), _ ->
 			activity?.openChapter(chapterID, novelID)
 			true
 		}

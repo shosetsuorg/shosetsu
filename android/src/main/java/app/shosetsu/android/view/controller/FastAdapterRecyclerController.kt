@@ -1,18 +1,13 @@
 package app.shosetsu.android.view.controller
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import androidx.annotation.CallSuper
-import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import app.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding
-import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerWithBottomMenuBinding
+import app.shosetsu.common.dto.handle
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.GenericItem
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
-import com.mikepenz.fastadapter.items.AbstractItem
 
 /*
  * This file is part of shosetsu.
@@ -62,7 +57,7 @@ abstract class FastAdapterRecyclerController<VB, ITEM> :
 
 	override fun setupRecyclerView() {
 		super.setupRecyclerView()
-		setupFastAdapter()
+		adapter?.setupFastAdapter()
 	}
 
 	override fun createRecyclerAdapter(): FastAdapter<ITEM> = fastAdapter
@@ -70,7 +65,7 @@ abstract class FastAdapterRecyclerController<VB, ITEM> :
 	/**
 	 * Allows child classes to manipulate the fast adapter
 	 */
-	open fun setupFastAdapter() {}
+	open fun FastAdapter<ITEM>.setupFastAdapter() {}
 
 	/** @param result [HResult], if [HResult.Success] then updates UI */
 	fun <T : GenericItem> handleRecyclerUpdate(
@@ -78,13 +73,12 @@ abstract class FastAdapterRecyclerController<VB, ITEM> :
 		showEmpty: () -> Unit,
 		hideEmpty: () -> Unit,
 		result: HResult<List<T>>
+	) = result.handle(
+		onLoading = { showLoading() },
+		onError = { handleErrorResult(it) },
+		onEmpty = { showEmpty() }
 	) {
-		when (result) {
-			is HResult.Loading -> showLoading()
-			is HResult.Success -> updateUI(itemAdapter, showEmpty, hideEmpty, result.data)
-			is HResult.Error -> handleErrorResult(result)
-			is HResult.Empty -> showEmpty()
-		}
+		updateUI(itemAdapter, showEmpty, hideEmpty, it)
 	}
 
 
@@ -95,6 +89,7 @@ abstract class FastAdapterRecyclerController<VB, ITEM> :
 		FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(itemAdapter, newList)
 	}
 
+	@Suppress("MemberVisibilityCanBePrivate")
 	fun <T : GenericItem> updateUI(
 		itemAdapter: ItemAdapter<T>,
 		showEmpty: () -> Unit,
@@ -109,52 +104,4 @@ abstract class FastAdapterRecyclerController<VB, ITEM> :
 
 	override fun difAreItemsTheSame(oldItem: ITEM, newItem: ITEM): Boolean =
 		difAreContentsTheSame(oldItem, newItem)
-
-
-	abstract class BottomMenuBasicFastAdapterRecyclerController<ITEM : AbstractItem<*>> :
-		FastAdapterRecyclerController<ControllerRecyclerWithBottomMenuBinding, ITEM> {
-
-		constructor() : super()
-		constructor(args: Bundle) : super(args)
-
-		@CallSuper
-		override fun showEmpty() {
-			binding.recyclerView.isVisible = false
-		}
-
-
-		@CallSuper
-		override fun hideEmpty() {
-			binding.recyclerView.isVisible = true
-			binding.emptyDataView.hide()
-		}
-
-
-		override fun bindView(inflater: LayoutInflater): ControllerRecyclerWithBottomMenuBinding =
-			ControllerRecyclerWithBottomMenuBinding.inflate(inflater)
-				.also { recyclerView = it.recyclerView }
-	}
-
-	abstract class BasicFastAdapterRecyclerController<ITEM : AbstractItem<*>> :
-		FastAdapterRecyclerController<ControllerRecyclerBinding, ITEM> {
-
-		constructor() : super()
-		constructor(args: Bundle) : super(args)
-
-		@CallSuper
-		override fun showEmpty() {
-			binding.recyclerView.isVisible = false
-		}
-
-
-		@CallSuper
-		override fun hideEmpty() {
-			binding.recyclerView.isVisible = true
-			binding.emptyDataView.hide()
-		}
-
-		override fun bindView(inflater: LayoutInflater): ControllerRecyclerBinding =
-			ControllerRecyclerBinding.inflate(inflater).also { recyclerView = it.recyclerView }
-	}
-
 }

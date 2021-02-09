@@ -2,7 +2,7 @@ package app.shosetsu.android.ui.settings
 
 import android.view.View
 import androidx.annotation.CallSuper
-import app.shosetsu.android.view.controller.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
+import app.shosetsu.android.view.controller.GenericFastAdapterRecyclerController
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.settings.ASubSettingsViewModel
 import app.shosetsu.common.dto.HResult
@@ -28,7 +28,7 @@ import app.shosetsu.common.dto.HResult
  * shosetsu
  * 29 / 01 / 2020
  */
-abstract class SettingsSubController : BasicFastAdapterRecyclerController<SettingsItemData>() {
+abstract class SettingsSubController : GenericFastAdapterRecyclerController<SettingsItemData>() {
 	@CallSuper
 	override fun onViewCreated(view: View) {
 		viewModel.getSettings().observe(this) { handleRecyclerUpdate(it) }

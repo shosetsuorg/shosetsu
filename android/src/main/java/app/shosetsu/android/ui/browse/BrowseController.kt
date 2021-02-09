@@ -64,8 +64,8 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 			.setOnQueryTextListener(BrowseSearchQuery(pushController))
 	}
 
-	override fun setupFastAdapter() {
-		fastAdapter.setOnClickListener { _, _, item, _ ->
+	override fun FastAdapter<ExtensionUI>.setupFastAdapter() {
+		setOnClickListener { _, _, item, _ ->
 			if (item.installed)
 				if (viewModel.isOnline()) {
 					pushController(
@@ -80,7 +80,7 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 			true
 		}
 
-		fastAdapter.addEventHook(object : ClickEventHook<ExtensionUI>() {
+		addEventHook(object : ClickEventHook<ExtensionUI>() {
 			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? =
 				if (viewHolder is ExtensionUI.ViewHolder) viewHolder.binding.button else null
 
@@ -101,7 +101,7 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 			}
 		})
 
-		fastAdapter.addEventHook(object : ClickEventHook<ExtensionUI>() {
+		addEventHook(object : ClickEventHook<ExtensionUI>() {
 			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? =
 				if (viewHolder is ExtensionUI.ViewHolder) viewHolder.binding.settings else null
 

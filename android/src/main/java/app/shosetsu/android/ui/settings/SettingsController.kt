@@ -4,12 +4,13 @@ import android.view.View
 import app.shosetsu.android.common.ext.setOnClickListener
 import app.shosetsu.android.ui.settings.sub.*
 import app.shosetsu.android.ui.settings.sub.backup.BackupSettings
-import app.shosetsu.android.view.controller.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
+import app.shosetsu.android.view.controller.GenericFastAdapterRecyclerController
 import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.SettingsCategoryUI
 import app.shosetsu.common.enums.SettingCategory.*
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.mikepenz.fastadapter.FastAdapter
 
 /*
  * This file is part of Shosetsu.
@@ -32,7 +33,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * Shosetsu
  * 9 / June / 2019
  */
-class SettingsController : BasicFastAdapterRecyclerController<SettingsCategoryUI>(),
+class SettingsController : GenericFastAdapterRecyclerController<SettingsCategoryUI>(),
 	PushCapableController {
 	override val viewTitleRes: Int = R.string.settings
 	override var pushController: (Controller) -> Unit = {}
@@ -56,8 +57,8 @@ class SettingsController : BasicFastAdapterRecyclerController<SettingsCategoryUI
 		super.setupRecyclerView()
 	}
 
-	override fun setupFastAdapter() {
-		fastAdapter.setOnClickListener { _, _, item, _ ->
+	override fun FastAdapter<SettingsCategoryUI>.setupFastAdapter() {
+		setOnClickListener { _, _, item, _ ->
 			pushController(
 				when (item.category) {
 					VIEW -> ViewSettings()

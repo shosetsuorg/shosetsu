@@ -9,7 +9,7 @@ import androidx.appcompat.widget.SearchView
 import app.shosetsu.android.common.consts.BundleKeys
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.search.adapters.SearchRowAdapter
-import app.shosetsu.android.view.controller.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
+import app.shosetsu.android.view.controller.GenericFastAdapterRecyclerController
 import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ISearchViewModel
@@ -41,7 +41,7 @@ import com.mikepenz.fastadapter.FastAdapter
  *
  * @author github.com/doomsdayrs
  */
-class SearchController(bundle: Bundle) : BasicFastAdapterRecyclerController<SearchRowUI>(bundle),
+class SearchController(bundle: Bundle) : GenericFastAdapterRecyclerController<SearchRowUI>(bundle),
 	PushCapableController {
 	override val viewTitleRes: Int = R.string.search
 	internal val viewModel: ISearchViewModel by viewModel()
