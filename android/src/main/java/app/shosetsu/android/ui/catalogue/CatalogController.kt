@@ -14,10 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
-import app.shosetsu.android.common.ext.context
-import app.shosetsu.android.common.ext.getString
-import app.shosetsu.android.common.ext.setOnClickListener
-import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.listeners.CatalogueSearchQuery
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.controller.FastAdapterRecyclerController
@@ -26,7 +23,6 @@ import app.shosetsu.android.view.uimodels.model.ProgressItem
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ICatalogViewModel
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
 import app.shosetsu.common.enums.NovelCardType.COMPRESSED
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -84,7 +80,6 @@ class CatalogController(
 	init {
 		setHasOptionsMenu(true)
 	}
-
 
 	override fun onDestroy() {
 		super.onDestroy()
@@ -199,21 +194,17 @@ class CatalogController(
 	}
 
 	private fun setupObservers() {
-		viewModel.listingItemsLive.observe(this) {
-			handleRecyclerUpdate(it)
+		viewModel.listingItemsLive.observeRecyclerUpdates()
+
+		viewModel.extensionName.handleObserve(this, onLoading = {
+			setViewTitle(getString(R.string.loading))
+		}) {
+			setViewTitle(it)
+			if (recyclerArray.isEmpty()) viewModel.resetView()
 		}
-		viewModel.extensionName.observe(this) { result ->
-			result.handle(onLoading = {
-				setViewTitle(getString(R.string.loading))
-			}) {
-				setViewTitle(it)
-				if (recyclerArray.isEmpty()) viewModel.resetView()
-			}
-		}
-		viewModel.hasSearchLive.observe(this) { result ->
-			result.handle {
-				searchView?.isEnabled = it
-			}
+
+		viewModel.hasSearchLive.handleObserve {
+			searchView?.isEnabled = it
 		}
 		viewModel.filterItemsLive.observe(this) {
 		}

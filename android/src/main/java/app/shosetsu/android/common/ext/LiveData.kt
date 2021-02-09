@@ -1,5 +1,10 @@
 package app.shosetsu.android.common.ext
 
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.handle
+
 /*
  * This file is part of Shosetsu.
  *
@@ -17,7 +22,19 @@ package app.shosetsu.android.common.ext
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * 01 / 01 / 2021
- */
- 
+inline fun <T : HResult<D>, reified D> LiveData<T>.handleObserve(
+	owner: LifecycleOwner,
+	crossinline onLoading: () -> Unit = {},
+	crossinline onEmpty: () -> Unit = {},
+	crossinline onError: (HResult.Error) -> Unit = {},
+	crossinline onSuccess: (D) -> Unit
+) {
+	observe(owner) {
+		it.handle(
+			onError = onError,
+			onEmpty = onEmpty,
+			onLoading = onLoading,
+			onSuccess = onSuccess
+		)
+	}
+}

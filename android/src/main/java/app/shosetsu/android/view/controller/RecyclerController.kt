@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.core.view.isVisible
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -81,14 +82,23 @@ abstract class RecyclerController<AD, IT, VB> : ViewedController<VB>
 	}
 
 	/** @param result [HResult], if [HResult.Success] then updates UI */
-	open fun handleRecyclerUpdate(result: HResult<List<IT>>) {
-		when (result) {
-			is HResult.Loading -> showLoading()
-			is HResult.Success -> updateUI(result.data)
-			is HResult.Error -> handleErrorResult(result)
-			is HResult.Empty -> showEmpty()
+	open fun handleRecyclerUpdate(result: HResult<List<IT>>) = when (result) {
+		HResult.Loading -> showLoading()
+		is HResult.Success -> updateUI(result.data)
+		is HResult.Error -> handleErrorResult(result)
+		HResult.Empty -> showEmpty()
+		else -> {
 		}
 	}
+
+	/**
+	 * Convenience method to observe a [LiveData] containing data
+	 * that matches what [handleRecyclerUpdate] needs
+	 */
+	fun LiveData<HResult<List<IT>>>.observeRecyclerUpdates() =
+		observe(this@RecyclerController) {
+			handleRecyclerUpdate(it)
+		}
 
 	abstract override fun onViewCreated(view: View)
 

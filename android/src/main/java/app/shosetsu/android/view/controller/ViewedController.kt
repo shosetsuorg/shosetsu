@@ -8,11 +8,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.CallSuper
 import androidx.annotation.StringRes
+import androidx.lifecycle.LiveData
 import androidx.viewbinding.ViewBinding
-import app.shosetsu.android.common.ext.getString
-import app.shosetsu.android.common.ext.launchUI
-import app.shosetsu.android.common.ext.logID
-import app.shosetsu.android.common.ext.toast
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.common.dto.HResult
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.archlifecycle.LifecycleController
@@ -168,4 +166,21 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 			applicationContext?.toast(message, length)
 		}
 	}
+
+
+	/**
+	 * Convenience method to observe [LiveData]
+	 */
+	fun <T> LiveData<T>.observe(observer: (T) -> Unit) =
+		observe(this@ViewedController, observer)
+
+	/**
+	 * Convenience method to simplify [handleObserve] with self
+	 */
+	inline fun <T : HResult<D>, reified D> LiveData<T>.handleObserve(
+		crossinline onLoading: () -> Unit = {},
+		crossinline onEmpty: () -> Unit = {},
+		crossinline onError: (HResult.Error) -> Unit = {},
+		crossinline onSuccess: (D) -> Unit
+	) = handleObserve(this@ViewedController, onLoading, onEmpty, onError, onSuccess)
 }

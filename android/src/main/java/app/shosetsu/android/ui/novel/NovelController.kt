@@ -105,13 +105,9 @@ class NovelController(bundle: Bundle) :
 	/** Refreshes the novel */
 	private fun refresh() {
 		logD("Refreshing")
-		viewModel.refresh().observe(this) {
-			when (it) {
-				is HResult.Loading -> binding.swipeRefreshLayout.isRefreshing = true
-				is HResult.Success -> binding.swipeRefreshLayout.isRefreshing = false
-				is HResult.Error -> binding.swipeRefreshLayout.isRefreshing = false
-				is HResult.Empty -> binding.swipeRefreshLayout.isRefreshing = false
-			}
+
+		viewModel.refresh().observe {
+			binding.swipeRefreshLayout.isRefreshing = (it is HResult.Loading)
 		}
 	}
 
