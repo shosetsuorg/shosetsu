@@ -28,7 +28,6 @@ import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.IAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
-import com.mikepenz.fastadapter.listeners.ClickEventHook
 import com.mikepenz.fastadapter.select.getSelectExtension
 import com.mikepenz.fastadapter.select.selectExtension
 import com.mikepenz.fastadapter.utils.AdapterPredicate
@@ -311,47 +310,23 @@ class NovelController(bundle: Bundle) :
 			true
 		}
 
-		addEventHook(object : ClickEventHook<NovelUI>() {
-			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? =
-				if (viewHolder is NovelUI.ViewHolder) viewHolder.binding.inLibrary else null
+		hookClickEvent(
+			bind = { it: NovelUI.ViewHolder -> it.binding.inLibrary }
+		) { _, _, _, _ ->
+			viewModel.toggleNovelBookmark()
+		}
 
-			override fun onClick(
-				v: View,
-				position: Int,
-				fastAdapter: FastAdapter<NovelUI>,
-				item: NovelUI
-			) {
-				viewModel.toggleNovelBookmark()
-			}
-		})
+		hookClickEvent(
+			bind = { it: NovelUI.ViewHolder -> it.binding.webView }
+		) { _, _, _, _ ->
+			viewModel.openWebView()
+		}
 
-		addEventHook(object : ClickEventHook<NovelUI>() {
-			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? =
-				if (viewHolder is NovelUI.ViewHolder) viewHolder.binding.webView else null
-
-			override fun onClick(
-				v: View,
-				position: Int,
-				fastAdapter: FastAdapter<NovelUI>,
-				item: NovelUI
-			) {
-				viewModel.openWebView()
-			}
-		})
-
-		addEventHook(object : ClickEventHook<NovelUI>() {
-			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? =
-				if (viewHolder is NovelUI.ViewHolder) viewHolder.binding.filterChip else null
-
-			override fun onClick(
-				v: View,
-				position: Int,
-				fastAdapter: FastAdapter<NovelUI>,
-				item: NovelUI
-			) {
-				openFilterMenu()
-			}
-		})
+		hookClickEvent(
+			bind = { it: NovelUI.ViewHolder -> it.binding.filterChip }
+		) { _, _, _, _ ->
+			openFilterMenu()
+		}
 
 		setObserver()
 	}

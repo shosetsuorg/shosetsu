@@ -1,7 +1,7 @@
 package app.shosetsu.android.ui.repository
 
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
+import app.shosetsu.android.common.ext.hookClickEvent
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.controller.GenericFastAdapterRecyclerController
 import app.shosetsu.android.view.controller.base.FABController
@@ -11,7 +11,6 @@ import app.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.listeners.ClickEventHook
 
 /*
  * This file is part of Shosetsu.
@@ -58,21 +57,11 @@ class RepositoryController : GenericFastAdapterRecyclerController<RepositoryUI>(
 	}
 
 	override fun FastAdapter<RepositoryUI>.setupFastAdapter() {
-		addEventHook(object : ClickEventHook<RepositoryUI>() {
-			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? =
-				if (viewHolder is RepositoryUI.ViewHolder)
-					viewHolder.binding.removeButton
-				else null
-
-			override fun onClick(
-				v: View,
-				position: Int,
-				fastAdapter: FastAdapter<RepositoryUI>,
-				item: RepositoryUI
-			) {
-				// Open remove thing
-			}
-		})
+		hookClickEvent(
+			bind = { it: RepositoryUI.ViewHolder -> it.binding.removeButton }
+		) { _, _, _, _ ->
+			// make remove thing
+		}
 	}
 
 

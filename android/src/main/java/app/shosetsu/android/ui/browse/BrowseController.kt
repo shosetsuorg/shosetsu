@@ -23,7 +23,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
-import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.CatalogController
@@ -36,7 +35,6 @@ import app.shosetsu.common.dto.HResult
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.listeners.ClickEventHook
 
 /**
  * shosetsu
@@ -80,41 +78,25 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 			true
 		}
 
-		addEventHook(object : ClickEventHook<ExtensionUI>() {
-			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? =
-				if (viewHolder is ExtensionUI.ViewHolder) viewHolder.binding.button else null
 
-			override fun onClick(
-				v: View,
-				position: Int,
-				fastAdapter: FastAdapter<ExtensionUI>,
-				item: ExtensionUI
-			) {
-				var installed = false
-				var update = false
-				if (item.installed && item.isExtEnabled) {
-					installed = true
-					if (item.updateState() == ExtensionUI.State.UPDATE) update = true
-				}
-
-				if (!installed || update) viewModel.installExtension(item)
-			}
-		})
-
-		addEventHook(object : ClickEventHook<ExtensionUI>() {
-			override fun onBind(viewHolder: RecyclerView.ViewHolder): View? =
-				if (viewHolder is ExtensionUI.ViewHolder) viewHolder.binding.settings else null
-
-			override fun onClick(
-				v: View,
-				position: Int,
-				fastAdapter: FastAdapter<ExtensionUI>,
-				item: ExtensionUI
-			) {
-				pushController(ConfigureExtension(bundleOf(BUNDLE_EXTENSION to item.id)))
+		hookClickEvent(
+			bind = { it: ExtensionUI.ViewHolder -> it.binding.button }
+		) { _, _, _, item ->
+			var installed = false
+			var update = false
+			if (item.installed && item.isExtEnabled) {
+				installed = true
+				if (item.updateState() == ExtensionUI.State.UPDATE) update = true
 			}
 
-		})
+			if (!installed || update) viewModel.installExtension(item)
+		}
+
+		hookClickEvent(
+			bind = { it: ExtensionUI.ViewHolder -> it.binding.settings }
+		) { _, _, _, item ->
+			pushController(ConfigureExtension(bundleOf(BUNDLE_EXTENSION to item.id)))
+		}
 	}
 
 

@@ -1,8 +1,11 @@
 package app.shosetsu.android.common.ext
 
+import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.mikepenz.fastadapter.ClickListener
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.GenericItem
+import com.mikepenz.fastadapter.listeners.ClickEventHook
 
 /*
  * This file is part of shosetsu.
@@ -33,3 +36,29 @@ fun <T : GenericItem> FastAdapter<T>.setOnPreClickListener(listener: ClickListen
 fun <T : GenericItem> FastAdapter<T>.setOnClickListener(listener: ClickListener<T>) {
 	onClickListener = listener
 }
+
+inline fun <ITEM : GenericItem, reified VH : RecyclerView.ViewHolder> FastAdapter<ITEM>.hookClickEvent(
+	crossinline bind: (VH) -> View? = { null },
+	crossinline bindMany: (VH) -> List<View>? = { null },
+	crossinline onClick: (
+		@ParameterName("v") View,
+		@ParameterName("position") Int,
+		@ParameterName("fastAdapter") FastAdapter<ITEM>,
+		@ParameterName("item") ITEM
+	) -> Unit
+) = addEventHook(object : ClickEventHook<ITEM>() {
+	override fun onClick(
+		v: View,
+		position: Int,
+		fastAdapter: FastAdapter<ITEM>,
+		item: ITEM
+	) =
+		onClick(v, position, fastAdapter, item)
+
+	override fun onBind(viewHolder: RecyclerView.ViewHolder): View? =
+		if (viewHolder is VH) bind(viewHolder) else null
+
+	override fun onBindMany(viewHolder: RecyclerView.ViewHolder): List<View>? =
+		if (viewHolder is VH) bindMany(viewHolder) else null
+}
+)
