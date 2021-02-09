@@ -28,7 +28,7 @@ import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.CatalogController
 import app.shosetsu.android.ui.extensionsConfigure.ConfigureExtension
-import app.shosetsu.android.view.controller.FastAdapterRecyclerController.BasicFastAdapterRecyclerController
+import app.shosetsu.android.view.controller.FastAdapterRefreshableRecyclerController
 import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.viewmodel.abstracted.IExtensionsViewModel
@@ -44,7 +44,7 @@ import com.mikepenz.fastadapter.listeners.ClickEventHook
  *
  * @author github.com/doomsdayrs
  */
-class BrowseController : BasicFastAdapterRecyclerController<ExtensionUI>(),
+class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>(),
 	PushCapableController {
 	override val viewTitleRes: Int = R.string.browse
 
@@ -146,12 +146,18 @@ class BrowseController : BasicFastAdapterRecyclerController<ExtensionUI>(),
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
 		R.id.refresh -> {
-			if (viewModel.isOnline())
-				viewModel.refreshRepository()
-			else toast(R.string.you_not_online)
+			refreshExtensions()
 			true
 		}
 		R.id.catalogues_search -> true
 		else -> false
 	}
+
+	private fun refreshExtensions() {
+		if (viewModel.isOnline())
+			viewModel.refreshRepository()
+		else toast(R.string.you_not_online)
+	}
+
+	override fun onRefresh() = refreshExtensions()
 }
