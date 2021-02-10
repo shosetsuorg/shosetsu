@@ -1,9 +1,9 @@
 package app.shosetsu.android.backend.workers
 
-import android.app.Notification
 import android.app.NotificationManager
 import android.content.Context
 import androidx.annotation.StringRes
+import androidx.core.app.NotificationCompat.Builder
 
 /*
  * This file is part of Shosetsu.
@@ -26,17 +26,38 @@ import androidx.annotation.StringRes
  * 09 / 02 / 2021
  */
 interface NotificationCapable {
-	val notification: Notification.Builder
-	val notificationManager: NotificationManager
-	val notifyContext: Context
-	val notificationId: Int
-	fun notify(@StringRes messageId: Int, action: Notification.Builder.() -> Unit = {}) =
-		notify(notifyContext.getText(messageId), action)
+	/**
+	 * Base that [notify] constructs off of, set this with shared content
+	 */
+	val baseNotificationBuilder: Builder
 
-	fun notify(message: CharSequence, action: Notification.Builder.() -> Unit = {}) {
+	/**
+	 * NotificationManager used by [notify]
+	 * @see NotificationManager
+	 */
+	val notificationManager: NotificationManager
+
+	/**
+	 * Context used by [notify] to get string res
+	 */
+	val notifyContext: Context
+
+	val defaultNotificationID: Int
+
+	fun notify(
+		@StringRes messageId: Int,
+		notificationId: Int = this.defaultNotificationID,
+		action: Builder.() -> Unit = {}
+	) = notify(notifyContext.getText(messageId), notificationId, action)
+
+	fun notify(
+		message: CharSequence,
+		notificationId: Int = this.defaultNotificationID,
+		action: Builder.() -> Unit = {}
+	) {
 		notificationManager.notify(
 			notificationId,
-			notification.apply {
+			baseNotificationBuilder.apply {
 				setContentText(message)
 				action()
 			}.build()

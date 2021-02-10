@@ -1,10 +1,10 @@
 package app.shosetsu.android.backend.workers.onetime
 
-import android.app.Notification
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import android.util.Base64
+import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.work.*
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
@@ -16,6 +16,7 @@ import app.shosetsu.android.common.consts.WorkerTags.BACKUP_WORK_ID
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
+import app.shosetsu.android.common.ext.notificationBuilder
 import app.shosetsu.android.common.utils.backupJSON
 import app.shosetsu.android.domain.model.local.backup.*
 import app.shosetsu.common.consts.settings.SettingKey.*
@@ -72,14 +73,9 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 	private val backupRepository by instance<IBackupRepository>()
 
 	override val notificationManager by lazy { appContext.getSystemService<NotificationManager>()!! }
-	override val notification
-		get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			Notification.Builder(applicationContext, CHANNEL_BACKUP)
-		} else {
-			// Suppressed due to lower API
-			@Suppress("DEPRECATION")
-			Notification.Builder(applicationContext)
-		}
+
+	override val baseNotificationBuilder: NotificationCompat.Builder
+		get() = notificationBuilder(applicationContext, CHANNEL_BACKUP)
 			.setSmallIcon(R.drawable.backup_icon)
 			.setSubText("Backup in progress")
 			.setOnlyAlertOnce(true)
@@ -87,7 +83,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 
 	override val notifyContext: Context
 		get() = applicationContext
-	override val notificationId: Int = Notifications.ID_BACKUP
+	override val defaultNotificationID: Int = Notifications.ID_BACKUP
 
 	private suspend fun backupChapters() =
 		iSettingsRepository.getBooleanOrDefault(BackupChapters)

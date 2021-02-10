@@ -1,11 +1,11 @@
 package app.shosetsu.android.backend.workers.onetime
 
-import android.app.Notification
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import android.util.Log
+import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.work.*
 import androidx.work.ExistingWorkPolicy.REPLACE
@@ -14,6 +14,7 @@ import androidx.work.NetworkType.UNMETERED
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
 import app.shosetsu.android.common.consts.LogConstants
+import app.shosetsu.android.common.consts.LogConstants.SERVICE_EXECUTE
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_UPDATE
 import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags.UPDATE_WORK_ID
@@ -27,8 +28,7 @@ import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
 import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
+import app.shosetsu.common.dto.transformToSuccess
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.Kodein
@@ -68,23 +68,20 @@ class NovelUpdateWorker(
 	override val notifyContext: Context
 		get() = applicationContext
 
-	override val notificationId: Int = ID_CHAPTER_UPDATE
+	override val defaultNotificationID: Int = ID_CHAPTER_UPDATE
 
 	override val notificationManager by lazy { appContext.getSystemService<NotificationManager>()!! }
-	override val notification by lazy {
-		if (SDK_INT >= VERSION_CODES.O) {
-			Notification.Builder(appContext, CHANNEL_UPDATE)
-		} else {
-			// Suppressed due to lower API
-			@Suppress("DEPRECATION")
-			Notification.Builder(appContext)
-		}
+
+	override val baseNotificationBuilder: NotificationCompat.Builder
+		get() = notificationBuilder(applicationContext, CHANNEL_UPDATE)
 			.setSmallIcon(R.drawable.refresh)
+			.setSubText(applicationContext.getString(R.string.update))
 			.setContentText("Update in progress")
 			.setOnlyAlertOnce(true)
-	}
+
 
 	override val kodein: Kodein by closestKodein(appContext)
+
 	private val iNovelsRepository: INovelsRepository by instance()
 	private val loadNovelUseCase: GetNovelUseCase by instance()
 	private val toastErrorUseCase: ToastErrorUseCase by instance()
@@ -98,18 +95,21 @@ class NovelUpdateWorker(
 		iSettingsRepository.getBooleanOrDefault(IsDownloadOnUpdate)
 
 	override suspend fun doWork(): Result {
-		logI(LogConstants.SERVICE_EXECUTE)
+		// Log that the worker is executing
+		logI(SERVICE_EXECUTE)
+
+		// Notify the user the worker is working
 		notify(R.string.update) {
 			setOngoing()
 		}
 
+		/** An array of [NovelEntity] that have had updated chapters */
 		val updateNovels = arrayListOf<NovelEntity>()
-		iNovelsRepository.loadBookmarkedNovelEntities().transform { list ->
-			successResult(
-				if (onlyUpdateOngoing())
-					list.filter { it.status == Novel.Status.PUBLISHING }
-				else list
-			)
+
+		iNovelsRepository.loadBookmarkedNovelEntities().transformToSuccess { list ->
+			if (onlyUpdateOngoing())
+				list.filter { it.status == Novel.Status.PUBLISHING }
+			else list
 		}.handle(
 			onError = { return Result.failure() },
 			onLoading = { return Result.failure() },
@@ -118,7 +118,8 @@ class NovelUpdateWorker(
 			var progress = 0
 
 			novels.forEach { nE ->
-				notify(applicationContext.getString(R.string.updating) + " " + nE.title) {
+				notify(nE.title) {
+					setContentTitle(applicationContext.getString(R.string.updating))
 					setProgress(novels.size, progress, false)
 				}
 				loadNovelUseCase(nE, true) {

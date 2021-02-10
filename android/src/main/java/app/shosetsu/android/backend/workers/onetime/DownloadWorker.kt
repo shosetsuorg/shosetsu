@@ -1,10 +1,10 @@
 package app.shosetsu.android.backend.workers.onetime
 
-import android.app.Notification
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
+import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.work.*
 import androidx.work.NetworkType.CONNECTED
@@ -14,16 +14,14 @@ import app.shosetsu.android.backend.workers.NotificationCapable
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_DOWNLOAD
 import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_DOWNLOAD
 import app.shosetsu.android.common.consts.WorkerTags.DOWNLOAD_WORK_ID
-import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.launchUI
-import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.common.ext.toast
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.DownloadEntity
 import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.DownloadStatus
 import com.github.doomsdayrs.apps.shosetsu.R
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -59,23 +57,17 @@ class DownloadWorker(
 ) : CoroutineWorker(appContext, params), KodeinAware, NotificationCapable {
 	override val notifyContext: Context
 		get() = applicationContext
-	override val notificationId: Int = ID_CHAPTER_DOWNLOAD
+	override val defaultNotificationID: Int = ID_CHAPTER_DOWNLOAD
 
 	override val notificationManager by lazy {
 		applicationContext.getSystemService<NotificationManager>()!!
 	}
-	override val notification
-		get() =
-			if (SDK_INT >= VERSION_CODES.O) {
-				Notification.Builder(applicationContext, CHANNEL_DOWNLOAD)
-			} else {
-				// Suppressed due to lower API
-				@Suppress("DEPRECATION")
-				Notification.Builder(applicationContext)
-			}
-				.setSmallIcon(R.drawable.download)
-				.setContentTitle(applicationContext.getString(R.string.app_name))
-				.setOngoing(true)
+
+	override val baseNotificationBuilder: NotificationCompat.Builder
+		get() = notificationBuilder(applicationContext, CHANNEL_DOWNLOAD)
+			.setSmallIcon(R.drawable.download)
+			.setContentTitle("Downloader")
+			.setOngoing(true)
 
 	override val kodein: Kodein by closestKodein(applicationContext)
 	private val downloadsRepo by instance<IDownloadsRepository>()
@@ -139,35 +131,61 @@ class DownloadWorker(
 		return count
 	}
 
-	private suspend fun launchDownload() {
+	/**
+	 * Creates a sub job that starts downloading a chapter async
+	 * This allows the creation of multiple jobs
+	 * This will respect the amount of threads running currently
+	 */
+	private fun launchDownload(): Job = launchIO {
 		downloadsRepo.loadFirstDownload().handle { downloadEntity ->
 			val extID = downloadEntity.extensionID
 
-			// This will loop until the download status is DOWNLOADING
+			//	notify("Pending", downloadEntity.chapterID + 100) { setNotOngoing()setSubText("Download")setContentTitle(downloadEntity.chapterName) }
+
+			// This will loop until the downloadEntity status is DOWNLOADING
 			while (downloadEntity.status != DownloadStatus.DOWNLOADING) {
-				// Will stop if download is paused
+				/*
+				 * Will stop if download is paused.
+				 * This is here in case the user presses
+				 * the pause button while downloads are WAITING.
+				 */
 				if (isDownloadPaused()) {
 					downloadsRepo.update(
 						downloadEntity.copy(
 							status = DownloadStatus.PENDING
 						)
 					)
-					return
+					//		notify("Cancelled", downloadEntity.chapterID + 100) { setNotOngoing()setSubText("Download")setContentTitle(downloadEntity.chapterName) }
+					return@launchIO
 				}
 
-				// Checks if there is space for the extension download
-				// If space is free, will start the extension download and break out of the loop
+				/*
+				 * The code below prevents an extension from
+				 * being overloaded with too many async connections.
+				 *
+				 * Checks if there is space for the extension to download from;
+				 * If space is free, will start the extension download and break out of the loop
+				 */
 				if (activeExt(extID) <= getDownloadThreadsPerExtension()) {
+					// There is a connection available, starting this task
 					downloadEntity.status = DownloadStatus.DOWNLOADING
 					downloadsRepo.update(downloadEntity)
+					// Break out of the while
 					break
 				} else {
-					// If the status is pending, it will now be waiting till the pool is open
+					/*
+					 * If the status is pending, the downloadEntity will be set to "WAITING".
+					 * This will tell the user that the download is waiting
+					 * for others to not overload the site.
+					 */
 					if (downloadEntity.status == DownloadStatus.PENDING) {
 						downloadEntity.status = DownloadStatus.WAITING
 						downloadsRepo.update(downloadEntity)
+						//	notify("Waiting", downloadEntity.chapterID + 100) { setNotOngoing()setSubText("Download")setContentTitle(downloadEntity.chapterName) }
 					}
+					// Continues the loop, letting the check repeat
 				}
+				// Prevent slowdowns to the application code by delaying each iteration by 100ms
 				delay(100)
 			}
 
@@ -176,6 +194,12 @@ class DownloadWorker(
 			activeJobs++
 
 			logI("Downloading $downloadEntity")
+			notify("Downloading", downloadEntity.chapterID + 100) {
+				setNotOngoing()
+				setSubText("Download")
+				setContentTitle(downloadEntity.chapterName)
+			}
+
 			download(downloadEntity).handle(
 				onError = {
 					downloadsRepo.update(
@@ -198,7 +222,7 @@ class DownloadWorker(
 					}
 				},
 				onLoading = {
-					throw Exception("Should not be loading")
+					error("Impossible")
 				}
 			) {
 				downloadsRepo.deleteEntity(downloadEntity)
@@ -206,6 +230,8 @@ class DownloadWorker(
 
 			activeJobs-- // Drops active job count once completed task
 			activeExtensions.remove(downloadEntity.extensionID)
+
+			//notify("Completed", downloadEntity.chapterID + 100) { setNotOngoing()setSubText("Downloading")setContentTitle(downloadEntity.chapterName) }
 		}
 	}
 
@@ -214,20 +240,27 @@ class DownloadWorker(
 		if (isDownloadPaused())
 			logI("Loop Paused")
 		else {
-			// Notifies the application is downloading chapters
-			notify("Downloading chapters")
-
-			// Will not run if there are no downloads or if the download is paused
-			while (getDownloadCount() >= 1 && !isDownloadPaused()) {
-				// Launches a job as long as there are threads to download via
-				val threadsAllowed = getDownloadThreads()
-				if (activeJobs <= threadsAllowed) launchIO {
-					launchDownload()
-				}
+			// Notifies that application is downloading chapters
+			notify("Downloading chapters") {
+				setNotOngoing()
 			}
 
+			// Will not run if there are no downloads to complete or if the download is paused
+			while (getDownloadCount() >= 1 && !isDownloadPaused()) {
+				/*
+				* Launches a job as long as there are threads to download via.
+				* Otherwise will continue, and the while loop will keep repeating until
+				* there is space to launch another thread for downloading.
+				* */
+				if (activeJobs <= getDownloadThreads())
+					launchDownload()
+			}
+
+
 			// Downloads the chapters
-			notificationManager.cancel(ID_CHAPTER_DOWNLOAD)
+			notify("Completed") {
+				setNotOngoing()
+			}
 		}
 		logI("Completed download loop")
 		return Result.success()
@@ -294,5 +327,4 @@ class DownloadWorker(
 		 */
 		override fun stop(): Operation = workerManager.cancelUniqueWork(DOWNLOAD_WORK_ID)
 	}
-
 }

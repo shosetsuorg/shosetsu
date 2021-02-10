@@ -17,7 +17,6 @@ package app.shosetsu.android.ui.updates
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import android.view.View
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.controller.FastAdapterRefreshableRecyclerController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
@@ -41,8 +40,6 @@ class UpdatesController : FastAdapterRefreshableRecyclerController<UpdateUI>(),
 	val viewModel: IUpdatesViewModel by viewModel()
 
 	override val viewTitleRes: Int = R.string.updates
-
-	override fun onViewCreated(view: View) {}
 
 	override fun setupRecyclerView() {
 		super.setupRecyclerView()

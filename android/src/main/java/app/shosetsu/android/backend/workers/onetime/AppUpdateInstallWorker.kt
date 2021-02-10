@@ -1,14 +1,13 @@
 package app.shosetsu.android.backend.workers.onetime
 
-import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Icon
 import android.net.Uri
-import android.os.Build
+import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
+import androidx.core.graphics.drawable.IconCompat
 import androidx.work.*
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
@@ -61,23 +60,15 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 		get() = applicationContext
 
 
-	override val notificationId: Int = ID_APP_UPDATE_INSTALL
+	override val defaultNotificationID: Int = ID_APP_UPDATE_INSTALL
 
 	private val reportExceptionUseCase by instance<ReportExceptionUseCase>()
 
-	override val notification by lazy {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			Notification.Builder(appContext, CHANNEL_APP_UPDATE)
-		} else {
-			// Suppressed due to lower API
-			@Suppress("DEPRECATION")
-			Notification.Builder(appContext)
-		}.apply {
-			setSubText(applicationContext.getString(R.string.notification_app_update_install_title))
-			setSmallIcon(R.drawable.app_update)
-			setProgress(0, 0, true)
-		}
-	}
+	override val baseNotificationBuilder: NotificationCompat.Builder
+		get() = notificationBuilder(applicationContext, CHANNEL_APP_UPDATE)
+			.setSubText(applicationContext.getString(R.string.notification_app_update_install_title))
+			.setSmallIcon(R.drawable.app_update)
+			.setProgress(0, 0, true)
 
 
 	override suspend fun doWork(): Result {
@@ -131,26 +122,16 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 				notify(R.string.notification_app_update_install) {
 					setNotOngoing()
 					removeProgress()
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-						addAction(
-							Notification.Action.Builder(
-								Icon.createWithResource(
-									applicationContext,
-									R.drawable.app_update
-								),
-								applicationContext.getString(R.string.install),
-								installApkPendingActivity(applicationContext, uri)
-							).build()
-						)
-					} else {
-						// Older API call
-						@Suppress("DEPRECATION")
-						addAction(
-							R.drawable.app_update,
+					addAction(
+						actionBuilder(
+							IconCompat.createWithResource(
+								applicationContext,
+								R.drawable.app_update
+							),
 							applicationContext.getString(R.string.install),
 							installApkPendingActivity(applicationContext, uri)
-						)
-					}
+						).build()
+					)
 				}
 
 			}
@@ -164,7 +145,7 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 	 * @param context context
 	 * @param uri uri of apk that is installed
 	 */
-	fun installApkPendingActivity(context: Context, uri: Uri): PendingIntent {
+	private fun installApkPendingActivity(context: Context, uri: Uri): PendingIntent {
 		val intent = Intent(Intent.ACTION_VIEW).apply {
 			setDataAndType(uri, APK_MIME)
 			flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION

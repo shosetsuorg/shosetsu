@@ -1,6 +1,10 @@
 package app.shosetsu.android.common.ext
 
-import android.app.Notification
+import android.app.PendingIntent
+import android.content.Context
+import androidx.core.app.NotificationCompat.Action
+import androidx.core.app.NotificationCompat.Builder
+import androidx.core.graphics.drawable.IconCompat
 
 /*
  * This file is part of Shosetsu.
@@ -19,9 +23,15 @@ import android.app.Notification
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-fun Notification.Builder.setOngoing() = setOngoing(true)
+fun Builder.setOngoing() = setOngoing(true)
 
-fun Notification.Builder.setNotOngoing() = setOngoing(false)
+fun Builder.setNotOngoing() = setOngoing(false)
 
-fun Notification.Builder.removeProgress() =
+fun Builder.removeProgress() =
 	setProgress(0, 0, false)
+
+fun notificationBuilder(context: Context, channel: String): Builder = Builder(context, channel)
+
+
+fun actionBuilder(icon: IconCompat?, title: CharSequence?, intent: PendingIntent?): Action.Builder =
+	Action.Builder(icon, title, intent)

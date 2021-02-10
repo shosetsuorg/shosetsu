@@ -183,6 +183,20 @@ inline fun <reified I, O> HResult<I>.transmogrify(
 
 
 /**
+ * Transform [this] [HResult] of [I] into a [HResult.Success] of [O]
+ *
+ * Note, Only used when the operation is guaranteed to succeed in all case
+ */
+inline fun <reified I, reified O> HResult<I>.transformToSuccess(
+	transformSuccess: (I) -> O
+): HResult<O> = when (this) {
+	is HResult.Success -> successResult(transformSuccess(this.data))
+	HResult.Loading -> this as HResult.Loading
+	HResult.Empty -> this as HResult.Empty
+	is HResult.Error -> this
+}
+
+/**
  * Transform [this] [HResult] of [I] into a [HResult] of [O]
  */
 inline fun <reified I, O> HResult<I>.transform(

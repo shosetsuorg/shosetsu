@@ -111,6 +111,7 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 	}
 
 	override fun onViewCreated(view: View) {
+		super.onViewCreated(view)
 		showEmpty()
 		viewModel.liveData.observe(this) { handleRecyclerUpdate(it) }
 	}

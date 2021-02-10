@@ -1,10 +1,10 @@
 package app.shosetsu.android.backend.workers.onetime
 
-import android.app.Notification
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.work.*
 import androidx.work.NetworkType.CONNECTED
@@ -16,10 +16,7 @@ import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.Notifications.ID_APP_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_WORK_ID
-import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.common.ext.toHError
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.load.LoadRemoteAppUpdateUseCase
 import app.shosetsu.android.ui.splash.SplashScreen
@@ -66,20 +63,14 @@ class AppUpdateCheckWorker(
 		get() = Intent(applicationContext, SplashScreen::class.java).apply {
 			action = ACTION_OPEN_APP_UPDATE
 		}
-	override val notificationId: Int = ID_APP_UPDATE
+	override val defaultNotificationID: Int = ID_APP_UPDATE
 
 	private val loadRemoteAppUpdateUseCase by instance<LoadRemoteAppUpdateUseCase>()
 	override val notificationManager: NotificationManager by lazy { appContext.getSystemService()!! }
 	private val reportExceptionUseCase by instance<ReportExceptionUseCase>()
 
-	override val notification: Notification.Builder
-		get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			Notification.Builder(applicationContext, Notifications.CHANNEL_APP_UPDATE)
-		} else {
-			// Suppressed due to lower API
-			@Suppress("DEPRECATION")
-			Notification.Builder(applicationContext)
-		}
+	override val baseNotificationBuilder: NotificationCompat.Builder
+		get() = notificationBuilder(applicationContext, Notifications.CHANNEL_APP_UPDATE)
 			.setSubText(applicationContext.getString(R.string.notification_app_update_check))
 			.setSmallIcon(R.drawable.app_update)
 			.setOnlyAlertOnce(true)
@@ -93,7 +84,7 @@ class AppUpdateCheckWorker(
 		try {
 			notify("Starting")
 			loadRemoteAppUpdateUseCase().handle(onEmpty = {
-				notificationManager.cancel(notificationId)
+				notificationManager.cancel(defaultNotificationID)
 			}, onError = {
 				logE("Error!", it.exception)
 				notify("Error! ${it.code} | ${it.message}") {

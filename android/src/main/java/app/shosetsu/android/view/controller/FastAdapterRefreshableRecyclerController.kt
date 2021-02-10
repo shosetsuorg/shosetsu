@@ -2,6 +2,7 @@ package app.shosetsu.android.view.controller
 
 import android.view.LayoutInflater
 import android.view.View
+import androidx.annotation.CallSuper
 import androidx.core.view.isVisible
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRefreshableRecyclerBinding
 import com.mikepenz.fastadapter.GenericItem
@@ -37,16 +38,19 @@ abstract class FastAdapterRefreshableRecyclerController<ITEM : GenericItem> :
 		binding.swipeRefreshLayout.setOnRefreshListener(null)
 	}
 
+	@CallSuper
 	override fun hideEmpty() {
 		if (!binding.recyclerView.isVisible) binding.recyclerView.isVisible = true
 		binding.emptyDataView.hide()
 	}
 
+	@CallSuper
 	override fun showEmpty() {
 		if (itemAdapter.adapterItemCount > 0) return
 		binding.recyclerView.isVisible = false
 	}
 
+	@CallSuper
 	override fun onViewCreated(view: View) {
 		binding.swipeRefreshLayout.setOnRefreshListener {
 			onRefresh()
