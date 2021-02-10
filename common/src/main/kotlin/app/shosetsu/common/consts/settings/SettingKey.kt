@@ -87,6 +87,8 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object UpdateOnLowBattery : SettingKey<Boolean>("updateLowBattery", false)
 	object UpdateOnMeteredConnection : SettingKey<Boolean>("updateMetered", false)
 	object UpdateOnlyWhenIdle : SettingKey<Boolean>("updateIdle", false)
+	object UpdateNotificationStyle : SettingKey<Boolean>("updateNotificationStyle", false)
+
 
 	// App Update Options
 	object AppUpdateOnStartup : SettingKey<Boolean>("appUpdateOnStartup", true)
@@ -203,7 +205,8 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 				DownloadThreadPool,
 				DownloadExtThreads,
-				AppTheme
+				AppTheme,
+				UpdateNotificationStyle
 			)
 		}
 

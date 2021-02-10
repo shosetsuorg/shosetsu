@@ -1,6 +1,8 @@
 package app.shosetsu.android.domain.usecases.start
 
+import androidx.work.await
 import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker.Manager
+import app.shosetsu.android.common.ext.launchIO
 
 /*
  * This file is part of shosetsu.
@@ -31,7 +33,14 @@ class StartUpdateWorkerUseCase(
 	 * @param override if true then will override the current update loop
 	 */
 	operator fun invoke(override: Boolean = false) {
-		if (!manager.isRunning() || override)
+		launchIO {
+			if (manager.isRunning())
+				if (override)
+					manager.stop().await()
+				else
+					return@launchIO
+
 			manager.start()
+		}
 	}
 }

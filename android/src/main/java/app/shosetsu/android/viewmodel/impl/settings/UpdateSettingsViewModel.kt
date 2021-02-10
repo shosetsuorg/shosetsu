@@ -114,6 +114,10 @@ class UpdateSettingsViewModel(
 			title { "Update only when idle" }
 			requiredVersion { android.os.Build.VERSION_CODES.M }
 			checkSettingValue(SettingKey.UpdateOnlyWhenIdle)
+		},
+		switchSettingData(6) {
+			title { "Notification Style" }
+			checkSettingValue(SettingKey.UpdateNotificationStyle)
 		}
 	)
 

@@ -94,6 +94,9 @@ class NovelUpdateWorker(
 	private suspend fun downloadOnUpdate(): Boolean =
 		iSettingsRepository.getBooleanOrDefault(IsDownloadOnUpdate)
 
+	private suspend fun notificationStyle(): Boolean =
+		iSettingsRepository.getBooleanOrDefault(UpdateNotificationStyle)
+
 	override suspend fun doWork(): Result {
 		// Log that the worker is executing
 		logI(SERVICE_EXECUTE)
@@ -118,8 +121,13 @@ class NovelUpdateWorker(
 			var progress = 0
 
 			novels.forEach { nE ->
-				notify(nE.title) {
-					setContentTitle(applicationContext.getString(R.string.updating))
+				val style = notificationStyle()
+				val title: String =
+					if (style) nE.title else applicationContext.getString(R.string.updating)
+				val content: String = if (style) "" else nE.title
+
+				notify(content) {
+					setContentTitle(title)
 					setProgress(novels.size, progress, false)
 				}
 				loadNovelUseCase(nE, true) {
@@ -128,12 +136,10 @@ class NovelUpdateWorker(
 				progress++
 			}
 
-			notify(R.string.update) {
+			notify(R.string.update_complete) {
 				setNotOngoing()
 				removeProgress()
 			}
-
-			if (updateNovels.isEmpty()) notificationManager.cancel(ID_CHAPTER_UPDATE)
 
 		}
 

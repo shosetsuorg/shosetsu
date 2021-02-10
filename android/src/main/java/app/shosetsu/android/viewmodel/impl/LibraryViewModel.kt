@@ -19,15 +19,14 @@ package app.shosetsu.android.viewmodel.impl
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
-import app.shosetsu.android.domain.usecases.start.StartUpdateWorkerUseCase
 import app.shosetsu.android.domain.usecases.load.LoadLibraryUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUIColumnsHUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUIColumnsPUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUITypeUseCase
 import app.shosetsu.android.domain.usecases.settings.SetNovelUITypeUseCase
+import app.shosetsu.android.domain.usecases.start.StartUpdateWorkerUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateBookmarkedNovelUseCase
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ILibraryViewModel
@@ -189,12 +188,9 @@ class LibraryViewModel(
 		flow: Flow<HashMap<String, InclusionState>>,
 		against: (ABookmarkedNovelUI) -> List<String>
 	) = combine(flow) { novelResult, filters ->
-		logV("HELLO")
 		novelResult.transform { list ->
-			logV("TRANSFORM")
 			successResult(
 				if (filters.isNotEmpty()) {
-					logV("Remapping")
 					var result = list
 					filters.forEach { (s, inclusionState) ->
 						result = when (inclusionState) {
@@ -210,7 +206,6 @@ class LibraryViewModel(
 					}
 					result
 				} else {
-					logV("Inital")
 					list
 				}
 			)
