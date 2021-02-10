@@ -75,7 +75,7 @@ class NovelUpdateWorker(
 	override val baseNotificationBuilder: NotificationCompat.Builder
 		get() = notificationBuilder(applicationContext, CHANNEL_UPDATE)
 			.setSmallIcon(R.drawable.refresh)
-			.setSubText(applicationContext.getString(R.string.update))
+			.setSubText(applicationContext.getString(R.string.update_novel))
 			.setContentText("Update in progress")
 			.setOnlyAlertOnce(true)
 

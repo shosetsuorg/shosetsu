@@ -343,6 +343,7 @@
     <string name="artists">Artists</string>
     <string name="unread_status">Unread status</string>
     <string name="message_backup_warning">While the backup is running, Please do not use the application</string>
+    <string name="update_novel">Novel Updater</string>
 
     <array name="application_themes">
         <item>@string/follow_system_theme</item>
