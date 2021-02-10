@@ -1,6 +1,8 @@
 package app.shosetsu.android.viewmodel.impl.settings
 
+import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker
 import app.shosetsu.android.domain.ReportExceptionUseCase
+import app.shosetsu.android.domain.usecases.start.StartBackupWorkerUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.ABackupSettingsViewModel
@@ -32,8 +34,16 @@ import com.github.doomsdayrs.apps.shosetsu.R
  */
 class BackupSettingsViewModel(
 	iSettingsRepository: ISettingsRepository,
-	private val reportExceptionUseCase: ReportExceptionUseCase
+	private val reportExceptionUseCase: ReportExceptionUseCase,
+	private val manager: NovelUpdateWorker.Manager,
+	private val startBackupWorkerUseCase: StartBackupWorkerUseCase
 ) : ABackupSettingsViewModel(iSettingsRepository) {
+
+	override fun startBackup() {
+		if (manager.isRunning()) manager.stop()
+		startBackupWorkerUseCase()
+	}
+
 	override suspend fun settings(): List<SettingsItemData> = listOf(
 		switchSettingData(0) {
 			title { R.string.backup_chapters_option }
@@ -48,12 +58,10 @@ class BackupSettingsViewModel(
 		buttonSettingData(3) {
 			title { R.string.backup_now }
 			text { R.string.backup_now }
-			onButtonClicked { }
 		},
 		buttonSettingData(4) {
 			title { R.string.restore_now }
 			text { R.string.restore_now }
-			onButtonClicked { }
 		}
 	)
 

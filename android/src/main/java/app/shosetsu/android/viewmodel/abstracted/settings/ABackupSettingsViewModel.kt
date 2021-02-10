@@ -24,4 +24,10 @@ import app.shosetsu.common.domain.repositories.base.ISettingsRepository
  * 31 / 08 / 2020
  */
 abstract class ABackupSettingsViewModel(iSettingsRepository: ISettingsRepository) :
-	ASubSettingsViewModel(iSettingsRepository)
+	ASubSettingsViewModel(iSettingsRepository) {
+
+	/** Order the app to create a new backup now */
+	abstract fun startBackup()
+
+
+}

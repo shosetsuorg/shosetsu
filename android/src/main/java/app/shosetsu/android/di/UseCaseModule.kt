@@ -12,6 +12,7 @@ import app.shosetsu.android.domain.usecases.settings.LoadChaptersResumeFirstUnre
 import app.shosetsu.android.domain.usecases.settings.LoadNavigationStyleUseCase
 import app.shosetsu.android.domain.usecases.settings.SetNovelUITypeUseCase
 import app.shosetsu.android.domain.usecases.start.StartAppUpdateInstallWorkerUseCase
+import app.shosetsu.android.domain.usecases.start.StartBackupWorkerUseCase
 import app.shosetsu.android.domain.usecases.start.StartDownloadWorkerUseCase
 import app.shosetsu.android.domain.usecases.start.StartUpdateWorkerUseCase
 import app.shosetsu.android.domain.usecases.toast.StringToastUseCase
@@ -186,5 +187,9 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 
 	bind<PurgeNovelCacheUseCase>() with provider {
 		PurgeNovelCacheUseCase(instance())
+	}
+
+	bind<StartBackupWorkerUseCase>() with provider {
+		StartBackupWorkerUseCase(instance(), instance())
 	}
 }

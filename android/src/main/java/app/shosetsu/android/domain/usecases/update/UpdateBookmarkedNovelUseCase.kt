@@ -30,5 +30,5 @@ class UpdateBookmarkedNovelUseCase(
 	private val novelsRepository: INovelsRepository,
 ) {
 	suspend operator fun invoke(list: List<ABookmarkedNovelUI>): HResult<*> =
-		novelsRepository.updateBookmarkedNovelData(list.convertList())
+		novelsRepository.updateLibraryNovelEntity(list.convertList())
 }

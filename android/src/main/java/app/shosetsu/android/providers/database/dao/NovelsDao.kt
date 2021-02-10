@@ -7,7 +7,7 @@ import androidx.room.Transaction
 import app.shosetsu.android.domain.model.database.DBNovelEntity
 import app.shosetsu.android.domain.model.database.DBStrippedNovelEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
-import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
+import app.shosetsu.common.domain.model.local.LibraryNovelEntity
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -69,7 +69,7 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 						novels.tags
 					FROM novels WHERE novels.bookmarked = 1"""
 	)
-	fun loadBookmarkedNovelsFlow(): Flow<List<BookmarkedNovelEntity>>
+	fun loadBookmarkedNovelsFlow(): Flow<List<LibraryNovelEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT id,title,imageURL,bookmarked FROM novels WHERE _rowid_ = :rowID LIMIT 1")
@@ -92,7 +92,7 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 
 	@Transaction
 	@Throws(SQLiteException::class)
-	suspend fun update(list: List<BookmarkedNovelEntity>) {
+	suspend fun update(list: List<LibraryNovelEntity>) {
 		list.forEach { bookMarked ->
 			update(
 				getNovel(bookMarked.id).copy(

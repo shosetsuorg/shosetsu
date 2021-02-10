@@ -12,13 +12,12 @@ import androidx.work.ExistingWorkPolicy.REPLACE
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
+import app.shosetsu.android.backend.workers.NotificationCapable
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_UPDATE
 import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags.UPDATE_WORK_ID
-import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.common.ext.logID
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.usecases.get.GetNovelUseCase
 import app.shosetsu.android.domain.usecases.start.StartDownloadWorkerUseCase
 import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
@@ -65,10 +64,14 @@ import org.kodein.di.generic.instance
 class NovelUpdateWorker(
 	appContext: Context,
 	params: WorkerParameters,
-) : CoroutineWorker(appContext, params), KodeinAware {
+) : CoroutineWorker(appContext, params), KodeinAware, NotificationCapable {
+	override val notifyContext: Context
+		get() = applicationContext
 
-	private val notificationManager by lazy { appContext.getSystemService<NotificationManager>()!! }
-	private val progressNotification by lazy {
+	override val notificationId: Int = ID_CHAPTER_UPDATE
+
+	override val notificationManager by lazy { appContext.getSystemService<NotificationManager>()!! }
+	override val notification by lazy {
 		if (SDK_INT >= VERSION_CODES.O) {
 			Notification.Builder(appContext, CHANNEL_UPDATE)
 		} else {
@@ -80,6 +83,7 @@ class NovelUpdateWorker(
 			.setContentText("Update in progress")
 			.setOnlyAlertOnce(true)
 	}
+
 	override val kodein: Kodein by closestKodein(appContext)
 	private val iNovelsRepository: INovelsRepository by instance()
 	private val loadNovelUseCase: GetNovelUseCase by instance()
@@ -95,10 +99,9 @@ class NovelUpdateWorker(
 
 	override suspend fun doWork(): Result {
 		logI(LogConstants.SERVICE_EXECUTE)
-		val pr = progressNotification
-		pr.setContentTitle(applicationContext.getString(R.string.update))
-		pr.setOngoing(true)
-		notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
+		notify(R.string.update) {
+			setOngoing()
+		}
 
 		val updateNovels = arrayListOf<NovelEntity>()
 		iNovelsRepository.loadBookmarkedNovelEntities().transform { list ->
@@ -115,27 +118,19 @@ class NovelUpdateWorker(
 			var progress = 0
 
 			novels.forEach { nE ->
-				pr.setContentText(applicationContext.getString(R.string.updating) + nE.title)
-				pr.setProgress(novels.size, progress, false)
-				notificationManager.notify(ID_CHAPTER_UPDATE, pr.build())
+				notify(applicationContext.getString(R.string.updating) + " " + nE.title) {
+					setProgress(novels.size, progress, false)
+				}
 				loadNovelUseCase(nE, true) {
 					updateNovels.add(nE)
 				}.handle(onError = { toastErrorUseCase<NovelUpdateWorker>(it) })
 				progress++
 			}
 
-
-			notificationManager.notify(
-				ID_CHAPTER_UPDATE,
-				pr.apply {
-					setContentTitle(applicationContext.getString(R.string.update))
-					setContentText(
-						applicationContext.getString(R.string.update_complete) + "\n"
-					)
-					setOngoing(false)
-					setProgress(0, 0, false)
-				}.build()
-			)
+			notify(R.string.update) {
+				setNotOngoing()
+				removeProgress()
+			}
 
 			if (updateNovels.isEmpty()) notificationManager.cancel(ID_CHAPTER_UPDATE)
 

@@ -3,7 +3,7 @@ package app.shosetsu.common.domain.repositories.impl
 import app.shosetsu.common.datasource.database.base.IDBNovelsDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteCatalogueDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteNovelDataSource
-import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
+import app.shosetsu.common.domain.model.local.LibraryNovelEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.StrippedBookmarkedNovelEntity
 import app.shosetsu.common.domain.model.local.StrippedNovelEntity
@@ -44,7 +44,7 @@ class NovelsRepository(
 	private val remoteSource: IRemoteNovelDataSource,
 	private val remoteCatalogueDataSource: IRemoteCatalogueDataSource,
 ) : INovelsRepository {
-	override fun loadBookmarkedNovelFlow(): Flow<HResult<List<BookmarkedNovelEntity>>> =
+	override fun loadLibraryNovelEntities(): Flow<HResult<List<LibraryNovelEntity>>> =
 		database.loadBookmarkedNovelsFlow()
 
 	override suspend fun loadBookmarkedNovelEntities(): HResult<List<NovelEntity>> =
@@ -104,7 +104,7 @@ class NovelsRepository(
 			)
 		)
 
-	override suspend fun updateBookmarkedNovelData(list: List<BookmarkedNovelEntity>): HResult<*> =
+	override suspend fun updateLibraryNovelEntity(list: List<LibraryNovelEntity>): HResult<*> =
 		database.update(list)
 
 	override suspend fun retrieveNovelInfo(

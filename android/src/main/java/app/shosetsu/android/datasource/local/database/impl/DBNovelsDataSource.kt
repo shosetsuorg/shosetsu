@@ -5,7 +5,7 @@ import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.providers.database.dao.NovelsDao
 import app.shosetsu.common.datasource.database.base.IDBNovelsDataSource
-import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
+import app.shosetsu.common.domain.model.local.LibraryNovelEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.StrippedNovelEntity
 import app.shosetsu.common.dto.*
@@ -46,7 +46,7 @@ class DBNovelsDataSource(
 
 	@ExperimentalCoroutinesApi
 	override fun loadBookmarkedNovelsFlow(
-	): Flow<HResult<List<BookmarkedNovelEntity>>> = flow {
+	): Flow<HResult<List<LibraryNovelEntity>>> = flow {
 		emit(loading())
 		try {
 			emitAll(novelsDao.loadBookmarkedNovelsFlow().mapLatestToSuccess())
@@ -77,7 +77,7 @@ class DBNovelsDataSource(
 	}
 
 	override suspend fun update(
-		list: List<BookmarkedNovelEntity>
+		list: List<LibraryNovelEntity>
 	): HResult<*> = try {
 		successResult(novelsDao.update(list))
 	} catch (e: Exception) {

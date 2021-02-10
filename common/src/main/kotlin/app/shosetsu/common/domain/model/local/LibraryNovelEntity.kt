@@ -29,7 +29,7 @@ package app.shosetsu.common.domain.model.local
  * @param bookmarked if this novel is bookmarked or not
  * @param unread chapters of this novel
  */
-data class BookmarkedNovelEntity(
+data class LibraryNovelEntity(
 	val id: Int,
 	val title: String,
 	val imageURL: String,

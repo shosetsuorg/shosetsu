@@ -1,6 +1,6 @@
 package app.shosetsu.common.datasource.database.base
 
-import app.shosetsu.common.domain.model.local.BookmarkedNovelEntity
+import app.shosetsu.common.domain.model.local.LibraryNovelEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.StrippedNovelEntity
 import app.shosetsu.common.dto.HResult
@@ -37,8 +37,8 @@ interface IDBNovelsDataSource {
 	/** Load a [List] of [NovelEntity]s that are bookmarked */
 	suspend fun loadBookmarkedNovels(): HResult<List<NovelEntity>>
 
-	/** Loads a [List] okf [BookmarkedNovelEntity] */
-	fun loadBookmarkedNovelsFlow(): Flow<HResult<List<BookmarkedNovelEntity>>>
+	/** Loads a [List] okf [LibraryNovelEntity] */
+	fun loadBookmarkedNovelsFlow(): Flow<HResult<List<LibraryNovelEntity>>>
 
 	/** Loads a [NovelEntity] by its [novelID] */
 	suspend fun getNovel(novelID: Int): HResult<NovelEntity>
@@ -49,8 +49,8 @@ interface IDBNovelsDataSource {
 	/** Updates a [NovelEntity] */
 	suspend fun update(novelEntity: NovelEntity): HResult<*>
 
-	/** Updates a list of [BookmarkedNovelEntity] */
-	suspend fun update(list: List<BookmarkedNovelEntity>): HResult<*>
+	/** Updates a list of [LibraryNovelEntity] */
+	suspend fun update(list: List<LibraryNovelEntity>): HResult<*>
 
 	/** Inserts a [NovelEntity] then returns its [StrippedNovelEntity] */
 	suspend fun insertReturnStripped(novelEntity: NovelEntity): HResult<StrippedNovelEntity>

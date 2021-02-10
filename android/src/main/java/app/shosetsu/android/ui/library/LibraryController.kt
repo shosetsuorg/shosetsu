@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import android.view.*
 import android.widget.SearchView
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -116,7 +115,7 @@ class LibraryController
 			syncFABWithRecyclerView(recyclerView, it)
 		}
 		super.setupRecyclerView()
-		setObservers()
+		startObservation()
 	}
 
 	override fun FastAdapter<ABookmarkedNovelUI>.setupFastAdapter() {
@@ -163,8 +162,8 @@ class LibraryController
 		}
 	}
 
-	private fun setObservers() {
-		viewModel.liveData.observe(this) { handleRecyclerUpdate(it) }
+	private fun startObservation() {
+		viewModel.liveData.observeRecyclerUpdates()
 		viewModel.novelCardTypeLiveData.observe(this) {
 			updateLayoutManager(it.manager)
 		}
@@ -233,14 +232,7 @@ class LibraryController
 		}
 	}
 
-	override fun hideEmpty() {
-		if (!binding.recyclerView.isVisible) binding.recyclerView.isVisible = true
-		binding.emptyDataView.hide()
-	}
-
 	override fun showEmpty() {
-		if (itemAdapter.adapterItemCount > 0) return
-		binding.recyclerView.isVisible = false
 		binding.emptyDataView.show("You don't have any novels, Go to \"Browse\" and add some!")
 	}
 

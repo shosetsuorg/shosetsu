@@ -37,10 +37,12 @@ import org.joda.time.DateTime
  */
 class UpdatesController : FastAdapterRefreshableRecyclerController<UpdateUI>(),
 	CollapsedToolBarController {
-	val viewModel: IUpdatesViewModel by viewModel()
-	override val viewTitleRes: Int = R.string.updates
-	override fun onViewCreated(view: View) {}
 
+	val viewModel: IUpdatesViewModel by viewModel()
+
+	override val viewTitleRes: Int = R.string.updates
+
+	override fun onViewCreated(view: View) {}
 
 	override fun setupRecyclerView() {
 		super.setupRecyclerView()
@@ -58,21 +60,7 @@ class UpdatesController : FastAdapterRefreshableRecyclerController<UpdateUI>(),
 		startObservation()
 	}
 
-	private fun startObservation() {
-		viewModel.liveData.observe(this) {
-			handleRecyclerUpdate(it)
-		}
-	}
-
-	override fun updateUI(newList: List<UpdateUI>) {
-		// Launches the sorting task async, then it passes the result to the UI
-		launchIO { newList.sortedByDescending { it.time }.let { launchUI { super.updateUI(it) } } }
-	}
-
-	override fun showEmpty() {
-		super.showEmpty()
-		binding.emptyDataView.show("No updates yet! Maybe check again?")
-	}
+	private fun startObservation() = viewModel.liveData.observeRecyclerUpdates()
 
 	override fun handleErrorResult(e: HResult.Error) {
 		super.handleErrorResult(e)

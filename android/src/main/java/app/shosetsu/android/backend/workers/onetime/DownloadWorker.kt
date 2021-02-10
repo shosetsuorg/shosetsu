@@ -10,6 +10,7 @@ import androidx.work.*
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
+import app.shosetsu.android.backend.workers.NotificationCapable
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_DOWNLOAD
 import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_DOWNLOAD
 import app.shosetsu.android.common.consts.WorkerTags.DOWNLOAD_WORK_ID
@@ -55,24 +56,27 @@ import org.kodein.di.generic.instance
 class DownloadWorker(
 	appContext: Context,
 	params: WorkerParameters,
-) : CoroutineWorker(appContext, params), KodeinAware {
+) : CoroutineWorker(appContext, params), KodeinAware, NotificationCapable {
+	override val notifyContext: Context
+		get() = applicationContext
+	override val notificationId: Int = ID_CHAPTER_DOWNLOAD
 
-	private val notificationManager by lazy {
+	override val notificationManager by lazy {
 		applicationContext.getSystemService<NotificationManager>()!!
 	}
-	private val progressNotification by lazy {
-		if (SDK_INT >= VERSION_CODES.O) {
-			Notification.Builder(applicationContext, CHANNEL_DOWNLOAD)
-		} else {
-			// Suppressed due to lower API
-			@Suppress("DEPRECATION")
-			Notification.Builder(applicationContext)
-		}
-			.setSmallIcon(R.drawable.download)
-			.setContentTitle(applicationContext.getString(R.string.app_name))
-			.setContentText("Downloading Chapters")
-			.setOngoing(true)
-	}
+	override val notification
+		get() =
+			if (SDK_INT >= VERSION_CODES.O) {
+				Notification.Builder(applicationContext, CHANNEL_DOWNLOAD)
+			} else {
+				// Suppressed due to lower API
+				@Suppress("DEPRECATION")
+				Notification.Builder(applicationContext)
+			}
+				.setSmallIcon(R.drawable.download)
+				.setContentTitle(applicationContext.getString(R.string.app_name))
+				.setOngoing(true)
+
 	override val kodein: Kodein by closestKodein(applicationContext)
 	private val downloadsRepo by instance<IDownloadsRepository>()
 	private val chapRepo by instance<IChaptersRepository>()
@@ -211,7 +215,7 @@ class DownloadWorker(
 			logI("Loop Paused")
 		else {
 			// Notifies the application is downloading chapters
-			notificationManager.notify(ID_CHAPTER_DOWNLOAD, progressNotification.build())
+			notify("Downloading chapters")
 
 			// Will not run if there are no downloads or if the download is paused
 			while (getDownloadCount() >= 1 && !isDownloadPaused()) {

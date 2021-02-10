@@ -8,6 +8,8 @@ import app.shosetsu.android.domain.usecases.start.StartUpdateWorkerUseCase
 import app.shosetsu.android.view.uimodels.model.UpdateUI
 import app.shosetsu.android.viewmodel.abstracted.IUpdatesViewModel
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.mapLatestResult
+import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.enums.ReadingStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -43,7 +45,11 @@ class UpdatesViewModel(
 ) : IUpdatesViewModel() {
 	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<List<UpdateUI>>> by lazy {
-		getUpdatesUseCase().asIOLiveData()
+		getUpdatesUseCase()
+			.mapLatestResult { list ->
+				successResult(list.sortedByDescending { it.time })
+			}
+			.asIOLiveData()
 	}
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {

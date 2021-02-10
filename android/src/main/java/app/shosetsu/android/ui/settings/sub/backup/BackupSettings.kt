@@ -3,6 +3,7 @@ package app.shosetsu.android.ui.settings.sub.backup
 import android.app.Activity
 import android.content.Intent
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import app.shosetsu.android.common.ext.context
 import app.shosetsu.android.common.ext.toast
 import app.shosetsu.android.common.ext.viewModel
@@ -45,6 +46,15 @@ class BackupSettings : SettingsSubController() {
 	override val viewModel: ABackupSettingsViewModel by viewModel()
 
 	override val adjustments: List<SettingsItemData>.() -> Unit = {
+		find<ButtonSettingData>(3)?.onButtonClicked {
+			// Open ui informing user to wait for completion of the backup
+			AlertDialog.Builder(recyclerView.context!!).apply {
+				setMessage(R.string.message_backup_warning)
+			}.create().show()
+			// Stops novel updates while backup is taking place
+			// Starts backing up data
+			viewModel.startBackup()
+		}
 		find<ButtonSettingData>(4)?.onButtonClicked {
 			performFileSelection()
 		}

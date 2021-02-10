@@ -8,18 +8,16 @@ import android.content.Intent
 import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Build
-import androidx.annotation.StringRes
 import androidx.core.content.getSystemService
 import androidx.work.*
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
+import app.shosetsu.android.backend.workers.NotificationCapable
 import app.shosetsu.android.common.consts.APK_MIME
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_APP_UPDATE
 import app.shosetsu.android.common.consts.Notifications.ID_APP_UPDATE_INSTALL
 import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_INSTALL_WORK_ID
-import app.shosetsu.android.common.ext.getUriCompat
-import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
 import app.shosetsu.common.dto.handle
@@ -54,13 +52,20 @@ import java.io.File
 class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(
 	appContext,
 	params
-), KodeinAware {
+), KodeinAware, NotificationCapable {
 	override val kodein: Kodein by closestKodein(appContext)
 	private val updateRepo by instance<IAppUpdatesRepository>()
-	private val notificationManager: NotificationManager by lazy { appContext.getSystemService()!! }
+	override val notificationManager: NotificationManager by lazy { appContext.getSystemService()!! }
+
+	override val notifyContext: Context
+		get() = applicationContext
+
+
+	override val notificationId: Int = ID_APP_UPDATE_INSTALL
+
 	private val reportExceptionUseCase by instance<ReportExceptionUseCase>()
 
-	private val progressNotification by lazy {
+	override val notification by lazy {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			Notification.Builder(appContext, CHANNEL_APP_UPDATE)
 		} else {
@@ -68,113 +73,85 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 			@Suppress("DEPRECATION")
 			Notification.Builder(appContext)
 		}.apply {
-			setContentTitle(applicationContext.getString(R.string.notification_app_update_install_title))
+			setSubText(applicationContext.getString(R.string.notification_app_update_install_title))
 			setSmallIcon(R.drawable.app_update)
 			setProgress(0, 0, true)
 		}
 	}
 
-	private fun Notification.Builder.setContentText(@StringRes int: Int) =
-		setContentText(applicationContext.getText(int))
 
 	override suspend fun doWork(): Result {
-		val pr = progressNotification
+		notify(R.string.notification_app_update_loading) {
+			setOngoing()
+		}
 
-		notificationManager.notify(ID_APP_UPDATE_INSTALL, pr.apply {
-			setOngoing(true)
-			setContentText(R.string.notification_app_update_loading)
-		}.build())
 		// Load up the app update from repo
 		updateRepo.loadAppUpdate().handle(
 			onError = {
+				notify("Exception occurred\n ${it.message}") {
+					setNotOngoing()
+					removeProgress()
+				}
 				reportExceptionUseCase(it)
-				notificationManager.notify(
-					ID_APP_UPDATE_INSTALL,
-					pr.apply {
-						setContentText("Exception occurred")
-						setSubText(it.message)
-						setOngoing(false)
-						setProgress(0, 0, false)
-					}.build()
-				)
 				return Result.failure()
 			},
 			onEmpty = {
-				notificationManager.notify(
-					ID_APP_UPDATE_INSTALL,
-					pr.apply {
-						setSubText("Empty result")
-						setContentText("Received empty return, Was there even an update?")
-						setOngoing(false)
-						setProgress(0, 0, false)
-					}.build()
-				)
+				notify("Empty result, Recieved empty return, Was there even an update?") {
+					setNotOngoing()
+					removeProgress()
+				}
 				return Result.failure()
 			}
 		) { update ->
 
-			notificationManager.notify(ID_APP_UPDATE_INSTALL, pr.apply {
-				setContentText(R.string.notification_app_update_downloading)
-			}.build())
+			notify(R.string.notification_app_update_downloading)
 
 			// download the app update and get the path to the installed file
 			updateRepo.downloadAppUpdate(update).handle(
 				onError = {
 					reportExceptionUseCase(it)
-					notificationManager.notify(
-						ID_APP_UPDATE_INSTALL,
-						pr.apply {
-							setContentText("Exception occurred")
-							setSubText(it.message)
-							setOngoing(false)
-							setProgress(0, 0, false)
-						}.build()
-					)
+
+					notify("Exception occurred \n ${it.message} ") {
+						setOngoing(false)
+						setProgress(0, 0, false)
+					}
+
 					return Result.failure()
 				},
 				onEmpty = {
-					notificationManager.notify(
-						ID_APP_UPDATE_INSTALL,
-						pr.apply {
-							setSubText("Empty result")
-							setContentText("Received empty return, Did the download fail?")
-							setOngoing(false)
-							setProgress(0, 0, false)
-						}.build()
-					)
+
+					notify("Empty result, Received empty return, Did the download fail?") {
+						setNotOngoing()
+						removeProgress()
+					}
 					return Result.failure()
 				}
 			) { path ->
 				val uri = File(path).getUriCompat(applicationContext)
-
-				notificationManager.notify(
-					ID_APP_UPDATE_INSTALL,
-					pr.apply {
-						setOngoing(false)
-						setProgress(0, 0, false)
-						setContentText(R.string.notification_app_update_install)
-						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-							addAction(
-								Notification.Action.Builder(
-									Icon.createWithResource(
-										applicationContext,
-										R.drawable.app_update
-									),
-									applicationContext.getString(R.string.install),
-									installApkPendingActivity(applicationContext, uri)
-								).build()
-							)
-						} else {
-							// Older API call
-							@Suppress("DEPRECATION")
-							addAction(
-								R.drawable.app_update,
+				notify(R.string.notification_app_update_install) {
+					setNotOngoing()
+					removeProgress()
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+						addAction(
+							Notification.Action.Builder(
+								Icon.createWithResource(
+									applicationContext,
+									R.drawable.app_update
+								),
 								applicationContext.getString(R.string.install),
 								installApkPendingActivity(applicationContext, uri)
-							)
-						}
-					}.build()
-				)
+							).build()
+						)
+					} else {
+						// Older API call
+						@Suppress("DEPRECATION")
+						addAction(
+							R.drawable.app_update,
+							applicationContext.getString(R.string.install),
+							installApkPendingActivity(applicationContext, uri)
+						)
+					}
+				}
 
 			}
 		}

@@ -31,6 +31,9 @@ import app.shosetsu.android.common.ext.notificationManager
  * @author github.com/doomsdayrs
  */
 object Notifications {
+	const val CHANNEL_BACKUP: String = "shosetsu_backup"
+	const val ID_BACKUP: Int = 1959
+
 	const val CHANNEL_UPDATE: String = "shosetsu_updater"
 	const val ID_CHAPTER_UPDATE: Int = 1917
 
@@ -48,17 +51,22 @@ object Notifications {
 			NotificationChannel(
 				CHANNEL_UPDATE,
 				"Shosetsu Update",
-				NotificationManager.IMPORTANCE_LOW
+				NotificationManager.IMPORTANCE_HIGH
 			),
 			NotificationChannel(
 				CHANNEL_DOWNLOAD,
 				"Shosetsu Download",
-				NotificationManager.IMPORTANCE_LOW
+				NotificationManager.IMPORTANCE_DEFAULT
 			),
 			NotificationChannel(
 				CHANNEL_APP_UPDATE,
 				"Shosetsu App Update",
-				NotificationManager.IMPORTANCE_DEFAULT
+				NotificationManager.IMPORTANCE_HIGH
+			),
+			NotificationChannel(
+				CHANNEL_BACKUP,
+				"Shosetsu Backup",
+				NotificationManager.IMPORTANCE_LOW
 			)
 		)
 		context.notificationManager.createNotificationChannels(channels)

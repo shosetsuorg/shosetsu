@@ -10,6 +10,7 @@ import androidx.work.*
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
+import app.shosetsu.android.backend.workers.NotificationCapable
 import app.shosetsu.android.common.consts.ACTION_OPEN_APP_UPDATE
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications
@@ -59,49 +60,52 @@ import org.kodein.di.generic.instance
 class AppUpdateCheckWorker(
 	appContext: Context,
 	params: WorkerParameters
-) : CoroutineWorker(appContext, params), KodeinAware {
+) : CoroutineWorker(appContext, params), KodeinAware, NotificationCapable {
 	override val kodein: Kodein by closestKodein(applicationContext)
 	private val openAppForUpdateIntent: Intent
 		get() = Intent(applicationContext, SplashScreen::class.java).apply {
 			action = ACTION_OPEN_APP_UPDATE
 		}
+	override val notificationId: Int = ID_APP_UPDATE
 
 	private val loadRemoteAppUpdateUseCase by instance<LoadRemoteAppUpdateUseCase>()
-	private val notificationManager: NotificationManager by lazy { appContext.getSystemService()!! }
+	override val notificationManager: NotificationManager by lazy { appContext.getSystemService()!! }
 	private val reportExceptionUseCase by instance<ReportExceptionUseCase>()
 
-	private val progressNotification by lazy {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			Notification.Builder(appContext, Notifications.CHANNEL_APP_UPDATE)
+	override val notification: Notification.Builder
+		get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			Notification.Builder(applicationContext, Notifications.CHANNEL_APP_UPDATE)
 		} else {
 			// Suppressed due to lower API
 			@Suppress("DEPRECATION")
-			Notification.Builder(appContext)
+			Notification.Builder(applicationContext)
 		}
-			.setContentTitle(applicationContext.getString(R.string.notification_app_update_check))
+			.setSubText(applicationContext.getString(R.string.notification_app_update_check))
 			.setSmallIcon(R.drawable.app_update)
 			.setOnlyAlertOnce(true)
-	}
+			.setOngoing(true)
+
+	override val notifyContext: Context
+		get() = applicationContext
+
 
 	override suspend fun doWork(): Result {
 		try {
-			val pr = progressNotification
-			pr.setOngoing(true)
-			notificationManager.notify(ID_APP_UPDATE, pr.build())
-			val result = loadRemoteAppUpdateUseCase()
-			pr.setOngoing(false)
-			result.handle(onEmpty = {
-				notificationManager.cancel(ID_APP_UPDATE)
+			notify("Starting")
+			loadRemoteAppUpdateUseCase().handle(onEmpty = {
+				notificationManager.cancel(notificationId)
 			}, onError = {
 				logE("Error!", it.exception)
-				pr.setContentText("Error! ${it.code} | ${it.message}")
-				notificationManager.notify(ID_APP_UPDATE, pr.build())
+				notify("Error! ${it.code} | ${it.message}") {
+					setOngoing(false)
+				}
 			}) {
-				pr.setContentText(
+				notify(
 					applicationContext.getString(R.string.notification_app_update_available)
 							+ " " + it.version
-				)
-				notificationManager.notify(ID_APP_UPDATE, pr.build())
+				) {
+					setOngoing(false)
+				}
 			}
 			return Result.success()
 		} catch (e: Exception) {
@@ -109,7 +113,6 @@ class AppUpdateCheckWorker(
 		}
 		return Result.failure()
 	}
-
 
 	/**
 	 * Manager of [AppUpdateCheckWorker]
