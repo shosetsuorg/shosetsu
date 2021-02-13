@@ -1,7 +1,10 @@
 package app.shosetsu.android.viewmodel.impl.settings
 
+import androidx.lifecycle.LiveData
 import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.ReportExceptionUseCase
+import app.shosetsu.android.domain.usecases.load.LoadInternalBackupNamesUseCase
 import app.shosetsu.android.domain.usecases.start.StartBackupWorkerUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
@@ -10,6 +13,7 @@ import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.R
+import kotlinx.coroutines.flow.flow
 
 /*
  * This file is part of shosetsu.
@@ -36,12 +40,21 @@ class BackupSettingsViewModel(
 	iSettingsRepository: ISettingsRepository,
 	private val reportExceptionUseCase: ReportExceptionUseCase,
 	private val manager: NovelUpdateWorker.Manager,
-	private val startBackupWorkerUseCase: StartBackupWorkerUseCase
+	private val startBackupWorkerUseCase: StartBackupWorkerUseCase,
+	private val loadInternalBackupNamesUseCase: LoadInternalBackupNamesUseCase
 ) : ABackupSettingsViewModel(iSettingsRepository) {
 
 	override fun startBackup() {
 		if (manager.isRunning()) manager.stop()
 		startBackupWorkerUseCase()
+	}
+
+	override fun loadInternalOptions(): LiveData<HResult<List<String>>> = flow {
+		emit(loadInternalBackupNamesUseCase())
+	}.asIOLiveData()
+
+	override fun restore(path: String, external: Boolean) {
+		logV("Restoring (external?: $external): $path ")
 	}
 
 	override suspend fun settings(): List<SettingsItemData> = listOf(

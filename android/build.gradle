@@ -169,8 +169,6 @@ dependencies {
     // Time control
     implementation 'joda-time:joda-time:2.10.5'
 
-    // Choosing backup files
-    implementation 'com.vincent.filepicker:MultiTypeFilePicker:1.0.8'
 
     // TODO Implement readerview provided by Mozilla
     //implementation "org.mozilla.components:feature-readerview:1.0.0"

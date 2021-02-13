@@ -192,4 +192,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<StartBackupWorkerUseCase>() with provider {
 		StartBackupWorkerUseCase(instance(), instance())
 	}
+	bind<LoadInternalBackupNamesUseCase>() with provider {
+		LoadInternalBackupNamesUseCase(instance())
+	}
 }

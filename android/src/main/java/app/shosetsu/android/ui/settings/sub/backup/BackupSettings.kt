@@ -2,9 +2,10 @@ package app.shosetsu.android.ui.settings.sub.backup
 
 import android.app.Activity
 import android.content.Intent
-import android.widget.Toast
+import android.webkit.MimeTypeMap
 import androidx.appcompat.app.AlertDialog
 import app.shosetsu.android.common.ext.context
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.toast
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.settings.SettingsSubController
@@ -12,12 +13,8 @@ import app.shosetsu.android.view.uimodels.settings.ButtonSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.onButtonClicked
 import app.shosetsu.android.viewmodel.abstracted.settings.ABackupSettingsViewModel
+import app.shosetsu.common.consts.BACKUP_FILE_EXTENSION
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.vincent.filepicker.Constant
-import com.vincent.filepicker.Constant.REQUEST_CODE_PICK_FILE
-import com.vincent.filepicker.activity.NormalFilePickActivity
-import com.vincent.filepicker.filter.entity.NormalFile
-import java.util.*
 
 /*
  * This file is part of Shosetsu.
@@ -56,47 +53,83 @@ class BackupSettings : SettingsSubController() {
 			viewModel.startBackup()
 		}
 		find<ButtonSettingData>(4)?.onButtonClicked {
-			performFileSelection()
+			AlertDialog.Builder(recyclerView.context!!).apply {
+				setTitle(R.string.settings_backup_alert_select_location_title)
+				setItems(R.array.settings_backup_alert_location_array) { d, i ->
+					when (i) {
+						0 -> {
+							// Open file selector
+							performFileSelection()
+							d.dismiss()
+						}
+						1 -> {
+							// Open internal list
+							viewModel.loadInternalOptions().handleObserve { list ->
+								d.dismiss()
+								AlertDialog.Builder(recyclerView.context!!).apply {
+									setTitle(R.string.settings_backup_alert_internal_title)
+									setItems(list.map {
+										it
+											.removePrefix("shosetsu-backup-")
+											.removeSuffix(".$BACKUP_FILE_EXTENSION")
+										// TODO Map dates with proper localization
+									}.toTypedArray()) { d, w ->
+										viewModel.restore(list[w])
+										d.dismiss()
+									}
+									setNegativeButton(android.R.string.cancel) { d, i ->
+										d.cancel()
+									}
+								}.show()
+							}
+						}
+					}
+				}
+			}.show()
 		}
 	}
+
+	/*
+	 * Options for restore
+	 * > Internal
+	 * >> Open pop up list to select file
+	 * > Via external
+	 * >> Open file explorer and select file
+	 */
+
 
 	private fun performFileSelection() {
 		context?.toast(
 			"Please make sure this is on the main storage, " +
-					"SD card storage is not functional yet", duration = Toast.LENGTH_LONG
+					"SD card storage is not functional yet"
 		)
-		val intent = Intent(context, NormalFilePickActivity::class.java)
-		intent.putExtra(Constant.MAX_NUMBER, 9)
-		intent.putExtra(NormalFilePickActivity.SUFFIX, arrayOf("shoback", "json"))
-		activity?.startActivityForResult(intent, REQUEST_CODE_PICK_FILE)
+		activity?.startActivityForResult(Intent(Intent.ACTION_GET_CONTENT).apply {
+			type = "*/*"
+		}, REQUEST_CODE_RESTORE_SELECTION)
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-		super.onActivityResult(requestCode, resultCode, data)
-		if (REQUEST_CODE_PICK_FILE == requestCode && resultCode == Activity.RESULT_OK) {
-			if (data != null) {
-				val list: ArrayList<NormalFile>? =
-					data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE)
-				if (list != null && list.size > 0) {
-					val normalFile = list[0]
-				}
-				/*
-				String path = data.getData().getPath();
-				Log.i("SelectedPath", path);
+		logV("Received code: $requestCode")
+		when (requestCode) {
+			REQUEST_CODE_RESTORE_SELECTION -> {
+				if (resultCode == Activity.RESULT_OK) {
+					data?.data?.let {
+						if (MimeTypeMap.getFileExtensionFromUrl(it.toString()) != BACKUP_FILE_EXTENSION) {
+							logV("invalid type")
+							context?.toast("Invalid file")
+							return
+						}
 
-				int i = path.lastIndexOf(".");
-				if (i > -1) {
-					String fileEnding = path.substring(i + 1);
-					if (fileEnding.equalsIgnoreCase("shoback")) {
-						Log.i("Selected Folder", "Uri: " + path);
-						//TODO Fix this shit, need's a proper integrated file manager
-						new RestoreProcess("/Shosetsu/backup/backup-Mon Oct
-						28 20:46:16 EDT 2019.shoback", getContext()).execute();
-					} else
-						Toast.makeText(getContext(), "Invalid file to use!",
-						 Toast.LENGTH_LONG).show();
-				}*/
+						context?.toast("Restoring now...")
+						viewModel.restore(it.path!!, true)
+					}
+				} else logV("Result code failed")
 			}
 		}
+		super.onActivityResult(requestCode, resultCode, data)
+	}
+
+	companion object {
+		private const val REQUEST_CODE_RESTORE_SELECTION = 2116
 	}
 }
