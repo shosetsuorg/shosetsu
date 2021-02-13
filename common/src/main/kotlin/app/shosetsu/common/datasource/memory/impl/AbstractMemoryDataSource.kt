@@ -40,15 +40,29 @@ abstract class AbstractMemoryDataSource<K, V : Any> {
 	/**
 	 * how many entries to store at max
 	 */
-	open val maxSize: Long = 0
+	abstract val maxSize: Long
 
 	private val _hashMap: HashMap<K, Pair<Long, V>> = hashMapOf()
 
+
+	/**
+	 * Recycler function, Iterates through the entries in [_hashMap] and clears out stale data
+	 *
+	 * Data is considered stale if it's creation point is > [expireTime]
+	 */
+	@Suppress("MemberVisibilityCanBePrivate")
 	fun recycle() {
+		// Reverses keys to go from back to front
 		val keys = _hashMap.keys.reversed()
+
+		// Saving value before hand saves 1ms~ per iteration
+		val compareTime = System.currentTimeMillis()
+
 		for (i in keys) {
+			// Gets the time for entry `i`, If `i` no longer exists, continue
 			val (time) = _hashMap[i] ?: continue
-			if (time + expireTime <= System.currentTimeMillis()) {
+
+			if (time + expireTime <= compareTime) {
 				_hashMap.remove(i)
 			}
 		}
@@ -61,9 +75,13 @@ abstract class AbstractMemoryDataSource<K, V : Any> {
 			successResult("")
 		}
 
+	/**
+	 * Assigns [key] to [value]
+	 * If [_hashMap] entries > [maxSize], removes first
+	 */
 	fun put(key: K, value: V): HResult<*> {
 		if (_hashMap.size > maxSize) {
-			_hashMap.remove(_hashMap.keys.first())
+			remove(_hashMap.keys.first())
 		}
 
 		_hashMap[key] = System.currentTimeMillis() to value
