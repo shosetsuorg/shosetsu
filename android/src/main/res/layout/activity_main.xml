@@ -62,7 +62,6 @@
             android:contentDescription="@string/todo"
             android:foregroundGravity="right"
             android:visibility="gone"
-            app:borderWidth="0dp"
             app:layout_anchorGravity="bottom|right|end"
             tools:text="Test"
             tools:visibility="visible" />

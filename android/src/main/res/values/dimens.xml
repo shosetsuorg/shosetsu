@@ -2,6 +2,8 @@
 <resources>
     <dimen name="fab_size">56dp</dimen>
     <dimen name="fab_margin">56dp</dimen>
+    <!-- Removes the default blue outline -->
+    <dimen name="fab_borderWidth">0dp</dimen>
 
     <dimen name="app_bar_layout_elevation">4dp</dimen>
 
