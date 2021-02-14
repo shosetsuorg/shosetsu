@@ -6,6 +6,7 @@ import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.load.LoadInternalBackupNamesUseCase
 import app.shosetsu.android.domain.usecases.start.StartBackupWorkerUseCase
+import app.shosetsu.android.domain.usecases.start.StartRestoreWorkerUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.ABackupSettingsViewModel
@@ -41,7 +42,8 @@ class BackupSettingsViewModel(
 	private val reportExceptionUseCase: ReportExceptionUseCase,
 	private val manager: NovelUpdateWorker.Manager,
 	private val startBackupWorkerUseCase: StartBackupWorkerUseCase,
-	private val loadInternalBackupNamesUseCase: LoadInternalBackupNamesUseCase
+	private val loadInternalBackupNamesUseCase: LoadInternalBackupNamesUseCase,
+	private val startRestoreWorkerUseCase: StartRestoreWorkerUseCase
 ) : ABackupSettingsViewModel(iSettingsRepository) {
 
 	override fun startBackup() {
@@ -55,6 +57,7 @@ class BackupSettingsViewModel(
 
 	override fun restore(path: String, external: Boolean) {
 		logV("Restoring (external?: $external): $path ")
+		startRestoreWorkerUseCase(path, external)
 	}
 
 	override suspend fun settings(): List<SettingsItemData> = listOf(

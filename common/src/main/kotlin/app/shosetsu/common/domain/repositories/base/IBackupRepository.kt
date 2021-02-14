@@ -37,13 +37,16 @@ interface IBackupRepository {
 
 	/**
 	 * Loads a backup via its name
+	 * @param path File name / Direct Path of a backup
+	 * @param isExternal, if true then [path] is a direct path
+	 *
 	 * @return
 	 * [HResult.Success] Backup entity
 	 * [HResult.Empty] Such does not exist
 	 * [HResult.Error] An exception occurred when loading
 	 * [HResult.Loading] never
 	 */
-	suspend fun loadBackup(backupName: String): HResult<BackupEntity>
+	suspend fun loadBackup(path: String, isExternal: Boolean): HResult<BackupEntity>
 
 
 	suspend fun saveBackup(backupEntity: BackupEntity): HResult<*>

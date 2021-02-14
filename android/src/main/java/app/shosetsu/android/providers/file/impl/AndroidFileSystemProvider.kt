@@ -114,6 +114,16 @@ class AndroidFileSystemProvider(
 		return successResult(file.readText())
 	}
 
+	override fun readFile(path: String): HResult<String> {
+		val file = File(path)
+
+		logV("Reading $path to $file")
+
+		if (!file.exists()) return emptyResult()
+		if (!file.canRead()) return errorResult(ERROR_LACK_PERM, "Cannot read file: $file")
+		return successResult(file.readText())
+	}
+
 	override fun deleteFile(internalFileDir: InternalFileDir, path: String): HResult<*> {
 		val file = File(internalFileDir.path() + path)
 		logV("Deleting $path in ${internalFileDir.path()} to $file")

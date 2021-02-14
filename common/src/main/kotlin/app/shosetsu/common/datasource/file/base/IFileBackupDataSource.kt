@@ -25,7 +25,7 @@ import app.shosetsu.common.dto.HResult
  */
 interface IFileBackupDataSource {
 
-	suspend fun loadBackup(backupName: String): HResult<BackupEntity>
+	suspend fun loadBackup(backupName: String, isExternal: Boolean): HResult<BackupEntity>
 
 	suspend fun saveBackup(backupEntity: BackupEntity): HResult<*>
 

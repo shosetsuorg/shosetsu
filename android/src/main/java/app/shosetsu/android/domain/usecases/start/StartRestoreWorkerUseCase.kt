@@ -2,6 +2,8 @@ package app.shosetsu.android.domain.usecases.start
 
 import androidx.work.Data
 import app.shosetsu.android.backend.workers.onetime.RestoreBackupWorker
+import app.shosetsu.android.backend.workers.onetime.RestoreBackupWorker.Companion.BACKUP_DATA_KEY
+import app.shosetsu.android.backend.workers.onetime.RestoreBackupWorker.Companion.BACKUP_DIR_KEY
 
 /*
  * This file is part of Shosetsu.
@@ -26,11 +28,12 @@ import app.shosetsu.android.backend.workers.onetime.RestoreBackupWorker
 class StartRestoreWorkerUseCase(
 	private val manager: RestoreBackupWorker.Manager
 ) {
-	operator fun invoke(fileName: String) {
+	operator fun invoke(path: String, external: Boolean) {
 		if (!manager.isRunning())
 			manager.start(
 				Data.Builder().apply {
-					putString(RestoreBackupWorker.BACKUP_DATA_KEY, fileName)
+					putString(BACKUP_DATA_KEY, path)
+					putBoolean(BACKUP_DIR_KEY, external)
 				}.build()
 			)
 	}

@@ -4,8 +4,7 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.common.datasource.file.base.IFileBackupDataSource
 import app.shosetsu.common.domain.model.local.BackupEntity
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
+import app.shosetsu.common.dto.transformToSuccess
 import app.shosetsu.common.enums.ExternalFileDir.APP
 import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import java.text.SimpleDateFormat
@@ -43,11 +42,16 @@ class FileBackupDataSource(
 		}
 	}
 
-	override suspend fun loadBackup(backupName: String): HResult<BackupEntity> =
-		iFileSystemProvider.readFile(APP, "$BACKUP_DIRECTORY/${backupName}.sbk")
-			.transform {
-				successResult(BackupEntity(it))
-			}
+	override suspend fun loadBackup(
+		backupName: String,
+		isExternal: Boolean
+	): HResult<BackupEntity> {
+		val result = if (!isExternal)
+			iFileSystemProvider.readFile(APP, "$BACKUP_DIRECTORY/${backupName}.sbk")
+		else iFileSystemProvider.readFile(backupName)
+
+		return result.transformToSuccess { BackupEntity(it) }
+	}
 
 	override suspend fun saveBackup(backupEntity: BackupEntity): HResult<*> =
 		iFileSystemProvider.writeFile(

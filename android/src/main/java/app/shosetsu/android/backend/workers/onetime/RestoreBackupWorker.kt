@@ -69,7 +69,9 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 	@Throws(IOException::class)
 	override suspend fun doWork(): Result {
 		val backupName = inputData.getString(BACKUP_DATA_KEY) ?: return Result.failure()
-		backupRepo.loadBackup(backupName).handle(
+		val isExternal = inputData.getBoolean(BACKUP_DIR_KEY, false)
+
+		backupRepo.loadBackup(backupName, isExternal).handle(
 			onEmpty = {
 				return Result.failure()
 			},
@@ -229,6 +231,16 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 
 	companion object {
 		const val SUPPORTED_VERSION = "1.0.0"
+
+		/**
+		 * Path / name of file
+		 */
 		const val BACKUP_DATA_KEY = "BACKUP_NAME"
+
+		/**
+		 * If true, the [BACKUP_DATA_KEY] is a full path pointing to a specific file, other wise
+		 * it is an internal path
+		 */
+		const val BACKUP_DIR_KEY = "BACKUP_DIR"
 	}
 }

@@ -55,6 +55,14 @@ interface IFileSystemProvider {
 	fun readFile(externalFileDir: ExternalFileDir, path: String): HResult<String>
 
 
+	/**
+	 * Reads a file directly
+	 *
+	 * @param path Absolute path to a file
+	 * @return file content
+	 */
+	fun readFile(path: String): HResult<String>
+
 	fun deleteFile(internalFileDir: InternalFileDir, path: String): HResult<*>
 
 	fun deleteFile(externalFileDir: ExternalFileDir, path: String): HResult<*>

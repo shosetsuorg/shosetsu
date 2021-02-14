@@ -31,8 +31,8 @@ class BackupRepository(
 	override suspend fun loadBackups(): HResult<List<String>> =
 		iFileBackupDataSource.loadBackups()
 
-	override suspend fun loadBackup(backupName: String): HResult<BackupEntity> =
-		iFileBackupDataSource.loadBackup(backupName)
+	override suspend fun loadBackup(path: String, isExternal: Boolean): HResult<BackupEntity> =
+		iFileBackupDataSource.loadBackup(path, isExternal)
 
 	override suspend fun saveBackup(backupEntity: BackupEntity): HResult<*> =
 		iFileBackupDataSource.saveBackup(backupEntity)

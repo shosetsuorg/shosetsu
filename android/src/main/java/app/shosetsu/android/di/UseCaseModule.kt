@@ -11,10 +11,7 @@ import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadChaptersResumeFirstUnreadUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadNavigationStyleUseCase
 import app.shosetsu.android.domain.usecases.settings.SetNovelUITypeUseCase
-import app.shosetsu.android.domain.usecases.start.StartAppUpdateInstallWorkerUseCase
-import app.shosetsu.android.domain.usecases.start.StartBackupWorkerUseCase
-import app.shosetsu.android.domain.usecases.start.StartDownloadWorkerUseCase
-import app.shosetsu.android.domain.usecases.start.StartUpdateWorkerUseCase
+import app.shosetsu.android.domain.usecases.start.*
 import app.shosetsu.android.domain.usecases.toast.StringToastUseCase
 import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
 import app.shosetsu.android.domain.usecases.update.*
@@ -194,5 +191,9 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	}
 	bind<LoadInternalBackupNamesUseCase>() with provider {
 		LoadInternalBackupNamesUseCase(instance())
+	}
+
+	bind<StartRestoreWorkerUseCase>() with provider {
+		StartRestoreWorkerUseCase(instance())
 	}
 }
