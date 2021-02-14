@@ -1,6 +1,7 @@
 package app.shosetsu.android.datasource.local.file.impl
 
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.common.consts.BACKUP_FILE_EXTENSION
 import app.shosetsu.common.datasource.file.base.IFileBackupDataSource
 import app.shosetsu.common.domain.model.local.BackupEntity
 import app.shosetsu.common.dto.HResult
@@ -47,7 +48,7 @@ class FileBackupDataSource(
 		isExternal: Boolean
 	): HResult<BackupEntity> {
 		val result = if (!isExternal)
-			iFileSystemProvider.readFile(APP, "$BACKUP_DIRECTORY/${backupName}.sbk")
+			iFileSystemProvider.readFile(APP, "$BACKUP_DIRECTORY/${backupName}")
 		else iFileSystemProvider.readFile(backupName)
 
 		return result.transformToSuccess { BackupEntity(it) }
@@ -56,7 +57,7 @@ class FileBackupDataSource(
 	override suspend fun saveBackup(backupEntity: BackupEntity): HResult<*> =
 		iFileSystemProvider.writeFile(
 			APP,
-			"$BACKUP_DIRECTORY/shosetsu-backup-${currentDate}.sbk",
+			"$BACKUP_DIRECTORY/shosetsu-backup-${currentDate}.${BACKUP_FILE_EXTENSION}",
 			backupEntity.content
 		)
 

@@ -1,11 +1,10 @@
 package app.shosetsu.android.backend.workers.onetime
 
-import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import android.util.Base64
 import androidx.core.app.NotificationCompat
-import androidx.core.content.getSystemService
+import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
@@ -13,10 +12,7 @@ import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_BACKUP
 import app.shosetsu.android.common.consts.WorkerTags.BACKUP_WORK_ID
-import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.common.ext.logV
-import app.shosetsu.android.common.ext.notificationBuilder
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.backupJSON
 import app.shosetsu.android.domain.model.local.backup.*
 import app.shosetsu.common.consts.settings.SettingKey.*
@@ -72,12 +68,12 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 	private val extensionRepoRepository by instance<IExtensionRepoRepository>()
 	private val backupRepository by instance<IBackupRepository>()
 
-	override val notificationManager by lazy { appContext.getSystemService<NotificationManager>()!! }
+	override val notificationManager: NotificationManagerCompat by notificationManager()
 
 	override val baseNotificationBuilder: NotificationCompat.Builder
 		get() = notificationBuilder(applicationContext, CHANNEL_BACKUP)
 			.setSmallIcon(R.drawable.backup_icon)
-			.setSubText("Backup in progress")
+			.setSubText("Backup")
 			.setOnlyAlertOnce(true)
 			.setOngoing(true)
 

@@ -4,6 +4,7 @@ import android.app.NotificationManager
 import android.content.Context
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat.Builder
+import androidx.core.app.NotificationManagerCompat
 
 /*
  * This file is part of Shosetsu.
@@ -35,7 +36,7 @@ interface NotificationCapable {
 	 * NotificationManager used by [notify]
 	 * @see NotificationManager
 	 */
-	val notificationManager: NotificationManager
+	val notificationManager: NotificationManagerCompat
 
 	/**
 	 * Context used by [notify] to get string res
@@ -51,14 +52,14 @@ interface NotificationCapable {
 	) = notify(notifyContext.getText(messageId), notificationId, action)
 
 	fun notify(
-		message: CharSequence,
+		contentText: CharSequence,
 		notificationId: Int = this.defaultNotificationID,
 		action: Builder.() -> Unit = {}
 	) {
 		notificationManager.notify(
 			notificationId,
 			baseNotificationBuilder.apply {
-				setContentText(message)
+				setContentText(contentText)
 				action()
 			}.build()
 		)

@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.getSystemService
 import androidx.work.*
 import androidx.work.NetworkType.CONNECTED
@@ -59,9 +60,7 @@ class DownloadWorker(
 		get() = applicationContext
 	override val defaultNotificationID: Int = ID_CHAPTER_DOWNLOAD
 
-	override val notificationManager by lazy {
-		applicationContext.getSystemService<NotificationManager>()!!
-	}
+	override val notificationManager: NotificationManagerCompat by notificationManager()
 
 	override val baseNotificationBuilder: NotificationCompat.Builder
 		get() = notificationBuilder(applicationContext, CHANNEL_DOWNLOAD)

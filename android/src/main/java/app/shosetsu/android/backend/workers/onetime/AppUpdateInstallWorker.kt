@@ -1,12 +1,11 @@
 package app.shosetsu.android.backend.workers.onetime
 
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.core.app.NotificationCompat
-import androidx.core.content.getSystemService
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.work.*
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
@@ -54,7 +53,7 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 ), KodeinAware, NotificationCapable {
 	override val kodein: Kodein by closestKodein(appContext)
 	private val updateRepo by instance<IAppUpdatesRepository>()
-	override val notificationManager: NotificationManager by lazy { appContext.getSystemService()!! }
+	override val notificationManager: NotificationManagerCompat by notificationManager()
 
 	override val notifyContext: Context
 		get() = applicationContext

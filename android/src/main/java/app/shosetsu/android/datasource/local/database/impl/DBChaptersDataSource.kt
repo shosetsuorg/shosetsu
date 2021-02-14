@@ -5,7 +5,6 @@ import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.providers.database.dao.ChaptersDao
 import app.shosetsu.common.datasource.database.base.IDBChaptersDataSource
 import app.shosetsu.common.domain.model.local.ChapterEntity
-import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.ReaderChapterEntity
 import app.shosetsu.common.dto.*
 import app.shosetsu.lib.Novel
@@ -78,21 +77,23 @@ class DBChaptersDataSource(
 	}
 
 	override suspend fun handleChapters(
-		novelEntity: NovelEntity,
+		novelID: Int,
+		extensionID: Int,
 		list: List<Novel.Chapter>,
 	): HResult<*> =
 		try {
-			successResult(chaptersDao.handleChapters(novelEntity, list))
+			successResult(chaptersDao.handleChapters(novelID, extensionID, list))
 		} catch (e: Exception) {
 			e.toHError()
 		}
 
 
 	override suspend fun handleChapterReturn(
-		novelEntity: NovelEntity,
+		novelID: Int,
+		extensionID: Int,
 		list: List<Novel.Chapter>,
 	): HResult<List<ChapterEntity>> = try {
-		chaptersDao.handleChaptersReturnNew(novelEntity, list).convertList()
+		chaptersDao.handleChaptersReturnNew(novelID, extensionID, list).convertList()
 			.let { successResult(it) }
 	} catch (e: Exception) {
 		e.toHError()

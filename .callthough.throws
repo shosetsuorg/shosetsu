@@ -7,3 +7,4 @@ kotlin.let block
 kotlin.io.use block
 app.shosetsu.common.dto.handle onLoading
 app.shosetsu.common.dto.handle onSuccess
+kotlin.run block

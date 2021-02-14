@@ -40,6 +40,19 @@ fun Novel.Chapter.entity(novelEntity: NovelEntity): ChapterEntity =
 		order = this.order
 	)
 
+fun Novel.Chapter.entity(
+	novelID: Int,
+	extensionID: Int,
+): ChapterEntity =
+	ChapterEntity(
+		url = this.link,
+		novelID = novelID,
+		extensionID = extensionID,
+		title = this.title,
+		releaseDate = this.release,
+		order = this.order
+	)
+
 fun Novel.Listing.convertTo(extension: IExtension): NovelEntity = NovelEntity(
 	url = this.link,
 	imageURL = this.imageURL,

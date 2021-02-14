@@ -1,12 +1,11 @@
 package app.shosetsu.android.backend.workers.onetime
 
-import android.app.NotificationManager
 import android.content.Context
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.content.getSystemService
+import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import androidx.work.ExistingWorkPolicy.REPLACE
 import androidx.work.NetworkType.CONNECTED
@@ -70,8 +69,7 @@ class NovelUpdateWorker(
 
 	override val defaultNotificationID: Int = ID_CHAPTER_UPDATE
 
-	override val notificationManager by lazy { appContext.getSystemService<NotificationManager>()!! }
-
+	override val notificationManager: NotificationManagerCompat by notificationManager()
 	override val baseNotificationBuilder: NotificationCompat.Builder
 		get() = notificationBuilder(applicationContext, CHANNEL_UPDATE)
 			.setSmallIcon(R.drawable.refresh)

@@ -1,11 +1,10 @@
 package app.shosetsu.android.backend.workers.onetime
 
-import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.core.content.getSystemService
+import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
@@ -66,7 +65,7 @@ class AppUpdateCheckWorker(
 	override val defaultNotificationID: Int = ID_APP_UPDATE
 
 	private val loadRemoteAppUpdateUseCase by instance<LoadRemoteAppUpdateUseCase>()
-	override val notificationManager: NotificationManager by lazy { appContext.getSystemService()!! }
+	override val notificationManager: NotificationManagerCompat by notificationManager()
 	private val reportExceptionUseCase by instance<ReportExceptionUseCase>()
 
 	override val baseNotificationBuilder: NotificationCompat.Builder

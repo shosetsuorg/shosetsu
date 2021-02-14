@@ -8,7 +8,6 @@ import app.shosetsu.android.common.ext.entity
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.domain.model.database.DBChapterEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
-import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.ReaderChapterEntity
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
@@ -87,31 +86,47 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 
 	@Transaction
 	@Throws(SQLiteException::class)
-	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>) {
-		val databaseChapterEntities: List<DBChapterEntity> = getChapters(novelEntity.id!!)
-		list.forEach { novelChapter: Novel.Chapter ->
-			databaseChapterEntities.find { it.url == novelChapter.link }?.let {
-				handleUpdate(it, novelChapter)
-			} ?: handleAbortInsert(novelChapter, novelEntity)
+	suspend fun handleChapters(
+		novelID: Int,
+		extensionID: Int, list: List<Novel.Chapter>
+	) {
+		val databaseChapterEntities: List<DBChapterEntity> = getChapters(novelID)
+		list.forEach { novelChapter ->
+			databaseChapterEntities.find { it.url == novelChapter.link }?.let { dbChapterEntity ->
+				handleUpdate(
+					DBChapterEntity = dbChapterEntity,
+					novelChapter = novelChapter
+				)
+			} ?: handleAbortInsert(
+				novelChapter = novelChapter,
+				novelID = novelID,
+				extensionID = extensionID
+			)
 		}
 	}
 
-	@Throws(SQLiteException::class)
+	@Throws(SQLiteException::class, IndexOutOfBoundsException::class)
 	@Transaction
 	suspend fun handleChaptersReturnNew(
-		novelEntity: NovelEntity,
+		novelID: Int,
+		extensionID: Int,
 		list: List<Novel.Chapter>,
 	): List<DBChapterEntity> {
 		val newChapters = ArrayList<DBChapterEntity>()
-		val databaseChapterEntities: List<DBChapterEntity> = getChapters(novelEntity.id!!)
-		list.forEach { novelChapter: Novel.Chapter ->
-			databaseChapterEntities.find { it.url == novelChapter.link }?.let {
-				handleUpdate(it, novelChapter)
-			} ?: run {
-				insertReturn(novelEntity, novelChapter).let {
-					newChapters.add(it)
-				}
-			}
+		val databaseChapterEntities: List<DBChapterEntity> = getChapters(novelID)
+		list.forEach { novelChapter ->
+			databaseChapterEntities.find { it.url == novelChapter.link }?.let { dbChapterEntity ->
+				handleUpdate(
+					DBChapterEntity = dbChapterEntity,
+					novelChapter = novelChapter
+				)
+			} ?: newChapters.add(
+				insertReturn(
+					novelID = novelID,
+					extensionID = extensionID,
+					novelChapter = novelChapter
+				)
+			)
 		}
 		return newChapters
 	}
@@ -122,19 +137,33 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 		getChapter(insertReplace(DBChapterEntity))
 
 
-	@Throws(IndexOutOfBoundsException::class)
+	@Throws(IndexOutOfBoundsException::class, SQLiteException::class)
 	private suspend fun insertReturn(
-		novelEntity: NovelEntity,
+		novelID: Int,
+		extensionID: Int,
 		novelChapter: Novel.Chapter,
 	): DBChapterEntity =
-		handleAbortInsert(novelChapter, novelEntity).let { rowID ->
+		handleAbortInsert(
+			novelChapter = novelChapter,
+			novelID = novelID,
+			extensionID = extensionID
+		).let { rowID ->
 			if (rowID < 0) throw IndexOutOfBoundsException("Insertion aborted")
 			getChapter(rowID)
 		}
 
 	@Throws(SQLiteException::class)
-	private suspend fun handleAbortInsert(novelChapter: Novel.Chapter, novelEntity: NovelEntity) =
-		insertAbort(novelChapter.entity(novelEntity).toDB())
+	private suspend fun handleAbortInsert(
+		novelChapter: Novel.Chapter,
+		novelID: Int,
+		extensionID: Int
+	) =
+		insertAbort(
+			novelChapter.entity(
+				novelID = novelID,
+				extensionID = extensionID
+			).toDB()
+		)
 
 	@Throws(SQLiteException::class)
 	private suspend fun handleUpdate(

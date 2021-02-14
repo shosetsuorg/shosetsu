@@ -348,6 +348,20 @@
     <string name="settings_backup_alert_location_external">External</string>
     <string name="settings_backup_alert_location_internal">Internal</string>
     <string name="settings_backup_alert_internal_title">Select a backup</string>
+    <string name="restore_notification_content_text_outdated">Backup is outdated</string>
+    <string name="restore_notification_content_missing_key">Backup does not contain \'version\' key</string>
+    <string name="restore_notification_content_decoding_string">Decoding</string>
+    <string name="restore_notification_content_unzipping_bytes">Unzipping</string>
+    <string name="restore_notification_content_unexpected_empty">Received empty, should not happen</string>
+    <string name="restore_notification_content_impossible_loading">Received loading, impossible</string>
+    <string name="restore_notification_content_starting">Starting restore</string>
+    <string name="restore_notification_title_adding_repos">Adding repositories</string>
+    <string name="restore_notification_content_novel_load">Loading novel data</string>
+    <string name="restore_notification_content_novel_save">Saving novel data</string>
+    <string name="restore_notification_content_novel_chapters_save">Saving novel chapters</string>
+    <string name="restore_notification_content_chapters_load">Loading chapters from database</string>
+    <string name="restore_notification_content_completed">Completed!</string>
+    <string name="restore_notification_subtitle">Restore</string>
 
     <array name="application_themes">
         <item>@string/follow_system_theme</item>

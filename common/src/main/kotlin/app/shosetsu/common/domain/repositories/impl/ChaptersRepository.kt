@@ -6,7 +6,6 @@ import app.shosetsu.common.datasource.file.base.IFileChapterDataSource
 import app.shosetsu.common.datasource.memory.base.IMemChaptersDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteChaptersDataSource
 import app.shosetsu.common.domain.model.local.ChapterEntity
-import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.ReaderChapterEntity
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.common.dto.HResult
@@ -86,16 +85,16 @@ class ChaptersRepository(
 
 
 	override suspend fun handleChapters(
-		novelEntity: NovelEntity,
-		list: List<Novel.Chapter>,
+		novelID: Int,
+		extensionID: Int, list: List<Novel.Chapter>,
 	): HResult<*> =
-		dbSource.handleChapters(novelEntity, list)
+		dbSource.handleChapters(novelID, extensionID, list)
 
 	override suspend fun handleChaptersReturn(
-		novelEntity: NovelEntity,
-		list: List<Novel.Chapter>,
+		novelID: Int,
+		extensionID: Int, list: List<Novel.Chapter>,
 	): HResult<List<ChapterEntity>> =
-		dbSource.handleChapterReturn(novelEntity, list)
+		dbSource.handleChapterReturn(novelID, extensionID, list)
 
 	override suspend fun getChaptersLive(novelID: Int): Flow<HResult<List<ChapterEntity>>> =
 		dbSource.getChaptersFlow(novelID)

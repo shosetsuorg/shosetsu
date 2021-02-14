@@ -1,7 +1,6 @@
 package app.shosetsu.common.datasource.database.base
 
 import app.shosetsu.common.domain.model.local.ChapterEntity
-import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.ReaderChapterEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.Novel
@@ -44,11 +43,16 @@ interface IDBChaptersDataSource {
 	suspend fun getReaderChapters(novelID: Int): Flow<HResult<List<ReaderChapterEntity>>>
 
 	/** Handles chapters from a remote source */
-	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>): HResult<*>
+	suspend fun handleChapters(
+		novelID: Int,
+		extensionID: Int,
+		list: List<Novel.Chapter>
+	): HResult<*>
 
 	/** Handles chapters from a remote source, then returns the new chapters */
 	suspend fun handleChapterReturn(
-		novelEntity: NovelEntity,
+		novelID: Int,
+		extensionID: Int,
 		list: List<Novel.Chapter>,
 	): HResult<List<ChapterEntity>>
 

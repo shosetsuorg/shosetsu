@@ -1,7 +1,6 @@
 package app.shosetsu.common.domain.repositories.base
 
 import app.shosetsu.common.domain.model.local.ChapterEntity
-import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.ReaderChapterEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.IExtension
@@ -86,7 +85,11 @@ interface IChaptersRepository {
 	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
 	@Deprecated("Remove foreign entity")
-	suspend fun handleChapters(novelEntity: NovelEntity, list: List<Novel.Chapter>): HResult<*>
+	suspend fun handleChapters(
+		novelID: Int,
+		extensionID: Int,
+		list: List<Novel.Chapter>
+	): HResult<*>
 
 	/**
 	 * Handles chapters return, but returns the chapters that are new
@@ -102,7 +105,8 @@ interface IChaptersRepository {
 	 */
 	@Deprecated("Remove foreign entity")
 	suspend fun handleChaptersReturn(
-		novelEntity: NovelEntity,
+		novelID: Int,
+		extensionID: Int,
 		list: List<Novel.Chapter>,
 	): HResult<List<ChapterEntity>>
 
