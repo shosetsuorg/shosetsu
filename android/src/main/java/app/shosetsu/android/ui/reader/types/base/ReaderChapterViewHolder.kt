@@ -26,11 +26,14 @@ import com.mikepenz.fastadapter.FastAdapter
  * shosetsu
  * 13 / 12 / 2019
  */
-abstract class TypedReaderViewHolder(
+abstract class ReaderChapterViewHolder(
 	itemView: View
 ) : FastAdapter.ViewHolder<ReaderChapterUI>(itemView) {
 	lateinit var chapter: ReaderChapterUI
 	lateinit var chapterReader: ChapterReader
+
+	val viewModel
+		get() = chapterReader.viewModel
 
 	/**
 	 * Passes in data

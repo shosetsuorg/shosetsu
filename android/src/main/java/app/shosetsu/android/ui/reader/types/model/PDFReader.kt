@@ -1,7 +1,7 @@
 package app.shosetsu.android.ui.reader.types.model
 
 import android.view.View
-import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
+import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 
 /*
@@ -25,7 +25,7 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
  * shosetsu
  * 11 / 09 / 2020
  */
-class PDFReader(itemView: View) : TypedReaderViewHolder(itemView) {
+class PDFReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	override fun setData(data: String) {
 		TODO("Not yet implemented")
 	}

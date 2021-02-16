@@ -25,7 +25,6 @@ import app.shosetsu.common.enums.MarkingTypes.ONVIEW
  */
 
 sealed class SettingKey<T : Any>(val name: String, val default: T) {
-	open inner class StringSettingKey(k: String, default: String) : SettingKey<String>(k, default)
 
 	object ReaderTheme : SettingKey<Int>("readerTheme", -1)
 
@@ -47,6 +46,27 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 	object ReaderIsInvertedSwipe : SettingKey<Boolean>("invertedSwipe", false)
 	object ReadingMarkingType : SettingKey<String>("readingMarkingType", ONVIEW.name)
+
+	/**
+	 * Should the application convert string returns from an extension to an Html page
+	 */
+	object ReaderStringToHtml : SettingKey<Boolean>("convertStringToHtml", false)
+
+	/**
+	 * User customization for CSS in html reader
+	 */
+	object ReaderHtmlCss : SettingKey<String>("readerHtmlCss", "")
+
+	/**
+	 * Instead of vertically moving between chapters, do a horizontal move
+	 */
+	object ReaderHorizontalPageSwap : SettingKey<Boolean>("readerHorizontalPaging", false)
+
+	/**
+	 * The reader smoothly moves between chapters
+	 */
+	object ReaderContinuousScroll : SettingKey<Boolean>("readerContinuousScroll", false)
+
 
 	//- Some things
 	object ChaptersResumeFirstUnread : SettingKey<Boolean>(
@@ -134,83 +154,14 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object AppTheme : SettingKey<Int>("selectedAppTheme", 0)
 
 	companion object {
-		private val KEYS: ArrayList<SettingKey<*>> by lazy {
-			arrayListOf(
-				ReaderTheme,
-				FirstTime,
-
-
-				// How things look in Reader
-				ReaderUserThemes,
-
-
-				ReaderTextSize,
-				ReaderParagraphSpacing,
-				ReaderIndentSize,
-
-				//- How things act in Reader
-				ReaderIsTapToScroll,
-				ReaderVolumeScroll,
-				ReaderIsInvertedSwipe,
-				ReadingMarkingType,
-				ReaderMarkReadAsReading,
-
-
-				//- Some things
-				ChaptersResumeFirstUnread,
-
-				// Download options
-				IsDownloadPaused,
-
-				DeleteReadChapter,
-				DownloadOnLowStorage,
-				DownloadOnLowBattery,
-				DownloadOnMeteredConnection,
-				DownloadOnlyWhenIdle,
-
-				// Update options
-				IsDownloadOnUpdate,
-				OnlyUpdateOngoing,
-				UpdateOnStartup,
-				UpdateCycle,
-				UpdateOnLowStorage,
-				UpdateOnLowBattery,
-				UpdateOnMeteredConnection,
-				UpdateOnlyWhenIdle,
-
-				// App Update Options
-				AppUpdateOnStartup,
-				AppUpdateOnMeteredConnection,
-				AppUpdateOnlyWhenIdle,
-				AppUpdateCycle,
-
-
-				// View options
-				ChapterColumnsInPortait,
-				ChapterColumnsInLandscape,
-				SelectedNovelCardType,
-				NavStyle,
-
-				// Backup Options
-				BackupChapters,
-				BackupSettings,
-
-				BackupCycle,
-				BackupOnLowBattery,
-				BackupOnLowStorage,
-				BackupOnlyWhenIdle,
-
-				// Download Options
-				CustomExportDirectory,
-
-				DownloadThreadPool,
-				DownloadExtThreads,
-				AppTheme,
-				UpdateNotificationStyle
-			)
+		private val map: Map<String, SettingKey<*>> by lazy {
+			SettingKey::class.sealedSubclasses
+				.map { it.objectInstance }
+				.filterIsInstance<SettingKey<*>>()
+				.associateBy { it.name }
 		}
 
-		fun getKey(key: String): SettingKey<*> =
-			KEYS.find { it.name == key } ?: throw NullPointerException("Cannot find $key")
+		fun valueOf(key: String): SettingKey<*> =
+			map[key] ?: error("SettingKey: Cannot find $key")
 	}
 }

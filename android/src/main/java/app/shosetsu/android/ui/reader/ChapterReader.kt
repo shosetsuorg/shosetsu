@@ -15,7 +15,7 @@ import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.consts.READER_BAR_ALPHA
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
+import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
@@ -234,7 +234,7 @@ class ChapterReader
 
 	private fun applyToReaders(
 		onlyCurrent: Boolean = false,
-		action: TypedReaderViewHolder.() -> Unit
+		action: ReaderChapterViewHolder.() -> Unit
 	) {
 		val textTypedReaders = chapterItems.mapNotNull { it.reader }
 		textTypedReaders.find {
@@ -483,7 +483,7 @@ class ChapterReader
 		}
 	}
 
-	fun syncReader(typedReaderViewHolder: TypedReaderViewHolder) = typedReaderViewHolder.apply {
+	fun syncReader(typedReaderViewHolder: ReaderChapterViewHolder) = typedReaderViewHolder.apply {
 		chapterReader = this@ChapterReader
 		syncBackgroundColor()
 		syncTextColor()

@@ -8,12 +8,13 @@ import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.setPadding
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.LifecycleObserver
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.percentageScrolled
-import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
+import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -44,13 +45,13 @@ import org.kodein.di.android.kodein
  */
 class StringReader(
 	itemView: View
-) : TypedReaderViewHolder(itemView), KodeinAware, LifecycleObserver {
+) : ReaderChapterViewHolder(itemView), KodeinAware, LifecycleObserver {
 	override val kodein: Kodein by kodein(itemView.context)
 
 	/**
 	 * Main way of reading in this view
 	 */
-	private val textView: TextView = itemView.findViewById(R.id.textView)
+	private val textView: AppCompatTextView = itemView.findViewById(R.id.textView)
 	private val scrollView: NestedScrollView = itemView.findViewById(R.id.scrollView)
 
 	private val middleBox: View = itemView.findViewById(R.id.reader_middle_box)
@@ -105,14 +106,21 @@ class StringReader(
 		paragraphIndent: Int = chapterReader.viewModel.defaultIndentSize
 	) {
 
+		// Calculate changes to \n
 		val replaceSpacing = StringBuilder("\n")
 		for (x in 0 until paragraphSpacing)
 			replaceSpacing.append("\n")
 		for (x in 0 until paragraphIndent)
 			replaceSpacing.append("\t")
+
+		// Syncs textSize
 		syncTextSize()
+
+		// Set color
 		textView.setTextColor(chapterReader.viewModel.defaultForeground)
 		textView.setBackgroundColor(chapterReader.viewModel.defaultBackground)
+
+		// Set new text formatted
 		textView.text = unformattedText.replace("\n".toRegex(), replaceSpacing.toString())
 	}
 

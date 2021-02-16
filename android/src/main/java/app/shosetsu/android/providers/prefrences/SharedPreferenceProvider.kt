@@ -42,7 +42,7 @@ class SharedPreferenceProvider(
 	private val floatMap: HashMap<SettingKey<Float>, MutableStateFlow<Float>> by lazy { hashMapOf() }
 
 	override fun onSharedPreferenceChanged(sp: SharedPreferences?, s: String) {
-		val key = SettingKey.getKey(s)
+		val key = SettingKey.valueOf(s)
 		when (key.default) {
 			is String -> {
 				val key = key as SettingKey<String>

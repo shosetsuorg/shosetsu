@@ -1,7 +1,7 @@
 package app.shosetsu.android.ui.reader.types.model
 
 import android.view.View
-import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
+import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 
 /*
@@ -32,7 +32,7 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
  *     A series of webviews can be used to represent different things (possible)
  * </p>
  */
-class EPUBReader(itemView: View) : TypedReaderViewHolder(itemView) {
+class EPUBReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	override fun setData(data: String) {
 		TODO("Not yet implemented")
 	}

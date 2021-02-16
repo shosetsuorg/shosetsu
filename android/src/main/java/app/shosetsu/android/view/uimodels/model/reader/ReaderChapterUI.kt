@@ -4,7 +4,7 @@ import android.view.View
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.ui.reader.ChapterReader
-import app.shosetsu.android.ui.reader.types.base.TypedReaderViewHolder
+import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.ui.reader.types.model.StringReader
 import app.shosetsu.common.domain.model.local.ReaderChapterEntity
 import app.shosetsu.common.dto.Convertible
@@ -14,9 +14,17 @@ import app.shosetsu.lib.Novel.ChapterType
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /**
- * Data class that holds each chapter and its data
+ * Data class that holds each chapter and its data (not including text content)
+ *
+ * @param id Id of the chapter in shosetsu db
+ * @param link URL of the chapter
+ * @param readingPosition Where the user last left off while reading
+ * @param readingStatus What is the reading status of the chapter
+ * @param bookmarked Is the chapter bookmarked
+ * @param chapterType What type of [ReaderChapterViewHolder] to use for loading,
+ * this is defined by the the extension first,
+ * otherwise the user choice will dictate what reader is used
  */
-
 data class ReaderChapterUI(
 	val id: Int,
 	val link: String,
@@ -25,7 +33,7 @@ data class ReaderChapterUI(
 	var readingStatus: ReadingStatus,
 	var bookmarked: Boolean,
 	private val chapterType: ChapterType
-) : Convertible<ReaderChapterEntity>, ReaderUIItem<ReaderChapterUI, TypedReaderViewHolder>() {
+) : Convertible<ReaderChapterEntity>, ReaderUIItem<ReaderChapterUI, ReaderChapterViewHolder>() {
 	override var identifier: Long
 		get() = id.toLong()
 		set(_) {}
@@ -37,7 +45,7 @@ data class ReaderChapterUI(
 			}
 		}
 
-	var reader: TypedReaderViewHolder? = null
+	var reader: ReaderChapterViewHolder? = null
 		set(value) {
 			field = value?.apply {
 				this.chapter = this@ReaderChapterUI
@@ -70,14 +78,14 @@ data class ReaderChapterUI(
 		}
 	}
 
-	override fun getViewHolder(v: View): TypedReaderViewHolder {
+	override fun getViewHolder(v: View): ReaderChapterViewHolder {
 		return when (chapterType) {
 			ChapterType.STRING -> StringReader(v)
 			else -> TODO("Not implemented")
 		}.also { reader = it }
 	}
 
-	override fun bindView(holder: TypedReaderViewHolder, payloads: List<Any>) {
+	override fun bindView(holder: ReaderChapterViewHolder, payloads: List<Any>) {
 		super.bindView(holder, payloads)
 		chapterReader?.let { reader ->
 			reader.viewModel.getChapterPassage(this).observe(reader) { result ->
