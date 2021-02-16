@@ -1,6 +1,6 @@
 package app.shosetsu.android.viewmodel.impl.settings
 
-import android.content.Context
+import android.app.Application
 import android.content.res.Resources.NotFoundException
 import android.util.Log
 import android.widget.ArrayAdapter
@@ -19,8 +19,6 @@ import app.shosetsu.common.domain.repositories.base.getFloatOrDefault
 import app.shosetsu.common.domain.repositories.base.getStringOrDefault
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.MarkingTypes
-import app.shosetsu.common.enums.MarkingTypes.ONSCROLL
-import app.shosetsu.common.enums.MarkingTypes.ONVIEW
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -47,7 +45,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  */
 class ReaderSettingsViewModel(
 	iSettingsRepository: ISettingsRepository,
-	private val context: Context,
+	private val app: Application,
 	private val reportExceptionUseCase: ReportExceptionUseCase,
 	val loadReaderThemes: LoadReaderThemes
 ) : AReaderSettingsViewModel(iSettingsRepository) {
@@ -64,9 +62,9 @@ class ReaderSettingsViewModel(
 			title { R.string.paragraph_spacing }
 			try {
 				arrayAdapter = ArrayAdapter(
-					context,
+					app.applicationContext,
 					android.R.layout.simple_spinner_dropdown_item,
-					context.resources!!.getStringArray(R.array.sizes_with_none)
+					app.applicationContext.resources!!.getStringArray(R.array.sizes_with_none)
 				)
 			} catch (e: NotFoundException) {
 				reportExceptionUseCase(e.toHError())
@@ -77,9 +75,9 @@ class ReaderSettingsViewModel(
 			title { R.string.text_size }
 			try {
 				arrayAdapter = ArrayAdapter(
-					context,
+					app.applicationContext,
 					android.R.layout.simple_spinner_dropdown_item,
-					context.resources!!.getStringArray(R.array.sizes_no_none)
+					app.applicationContext.resources!!.getStringArray(R.array.sizes_no_none)
 				)
 			} catch (e: NotFoundException) {
 				reportExceptionUseCase(e.toHError())
@@ -113,9 +111,9 @@ class ReaderSettingsViewModel(
 			title { R.string.paragraph_indent }
 			try {
 				arrayAdapter = ArrayAdapter(
-					context,
+					app.applicationContext,
 					android.R.layout.simple_spinner_dropdown_item,
-					context.resources!!.getStringArray(R.array.sizes_with_none)
+					app.applicationContext.resources!!.getStringArray(R.array.sizes_with_none)
 				)
 			} catch (e: NotFoundException) {
 				reportExceptionUseCase(e.toHError())
@@ -134,33 +132,53 @@ class ReaderSettingsViewModel(
 			title { R.string.tap_to_scroll }
 			checkSettingValue(ReaderIsTapToScroll)
 		},
-		switchSettingData(6) {
+		switchSettingData(8) {
 			title { R.string.mark_read_as_reading }
 			description { R.string.mark_read_as_reading_desc }
 			checkSettingValue(ReaderMarkReadAsReading)
+		},
+		switchSettingData(9) {
+			title { "Horizontal paging" }
+			description { "Swipe left and right to move between chapters" }
+			checkSettingValue(ReaderHorizontalPageSwap)
+		},
+		textInputSettingData(9) {
+			title { "Html CSS" }
+			description { "CSS injected into html reader" }
+			textSettingValue(ReaderHtmlCss)
+		},
+		switchSettingData(9) {
+			title { "Convert string to html" }
+			description { "All string based extensions are rendered as html" }
+			checkSettingValue(ReaderStringToHtml)
+		},
+		switchSettingData(9) {
+			title { "Continuous scroll" }
+			description { "Smoothly scroll between chapters" }
+			checkSettingValue(ReaderContinuousScroll)
 		},
 		spinnerSettingData(0) {
 			title { R.string.marking_mode }
 			try {
 				arrayAdapter = ArrayAdapter(
-					context,
+					app.applicationContext,
 					android.R.layout.simple_spinner_dropdown_item,
-					context.resources!!.getStringArray(R.array.marking_names)
+					app.applicationContext.resources!!.getStringArray(R.array.marking_names)
 				)
 			} catch (e: NotFoundException) {
 				reportExceptionUseCase.invoke(e.toHError())
 			}
 			spinnerValue {
 				when (MarkingTypes.valueOf(settingsRepo.getStringOrDefault(ReadingMarkingType))) {
-					ONSCROLL -> 1
-					ONVIEW -> 0
+					MarkingTypes.ONSCROLL -> 1
+					MarkingTypes.ONVIEW -> 0
 				}
 			}
 			onSpinnerItemSelected { _, _, position, _ ->
 				launchIO {
 					when (position) {
-						0 -> settingsRepo.setString(ReadingMarkingType, ONVIEW.name)
-						1 -> settingsRepo.setString(ReadingMarkingType, ONSCROLL.name)
+						0 -> settingsRepo.setString(ReadingMarkingType, MarkingTypes.ONVIEW.name)
+						1 -> settingsRepo.setString(ReadingMarkingType, MarkingTypes.ONSCROLL.name)
 						else -> Log.e("MarkingMode", "UnknownType")
 					}
 				}

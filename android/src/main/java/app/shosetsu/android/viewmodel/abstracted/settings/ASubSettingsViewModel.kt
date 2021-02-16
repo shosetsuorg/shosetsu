@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.view.uimodels.settings.NumberPickerSettingData
 import app.shosetsu.android.view.uimodels.settings.SpinnerSettingData
+import app.shosetsu.android.view.uimodels.settings.TextInputSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.base.ToggleableStateSettingData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
@@ -16,6 +17,7 @@ import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
 import app.shosetsu.common.domain.repositories.base.getIntOrDefault
+import app.shosetsu.common.domain.repositories.base.getStringOrDefault
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.loading
 import app.shosetsu.common.dto.successResult
@@ -90,6 +92,18 @@ abstract class ASubSettingsViewModel(
 		onChecked { _, isChecked ->
 			launchIO {
 				settingsRepo.setBoolean(key, isChecked)
+			}
+		}
+	}
+
+	@SettingsItemDSL
+	suspend inline fun TextInputSettingData.textSettingValue(
+		key: SettingKey<String>
+	) {
+		initialText = settingsRepo.getStringOrDefault(key)
+		doAfterTextChanged {
+			launchIO {
+				settingsRepo.setString(key, it.toString())
 			}
 		}
 	}
