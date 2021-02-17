@@ -56,6 +56,11 @@ abstract class IChapterReaderViewModel :
 	abstract val liveTextSize: LiveData<Float>
 	abstract val liveVolumeScroll: LiveData<Boolean>
 
+	/**
+	 * false    -> vertical paging
+	 * true     -> horizontal paging
+	 */
+	abstract val liveChapterDirection: LiveData<Boolean>
 
 	var defaultTextSize: Float = SettingKey.ReaderTextSize.default
 	var defaultParaSpacing: Int = SettingKey.ReaderParagraphSpacing.default

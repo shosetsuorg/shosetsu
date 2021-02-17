@@ -93,6 +93,7 @@ class NestedScrollableHost @JvmOverloads constructor(
 
 			if (dx.absoluteValue > touchSlop || dy.absoluteValue > touchSlop) {
 				if (isVpHorizontal == (dy.absoluteValue > dx.absoluteValue)) {
+
 					// Gesture is perpendicular, allow all parents to intercept
 					parent.requestDisallowInterceptTouchEvent(false)
 
@@ -100,11 +101,12 @@ class NestedScrollableHost @JvmOverloads constructor(
 					// ViewPager2(V) -> NestedScrollView(V) -> RecyclerView(H)
 					// return false instead so that the innermost RV(H) can scroll normally.
 					// It is not tested for other use case.
-					return true
+					return false
 				} else {
 					// Gesture is parallel, query child if movement in that direction is possible
 					if (canChildScroll(orientation, if (isVpHorizontal) dx else dy)) {
 						// Child can scroll, disallow all parents to intercept
+
 						parent.requestDisallowInterceptTouchEvent(true)
 					} else {
 						// Child cannot scroll, allow all parents to intercept

@@ -64,6 +64,7 @@ class ExtensionConfigureViewModel(
 		reportExceptionUseCase(error)
 	}
 
+	@ExperimentalCoroutinesApi
 	override val extensionSettings: LiveData<HResult<List<SettingsItemData>>> by lazy {
 		idLive.switchMap {
 			getExtensionSettings(it).mapLatestResult {

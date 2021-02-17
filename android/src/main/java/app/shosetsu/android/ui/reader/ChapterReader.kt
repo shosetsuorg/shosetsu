@@ -6,11 +6,14 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.Toolbar
 import androidx.core.util.set
 import androidx.core.view.isVisible
+import androidx.lifecycle.LiveData
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import androidx.viewpager2.widget.ViewPager2.*
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.consts.READER_BAR_ALPHA
@@ -29,12 +32,14 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityReaderBinding
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.calculateDiff
 import com.mikepenz.fastadapter.select.selectExtension
 import com.skydoves.colorpickerview.ColorPickerDialog
+import com.xw.repo.BubbleSeekBar
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -74,22 +79,22 @@ class ChapterReader
 	private val chapterReaderBottom: LinearLayout
 		get() = binding.chapterReaderBottom.chapterReaderBottom
 
-	private val viewpager
+	private val viewpager: ViewPager2
 		get() = binding.viewpager
 
-	private val drawerToggle
+	private val drawerToggle: AppCompatImageButton
 		get() = binding.chapterReaderBottom.drawerToggle
 
-	private val textSizeBar
+	private val textSizeBar: BubbleSeekBar
 		get() = binding.chapterReaderBottom.textSizeBar
-	private val paraIndentBar
+	private val paraIndentBar: BubbleSeekBar
 		get() = binding.chapterReaderBottom.paraIndentBar
-	private val paraSpaceBar
+	private val paraSpaceBar: BubbleSeekBar
 		get() = binding.chapterReaderBottom.paraSpaceBar
 
-	private val colorPickerOptions
+	private val colorPickerOptions: RecyclerView
 		get() = binding.chapterReaderBottom.colorPickerOptions
-	private val volumeToScrollBar
+	private val volumeToScrollBar: SwitchMaterial
 		get() = binding.chapterReaderBottom.volumeToScrollBar
 
 
@@ -183,7 +188,7 @@ class ChapterReader
 	}
 
 	private fun setObservers() {
-		viewModel.liveData.observe(this) { result ->
+		viewModel.liveData.observe { result ->
 			result.handle(
 				onLoading = {
 					logD("Loading")
@@ -194,7 +199,7 @@ class ChapterReader
 		}
 
 
-		viewModel.liveTheme.observe(this) { (t, b) ->
+		viewModel.liveTheme.observe { (t, b) ->
 			viewModel.defaultForeground = t
 			viewModel.defaultBackground = b
 
@@ -204,31 +209,35 @@ class ChapterReader
 			}
 		}
 
-		viewModel.liveIndentSize.observe(this) { i ->
+		viewModel.liveIndentSize.observe { i ->
 			viewModel.defaultIndentSize = i
 			applyToReaders {
 				syncParagraphIndent()
 			}
 		}
 
-		viewModel.liveParagraphSpacing.observe(this) { i ->
+		viewModel.liveParagraphSpacing.observe { i ->
 			viewModel.defaultParaSpacing = i
 			applyToReaders {
 				syncParagraphSpacing()
 			}
 		}
 
-		viewModel.liveTextSize.observe(this) { i ->
+		viewModel.liveTextSize.observe { i ->
 			viewModel.defaultTextSize = i
 			applyToReaders { syncTextSize() }
 		}
 
-		viewModel.liveThemes.observe(this) { list ->
+		viewModel.liveThemes.observe { list ->
 			colorItemAdapterUI.add(list.onEach { it.inReader = true })
 		}
 
-		viewModel.liveVolumeScroll.observe(this) {
+		viewModel.liveVolumeScroll.observe {
 			viewModel.volumeScroll = it
+		}
+
+		viewModel.liveChapterDirection.observe {
+			viewpager.orientation = if (it) ORIENTATION_HORIZONTAL else ORIENTATION_VERTICAL
 		}
 	}
 
@@ -411,7 +420,7 @@ class ChapterReader
 		viewpager.apply {
 			adapter = fastAdapter
 			registerOnPageChangeCallback(pageChangeCallback)
-			orientation = ViewPager2.ORIENTATION_VERTICAL
+			orientation = ORIENTATION_VERTICAL
 			isNestedScrollingEnabled = true
 		}
 	}
@@ -524,4 +533,9 @@ class ChapterReader
 			}
 		}
 	}
+
+
+	private fun <T> LiveData<T>.observe(observer: (T) -> Unit) =
+		observe(this@ChapterReader, observer)
 }
+

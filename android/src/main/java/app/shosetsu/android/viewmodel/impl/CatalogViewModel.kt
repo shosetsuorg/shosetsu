@@ -127,8 +127,8 @@ class CatalogViewModel(
 		}
 	}
 
-	override fun setExtensionID(fID: Int) {
-		setFID(fID)
+	override fun setExtensionID(extensionID: Int) {
+		setFID(extensionID)
 	}
 
 	override fun setQuery(string: String) {

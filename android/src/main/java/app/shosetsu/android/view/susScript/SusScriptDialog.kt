@@ -52,7 +52,7 @@ class SusScriptDialog(val activity: Activity, fileList: ArrayList<File>) {
 		val dialog = DialogBody(activity.layoutInflater, builder, this)
 		builder.setView(dialog.view)
 
-		builder.setPositiveButton(android.R.string.yes) { _, _ ->
+		builder.setPositiveButton(android.R.string.ok) { _, _ ->
 			processActions()
 			finalAction()
 		}

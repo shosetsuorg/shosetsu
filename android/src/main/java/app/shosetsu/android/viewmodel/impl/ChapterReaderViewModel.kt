@@ -30,6 +30,7 @@ import app.shosetsu.common.enums.ReadingStatus.READING
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 
@@ -149,6 +150,10 @@ class ChapterReaderViewModel(
 	override var currentChapterID: Int = -1
 
 	private var nID = -1
+
+	override val liveChapterDirection: LiveData<Boolean> = flow {
+		emitAll(iSettingsRepository.getBooleanFlow(ReaderHorizontalPageSwap))
+	}.asIOLiveData()
 
 	override fun setReaderTheme(value: Int) {
 		launchIO { iSettingsRepository.setInt(ReaderTheme, value) }
