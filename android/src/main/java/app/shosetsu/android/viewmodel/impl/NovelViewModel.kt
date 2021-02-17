@@ -1,4 +1,4 @@
-package app.shosetsu.android.viewmodel.impl.novel
+package app.shosetsu.android.viewmodel.impl
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO

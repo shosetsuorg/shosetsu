@@ -5,7 +5,7 @@ import app.shosetsu.android.viewmodel.abstracted.settings.*
 import app.shosetsu.android.viewmodel.impl.*
 import app.shosetsu.android.viewmodel.impl.extension.ExtensionConfigureViewModel
 import app.shosetsu.android.viewmodel.impl.extension.ExtensionsViewModel
-import app.shosetsu.android.viewmodel.impl.novel.NovelViewModel
+import app.shosetsu.android.viewmodel.impl.NovelViewModel
 import app.shosetsu.android.viewmodel.impl.settings.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.kodein.di.Kodein
