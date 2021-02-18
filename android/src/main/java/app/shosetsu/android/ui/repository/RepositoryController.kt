@@ -71,10 +71,17 @@ class RepositoryController : GenericFastAdapterRecyclerController<RepositoryUI>(
 				}
 			) {
 				toast(R.string.toast_repository_removed)
+				showWarning()
 			}
 		}
 	}
 
+	/**
+	 * Warn the user that they need to refresh their extension list
+	 */
+	private fun showWarning() = Builder(binding.root.context)
+		.setTitle(R.string.repository_list_change_warning)
+		.show()
 
 	override fun manipulateFAB(fab: FloatingActionButton) {
 		// On add repo
@@ -99,6 +106,7 @@ class RepositoryController : GenericFastAdapterRecyclerController<RepositoryUI>(
 							}
 						) {
 							toast(R.string.toast_repository_added)
+							showWarning()
 						}
 						d.dismiss()
 					}

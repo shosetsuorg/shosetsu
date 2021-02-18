@@ -369,6 +369,7 @@
     <string name="toast_repository_added">Repository Added</string>
     <string name="toast_repository_add_fail">Failed to add repository</string>
     <string name="toast_repository_remove_fail">Failed to remove repository!</string>
+    <string name="repository_list_change_warning">Please refresh the repository list in Browse</string>
 
     <array name="application_themes">
         <item>@string/follow_system_theme</item>
