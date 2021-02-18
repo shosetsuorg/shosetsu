@@ -64,7 +64,7 @@ class RepositoryController : GenericFastAdapterRecyclerController<RepositoryUI>(
 		hookClickEvent(
 			bind = { it: RepositoryUI.ViewHolder -> it.binding.removeButton }
 		) { _, _, _, item ->
-			// make remove thing
+			// Pass item to viewModel to remove, observe result
 			viewModel.remove(item).handleObserve(
 				onError = {
 					toast(R.string.toast_repository_remove_fail)
@@ -84,9 +84,10 @@ class RepositoryController : GenericFastAdapterRecyclerController<RepositoryUI>(
 		.show()
 
 	override fun manipulateFAB(fab: FloatingActionButton) {
-		// On add repo
 
 		fab.setImageResource(R.drawable.add_circle_outline)
+
+		// When the FAB is clicked, open a alert dialog to input a new repository
 		fab.setOnClickListener {
 			val addBinding: RepositoryAddBinding =
 				RepositoryAddBinding.inflate(LayoutInflater.from(fab.context))
@@ -96,6 +97,7 @@ class RepositoryController : GenericFastAdapterRecyclerController<RepositoryUI>(
 				.setTitle(R.string.repository_add_title)
 				.setPositiveButton(android.R.string.ok) { d, w ->
 					addBinding.let {
+						// Pass data to view model, observe result
 						viewModel.addRepository(
 							it.nameInput.text.toString(),
 							it.urlInput.text.toString()
