@@ -54,7 +54,8 @@ data class ExtensionUI(
 	enum class State { UPDATE, NO_UPDATE, OBSOLETE }
 
 	fun updateState(): State {
-		if (repositoryVersion == Version(-9, -9, -9)) return State.OBSOLETE
+		if (repositoryVersion == OBSOLETE_VERSION) return State.OBSOLETE
+
 		return if (installedVersion != null && installedVersion!!.compareTo(repositoryVersion) == -1)
 			State.UPDATE else State.NO_UPDATE
 	}
@@ -128,5 +129,9 @@ data class ExtensionUI(
 			language.text = null
 			imageView.setImageResource(R.drawable.broken_image)
 		}
+	}
+
+	companion object {
+		val OBSOLETE_VERSION by lazy { Version(-9, -9, -9) }
 	}
 }

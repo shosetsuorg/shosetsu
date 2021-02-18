@@ -8,7 +8,6 @@ import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionLibrariesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.HResult.Error
 import app.shosetsu.common.dto.HResult.Success
 import app.shosetsu.common.dto.handle
@@ -46,35 +45,32 @@ class InitializeExtensionsUseCase(
 	private val extensionLibrariesRepo: IExtensionLibrariesRepository,
 	private var isOnlineUseCase: IsOnlineUseCase,
 ) {
+	/**
+	 * Main function for initialization
+	 * Will loop through repos getting and updating data
+	 */
 	suspend operator fun invoke(progressUpdate: (String) -> Unit) {
 		Log.i(logID(), "Starting Update")
 		if (isOnlineUseCase()) {
 			progressUpdate("Online, Loading repositories")
-			val repos: HResult<List<RepositoryEntity>> = extRepoRepo.loadRepositories()
-			if (repos is Success)
-				for (repo in repos.data) {
-					val repoName = repo.name
-
-					progressUpdate("Checking $repoName")
+			extRepoRepo.loadRepositories().handle(
+				onError = { progressUpdate("Failed to get repos") }
+			) { repos: List<RepositoryEntity> ->
+				for (repo in repos) {
 					// gets the latest list for the repo
-					val result = extRepoRepo.getRepoData(repo)
-					result.takeIf { it is Success }
-						?.let { (it as Success).data }
-						?.let { repoIndex ->
-							updateLibraries(repoIndex.libraries, repo, progressUpdate)
-							updateScript(repoIndex.extensions, repo)
+					extRepoRepo.getRepoData(repo).handle(
+						onError = {
+							logE(
+								"Exception! ${it.code} : ${it.message}",
+								it.exception
+							)
 						}
-						?: result.takeIf { it is Error }
-							?.let { (it as Error) }
-							?.let {
-								logE(
-									"Exception! ${it.code} : ${it.message}",
-									it.exception
-								)
-							}
-
+					) { repoIndex ->
+						updateLibraries(repoIndex.libraries, repo, progressUpdate)
+						updateExtensions(repoIndex.extensions, repo)
+					}
 				}
-			else progressUpdate("Failed to get repos")
+			}
 		} else {
 			progressUpdate("Application is offline, Not updating")
 		}
@@ -132,7 +128,6 @@ class InitializeExtensionsUseCase(
 
 				// For each library not present, installs
 				libsNotPresent.forEach {
-					progressUpdate("Updating/Installing ${it.scriptName}")
 					extensionLibrariesRepo.installExtLibrary(repo.url, it)
 				}
 			}
@@ -142,9 +137,9 @@ class InitializeExtensionsUseCase(
 				}
 	}
 
-	private suspend fun updateScript(repoList: List<RepoExtension>, repo: RepositoryEntity) {
+	private suspend fun updateExtensions(repoList: List<RepoExtension>, repo: RepositoryEntity) {
 		val presentExtensions = ArrayList<Int>() // Extensions from repo
-		repoList.forEach { (id, name, fileName, imageURL, lang, _, libVersion, md5) ->
+		repoList.forEach { (id, name, fileName, imageURL, lang, version, _, md5) ->
 			extRepo.insertOrUpdate(
 				ExtensionEntity(
 					id = id,
@@ -153,7 +148,7 @@ class InitializeExtensionsUseCase(
 					fileName = fileName,
 					imageURL = imageURL,
 					lang = lang,
-					repositoryVersion = libVersion,
+					repositoryVersion = version,
 					md5 = md5
 				)
 			)
