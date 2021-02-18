@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
 import app.shosetsu.lib.Filter
 
-class TextInput @JvmOverloads constructor(
+class TextFilterInput @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
 	override val filterID: Int = -1

@@ -29,7 +29,7 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.TriStateCheckboxBinding
 /**
  * 30 / 01 / 2021
  */
-class TriStateInput @JvmOverloads constructor(
+class TriStateFilterInput @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
 	override val filterID: Int = -1

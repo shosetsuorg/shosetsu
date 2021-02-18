@@ -18,15 +18,19 @@ import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.listeners.CatalogueSearchQuery
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.controller.FastAdapterRecyclerController
+import app.shosetsu.android.view.controller.base.BottomMenuController
+import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.ProgressItem
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
+import app.shosetsu.android.view.widget.SlidingUpBottomMenu
 import app.shosetsu.android.viewmodel.abstracted.ICatalogViewModel
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.NovelCardType.COMPRESSED
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerCatalogueBinding
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.scroll.EndlessRecyclerOnScrollListener
@@ -59,7 +63,7 @@ class CatalogController(
 	/** data bundle uwu */
 	val bundle: Bundle,
 ) : FastAdapterRecyclerController<ControllerCatalogueBinding, ACatalogNovelUI>(bundle),
-	PushCapableController {
+	PushCapableController, ExtendedFABController, BottomMenuController {
 	private var searchView: SearchView? = null
 
 	override var pushController: (Controller) -> Unit = {}
@@ -212,4 +216,12 @@ class CatalogController(
 
 	override fun bindView(inflater: LayoutInflater): ControllerCatalogueBinding =
 		ControllerCatalogueBinding.inflate(inflater).also { recyclerView = it.recyclerView }
+
+	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
+		fab.setIconResource(R.drawable.filter)
+	}
+
+	override var bottomMenuRetriever: () -> SlidingUpBottomMenu? = { null }
+
+	override fun getBottomMenuView(): View = CatalogFilterMenuBuilder(this).build()
 }

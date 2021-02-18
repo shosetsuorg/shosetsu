@@ -2,7 +2,6 @@ package app.shosetsu.android.view.widget.setting
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.appcompat.widget.SwitchCompat
 import app.shosetsu.lib.Filter
 
 /*
@@ -25,17 +24,17 @@ import app.shosetsu.lib.Filter
 /**
  * 30 / 01 / 2021
  */
-class SwitchInput @JvmOverloads constructor(
+class CheckboxFilterInput @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
 	override val filterID: Int = -1
-) : FilterSettingWidget<Boolean>, SwitchCompat(context, attrs) {
+) : FilterSettingWidget<Boolean>, androidx.appcompat.widget.AppCompatCheckBox(context, attrs) {
 	override var result: Boolean
 		get() = super.isChecked()
 		set(value) = super.setChecked(value)
 
 	constructor(
-		filter: Filter.Switch,
+		filter: Filter.Checkbox,
 		context: Context,
 		attrs: AttributeSet? = null
 	) : this(
