@@ -35,7 +35,7 @@ abstract class ARepositoryViewModel
 	 *
 	 * @param url THe URL of the repository
 	 */
-	abstract fun addRepository(name: String, url: String)
+	abstract fun addRepository(name: String, url: String): LiveData<HResult<*>>
 
 	/**
 	 * Checks if the string provided is a valid URL

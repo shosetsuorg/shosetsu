@@ -1,6 +1,7 @@
 package app.shosetsu.android.view.uimodels.model
 
 import android.view.View
+import androidx.core.view.isVisible
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import app.shosetsu.android.view.uimodels.model.RepositoryUI.ViewHolder
@@ -55,12 +56,15 @@ data class RepositoryUI(
 			repoID.text = item.id.toString()
 			title.text = item.name
 			url.text = item.url
+			if (item.id == 1)
+				removeButton.isVisible = false
 		}
 
 		override fun RecyclerRepositoryInfoBinding.unbindView(item: RepositoryUI) {
 			repoID.setText(R.string.negative_one)
 			title.text = ""
 			url.text = ""
+			removeButton.isVisible = true
 		}
 	}
 

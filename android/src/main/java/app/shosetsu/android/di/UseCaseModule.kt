@@ -4,6 +4,7 @@ import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.*
 import app.shosetsu.android.domain.usecases.delete.DeleteChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteDownloadUseCase
+import app.shosetsu.android.domain.usecases.delete.DeleteRepositoryUseCase
 import app.shosetsu.android.domain.usecases.get.*
 import app.shosetsu.android.domain.usecases.load.*
 import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
@@ -195,5 +196,12 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 
 	bind<StartRestoreWorkerUseCase>() with provider {
 		StartRestoreWorkerUseCase(instance())
+	}
+
+	bind<AddRepositoryUseCase>() with provider {
+		AddRepositoryUseCase(instance())
+	}
+	bind<DeleteRepositoryUseCase>() with provider {
+		DeleteRepositoryUseCase(instance())
 	}
 }

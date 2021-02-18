@@ -362,6 +362,13 @@
     <string name="restore_notification_content_chapters_load">Loading chapters from database</string>
     <string name="restore_notification_content_completed">Completed!</string>
     <string name="restore_notification_subtitle">Restore</string>
+    <string name="toast_repository_removed">Removed Repository!</string>
+    <string name="repository_add_name_hint">Repository name</string>
+    <string name="repository_add_url_hint">Repository URL</string>
+    <string name="repository_add_title">Add Repository</string>
+    <string name="toast_repository_added">Repository Added</string>
+    <string name="toast_repository_add_fail">Failed to add repository</string>
+    <string name="toast_repository_remove_fail">Failed to remove repository!</string>
 
     <array name="application_themes">
         <item>@string/follow_system_theme</item>

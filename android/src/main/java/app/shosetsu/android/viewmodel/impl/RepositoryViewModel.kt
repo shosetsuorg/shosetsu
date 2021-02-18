@@ -7,6 +7,7 @@ import app.shosetsu.android.domain.usecases.delete.DeleteRepositoryUseCase
 import app.shosetsu.android.domain.usecases.load.LoadRepositoriesUseCase
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.android.viewmodel.abstracted.ARepositoryViewModel
+import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
@@ -44,9 +45,9 @@ class RepositoryViewModel(
 		loadRepositoriesUseCase().asIOLiveData()
 	}
 
-	override fun addRepository(name: String, url: String) {
-
-	}
+	override fun addRepository(name: String, url: String) = flow {
+		emit(addRepositoryUseCase(RepositoryEntity(url = url, name = name)))
+	}.asIOLiveData()
 
 	override fun isURL(string: String): Boolean {
 		return false
@@ -56,7 +57,8 @@ class RepositoryViewModel(
 		reportExceptionUseCase(error)
 	}
 
-	override fun remove(repositoryInfoUI: RepositoryUI) = flow {
-		emit(deleteRepositoryUseCase(repositoryInfoUI))
-	}.asIOLiveData()
+	override fun remove(repositoryInfoUI: RepositoryUI) =
+		flow {
+			emit(deleteRepositoryUseCase(repositoryInfoUI))
+		}.asIOLiveData()
 }
