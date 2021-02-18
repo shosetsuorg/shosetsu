@@ -39,19 +39,24 @@ interface INovelSettingsRepository {
 	 *
 	 * [HResult.Empty] If no novel settings were found
 	 */
-	suspend fun getNovelSettings(novelID: Int): HResult<NovelSettingEntity>
+	suspend fun get(novelID: Int): HResult<NovelSettingEntity>
 
 
 	/**
 	 * Gets the settings for a novel, but in a flow that will be updated with any changes
 	 *
-	 * @see getNovelSettings
+	 * @see get
 	 */
-	fun getNovelSettingsFlow(novelID: Int): Flow<HResult<NovelSettingEntity>>
+	fun getFlow(novelID: Int): Flow<HResult<NovelSettingEntity>>
 
 
 	/**
 	 * Updates the settings for novels
 	 */
-	suspend fun updateNovelSettings(novelSettingEntity: NovelSettingEntity): HResult<*>
+	suspend fun update(novelSettingEntity: NovelSettingEntity): HResult<*>
+
+	/**
+	 * Inserts a new setting
+	 */
+	suspend fun insert(novelSettingEntity: NovelSettingEntity): HResult<*>
 }

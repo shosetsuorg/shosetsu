@@ -1,9 +1,7 @@
 package app.shosetsu.android.viewmodel.impl
 
 import androidx.lifecycle.LiveData
-import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.liveDataIO
-import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
@@ -122,7 +120,7 @@ class NovelViewModel(
 
 	@ExperimentalCoroutinesApi
 	private val _onlyBookmarkedFlow: Flow<Boolean> =
-		novelSettingsFlow.mapLatest { it.transmogrify { ui -> ui.showOnlyDownloaded } ?: false }
+		novelSettingsFlow.mapLatest { it.transmogrify { ui -> ui.showOnlyBookmarked } ?: false }
 
 	@ExperimentalCoroutinesApi
 	private val _sortTypeFlow: Flow<ChapterSortType> =
@@ -130,7 +128,7 @@ class NovelViewModel(
 
 	@ExperimentalCoroutinesApi
 	private val _reversedSortFlow: Flow<Boolean> =
-		novelSettingsFlow.mapLatest { it.transmogrify { ui -> ui.showOnlyDownloaded } ?: false }
+		novelSettingsFlow.mapLatest { it.transmogrify { ui -> ui.reverseOrder } ?: false }
 
 	@ExperimentalCoroutinesApi
 	private fun Flow<HResult<List<ChapterUI>>>.combineBookmarked(): Flow<HResult<List<ChapterUI>>> =
@@ -417,6 +415,7 @@ class NovelViewModel(
 	}
 
 	override fun updateNovelSetting(novelSettingUI: NovelSettingUI) {
+		logD("Launching update")
 		launchIO {
 			updateNovelSettingUseCase(novelSettingUI)
 		}

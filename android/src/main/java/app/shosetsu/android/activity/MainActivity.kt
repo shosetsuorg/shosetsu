@@ -448,9 +448,13 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			to.configureTabs(tabLayout)
 		}
 
+		// clean up TabbedController
 		if (from is TabbedController && to !is TabbedController) tabLayout.collapse()
+
+		// setup TabbedController
 		if (from !is TabbedController && to is TabbedController) tabLayout.expand()
 
+		// Clean up from BottomMenuController
 		if (from is BottomMenuController) {
 			binding.slidingUpBottomMenu.apply {
 				clearOnHideListeners()
@@ -459,6 +463,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			}
 		}
 
+		// if the to is a BottomMenuController, set it up
 		if (to is BottomMenuController) {
 			var created = false
 			to.bottomMenuRetriever = { binding.slidingUpBottomMenu }
@@ -466,17 +471,20 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			binding.slidingUpBottomMenu.apply {
 				addOnShowListener {
 					if (!created) {
-						addChildView(to.getBottomMenuView())
+						addChildView(to.getBottomMenuView().also {
+							this@MainActivity.logV("Created bottom menu #${it.hashCode()}")
+						})
 						created = true
 					}
 				}
 
+				// Interaction with FABController
 				if (to is FABController) {
 					addOnShowListener { to.hideFAB(fab) }
 					addOnHideListener { to.showFAB(fab) }
 				}
 
-
+				// Interaction with the EFABController
 				if (to is ExtendedFABController) {
 					addOnShowListener { to.hideFAB(eFab) }
 					addOnHideListener { to.showFAB(eFab) }
@@ -484,6 +492,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			}
 		}
 
+		// Change the elevation for the app bar layout
 		when (to) {
 			is CollapsedToolBarController -> {
 				binding.elevatedAppBarLayout.drop()

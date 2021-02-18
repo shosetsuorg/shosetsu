@@ -29,10 +29,8 @@ enum class ReadingStatus(val key: Int, val status: String) {
 
 	UNKNOWN(-1, "Unknown");
 
-	override fun toString(): String = key.toString()
 
 	companion object {
 		fun fromInt(key: Int): ReadingStatus = values().find { it.key == key } ?: UNKNOWN
 	}
-
 }

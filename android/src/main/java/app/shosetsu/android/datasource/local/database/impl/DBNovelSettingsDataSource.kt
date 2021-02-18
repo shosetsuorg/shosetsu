@@ -2,16 +2,18 @@ package app.shosetsu.android.datasource.local.database.impl
 
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.dto.errorResult
+import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.domain.model.database.DBNovelSettingsEntity
 import app.shosetsu.android.providers.database.dao.NovelSettingsDao
 import app.shosetsu.common.datasource.database.base.IDBNovelSettingsDataSource
 import app.shosetsu.common.domain.model.local.NovelSettingEntity
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.mapLatestTo
-import app.shosetsu.common.dto.mapLatestToSuccess
+import app.shosetsu.common.dto.emptyResult
 import app.shosetsu.common.dto.successResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 
 /*
  * This file is part of Shosetsu.
@@ -38,21 +40,33 @@ class DBNovelSettingsDataSource(
 ) : IDBNovelSettingsDataSource {
 
 	@ExperimentalCoroutinesApi
-	override fun getNovelSettingsFlow(novelID: Int): Flow<HResult<NovelSettingEntity>> =
-		dao.getFlow(novelID).mapLatestTo().mapLatestToSuccess()
+	override fun getFlow(novelID: Int): Flow<HResult<NovelSettingEntity>> =
+		dao.getFlow(novelID).map {
+			it?.let { successResult(it.convertTo()) } ?: emptyResult()
+		}.catch { throwable ->
+			(throwable as? Exception)?.toHError()?.let { emit(it) }
+		}
 
-	override suspend fun updateNovelSettings(novelSettingEntity: NovelSettingEntity): HResult<*> =
+
+	override suspend fun update(novelSettingEntity: NovelSettingEntity): HResult<*> =
 		try {
 			successResult(dao.update(novelSettingEntity.toDB()))
 		} catch (e: SQLiteException) {
 			errorResult(e)
 		}
 
-	override suspend fun getNovelSettings(novelID: Int): HResult<NovelSettingEntity> = try {
+	override suspend fun get(novelID: Int): HResult<NovelSettingEntity> = try {
 		successResult(dao.get(novelID).convertTo())
 	} catch (e: SQLiteException) {
 		errorResult(e)
 	}
+
+	override suspend fun insert(novelSettingEntity: NovelSettingEntity): HResult<*> =
+		try {
+			successResult(dao.insertAbort(novelSettingEntity.toDB()))
+		} catch (e: SQLiteException) {
+			errorResult(e)
+		}
 
 	private fun NovelSettingEntity.toDB(): DBNovelSettingsEntity =
 		DBNovelSettingsEntity(

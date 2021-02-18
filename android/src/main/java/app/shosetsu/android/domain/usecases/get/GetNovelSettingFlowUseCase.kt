@@ -1,10 +1,13 @@
 package app.shosetsu.android.domain.usecases.get
 
+import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.utils.uifactory.NovelSettingConversionFactory
+import app.shosetsu.common.domain.model.local.NovelSettingEntity
 import app.shosetsu.common.domain.repositories.base.INovelSettingsRepository
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.emptyResult
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.dto.transform
 import app.shosetsu.common.view.uimodel.NovelSettingUI
@@ -34,19 +37,18 @@ import kotlinx.coroutines.flow.map
  * Gets a novel setting flow, but will create a
  */
 class GetNovelSettingFlowUseCase(
-	private val iNovelSettingsRepository: INovelSettingsRepository,
+	private val novelSettingsRepository: INovelSettingsRepository,
 	private val iSettingsRepository: ISettingsRepository,
 	private val iNovelsRepository: INovelsRepository
 ) {
 	operator fun invoke(novelID: Int): Flow<HResult<NovelSettingUI>> =
-		iNovelSettingsRepository.getNovelSettingsFlow(novelID).map { settingsResult ->
+		novelSettingsRepository.getFlow(novelID).map { settingsResult ->
 			settingsResult.transform(
-				onLoading = {
-					successResult(NovelSettingUI(novelID))
-				}, onEmpty = {
-					successResult(NovelSettingUI(novelID))
-				}, onError = {
-					successResult(NovelSettingUI(novelID))
+				onEmpty = {
+					launchIO {
+						novelSettingsRepository.insert(NovelSettingEntity(novelID))
+					}
+					emptyResult()
 				}
 			) {
 				successResult(NovelSettingConversionFactory(it).convertTo())

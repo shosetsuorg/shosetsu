@@ -27,9 +27,11 @@ import kotlinx.coroutines.flow.Flow
  * Database source for [NovelSettingEntity]
  */
 interface IDBNovelSettingsDataSource {
-	fun getNovelSettingsFlow(novelID: Int): Flow<HResult<NovelSettingEntity>>
+	fun getFlow(novelID: Int): Flow<HResult<NovelSettingEntity>>
 
-	suspend fun updateNovelSettings(novelSettingEntity: NovelSettingEntity): HResult<*>
+	suspend fun update(novelSettingEntity: NovelSettingEntity): HResult<*>
 
-	suspend fun getNovelSettings(novelID: Int): HResult<NovelSettingEntity>
+	suspend fun get(novelID: Int): HResult<NovelSettingEntity>
+
+	suspend fun insert(novelSettingEntity: NovelSettingEntity): HResult<*>
 }

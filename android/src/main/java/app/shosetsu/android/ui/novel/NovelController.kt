@@ -327,7 +327,7 @@ class NovelController(bundle: Bundle) :
 		setObserver()
 	}
 
-	internal fun openFilterMenu() {
+	private fun openFilterMenu() {
 		bottomMenuRetriever.invoke()?.show()
 	}
 

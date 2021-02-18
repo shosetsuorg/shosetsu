@@ -32,5 +32,5 @@ class UpdateNovelSettingUseCase(
 		invoke(novelSettingUI.convertTo())
 
 	suspend operator fun invoke(novelSettingEntity: NovelSettingEntity): HResult<*> =
-		novelSettingsRepository.updateNovelSettings(novelSettingEntity)
+		novelSettingsRepository.update(novelSettingEntity)
 }

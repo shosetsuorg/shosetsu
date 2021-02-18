@@ -27,15 +27,17 @@ import kotlinx.coroutines.flow.Flow
  * 20 / 01 / 2021
  */
 class NovelSettingsRepository(
-	private val idbNovelSettingsDataSource: IDBNovelSettingsDataSource
+	private val database: IDBNovelSettingsDataSource
 ) : INovelSettingsRepository {
-	override suspend fun getNovelSettings(novelID: Int): HResult<NovelSettingEntity> =
-		idbNovelSettingsDataSource.getNovelSettings(novelID)
+	override suspend fun get(novelID: Int): HResult<NovelSettingEntity> =
+		database.get(novelID)
 
+	override fun getFlow(novelID: Int): Flow<HResult<NovelSettingEntity>> =
+		database.getFlow(novelID)
 
-	override fun getNovelSettingsFlow(novelID: Int): Flow<HResult<NovelSettingEntity>> =
-		idbNovelSettingsDataSource.getNovelSettingsFlow(novelID)
+	override suspend fun update(novelSettingEntity: NovelSettingEntity): HResult<*> =
+		database.update(novelSettingEntity)
 
-	override suspend fun updateNovelSettings(novelSettingEntity: NovelSettingEntity): HResult<*> =
-		idbNovelSettingsDataSource.updateNovelSettings(novelSettingEntity)
+	override suspend fun insert(novelSettingEntity: NovelSettingEntity): HResult<*> =
+		database.insert(novelSettingEntity)
 }

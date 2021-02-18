@@ -5,19 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.viewpager.widget.PagerAdapter
+import app.shosetsu.android.common.ext.handleObserve
+import app.shosetsu.android.common.ext.logD
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.view.widget.TriStateButton.State.CHECKED
 import app.shosetsu.android.view.widget.TriStateButton.State.UNCHECKED
 import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
-import app.shosetsu.common.dto.handle
+import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.ChapterSortType.SOURCE
 import app.shosetsu.common.enums.ChapterSortType.UPLOAD
 import app.shosetsu.common.enums.ReadingStatus.READ
 import app.shosetsu.common.enums.ReadingStatus.UNREAD
+import app.shosetsu.common.view.uimodel.NovelSettingUI
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottomMenu0Binding
-import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottomMenu1Binding
-import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottomMenuBinding
+import com.github.doomsdayrs.apps.shosetsu.databinding.*
 
 /*
  * This file is part of Shosetsu.
@@ -47,19 +50,30 @@ class NovelFilterMenuBuilder(
 	private val inflater: LayoutInflater,
 	private val viewModel: INovelViewModel
 ) {
+	private val novelSettingFlow: LiveData<HResult<NovelSettingUI>> =
+		viewModel.novelSettingFlow
+
+	private fun updateNovelSetting(novelSettingUI: NovelSettingUI) =
+		viewModel.updateNovelSetting(novelSettingUI)
+
 	fun build(): View =
 		ControllerNovelInfoBottomMenuBinding.inflate(
 			inflater
 		).also { binding ->
+			// The work is done purely on the viewPager
 			binding.viewPager.apply {
-				val menAda = MenuAdapter(binding.root.context)
-				this.adapter = menAda
-				var isInitalSetup = true
-				viewModel.novelSettingFlow.observe(novelControllerLifeCycle) { result ->
-					result.handle { settings ->
-						if (isInitalSetup) {
-							isInitalSetup = false
-							menAda.controllerNovelInfoBottomMenu0Binding?.apply {
+				val menuAdapter = MenuAdapter(binding.root.context)
+				this.adapter = menuAdapter
+				var isInitialSetup = true
+				menuAdapter.onMenuCreated = {
+					novelSettingFlow.handleObserve(novelControllerLifeCycle) { settings ->
+						this@NovelFilterMenuBuilder.logV("Settings $settings")
+
+						// Prevents some data overflow by only running certain loads once
+						if (isInitialSetup) {
+							isInitialSetup = false
+							this@NovelFilterMenuBuilder.logD("Initial setup")
+							menuAdapter.menu0?.apply {
 								bookmarked.isChecked = settings.showOnlyBookmarked
 								downloaded.isChecked = settings.showOnlyDownloaded
 								when (settings.showOnlyReadingStatusOf) {
@@ -68,7 +82,7 @@ class NovelFilterMenuBuilder(
 									else -> allRadioButton.isChecked = true
 								}
 							}
-							menAda.controllerNovelInfoBottomMenu1Binding?.apply {
+							menuAdapter.menu1?.apply {
 								val reversed = settings.reverseOrder
 
 								when (settings.sortType) {
@@ -77,9 +91,13 @@ class NovelFilterMenuBuilder(
 								}.set(if (!reversed) CHECKED else UNCHECKED)
 							}
 						}
-						menAda.controllerNovelInfoBottomMenu0Binding?.apply {
+
+						// refresh all the bindings always
+						this@NovelFilterMenuBuilder.logD("Setting bindings")
+						menuAdapter.menu0.apply {
+							this@NovelFilterMenuBuilder.logD("Menu binding#0")
 							bookmarked.setOnCheckedChangeListener { _, state ->
-								viewModel.updateNovelSetting(
+								updateNovelSetting(
 									settings.copy(
 										showOnlyBookmarked = state
 									)
@@ -87,7 +105,7 @@ class NovelFilterMenuBuilder(
 							}
 
 							downloaded.setOnCheckedChangeListener { _, state ->
-								viewModel.updateNovelSetting(
+								updateNovelSetting(
 									settings.copy(
 										showOnlyDownloaded = state
 									)
@@ -96,19 +114,19 @@ class NovelFilterMenuBuilder(
 
 							radioGroup.setOnCheckedChangeListener { _, checkedId ->
 								when (checkedId) {
-									R.id.all_radio_button -> viewModel.updateNovelSetting(
+									R.id.all_radio_button -> updateNovelSetting(
 										settings.copy(
 											showOnlyReadingStatusOf = null
 										)
 									)
 
-									R.id.read_radio_button -> viewModel.updateNovelSetting(
+									R.id.read_radio_button -> updateNovelSetting(
 										settings.copy(
 											showOnlyReadingStatusOf = READ
 										)
 									)
 
-									R.id.unread_radio_button -> viewModel.updateNovelSetting(
+									R.id.unread_radio_button -> updateNovelSetting(
 										settings.copy(
 											showOnlyReadingStatusOf = UNREAD
 										)
@@ -118,9 +136,10 @@ class NovelFilterMenuBuilder(
 							}
 
 						}
-						menAda.controllerNovelInfoBottomMenu1Binding?.apply {
+						menuAdapter.menu1.apply {
+							this@NovelFilterMenuBuilder.logD("Menu binding#1")
 							triStateGroup.addOnStateChangeListener { id, state ->
-								viewModel.updateNovelSetting(
+								updateNovelSetting(
 									settings.copy(
 										sortType = when (id) {
 											R.id.by_date -> UPLOAD
@@ -132,19 +151,14 @@ class NovelFilterMenuBuilder(
 								)
 							}
 						}
-
 					}
 				}
-
 			}
-
 		}.root
 
 	inner class MenuAdapter(
 		private val context: Context
 	) : PagerAdapter() {
-		var controllerNovelInfoBottomMenu0Binding: ControllerNovelInfoBottomMenu0Binding? = null
-		var controllerNovelInfoBottomMenu1Binding: ControllerNovelInfoBottomMenu1Binding? = null
 
 		override fun getCount(): Int = 2
 		override fun getPageTitle(position: Int): CharSequence? = when (position) {
@@ -154,6 +168,21 @@ class NovelFilterMenuBuilder(
 		}
 
 		override fun isViewFromObject(view: View, obj: Any): Boolean = view == obj
+		lateinit var menu0: ControllerNovelInfoBottomMenu0Binding
+		lateinit var menu1: ControllerNovelInfoBottomMenu1Binding
+
+		private var menu0Created = false
+		private var menu1Created = false
+		var onMenuCreated: () -> Unit = {}
+
+		fun markCreated(i: Int) {
+			if (i == 0)
+				menu0Created = true
+			else
+				menu1Created = true
+
+			if (menu0Created && menu1Created) onMenuCreated()
+		}
 
 		override fun instantiateItem(container: ViewGroup, position: Int): Any {
 			when (position) {
@@ -162,8 +191,11 @@ class NovelFilterMenuBuilder(
 						inflater,
 						container,
 						false
-					).root
+					).also {
+						menu0 = it
+					}.root
 					container.addView(view)
+					markCreated(0)
 					return view
 				}
 				1 -> {
@@ -172,11 +204,10 @@ class NovelFilterMenuBuilder(
 						container,
 						false
 					).also {
-						controllerNovelInfoBottomMenu1Binding = it
-
-
+						menu1 = it
 					}.root
 					container.addView(view)
+					markCreated(1)
 					return view
 				}
 			}

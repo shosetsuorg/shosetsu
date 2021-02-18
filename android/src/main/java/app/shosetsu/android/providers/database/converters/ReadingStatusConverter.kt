@@ -30,8 +30,8 @@ import app.shosetsu.common.enums.ReadingStatus.Companion.fromInt
  */
 class ReadingStatusConverter {
 	@TypeConverter
-	fun toInt(readingStatus: ReadingStatus): Int = readingStatus.key
+	fun toInt(readingStatus: ReadingStatus?): Int? = readingStatus?.key
 
 	@TypeConverter
-	fun toStatus(int: Int): ReadingStatus = fromInt(int)
+	fun toStatus(int: Int?): ReadingStatus? = int?.let { fromInt(int) }
 }
