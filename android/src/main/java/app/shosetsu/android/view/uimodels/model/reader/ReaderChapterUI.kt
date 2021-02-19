@@ -3,8 +3,10 @@ package app.shosetsu.android.view.uimodels.model.reader
 import android.view.View
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logE
+import app.shosetsu.common.utils.asHtml
 import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
+import app.shosetsu.android.ui.reader.types.model.HtmlReader
 import app.shosetsu.android.ui.reader.types.model.StringReader
 import app.shosetsu.common.domain.model.local.ReaderChapterEntity
 import app.shosetsu.common.dto.Convertible
@@ -24,6 +26,8 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * @param chapterType What type of [ReaderChapterViewHolder] to use for loading,
  * this is defined by the the extension first,
  * otherwise the user choice will dictate what reader is used
+ *
+ * @param convertStringToHtml Convert a string chapter to an html chapter
  */
 data class ReaderChapterUI(
 	val id: Int,
@@ -32,7 +36,8 @@ data class ReaderChapterUI(
 	var readingPosition: Int,
 	var readingStatus: ReadingStatus,
 	var bookmarked: Boolean,
-	private val chapterType: ChapterType
+	private val chapterType: ChapterType,
+	private val convertStringToHtml: Boolean = false
 ) : Convertible<ReaderChapterEntity>, ReaderUIItem<ReaderChapterUI, ReaderChapterViewHolder>() {
 	override var identifier: Long
 		get() = id.toLong()
@@ -58,7 +63,7 @@ data class ReaderChapterUI(
 
 	override val layoutRes: Int by lazy {
 		when (chapterType) {
-			ChapterType.STRING -> R.layout.chapter_reader_text_view
+			ChapterType.STRING -> if (!convertStringToHtml) R.layout.chapter_reader_text_view else R.layout.chapter_reader_html
 			ChapterType.HTML -> R.layout.chapter_reader_html
 			ChapterType.MARKDOWN -> R.layout.chapter_reader_mark_down
 
@@ -69,7 +74,7 @@ data class ReaderChapterUI(
 
 	override val type: Int by lazy {
 		when (chapterType) {
-			ChapterType.STRING -> R.layout.chapter_reader_text_view
+			ChapterType.STRING -> if (!convertStringToHtml) R.layout.chapter_reader_text_view else R.layout.chapter_reader_html
 			ChapterType.HTML -> R.layout.chapter_reader_html
 			ChapterType.MARKDOWN -> R.layout.chapter_reader_mark_down
 
@@ -80,7 +85,8 @@ data class ReaderChapterUI(
 
 	override fun getViewHolder(v: View): ReaderChapterViewHolder {
 		return when (chapterType) {
-			ChapterType.STRING -> StringReader(v)
+			ChapterType.STRING -> if (!convertStringToHtml) StringReader(v) else HtmlReader(v)
+			ChapterType.HTML -> HtmlReader(v)
 			else -> TODO("Not implemented")
 		}.also { reader = it }
 	}
@@ -90,8 +96,8 @@ data class ReaderChapterUI(
 		chapterReader?.let { reader ->
 			reader.viewModel.getChapterPassage(this).observe(reader) { result ->
 				result.handle(
-					{ logD("Showing loading"); holder.showProgress() },
-					{ logD("Empty result") },
+					{ logD("Showing loading"); holder.showLoadingProgress() },
+					{ logD("Empty result"); holder.hideLoadingProgress() },
 					{
 						logD("Showing error")
 						//	holder.setError(it.message, "Retry") {
@@ -99,8 +105,8 @@ data class ReaderChapterUI(
 						//		}
 					}) {
 					logD("Successfully loaded :D")
-					holder.hideProgress()
-					holder.setData(it)
+					holder.hideLoadingProgress()
+					holder.setData(if (!convertStringToHtml) it else asHtml(it))
 					holder.itemView.post {
 						holder.setProgress(this.readingPosition)
 					}

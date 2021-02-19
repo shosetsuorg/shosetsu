@@ -78,12 +78,12 @@ class StringReader(
 		}
 	}
 
-	override fun showProgress() {
+	override fun showLoadingProgress() {
 		middleBox.visibility = VISIBLE
 		progressBar.visibility = VISIBLE
 	}
 
-	override fun hideProgress() {
+	override fun hideLoadingProgress() {
 		middleBox.visibility = GONE
 		progressBar.visibility = GONE
 	}

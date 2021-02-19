@@ -251,4 +251,7 @@ class ChapterReaderViewModel(
 			iSettingsRepository.setBoolean(ReaderVolumeScroll, checked)
 		}
 	}
+
+	override fun loadChapterCss(): LiveData<String> =
+		iSettingsRepository.getStringFlow(ReaderHtmlCss).asIOLiveData()
 }

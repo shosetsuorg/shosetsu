@@ -1,6 +1,6 @@
 package app.shosetsu.common.tests
 
-import app.shosetsu.android.common.utils.asHtml
+import app.shosetsu.common.utils.asHtml
 import org.junit.Test
 
 /*

@@ -56,8 +56,8 @@ abstract class ReaderChapterViewHolder(
 	 */
 	abstract fun getFocusTarget(): View?
 
-	abstract fun hideProgress()
-	abstract fun showProgress()
+	abstract fun hideLoadingProgress()
+	abstract fun showLoadingProgress()
 
 	abstract fun incrementScroll()
 

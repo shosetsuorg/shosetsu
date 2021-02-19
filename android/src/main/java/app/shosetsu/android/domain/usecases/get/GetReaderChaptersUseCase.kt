@@ -7,6 +7,7 @@ import app.shosetsu.common.dto.loading
 import app.shosetsu.common.dto.mapLatestResult
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.lib.Novel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -35,6 +36,7 @@ import kotlinx.coroutines.flow.flow
 class GetReaderChaptersUseCase(
 	private val iChaptersRepository: IChaptersRepository,
 ) {
+	@ExperimentalCoroutinesApi
 	operator fun invoke(novelID: Int): Flow<HResult<List<ReaderChapterUI>>> =
 		flow {
 			emit(loading())
@@ -47,7 +49,8 @@ class GetReaderChaptersUseCase(
 						readingPosition,
 						readingStatus,
 						bookmarked,
-						Novel.ChapterType.STRING
+						Novel.ChapterType.STRING,
+						true
 					)
 				})
 			})

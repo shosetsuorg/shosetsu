@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
@@ -77,7 +78,6 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 
 	init {
 		webView.settings.javaScriptEnabled = true
-		syncStylesWithViewModel()
 		webView.addJavascriptInterface(ScrollListener(), "scroll_listener")
 		webView.evaluateJavascript(
 			"""
@@ -105,7 +105,7 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 		}.joinToString("\n")
 
 
-	private fun injectCss() {
+	private fun injectShosetsuCss() {
 		// READ AND INJECT STYLE
 		webView.evaluateJavascript(
 			"""
@@ -116,13 +116,10 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 					document.head.append(style);
 				}
 				style.innerHtml = "${generateShosetsuCss().replace("\"", "\\\"")}";
-			""".trimIndent(),
-			null
-		)
-
-		// READ USER CSS AND INJECT
-
-
+			""".trimIndent()
+		) {
+			logD("Shosetsu injection: $it")
+		}
 	}
 
 	private fun bind() {
@@ -130,32 +127,33 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	}
 
 	override fun setData(data: String) {
+		syncStylesWithViewModel()
 		html = data
 		bind()
 	}
 
 	override fun syncTextColor() {
-		injectCss()
+		injectShosetsuCss()
 	}
 
 	override fun syncBackgroundColor() {
-		injectCss()
+		injectShosetsuCss()
 	}
 
 	override fun syncTextSize() {
-		injectCss()
+		injectShosetsuCss()
 	}
 
 	override fun syncTextPadding() {
-		injectCss()
+		injectShosetsuCss()
 	}
 
 	override fun syncParagraphSpacing() {
-		injectCss()
+		injectShosetsuCss()
 	}
 
 	override fun syncParagraphIndent() {
-		injectCss()
+		injectShosetsuCss()
 	}
 
 	override fun setProgress(progress: Int) {
@@ -164,8 +162,8 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 
 	override fun getFocusTarget(): View = webView
 
-	override fun hideProgress() {}
-	override fun showProgress() {}
+	override fun hideLoadingProgress() {}
+	override fun showLoadingProgress() {}
 
 	override fun incrementScroll() {
 		webView.evaluateJavascript("window.scroll(0,50)", null)
@@ -177,7 +175,31 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 
 	override fun bindView(item: ReaderChapterUI, payloads: List<Any>) {
 		syncStylesWithViewModel()
-		injectCss()
+		injectShosetsuCss()
+
+		viewModel.loadChapterCss().observe(chapterReader) { css ->
+			webView.evaluateJavascript(
+				"""
+				document.getElementById("shosetsu-style").innerHtml += "$css";
+			""".trimIndent()
+			) {
+				logD("User injection: $it")
+			}
+			webView.evaluateJavascript(
+				"""
+				document.getElementById("shosetsu-style").innerHtml;
+			""".trimIndent()
+			) {
+				logD("Inner html: $it")
+			}
+			webView.evaluateJavascript(
+				"""
+				document.getElementsByTagName("html")[0].innerHtml;
+			""".trimIndent()
+			) {
+				logD("Html: $it")
+			}
+		}
 	}
 
 	override fun unbindView(item: ReaderChapterUI) {

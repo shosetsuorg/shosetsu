@@ -94,4 +94,6 @@ abstract class IChapterReaderViewModel :
 
 	abstract fun allowVolumeScroll(): Boolean
 	abstract fun setOnVolumeScroll(checked: Boolean)
+
+	abstract fun loadChapterCss(): LiveData<String>
 }

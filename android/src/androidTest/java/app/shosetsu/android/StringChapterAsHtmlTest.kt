@@ -2,7 +2,7 @@ package app.shosetsu.android
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
-import app.shosetsu.android.common.utils.asHtml
+import app.shosetsu.common.utils.asHtml
 import app.shosetsu.android.domain.usecases.get.GetChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.get.GetReaderChaptersUseCase
 import app.shosetsu.android.domain.usecases.load.LoadLibraryUseCase

@@ -62,11 +62,11 @@ class PDFReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 		TODO("Not yet implemented")
 	}
 
-	override fun hideProgress() {
+	override fun hideLoadingProgress() {
 		TODO("Not yet implemented")
 	}
 
-	override fun showProgress() {
+	override fun showLoadingProgress() {
 		TODO("Not yet implemented")
 	}
 
