@@ -24,7 +24,19 @@ package app.shosetsu.android.common.utils
  *     asudhasjdhlakshdlkasd;klajsdlk.
  * </p>
  */
-fun asHTML(passage: String): String =
+fun asHtml(
+	passage: String,
+	title: String = "Converted from string",
+	separator: String = ""
+): String =
 	"""
-	ho
+	<!DOCTYPE html>
+	<html>
+		<header>
+			<h1>$title</h1>
+		</header>
+		<body>
+			${passage.split("\n").joinToString(separator = separator) { "<p>$it</p>" }}
+		</body>
+	</html> 
 	""".trimIndent()
