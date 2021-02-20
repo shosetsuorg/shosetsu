@@ -69,8 +69,22 @@ class ReaderSettingsViewModel(
 			} catch (e: NotFoundException) {
 				reportExceptionUseCase(e.toHError())
 			}
-			spinnerSettingValue(ReaderParagraphSpacing)
 		},
+
+		spinnerSettingData(9) {
+			title { "Text Alignment" }
+			try {
+				arrayAdapter = ArrayAdapter(
+					app.applicationContext,
+					android.R.layout.simple_spinner_dropdown_item,
+					app.applicationContext.resources!!.getStringArray(R.array.text_alignments)
+				)
+			} catch (e: NotFoundException) {
+				reportExceptionUseCase(e.toHError())
+			}
+			spinnerSettingValue(ReaderTextAlignment)
+		},
+
 		spinnerSettingData(3) {
 			title { R.string.text_size }
 			try {

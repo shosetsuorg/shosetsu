@@ -371,6 +371,20 @@
     <string name="toast_repository_remove_fail">Failed to remove repository!</string>
     <string name="repository_list_change_warning">Please refresh the repository list in Browse</string>
 
+
+    <string name="text_alignment_start">Start</string>
+    <string name="text_alignment_center">Center</string>
+    <string name="text_alignment_justified">Justified</string>
+    <string name="text_alignment_end">End</string>
+
+
+    <array name="text_alignments">
+        <item>@string/text_alignment_start</item>
+        <item>@string/text_alignment_center</item>
+        <item>@string/text_alignment_justified</item>
+        <item>@string/text_alignment_end</item>
+    </array>
+
     <array name="application_themes">
         <item>@string/follow_system_theme</item>
         <item>@string/light</item>

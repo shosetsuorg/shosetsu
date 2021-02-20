@@ -8,6 +8,7 @@
     android:orientation="vertical"
     android:padding="8dp">
 
+    <!-- Title -->
     <TextView
         android:id="@+id/settings_item_title"
         android:layout_width="wrap_content"
@@ -19,6 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Description -->
     <TextView
         android:id="@+id/settings_item_desc"
         android:layout_width="0dp"
@@ -32,6 +34,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/settings_item_title" />
 
+    <!-- Side Field -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rightField"
         android:layout_width="wrap_content"
@@ -122,6 +125,7 @@
             tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Bottom Field -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomField"
         android:layout_width="0dp"

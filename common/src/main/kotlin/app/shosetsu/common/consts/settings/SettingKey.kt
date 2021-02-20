@@ -36,8 +36,22 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 
 	object ReaderTextSize : SettingKey<Float>("readerTextSize", 14f)
-	object ReaderParagraphSpacing : SettingKey<Int>("readerParagraphSpacing", 1)
+	object ReaderParagraphSpacing : SettingKey<Float>("readerParagraphSpacing", 1f)
 	object ReaderIndentSize : SettingKey<Int>("readerIndentSize", 1)
+
+	/**
+	 * 0 : align start
+	 * 1 : align center
+	 * 2 : justified
+	 * 3 : align end
+	 */
+	object ReaderTextAlignment : SettingKey<Int>("readerTextAlignment", 0)
+
+	object ReaderMarginSize : SettingKey<Float>("readerMargin", 0f)
+
+	object ReaderLineSpacing : SettingKey<Float>("readerLineSpacing", 1f)
+
+	object ReaderFont : SettingKey<String>("readerFont", "")
 
 	//- How things act in Reader
 	object ReaderIsTapToScroll : SettingKey<Boolean>("tapToScroll", false)
