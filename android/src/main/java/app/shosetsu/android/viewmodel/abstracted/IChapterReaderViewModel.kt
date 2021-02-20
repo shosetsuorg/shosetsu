@@ -1,6 +1,7 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import android.graphics.Color
+import androidx.core.graphics.red
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI

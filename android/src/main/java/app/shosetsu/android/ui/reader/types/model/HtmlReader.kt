@@ -4,6 +4,10 @@ import android.util.Log
 import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import android.webkit.WebViewClient
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
@@ -40,12 +44,6 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	 * value    : style-key to value
 	 */
 	private val shosetsuStyle: HashMap<String, HashMap<String, String>> = hashMapOf()
-
-	/**
-	 * HTML page provided by extension
-	 */
-	private var html: String = ""
-
 
 	private inner class ScrollListener() {
 
@@ -84,14 +82,30 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 				window.addEventListener("scroll",scrolled);
 			""".trimIndent(), null
 		)
+		webView.webViewClient = object : WebViewClient() {
+			override fun onPageFinished(view: WebView?, url: String?) {
+				injectCss()
+				super.onPageFinished(view, url)
+			}
+		}
 	}
 
+	private var userCss: String = ""
+
+	private fun Int.cssColor(): String = "rgb($red,$green,$blue)"
+
+	/**
+	 * Get CSS from shosetsu normal settings and insert them into [shosetsuStyle]
+	 */
 	private fun syncStylesWithViewModel() {
-		setShosetsuStyle("body")["backgroundColor"] = "${viewModel.defaultBackground}"
-		setShosetsuStyle("p1")["color"] = "${viewModel.defaultForeground}"
-		setShosetsuStyle("p1")["size"] = "${viewModel.defaultTextSize}"
+		setShosetsuStyle("body")["background-color"] = viewModel.defaultBackground.cssColor()
+		setShosetsuStyle("body")["color"] = viewModel.defaultForeground.cssColor()
+		setShosetsuStyle("body")["font-size"] = "${viewModel.defaultTextSize}pt"
 	}
 
+	/**
+	 * Get a specific style for an element out of [shosetsuStyle], otherwise put and get emptyMap
+	 */
 	private fun setShosetsuStyle(elem: String): HashMap<String, String> =
 		shosetsuStyle.getOrPut(elem) { hashMapOf() }
 
@@ -104,56 +118,56 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 				.joinToString(";", postfix = ";") + "}"
 		}.joinToString("\n")
 
-
-	private fun injectShosetsuCss() {
+	private fun injectCss() {
 		// READ AND INJECT STYLE
+		val css = generateShosetsuCss() + userCss
 		webView.evaluateJavascript(
 			"""
-				style = document.getElementById("shosetsu-style");
+				style = document.getElementById('shosetsu-style');
 				if(!style){
-					style = document.createElement("style");
-					style.id = "shosetsu-style";
-					document.head.append(style);
+					style = document.createElement('style');
+					style.id = 'shosetsu-style';
+					style.type = 'text/css';
+					document.head.appendChild(style);
 				}
-				style.innerHtml = "${generateShosetsuCss().replace("\"", "\\\"")}";
-			""".trimIndent()
-		) {
-			logD("Shosetsu injection: $it")
-		}
-	}
+				style.textContent = '$css';
+			""".trimIndent(),
+			null
+		)
 
-	private fun bind() {
-		webView.loadData(html, "text/html", "UTF-8")
+		webView.evaluateJavascript("document.head.parentElement.innerHTML") {
+			logD("This is the head $it")
+		}
+
 	}
 
 	override fun setData(data: String) {
 		syncStylesWithViewModel()
-		html = data
-		bind()
+		webView.loadData(data, "text/html", "UTF-8")
 	}
 
 	override fun syncTextColor() {
-		injectShosetsuCss()
+		injectCss()
 	}
 
 	override fun syncBackgroundColor() {
-		injectShosetsuCss()
+		injectCss()
 	}
 
 	override fun syncTextSize() {
-		injectShosetsuCss()
+		injectCss()
 	}
 
 	override fun syncTextPadding() {
-		injectShosetsuCss()
+		injectCss()
 	}
 
 	override fun syncParagraphSpacing() {
-		injectShosetsuCss()
+		injectCss()
 	}
 
 	override fun syncParagraphIndent() {
-		injectShosetsuCss()
+		injectCss()
 	}
 
 	override fun setProgress(progress: Int) {
@@ -175,31 +189,8 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 
 	override fun bindView(item: ReaderChapterUI, payloads: List<Any>) {
 		syncStylesWithViewModel()
-		injectShosetsuCss()
-
-		viewModel.loadChapterCss().observe(chapterReader) { css ->
-			webView.evaluateJavascript(
-				"""
-				document.getElementById("shosetsu-style").innerHtml += "$css";
-			""".trimIndent()
-			) {
-				logD("User injection: $it")
-			}
-			webView.evaluateJavascript(
-				"""
-				document.getElementById("shosetsu-style").innerHtml;
-			""".trimIndent()
-			) {
-				logD("Inner html: $it")
-			}
-			webView.evaluateJavascript(
-				"""
-				document.getElementsByTagName("html")[0].innerHtml;
-			""".trimIndent()
-			) {
-				logD("Html: $it")
-			}
-		}
+		injectCss()
+		viewModel.loadChapterCss().observe(chapterReader) { userCss = it;injectCss() }
 	}
 
 	override fun unbindView(item: ReaderChapterUI) {

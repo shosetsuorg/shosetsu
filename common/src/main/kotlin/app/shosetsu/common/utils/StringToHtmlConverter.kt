@@ -18,11 +18,8 @@ package app.shosetsu.common.utils
  */
 
 /**
- *
- * <p>
- *     lkjasrhljashdlkjahsdlkjahsd.\n
- *     asudhasjdhlakshdlkasd;klajsdlk.
- * </p>
+ * Converts a string passage into an HTML passage.
+ * Used with the option for converting string sources to html
  */
 fun asHtml(
 	passage: String,

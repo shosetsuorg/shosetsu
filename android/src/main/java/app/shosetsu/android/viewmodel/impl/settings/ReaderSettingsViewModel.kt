@@ -69,6 +69,7 @@ class ReaderSettingsViewModel(
 			} catch (e: NotFoundException) {
 				reportExceptionUseCase(e.toHError())
 			}
+			spinnerSettingValue(ReaderParagraphSpacing)
 		},
 
 		spinnerSettingData(9) {

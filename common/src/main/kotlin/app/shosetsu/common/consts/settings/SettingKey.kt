@@ -36,7 +36,9 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 
 	object ReaderTextSize : SettingKey<Float>("readerTextSize", 14f)
-	object ReaderParagraphSpacing : SettingKey<Float>("readerParagraphSpacing", 1f)
+
+	//TODO turn into float
+	object ReaderParagraphSpacing : SettingKey<Int>("readerParagraphSpacing", 1)
 	object ReaderIndentSize : SettingKey<Int>("readerIndentSize", 1)
 
 	/**

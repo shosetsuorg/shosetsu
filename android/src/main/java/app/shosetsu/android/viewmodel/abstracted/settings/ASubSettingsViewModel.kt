@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.view.uimodels.settings.NumberPickerSettingData
 import app.shosetsu.android.view.uimodels.settings.SpinnerSettingData
 import app.shosetsu.android.view.uimodels.settings.TextInputSettingData
@@ -100,7 +101,9 @@ abstract class ASubSettingsViewModel(
 	suspend inline fun TextInputSettingData.textSettingValue(
 		key: SettingKey<String>
 	) {
-		initialText = settingsRepo.getStringOrDefault(key)
+		initialText = settingsRepo.getStringOrDefault(key).also {
+			logV("Value: $it")
+		}
 		doAfterTextChanged {
 			launchIO {
 				settingsRepo.setString(key, it.toString())

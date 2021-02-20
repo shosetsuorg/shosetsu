@@ -39,6 +39,7 @@ class TextInputSettingData(id: Int) : BottomSettingsItemData(id) {
 		holder.textInputEditText.apply {
 			isVisible = true
 			if (descID != -1) setHint(descID) else if (descText.isNotEmpty()) hint = descText
+			setText(initialText)
 			doAfterTextChanged { it?.let(onTextChanged) }
 		}
 	}
