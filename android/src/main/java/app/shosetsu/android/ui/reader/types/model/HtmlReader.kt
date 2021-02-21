@@ -10,6 +10,7 @@ import androidx.core.graphics.green
 import androidx.core.graphics.red
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logID
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.common.enums.ReadingStatus
@@ -98,16 +99,24 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	 * Get CSS from shosetsu normal settings and insert them into [shosetsuStyle]
 	 */
 	private fun syncStylesWithViewModel() {
-		setShosetsuStyle("body")["background-color"] = viewModel.defaultBackground.cssColor()
-		setShosetsuStyle("body")["color"] = viewModel.defaultForeground.cssColor()
-		setShosetsuStyle("body")["font-size"] = "${viewModel.defaultTextSize}pt"
+		setShosetsuStyle("body") {
+			this["background-color"] = viewModel.defaultBackground.cssColor()
+			this["color"] = viewModel.defaultForeground.cssColor()
+			this["font-size"] = "${viewModel.defaultTextSize}pt"
+			this["scroll-behavior"] = "smooth"
+		}
+		setShosetsuStyle("img") {
+			this["max-width"] = "100%"
+			this["height"] = "initial !important"
+		}
 	}
+
 
 	/**
 	 * Get a specific style for an element out of [shosetsuStyle], otherwise put and get emptyMap
 	 */
-	private fun setShosetsuStyle(elem: String): HashMap<String, String> =
-		shosetsuStyle.getOrPut(elem) { hashMapOf() }
+	private inline fun setShosetsuStyle(elem: String, action: HashMap<String, String>.() -> Unit) =
+		shosetsuStyle.getOrPut(elem) { hashMapOf() }.apply(action)
 
 	/**
 	 * Converts [shosetsuStyle] into a valid css styles sheet to be inserted
@@ -121,6 +130,8 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	private fun injectCss() {
 		// READ AND INJECT STYLE
 		val css = generateShosetsuCss() + userCss
+		logV("Generated CSS: $css")
+
 		webView.evaluateJavascript(
 			"""
 				style = document.getElementById('shosetsu-style');
