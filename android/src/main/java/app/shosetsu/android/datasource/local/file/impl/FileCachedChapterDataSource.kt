@@ -1,7 +1,9 @@
 package app.shosetsu.android.datasource.local.file.impl
 
-import android.util.Log
-import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.logV
+import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.common.datasource.file.base.IFileCachedChapterDataSource
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
@@ -108,14 +110,14 @@ class FileCachedChapterDataSource(
 	private suspend fun launchCleanUp() {
 		if (running) return
 		running = true
-		Log.i(logID(), "Cleaning up chapter file cache")
+		//Log.i(logID(), "Cleaning up chapter file cache")
 
 		// Filters out
 		while (chaptersCacheInstruction.length() > 100) {
 			val obj = chaptersCacheInstruction.getJSONObject(0)
 			chaptersCacheInstruction.remove(0)
 			val id = obj.getInt(CHAPTER_KEY)
-			logD("#### REMOVING $id FROM FILE CACHE DUE TO OVERFLOW ####")
+			//	logD("#### REMOVING $id FROM FILE CACHE DUE TO OVERFLOW ####")
 			iFileSystemProvider.deleteFile(CACHE, "$chaptersCacheDir/$id.txt")
 		}
 
@@ -127,7 +129,7 @@ class FileCachedChapterDataSource(
 			// Deletes the obj
 			if (time < (System.currentTimeMillis() - (3600000 * CACHE_TIME))) {
 				val id = obj.getInt(CHAPTER_KEY)
-				Log.d(logID(), "#### REMOVING $id FROM FILE CACHE ####")
+				//		Log.d(logID(), "#### REMOVING $id FROM FILE CACHE ####")
 				iFileSystemProvider.deleteFile(CACHE, "$chaptersCacheDir/$id.txt")
 				chaptersCacheInstruction.remove(i)
 				continue
@@ -135,7 +137,7 @@ class FileCachedChapterDataSource(
 		}
 		writeFile()
 		running = false
-		Log.i(logID(), "Finished cleaning up")
+		//Log.i(logID(), "Finished cleaning up")
 	}
 
 	@Throws(JSONException::class)

@@ -30,6 +30,7 @@ import app.shosetsu.common.enums.ReadingStatus.READING
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
@@ -58,13 +59,31 @@ import kotlinx.coroutines.withContext
  * TODO delete previous chapter
  */
 class ChapterReaderViewModel(
-	private val iSettingsRepository: ISettingsRepository,
+	private val settingsRepo: ISettingsRepository,
 	private val loadReaderChaptersUseCase: GetReaderChaptersUseCase,
 	private val loadChapterPassageUseCase: GetChapterPassageUseCase,
 	private val updateReaderChapterUseCase: UpdateReaderChapterUseCase,
 	private val loadReadersThemes: LoadReaderThemes,
 	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : IChapterReaderViewModel() {
+
+
+	private val isReaderContinuousScrollFlow = settingsRepo.getBooleanFlow(ReaderContinuousScroll)
+	private val convertStringToHtml = settingsRepo.getBooleanFlow(ReaderStringToHtml)
+	private val isHorizontalPageSwapping = settingsRepo.getBooleanFlow(ReaderHorizontalPageSwap)
+
+	init {
+		launchIO {
+			isReaderContinuousScrollFlow.collectLatest {
+			}
+			convertStringToHtml.collectLatest {
+				super.convertStringAsHtml = it
+			}
+			isHorizontalPageSwapping.collectLatest {
+				super.isHorizontalReading = it
+			}
+		}
+	}
 
 	/**
 	 * TODO Memory management here
@@ -97,18 +116,13 @@ class ChapterReaderViewModel(
 			}
 		}.asIOLiveData()
 	}
-
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-		reportExceptionUseCase(error)
-	}
-
 	override val liveTheme: LiveData<Pair<Int, Int>> by lazy {
 		liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
 			emitSource(
-				iSettingsRepository.getIntFlow(ReaderTheme).asIOLiveData().switchMap { id: Int ->
+				settingsRepo.getIntFlow(ReaderTheme).asIOLiveData().switchMap { id: Int ->
 					logD("Loading theme for $id")
 					liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-						val s = iSettingsRepository.getStringSet(ReaderUserThemes)
+						val s = settingsRepo.getStringSet(ReaderUserThemes)
 						if (s is HResult.Success) {
 							val selected = s.data.map { ColorChoiceData.fromString(it) }
 								.find { it.identifier == id.toLong() }
@@ -120,9 +134,8 @@ class ChapterReaderViewModel(
 				})
 		}
 	}
-
 	override val liveMarkingTypes: LiveData<MarkingTypes> by lazy {
-		iSettingsRepository.getStringFlow(ReadingMarkingType)
+		settingsRepo.getStringFlow(ReadingMarkingType)
 			.asIOLiveData()
 			.map { MarkingTypes.valueOf(it) }
 	}
@@ -131,47 +144,45 @@ class ChapterReaderViewModel(
 	override val liveThemes: LiveData<List<ColorChoiceUI>> by lazy {
 		loadReadersThemes().asIOLiveData()
 	}
-
 	override val liveIndentSize: LiveData<Int> by lazy {
-		iSettingsRepository.getIntFlow(ReaderIndentSize).asIOLiveData()
+		settingsRepo.getIntFlow(ReaderIndentSize).asIOLiveData()
 	}
-
 	override val liveParagraphSpacing: LiveData<Int> by lazy {
-		iSettingsRepository.getIntFlow(ReaderParagraphSpacing).asIOLiveData()
+		settingsRepo.getIntFlow(ReaderParagraphSpacing).asIOLiveData()
 	}
-
 	override val liveTextSize: LiveData<Float> by lazy {
-		iSettingsRepository.getFloatFlow(ReaderTextSize).asIOLiveData()
+		settingsRepo.getFloatFlow(ReaderTextSize).asIOLiveData()
 	}
 	override val liveVolumeScroll: LiveData<Boolean> by lazy {
-		iSettingsRepository.getBooleanFlow(ReaderVolumeScroll).asIOLiveData()
+		settingsRepo.getBooleanFlow(ReaderVolumeScroll).asIOLiveData()
 	}
-
 	override var currentChapterID: Int = -1
-
 	private var nID = -1
-
 	override val liveChapterDirection: LiveData<Boolean> = flow {
-		emitAll(iSettingsRepository.getBooleanFlow(ReaderHorizontalPageSwap))
+		emitAll(settingsRepo.getBooleanFlow(ReaderHorizontalPageSwap))
 	}.asIOLiveData()
 
+	override fun reportError(error: HResult.Error, isSilent: Boolean) {
+		reportExceptionUseCase(error)
+	}
+
 	override fun setReaderTheme(value: Int) {
-		launchIO { iSettingsRepository.setInt(ReaderTheme, value) }
+		launchIO { settingsRepo.setInt(ReaderTheme, value) }
 	}
 
 	override fun setReaderIndentSize(value: Int) {
 		launchIO {
 			logI("setting")
-			iSettingsRepository.setInt(ReaderIndentSize, value)
+			settingsRepo.setInt(ReaderIndentSize, value)
 		}
 	}
 
 	override fun setReaderParaSpacing(value: Int) {
-		launchIO { iSettingsRepository.setInt(ReaderParagraphSpacing, value) }
+		launchIO { settingsRepo.setInt(ReaderParagraphSpacing, value) }
 	}
 
 	override fun setReaderTextSize(value: Float) {
-		launchIO { iSettingsRepository.setFloat(ReaderTextSize, value) }
+		launchIO { settingsRepo.setFloat(ReaderTextSize, value) }
 	}
 
 	override fun setNovelID(novelID: Int) {
@@ -222,9 +233,9 @@ class ChapterReaderViewModel(
 		readingPosition: Int = chapterUI.readingPosition
 	) {
 		launchIO {
-			iSettingsRepository.getBoolean(ReaderMarkReadAsReading).handle { markReadAsReading ->
+			settingsRepo.getBoolean(ReaderMarkReadAsReading).handle { markReadAsReading ->
 				if (!markReadAsReading && chapterUI.readingStatus == READ) return@launchIO
-				iSettingsRepository.getString(ReadingMarkingType).handle {
+				settingsRepo.getString(ReadingMarkingType).handle {
 					if (MarkingTypes.valueOf(it) == markingTypes) updateChapter(
 						chapterUI.copy(
 							readingStatus = READING, readingPosition = readingPosition
@@ -243,15 +254,27 @@ class ChapterReaderViewModel(
 		markAsReading(readerChapterUI, ONSCROLL, yAswell)
 	}
 
-	override fun allowVolumeScroll(): Boolean = volumeScroll
+	override fun allowVolumeScroll(): Boolean = defaultVolumeScroll
 
 	override fun setOnVolumeScroll(checked: Boolean) {
-		volumeScroll = checked
+		defaultVolumeScroll = checked
 		launchIO {
-			iSettingsRepository.setBoolean(ReaderVolumeScroll, checked)
+			settingsRepo.setBoolean(ReaderVolumeScroll, checked)
 		}
 	}
 
 	override fun loadChapterCss(): LiveData<String> =
-		iSettingsRepository.getStringFlow(ReaderHtmlCss).asIOLiveData()
+		settingsRepo.getStringFlow(ReaderHtmlCss).asIOLiveData()
+
+	override fun updateConvertStringAsHtml(checked: Boolean) {
+		launchIO {
+			settingsRepo.setBoolean(ReaderStringToHtml, checked)
+		}
+	}
+
+	override fun updateHorizontalReading(checked: Boolean) {
+		launchIO {
+			settingsRepo.setBoolean(ReaderHorizontalPageSwap, checked)
+		}
+	}
 }

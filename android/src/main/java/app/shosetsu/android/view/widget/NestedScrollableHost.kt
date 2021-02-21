@@ -22,6 +22,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
+import android.webkit.WebView
 import android.widget.FrameLayout
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.ORIENTATION_HORIZONTAL
@@ -71,47 +72,120 @@ class NestedScrollableHost @JvmOverloads constructor(
 	override fun onInterceptTouchEvent(e: MotionEvent): Boolean =
 		handleInterceptTouchEvent(e) || super.onInterceptTouchEvent(e)
 
+	private fun parentTakesControl() {
+		parent.requestDisallowInterceptTouchEvent(false)
+
+	}
+
+	private fun childTakesControl() {
+		parent.requestDisallowInterceptTouchEvent(true)
+	}
+
 	/**
 	 * @return The child does not need to scroll.
 	 */
 	private fun handleInterceptTouchEvent(e: MotionEvent): Boolean {
 		val orientation = parentViewPager?.orientation ?: return false
 
-		// Early return if child can't scroll in same direction as parent
-		if (!canChildScroll(orientation, -1f) && !canChildScroll(orientation, 1f)) {
-			return false
-		}
+		when (child) {
+			is WebView -> {
+				when (e.action) {
+					MotionEvent.ACTION_DOWN -> {
+						initialX = e.x
+						initialY = e.y
+						childTakesControl()
+					}
+					MotionEvent.ACTION_MOVE -> {
+						val dx = e.x - initialX
+						val dy = e.y - initialY
 
-		if (e.action == MotionEvent.ACTION_DOWN) {
-			initialX = e.x
-			initialY = e.y
-			parent.requestDisallowInterceptTouchEvent(true)
-		} else if (e.action == MotionEvent.ACTION_MOVE) {
-			val dx = e.x - initialX
-			val dy = e.y - initialY
-			val isVpHorizontal = orientation == ORIENTATION_HORIZONTAL
+						/**
+						 * Is the ViewPager horizontal or not
+						 */
+						val isVpHorizontal = orientation == ORIENTATION_HORIZONTAL
+						if (dx.absoluteValue > touchSlop || dy.absoluteValue > touchSlop) {
+							// use two different methods for horizontal and vertical paging
+							if (isVpHorizontal == (dy.absoluteValue > dx.absoluteValue)) {
+								// Gesture is perpendicular, reject all parents to intercept
+								childTakesControl()
 
-			if (dx.absoluteValue > touchSlop || dy.absoluteValue > touchSlop) {
-				if (isVpHorizontal == (dy.absoluteValue > dx.absoluteValue)) {
+								// Return false to prevent parent from taking movement
+								return false
+							} else {
+								// Gesture is parallel, query child if movement in that direction is possible
+								if (canChildScroll(orientation, if (isVpHorizontal) dx else dy)) {
+									// Child can scroll, disallow all parents to intercept
+									childTakesControl()
+								} else {
+									// Child cannot scroll, allow all parents to intercept
+									// Only if the action is greater then a certain amount
+									val isDyGreaterThenDx = dy.absoluteValue > dx.absoluteValue
+									val isDxLessThenProtection = dx.absoluteValue < 300
 
-					// Gesture is perpendicular, allow all parents to intercept
-					parent.requestDisallowInterceptTouchEvent(false)
+									val shouldChildScroll = isDxLessThenProtection && isVpHorizontal
+									//	logV("================================")
+									//	logV("DX: $dx, $dy")
+									//	logV("IsDyGreaterThenDx: $isDyGreaterThenDx")
+									//	logV("IsDxLessThenProtection: $isDxLessThenProtection")
+									//	logV("Is horizontal: $isVpHorizontal")
+									//	logV("ShouldChildScroll: $shouldChildScroll")
+									return if (shouldChildScroll) {
+										childTakesControl()
+										false
+									} else {
+										parentTakesControl()
+										true
+									}
 
-					// If you are the following case:
-					// ViewPager2(V) -> NestedScrollView(V) -> RecyclerView(H)
-					// return false instead so that the innermost RV(H) can scroll normally.
-					// It is not tested for other use case.
+								}
+							}
+						}
+					}
+				}
+			}
+			else -> {
+
+				// Early return if child can't scroll in same direction as parent
+				if (!canChildScroll(orientation, -1f) && !canChildScroll(orientation, 1f)) {
 					return false
-				} else {
-					// Gesture is parallel, query child if movement in that direction is possible
-					if (canChildScroll(orientation, if (isVpHorizontal) dx else dy)) {
-						// Child can scroll, disallow all parents to intercept
+				}
 
-						parent.requestDisallowInterceptTouchEvent(true)
-					} else {
-						// Child cannot scroll, allow all parents to intercept
-						parent.requestDisallowInterceptTouchEvent(false)
-						return true
+				when (e.action) {
+					MotionEvent.ACTION_DOWN -> {
+						initialX = e.x
+						initialY = e.y
+						childTakesControl()
+					}
+					MotionEvent.ACTION_MOVE -> {
+						val dx = e.x - initialX
+						val dy = e.y - initialY
+						val isVpHorizontal = orientation == ORIENTATION_HORIZONTAL
+
+						// Ignore the movement if it is sloppy
+						if (dx.absoluteValue > touchSlop || dy.absoluteValue > touchSlop) {
+							if (isVpHorizontal == (dy.absoluteValue > dx.absoluteValue)) {
+
+								// Gesture is perpendicular, allow all parents to intercept
+								parentTakesControl()
+
+								// If you are the following case:
+								// ViewPager2(V) -> NestedScrollView(V) -> RecyclerView(H)
+								// return false instead so that the innermost RV(H) can scroll normally.
+								// It is not tested for other use case.
+								return false
+							} else {
+								// Gesture is parallel, query child if movement in that direction is possible
+								if (canChildScroll(orientation, if (isVpHorizontal) dx else dy)) {
+									// Child can scroll, disallow all parents to intercept
+
+									childTakesControl()
+								} else {
+									// Child cannot scroll, allow all parents to intercept
+									parentTakesControl()
+									return true
+								}
+							}
+						}
 					}
 				}
 			}

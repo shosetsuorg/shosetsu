@@ -23,9 +23,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
         android:gravity="center"
         android:orientation="horizontal"
-        android:layout_marginBottom="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -92,8 +92,8 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
         android:id="@+id/chapter_reader_bottom_scroll"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <LinearLayout
@@ -251,37 +251,35 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/tap_to_scroll_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"
-                android:orientation="vertical">
+                android:layout_marginBottom="8dp"
+                android:text="@string/tap_to_scroll" />
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/tap_to_scroll_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/tap_to_scroll" />
-
-            </LinearLayout>
-
-            <LinearLayout
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/volume_to_scroll_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"
-                android:orientation="vertical">
+                android:layout_marginBottom="8dp"
+                android:text="@string/volume_scroll" />
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/volume_to_scroll_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/volume_scroll" />
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_convert_html_to_string"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/settings_reader_title_string_to_html" />
 
-            </LinearLayout>
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/settings_reader_title_horizontal_option" />
+
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>

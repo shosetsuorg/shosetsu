@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
 import androidx.core.util.set
 import androidx.core.view.isVisible
@@ -32,7 +33,6 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityReaderBinding
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
-import com.google.android.material.switchmaterial.SwitchMaterial
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
@@ -43,7 +43,6 @@ import com.xw.repo.BubbleSeekBar
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
-import kotlin.system.measureTimeMillis
 
 /*
  * This file is part of shosetsu.
@@ -70,42 +69,38 @@ class ChapterReader
 	: AppCompatActivity(), KodeinAware {
 	override val kodein: Kodein by closestKodein()
 	internal val viewModel: IChapterReaderViewModel by viewModel()
-
 	private lateinit var binding: ActivityReaderBinding
 
 	private val toolbar: MaterialToolbar
 		get() = binding.toolbar
-
 	private val chapterReaderBottom: LinearLayout
 		get() = binding.chapterReaderBottom.chapterReaderBottom
-
 	private val viewpager: ViewPager2
 		get() = binding.viewpager
-
 	private val drawerToggle: AppCompatImageButton
 		get() = binding.chapterReaderBottom.drawerToggle
-
 	private val textSizeBar: BubbleSeekBar
 		get() = binding.chapterReaderBottom.textSizeBar
 	private val paraIndentBar: BubbleSeekBar
 		get() = binding.chapterReaderBottom.paraIndentBar
 	private val paraSpaceBar: BubbleSeekBar
 		get() = binding.chapterReaderBottom.paraSpaceBar
-
 	private val colorPickerOptions: RecyclerView
 		get() = binding.chapterReaderBottom.colorPickerOptions
-	private val volumeToScrollBar: SwitchMaterial
+	private val volumeToScrollBar: SwitchCompat
 		get() = binding.chapterReaderBottom.volumeToScrollBar
+	private val horizontalOption: SwitchCompat
+		get() = binding.chapterReaderBottom.switchHorizontal
+
+	private val stringAsHtmlOption: SwitchCompat
+		get() = binding.chapterReaderBottom.switchConvertHtmlToString
 
 
 	private val pageChangeCallback: OnPageChangeCallback by lazy { ChapterReaderPageChange() }
-
 	private val itemAdapter by lazy { ItemAdapter<ReaderUIItem<*, *>>() }
 	private val fastAdapter by lazy { FastAdapter.with(itemAdapter) }
-
 	private val bookmark
 		get() = binding.chapterReaderBottom.bookmark
-
 	private val themeSelect
 		get() = binding.chapterReaderBottom.themeSelect
 
@@ -116,15 +111,12 @@ class ChapterReader
 	/** Gets dividers from the [itemAdapter] */
 	val dividerItems: List<ReaderDividerUI>
 		get() = itemAdapter.itemList.items.filterIsInstance<ReaderDividerUI>()
-
 	private val bottomSheetBehavior: ChapterReaderBottomBar<LinearLayout> by lazy {
 		from(chapterReaderBottom) as ChapterReaderBottomBar
 	}
-
 	private val colorItemAdapterUI: ItemAdapter<ColorChoiceUI> by lazy {
 		ItemAdapter()
 	}
-
 	private val colorFastAdapterUI: FastAdapter<ColorChoiceUI> by lazy {
 		FastAdapter.with(colorItemAdapterUI)
 	}
@@ -164,26 +156,17 @@ class ChapterReader
 	}
 
 	private fun handleChaptersResult(list: List<ReaderUIItem<*, *>>) {
-		logV("handleChaptersResult")
-		val time = measureTimeMillis {
-			val oldSize = itemAdapter.itemList.size()
-
-			logV("Attaching self to each item")
-			val time = measureTimeMillis {
-				list.forEach {
-					if (it is ReaderChapterUI)
-						it.chapterReader = this
-				}
-			}
-			logV("Attaching self to each item completed in $time ms")
-
-			FastAdapterDiffUtil[itemAdapter] =
-				calculateDiff(itemAdapter, list)
-
-			if (oldSize == 0)
-				viewpager.setCurrentItem(getCurrentChapterIndex(), false)
+		val oldSize = itemAdapter.itemList.size()
+		list.forEach {
+			if (it is ReaderChapterUI)
+				it.chapterReader = this
 		}
-		logV("handleChaptersResult completed in $time ms")
+
+		FastAdapterDiffUtil[itemAdapter] =
+			calculateDiff(itemAdapter, list)
+
+		if (oldSize == 0)
+			viewpager.setCurrentItem(getCurrentChapterIndex(), false)
 
 	}
 
@@ -233,7 +216,7 @@ class ChapterReader
 		}
 
 		viewModel.liveVolumeScroll.observe {
-			viewModel.volumeScroll = it
+			viewModel.defaultVolumeScroll = it
 		}
 
 		viewModel.liveChapterDirection.observe {
@@ -408,9 +391,23 @@ class ChapterReader
 		}
 
 		volumeToScrollBar.apply {
-			isChecked = viewModel.volumeScroll
+			isChecked = viewModel.defaultVolumeScroll
 			this.setOnCheckedChangeListener { _, isChecked ->
 				viewModel.setOnVolumeScroll(isChecked)
+			}
+		}
+
+		horizontalOption.apply {
+			isChecked = viewModel.isHorizontalReading
+			this.setOnCheckedChangeListener { _, isChecked ->
+				viewModel.updateHorizontalReading(isChecked)
+			}
+		}
+
+		stringAsHtmlOption.apply {
+			isChecked = viewModel.convertStringAsHtml
+			this.setOnCheckedChangeListener { _, isChecked ->
+				viewModel.updateConvertStringAsHtml(isChecked)
 			}
 		}
 	}
@@ -504,6 +501,9 @@ class ChapterReader
 		} ?: logE("Returned target was null")
 	}
 
+	private fun <T> LiveData<T>.observe(observer: (T) -> Unit) =
+		observe(this@ChapterReader, observer)
+
 	inner class ChapterReaderPageChange : OnPageChangeCallback() {
 		override fun onPageSelected(position: Int) {
 			when (val item = itemAdapter.getAdapterItem(position)) {
@@ -533,9 +533,5 @@ class ChapterReader
 			}
 		}
 	}
-
-
-	private fun <T> LiveData<T>.observe(observer: (T) -> Unit) =
-		observe(this@ChapterReader, observer)
 }
 

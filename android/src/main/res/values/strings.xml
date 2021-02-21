@@ -329,8 +329,8 @@
     <string name="error">Error</string>
     <string name="resume">Resume</string>
     <string name="waiting">Waiting</string>
-    <string name="mark_read_as_reading">Mark read as reading</string>
-    <string name="mark_read_as_reading_desc">Allows the reader to mark a read chapter as reading when its opened up.</string>
+    <string name="settings_reader_title_mark_read_as_reading">Mark read as reading</string>
+    <string name="settings_reader_desc_mark_read_as_reading">Allows the reader to mark a read chapter as reading when its opened up.</string>
     <string name="no_more_chapters">No more chapters</string>
     <string name="next_chapter">Next Chapter...</string>
 
@@ -376,6 +376,14 @@
     <string name="text_alignment_center">Center</string>
     <string name="text_alignment_justified">Justified</string>
     <string name="text_alignment_end">End</string>
+    <string name="settings_reader_title_string_to_html">Convert string to html</string>
+    <string name="settings_reader_desc_string_to_html">All string based extensions are rendered as html</string>
+    <string name="settings_reader_title_horizontal_option">Horizontal paging</string>
+    <string name="settings_reader_desc_horizontal_option">Swipe left and right to move between chapters</string>
+    <string name="settings_reader_title_html_css">Html CSS</string>
+    <string name="settings_reader_desc_html_css">CSS injected into html reader</string>
+    <string name="settings_reader_title_continous_scroll">Continuous scroll</string>
+    <string name="settings_reader_desc_continous_scroll">Smoothly scroll between chapters</string>
 
 
     <array name="text_alignments">

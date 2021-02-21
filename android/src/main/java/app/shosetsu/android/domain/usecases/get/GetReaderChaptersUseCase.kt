@@ -1,14 +1,14 @@
 package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
+import app.shosetsu.common.consts.settings.SettingKey.ReaderStringToHtml
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.loading
-import app.shosetsu.common.dto.mapLatestResult
-import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.dto.*
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 
@@ -35,24 +35,31 @@ import kotlinx.coroutines.flow.flow
  */
 class GetReaderChaptersUseCase(
 	private val iChaptersRepository: IChaptersRepository,
+	private var settingsRepository: ISettingsRepository
 ) {
 	@ExperimentalCoroutinesApi
 	operator fun invoke(novelID: Int): Flow<HResult<List<ReaderChapterUI>>> =
 		flow {
 			emit(loading())
-			emitAll(iChaptersRepository.getReaderChaptersFlow(novelID).mapLatestResult {
-				successResult(it.map { (id, url, title, readingPosition, readingStatus, bookmarked) ->
-					ReaderChapterUI(
-						id,
-						url,
-						title,
-						readingPosition,
-						readingStatus,
-						bookmarked,
-						Novel.ChapterType.STRING,
-						true
-					)
-				})
-			})
+			emitAll(
+				iChaptersRepository.getReaderChaptersFlow(novelID)
+					.combine(settingsRepository.getBooleanFlow(ReaderStringToHtml)) { list, convertTohtml ->
+						list.transformToSuccess { it to convertTohtml }
+					}
+					.mapLatestResult { (list, convertToHtml) ->
+						successResult(list.map { (id, url, title, readingPosition, readingStatus, bookmarked) ->
+							ReaderChapterUI(
+								id,
+								url,
+								title,
+								readingPosition,
+								readingStatus,
+								bookmarked,
+								Novel.ChapterType.STRING,
+								convertToHtml
+							)
+						})
+					}
+			)
 		}
 }

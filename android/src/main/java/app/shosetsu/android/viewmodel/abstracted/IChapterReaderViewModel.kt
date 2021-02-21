@@ -1,7 +1,6 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import android.graphics.Color
-import androidx.core.graphics.red
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
@@ -69,7 +68,10 @@ abstract class IChapterReaderViewModel :
 	var defaultForeground: Int = Color.BLACK
 	var defaultBackground: Int = Color.WHITE
 
-	var volumeScroll: Boolean = false
+	var convertStringAsHtml: Boolean = SettingKey.ReaderStringToHtml.default
+	var isHorizontalReading: Boolean = SettingKey.ReaderHorizontalPageSwap.default
+
+	var defaultVolumeScroll: Boolean = SettingKey.ReaderVolumeScroll.default
 
 	abstract fun setReaderTheme(value: Int)
 	abstract fun setReaderTextSize(value: Float)
@@ -97,4 +99,8 @@ abstract class IChapterReaderViewModel :
 	abstract fun setOnVolumeScroll(checked: Boolean)
 
 	abstract fun loadChapterCss(): LiveData<String>
+
+	abstract fun updateConvertStringAsHtml(checked: Boolean)
+	abstract fun updateHorizontalReading(checked: Boolean)
+
 }

@@ -1,7 +1,6 @@
 package app.shosetsu.android.datasource.local.memory.impl
 
 import app.shosetsu.android.common.ext.get
-import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.set
 import app.shosetsu.common.consts.MEMORY_EXPIRE_EXTENSION_TIME
 import app.shosetsu.common.consts.MEMORY_MAX_EXT_LIBS
@@ -43,12 +42,12 @@ class GuavaMemExtLibDataSource : IMemExtLibDataSource {
 
 	override fun loadLibrary(name: String): HResult<String> {
 		val result = libraries[name]
-		logV("Loading $name from memory (success?: ${result != null})")
+		//logV("Loading $name from memory (success?: ${result != null})")
 		return result?.let { successResult(it) } ?: emptyResult()
 	}
 
 	override fun setLibrary(name: String, data: String): HResult<*> {
-		logV("Putting $name into memory")
+		//logV("Putting $name into memory")
 		libraries[name] = data
 		return successResult("")
 	}

@@ -87,7 +87,12 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<UpdateChapterUseCase>() with provider { UpdateChapterUseCase(instance()) }
 
 	bind<UpdateReaderChapterUseCase>() with provider { UpdateReaderChapterUseCase(instance()) }
-	bind<GetReaderChaptersUseCase>() with provider { GetReaderChaptersUseCase(instance()) }
+	bind<GetReaderChaptersUseCase>() with provider {
+		GetReaderChaptersUseCase(
+			instance(),
+			instance()
+		)
+	}
 
 	bind<GetChapterPassageUseCase>() with provider {
 		GetChapterPassageUseCase(instance(), instance())

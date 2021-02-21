@@ -96,15 +96,15 @@ data class ReaderChapterUI(
 		chapterReader?.let { reader ->
 			reader.viewModel.getChapterPassage(this).observe(reader) { result ->
 				result.handle(
-					{ logD("Showing loading"); holder.showLoadingProgress() },
-					{ logD("Empty result"); holder.hideLoadingProgress() },
+					{ holder.showLoadingProgress() },
+					{ holder.hideLoadingProgress() },
 					{
 						logD("Showing error")
 						//	holder.setError(it.message, "Retry") {
 						//		TODO("Figure out how to restart the liveData")
 						//		}
 					}) {
-					logD("Successfully loaded :D")
+					//logD("Successfully loaded :D")
 					holder.hideLoadingProgress()
 					holder.setData(if (!convertStringToHtml) it else asHtml(it, title = title))
 					holder.itemView.post {
@@ -134,6 +134,8 @@ data class ReaderChapterUI(
 		if (link != other.link) return false
 		if (title != other.title) return false
 		if (bookmarked != other.bookmarked) return false
+		if (chapterType != other.chapterType) return false
+		if (convertStringToHtml != other.convertStringToHtml) return false
 		return true
 	}
 
@@ -142,6 +144,8 @@ data class ReaderChapterUI(
 		result = 31 * result + link.hashCode()
 		result = 31 * result + title.hashCode()
 		result = 31 * result + bookmarked.hashCode()
+		result = 31 * result + chapterType.hashCode()
+		result = 31 * result + convertStringToHtml.hashCode()
 		return result
 	}
 }

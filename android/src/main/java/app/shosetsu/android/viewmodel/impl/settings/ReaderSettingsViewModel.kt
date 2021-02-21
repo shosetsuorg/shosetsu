@@ -148,28 +148,28 @@ class ReaderSettingsViewModel(
 			checkSettingValue(ReaderIsTapToScroll)
 		},
 		switchSettingData(8) {
-			title { R.string.mark_read_as_reading }
-			description { R.string.mark_read_as_reading_desc }
+			title { R.string.settings_reader_title_mark_read_as_reading }
+			description { R.string.settings_reader_desc_mark_read_as_reading }
 			checkSettingValue(ReaderMarkReadAsReading)
 		},
 		switchSettingData(9) {
-			title { "Horizontal paging" }
-			description { "Swipe left and right to move between chapters" }
+			title { R.string.settings_reader_title_horizontal_option }
+			description { R.string.settings_reader_desc_horizontal_option }
 			checkSettingValue(ReaderHorizontalPageSwap)
 		},
 		textInputSettingData(9) {
-			title { "Html CSS" }
-			description { "CSS injected into html reader" }
+			title { R.string.settings_reader_title_html_css }
+			description { R.string.settings_reader_desc_html_css }
 			textSettingValue(ReaderHtmlCss)
 		},
 		switchSettingData(9) {
-			title { "Convert string to html" }
-			description { "All string based extensions are rendered as html" }
+			title { R.string.settings_reader_title_string_to_html }
+			description { R.string.settings_reader_desc_string_to_html }
 			checkSettingValue(ReaderStringToHtml)
 		},
 		switchSettingData(9) {
-			title { "Continuous scroll" }
-			description { "Smoothly scroll between chapters" }
+			title { R.string.settings_reader_title_continous_scroll }
+			description { R.string.settings_reader_desc_continous_scroll }
 			checkSettingValue(ReaderContinuousScroll)
 		},
 		spinnerSettingData(0) {

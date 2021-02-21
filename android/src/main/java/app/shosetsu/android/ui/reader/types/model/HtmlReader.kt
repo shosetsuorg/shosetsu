@@ -8,9 +8,7 @@ import android.webkit.WebViewClient
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
-import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logID
-import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.common.enums.ReadingStatus
@@ -130,7 +128,6 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	private fun injectCss() {
 		// READ AND INJECT STYLE
 		val css = generateShosetsuCss() + userCss
-		logV("Generated CSS: $css")
 
 		webView.evaluateJavascript(
 			"""
@@ -146,9 +143,6 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 			null
 		)
 
-		webView.evaluateJavascript("document.head.parentElement.innerHTML") {
-			logD("This is the head $it")
-		}
 
 	}
 

@@ -1,7 +1,6 @@
 package app.shosetsu.android.datasource.local.memory.impl
 
 import app.shosetsu.android.common.ext.get
-import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.set
 import app.shosetsu.common.consts.MEMORY_EXPIRE_EXT_LIB_TIME
 import app.shosetsu.common.consts.MEMORY_MAX_EXTENSIONS
@@ -43,17 +42,17 @@ class GuavaMemExtensionDataSource : IMemExtensionsDataSource {
 		.build()
 
 	override fun loadExtensionFromMemory(extensionID: Int): HResult<IExtension> {
-		logV("Loading formatter $extensionID from memory")
+		//	logV("Loading formatter $extensionID from memory")
 		return extensionsCache[extensionID]?.let { successResult(it) } ?: emptyResult()
 	}
 
 	override fun putExtensionInMemory(iExtension: IExtension): HResult<*> {
-		logV("Putting formatter ${iExtension.formatterID} into memory")
+		//	logV("Putting formatter ${iExtension.formatterID} into memory")
 		return successResult(extensionsCache.set(iExtension.formatterID, iExtension))
 	}
 
 	override fun removeExtensionFromMemory(extensionID: Int): HResult<*> {
-		logV("Removing formatter $extensionID from memory")
+		//	logV("Removing formatter $extensionID from memory")
 		return successResult(extensionsCache.invalidate(extensionID))
 	}
 }
