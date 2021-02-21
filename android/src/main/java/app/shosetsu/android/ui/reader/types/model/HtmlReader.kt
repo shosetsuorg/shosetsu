@@ -125,7 +125,7 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 		shosetsuStyle.map { elem ->
 			"${elem.key} {" + elem.value.map { rule -> "${rule.key}:${rule.value}" }
 				.joinToString(";", postfix = ";") + "}"
-		}.joinToString("\n")
+		}.joinToString("")
 
 	private fun injectCss() {
 		// READ AND INJECT STYLE
