@@ -58,18 +58,11 @@ class ReaderSettingsViewModel(
 		customSettingData(1) {
 			title { "" }
 		},
-		spinnerSettingData(2) {
+		floatButtonSettingData(2) {
 			title { R.string.paragraph_spacing }
-			try {
-				arrayAdapter = ArrayAdapter(
-					app.applicationContext,
-					android.R.layout.simple_spinner_dropdown_item,
-					app.applicationContext.resources!!.getStringArray(R.array.sizes_with_none)
-				)
-			} catch (e: NotFoundException) {
-				reportExceptionUseCase(e.toHError())
-			}
-			spinnerSettingValue(ReaderParagraphSpacing)
+			minWhole = 0
+
+			settingValue(ReaderParagraphSpacing)
 		},
 
 		spinnerSettingData(9) {
@@ -157,17 +150,17 @@ class ReaderSettingsViewModel(
 			description { R.string.settings_reader_desc_horizontal_option }
 			checkSettingValue(ReaderHorizontalPageSwap)
 		},
-		textInputSettingData(9) {
+		textInputSettingData(10) {
 			title { R.string.settings_reader_title_html_css }
 			description { R.string.settings_reader_desc_html_css }
 			textSettingValue(ReaderHtmlCss)
 		},
-		switchSettingData(9) {
+		switchSettingData(11) {
 			title { R.string.settings_reader_title_string_to_html }
 			description { R.string.settings_reader_desc_string_to_html }
 			checkSettingValue(ReaderStringToHtml)
 		},
-		switchSettingData(9) {
+		switchSettingData(12) {
 			title { R.string.settings_reader_title_continous_scroll }
 			description { R.string.settings_reader_desc_continous_scroll }
 			checkSettingValue(ReaderContinuousScroll)

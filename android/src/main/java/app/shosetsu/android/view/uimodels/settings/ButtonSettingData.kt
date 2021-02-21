@@ -25,7 +25,7 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
  * shosetsu
  * 25 / 06 / 2020
  */
-class ButtonSettingData(id: Int) : TextRequiringSettingData(id) {
+open class ButtonSettingData(id: Int) : TextRequiringSettingData(id) {
 	var buttonOnClickListener: (View) -> Unit = {}
 
 	override fun bindBinding(holder: SettingsItemBinding, payloads: List<Any>) {

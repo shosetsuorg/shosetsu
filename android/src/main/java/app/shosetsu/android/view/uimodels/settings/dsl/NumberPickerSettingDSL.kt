@@ -50,7 +50,7 @@ inline fun NumberPickerSettingData.range(
 ): Unit = value().let { lowerBound = it.first;upperBound = it.second }
 
 @SettingsItemDSL
-inline fun NumberPickerSettingData.onValuePicked(
+inline fun NumberPickerSettingData.onValueSelected(
 	crossinline action: NumberPickerSettingData.(
 		@ParameterName("picker") NumberPicker?,
 		@ParameterName("oldVal") Int,
@@ -73,5 +73,5 @@ inline fun NumberPickerSettingData.numberValue(
 ) {
 	val property = action()
 	initalValue { property.get() }
-	onValuePicked { _, _, newVal: Int -> property.set(newVal) }
+	onValueSelected { _, _, newVal: Int -> property.set(newVal) }
 }

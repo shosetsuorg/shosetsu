@@ -147,8 +147,8 @@ class ChapterReaderViewModel(
 	override val liveIndentSize: LiveData<Int> by lazy {
 		settingsRepo.getIntFlow(ReaderIndentSize).asIOLiveData()
 	}
-	override val liveParagraphSpacing: LiveData<Int> by lazy {
-		settingsRepo.getIntFlow(ReaderParagraphSpacing).asIOLiveData()
+	override val liveParagraphSpacing: LiveData<Float> by lazy {
+		settingsRepo.getFloatFlow(ReaderParagraphSpacing).asIOLiveData()
 	}
 	override val liveTextSize: LiveData<Float> by lazy {
 		settingsRepo.getFloatFlow(ReaderTextSize).asIOLiveData()
@@ -177,8 +177,8 @@ class ChapterReaderViewModel(
 		}
 	}
 
-	override fun setReaderParaSpacing(value: Int) {
-		launchIO { settingsRepo.setInt(ReaderParagraphSpacing, value) }
+	override fun setReaderParaSpacing(value: Float) {
+		launchIO { settingsRepo.setFloat(ReaderParagraphSpacing, value) }
 	}
 
 	override fun setReaderTextSize(value: Float) {

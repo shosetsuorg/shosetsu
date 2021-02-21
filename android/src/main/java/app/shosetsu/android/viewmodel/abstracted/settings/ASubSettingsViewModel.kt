@@ -6,6 +6,7 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logV
+import app.shosetsu.android.view.uimodels.settings.DoubleNumberSettingData
 import app.shosetsu.android.view.uimodels.settings.NumberPickerSettingData
 import app.shosetsu.android.view.uimodels.settings.SpinnerSettingData
 import app.shosetsu.android.view.uimodels.settings.TextInputSettingData
@@ -15,10 +16,7 @@ import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
-import app.shosetsu.common.domain.repositories.base.getIntOrDefault
-import app.shosetsu.common.domain.repositories.base.getStringOrDefault
+import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.loading
 import app.shosetsu.common.dto.successResult
@@ -62,7 +60,7 @@ abstract class ASubSettingsViewModel(
 		},
 	) {
 		initalValue { settingsRepo.getIntOrDefault(key) }
-		onValuePicked { picker, oldVal, newVal ->
+		onValueSelected { picker, oldVal, newVal ->
 			launchIO { action(picker, oldVal, newVal) }
 		}
 	}
@@ -123,4 +121,24 @@ abstract class ASubSettingsViewModel(
 		}
 
 
+	fun Int.orZero() = if (this == -1) 0 else this
+
+	/**
+	 * Set min and max before hand
+	 */
+	@SettingsItemDSL
+	suspend inline fun DoubleNumberSettingData.settingValue(
+		key: SettingKey<Float>
+	) {
+		settingsRepo.getFloatOrDefault(key).let { settingValue ->
+			initialWhole = wholeSteps.indexOfFirst { it == settingValue.toInt() }.orZero()
+			val decimal: Int = ((settingValue % 1) * 100).toInt()
+			initialDecimal = decimalSteps.indexOfFirst { it == decimal }.orZero()
+		}
+		onValueSelected {
+			launchIO {
+				settingsRepo.setFloat(key, it.toFloat())
+			}
+		}
+	}
 }

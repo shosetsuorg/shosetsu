@@ -52,7 +52,7 @@ abstract class IChapterReaderViewModel :
 	abstract val liveThemes: LiveData<List<ColorChoiceUI>>
 	abstract val liveMarkingTypes: LiveData<MarkingTypes>
 	abstract val liveIndentSize: LiveData<Int>
-	abstract val liveParagraphSpacing: LiveData<Int>
+	abstract val liveParagraphSpacing: LiveData<Float>
 	abstract val liveTextSize: LiveData<Float>
 	abstract val liveVolumeScroll: LiveData<Boolean>
 
@@ -63,7 +63,7 @@ abstract class IChapterReaderViewModel :
 	abstract val liveChapterDirection: LiveData<Boolean>
 
 	var defaultTextSize: Float = SettingKey.ReaderTextSize.default
-	var defaultParaSpacing: Int = SettingKey.ReaderParagraphSpacing.default
+	var defaultParaSpacing: Float = SettingKey.ReaderParagraphSpacing.default
 	var defaultIndentSize: Int = SettingKey.ReaderIndentSize.default
 	var defaultForeground: Int = Color.BLACK
 	var defaultBackground: Int = Color.WHITE
@@ -75,7 +75,7 @@ abstract class IChapterReaderViewModel :
 
 	abstract fun setReaderTheme(value: Int)
 	abstract fun setReaderTextSize(value: Float)
-	abstract fun setReaderParaSpacing(value: Int)
+	abstract fun setReaderParaSpacing(value: Float)
 	abstract fun setReaderIndentSize(value: Int)
 
 	/** Set the novelID */
