@@ -1,5 +1,6 @@
 package app.shosetsu.android.viewmodel.impl
 
+import android.app.Application
 import android.graphics.Color
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.*
@@ -17,7 +18,9 @@ import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
+import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.IChapterReaderViewModel
+import app.shosetsu.android.viewmodel.impl.settings.*
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.*
@@ -59,7 +62,8 @@ import kotlinx.coroutines.withContext
  * TODO delete previous chapter
  */
 class ChapterReaderViewModel(
-	private val settingsRepo: ISettingsRepository,
+	private val application: Application,
+	override val settingsRepo: ISettingsRepository,
 	private val loadReaderChaptersUseCase: GetReaderChaptersUseCase,
 	private val loadChapterPassageUseCase: GetChapterPassageUseCase,
 	private val updateReaderChapterUseCase: UpdateReaderChapterUseCase,
@@ -277,4 +281,21 @@ class ChapterReaderViewModel(
 			settingsRepo.setBoolean(ReaderHorizontalPageSwap, checked)
 		}
 	}
+
+	override suspend fun settings(): List<SettingsItemData> = listOf(
+		// Quick settings
+		textSizeOption(0),
+		paragraphSpacingOption(1),
+		paragraphIndentOption(2, application.applicationContext),
+
+		// Minor Behavior settings, these wont effect the UI too much
+		tapToScrollOption(3),
+		volumeScrollingOption(4),
+		horizontalSwitchOption(5),
+		continuousScrollOption(6),
+		invertChapterSwipeOption(8),
+
+		// Major changes
+		stringAsHtmlOption(7),
+	)
 }

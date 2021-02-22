@@ -139,7 +139,12 @@ class SharedPreferenceProvider(
 		settings.getStringSet(key.name, key.default) ?: setOf()
 
 	fun getFloat(key: SettingKey<Float>): Float =
-		settings.getFloat(key.name, key.default)
+		try {
+			settings.getFloat(key.name, key.default)
+		} catch (e: ClassCastException) {
+			setFloat(key, key.default)
+			key.default
+		}
 
 	fun setLong(key: SettingKey<Long>, value: Long): Unit =
 		settings.edit { putLong(key.name, value) }

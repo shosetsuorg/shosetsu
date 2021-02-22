@@ -80,8 +80,8 @@ class DoubleNumberSettingData(id: Int) : ButtonSettingData(id) {
 					orientation = LinearLayoutCompat.HORIZONTAL
 					gravity = Gravity.CENTER
 					setPadding(16)
-					var selectedWhole = 0
-					var selectedDecimal = 0
+					var selectedWhole = initialWhole
+					var selectedDecimal = initialDecimal
 
 					addView(NumberPicker(context).apply {
 						minValue = 0

@@ -1,6 +1,7 @@
 package app.shosetsu.android.viewmodel.impl.settings
 
 import android.app.Application
+import android.content.Context
 import android.content.res.Resources.NotFoundException
 import android.util.Log
 import android.widget.ArrayAdapter
@@ -13,9 +14,9 @@ import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AReaderSettingsViewModel
+import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.domain.repositories.base.getFloatOrDefault
 import app.shosetsu.common.domain.repositories.base.getStringOrDefault
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.MarkingTypes
@@ -58,13 +59,7 @@ class ReaderSettingsViewModel(
 		customSettingData(1) {
 			title { "" }
 		},
-		floatButtonSettingData(2) {
-			title { R.string.paragraph_spacing }
-			minWhole = 0
-
-			settingValue(ReaderParagraphSpacing)
-		},
-
+		paragraphSpacingOption(2),
 		spinnerSettingData(9) {
 			title { "Text Alignment" }
 			try {
@@ -78,93 +73,27 @@ class ReaderSettingsViewModel(
 			}
 			spinnerSettingValue(ReaderTextAlignment)
 		},
-
-		spinnerSettingData(3) {
-			title { R.string.text_size }
-			try {
-				arrayAdapter = ArrayAdapter(
-					app.applicationContext,
-					android.R.layout.simple_spinner_dropdown_item,
-					app.applicationContext.resources!!.getStringArray(R.array.sizes_no_none)
-				)
-			} catch (e: NotFoundException) {
-				reportExceptionUseCase(e.toHError())
-			}
-			spinnerValue {
-				when (settingsRepo.getFloatOrDefault(ReaderTextSize)) {
-					14f -> 0
-					17f -> 1
-					20f -> 2
-					else -> 0
-				}
-			}
-			onSpinnerItemSelected { adapterView, _, i, _ ->
-				if (i in 0..2) {
-					var size = 14
-					when (i) {
-						0 -> {
-						}
-						1 -> size = 17
-						2 -> size = 20
-					}
-					launchIO {
-						settingsRepo.setFloat(ReaderTextSize, size.toFloat())
-					}
-
-					adapterView?.setSelection(i)
-				}
-			}
-		},
-		spinnerSettingData(4) {
-			title { R.string.paragraph_indent }
-			try {
-				arrayAdapter = ArrayAdapter(
-					app.applicationContext,
-					android.R.layout.simple_spinner_dropdown_item,
-					app.applicationContext.resources!!.getStringArray(R.array.sizes_with_none)
-				)
-			} catch (e: NotFoundException) {
-				reportExceptionUseCase(e.toHError())
-			}
-			spinnerSettingValue(ReaderIndentSize)
-		},
+		textSizeOption(3),
+		paragraphIndentOption(4, app.applicationContext),
 		customBottomSettingData(5) {
 			title { R.string.reader_theme }
 		},
-		switchSettingData(6) {
-			title { R.string.inverted_swipe }
-			description { "Invert the chapter swipe" }
-			checkSettingValue(ReaderIsInvertedSwipe)
-		},
-		switchSettingData(7) {
-			title { R.string.tap_to_scroll }
-			checkSettingValue(ReaderIsTapToScroll)
-		},
+		invertChapterSwipeOption(6),
+		tapToScrollOption(7),
+		volumeScrollingOption(13),
 		switchSettingData(8) {
 			title { R.string.settings_reader_title_mark_read_as_reading }
 			description { R.string.settings_reader_desc_mark_read_as_reading }
 			checkSettingValue(ReaderMarkReadAsReading)
 		},
-		switchSettingData(9) {
-			title { R.string.settings_reader_title_horizontal_option }
-			description { R.string.settings_reader_desc_horizontal_option }
-			checkSettingValue(ReaderHorizontalPageSwap)
-		},
+		horizontalSwitchOption(9),
 		textInputSettingData(10) {
 			title { R.string.settings_reader_title_html_css }
 			description { R.string.settings_reader_desc_html_css }
 			textSettingValue(ReaderHtmlCss)
 		},
-		switchSettingData(11) {
-			title { R.string.settings_reader_title_string_to_html }
-			description { R.string.settings_reader_desc_string_to_html }
-			checkSettingValue(ReaderStringToHtml)
-		},
-		switchSettingData(12) {
-			title { R.string.settings_reader_title_continous_scroll }
-			description { R.string.settings_reader_desc_continous_scroll }
-			checkSettingValue(ReaderContinuousScroll)
-		},
+		stringAsHtmlOption(11),
+		continuousScrollOption(12),
 		spinnerSettingData(0) {
 			title { R.string.marking_mode }
 			try {
@@ -207,3 +136,70 @@ class ReaderSettingsViewModel(
 		reportExceptionUseCase(error)
 	}
 }
+
+suspend fun ExposedSettingsRepoViewModel.stringAsHtmlOption(id: Int) =
+	switchSettingData(id) {
+		title { R.string.settings_reader_title_string_to_html }
+		description { R.string.settings_reader_desc_string_to_html }
+		checkSettingValue(ReaderStringToHtml)
+	}
+
+suspend fun ExposedSettingsRepoViewModel.horizontalSwitchOption(id: Int) =
+	switchSettingData(id) {
+		title { R.string.settings_reader_title_horizontal_option }
+		description { R.string.settings_reader_desc_horizontal_option }
+		checkSettingValue(ReaderHorizontalPageSwap)
+	}
+
+suspend fun ExposedSettingsRepoViewModel.invertChapterSwipeOption(id: Int) =
+	switchSettingData(id) {
+		title { R.string.inverted_swipe }
+		description { "Invert the chapter swipe" }
+		checkSettingValue(ReaderIsInvertedSwipe)
+	}
+
+suspend fun ExposedSettingsRepoViewModel.continuousScrollOption(id: Int) =
+	switchSettingData(id) {
+		title { R.string.settings_reader_title_continous_scroll }
+		description { R.string.settings_reader_desc_continous_scroll }
+		checkSettingValue(ReaderContinuousScroll)
+	}
+
+suspend fun ExposedSettingsRepoViewModel.tapToScrollOption(id: Int) =
+	switchSettingData(id) {
+		title { R.string.tap_to_scroll }
+		checkSettingValue(ReaderIsTapToScroll)
+	}
+
+suspend fun ExposedSettingsRepoViewModel.volumeScrollingOption(id: Int) =
+	switchSettingData(id) {
+		title { R.string.volume_scroll }
+		checkSettingValue(ReaderVolumeScroll)
+	}
+
+suspend fun ExposedSettingsRepoViewModel.textSizeOption(id: Int) =
+	floatButtonSettingData(id) {
+		title { R.string.text_size }
+		minWhole = 7
+		maxWhole = 50
+		settingValue(ReaderTextSize)
+	}
+
+suspend fun ExposedSettingsRepoViewModel.paragraphIndentOption(id: Int, context: Context) =
+	spinnerSettingData(id) {
+		title { R.string.paragraph_indent }
+		arrayAdapter = ArrayAdapter(
+			context,
+			android.R.layout.simple_spinner_dropdown_item,
+			context.resources!!.getStringArray(R.array.sizes_with_none)
+		)
+		spinnerSettingValue(ReaderIndentSize)
+	}
+
+suspend fun ExposedSettingsRepoViewModel.paragraphSpacingOption(id: Int) =
+	floatButtonSettingData(id) {
+		title { R.string.paragraph_spacing }
+		minWhole = 0
+
+		settingValue(ReaderParagraphSpacing)
+	}

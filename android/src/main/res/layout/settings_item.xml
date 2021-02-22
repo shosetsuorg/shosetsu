@@ -18,7 +18,8 @@
         app:layout_constraintEnd_toStartOf="@+id/rightField"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="This is a setting" />
 
     <!-- Description -->
     <TextView
@@ -32,7 +33,9 @@
         app:layout_constraintEnd_toStartOf="@+id/rightField"
         app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_item_title" />
+        app:layout_constraintTop_toBottomOf="@+id/settings_item_title"
+        tools:text="This is a description"
+        tools:visibility="visible" />
 
     <!-- Side Field -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -76,7 +79,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/textView"

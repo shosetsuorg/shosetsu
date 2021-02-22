@@ -20,4 +20,6 @@
         <item name="android:textSize">16sp</item>
         <item name="android:statusBarColor">@android:color/black</item>
     </style>
+
+    <style name="AppTheme.Widget.Spinner" parent="Widget.AppCompat.Spinner"></style>
 </resources>

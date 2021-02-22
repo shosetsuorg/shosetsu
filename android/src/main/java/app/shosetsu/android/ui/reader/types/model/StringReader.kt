@@ -102,13 +102,13 @@ class StringReader(
 	}
 
 	fun bind(
-		paragraphSpacing: Int = chapterReader.viewModel.defaultParaSpacing,
+		paragraphSpacing: Float = chapterReader.viewModel.defaultParaSpacing,
 		paragraphIndent: Int = chapterReader.viewModel.defaultIndentSize
 	) {
 
 		// Calculate changes to \n
 		val replaceSpacing = StringBuilder("\n")
-		for (x in 0 until paragraphSpacing)
+		for (x in 0 until paragraphSpacing.toInt())
 			replaceSpacing.append("\n")
 		for (x in 0 until paragraphIndent)
 			replaceSpacing.append("\t")
