@@ -66,8 +66,10 @@ abstract class IChapterReaderViewModel :
 	abstract val liveChapterDirection: LiveData<Boolean>
 
 	var defaultTextSize: Float = SettingKey.ReaderTextSize.default
+
 	var defaultParaSpacing: Float = SettingKey.ReaderParagraphSpacing.default
 	var defaultIndentSize: Int = SettingKey.ReaderIndentSize.default
+
 	var defaultForeground: Int = Color.BLACK
 	var defaultBackground: Int = Color.WHITE
 
@@ -98,7 +100,6 @@ abstract class IChapterReaderViewModel :
 	abstract fun markAsReadingOnView(readerChapterUI: ReaderChapterUI)
 	abstract fun markAsReadingOnScroll(readerChapterUI: ReaderChapterUI, yAswell: Int)
 
-	abstract fun allowVolumeScroll(): Boolean
 	abstract fun setOnVolumeScroll(checked: Boolean)
 
 	abstract fun loadChapterCss(): LiveData<String>

@@ -1,13 +1,13 @@
 package app.shosetsu.android.datasource.local.file.impl
 
-import app.shosetsu.android.common.consts.LIBRARY_DIR
-import app.shosetsu.android.common.consts.SOURCE_DIR
+import app.shosetsu.android.common.consts.FILE_SOURCE_DIR
+import app.shosetsu.android.common.consts.FILE_LIBRARY_DIR
 import app.shosetsu.android.common.ext.logV
-import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import app.shosetsu.common.datasource.file.base.IFileExtLibDataSource
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.enums.InternalFileDir.FILES
+import app.shosetsu.common.providers.file.base.IFileSystemProvider
 
 /*
  * This file is part of shosetsu.
@@ -35,7 +35,7 @@ class FileExtLibDataSource(
 ) : IFileExtLibDataSource {
 	init {
 		logV("Creating required directories")
-		iFileSystemProvider.createDirectory(FILES, "$SOURCE_DIR$LIBRARY_DIR").handle(
+		iFileSystemProvider.createDirectory(FILES, "$FILE_SOURCE_DIR$FILE_LIBRARY_DIR").handle(
 			onError = {
 				logV("Error on creation of directories $it")
 			},
@@ -47,7 +47,7 @@ class FileExtLibDataSource(
 
 
 	private fun makeLibraryFile(fileName: String): String =
-		"$SOURCE_DIR$LIBRARY_DIR$fileName.lua"
+		"$FILE_SOURCE_DIR$FILE_LIBRARY_DIR$fileName.lua"
 
 	override suspend fun writeExtLib(fileName: String, data: String): HResult<*> =
 		iFileSystemProvider.writeFile(

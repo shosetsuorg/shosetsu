@@ -160,9 +160,6 @@ class ChapterReader
 		}
 
 		viewModel.liveTheme.observe { (t, b) ->
-			viewModel.defaultForeground = t
-			viewModel.defaultBackground = b
-
 			applyToReaders {
 				syncTextColor()
 				syncBackgroundColor()
@@ -336,7 +333,7 @@ class ChapterReader
 	 * Adds the
 	 */
 	override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-		if (viewModel.allowVolumeScroll())
+		if (viewModel.defaultVolumeScroll)
 			when (keyCode) {
 				KeyEvent.KEYCODE_VOLUME_DOWN -> {
 					applyToReaders(true) {

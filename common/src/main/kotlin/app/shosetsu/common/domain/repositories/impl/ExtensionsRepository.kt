@@ -93,8 +93,8 @@ class ExtensionsRepository(
 
 
 	override suspend fun uninstallExtension(extensionEntity: ExtensionEntity): HResult<*> =
-		memorySource.removeExtensionFromMemory(extensionEntity.id) and
-				fileSource.deleteExtension(extensionEntity.fileName) and
+		memorySource.removeExtensionFromMemory(extensionEntity.id) ifSo {
+			fileSource.deleteExtension(extensionEntity.fileName) ifSo {
 				dbSource.updateExtension(
 					extensionEntity.copy(
 						enabled = false,
@@ -102,6 +102,8 @@ class ExtensionsRepository(
 						installedVersion = null
 					)
 				)
+			}
+		}
 
 	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<*> =
 		dbSource.insertOrUpdate(extensionEntity)
@@ -132,9 +134,10 @@ class ExtensionsRepository(
 		dbSource.loadPoweredExtensionsCards()
 
 
-
 	override suspend fun removeExtension(extensionEntity: ExtensionEntity): HResult<*> =
-		dbSource.deleteExtension(extensionEntity) and
-				fileSource.deleteExtension(extensionEntity.fileName) and
-				memorySource.removeExtensionFromMemory(extensionEntity.id)
+		memorySource.removeExtensionFromMemory(extensionEntity.id) ifSo {
+			fileSource.deleteExtension(extensionEntity.fileName) ifSo {
+				dbSource.deleteExtension(extensionEntity)
+			}
+		}
 }

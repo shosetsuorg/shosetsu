@@ -6,10 +6,14 @@ import app.shosetsu.android.domain.model.database.DBNovelReaderSettingEntity
 import app.shosetsu.android.providers.database.dao.NovelReaderSettingsDao
 import app.shosetsu.common.datasource.database.base.IDBNovelReaderSettingsDataSource
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
-import app.shosetsu.common.dto.*
+import app.shosetsu.common.dto.HFlow
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.emptyResult
+import app.shosetsu.common.dto.successResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of Shosetsu.
@@ -35,7 +39,9 @@ class DBNovelReaderSettingsDataSource(
 	private val dao: NovelReaderSettingsDao
 ) : IDBNovelReaderSettingsDataSource {
 	override suspend fun get(novelID: Int): HResult<NovelReaderSettingEntity> = try {
-		successResult(dao.get(novelID))
+		dao.get(novelID)?.let {
+			successResult(it)
+		} ?: emptyResult()
 	} catch (e: Exception) {
 		e.toHError()
 	}
@@ -43,7 +49,8 @@ class DBNovelReaderSettingsDataSource(
 	@ExperimentalCoroutinesApi
 	override fun getFlow(novelID: Int): HFlow<NovelReaderSettingEntity> = flow {
 		try {
-			emitAll(dao.getFlow(novelID).mapLatestTo().mapLatestToSuccess())
+			emitAll(dao.getFlow(novelID).mapLatest { it?.convertTo() }
+				.mapLatest { it?.let { successResult(it) } ?: emptyResult() })
 		} catch (e: SQLiteException) {
 			emit(e.toHError())
 		}

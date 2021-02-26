@@ -6,9 +6,7 @@ import android.widget.ArrayAdapter
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.*
 import app.shosetsu.android.common.dto.*
-import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.logD
-import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.model.local.ColorChoiceData
 import app.shosetsu.android.domain.usecases.get.GetChapterPassageUseCase
@@ -27,7 +25,9 @@ import app.shosetsu.android.viewmodel.abstracted.IChapterReaderViewModel
 import app.shosetsu.android.viewmodel.base.spinnerValue
 import app.shosetsu.android.viewmodel.impl.settings.*
 import app.shosetsu.common.consts.settings.SettingKey.*
+import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.domain.repositories.base.getStringSetOrDefault
 import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.MarkingTypes
 import app.shosetsu.common.enums.MarkingTypes.ONSCROLL
@@ -75,24 +75,9 @@ class ChapterReaderViewModel(
 	private val getReaderSettingsUseCase: GetReaderSettingUseCase,
 	private val updateReaderSettingUseCase: UpdateReaderSettingUseCase
 ) : IChapterReaderViewModel() {
-
-
 	private val isReaderContinuousScrollFlow = settingsRepo.getBooleanFlow(ReaderContinuousScroll)
 	private val convertStringToHtml = settingsRepo.getBooleanFlow(ReaderStringToHtml)
 	private val isHorizontalPageSwapping = settingsRepo.getBooleanFlow(ReaderHorizontalPageSwap)
-
-	init {
-		launchIO {
-			isReaderContinuousScrollFlow.collectLatest {
-			}
-			convertStringToHtml.collectLatest {
-				super.convertStringAsHtml = it
-			}
-			isHorizontalPageSwapping.collectLatest {
-				super.isHorizontalReading = it
-			}
-		}
-	}
 
 	/**
 	 * TODO Memory management here
@@ -102,46 +87,53 @@ class ChapterReaderViewModel(
 	private val hashMap: HashMap<Int, Flow<HResult<String>>> = hashMapOf()
 
 	@ExperimentalCoroutinesApi
-	override val liveData: LiveData<HResult<List<ReaderUIItem<*, *>>>> by lazy {
-		loadReaderChaptersUseCase(nID).mapLatestResult {
-			withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
-				successResult(ArrayList<ReaderUIItem<*, *>>(it).apply {
-					// Adds the "No more chapters" marker
-					add(size, ReaderDividerUI(prev = it.last().title))
+	override val liveData: LiveData<HList<ReaderUIItem<*, *>>> by lazy {
+		novelIDLive.transformLatest { nId ->
+			loadReaderChaptersUseCase(nId).mapLatestResult {
+				withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
+					successResult(ArrayList<ReaderUIItem<*, *>>(it).apply {
+						// Adds the "No more chapters" marker
+						add(size, ReaderDividerUI(prev = it.last().title))
 
-					/**
-					 * Loops down the list, adding in betweens
-					 */
-					val startPoint = size - 2
-					for (index in startPoint downTo 1)
-						add(
-							index, ReaderDividerUI(
-								(this[index - 1] as ReaderChapterUI).title,
-								(this[index] as ReaderChapterUI).title
+						/**
+						 * Loops down the list, adding in betweens
+						 */
+						val startPoint = size - 2
+						for (index in startPoint downTo 1)
+							add(
+								index, ReaderDividerUI(
+									(this[index - 1] as ReaderChapterUI).title,
+									(this[index] as ReaderChapterUI).title
+								)
 							)
-						)
 
-				})
-			}
+					})
+				}
+			}.let { emitAll(it) }
 		}.asIOLiveData()
 	}
-	override val liveTheme: LiveData<Pair<Int, Int>> by lazy {
-		liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-			emitSource(
-				settingsRepo.getIntFlow(ReaderTheme).asIOLiveData().switchMap { id: Int ->
-					logD("Loading theme for $id")
-					liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-						val s = settingsRepo.getStringSet(ReaderUserThemes)
-						if (s is HResult.Success) {
-							val selected = s.data.map { ColorChoiceData.fromString(it) }
-								.find { it.identifier == id.toLong() }
-							selected?.let {
-								emit(it.textColor to it.backgroundColor)
-							} ?: emit(Color.BLACK to Color.WHITE)
-						} else emit(Color.BLACK to Color.WHITE)
-					}
-				})
+
+	@ExperimentalCoroutinesApi
+	private val readerSettingsFlow: Flow<HResult<NovelReaderSettingEntity>> by lazy {
+		novelIDLive.transformLatest {
+			emitAll(getReaderSettingsUseCase(it))
 		}
+	}
+
+	@ExperimentalCoroutinesApi
+	override val liveTheme: LiveData<Pair<Int, Int>> by lazy {
+		settingsRepo.getIntFlow(ReaderTheme).transformLatest { id: Int ->
+			settingsRepo.getStringSetOrDefault(ReaderUserThemes)
+				.map { ColorChoiceData.fromString(it) }
+				.find { it.identifier == id.toLong() }
+				?.let { (_, _, textColor, backgroundColor) ->
+					super.defaultForeground = textColor
+					super.defaultBackground = backgroundColor
+
+					emit(textColor to backgroundColor)
+				} ?: emit(Color.BLACK to Color.WHITE)
+
+		}.asIOLiveData()
 	}
 	override val liveMarkingTypes: LiveData<MarkingTypes> by lazy {
 		settingsRepo.getStringFlow(ReadingMarkingType)
@@ -166,10 +158,23 @@ class ChapterReaderViewModel(
 		settingsRepo.getBooleanFlow(ReaderVolumeScroll).asIOLiveData()
 	}
 	override var currentChapterID: Int = -1
-	private var nID = -1
-	override val liveChapterDirection: LiveData<Boolean> = flow {
-		emitAll(settingsRepo.getBooleanFlow(ReaderHorizontalPageSwap))
-	}.asIOLiveData()
+	private val novelIDLive: MutableStateFlow<Int> by lazy { MutableStateFlow(novelIDValue) }
+	private var novelIDValue = -1
+	override val liveChapterDirection: LiveData<Boolean> =
+		settingsRepo.getBooleanFlow(ReaderHorizontalPageSwap).asIOLiveData()
+
+	init {
+		launchIO {
+			isReaderContinuousScrollFlow.collectLatest {
+			}
+			convertStringToHtml.collectLatest {
+				super.convertStringAsHtml = it
+			}
+			isHorizontalPageSwapping.collectLatest {
+				super.isHorizontalReading = it
+			}
+		}
+	}
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
 		reportExceptionUseCase(error)
@@ -195,8 +200,16 @@ class ChapterReaderViewModel(
 	}
 
 	override fun setNovelID(novelID: Int) {
-		if (nID == -1)
-			nID = novelID
+		when {
+			novelIDValue == -1 -> logI("Setting NovelID")
+			novelIDValue != novelID -> logI("NovelID not equal, resetting")
+			novelIDValue == novelID -> {
+				logI("NovelID equal, ignoring")
+				return
+			}
+		}
+		novelIDLive.tryEmit(novelID)
+		novelIDValue = novelID
 	}
 
 	@WorkerThread
@@ -263,10 +276,7 @@ class ChapterReaderViewModel(
 		markAsReading(readerChapterUI, ONSCROLL, yAswell)
 	}
 
-	override fun allowVolumeScroll(): Boolean = defaultVolumeScroll
-
 	override fun setOnVolumeScroll(checked: Boolean) {
-		defaultVolumeScroll = checked
 		launchIO {
 			settingsRepo.setBoolean(ReaderVolumeScroll, checked)
 		}
@@ -287,15 +297,18 @@ class ChapterReaderViewModel(
 		}
 	}
 
-	override fun getSettings(): LiveData<HResult<List<SettingsItemData>>> = flow {
-		emit(loading)
-
-		emit(successResult(settings()))
-	}.combine(getReaderSettingsUseCase(nID)) { settingsListResult, readerSettingsResult ->
-		settingsListResult.transform { settingsList ->
-			readerSettingsResult.transform(
-				onLoading = { successResult(settingsList) }
-			) { settingEntity ->
+	@ExperimentalCoroutinesApi
+	override fun getSettings(): LiveData<HResult<List<SettingsItemData>>> =
+		flow {
+			// First build the universal setting interface
+			emit(loading)
+			emit(successResult(settings()))
+		}.combine(readerSettingsFlow) { settingsListResult, readerSettingsResult ->
+			/*
+			 * Combining the universal setting flow and the readerSettingFlow
+			 * Handle both results together, then transform the result, adding UI for reader specific settings
+			 */
+			(settingsListResult thenAlso readerSettingsResult).transformToSuccess { (settingsList, settingEntity) ->
 				ArrayList(settingsList).apply {
 					add(floatButtonSettingData(1) {
 						title { R.string.paragraph_spacing }
@@ -340,10 +353,9 @@ class ChapterReaderViewModel(
 
 					// Sort so the result will be ordered properly
 					sortBy { it.id }
-				}.let { successResult(it) }
+				}
 			}
-		}
-	}.asIOLiveData()
+		}.asIOLiveData()
 
 	suspend fun settings(): List<SettingsItemData> = listOf(
 		// Quick settings

@@ -50,7 +50,7 @@ interface IChaptersRepository {
 	 */
 	suspend fun getChapterPassage(
 		formatter: IExtension,
-		chapterEntity: ChapterEntity,
+		entity: ChapterEntity,
 	): HResult<String>
 
 	/**
@@ -68,7 +68,7 @@ interface IChaptersRepository {
 	 * [HResult.Loading] never
 	 */
 	suspend fun saveChapterPassageToStorage(
-		chapterEntity: ChapterEntity,
+		entity: ChapterEntity,
 		passage: String
 	): HResult<*>
 

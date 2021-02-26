@@ -1,7 +1,5 @@
 package app.shosetsu.android.common.consts
 
-import android.view.View
-
 /*
  * This file is part of shosetsu.
  *
@@ -20,38 +18,34 @@ import android.view.View
  */
 
 
-/**
- * shosetsu
- * 04 / 05 / 2020
- */
-
-
 const val SELECTED_STROKE_WIDTH: Int = 8
 
 /** How fast the user must fling inorder to activate the scroll to last */
 const val FLING_THRESHOLD = 19999
 
-const val SCRIPT_DIR: String = "/scripts/"
-const val LIBRARY_DIR: String = "/libraries/"
-const val SOURCE_DIR: String = "/src/"
-const val REPO_DIR_STRUCT: String = "/src/main/resources/"
+/**
+ * File system directory for extension scripts
+ */
+const val FILE_SCRIPT_DIR: String = "/scripts/"
+
+/**
+ * File system directory for library scripts
+ */
+const val FILE_LIBRARY_DIR: String = "/libraries/"
+
+/**
+ * File system directory for source files
+ */
+const val FILE_SOURCE_DIR: String = "/src/"
+
+/**
+ * Directory on the repository that contains the extensions,
+ * proceeding this will be the extension language
+ */
+const val REPO_SOURCE_DIR: String = "/src/"
 
 const val APP_UPDATE_CACHE_FILE = "SHOSETSU_APP_UPDATE.json"
 
-
-@Deprecated(
-	"Just use View",
-	replaceWith = ReplaceWith("VISIBLE", "import android.view.View.VISIBLE"),
-	DeprecationLevel.WARNING
-)
-const val VISIBLE: Int = View.VISIBLE
-
-@Deprecated(
-	"Just use View",
-	replaceWith = ReplaceWith("GONE", "import android.view.View.GONE"),
-	DeprecationLevel.WARNING
-)
-const val GONE: Int = View.GONE
 
 const val READER_BAR_ALPHA: Float = 0.8F
 

@@ -31,10 +31,7 @@ import app.shosetsu.android.domain.usecases.update.UpdateBookmarkedNovelUseCase
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ILibraryViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
+import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.InclusionState
 import app.shosetsu.common.enums.InclusionState.EXCLUDE
 import app.shosetsu.common.enums.InclusionState.INCLUDE
@@ -227,40 +224,33 @@ class LibraryViewModel(
 
 	private fun Flow<HResult<List<ABookmarkedNovelUI>>>.combineSortReverse() =
 		combine(areNovelsReversedFlow) { novelResult, reversed ->
-			novelResult.transform { list ->
-				successResult(
-					if (reversed)
-						list.reversed()
-					else list
-				)
+			novelResult.transformToSuccess { list ->
+				if (reversed)
+					list.reversed()
+				else list
 			}
 		}
 
 	private fun Flow<HResult<List<ABookmarkedNovelUI>>>.combineSortType() =
 		combine(novelSortTypeFlow) { novelResult, sortType ->
-			novelResult.transform { list ->
-				successResult(
-					when (sortType) {
-						NovelSortType.BY_TITLE -> list.sortedBy { it.title }
-						NovelSortType.BY_UNREAD_COUNT -> list.sortedBy { it.unread }
-						NovelSortType.BY_ID -> list.sortedBy { it.id }
-					}
-				)
+			novelResult.transformToSuccess { list ->
+				when (sortType) {
+					NovelSortType.BY_TITLE -> list.sortedBy { it.title }
+					NovelSortType.BY_UNREAD_COUNT -> list.sortedBy { it.unread }
+					NovelSortType.BY_ID -> list.sortedBy { it.id }
+				}
 			}
 		}
 
 	private fun Flow<HResult<List<ABookmarkedNovelUI>>>.combineUnreadStatus() =
 		combine(unreadStatusFlow) { novelResult, sortType ->
-			novelResult.transform { list ->
-				successResult(
-					sortType?.let {
-						when (sortType) {
-							INCLUDE -> list.filter { it.unread > 0 }
-							EXCLUDE -> list.filterNot { it.unread > 0 }
-						}
-					} ?: list
-
-				)
+			novelResult.transformToSuccess { list ->
+				sortType?.let {
+					when (sortType) {
+						INCLUDE -> list.filter { it.unread > 0 }
+						EXCLUDE -> list.filterNot { it.unread > 0 }
+					}
+				} ?: list
 			}
 		}
 

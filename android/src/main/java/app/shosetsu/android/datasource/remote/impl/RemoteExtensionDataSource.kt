@@ -1,6 +1,6 @@
 package app.shosetsu.android.datasource.remote.impl
 
-import app.shosetsu.android.common.consts.REPO_DIR_STRUCT
+import app.shosetsu.android.common.consts.REPO_SOURCE_DIR
 import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.common.datasource.remote.base.IRemoteExtensionDataSource
@@ -36,7 +36,7 @@ class RemoteExtensionDataSource(
 ) : IRemoteExtensionDataSource {
 
 	private fun makeExtensionURL(repo: RepositoryEntity, fe: ExtensionEntity): String =
-		"${repo.url}$REPO_DIR_STRUCT/src/${fe.lang}/${fe.fileName}.lua"
+		"${repo.url}$REPO_SOURCE_DIR/${fe.lang}/${fe.fileName}.lua"
 
 	override suspend fun downloadExtension(
 		repositoryEntity: RepositoryEntity,

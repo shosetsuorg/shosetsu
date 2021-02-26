@@ -1,7 +1,7 @@
 package app.shosetsu.android.datasource.local.file.impl
 
-import app.shosetsu.android.common.consts.SCRIPT_DIR
-import app.shosetsu.android.common.consts.SOURCE_DIR
+import app.shosetsu.android.common.consts.FILE_SCRIPT_DIR
+import app.shosetsu.android.common.consts.FILE_SOURCE_DIR
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.common.providers.file.base.IFileSystemProvider
@@ -41,7 +41,7 @@ class FileExtensionDataSource(
 ) : IFileExtensionDataSource {
 	init {
 		logV("Creating required directories")
-		iFileSystemProvider.createDirectory(FILES, "$SOURCE_DIR$SCRIPT_DIR").handle(
+		iFileSystemProvider.createDirectory(FILES, "$FILE_SOURCE_DIR$FILE_SCRIPT_DIR").handle(
 			onError = {
 				logV("Error on creation of directories $it")
 			},
@@ -52,7 +52,7 @@ class FileExtensionDataSource(
 	}
 
 	private fun makeExtensionFileURL(fileName: String): String =
-		"$SOURCE_DIR$SCRIPT_DIR$fileName.lua"
+		"$FILE_SOURCE_DIR$FILE_SCRIPT_DIR$fileName.lua"
 
 
 	override suspend fun loadExtension(fileName: String): HResult<IExtension> = try {

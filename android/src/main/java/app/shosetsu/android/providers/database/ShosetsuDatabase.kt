@@ -87,41 +87,53 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 					object : Migration(2, 3) {
 						@Throws(SQLException::class)
 						override fun migrate(database: SupportSQLiteDatabase) {
-							val repositoryTableName = "repositories"
+							run {
+								val repositoryTableName = "repositories"
 
-							// Delete the old table
+								// Delete the old table
 
-							// Creates new table
-							database.execSQL("CREATE TABLE IF NOT EXISTS `${repositoryTableName}_new` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `url` TEXT NOT NULL UNIQUE, `name` TEXT NOT NULL)")
+								// Creates new table
+								database.execSQL("CREATE TABLE IF NOT EXISTS `${repositoryTableName}_new` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `url` TEXT NOT NULL UNIQUE, `name` TEXT NOT NULL)")
 
-							val cursor = database.query("SELECT * FROM $repositoryTableName")
-							while (cursor.moveToNext()) {
-								database.insert(
-									"${repositoryTableName}_new",
-									OnConflictStrategy.ABORT,
-									ContentValues().apply {
-										val keyURL = "url"
-										val keyName = "name"
-										put(keyURL, cursor.getString(cursor.getColumnIndex(keyURL)))
-										put(
-											keyName,
-											cursor.getString(cursor.getColumnIndex(keyName))
-										)
-									}
-								)
+								val cursor = database.query("SELECT * FROM $repositoryTableName")
+								while (cursor.moveToNext()) {
+									database.insert(
+										"${repositoryTableName}_new",
+										OnConflictStrategy.ABORT,
+										ContentValues().apply {
+											val keyURL = "url"
+											val keyName = "name"
+											put(
+												keyURL,
+												cursor.getString(cursor.getColumnIndex(keyURL))
+											)
+											put(
+												keyName,
+												cursor.getString(cursor.getColumnIndex(keyName))
+											)
+										}
+									)
+								}
+
+								// Drop
+								database.execSQL("DROP TABLE $repositoryTableName")
+
+								// Rename new table to fill in
+								database.execSQL("ALTER TABLE `${repositoryTableName}_new` RENAME TO `${repositoryTableName}`")
+								database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_${repositoryTableName}_url` ON `${repositoryTableName}` (`url`)")
+
+							}
+							// Migration to create novel_settings
+							run {
+								database.execSQL("CREATE TABLE IF NOT EXISTS `novel_settings` (`novelID` INTEGER NOT NULL, `sortType` TEXT NOT NULL, `showOnlyReadingStatusOf` INTEGER, `showOnlyBookmarked` INTEGER NOT NULL, `showOnlyDownloaded` INTEGER NOT NULL, `reverseOrder` INTEGER NOT NULL, PRIMARY KEY(`novelID`), FOREIGN KEY(`novelID`) REFERENCES `novels`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )")
+								database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_novel_settings_novelID` ON `novel_settings` (`novelID`)")
 							}
 
-							// Drop
-							database.execSQL("DROP TABLE $repositoryTableName")
-
-							// Rename new table to fill in
-							database.execSQL("ALTER TABLE `${repositoryTableName}_new` RENAME TO `${repositoryTableName}`")
-							database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_${repositoryTableName}_url` ON `${repositoryTableName}` (`url`)")
-
-							// Migration to create novel_settings
-							database.execSQL("CREATE TABLE IF NOT EXISTS `novel_settings` (`novelID` INTEGER NOT NULL, `sortType` TEXT NOT NULL, `showOnlyReadingStatusOf` INTEGER, `showOnlyBookmarked` INTEGER NOT NULL, `showOnlyDownloaded` INTEGER NOT NULL, `reverseOrder` INTEGER NOT NULL, PRIMARY KEY(`novelID`), FOREIGN KEY(`novelID`) REFERENCES `novels`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )")
-							database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_novel_settings_novelID` ON `novel_settings` (`novelID`)")
-
+							// Create novel_reader_settings
+							run {
+								database.execSQL("CREATE TABLE IF NOT EXISTS `novel_reader_settings` (`novelID` INTEGER NOT NULL, `paragraphIndentSize` INTEGER NOT NULL, `paragraphSpacingSize` REAL NOT NULL, PRIMARY KEY(`novelID`), FOREIGN KEY(`novelID`) REFERENCES `novels`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )")
+								database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_novel_reader_settings_novelID` ON `novel_reader_settings` (`novelID`)")
+							}
 						}
 					}
 				).build()

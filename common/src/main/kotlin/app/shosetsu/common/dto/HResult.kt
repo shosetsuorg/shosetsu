@@ -59,11 +59,13 @@ sealed class HResult<out T> {
 	object Loading : HResult<Nothing>()
 
 	/** This states that the operation has returned nothing */
-	object Empty : HResult<Nothing>()
+	object Empty : HResult<Nothing>();
 }
 
 /** This is a quick way to toss a success */
 inline fun <reified T> successResult(data: T): HResult.Success<T> = HResult.Success(data)
+
+fun successResult(): HResult.Success<*> = HResult.Success(Unit)
 
 /** This is a quick way to create a loading*/
 fun loading(): HResult.Loading = HResult.Loading
@@ -72,6 +74,8 @@ val loading = HResult.Loading
 
 /** This is a quick way to create an empty result*/
 fun emptyResult(): HResult.Empty = HResult.Empty
+
+val empty = HResult.Empty
 
 /** This is an easy way to create an error*/
 fun errorResult(code: Int, message: String, error: Exception? = null): HResult.Error =
@@ -94,30 +98,70 @@ fun errorResult(e: NullPointerException): HResult.Error =
 
 /**
  * Used to sequence HResult returning methods together
+ *
+ * Will get the result of [this] and [other] then process them,
+ * this means that [other] will always run
  */
-inline infix fun <reified I1, reified I2> HResult<I1>.and(
-	hResult: HResult<I2>,
-): HResult<*> {
-	if (this is HResult.Success && hResult is HResult.Success) return successResult("")
+inline infix fun <reified I1, reified I2> HResult<I1>.thenAlso(
+	other: HResult<I2>,
+): HResult<Pair<I1, I2>> {
+	if (this is HResult.Success && other is HResult.Success) return successResult(this.data to other.data)
 
 	/** Returns the reason why the [HResult] [I1] is not a success */
 	this.handle(
-		onLoading = { return this },
-		onEmpty = { return this },
-		onError = { return this }
+		onLoading = { return loading },
+		onEmpty = { return empty },
+		onError = { return it }
 	)
 
 	/** Returns the reason why the [HResult] [I2] is not a success */
-	hResult.handle(
-		onLoading = { return hResult },
-		onEmpty = { return hResult },
-		onError = { return hResult }
+	other.handle(
+		onLoading = { return loading },
+		onEmpty = { return empty },
+		onError = { return it }
 	)
 
 	/**
 	 * Default message for when the above somehow does not catch the issue
 	 */
 	return errorResult(ErrorKeys.ERROR_GENERAL, "Unknown case for both results")
+}
+
+/**
+ * Sequence HResults one after another
+ * If [this] fails, then it will return the status, otherwise
+ * [next] is run, and it will check for next
+ */
+inline infix fun <reified I1, reified I2> HResult<I1>.ifSo(
+	next: () -> HResult<I2>,
+): HResult<Pair<I1, I2>> {
+	var result1: I1? = null
+	var result2: I2? = null
+
+	/** Handles this result, if a success continues to the [next] */
+	this.handle(
+		onLoading = { return loading },
+		onEmpty = { return empty },
+		onError = { return it }
+	) {
+		result1 = it
+	}
+
+	/** Executes the the next block, */
+	with(next()) {
+		handle(
+			onLoading = { return loading },
+			onEmpty = { return empty },
+			onError = { return it }
+		) {
+			result2 = it
+		}
+	}
+
+	/**
+	 * Both were a success, exiting
+	 */
+	return successResult(result1!! to result2!!)
 }
 
 /**
@@ -231,3 +275,6 @@ inline fun <reified I, O> HResult<I>.transform(
 	HResult.Empty -> onEmpty()
 	is HResult.Error -> onError(this)
 }
+
+inline fun <reified T> HResult<T>.catch(unit: () -> HResult<T>): HResult<T> =
+	takeIf { it is HResult.Success } ?: unit()

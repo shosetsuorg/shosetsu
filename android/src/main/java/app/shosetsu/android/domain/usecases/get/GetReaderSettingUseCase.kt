@@ -1,5 +1,6 @@
 package app.shosetsu.android.domain.usecases.get
 
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.common.domain.repositories.base.INovelReaderSettingsRepository
@@ -7,6 +8,7 @@ import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.domain.repositories.base.getFloatOrDefault
 import app.shosetsu.common.domain.repositories.base.getIntOrDefault
 import app.shosetsu.common.dto.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapLatest
@@ -35,9 +37,11 @@ class GetReaderSettingUseCase(
 	private val readerRepo: INovelReaderSettingsRepository,
 	private val settingsRepo: ISettingsRepository,
 ) {
+	@ExperimentalCoroutinesApi
 	operator fun invoke(novelID: Int): HFlow<NovelReaderSettingEntity> = flow {
 		emit(loading)
 		emitAll(readerRepo.getFlow(novelID).mapLatest { result ->
+			this@GetReaderSettingUseCase.logV("I got a map")
 			result.transform(
 				onEmpty = {
 					readerRepo.insert(

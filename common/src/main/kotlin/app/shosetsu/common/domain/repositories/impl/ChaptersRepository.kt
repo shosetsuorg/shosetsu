@@ -8,8 +8,7 @@ import app.shosetsu.common.datasource.remote.base.IRemoteChaptersDataSource
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.ReaderChapterEntity
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.and
+import app.shosetsu.common.dto.*
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
@@ -50,38 +49,57 @@ class ChaptersRepository(
 	private val remoteSource: IRemoteChaptersDataSource,
 ) : IChaptersRepository {
 
-	private suspend fun placeIntoCache(chapterEntity: ChapterEntity, value: HResult<String>) {
-		if (value is HResult.Success)
-			saveChapterPassageToMemory(chapterEntity, value.data)
-	}
+	private suspend inline fun placeIntoCache(
+		chapterEntity: ChapterEntity,
+		result: HResult<String>
+	) = result.handle { saveChapterPassageToMemory(chapterEntity, it) }
 
 	override suspend fun getChapterPassage(
 		formatter: IExtension,
-		chapterEntity: ChapterEntity,
+		entity: ChapterEntity,
 	): HResult<String> =
-		memorySource.loadChapterFromCache(chapterEntity.id!!)
-			.takeIf { it is HResult.Success }
-			?: cacheSource.loadChapterPassage(chapterEntity.id!!)
-				.takeIf { it is HResult.Success }
-			?: fileSource.loadChapterPassageFromStorage(chapterEntity)
-				.takeIf { it is HResult.Success }?.also { placeIntoCache(chapterEntity, it) }
-			?: remoteSource.loadChapterPassage(
-				formatter,
-				chapterEntity.url
-			).also { placeIntoCache(chapterEntity, it) }
+		memorySource.loadChapterFromCache(entity.id!!)
+			.catch {
+				cacheSource.loadChapterPassage(entity.id!!).also { result ->
+					result.handle { memorySource.saveChapterInCache(entity.id!!, it) }
+				}
+			}.catch {
+				fileSource.loadChapterPassageFromStorage(entity)
+					.also { placeIntoCache(entity, it) }
+			}.catch {
+				remoteSource.loadChapterPassage(
+					formatter,
+					entity.url
+				).also { placeIntoCache(entity, it) }
+			}
 
 	suspend fun saveChapterPassageToMemory(
 		chapterEntity: ChapterEntity,
 		passage: String,
-	): HResult<*> = memorySource.saveChapterInCache(chapterEntity.id!!, passage) and
+	): HResult<*> = memorySource.saveChapterInCache(chapterEntity.id!!, passage) thenAlso
 			cacheSource.saveChapterInCache(chapterEntity.id!!, passage)
 
+
+	/**
+	 *
+	 * 1. save to memory
+	 * 2. save to filesystem
+	 * 3. if filesystem save was a success, then update the chapter
+	 * 4. finally evaluate with and between 1&&(2||3)
+	 */
+
+	/**
+	 * We want to ensure that the [passage] is saved either to [memorySource] or [fileSource] first off
+	 * After that, then we can update the [entity] to say [passage] was properly saved
+	 */
 	override suspend fun saveChapterPassageToStorage(
-		chapterEntity: ChapterEntity,
+		entity: ChapterEntity,
 		passage: String,
-	): HResult<*> = saveChapterPassageToMemory(chapterEntity, passage) and
-			fileSource.saveChapterPassageToStorage(chapterEntity, passage) and
-			dbSource.updateChapter(chapterEntity.copy(isSaved = true))
+	): HResult<*> =
+		saveChapterPassageToMemory(entity, passage) thenAlso (
+				fileSource.saveChapterPassageToStorage(entity, passage) ifSo {
+					dbSource.updateChapter(entity.copy(isSaved = true))
+				})
 
 
 	override suspend fun handleChapters(
@@ -120,6 +138,6 @@ class ChaptersRepository(
 			chapterEntity.copy(
 				isSaved = false
 			)
-		) and fileSource.deleteChapter(chapterEntity)
+		) ifSo { fileSource.deleteChapter(chapterEntity) }
 
 }

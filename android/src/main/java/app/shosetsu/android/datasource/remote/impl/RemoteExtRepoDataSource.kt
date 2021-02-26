@@ -1,6 +1,5 @@
 package app.shosetsu.android.datasource.remote.impl
 
-import app.shosetsu.android.common.consts.REPO_DIR_STRUCT
 import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.common.datasource.remote.base.IRemoteExtRepoDataSource
@@ -41,7 +40,7 @@ class RemoteExtRepoDataSource(
 		(successResult(
 			RepoIndex.fromString(
 				client.quickie(
-					"${repo.url}${REPO_DIR_STRUCT}index.json"
+					"${repo.url}/index.json"
 				).body!!.string()
 			)
 		))

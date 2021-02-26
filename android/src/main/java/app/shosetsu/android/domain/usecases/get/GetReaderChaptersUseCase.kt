@@ -43,8 +43,8 @@ class GetReaderChaptersUseCase(
 			emit(loading())
 			emitAll(
 				iChaptersRepository.getReaderChaptersFlow(novelID)
-					.combine(settingsRepository.getBooleanFlow(ReaderStringToHtml)) { list, convertTohtml ->
-						list.transformToSuccess { it to convertTohtml }
+					.combine(settingsRepository.getBooleanFlow(ReaderStringToHtml)) { list, convertToHtml ->
+						list.transformToSuccess { it to convertToHtml }
 					}
 					.mapLatestResult { (list, convertToHtml) ->
 						successResult(list.map { (id, url, title, readingPosition, readingStatus, bookmarked) ->

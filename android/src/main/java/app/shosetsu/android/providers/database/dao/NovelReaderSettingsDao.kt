@@ -33,10 +33,10 @@ interface NovelReaderSettingsDao : BaseDao<DBNovelReaderSettingEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novel_reader_settings WHERE novelID = :novelID LIMIT 1")
-	fun getFlow(novelID: Int): Flow<DBNovelReaderSettingEntity>
+	fun getFlow(novelID: Int): Flow<DBNovelReaderSettingEntity?>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novel_reader_settings WHERE novelID = :novelID LIMIT 1")
-	fun get(novelID: Int): NovelReaderSettingEntity
+	fun get(novelID: Int): NovelReaderSettingEntity?
 
 }
