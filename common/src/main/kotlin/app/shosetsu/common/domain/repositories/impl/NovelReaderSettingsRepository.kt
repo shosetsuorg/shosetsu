@@ -3,8 +3,8 @@ package app.shosetsu.common.domain.repositories.impl
 import app.shosetsu.common.datasource.database.base.IDBNovelReaderSettingsDataSource
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.common.domain.repositories.base.INovelReaderSettingsRepository
+import app.shosetsu.common.dto.HFlow
 import app.shosetsu.common.dto.HResult
-import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of Shosetsu.
@@ -33,7 +33,7 @@ class NovelReaderSettingsRepository(
 	override suspend fun get(novelID: Int): HResult<NovelReaderSettingEntity> =
 		database.get(novelID)
 
-	override fun getFlow(novelID: Int): Flow<HResult<NovelReaderSettingEntity>> =
+	override fun getFlow(novelID: Int): HFlow<NovelReaderSettingEntity> =
 		database.getFlow(novelID)
 
 	override suspend fun insert(novelReaderSettingEntity: NovelReaderSettingEntity): HResult<*> =

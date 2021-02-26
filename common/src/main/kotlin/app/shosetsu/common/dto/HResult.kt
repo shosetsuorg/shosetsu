@@ -20,6 +20,10 @@ import app.shosetsu.common.consts.ErrorKeys
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * A [List] of the type in an [HResult]
+ */
+typealias HList<T> = HResult<List<T>>
 
 /**
  * shosetsu

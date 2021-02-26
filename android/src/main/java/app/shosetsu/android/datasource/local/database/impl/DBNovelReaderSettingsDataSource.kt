@@ -6,12 +6,8 @@ import app.shosetsu.android.domain.model.database.DBNovelReaderSettingEntity
 import app.shosetsu.android.providers.database.dao.NovelReaderSettingsDao
 import app.shosetsu.common.datasource.database.base.IDBNovelReaderSettingsDataSource
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.mapLatestTo
-import app.shosetsu.common.dto.mapLatestToSuccess
-import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 
@@ -45,7 +41,7 @@ class DBNovelReaderSettingsDataSource(
 	}
 
 	@ExperimentalCoroutinesApi
-	override fun getFlow(novelID: Int): Flow<HResult<NovelReaderSettingEntity>> = flow {
+	override fun getFlow(novelID: Int): HFlow<NovelReaderSettingEntity> = flow {
 		try {
 			emitAll(dao.getFlow(novelID).mapLatestTo().mapLatestToSuccess())
 		} catch (e: SQLiteException) {

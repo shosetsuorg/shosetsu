@@ -7,7 +7,6 @@ import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.domain.repositories.base.getFloatOrDefault
 import app.shosetsu.common.domain.repositories.base.getIntOrDefault
 import app.shosetsu.common.dto.*
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapLatest
@@ -36,7 +35,7 @@ class GetReaderSettingUseCase(
 	private val readerRepo: INovelReaderSettingsRepository,
 	private val settingsRepo: ISettingsRepository,
 ) {
-	operator fun invoke(novelID: Int): Flow<HResult<NovelReaderSettingEntity>> = flow {
+	operator fun invoke(novelID: Int): HFlow<NovelReaderSettingEntity> = flow {
 		emit(loading)
 		emitAll(readerRepo.getFlow(novelID).mapLatest { result ->
 			result.transform(

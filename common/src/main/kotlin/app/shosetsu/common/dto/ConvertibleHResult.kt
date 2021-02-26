@@ -21,7 +21,7 @@ package app.shosetsu.common.dto
  * Converts a list of [Convertible] from their [I] form to their [O] form while
  * maintaining itself in an [HResult]
  */
-inline fun <reified O, reified I> HResult<List<I>>.convertList(): HResult<List<O>>
+inline fun <reified O, reified I> HList<I>.convertList(): HList<O>
 		where I : Convertible<O> =
 	this.transform { successResult(it.convertList()) }
 

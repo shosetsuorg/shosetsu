@@ -48,7 +48,7 @@ class DBExtensionsDataSource(
 	}
 
 	@ExperimentalCoroutinesApi
-	override fun loadExtensionLive(formatterID: Int): Flow<HResult<ExtensionEntity>> = flow {
+	override fun loadExtensionLive(formatterID: Int): HFlow<ExtensionEntity> = flow {
 		emit(loading())
 		try {
 			emitAll(extensionsDao.getExtensionLive(formatterID).mapLatestTo().mapLatestToSuccess())
