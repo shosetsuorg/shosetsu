@@ -2,7 +2,7 @@ package app.shosetsu.android.providers.database.converters
 
 import androidx.room.TypeConverter
 import app.shosetsu.common.enums.ReaderType
-import app.shosetsu.common.enums.ReaderType.Companion.fromKey
+import app.shosetsu.common.enums.ReaderType.Companion.valueOf
 
 /*
  * This file is part of Shosetsu.
@@ -29,5 +29,5 @@ class ReaderTypeConverter {
 	fun toString(readerType: ReaderType): Int = readerType.key
 
 	@TypeConverter
-	fun toSortType(key: Int): ReaderType = fromKey(key)
+	fun toSortType(key: Int): ReaderType = valueOf(key)
 }

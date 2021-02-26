@@ -41,7 +41,7 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels WHERE bookmarked = 1")
-	fun loadLiveBookmarkedNovels(): Flow<List<DBNovelEntity>>
+	fun loadBookMarkedNovelsFlow(): Flow<List<DBNovelEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")

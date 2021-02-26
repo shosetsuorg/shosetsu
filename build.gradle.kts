@@ -15,9 +15,9 @@ buildscript {
 
 	dependencies {
 		classpath("com.android.tools.build:gradle:4.1.2")
-		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.21")
-		classpath(kotlin("gradle-plugin", version = "1.4.21"))
-		classpath(kotlin("serialization", version = "1.4.21"))
+		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.30")
+		classpath(kotlin("gradle-plugin", version = "1.4.30"))
+		classpath(kotlin("serialization", version = "1.4.30"))
 		// NOTE: Do not place your application dependencies here; they belong
 		// in the individual module build.gradle files
 	}

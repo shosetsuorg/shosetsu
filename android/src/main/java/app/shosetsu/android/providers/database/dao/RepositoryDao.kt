@@ -5,10 +5,11 @@ import androidx.room.Dao
 import androidx.room.Ignore
 import androidx.room.Query
 import androidx.room.Transaction
+import app.shosetsu.android.common.enums.ProductFlavors
+import app.shosetsu.android.common.utils.flavor
 import app.shosetsu.android.domain.model.database.DBRepositoryEntity
 import app.shosetsu.android.domain.model.local.CountIDTuple
 import app.shosetsu.android.providers.database.dao.base.BaseDao
-import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -80,14 +81,24 @@ interface RepositoryDao : BaseDao<DBRepositoryEntity> {
 	@Transaction
 	@Throws(SQLiteException::class)
 	suspend fun initializeData() {
-		val branch = if (BuildConfig.DEBUG) "dev" else "master"
-		val name = if (BuildConfig.DEBUG) "Development" else "Stable"
-		val repo = DBRepositoryEntity(
-			null,
-			url = "https://raw.githubusercontent.com/shosetsuorg/extensions/$branch",
-			name = name
+		// Create the Main repository with supportive code
+		createIfNotExist(
+			DBRepositoryEntity(
+				null,
+				url = "https://raw.githubusercontent.com/shosetsuorg/extensions-main/main",
+				name = "Main"
+			)
 		)
-		createIfNotExist(repo)
+
+		// Create the Universe repository
+		if (flavor() != ProductFlavors.PLAY_STORE)
+			createIfNotExist(
+				DBRepositoryEntity(
+					null,
+					url = "https://raw.githubusercontent.com/shosetsuorg/extensions/dev",
+					name = "Universe"
+				)
+			)
 	}
 
 	@Transaction

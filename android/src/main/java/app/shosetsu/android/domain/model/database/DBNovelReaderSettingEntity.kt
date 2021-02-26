@@ -5,8 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import app.shosetsu.common.enums.ReaderType
-import app.shosetsu.common.enums.TextSizes
+import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
+import app.shosetsu.common.dto.Convertible
 
 /*
  * This file is part of Shosetsu.
@@ -44,25 +44,12 @@ data class DBNovelReaderSettingEntity(
 	@PrimaryKey
 	val novelID: Int,
 
-	// how the reader is set-up
-	@NonNull
-	var type: ReaderType,
-
-	@NonNull
-	var themeChoice: Int,
-
-	@NonNull
-	var textSize: TextSizes,
-
 	@NonNull
 	var paragraphIndentSize: Int,
 
 	@NonNull
-	var paragraphSpacingSize: Int,
-
-	@NonNull
-	var volumeScrolling: Boolean,
-
-	@NonNull
-	var tapToScroll: Boolean
-)
+	var paragraphSpacingSize: Float,
+) : Convertible<NovelReaderSettingEntity> {
+	override fun convertTo(): NovelReaderSettingEntity =
+		NovelReaderSettingEntity(novelID, paragraphIndentSize, paragraphSpacingSize)
+}

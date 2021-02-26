@@ -43,6 +43,7 @@ import org.kodein.di.android.kodein
  * shosetsu
  * 13 / 12 / 2019
  */
+@Deprecated("No longer supported, moving to WebView")
 class StringReader(
 	itemView: View
 ) : ReaderChapterViewHolder(itemView), KodeinAware, LifecycleObserver {

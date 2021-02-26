@@ -1,8 +1,5 @@
 package app.shosetsu.common.domain.model.local
 
-import app.shosetsu.common.enums.ReaderType
-import app.shosetsu.common.enums.TextSizes
-
 /*
  * This file is part of Shosetsu.
  *
@@ -28,18 +25,7 @@ import app.shosetsu.common.enums.TextSizes
 data class NovelReaderSettingEntity(
 	val novelID: Int,
 
-	// how the reader is set-up
-	var type: ReaderType,
-
-	var themeChoice: Int,
-
-	var textSize: TextSizes,
-
 	var paragraphIndentSize: Int,
 
-	var paragraphSpacingSize: Int,
-
-	var volumeScrolling: Boolean,
-
-	var tapToScroll: Boolean
+	var paragraphSpacingSize: Float,
 )

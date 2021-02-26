@@ -39,6 +39,7 @@ val databaseModule: Kodein.Module = Kodein.Module("database_module") {
 	bind<DownloadsDao>() with singleton { instance<ShosetsuDatabase>().downloadsDao }
 	bind<ExtensionLibraryDao>() with singleton { instance<ShosetsuDatabase>().extensionLibraryDao }
 	bind<ExtensionsDao>() with singleton { instance<ShosetsuDatabase>().extensionsDao }
+	bind<NovelReaderSettingsDao>() with singleton { instance<ShosetsuDatabase>().novelReaderSettingsDao }
 	bind<NovelsDao>() with singleton { instance<ShosetsuDatabase>().novelsDao }
 	bind<NovelSettingsDao>() with singleton { instance<ShosetsuDatabase>().novelSettingsDao }
 	bind<RepositoryDao>() with singleton { instance<ShosetsuDatabase>().repositoryDao }

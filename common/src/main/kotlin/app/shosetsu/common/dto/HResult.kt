@@ -64,6 +64,8 @@ inline fun <reified T> successResult(data: T): HResult.Success<T> = HResult.Succ
 /** This is a quick way to create a loading*/
 fun loading(): HResult.Loading = HResult.Loading
 
+val loading = HResult.Loading
+
 /** This is a quick way to create an empty result*/
 fun emptyResult(): HResult.Empty = HResult.Empty
 

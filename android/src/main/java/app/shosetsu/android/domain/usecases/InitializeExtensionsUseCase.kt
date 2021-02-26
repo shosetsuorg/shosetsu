@@ -66,7 +66,7 @@ class InitializeExtensionsUseCase(
 							)
 						}
 					) { repoIndex ->
-						updateLibraries(repoIndex.libraries, repo, progressUpdate)
+						updateLibraries(repoIndex.libraries, repo)
 						updateExtensions(repoIndex.extensions, repo)
 					}
 				}
@@ -87,7 +87,6 @@ class InitializeExtensionsUseCase(
 	private suspend fun updateLibraries(
 		repoList: List<RepoLibrary>,
 		repo: RepositoryEntity,
-		progressUpdate: (String) -> Unit,
 	) {
 		// Libraries in database
 		val repoResult = extensionLibrariesRepo.loadExtLibByRepo(repo.id!!)

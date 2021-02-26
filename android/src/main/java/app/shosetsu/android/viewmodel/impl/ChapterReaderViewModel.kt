@@ -2,6 +2,7 @@ package app.shosetsu.android.viewmodel.impl
 
 import android.app.Application
 import android.graphics.Color
+import android.widget.ArrayAdapter
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.*
 import app.shosetsu.android.common.dto.*
@@ -12,14 +13,18 @@ import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.model.local.ColorChoiceData
 import app.shosetsu.android.domain.usecases.get.GetChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.get.GetReaderChaptersUseCase
+import app.shosetsu.android.domain.usecases.get.GetReaderSettingUseCase
 import app.shosetsu.android.domain.usecases.load.LoadReaderThemes
 import app.shosetsu.android.domain.usecases.update.UpdateReaderChapterUseCase
+import app.shosetsu.android.domain.usecases.update.UpdateReaderSettingUseCase
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
+import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.IChapterReaderViewModel
+import app.shosetsu.android.viewmodel.base.spinnerValue
 import app.shosetsu.android.viewmodel.impl.settings.*
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
@@ -30,12 +35,10 @@ import app.shosetsu.common.enums.MarkingTypes.ONVIEW
 import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.common.enums.ReadingStatus.READ
 import app.shosetsu.common.enums.ReadingStatus.READING
+import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 
 /*
@@ -68,7 +71,9 @@ class ChapterReaderViewModel(
 	private val loadChapterPassageUseCase: GetChapterPassageUseCase,
 	private val updateReaderChapterUseCase: UpdateReaderChapterUseCase,
 	private val loadReadersThemes: LoadReaderThemes,
-	private val reportExceptionUseCase: ReportExceptionUseCase
+	private val reportExceptionUseCase: ReportExceptionUseCase,
+	private val getReaderSettingsUseCase: GetReaderSettingUseCase,
+	private val updateReaderSettingUseCase: UpdateReaderSettingUseCase
 ) : IChapterReaderViewModel() {
 
 
@@ -94,7 +99,7 @@ class ChapterReaderViewModel(
 	 *
 	 * ChapterID to the data flow for it
 	 */
-	private val hashMap: HashMap<Int, Flow<*>> = hashMapOf()
+	private val hashMap: HashMap<Int, Flow<HResult<String>>> = hashMapOf()
 
 	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<List<ReaderUIItem<*, *>>>> by lazy {
@@ -282,11 +287,68 @@ class ChapterReaderViewModel(
 		}
 	}
 
-	override suspend fun settings(): List<SettingsItemData> = listOf(
+	override fun getSettings(): LiveData<HResult<List<SettingsItemData>>> = flow {
+		emit(loading)
+
+		emit(successResult(settings()))
+	}.combine(getReaderSettingsUseCase(nID)) { settingsListResult, readerSettingsResult ->
+		settingsListResult.transform { settingsList ->
+			readerSettingsResult.transform(
+				onLoading = { successResult(settingsList) }
+			) { settingEntity ->
+				ArrayList(settingsList).apply {
+					add(floatButtonSettingData(1) {
+						title { R.string.paragraph_spacing }
+						minWhole = 0
+
+						settingEntity.paragraphSpacingSize.let { settingValue ->
+							initialWhole =
+								wholeSteps.indexOfFirst { it == settingValue.toInt() }.orZero()
+							val decimal: Int = ((settingValue % 1) * 100).toInt()
+							initialDecimal = decimalSteps.indexOfFirst { it == decimal }.orZero()
+						}
+						onValueSelected { selected ->
+							launchIO {
+								updateReaderSettingUseCase(
+									settingEntity.copy(
+										paragraphSpacingSize = selected.toFloat()
+									)
+								)
+							}
+						}
+					})
+					add(spinnerSettingData(2) {
+						val context = application.applicationContext
+						title { R.string.paragraph_indent }
+						arrayAdapter = ArrayAdapter(
+							context,
+							android.R.layout.simple_spinner_dropdown_item,
+							context.resources!!.getStringArray(R.array.sizes_with_none)
+						)
+
+						spinnerValue { settingEntity.paragraphIndentSize }
+						onSpinnerItemSelected { _, _, position, _ ->
+							launchIO {
+								updateReaderSettingUseCase(
+									settingEntity.copy(
+										paragraphIndentSize = position
+									)
+								)
+							}
+						}
+					})
+
+					// Sort so the result will be ordered properly
+					sortBy { it.id }
+				}.let { successResult(it) }
+			}
+		}
+	}.asIOLiveData()
+
+	suspend fun settings(): List<SettingsItemData> = listOf(
 		// Quick settings
 		textSizeOption(0),
-		paragraphSpacingOption(1),
-		paragraphIndentOption(2, application.applicationContext),
+		//==paragraph indent and spacing here
 
 		// Minor Behavior settings, these wont effect the UI too much
 		tapToScrollOption(3),

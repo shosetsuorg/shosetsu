@@ -42,5 +42,10 @@ val dbDataSourceModule = Kodein.Module("database_data_source") {
 	bind<IDBUpdatesDataSource>() with singleton { DBUpdatesDataSource(instance()) }
 
 	bind<IDBNovelSettingsDataSource>() with singleton { DBNovelSettingsDataSource(instance()) }
+	bind<IDBNovelReaderSettingsDataSource>() with singleton {
+		DBNovelReaderSettingsDataSource(
+			instance()
+		)
+	}
 
 }

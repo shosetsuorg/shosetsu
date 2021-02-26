@@ -32,80 +32,93 @@ import kotlinx.coroutines.flow.Flow
 class FileSharedPreferencesSettingsDataSource(
 	private val provider: SharedPreferenceProvider
 ) : IFileSettingsDataSource {
-	@ExperimentalCoroutinesApi
-	override fun observeLong(key: SettingKey<Long>): Flow<Long> =
-		provider.observeLong(key)
 
 	@ExperimentalCoroutinesApi
-	override fun observeString(key: SettingKey<String>): Flow<String> =
-		provider.observeString(key)
+	override fun observeLong(name: String, key: SettingKey<Long>): Flow<Long> =
+		provider.observeLong(name, key)
 
 	@ExperimentalCoroutinesApi
-	override fun observeInt(key: SettingKey<Int>): Flow<Int> =
-		provider.observeInt(key)
+	override fun observeString(name: String, key: SettingKey<String>): Flow<String> =
+		provider.observeString(name, key)
 
 	@ExperimentalCoroutinesApi
-	override fun observeBoolean(key: SettingKey<Boolean>): Flow<Boolean> =
-		provider.observeBoolean(key)
+	override fun observeInt(name: String, key: SettingKey<Int>): Flow<Int> =
+		provider.observeInt(name, key)
 
 	@ExperimentalCoroutinesApi
-	override fun observeStringSet(key: SettingKey<Set<String>>): Flow<Set<String>> =
-		provider.observeStringSet(key)
+	override fun observeBoolean(name: String, key: SettingKey<Boolean>): Flow<Boolean> =
+		provider.observeBoolean(name, key)
 
 	@ExperimentalCoroutinesApi
-	override fun observeFloat(key: SettingKey<Float>): Flow<Float> =
-		provider.observeFloat(key)
+	override fun observeStringSet(name: String, key: SettingKey<Set<String>>): Flow<Set<String>> =
+		provider.observeStringSet(name, key)
 
 	@ExperimentalCoroutinesApi
-	override suspend fun getLong(key: SettingKey<Long>): HResult<Long> =
-		successResult(provider.getLong(key))
+	override fun observeFloat(name: String, key: SettingKey<Float>): Flow<Float> =
+		provider.observeFloat(name, key)
 
 	@ExperimentalCoroutinesApi
-	override suspend fun getString(key: SettingKey<String>): HResult<String> =
-		successResult(provider.getString(key))
+	override suspend fun getLong(name: String, key: SettingKey<Long>): HResult<Long> =
+		successResult(provider.getLong(name, key))
 
 	@ExperimentalCoroutinesApi
-	override suspend fun getInt(key: SettingKey<Int>): HResult<Int> =
-		successResult(provider.getInt(key))
+	override suspend fun getString(name: String, key: SettingKey<String>): HResult<String> =
+		successResult(provider.getString(name, key))
+
+	@ExperimentalCoroutinesApi
+	override suspend fun getInt(name: String, key: SettingKey<Int>): HResult<Int> =
+		successResult(provider.getInt(name, key))
 
 
 	@ExperimentalCoroutinesApi
-	override suspend fun getBoolean(key: SettingKey<Boolean>): HResult<Boolean> =
-		successResult(provider.getBoolean(key))
+	override suspend fun getBoolean(name: String, key: SettingKey<Boolean>): HResult<Boolean> =
+		successResult(provider.getBoolean(name, key))
 
 	@ExperimentalCoroutinesApi
-	override suspend fun getStringSet(key: SettingKey<Set<String>>): HResult<Set<String>> =
-		successResult(provider.getStringSet(key))
+	override suspend fun getStringSet(
+		name: String,
+		key: SettingKey<Set<String>>
+	): HResult<Set<String>> =
+		successResult(provider.getStringSet(name, key))
 
 	@ExperimentalCoroutinesApi
-	override suspend fun getFloat(key: SettingKey<Float>) =
-		successResult(provider.getFloat(key))
+	override suspend fun getFloat(name: String, key: SettingKey<Float>) =
+		successResult(provider.getFloat(name, key))
 
 	@ExperimentalCoroutinesApi
-	override suspend fun setLong(key: SettingKey<Long>, value: Long): HResult<*> =
-		successResult(provider.setLong(key, value))
+	override suspend fun setLong(name: String, key: SettingKey<Long>, value: Long): HResult<*> =
+		successResult(provider.setLong(name, key, value))
 
 	@ExperimentalCoroutinesApi
-	override suspend fun setString(key: SettingKey<String>, value: String): HResult<*> =
-		successResult(provider.setString(key, value))
+	override suspend fun setString(
+		name: String,
+		key: SettingKey<String>,
+		value: String
+	): HResult<*> =
+		successResult(provider.setString(name, key, value))
 
 	@ExperimentalCoroutinesApi
-	override suspend fun setInt(key: SettingKey<Int>, value: Int): HResult<*> =
-		successResult(provider.setInt(key, value))
+	override suspend fun setInt(name: String, key: SettingKey<Int>, value: Int): HResult<*> =
+		successResult(provider.setInt(name, key, value))
 
 	@ExperimentalCoroutinesApi
-	override suspend fun setBoolean(key: SettingKey<Boolean>, value: Boolean): HResult<*> =
-		successResult(provider.setBoolean(key, value))
+	override suspend fun setBoolean(
+		name: String,
+		key: SettingKey<Boolean>,
+		value: Boolean
+	): HResult<*> =
+		successResult(provider.setBoolean(name, key, value))
 
 	@ExperimentalCoroutinesApi
 	override suspend fun setStringSet(
+		name: String,
 		key: SettingKey<Set<String>>,
 		value: Set<String>
 	): HResult<*> =
-		successResult(provider.setStringSet(key, value))
+		successResult(provider.setStringSet(name, key, value))
 
 	@ExperimentalCoroutinesApi
-	override suspend fun setFloat(key: SettingKey<Float>, value: Float): HResult<*> =
-		successResult(provider.setFloat(key, value))
+	override suspend fun setFloat(name: String, key: SettingKey<Float>, value: Float): HResult<*> =
+		successResult(provider.setFloat(name, key, value))
 
 }

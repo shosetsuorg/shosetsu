@@ -24,22 +24,30 @@ import app.shosetsu.common.enums.MarkingTypes.ONVIEW
  * 23 / 06 / 2020
  */
 
+
+typealias IntKey = SettingKey<Int>
+typealias BooleanKey = SettingKey<Boolean>
+typealias FloatKey = SettingKey<Float>
+typealias StringKey = SettingKey<String>
+typealias StringSetKey = SettingKey<Set<String>>
+
+
 sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
-	object ReaderTheme : SettingKey<Int>("readerTheme", -1)
+	object ReaderTheme : IntKey("readerTheme", -1)
 
-	object FirstTime : SettingKey<Boolean>("first_time", true)
+	object FirstTime : BooleanKey("first_time", true)
 
 
 	// How things look in Reader
-	object ReaderUserThemes : SettingKey<Set<String>>("readerThemes", setOf())
+	object ReaderUserThemes : StringSetKey("readerThemes", setOf())
 
 
-	object ReaderTextSize : SettingKey<Float>("readerTextSize", 14f)
+	object ReaderTextSize : FloatKey("readerTextSize", 14f)
 
 	//TODO turn into float
-	object ReaderParagraphSpacing : SettingKey<Float>("readerParagraphSpacing", 1f)
-	object ReaderIndentSize : SettingKey<Int>("readerIndentSize", 1)
+	object ReaderParagraphSpacing : FloatKey("readerParagraphSpacing", 1f)
+	object ReaderIndentSize : IntKey("readerIndentSize", 1)
 
 	/**
 	 * 0 : align start
@@ -47,51 +55,53 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	 * 2 : justified
 	 * 3 : align end
 	 */
-	object ReaderTextAlignment : SettingKey<Int>("readerTextAlignment", 0)
+	object ReaderTextAlignment : IntKey("readerTextAlignment", 0)
 
-	object ReaderMarginSize : SettingKey<Float>("readerMargin", 0f)
+	object ReaderMarginSize : FloatKey("readerMargin", 0f)
 
-	object ReaderLineSpacing : SettingKey<Float>("readerLineSpacing", 1f)
+	object ReaderLineSpacing : FloatKey("readerLineSpacing", 1f)
 
-	object ReaderFont : SettingKey<String>("readerFont", "")
+	object ReaderFont : StringKey("readerFont", "")
+
+	object ReaderType : IntKey("readerType", -1)
 
 	//- How things act in Reader
-	object ReaderIsTapToScroll : SettingKey<Boolean>("tapToScroll", false)
-	object ReaderVolumeScroll : SettingKey<Boolean>("volumeToScroll", false)
+	object ReaderIsTapToScroll : BooleanKey("tapToScroll", false)
+	object ReaderVolumeScroll : BooleanKey("volumeToScroll", false)
 
 
-	object ReaderIsInvertedSwipe : SettingKey<Boolean>("invertedSwipe", false)
-	object ReadingMarkingType : SettingKey<String>("readingMarkingType", ONVIEW.name)
+	object ReaderIsInvertedSwipe : BooleanKey("invertedSwipe", false)
+	object ReadingMarkingType : StringKey("readingMarkingType", ONVIEW.name)
 
 	/**
 	 * Should the application convert string returns from an extension to an Html page
 	 */
-	object ReaderStringToHtml : SettingKey<Boolean>("convertStringToHtml", false)
+	object ReaderStringToHtml : BooleanKey("convertStringToHtml", false)
 
 	/**
 	 * User customization for CSS in html reader
 	 */
-	object ReaderHtmlCss : SettingKey<String>("readerHtmlCss", "")
+	object ReaderHtmlCss : StringKey("readerHtmlCss", "")
 
 	/**
 	 * Instead of vertically moving between chapters, do a horizontal move
 	 */
-	object ReaderHorizontalPageSwap : SettingKey<Boolean>("readerHorizontalPaging", false)
+	object ReaderHorizontalPageSwap : BooleanKey("readerHorizontalPaging", false)
 
 	/**
 	 * The reader smoothly moves between chapters
 	 */
-	object ReaderContinuousScroll : SettingKey<Boolean>("readerContinuousScroll", false)
+	object ReaderContinuousScroll : BooleanKey("readerContinuousScroll", false)
 
 
 	//- Some things
-	object ChaptersResumeFirstUnread : SettingKey<Boolean>(
+	object ChaptersResumeFirstUnread : BooleanKey(
 		"readerResumeFirstUnread",
 		false
 	)
 
 	// Download options
-	object IsDownloadPaused : SettingKey<Boolean>("isDownloadPaused", false)
+	object IsDownloadPaused : BooleanKey("isDownloadPaused", false)
 
 
 	/**
@@ -100,74 +110,74 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	 * If 0, then deletes the read chapter
 	 * If 1+, deletes the chapter of READ CHAPTER - [deletePreviousChapter]
 	 */
-	object DeleteReadChapter : SettingKey<Int>("deleteReadChapter", -1)
+	object DeleteReadChapter : IntKey("deleteReadChapter", -1)
 
-	object DownloadOnLowStorage : SettingKey<Boolean>("downloadNotLowStorage", false)
-	object DownloadOnLowBattery : SettingKey<Boolean>("downloadNotLowBattery", false)
-	object DownloadOnMeteredConnection : SettingKey<Boolean>(
+	object DownloadOnLowStorage : BooleanKey("downloadNotLowStorage", false)
+	object DownloadOnLowBattery : BooleanKey("downloadNotLowBattery", false)
+	object DownloadOnMeteredConnection : BooleanKey(
 		"downloadNotMetered",
 		false
 	)
 
-	object DownloadOnlyWhenIdle : SettingKey<Boolean>("downloadIdle", false)
+	object DownloadOnlyWhenIdle : BooleanKey("downloadIdle", false)
 
 	/** Bookmark a novel if it is not bookmarked when a chapter from it is downloaded */
-	object BookmarkOnDownload : SettingKey<Boolean>("bookmarkOnDownload", false)
+	object BookmarkOnDownload : BooleanKey("bookmarkOnDownload", false)
 
 	// Update options
-	object IsDownloadOnUpdate : SettingKey<Boolean>("isDownloadOnUpdate", false)
-	object OnlyUpdateOngoing : SettingKey<Boolean>("onlyUpdateOngoing", false)
-	object UpdateOnStartup : SettingKey<Boolean>("updateOnStartup", true)
-	object UpdateCycle : SettingKey<Int>("updateCycle", 1)
-	object UpdateOnLowStorage : SettingKey<Boolean>("updateLowStorage", false)
-	object UpdateOnLowBattery : SettingKey<Boolean>("updateLowBattery", false)
-	object UpdateOnMeteredConnection : SettingKey<Boolean>("updateMetered", false)
-	object UpdateOnlyWhenIdle : SettingKey<Boolean>("updateIdle", false)
-	object UpdateNotificationStyle : SettingKey<Boolean>("updateNotificationStyle", false)
+	object IsDownloadOnUpdate : BooleanKey("isDownloadOnUpdate", false)
+	object OnlyUpdateOngoing : BooleanKey("onlyUpdateOngoing", false)
+	object UpdateOnStartup : BooleanKey("updateOnStartup", true)
+	object UpdateCycle : IntKey("updateCycle", 1)
+	object UpdateOnLowStorage : BooleanKey("updateLowStorage", false)
+	object UpdateOnLowBattery : BooleanKey("updateLowBattery", false)
+	object UpdateOnMeteredConnection : BooleanKey("updateMetered", false)
+	object UpdateOnlyWhenIdle : BooleanKey("updateIdle", false)
+	object UpdateNotificationStyle : BooleanKey("updateNotificationStyle", false)
 
 
 	// App Update Options
-	object AppUpdateOnStartup : SettingKey<Boolean>("appUpdateOnStartup", true)
-	object AppUpdateOnMeteredConnection : SettingKey<Boolean>(
+	object AppUpdateOnStartup : BooleanKey("appUpdateOnStartup", true)
+	object AppUpdateOnMeteredConnection : BooleanKey(
 		"appUpdateMetered",
 		false
 	)
 
-	object AppUpdateOnlyWhenIdle : SettingKey<Boolean>("appUpdateIdle", false)
-	object AppUpdateCycle : SettingKey<Int>("appUpdateCycle", 1)
+	object AppUpdateOnlyWhenIdle : BooleanKey("appUpdateIdle", false)
+	object AppUpdateCycle : IntKey("appUpdateCycle", 1)
 
 
 	// View options
-	object ChapterColumnsInPortait : SettingKey<Int>("columnsInNovelsViewP", 3)
-	object ChapterColumnsInLandscape : SettingKey<Int>("columnsInNovelsViewH", 6)
-	object SelectedNovelCardType : SettingKey<Int>("novelCardType", 0)
-	object NavStyle : SettingKey<Int>("navigationStyle", 0)
+	object ChapterColumnsInPortait : IntKey("columnsInNovelsViewP", 3)
+	object ChapterColumnsInLandscape : IntKey("columnsInNovelsViewH", 6)
+	object SelectedNovelCardType : IntKey("novelCardType", 0)
+	object NavStyle : IntKey("navigationStyle", 0)
 
 	// Backup Options
-	object BackupChapters : SettingKey<Boolean>("backupChapters", true)
-	object BackupSettings : SettingKey<Boolean>("backupSettings", false)
-	object BackupCycle : SettingKey<Int>("backupCycle", 3)
+	object BackupChapters : BooleanKey("backupChapters", true)
+	object BackupSettings : BooleanKey("backupSettings", false)
+	object BackupCycle : IntKey("backupCycle", 3)
 
-	object BackupOnLowStorage : SettingKey<Boolean>("backupLowStorage", false)
-	object BackupOnLowBattery : SettingKey<Boolean>("backupLowBattery", false)
-	object BackupOnlyWhenIdle : SettingKey<Boolean>("backupIdle", false)
+	object BackupOnLowStorage : BooleanKey("backupLowStorage", false)
+	object BackupOnLowBattery : BooleanKey("backupLowBattery", false)
+	object BackupOnlyWhenIdle : BooleanKey("backupIdle", false)
 
 	// Download Options
-	object CustomExportDirectory : SettingKey<String>("downloadDirectory", "")
+	object CustomExportDirectory : StringKey("downloadDirectory", "")
 
 	/** How many threads to download at the same time */
-	object DownloadThreadPool : SettingKey<Int>("downloadThreads", 1)
+	object DownloadThreadPool : IntKey("downloadThreads", 1)
 
 	/** How many extension threads allowed to work in the pool */
-	object DownloadExtThreads : SettingKey<Int>("downloadExtThreads", 1)
+	object DownloadExtThreads : IntKey("downloadExtThreads", 1)
 
 	/** If the reader can mark a read chapter as reading when its opened / scrolled */
-	object ReaderMarkReadAsReading : SettingKey<Boolean>(
+	object ReaderMarkReadAsReading : BooleanKey(
 		"readerMarkReadAsReading",
 		false
 	)
 
-	object AppTheme : SettingKey<Int>("selectedAppTheme", 0)
+	object AppTheme : IntKey("selectedAppTheme", 0)
 
 	companion object {
 		private val map: Map<String, SettingKey<*>> by lazy {

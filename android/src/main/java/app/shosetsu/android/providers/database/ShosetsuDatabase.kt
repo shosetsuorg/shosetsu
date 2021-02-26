@@ -46,6 +46,7 @@ import kotlinx.coroutines.launch
 		DBDownloadEntity::class,
 		DBExtensionEntity::class,
 		DBExtLibEntity::class,
+		DBNovelReaderSettingEntity::class,
 		DBNovelEntity::class,
 		DBNovelSettingsEntity::class,
 		DBRepositoryEntity::class,
@@ -139,6 +140,7 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 	abstract val downloadsDao: DownloadsDao
 	abstract val extensionLibraryDao: ExtensionLibraryDao
 	abstract val extensionsDao: ExtensionsDao
+	abstract val novelReaderSettingsDao: NovelReaderSettingsDao
 	abstract val novelsDao: NovelsDao
 	abstract val novelSettingsDao: NovelSettingsDao
 	abstract val repositoryDao: RepositoryDao

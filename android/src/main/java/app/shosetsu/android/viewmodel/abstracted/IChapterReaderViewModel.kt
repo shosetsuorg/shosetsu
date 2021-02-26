@@ -2,8 +2,6 @@ package app.shosetsu.android.viewmodel.abstracted
 
 import android.graphics.Color
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
@@ -14,11 +12,8 @@ import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.loading
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.enums.MarkingTypes
 import app.shosetsu.common.enums.ReadingStatus
-import kotlinx.coroutines.Dispatchers
 
 /*
  * This file is part of shosetsu.
@@ -111,12 +106,7 @@ abstract class IChapterReaderViewModel :
 	abstract fun updateConvertStringAsHtml(checked: Boolean)
 	abstract fun updateHorizontalReading(checked: Boolean)
 
-	abstract suspend fun settings(): List<SettingsItemData>
 
-	fun getSettings(): LiveData<HResult<List<SettingsItemData>>> =
-		liveData(context = viewModelScope.coroutineContext + Dispatchers.IO) {
-			emit(loading())
-			emit(successResult(settings()))
-		}
+	abstract fun getSettings(): LiveData<HResult<List<SettingsItemData>>>
 
 }

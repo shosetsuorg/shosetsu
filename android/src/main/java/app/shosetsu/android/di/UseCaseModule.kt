@@ -209,4 +209,12 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<DeleteRepositoryUseCase>() with provider {
 		DeleteRepositoryUseCase(instance())
 	}
+
+	bind<GetReaderSettingUseCase>() with provider {
+		GetReaderSettingUseCase(instance(), instance())
+	}
+
+	bind<UpdateReaderSettingUseCase>() with provider {
+		UpdateReaderSettingUseCase(instance())
+	}
 }

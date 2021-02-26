@@ -1,11 +1,7 @@
-package app.shosetsu.android.providers.database.dao
+package app.shosetsu.common.datasource.database.base
 
-import android.database.sqlite.SQLiteException
-import androidx.room.Dao
-import androidx.room.Query
-import app.shosetsu.android.domain.model.database.DBNovelReaderSettingEntity
-import app.shosetsu.android.providers.database.dao.base.BaseDao
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
+import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -28,15 +24,10 @@ import kotlinx.coroutines.flow.Flow
 /**
  * 26 / 02 / 2021
  */
-@Dao
-interface NovelReaderSettingsDao : BaseDao<DBNovelReaderSettingEntity> {
+interface IDBNovelReaderSettingsDataSource {
+	suspend fun get(novelID: Int): HResult<NovelReaderSettingEntity>
+	fun getFlow(novelID: Int): Flow<HResult<NovelReaderSettingEntity>>
 
-	@Throws(SQLiteException::class)
-	@Query("SELECT * FROM novel_reader_settings WHERE novelID = :novelID LIMIT 1")
-	fun getFlow(novelID: Int): Flow<DBNovelReaderSettingEntity>
-
-	@Throws(SQLiteException::class)
-	@Query("SELECT * FROM novel_reader_settings WHERE novelID = :novelID LIMIT 1")
-	fun get(novelID: Int): NovelReaderSettingEntity
-
+	suspend fun insert(novelReaderSettingEntity: NovelReaderSettingEntity): HResult<*>
+	suspend fun update(novelReaderSettingEntity: NovelReaderSettingEntity): HResult<*>
 }
