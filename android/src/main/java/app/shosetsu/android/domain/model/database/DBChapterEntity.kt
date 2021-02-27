@@ -67,7 +67,7 @@ data class DBChapterEntity(
 
 	var order: Double,
 
-	var readingPosition: Int = 0,
+	var readingPosition: Double = 0.0,
 
 	var readingStatus: ReadingStatus = ReadingStatus.UNREAD,
 

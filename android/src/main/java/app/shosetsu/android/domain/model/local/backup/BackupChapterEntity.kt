@@ -13,5 +13,5 @@ data class BackupChapterEntity(
 	val name: String,
 	val bookmarked: Boolean,
 	val rS: ReadingStatus,
-	val rP: Int
+	val rP: Double
 )

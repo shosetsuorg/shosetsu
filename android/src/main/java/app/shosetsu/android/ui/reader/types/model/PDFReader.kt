@@ -54,7 +54,7 @@ class PDFReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 		TODO("Not yet implemented")
 	}
 
-	override fun setProgress(progress: Int) {
+	override fun setProgress(progress: Double) {
 		TODO("Not yet implemented")
 	}
 

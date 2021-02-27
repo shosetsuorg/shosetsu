@@ -25,15 +25,15 @@ import app.shosetsu.common.enums.ReadingStatus
  * Used by reader, provides all needed functions
  */
 data class ReaderChapterEntity(
-		val id: Int,
+	val id: Int,
 
-		val url: String,
+	val url: String,
 
-		val title: String,
+	val title: String,
 
-		var readingPosition: Int = 0,
+	var readingPosition: Double = 0.0,
 
-		var readingStatus: ReadingStatus = ReadingStatus.UNREAD,
+	var readingStatus: ReadingStatus = ReadingStatus.UNREAD,
 
-		var bookmarked: Boolean = false,
+	var bookmarked: Boolean = false,
 )

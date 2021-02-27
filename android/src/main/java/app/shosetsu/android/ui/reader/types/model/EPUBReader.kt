@@ -62,7 +62,7 @@ class EPUBReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	}
 
 
-	override fun setProgress(progress: Int) {
+	override fun setProgress(progress: Double) {
 		TODO("Not yet implemented")
 	}
 

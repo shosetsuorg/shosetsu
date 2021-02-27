@@ -228,7 +228,7 @@ class DBHelper(context: Context) :
 					title = title,
 					releaseDate = date,
 					order = order,
-					readingPosition = yPosition,
+					readingPosition = yPosition.toDouble(),
 					readingStatus = readChapter,
 					bookmarked = bookmarked
 				)

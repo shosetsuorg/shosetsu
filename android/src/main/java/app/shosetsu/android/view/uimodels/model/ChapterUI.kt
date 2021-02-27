@@ -43,7 +43,7 @@ data class ChapterUI(
 	var title: String,
 	var releaseDate: String,
 	var order: Double,
-	var readingPosition: Int,
+	var readingPosition: Double,
 	var readingStatus: ReadingStatus,
 	var bookmarked: Boolean,
 	var isSaved: Boolean,
@@ -111,7 +111,7 @@ data class ChapterUI(
 			when (item.readingStatus) {
 				ReadingStatus.READING -> {
 					setAlpha()
-					if (item.readingPosition != 0) {
+					if (item.readingPosition > 0) {
 						readTag.visibility = View.VISIBLE
 						readProgressValue.visibility = View.VISIBLE
 						readProgressValue.text = item.readingPosition.toString()

@@ -49,7 +49,7 @@ abstract class ReaderChapterViewHolder(
 	abstract fun syncParagraphSpacing()
 	abstract fun syncParagraphIndent()
 
-	abstract fun setProgress(progress: Int)
+	abstract fun setProgress(progress: Double)
 
 	/**
 	 * When the user double clicks the window

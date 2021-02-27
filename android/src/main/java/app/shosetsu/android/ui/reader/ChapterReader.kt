@@ -412,7 +412,7 @@ class ChapterReader
 						viewModel.updateChapter(
 							lastChapter.copy(
 								readingStatus = ReadingStatus.READ,
-								readingPosition = 0
+								readingPosition = 0.0
 							)
 						)
 					}

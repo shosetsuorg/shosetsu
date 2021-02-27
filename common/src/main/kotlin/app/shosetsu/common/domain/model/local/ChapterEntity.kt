@@ -25,8 +25,8 @@ import app.shosetsu.common.enums.ReadingStatus
  * 23 / 04 / 2020
  *
  * @author github.com/doomsdayrs
+ * @param readingPosition The progress through an chapter. Will be interpreted as 0 - 99%
  */
-
 data class ChapterEntity(
 	var id: Int? = null,
 
@@ -42,7 +42,7 @@ data class ChapterEntity(
 
 	var order: Double,
 
-	var readingPosition: Int = 0,
+	var readingPosition: Double = 0.0,
 
 	var readingStatus: ReadingStatus = ReadingStatus.UNREAD,
 

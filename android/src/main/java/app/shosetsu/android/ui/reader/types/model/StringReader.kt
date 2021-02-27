@@ -1,7 +1,6 @@
 package app.shosetsu.android.ui.reader.types.model
 
 import android.os.Build
-import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -12,7 +11,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.setPadding
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.LifecycleObserver
-import app.shosetsu.android.common.ext.logID
+import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.percentageScrolled
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
@@ -146,8 +145,8 @@ class StringReader(
 		bind()
 	}
 
-	override fun setProgress(progress: Int) {
-		scrollView.scrollTo(0, progress)
+	override fun setProgress(progress: Double) {
+		scrollView.scrollTo(0, progress.toInt())
 	}
 
 	override fun getFocusTarget(): View = textView
@@ -165,19 +164,19 @@ class StringReader(
 	 */
 	private fun scrollHitBottom() {
 		val yPosition = scrollView.scrollY
-		if (scrollView.percentageScrolled() < 99) {
+		val percentage = scrollView.percentageScrolled()
+		if (percentage < 99) {
 			if (yPosition % 5 == 0) {
-				Log.i(logID(), "Scrolling")
+				logD("Percentage: $percentage")
 				// Mark as reading if on scroll
-				chapterReader.viewModel.markAsReadingOnScroll(chapter, yPosition)
+				chapterReader.viewModel.markAsReadingOnScroll(chapter, percentage.toDouble())
 			}
 		} else {
-			Log.i(logID(), "Hit the bottom")
 			// Hit bottom
 			chapterReader.viewModel.updateChapter(
 				chapter.copy(
 					readingStatus = ReadingStatus.READ,
-					readingPosition = 0
+					readingPosition = 0.0
 				),
 			)
 		}

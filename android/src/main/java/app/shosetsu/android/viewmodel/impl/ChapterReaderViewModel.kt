@@ -266,7 +266,7 @@ class ChapterReaderViewModel(
 	private fun markAsReading(
 		chapterUI: ReaderChapterUI,
 		markingType: MarkingType,
-		readingPosition: Int = chapterUI.readingPosition
+		readingPosition: Double = chapterUI.readingPosition
 	) = launchIO {
 		settingsRepo.getBoolean(ReaderMarkReadAsReading).handle { markReadAsReading ->
 			/*
@@ -275,10 +275,10 @@ class ChapterReaderViewModel(
 			 */
 			if (!markReadAsReading && chapterUI.readingStatus == READ) return@launchIO
 
-			settingsRepo.getString(ReadingMarkingType).handle {
+			settingsRepo.getString(ReadingMarkingType).handle { value ->
 				updateChapter(
 					chapterUI.copy(
-						readingStatus = if (markingValueOf(it) == markingType) READING else chapterUI.readingStatus,
+						readingStatus = if (markingValueOf(value) == markingType) READING else chapterUI.readingStatus,
 						readingPosition = readingPosition
 					)
 				)
@@ -291,7 +291,7 @@ class ChapterReaderViewModel(
 		markAsReading(readerChapterUI, ONVIEW)
 	}
 
-	override fun markAsReadingOnScroll(readerChapterUI: ReaderChapterUI, readingPosition: Int) {
+	override fun markAsReadingOnScroll(readerChapterUI: ReaderChapterUI, readingPosition: Double) {
 		markAsReading(readerChapterUI, ONSCROLL, readingPosition)
 	}
 

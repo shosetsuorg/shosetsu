@@ -70,7 +70,7 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 				""".trimIndent()
 
 				webView.evaluateJavascript("window.pageYOffset") { _yPosition ->
-					val yPosition: Int? = _yPosition.toDoubleOrNull()?.toInt()
+					val yPosition: Double? = _yPosition.toDoubleOrNull()
 					yPosition ?: logD("Null Y position")
 					yPosition ?: return@evaluateJavascript
 
@@ -82,16 +82,16 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 
 						val percentage = ((yPosition / scrollMaxY) * 100)
 						if (percentage < 99) {
-							if (yPosition % 5 == 0) {
+							if (yPosition.toInt() % 5 == 0) {
 								// Mark as reading if on scroll
-								chapterReader.viewModel.markAsReadingOnScroll(chapter, yPosition)
+								chapterReader.viewModel.markAsReadingOnScroll(chapter, percentage)
 							}
 						} else {
 							// Hit bottom
 							chapterReader.viewModel.updateChapter(
 								chapter.copy(
 									readingStatus = ReadingStatus.READ,
-									readingPosition = 0
+									readingPosition = 0.0
 								),
 							)
 						}
@@ -219,7 +219,7 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 		injectCss()
 	}
 
-	override fun setProgress(progress: Int) {
+	override fun setProgress(progress: Double) {
 		val call = {
 			webView.evaluateJavascript("window.scrollTo(0,$progress)", null)
 		}

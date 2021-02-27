@@ -125,7 +125,7 @@ abstract class IChapterReaderViewModel :
 	 * Called when a [readerChapterUI] is scrolled,
 	 * will also update the [readingPosition] for ease
 	 */
-	abstract fun markAsReadingOnScroll(readerChapterUI: ReaderChapterUI, readingPosition: Int)
+	abstract fun markAsReadingOnScroll(readerChapterUI: ReaderChapterUI, readingPosition: Double)
 
 	/**
 	 * Loads a [LiveData] reflection of the global custom css

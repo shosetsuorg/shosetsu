@@ -34,7 +34,7 @@ data class ReaderChapterUI(
 	val id: Int,
 	val link: String,
 	val title: String,
-	var readingPosition: Int,
+	var readingPosition: Double,
 	var readingStatus: ReadingStatus,
 	var bookmarked: Boolean,
 	private val chapterType: ChapterType,
