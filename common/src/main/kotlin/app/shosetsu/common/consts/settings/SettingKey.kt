@@ -1,6 +1,6 @@
 package app.shosetsu.common.consts.settings
 
-import app.shosetsu.common.enums.MarkingTypes.ONVIEW
+import app.shosetsu.common.enums.MarkingType.ONVIEW
 
 /*
  * This file is part of shosetsu.

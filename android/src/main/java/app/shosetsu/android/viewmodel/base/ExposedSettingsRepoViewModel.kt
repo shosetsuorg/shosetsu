@@ -63,8 +63,13 @@ interface ExposedSettingsRepoViewModel {
 		key: SettingKey<Int>
 	) {
 		spinnerValue { settingsRepo.getIntOrDefault(key) }
+		var first = true
 		onSpinnerItemSelected { _, _, position, _ ->
 			launchIO {
+				if (first) {
+					first = false
+					return@launchIO
+				}
 				settingsRepo.setInt(key, position)
 			}
 		}

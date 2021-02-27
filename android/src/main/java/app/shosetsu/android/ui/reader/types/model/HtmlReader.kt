@@ -12,7 +12,7 @@ import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.common.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.databinding.ChapterReaderHtmlBinding
 
 /*
  * This file is part of Shosetsu.
@@ -36,7 +36,9 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * 11 / 09 / 2020
  */
 class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
-	private val webView: WebView = itemView.findViewById(R.id.web_view)
+	private val binding = ChapterReaderHtmlBinding.bind(itemView)
+	private val webView: WebView = binding.webView
+	private val host = binding.nestScrollableHost
 
 	/**
 	 * key      : selector
@@ -63,9 +65,10 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 						Log.i(logID(), "Hit the bottom")
 						// Hit bottom
 						chapterReader.viewModel.updateChapter(
-							chapter,
-							readingStatus = ReadingStatus.READ,
-							readingPosition = 0
+							chapter.copy(
+								readingStatus = ReadingStatus.READ,
+								readingPosition = 0
+							),
 						)
 					}
 				}
@@ -102,7 +105,13 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 			this["color"] = viewModel.defaultForeground.cssColor()
 			this["font-size"] = "${viewModel.defaultTextSize}pt"
 			this["scroll-behavior"] = "smooth"
+			this["text-indent"] = "${viewModel.defaultIndentSize * 10}px"
 		}
+
+		setShosetsuStyle("p") {
+			this["margin"] = "${viewModel.defaultParaSpacing * 10}px 0"
+		}
+
 		setShosetsuStyle("img") {
 			this["max-width"] = "100%"
 			this["height"] = "initial !important"
@@ -126,6 +135,8 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 		}.joinToString("")
 
 	private fun injectCss() {
+		syncStylesWithViewModel()
+
 		// READ AND INJECT STYLE
 		val css = generateShosetsuCss() + userCss
 
@@ -179,7 +190,7 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 		webView.evaluateJavascript("window.scroll(0,$progress)", null)
 	}
 
-	override fun getFocusTarget(): View = webView
+	override fun getFocusTarget(): View = host
 
 	override fun hideLoadingProgress() {}
 	override fun showLoadingProgress() {}

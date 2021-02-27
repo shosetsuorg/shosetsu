@@ -1,8 +1,6 @@
 package app.shosetsu.android.viewmodel.abstracted
 
-import android.graphics.Color
 import androidx.lifecycle.LiveData
-import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
@@ -10,10 +8,7 @@ import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
-import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.enums.MarkingTypes
-import app.shosetsu.common.enums.ReadingStatus
 
 /*
  * This file is part of shosetsu.
@@ -52,11 +47,12 @@ abstract class IChapterReaderViewModel :
 	 */
 	abstract val liveTheme: LiveData<Pair<Int, Int>>
 
-	abstract val liveThemes: LiveData<List<ColorChoiceUI>>
-	abstract val liveMarkingTypes: LiveData<MarkingTypes>
 	abstract val liveIndentSize: LiveData<Int>
+
 	abstract val liveParagraphSpacing: LiveData<Float>
+
 	abstract val liveTextSize: LiveData<Float>
+
 	abstract val liveVolumeScroll: LiveData<Boolean>
 
 	/**
@@ -65,49 +61,80 @@ abstract class IChapterReaderViewModel :
 	 */
 	abstract val liveChapterDirection: LiveData<Boolean>
 
-	var defaultTextSize: Float = SettingKey.ReaderTextSize.default
+	/**
+	 * The text size that should be used by default for newly created views
+	 * This also is the way to easily get current size without async calls
+	 */
+	abstract val defaultTextSize: Float
 
-	var defaultParaSpacing: Float = SettingKey.ReaderParagraphSpacing.default
-	var defaultIndentSize: Int = SettingKey.ReaderIndentSize.default
+	/**
+	 * The para space size that should be used by default for newly created views
+	 * This also is the way to easily get current size without async calls
+	 */
+	abstract val defaultParaSpacing: Float
 
-	var defaultForeground: Int = Color.BLACK
-	var defaultBackground: Int = Color.WHITE
+	/**
+	 * The indent size that should be used by default for newly created views
+	 * This also is the way to easily get current size without async calls
+	 */
+	abstract val defaultIndentSize: Int
 
-	var convertStringAsHtml: Boolean = SettingKey.ReaderStringToHtml.default
-	var isHorizontalReading: Boolean = SettingKey.ReaderHorizontalPageSwap.default
+	/**
+	 * The text color that should be used by default for newly created views
+	 * This also is the way to easily get current color without async calls
+	 */
+	abstract val defaultForeground: Int
 
-	var defaultVolumeScroll: Boolean = SettingKey.ReaderVolumeScroll.default
+	/**
+	 * The background color that should be used by default for newly created views
+	 * This also is the way to easily get current color without async calls
+	 */
+	abstract val defaultBackground: Int
 
-	abstract fun setReaderTheme(value: Int)
-	abstract fun setReaderTextSize(value: Float)
-	abstract fun setReaderParaSpacing(value: Float)
-	abstract fun setReaderIndentSize(value: Int)
+	/**
+	 * The horizontal option that should be used by default for newly created views
+	 * This also is the way to easily get current state without async calls
+	 */
+	abstract val isHorizontalReading: Boolean
+
+	/**
+	 * The state that should be used by default for newly created views
+	 * This also is the way to easily get current state without async calls
+	 */
+	abstract val defaultVolumeScroll: Boolean
+
 
 	/** Set the novelID */
 	abstract fun setNovelID(novelID: Int)
 
+	/** Start loading up a [readerChapterUI]'s passage */
 	abstract fun getChapterPassage(readerChapterUI: ReaderChapterUI): LiveData<HResult<String>>
-	abstract fun appendID(readerChapterUI: ReaderChapterUI): String
+
+	/** An easy method to toggle the state of a bookmark */
 	abstract fun toggleBookmark(readerChapterUI: ReaderChapterUI)
 
+	/** Update a [readerChapterUI] */
 	abstract fun updateChapter(
 		readerChapterUI: ReaderChapterUI,
-		readingPosition: Int = readerChapterUI.readingPosition,
-		readingStatus: ReadingStatus = readerChapterUI.readingStatus,
-		bookmarked: Boolean = readerChapterUI.bookmarked,
 	)
 
+	/** Called when a [readerChapterUI] is viewed by the user */
 	abstract fun markAsReadingOnView(readerChapterUI: ReaderChapterUI)
-	abstract fun markAsReadingOnScroll(readerChapterUI: ReaderChapterUI, yAswell: Int)
 
-	abstract fun setOnVolumeScroll(checked: Boolean)
+	/**
+	 * Called when a [readerChapterUI] is scrolled,
+	 * will also update the [readingPosition] for ease
+	 */
+	abstract fun markAsReadingOnScroll(readerChapterUI: ReaderChapterUI, readingPosition: Int)
 
+	/**
+	 * Loads a [LiveData] reflection of the global custom css
+	 */
 	abstract fun loadChapterCss(): LiveData<String>
 
-	abstract fun updateConvertStringAsHtml(checked: Boolean)
-	abstract fun updateHorizontalReading(checked: Boolean)
-
-
+	/**
+	 * Loads the settings list for the bottom bar
+	 */
 	abstract fun getSettings(): LiveData<HResult<List<SettingsItemData>>>
 
 }

@@ -1,8 +1,9 @@
 package app.shosetsu.android.view.uimodels.model.reader
 
 import android.view.View
-import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.logError
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.ui.reader.types.model.HtmlReader
@@ -46,13 +47,14 @@ data class ReaderChapterUI(
 	var chapterReader: ChapterReader? = null
 		set(value) {
 			field = value?.apply {
-				reader?.chapterReader = value
+				viewHolder?.chapterReader = value
 			}
 		}
 
-	var reader: ReaderChapterViewHolder? = null
+	var viewHolder: ReaderChapterViewHolder? = null
 		set(value) {
 			field = value?.apply {
+				logV("Applying view holder")
 				this.chapter = this@ReaderChapterUI
 				this@ReaderChapterUI.chapterReader?.let {
 					this.chapterReader = it
@@ -88,18 +90,19 @@ data class ReaderChapterUI(
 			ChapterType.STRING -> if (!convertStringToHtml) StringReader(v) else HtmlReader(v)
 			ChapterType.HTML -> HtmlReader(v)
 			else -> TODO("Not implemented")
-		}.also { reader = it }
+		}
 	}
 
 	override fun bindView(holder: ReaderChapterViewHolder, payloads: List<Any>) {
 		super.bindView(holder, payloads)
+		viewHolder = holder
 		chapterReader?.let { reader ->
 			reader.viewModel.getChapterPassage(this).observe(reader) { result ->
 				result.handle(
 					{ holder.showLoadingProgress() },
 					{ holder.hideLoadingProgress() },
 					{
-						logD("Showing error")
+						logError { it }
 						//	holder.setError(it.message, "Retry") {
 						//		TODO("Figure out how to restart the liveData")
 						//		}

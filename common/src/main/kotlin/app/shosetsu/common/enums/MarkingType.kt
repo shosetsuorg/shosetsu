@@ -21,4 +21,4 @@ package app.shosetsu.common.enums
  * shosetsu
  * 18 / 09 / 2020
  */
-enum class MarkingTypes { ONVIEW, ONSCROLL }
+enum class MarkingType { ONVIEW, ONSCROLL }

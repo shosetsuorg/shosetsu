@@ -175,9 +175,10 @@ class StringReader(
 			Log.i(logID(), "Hit the bottom")
 			// Hit bottom
 			chapterReader.viewModel.updateChapter(
-				chapter,
-				readingStatus = ReadingStatus.READ,
-				readingPosition = 0
+				chapter.copy(
+					readingStatus = ReadingStatus.READ,
+					readingPosition = 0
+				),
 			)
 		}
 	}

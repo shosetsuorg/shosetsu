@@ -12,10 +12,8 @@ import app.shosetsu.android.domain.model.local.ColorChoiceData
 import app.shosetsu.android.domain.usecases.get.GetChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.get.GetReaderChaptersUseCase
 import app.shosetsu.android.domain.usecases.get.GetReaderSettingUseCase
-import app.shosetsu.android.domain.usecases.load.LoadReaderThemes
 import app.shosetsu.android.domain.usecases.update.UpdateReaderChapterUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateReaderSettingUseCase
-import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
@@ -29,10 +27,9 @@ import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.domain.repositories.base.getStringSetOrDefault
 import app.shosetsu.common.dto.*
-import app.shosetsu.common.enums.MarkingTypes
-import app.shosetsu.common.enums.MarkingTypes.ONSCROLL
-import app.shosetsu.common.enums.MarkingTypes.ONVIEW
-import app.shosetsu.common.enums.ReadingStatus
+import app.shosetsu.common.enums.MarkingType
+import app.shosetsu.common.enums.MarkingType.ONSCROLL
+import app.shosetsu.common.enums.MarkingType.ONVIEW
 import app.shosetsu.common.enums.ReadingStatus.READ
 import app.shosetsu.common.enums.ReadingStatus.READING
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -40,6 +37,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
+import app.shosetsu.common.enums.MarkingType.valueOf as markingValueOf
 
 /*
  * This file is part of shosetsu.
@@ -70,14 +68,13 @@ class ChapterReaderViewModel(
 	private val loadReaderChaptersUseCase: GetReaderChaptersUseCase,
 	private val loadChapterPassageUseCase: GetChapterPassageUseCase,
 	private val updateReaderChapterUseCase: UpdateReaderChapterUseCase,
-	private val loadReadersThemes: LoadReaderThemes,
 	private val reportExceptionUseCase: ReportExceptionUseCase,
 	private val getReaderSettingsUseCase: GetReaderSettingUseCase,
 	private val updateReaderSettingUseCase: UpdateReaderSettingUseCase
 ) : IChapterReaderViewModel() {
-	private val isReaderContinuousScrollFlow = settingsRepo.getBooleanFlow(ReaderContinuousScroll)
-	private val convertStringToHtml = settingsRepo.getBooleanFlow(ReaderStringToHtml)
-	private val isHorizontalPageSwapping = settingsRepo.getBooleanFlow(ReaderHorizontalPageSwap)
+	private val isHorizontalPageSwapping by lazy {
+		settingsRepo.getBooleanFlow(ReaderHorizontalPageSwap)
+	}
 
 	/**
 	 * TODO Memory management here
@@ -127,89 +124,109 @@ class ChapterReaderViewModel(
 				.map { ColorChoiceData.fromString(it) }
 				.find { it.identifier == id.toLong() }
 				?.let { (_, _, textColor, backgroundColor) ->
-					super.defaultForeground = textColor
-					super.defaultBackground = backgroundColor
+					_defaultForeground = textColor
+					_defaultBackground = backgroundColor
 
 					emit(textColor to backgroundColor)
 				} ?: emit(Color.BLACK to Color.WHITE)
 
 		}.asIOLiveData()
 	}
-	override val liveMarkingTypes: LiveData<MarkingTypes> by lazy {
-		settingsRepo.getStringFlow(ReadingMarkingType)
-			.asIOLiveData()
-			.map { MarkingTypes.valueOf(it) }
+
+	@ExperimentalCoroutinesApi
+	override val liveIndentSize: LiveData<Int> by lazy {
+		readerSettingsFlow.mapLatest { result ->
+			result.unwrap()?.paragraphIndentSize?.also {
+				_defaultIndentSize = it
+			} ?: defaultIndentSize
+		}.asIOLiveData()
 	}
 
 	@ExperimentalCoroutinesApi
-	override val liveThemes: LiveData<List<ColorChoiceUI>> by lazy {
-		loadReadersThemes().asIOLiveData()
-	}
-	override val liveIndentSize: LiveData<Int> by lazy {
-		settingsRepo.getIntFlow(ReaderIndentSize).asIOLiveData()
-	}
 	override val liveParagraphSpacing: LiveData<Float> by lazy {
-		settingsRepo.getFloatFlow(ReaderParagraphSpacing).asIOLiveData()
+		readerSettingsFlow.mapLatest { result ->
+			logV("Mapping latest paragraph spacing")
+			result.unwrap()?.paragraphSpacingSize?.also {
+				_defaultParaSpacing = it
+			} ?: defaultParaSpacing
+		}.asIOLiveData()
 	}
+
+	@ExperimentalCoroutinesApi
 	override val liveTextSize: LiveData<Float> by lazy {
-		settingsRepo.getFloatFlow(ReaderTextSize).asIOLiveData()
+		settingsRepo.getFloatFlow(ReaderTextSize).mapLatest {
+			_defaultTextSize = it
+			it
+		}.asIOLiveData()
 	}
+
+	@ExperimentalCoroutinesApi
 	override val liveVolumeScroll: LiveData<Boolean> by lazy {
-		settingsRepo.getBooleanFlow(ReaderVolumeScroll).asIOLiveData()
+		settingsRepo.getBooleanFlow(ReaderVolumeScroll).mapLatest {
+			_defaultVolumeScroll = it
+			it
+		}.asIOLiveData()
 	}
 	override var currentChapterID: Int = -1
-	private val novelIDLive: MutableStateFlow<Int> by lazy { MutableStateFlow(novelIDValue) }
-	private var novelIDValue = -1
-	override val liveChapterDirection: LiveData<Boolean> =
-		settingsRepo.getBooleanFlow(ReaderHorizontalPageSwap).asIOLiveData()
 
-	init {
-		launchIO {
-			isReaderContinuousScrollFlow.collectLatest {
-			}
-			convertStringToHtml.collectLatest {
-				super.convertStringAsHtml = it
-			}
-			isHorizontalPageSwapping.collectLatest {
-				super.isHorizontalReading = it
-			}
-		}
+	private val novelIDLive: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
+
+	private var _defaultTextSize: Float = ReaderTextSize.default
+
+	private var _defaultBackground: Int = Color.WHITE
+	private var _defaultForeground: Int = Color.BLACK
+
+	private var _defaultParaSpacing: Float = ReaderParagraphSpacing.default
+
+	private var _defaultIndentSize: Int = ReaderIndentSize.default
+
+	private var _defaultVolumeScroll: Boolean = ReaderVolumeScroll.default
+
+	private var _isHorizontalReading: Boolean = ReaderHorizontalPageSwap.default
+
+	override val defaultTextSize: Float
+		get() = _defaultTextSize
+
+	override val defaultBackground: Int
+		get() = _defaultBackground
+
+	override val defaultForeground: Int
+		get() = _defaultForeground
+
+	override val defaultParaSpacing: Float
+		get() = _defaultParaSpacing
+
+	override val defaultIndentSize: Int
+		get() = _defaultIndentSize
+
+	override val defaultVolumeScroll: Boolean
+		get() = _defaultVolumeScroll
+
+	override val isHorizontalReading: Boolean
+		get() = _isHorizontalReading
+
+
+	override val liveChapterDirection: LiveData<Boolean> by lazy {
+		isHorizontalPageSwapping.mapLatest {
+			_isHorizontalReading = it
+			it
+		}.asIOLiveData()
 	}
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
 		reportExceptionUseCase(error)
 	}
 
-	override fun setReaderTheme(value: Int) {
-		launchIO { settingsRepo.setInt(ReaderTheme, value) }
-	}
-
-	override fun setReaderIndentSize(value: Int) {
-		launchIO {
-			logI("setting")
-			settingsRepo.setInt(ReaderIndentSize, value)
-		}
-	}
-
-	override fun setReaderParaSpacing(value: Float) {
-		launchIO { settingsRepo.setFloat(ReaderParagraphSpacing, value) }
-	}
-
-	override fun setReaderTextSize(value: Float) {
-		launchIO { settingsRepo.setFloat(ReaderTextSize, value) }
-	}
-
 	override fun setNovelID(novelID: Int) {
 		when {
-			novelIDValue == -1 -> logI("Setting NovelID")
-			novelIDValue != novelID -> logI("NovelID not equal, resetting")
-			novelIDValue == novelID -> {
+			novelIDLive.value == -1 -> logI("Setting NovelID")
+			novelIDLive.value != novelID -> logI("NovelID not equal, resetting")
+			novelIDLive.value == novelID -> {
 				logI("NovelID equal, ignoring")
 				return
 			}
 		}
 		novelIDLive.tryEmit(novelID)
-		novelIDValue = novelID
 	}
 
 	@WorkerThread
@@ -225,77 +242,63 @@ class ChapterReaderViewModel(
 		}.asIOLiveData()
 	}
 
-	override fun appendID(readerChapterUI: ReaderChapterUI): String =
-		"${readerChapterUI.id}|${readerChapterUI.link}"
-
 	override fun toggleBookmark(readerChapterUI: ReaderChapterUI) {
-		updateChapter(readerChapterUI, bookmarked = !readerChapterUI.bookmarked)
+		updateChapter(
+			readerChapterUI.copy(
+				bookmarked = !readerChapterUI.bookmarked
+			)
+		)
 	}
 
 	override fun updateChapter(
 		readerChapterUI: ReaderChapterUI,
-		readingPosition: Int,
-		readingStatus: ReadingStatus,
-		bookmarked: Boolean,
 	) {
 		launchIO {
-			updateReaderChapterUseCase(
-				readerChapterUI.copy(
-					readingPosition = readingPosition,
-					readingStatus = readingStatus,
-					bookmarked = bookmarked
-				)
-			)
+			updateReaderChapterUseCase(readerChapterUI)
 		}
 	}
 
+	/**
+	 * @param chapterUI Entity to update
+	 * @param markingType What is calling this update
+	 * @param readingPosition Optionally update the reading position
+	 */
 	private fun markAsReading(
 		chapterUI: ReaderChapterUI,
-		markingTypes: MarkingTypes,
+		markingType: MarkingType,
 		readingPosition: Int = chapterUI.readingPosition
-	) {
-		launchIO {
-			settingsRepo.getBoolean(ReaderMarkReadAsReading).handle { markReadAsReading ->
-				if (!markReadAsReading && chapterUI.readingStatus == READ) return@launchIO
-				settingsRepo.getString(ReadingMarkingType).handle {
-					if (MarkingTypes.valueOf(it) == markingTypes) updateChapter(
-						chapterUI.copy(
-							readingStatus = READING, readingPosition = readingPosition
-						)
+	) = launchIO {
+		settingsRepo.getBoolean(ReaderMarkReadAsReading).handle { markReadAsReading ->
+			/*
+			 * If marking chapters that are read as reading is disabled
+			 * and the chapter's readingStatus is read, return to prevent further IO.
+			 */
+			if (!markReadAsReading && chapterUI.readingStatus == READ) return@launchIO
+
+			settingsRepo.getString(ReadingMarkingType).handle {
+				updateChapter(
+					chapterUI.copy(
+						readingStatus = if (markingValueOf(it) == markingType) READING else chapterUI.readingStatus,
+						readingPosition = readingPosition
 					)
-				}
+				)
 			}
 		}
 	}
+
 
 	override fun markAsReadingOnView(readerChapterUI: ReaderChapterUI) {
 		markAsReading(readerChapterUI, ONVIEW)
 	}
 
-	override fun markAsReadingOnScroll(readerChapterUI: ReaderChapterUI, yAswell: Int) {
-		markAsReading(readerChapterUI, ONSCROLL, yAswell)
+	override fun markAsReadingOnScroll(readerChapterUI: ReaderChapterUI, readingPosition: Int) {
+		markAsReading(readerChapterUI, ONSCROLL, readingPosition)
 	}
 
-	override fun setOnVolumeScroll(checked: Boolean) {
-		launchIO {
-			settingsRepo.setBoolean(ReaderVolumeScroll, checked)
-		}
-	}
 
 	override fun loadChapterCss(): LiveData<String> =
 		settingsRepo.getStringFlow(ReaderHtmlCss).asIOLiveData()
 
-	override fun updateConvertStringAsHtml(checked: Boolean) {
-		launchIO {
-			settingsRepo.setBoolean(ReaderStringToHtml, checked)
-		}
-	}
-
-	override fun updateHorizontalReading(checked: Boolean) {
-		launchIO {
-			settingsRepo.setBoolean(ReaderHorizontalPageSwap, checked)
-		}
-	}
 
 	@ExperimentalCoroutinesApi
 	override fun getSettings(): LiveData<HResult<List<SettingsItemData>>> =
@@ -308,6 +311,7 @@ class ChapterReaderViewModel(
 			 * Combining the universal setting flow and the readerSettingFlow
 			 * Handle both results together, then transform the result, adding UI for reader specific settings
 			 */
+
 			(settingsListResult thenAlso readerSettingsResult).transformToSuccess { (settingsList, settingEntity) ->
 				ArrayList(settingsList).apply {
 					add(floatButtonSettingData(1) {
@@ -320,8 +324,10 @@ class ChapterReaderViewModel(
 							val decimal: Int = ((settingValue % 1) * 100).toInt()
 							initialDecimal = decimalSteps.indexOfFirst { it == decimal }.orZero()
 						}
+
 						onValueSelected { selected ->
 							launchIO {
+
 								updateReaderSettingUseCase(
 									settingEntity.copy(
 										paragraphSpacingSize = selected.toFloat()
@@ -340,8 +346,13 @@ class ChapterReaderViewModel(
 						)
 
 						spinnerValue { settingEntity.paragraphIndentSize }
+						var first = true
 						onSpinnerItemSelected { _, _, position, _ ->
 							launchIO {
+								if (first) {
+									first = false
+									return@launchIO
+								}
 								updateReaderSettingUseCase(
 									settingEntity.copy(
 										paragraphIndentSize = position

@@ -30,62 +30,65 @@ import kotlinx.coroutines.flow.Flow
 class SettingsRepository(
 	private val iLocalSettingsDataSource: IFileSettingsDataSource
 ) : ISettingsRepository {
-	private val GENERAL_NAME = "name"
 
 	override fun getLongFlow(key: SettingKey<Long>): Flow<Long> =
-		iLocalSettingsDataSource.observeLong(GENERAL_NAME, key)
+		iLocalSettingsDataSource.observeLong(DEFAULT_NAME, key)
 
 	override fun getStringFlow(key: SettingKey<String>): Flow<String> =
-		iLocalSettingsDataSource.observeString(GENERAL_NAME, key)
+		iLocalSettingsDataSource.observeString(DEFAULT_NAME, key)
 
 	override fun getIntFlow(key: SettingKey<Int>): Flow<Int> =
-		iLocalSettingsDataSource.observeInt(GENERAL_NAME, key)
+		iLocalSettingsDataSource.observeInt(DEFAULT_NAME, key)
 
 	override fun getBooleanFlow(key: SettingKey<Boolean>): Flow<Boolean> =
-		iLocalSettingsDataSource.observeBoolean(GENERAL_NAME, key)
+		iLocalSettingsDataSource.observeBoolean(DEFAULT_NAME, key)
 
 	override fun getStringSetFlow(key: SettingKey<Set<String>>): Flow<Set<String>> =
-		iLocalSettingsDataSource.observeStringSet(GENERAL_NAME, key)
+		iLocalSettingsDataSource.observeStringSet(DEFAULT_NAME, key)
 
 	override fun getFloatFlow(key: SettingKey<Float>): Flow<Float> =
-		iLocalSettingsDataSource.observeFloat(GENERAL_NAME, key)
+		iLocalSettingsDataSource.observeFloat(DEFAULT_NAME, key)
 
 	override suspend fun getLong(key: SettingKey<Long>): HResult<Long> =
-		iLocalSettingsDataSource.getLong(GENERAL_NAME, key)
+		iLocalSettingsDataSource.getLong(DEFAULT_NAME, key)
 
 	override suspend fun getString(key: SettingKey<String>): HResult<String> =
-		iLocalSettingsDataSource.getString(GENERAL_NAME, key)
+		iLocalSettingsDataSource.getString(DEFAULT_NAME, key)
 
 	override suspend fun getInt(key: SettingKey<Int>): HResult<Int> =
-		iLocalSettingsDataSource.getInt(GENERAL_NAME, key)
+		iLocalSettingsDataSource.getInt(DEFAULT_NAME, key)
 
 	override suspend fun getBoolean(key: SettingKey<Boolean>): HResult<Boolean> =
-		iLocalSettingsDataSource.getBoolean(GENERAL_NAME, key)
+		iLocalSettingsDataSource.getBoolean(DEFAULT_NAME, key)
 
 	override suspend fun getStringSet(key: SettingKey<Set<String>>): HResult<Set<String>> =
-		iLocalSettingsDataSource.getStringSet(GENERAL_NAME, key)
+		iLocalSettingsDataSource.getStringSet(DEFAULT_NAME, key)
 
 	override suspend fun getFloat(key: SettingKey<Float>) =
-		iLocalSettingsDataSource.getFloat(GENERAL_NAME, key)
+		iLocalSettingsDataSource.getFloat(DEFAULT_NAME, key)
 
 	override suspend fun setLong(key: SettingKey<Long>, value: Long): HResult<*> =
-		iLocalSettingsDataSource.setLong(GENERAL_NAME, key, value)
+		iLocalSettingsDataSource.setLong(DEFAULT_NAME, key, value)
 
 	override suspend fun setString(key: SettingKey<String>, value: String): HResult<*> =
-		iLocalSettingsDataSource.setString(GENERAL_NAME, key, value)
+		iLocalSettingsDataSource.setString(DEFAULT_NAME, key, value)
 
 	override suspend fun setInt(key: SettingKey<Int>, value: Int): HResult<*> =
-		iLocalSettingsDataSource.setInt(GENERAL_NAME, key, value)
+		iLocalSettingsDataSource.setInt(DEFAULT_NAME, key, value)
 
 	override suspend fun setBoolean(key: SettingKey<Boolean>, value: Boolean): HResult<*> =
-		iLocalSettingsDataSource.setBoolean(GENERAL_NAME, key, value)
+		iLocalSettingsDataSource.setBoolean(DEFAULT_NAME, key, value)
 
 	override suspend fun setStringSet(
 		key: SettingKey<Set<String>>,
 		value: Set<String>
 	): HResult<*> =
-		iLocalSettingsDataSource.setStringSet(GENERAL_NAME, key, value)
+		iLocalSettingsDataSource.setStringSet(DEFAULT_NAME, key, value)
 
 	override suspend fun setFloat(key: SettingKey<Float>, value: Float): HResult<*> =
-		iLocalSettingsDataSource.setFloat(GENERAL_NAME, key, value)
+		iLocalSettingsDataSource.setFloat(DEFAULT_NAME, key, value)
+
+	companion object {
+		private const val DEFAULT_NAME = "settings"
+	}
 }

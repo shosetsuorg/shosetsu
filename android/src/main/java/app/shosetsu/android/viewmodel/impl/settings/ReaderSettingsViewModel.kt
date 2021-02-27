@@ -19,7 +19,7 @@ import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.domain.repositories.base.getStringOrDefault
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.enums.MarkingTypes
+import app.shosetsu.common.enums.MarkingType
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -106,16 +106,16 @@ class ReaderSettingsViewModel(
 				reportExceptionUseCase.invoke(e.toHError())
 			}
 			spinnerValue {
-				when (MarkingTypes.valueOf(settingsRepo.getStringOrDefault(ReadingMarkingType))) {
-					MarkingTypes.ONSCROLL -> 1
-					MarkingTypes.ONVIEW -> 0
+				when (MarkingType.valueOf(settingsRepo.getStringOrDefault(ReadingMarkingType))) {
+					MarkingType.ONSCROLL -> 1
+					MarkingType.ONVIEW -> 0
 				}
 			}
 			onSpinnerItemSelected { _, _, position, _ ->
 				launchIO {
 					when (position) {
-						0 -> settingsRepo.setString(ReadingMarkingType, MarkingTypes.ONVIEW.name)
-						1 -> settingsRepo.setString(ReadingMarkingType, MarkingTypes.ONSCROLL.name)
+						0 -> settingsRepo.setString(ReadingMarkingType, MarkingType.ONVIEW.name)
+						1 -> settingsRepo.setString(ReadingMarkingType, MarkingType.ONSCROLL.name)
 						else -> Log.e("MarkingMode", "UnknownType")
 					}
 				}

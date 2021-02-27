@@ -69,10 +69,13 @@ class ChapterReader
 
 	private val toolbar: MaterialToolbar
 		get() = binding.toolbar
+
 	private val chapterReaderBottom: LinearLayout
 		get() = binding.chapterReaderBottom.chapterReaderBottom
+
 	private val viewpager: ViewPager2
 		get() = binding.viewpager
+
 	private val drawerToggle: AppCompatImageButton
 		get() = binding.chapterReaderBottom.drawerToggle
 
@@ -90,11 +93,12 @@ class ChapterReader
 
 	/** Gets chapters from the [itemAdapter] */
 	private val chapterItems: List<ReaderChapterUI>
-		get() = itemAdapter.itemList.items.filterIsInstance<ReaderChapterUI>()
+		get() = itemAdapter.adapterItems.filterIsInstance<ReaderChapterUI>()
 
 	/** Gets dividers from the [itemAdapter] */
 	val dividerItems: List<ReaderDividerUI>
-		get() = itemAdapter.itemList.items.filterIsInstance<ReaderDividerUI>()
+		get() = itemAdapter.adapterItems.filterIsInstance<ReaderDividerUI>()
+
 	private val bottomSheetBehavior: ChapterReaderBottomBar<LinearLayout> by lazy {
 		from(chapterReaderBottom) as ChapterReaderBottomBar
 	}
@@ -135,17 +139,19 @@ class ChapterReader
 
 	private fun handleChaptersResult(list: List<ReaderUIItem<*, *>>) {
 		val oldSize = itemAdapter.itemList.size()
-		list.forEach {
-			if (it is ReaderChapterUI)
-				it.chapterReader = this
+
+		// Provide each entity with self
+		list.filterIsInstance<ReaderChapterUI>().forEach {
+			it.chapterReader = this
 		}
 
+		// Update the UI
 		FastAdapterDiffUtil[itemAdapter] =
 			calculateDiff(itemAdapter, list)
 
+		// Go to the current chapter
 		if (oldSize == 0)
 			viewpager.setCurrentItem(getCurrentChapterIndex(), false)
-
 	}
 
 	private fun setObservers() {
@@ -159,35 +165,30 @@ class ChapterReader
 			}
 		}
 
-		viewModel.liveTheme.observe { (t, b) ->
+		viewModel.liveTheme.observe {
 			applyToReaders {
 				syncTextColor()
 				syncBackgroundColor()
 			}
 		}
 
-		viewModel.liveIndentSize.observe { i ->
-			viewModel.defaultIndentSize = i
+		viewModel.liveIndentSize.observe {
 			applyToReaders {
 				syncParagraphIndent()
 			}
 		}
 
-		viewModel.liveParagraphSpacing.observe { i ->
-			viewModel.defaultParaSpacing = i
-			applyToReaders {
-				syncParagraphSpacing()
-			}
+		viewModel.liveParagraphSpacing.observe {
+			logD("Updating paragraph spacing to reader UI")
+			applyToReaders { syncParagraphSpacing() }
 		}
 
-		viewModel.liveTextSize.observe { i ->
-			viewModel.defaultTextSize = i
+		viewModel.liveTextSize.observe {
 			applyToReaders { syncTextSize() }
 		}
 
 
 		viewModel.liveVolumeScroll.observe {
-			viewModel.defaultVolumeScroll = it
 		}
 
 		viewModel.liveChapterDirection.observe {
@@ -199,7 +200,8 @@ class ChapterReader
 		onlyCurrent: Boolean = false,
 		action: ReaderChapterViewHolder.() -> Unit
 	) {
-		val textTypedReaders = chapterItems.mapNotNull { it.reader }
+		val textTypedReaders = chapterItems.mapNotNull { it.viewHolder }
+		// Apply to the current chapter first
 		textTypedReaders.find {
 			it.chapter.id == viewModel.currentChapterID
 		}?.action()
@@ -298,7 +300,8 @@ class ChapterReader
 		viewpager.apply {
 			adapter = fastAdapter
 			registerOnPageChangeCallback(pageChangeCallback)
-			orientation = ORIENTATION_VERTICAL
+			orientation =
+				if (viewModel.isHorizontalReading) ORIENTATION_HORIZONTAL else ORIENTATION_VERTICAL
 			isNestedScrollingEnabled = true
 		}
 	}
@@ -393,26 +396,27 @@ class ChapterReader
 			when (val item = itemAdapter.getAdapterItem(position)) {
 				is ReaderChapterUI -> {
 					item.apply {
-						logD("Page changed to $position ${this.link}")
 						viewModel.currentChapterID = id
 						viewModel.markAsReadingOnView(this)    // Mark read if set to onview
-						reader?.let { syncReader(it) } ?: logE("Reader is null")
+						viewHolder?.let { syncReader(it) } ?: logE("Reader is null")
 						supportActionBar?.title = title
 						setBookmarkIcon(this)
 					}
 				}
 				is ReaderDividerUI -> {
 					supportActionBar?.setTitle(R.string.next_chapter)
-					val lastChapter = itemAdapter.getAdapterItem(position - 1) as ReaderChapterUI
-
 					// Marks the previous chapter as read when you hit the divider
 					// This was implemented due to performance shortcuts taken due to excessive
 					// [handleChaptersResult] operation time
-					viewModel.updateChapter(
-						lastChapter,
-						readingStatus = ReadingStatus.READ,
-						readingPosition = 0
-					)
+					(itemAdapter.getAdapterItem(position - 1) as? ReaderChapterUI)?.let { lastChapter ->
+						viewModel.updateChapter(
+							lastChapter.copy(
+								readingStatus = ReadingStatus.READ,
+								readingPosition = 0
+							)
+						)
+					}
+
 				}
 			}
 		}
