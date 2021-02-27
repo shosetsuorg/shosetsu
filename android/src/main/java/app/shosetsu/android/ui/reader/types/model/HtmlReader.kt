@@ -8,7 +8,9 @@ import android.webkit.WebViewClient
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logID
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.common.enums.ReadingStatus
@@ -49,7 +51,8 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	private inner class ScrollListener() {
 
 		@JavascriptInterface
-		public fun scrolled() {
+		fun call() {
+			logD("javascript scroll")
 			webView.evaluateJavascript("window.pageYOffset") { _yPosition ->
 				val yPosition = _yPosition.toInt()
 				webView.evaluateJavascript("window.scrollMaxY") { _scrollMaxY ->
@@ -78,10 +81,10 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 
 	init {
 		webView.settings.javaScriptEnabled = true
-		webView.addJavascriptInterface(ScrollListener(), "scroll_listener")
+		webView.addJavascriptInterface(ScrollListener(), "scrollInterface")
 		webView.evaluateJavascript(
 			"""
-				window.addEventListener("scroll",scrolled);
+				window.addEventListener("scroll",(event)=>{ scrollInterface.call(); });
 			""".trimIndent(), null
 		)
 		webView.webViewClient = object : WebViewClient() {
@@ -187,7 +190,8 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	}
 
 	override fun setProgress(progress: Int) {
-		webView.evaluateJavascript("window.scroll(0,$progress)", null)
+		logV("posting progress")
+		webView.evaluateJavascript("window.scrollTo(0,$progress)", null)
 	}
 
 	override fun getFocusTarget(): View = host
