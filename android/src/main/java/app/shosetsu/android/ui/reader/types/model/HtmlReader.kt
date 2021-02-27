@@ -1,6 +1,6 @@
 package app.shosetsu.android.ui.reader.types.model
 
-import android.util.Log
+import android.graphics.Bitmap
 import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
@@ -8,8 +8,8 @@ import android.webkit.WebViewClient
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.common.ext.logD
-import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
@@ -42,37 +42,59 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	private val webView: WebView = binding.webView
 	private val host = binding.nestScrollableHost
 
+	private var isPageLoaded = false
+	private var onPageLoaded: (() -> Unit)? = null
+
 	/**
 	 * key      : selector
 	 * value    : style-key to value
 	 */
 	private val shosetsuStyle: HashMap<String, HashMap<String, String>> = hashMapOf()
 
-	private inner class ScrollListener() {
+	private inner class ScrollListener {
 
 		@JavascriptInterface
-		fun call() {
-			logD("javascript scroll")
-			webView.evaluateJavascript("window.pageYOffset") { _yPosition ->
-				val yPosition = _yPosition.toInt()
-				webView.evaluateJavascript("window.scrollMaxY") { _scrollMaxY ->
-					val scrollMaxY = _scrollMaxY.toInt()
-					val percentage = (yPosition / scrollMaxY) * 100
-					if (percentage < 99) {
-						if (yPosition % 5 == 0) {
-							Log.i(logID(), "Scrolling")
-							// Mark as reading if on scroll
-							chapterReader.viewModel.markAsReadingOnScroll(chapter, yPosition)
+		fun print(any: Any?) {
+			logV("Printing from javascript: $any")
+		}
+
+
+		@Suppress("unused", "RedundantVisibilityModifier")
+		@JavascriptInterface
+		public fun call() {
+			launchUI {
+				val getMax = """
+					    var innerh = window.innerHeight || ebody.clientHeight, yWithScroll = 0;
+					    yWithScroll = document.body.scrollHeight;
+					    yWithScroll-innerh; 
+				""".trimIndent()
+
+				webView.evaluateJavascript("window.pageYOffset") { _yPosition ->
+					val yPosition: Int? = _yPosition.toDoubleOrNull()?.toInt()
+					yPosition ?: logD("Null Y position")
+					yPosition ?: return@evaluateJavascript
+
+					webView.evaluateJavascript(getMax) { _scrollMaxY ->
+						val scrollMaxY: Double? = _scrollMaxY.toDoubleOrNull()
+						scrollMaxY ?: logD("Null Y max")
+						scrollMaxY ?: return@evaluateJavascript
+
+
+						val percentage = ((yPosition / scrollMaxY) * 100)
+						if (percentage < 99) {
+							if (yPosition % 5 == 0) {
+								// Mark as reading if on scroll
+								chapterReader.viewModel.markAsReadingOnScroll(chapter, yPosition)
+							}
+						} else {
+							// Hit bottom
+							chapterReader.viewModel.updateChapter(
+								chapter.copy(
+									readingStatus = ReadingStatus.READ,
+									readingPosition = 0
+								),
+							)
 						}
-					} else {
-						Log.i(logID(), "Hit the bottom")
-						// Hit bottom
-						chapterReader.viewModel.updateChapter(
-							chapter.copy(
-								readingStatus = ReadingStatus.READ,
-								readingPosition = 0
-							),
-						)
 					}
 				}
 			}
@@ -82,15 +104,23 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	init {
 		webView.settings.javaScriptEnabled = true
 		webView.addJavascriptInterface(ScrollListener(), "scrollInterface")
-		webView.evaluateJavascript(
-			"""
-				window.addEventListener("scroll",(event)=>{ scrollInterface.call(); });
-			""".trimIndent(), null
-		)
+
 		webView.webViewClient = object : WebViewClient() {
+			override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+				isPageLoaded = false
+				super.onPageStarted(view, url, favicon)
+			}
+
 			override fun onPageFinished(view: WebView?, url: String?) {
 				injectCss()
 				super.onPageFinished(view, url)
+				webView.evaluateJavascript(
+					"""
+						window.addEventListener("scroll",(event)=>{ scrollInterface.call(); });
+					""".trimIndent(), null
+				)
+				isPageLoaded = true
+				onPageLoaded?.invoke()
 			}
 		}
 	}
@@ -190,8 +220,12 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	}
 
 	override fun setProgress(progress: Int) {
-		logV("posting progress")
-		webView.evaluateJavascript("window.scrollTo(0,$progress)", null)
+		val call = {
+			webView.evaluateJavascript("window.scrollTo(0,$progress)", null)
+		}
+
+		if (isPageLoaded) call()
+		else onPageLoaded = call
 	}
 
 	override fun getFocusTarget(): View = host
