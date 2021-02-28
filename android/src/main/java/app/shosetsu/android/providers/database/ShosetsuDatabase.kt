@@ -7,10 +7,7 @@ import android.database.sqlite.SQLiteException
 import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import app.shosetsu.android.common.ext.getInt
-import app.shosetsu.android.common.ext.getLong
-import app.shosetsu.android.common.ext.getString
-import app.shosetsu.android.common.ext.set
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.model.database.*
 import app.shosetsu.android.providers.database.converters.*
 import app.shosetsu.android.providers.database.dao.*
@@ -136,17 +133,17 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 										"${chaptersTableName}_new",
 										OnConflictStrategy.ABORT,
 										ContentValues().apply {
-											this["id"] = cursor.getInt("id")
-											this["url"] = cursor.getString("url")
-											this["novelID"] = cursor.getInt("novelID")
-											this["extensionID"] = cursor.getInt("extensionID")
-											this["title"] = cursor.getString("title")
-											this["releaseDate"] = cursor.getString("releaseDate")
-											this["order"] = cursor.getLong("order")
-											this["readingPosition"] = 0.0
-											this["readingStatus"] = cursor.getInt("readingStatus")
-											this["bookmarked"] = cursor.getInt("bookmarked")
-											this["isSaved"] = cursor.getInt("isSaved")
+											this["'id'"] = cursor.getInt("id")
+											this["'url'"] = cursor.getString("url")
+											this["'novelID'"] = cursor.getInt("novelID")
+											this["'formatterID'"] = cursor.getInt("formatterID")
+											this["'title'"] = cursor.getString("title")
+											this["'releaseDate'"] = cursor.getString("releaseDate")
+											this["'order'"] = cursor.getDouble("order")
+											this["'readingPosition'"] = 0.0
+											this["'readingStatus'"] = cursor.getInt("readingStatus")
+											this["'bookmarked'"] = cursor.getInt("bookmarked")
+											this["'isSaved'"] = cursor.getInt("isSaved")
 										}
 									)
 								}
@@ -155,6 +152,11 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 								database.execSQL("DROP TABLE $chaptersTableName")
 								database.execSQL("ALTER TABLE `${chaptersTableName}_new` RENAME TO `${chaptersTableName}`")
 
+								// Indexs
+
+								database.execSQL("CREATE INDEX IF NOT EXISTS `index_chapters_novelID` ON `${chaptersTableName}` (`novelID`)")
+								database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_chapters_url` ON `${chaptersTableName}` (`url`)")
+								database.execSQL("CREATE INDEX IF NOT EXISTS `index_chapters_formatterID` ON `${chaptersTableName}` (`formatterID`)")
 							}
 
 							// Migration to create novel_settings
