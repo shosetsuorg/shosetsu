@@ -1,5 +1,6 @@
 package app.shosetsu.common.domain.repositories.impl
 
+import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.datasource.database.base.IDBChaptersDataSource
 import app.shosetsu.common.datasource.file.base.IFileCachedChapterDataSource
 import app.shosetsu.common.datasource.file.base.IFileChapterDataSource
@@ -50,9 +51,10 @@ class ChaptersRepository(
 ) : IChaptersRepository {
 
 	private suspend inline fun placeIntoCache(
-		chapterEntity: ChapterEntity,
+		entity: ChapterEntity,
+		chapterType: Novel.ChapterType,
 		result: HResult<String>
-	) = result.handle { saveChapterPassageToMemory(chapterEntity, it) }
+	) = result.handle { saveChapterPassageToMemory(entity, chapterType, it) }
 
 	override suspend fun getChapterPassage(
 		formatter: IExtension,
@@ -60,24 +62,36 @@ class ChaptersRepository(
 	): HResult<String> =
 		memorySource.loadChapterFromCache(entity.id!!)
 			.catch {
-				cacheSource.loadChapterPassage(entity.id!!).also { result ->
-					result.handle { memorySource.saveChapterInCache(entity.id!!, it) }
+				cacheSource.loadChapterPassage(entity.id!!, formatter.chapterType).also { result ->
+					result.handle {
+						memorySource.saveChapterInCache(entity.id!!, it)
+					}
 				}
 			}.catch {
-				fileSource.loadChapterPassageFromStorage(entity)
-					.also { placeIntoCache(entity, it) }
+				fileSource.loadChapterPassageFromStorage(entity, formatter.chapterType)
+					.also { result ->
+						result.handle(onError = {
+							// Delete a mismatched chapter
+							if (it.code == ErrorKeys.MISMATCHED_CHAPTER_TYPE)
+								fileSource.deleteChapter(entity)
+
+						}) {
+						}
+						placeIntoCache(entity, formatter.chapterType, result)
+					}
 			}.catch {
 				remoteSource.loadChapterPassage(
 					formatter,
 					entity.url
-				).also { placeIntoCache(entity, it) }
+				).also { placeIntoCache(entity, formatter.chapterType, it) }
 			}
 
 	suspend fun saveChapterPassageToMemory(
 		chapterEntity: ChapterEntity,
+		chapterType: Novel.ChapterType,
 		passage: String,
 	): HResult<*> = memorySource.saveChapterInCache(chapterEntity.id!!, passage) thenAlso
-			cacheSource.saveChapterInCache(chapterEntity.id!!, passage)
+			cacheSource.saveChapterInCache(chapterEntity.id!!, chapterType, passage)
 
 
 	/**
@@ -94,10 +108,11 @@ class ChaptersRepository(
 	 */
 	override suspend fun saveChapterPassageToStorage(
 		entity: ChapterEntity,
+		chapterType: Novel.ChapterType,
 		passage: String,
 	): HResult<*> =
-		saveChapterPassageToMemory(entity, passage) thenAlso (
-				fileSource.saveChapterPassageToStorage(entity, passage) ifSo {
+		saveChapterPassageToMemory(entity, chapterType, passage) thenAlso (
+				fileSource.saveChapterPassageToStorage(entity, chapterType, passage) ifSo {
 					dbSource.updateChapter(entity.copy(isSaved = true))
 				})
 

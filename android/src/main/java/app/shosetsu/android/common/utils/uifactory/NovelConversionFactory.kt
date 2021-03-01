@@ -36,7 +36,6 @@ class NovelConversionFactory(data: NovelEntity) : UIConversionFactory<NovelEntit
 		novelURL = url,
 		extID = extensionID,
 		bookmarked = bookmarked,
-		readerType = readerType,
 		title = title,
 		imageURL = imageURL,
 		description = description,

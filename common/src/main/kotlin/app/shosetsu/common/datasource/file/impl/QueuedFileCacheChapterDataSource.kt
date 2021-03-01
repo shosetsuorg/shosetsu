@@ -4,6 +4,7 @@ import app.shosetsu.common.datasource.file.base.IFileCachedChapterDataSource
 import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.InternalFileDir.CACHE
 import app.shosetsu.common.providers.file.base.IFileSystemProvider
+import app.shosetsu.lib.Novel
 import kotlinx.coroutines.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -35,13 +36,20 @@ class QueuedFileCacheChapterDataSource(
 
 	private val mapHandler by lazy { MapHandler() }
 
-	override suspend fun saveChapterInCache(chapterID: Int, passage: String): HResult<*> {
+	override suspend fun saveChapterInCache(
+		chapterID: Int,
+		chapterType: Novel.ChapterType,
+		passage: String
+	): HResult<*> {
 		val job = CacheJob.Write(chapterID, passage)
 		mapHandler.enqueue(job)
 		return successResult(mapHandler.waitFor(job))
 	}
 
-	override suspend fun loadChapterPassage(chapterID: Int): HResult<String> {
+	override suspend fun loadChapterPassage(
+		chapterID: Int,
+		chapterType: Novel.ChapterType
+	): HResult<String> {
 		val job = CacheJob.Read(chapterID)
 		mapHandler.enqueue(job)
 		return mapHandler.waitFor(job)

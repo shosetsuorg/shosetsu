@@ -1,13 +1,13 @@
 package app.shosetsu.android.datasource.local.file.impl
 
 import app.shosetsu.android.common.ext.logV
+import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.datasource.file.base.IFileChapterDataSource
 import app.shosetsu.common.domain.model.local.ChapterEntity
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.transform
+import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.ExternalFileDir.DOWNLOADS
 import app.shosetsu.common.providers.file.base.IFileSystemProvider
+import app.shosetsu.lib.Novel
 
 /*
  * This file is part of shosetsu.
@@ -52,6 +52,7 @@ class FileChapterDataSource(
 
 	override suspend fun saveChapterPassageToStorage(
 		chapterEntity: ChapterEntity,
+		chapterType: Novel.ChapterType,
 		passage: String,
 	): HResult<*> {
 		val path = makePath(chapterEntity)
@@ -62,14 +63,37 @@ class FileChapterDataSource(
 			iFileSystemProvider.writeFile(
 				DOWNLOADS,
 				path,
-				passage
+				"${chapterType.key}\n$passage"
 			)
 		}
 	}
 
-	override suspend fun loadChapterPassageFromStorage(chapterEntity: ChapterEntity): HResult<String> =
-		iFileSystemProvider.readFile(DOWNLOADS, makePath(chapterEntity))
+	override suspend fun loadChapterPassageFromStorage(
+		chapterEntity: ChapterEntity,
+		chapterType: Novel.ChapterType,
+	): HResult<String> =
+		iFileSystemProvider.readFile(DOWNLOADS, makePath(chapterEntity)).transform { passage ->
+			// This block of code uses a sequence to be as performance efficient as possible
+			passage.lineSequence().firstOrNull()?.let { firstLine ->
+				firstLine.toIntOrNull()?.let {
+					if (it != chapterType.key)
+						return@transform mismatchedChapterType
+				} ?: return@transform mismatchedChapterType
+			} ?: return@transform emptyResult()
+
+			successResult(passage.replaceFirst("${chapterType.key}\n", ""))
+		}
 
 	override suspend fun deleteChapter(chapterEntity: ChapterEntity): HResult<*> =
 		iFileSystemProvider.deleteFile(DOWNLOADS, makePath(chapterEntity))
+
+	companion object {
+		private val mismatchedChapterType by lazy {
+			errorResult(
+				ErrorKeys.MISMATCHED_CHAPTER_TYPE,
+				"File chapter not of expected type"
+			)
+		}
+
+	}
 }

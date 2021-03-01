@@ -206,6 +206,7 @@ class ChapterReaderViewModel(
 		get() = _isHorizontalReading
 
 
+	@ExperimentalCoroutinesApi
 	override val liveChapterDirection: LiveData<Boolean> by lazy {
 		isHorizontalPageSwapping.mapLatest {
 			_isHorizontalReading = it

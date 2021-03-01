@@ -69,6 +69,7 @@ interface IChaptersRepository {
 	 */
 	suspend fun saveChapterPassageToStorage(
 		entity: ChapterEntity,
+		chapterType: Novel.ChapterType,
 		passage: String
 	): HResult<*>
 

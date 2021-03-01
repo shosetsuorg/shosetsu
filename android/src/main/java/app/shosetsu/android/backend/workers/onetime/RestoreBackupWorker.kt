@@ -203,7 +203,6 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 								siteNovel.asEntity(
 									link = bNovelURL,
 									extensionID = extensionID,
-									readerType = extensionEntity.chapterType
 								).copy(
 									bookmarked = true
 								)

@@ -58,13 +58,11 @@ fun Novel.Listing.convertTo(extension: IExtension): NovelEntity = NovelEntity(
 	imageURL = this.imageURL,
 	title = this.title,
 	extensionID = extension.formatterID,
-	readerType = extension.chapterType
 )
 
 fun Novel.Info.asEntity(
 	link: String,
 	extensionID: Int,
-	readerType: Novel.ChapterType
 ): NovelEntity =
 	NovelEntity(
 		url = link,
@@ -79,5 +77,4 @@ fun Novel.Info.asEntity(
 		genres = this.genres.toList(),
 		tags = this.tags.toList(),
 		status = this.status,
-		readerType = readerType
 	)

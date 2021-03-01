@@ -91,6 +91,7 @@ interface IExtensionsRepository {
 	 *
 	 * Adds the [IExtension] to the filesystem & memory
 	 *
+	 * @see InstallExtensionFlags
 	 * @return
 	 * [HResult.Success] If the extension is found
 	 *
@@ -100,7 +101,14 @@ interface IExtensionsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun installExtension(extensionEntity: ExtensionEntity): HResult<*>
+	suspend fun installExtension(extensionEntity: ExtensionEntity): HResult<InstallExtensionFlags>
+
+	/**
+	 * Flags returned after installing an extension
+	 */
+	data class InstallExtensionFlags(
+		val deleteChapters: Boolean
+	)
 
 	/**
 	 * Uninstalls an [extensionEntity]
@@ -189,7 +197,6 @@ interface IExtensionsRepository {
 	 * [HResult.Loading] Initial value
 	 */
 	fun loadStrippedExtensionEntityFlow(): Flow<HResult<List<StrippedExtensionEntity>>>
-
 
 
 	/**

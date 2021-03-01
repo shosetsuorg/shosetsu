@@ -43,18 +43,6 @@ data class NovelEntity(
 	/** Says if the data is loaded or now, if it is not it needs to be loaded */
 	var loaded: Boolean = false,
 
-	/**
-	 * What kind of reader is this novel using.
-	 *
-	 * This typically is the same as what the extension is using, but in the case they do not match.
-	 * All chapters relating to this novel should be deleted and then this should updated to match.
-	 *
-	 * The reason for this is that if an extension updates from one type to another,
-	 * in the unlikely case it does, this will allow a seamless transition for the user with
-	 * little conflict to the users life.
-	 */
-	var readerType: Novel.ChapterType,
-
 	/** The title of the novel */
 	var title: String,
 

@@ -49,8 +49,6 @@ data class NovelUI(
 
 	var bookmarked: Boolean,
 
-	var readerType: Novel.ChapterType,
-
 	var title: String,
 
 	var imageURL: String,
@@ -81,7 +79,6 @@ data class NovelUI(
 		extensionID = extID,
 		bookmarked = bookmarked,
 		loaded = loaded,
-		readerType = readerType,
 		title = title,
 		imageURL = imageURL,
 		description = description,

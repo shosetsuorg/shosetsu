@@ -3,9 +3,9 @@ package app.shosetsu.android.domain.usecases.get
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.common.consts.settings.SettingKey.ReaderStringToHtml
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.*
-import app.shosetsu.lib.Novel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -35,7 +35,8 @@ import kotlinx.coroutines.flow.flow
  */
 class GetReaderChaptersUseCase(
 	private val iChaptersRepository: IChaptersRepository,
-	private var settingsRepository: ISettingsRepository
+	private val settingsRepository: ISettingsRepository,
+	private val extensionRepository: IExtensionsRepository
 ) {
 	@ExperimentalCoroutinesApi
 	operator fun invoke(novelID: Int): Flow<HResult<List<ReaderChapterUI>>> =
@@ -47,18 +48,20 @@ class GetReaderChaptersUseCase(
 						list.transformToSuccess { it to convertToHtml }
 					}
 					.mapLatestResult { (list, convertToHtml) ->
-						successResult(list.map { (id, url, title, readingPosition, readingStatus, bookmarked) ->
-							ReaderChapterUI(
-								id,
-								url,
-								title,
-								readingPosition,
-								readingStatus,
-								bookmarked,
-								Novel.ChapterType.STRING,
-								convertToHtml
-							)
-						})
+						extensionRepository.getExtensionEntity(novelID).transform { novelEntity ->
+							successResult(list.map { (id, url, title, readingPosition, readingStatus, bookmarked) ->
+								ReaderChapterUI(
+									id,
+									url,
+									title,
+									readingPosition,
+									readingStatus,
+									bookmarked,
+									novelEntity.chapterType,
+									convertToHtml
+								)
+							})
+						}
 					}
 			)
 		}

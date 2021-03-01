@@ -59,9 +59,6 @@ data class DBNovelEntity(
 	/** Says if the data is loaded or now, if it is not it needs to be loaded */
 	var loaded: Boolean = false,
 
-	/** What kind of reader is this novel using */
-	var readerType: Novel.ChapterType,
-
 	@NonNull
 	/** The title of the novel */
 	var title: String,
@@ -98,7 +95,6 @@ data class DBNovelEntity(
 		extensionID,
 		bookmarked,
 		loaded,
-		readerType,
 		title,
 		imageURL,
 		description,

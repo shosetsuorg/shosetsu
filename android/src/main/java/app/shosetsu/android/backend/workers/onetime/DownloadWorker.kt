@@ -100,10 +100,11 @@ class DownloadWorker(
 
 	private suspend fun download(downloadEntity: DownloadEntity): HResult<*> =
 		chapRepo.getChapter(downloadEntity.chapterID).transform { chapterEntity ->
-			extRepo.getIExtension(chapterEntity.extensionID).transform { formatterEntity ->
-				chapRepo.getChapterPassage(formatterEntity, chapterEntity).transform { passage ->
+			extRepo.getIExtension(chapterEntity.extensionID).transform { iExtension ->
+				chapRepo.getChapterPassage(iExtension, chapterEntity).transform { passage ->
 					chapRepo.saveChapterPassageToStorage(
 						chapterEntity,
+						iExtension.chapterType,
 						passage
 					)
 					successResult("Chapter Loaded")

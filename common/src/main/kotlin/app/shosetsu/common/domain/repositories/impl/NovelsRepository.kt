@@ -72,7 +72,7 @@ class NovelsRepository(
 			result.transform { list: List<NovelEntity> ->
 				if (list.isEmpty()) emptyResult()
 				successResult(list.filter { it.title.contains(string, false) }
-					.map { (id, _, _, _, _, _, title, imageURL, _, _, _, _, _, _, _) ->
+					.map { (id, _, _, _, _, _, title, imageURL, _, _, _, _, _, _) ->
 						StrippedBookmarkedNovelEntity(id!!, title, imageURL)
 					})
 			}

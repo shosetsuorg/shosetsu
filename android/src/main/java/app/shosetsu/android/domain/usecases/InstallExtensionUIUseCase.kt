@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.dto.HResult
 
 /*
@@ -28,6 +28,7 @@ import app.shosetsu.common.dto.HResult
 class InstallExtensionUIUseCase(
 	private val extensionsRepository: IExtensionsRepository,
 ) {
-	suspend operator fun invoke(p1: ExtensionUI): HResult<*> =
-		extensionsRepository.installExtension(p1.convertTo())
+	suspend operator fun invoke(extension: ExtensionUI): HResult<*> {
+		return extensionsRepository.installExtension(extension.convertTo())
+	}
 }

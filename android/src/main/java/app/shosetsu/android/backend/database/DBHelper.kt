@@ -177,7 +177,7 @@ class DBHelper(context: Context) :
 					)
 				}
 			}
-				.map { (novelID, bookmarked, title, imageURL, description, genres, authors, tags, publishingStatus, artists, language, maxChapter) ->
+				.map { (novelID, bookmarked, title, imageURL, description, genres, authors, tags, publishingStatus, artists, language, _) ->
 					val novelIDF = novelIDS.find { it.novelID == novelID }!!
 
 					NovelEntity(
@@ -195,9 +195,6 @@ class DBHelper(context: Context) :
 						artists = artists.toList(),
 						tags = tags.toList(),
 						status = publishingStatus,
-
-						// Default to string, it's alright as the extension will update this later
-						readerType = Novel.ChapterType.STRING
 					)
 				}
 

@@ -276,5 +276,9 @@ inline fun <reified I, O> HResult<I>.transform(
 	is HResult.Error -> onError(this)
 }
 
-inline fun <reified T> HResult<T>.catch(unit: () -> HResult<T>): HResult<T> =
-	takeIf { it is HResult.Success } ?: unit()
+/**
+ * This allows an [HResult] to be "caught". This is useful when you need to handle an [HResult]
+ * in a catching manner
+ */
+inline fun <reified T> HResult<T>.catch(notASuccess: () -> HResult<T>): HResult<T> =
+	takeIf { it is HResult.Success } ?: notASuccess()

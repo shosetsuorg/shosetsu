@@ -59,7 +59,7 @@ class ExtensionsRepository(
 	override suspend fun getExtensionEntities(repoID: Int): HResult<List<ExtensionEntity>> =
 		dbSource.getExtensions(repoID)
 
-	override suspend fun installExtension(extensionEntity: ExtensionEntity): HResult<*> =
+	override suspend fun installExtension(extensionEntity: ExtensionEntity): HResult<IExtensionsRepository.InstallExtensionFlags> =
 		dbRepoSource.loadRepository(extensionEntity.repoID).transform { repo ->
 			remoteSource.downloadExtension(
 				repo,
@@ -77,12 +77,20 @@ class ExtensionsRepository(
 						extensionEntity.installedVersion = meta.version
 						extensionEntity.repositoryVersion = meta.version
 					}
+
 					extensionEntity.name = formatter.name
 					extensionEntity.imageURL = formatter.imageURL
 					extensionEntity.installed = true
 					extensionEntity.enabled = true
+					val deleteChapters = extensionEntity.chapterType != formatter.chapterType
+					extensionEntity.chapterType = formatter.chapterType
+
+					extensionEntity.fileName
+
 					dbSource.updateExtension(extensionEntity)
-					successResult("")
+
+					successResult(IExtensionsRepository.InstallExtensionFlags(deleteChapters))
+
 				} catch (e: IllegalArgumentException) {
 					errorResult(ERROR_LUA_BROKEN, e)
 				} catch (e: Exception) {

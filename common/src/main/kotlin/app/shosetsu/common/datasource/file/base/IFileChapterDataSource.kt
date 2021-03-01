@@ -1,7 +1,8 @@
 package app.shosetsu.common.datasource.file.base
 
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.model.local.ChapterEntity
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.lib.Novel
 
 /*
  * This file is part of shosetsu.
@@ -28,13 +29,20 @@ interface IFileChapterDataSource {
 	/**
 	 * Save the chapter passage to storage
 	 */
-	suspend fun saveChapterPassageToStorage(chapterEntity: ChapterEntity, passage: String): HResult<*>
+	suspend fun saveChapterPassageToStorage(
+		chapterEntity: ChapterEntity,
+		chapterType: Novel.ChapterType,
+		passage: String
+	): HResult<*>
 
 	/**
 	 * Gets chapter passage via it's ID
 	 * @return [HResult.Empty] if passage not found, [HResult.Success] if found
 	 */
-	suspend fun loadChapterPassageFromStorage(chapterEntity: ChapterEntity): HResult<String>
+	suspend fun loadChapterPassageFromStorage(
+		chapterEntity: ChapterEntity,
+		chapterType: Novel.ChapterType
+	): HResult<String>
 
 	/** Deletes a chapter from the filesystem */
 	suspend fun deleteChapter(chapterEntity: ChapterEntity): HResult<*>
