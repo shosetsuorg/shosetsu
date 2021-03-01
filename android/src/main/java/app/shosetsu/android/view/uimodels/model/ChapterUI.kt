@@ -3,6 +3,7 @@ package app.shosetsu.android.view.uimodels.model
 import android.content.res.ColorStateList
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
@@ -106,22 +107,22 @@ data class ChapterUI(
 				)
 			}
 
-			downloadTag.visibility = if (item.isSaved) View.VISIBLE else View.INVISIBLE
+			downloadTag.isVisible = item.isSaved
 
 			when (item.readingStatus) {
 				ReadingStatus.READING -> {
 					setAlpha()
 					if (item.readingPosition > 0) {
-						readTag.visibility = View.VISIBLE
-						readProgressValue.visibility = View.VISIBLE
-						readProgressValue.text = item.readingPosition.toString()
+						readTag.isVisible = true
+						readProgressValue.isVisible = true
+						readProgressValue.text = ("${"%2.1f".format(item.readingPosition)}%")
 					}
 				}
 				ReadingStatus.UNREAD -> setAlpha()
 				ReadingStatus.READ -> {
 					setAlpha(0.5F) // Opacity to move attention away
-					readTag.visibility = View.GONE
-					readProgressValue.visibility = View.GONE
+					readTag.isVisible = false
+					readProgressValue.isVisible = false
 				}
 				else -> {
 				}
@@ -133,8 +134,8 @@ data class ChapterUI(
 			title.text = null
 			oldColors.let { title.setTextColor(it) }
 			readProgressValue.text = null
-			readTag.visibility = View.GONE
-			downloadTag.visibility = View.GONE
+			readTag.isVisible = false
+			downloadTag.isVisible = false
 		}
 	}
 }

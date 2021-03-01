@@ -12,6 +12,7 @@ import androidx.core.view.setPadding
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.LifecycleObserver
 import app.shosetsu.android.common.ext.logD
+import app.shosetsu.android.common.ext.maxY
 import app.shosetsu.android.common.ext.percentageScrolled
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
@@ -146,7 +147,7 @@ class StringReader(
 	}
 
 	override fun setProgress(progress: Double) {
-		scrollView.scrollTo(0, progress.toInt())
+		scrollView.scrollTo(0, (scrollView.maxY * (progress / 100)).toInt())
 	}
 
 	override fun getFocusTarget(): View = textView

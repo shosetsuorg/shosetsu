@@ -63,18 +63,14 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 		@JavascriptInterface
 		public fun call() {
 			launchUI {
-				val getMax = """
-					    var innerh = window.innerHeight || ebody.clientHeight, yWithScroll = 0;
-					    yWithScroll = document.body.scrollHeight;
-					    yWithScroll-innerh; 
-				""".trimIndent()
+
 
 				webView.evaluateJavascript("window.pageYOffset") { _yPosition ->
 					val yPosition: Double? = _yPosition.toDoubleOrNull()
 					yPosition ?: logD("Null Y position")
 					yPosition ?: return@evaluateJavascript
 
-					webView.evaluateJavascript(getMax) { _scrollMaxY ->
+					webView.evaluateJavascript(getMaxJson) { _scrollMaxY ->
 						val scrollMaxY: Double? = _scrollMaxY.toDoubleOrNull()
 						scrollMaxY ?: logD("Null Y max")
 						scrollMaxY ?: return@evaluateJavascript
@@ -221,7 +217,15 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 
 	override fun setProgress(progress: Double) {
 		val call = {
-			webView.evaluateJavascript("window.scrollTo(0,$progress)", null)
+
+			webView.evaluateJavascript(getMaxJson) { maxString ->
+				maxString.toDoubleOrNull()?.let { maxY ->
+					webView.evaluateJavascript(
+						"window.scrollTo(0,${(maxY * (progress / 100)).toInt()})",
+						null
+					)
+				}
+			}
 		}
 
 		if (isPageLoaded) call()
@@ -248,5 +252,13 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	}
 
 	override fun unbindView(item: ReaderChapterUI) {
+	}
+
+	companion object {
+		private val getMaxJson = """
+					    var innerh = window.innerHeight || ebody.clientHeight, yWithScroll = 0;
+					    yWithScroll = document.body.scrollHeight;
+					    yWithScroll-innerh; 
+				""".trimIndent()
 	}
 }
