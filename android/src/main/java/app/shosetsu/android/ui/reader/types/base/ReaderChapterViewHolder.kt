@@ -54,7 +54,7 @@ abstract class ReaderChapterViewHolder(
 	/**
 	 * When the user double clicks the window
 	 */
-	abstract fun getFocusTarget(): View?
+	abstract fun getFocusTarget(onFocus: () -> Unit)
 
 	abstract fun hideLoadingProgress()
 	abstract fun showLoadingProgress()
@@ -62,6 +62,4 @@ abstract class ReaderChapterViewHolder(
 	abstract fun incrementScroll()
 
 	abstract fun depleteScroll()
-
-	// abstract fun setTextFont()
 }

@@ -10,7 +10,6 @@ import androidx.core.graphics.green
 import androidx.core.graphics.red
 import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.common.ext.logD
-import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.common.enums.ReadingStatus
@@ -50,21 +49,23 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	 * value    : style-key to value
 	 */
 	private val shosetsuStyle: HashMap<String, HashMap<String, String>> = hashMapOf()
+	private val shosetsuScript by lazy { ShosetsuScript() }
 
-	private inner class ScrollListener {
+	private inner class ShosetsuScript {
+		var onClickMethod: () -> Unit = {}
 
+		@Suppress("unused")
 		@JavascriptInterface
-		fun print(any: Any?) {
-			logV("Printing from javascript: $any")
+		fun onClick() {
+			launchUI {
+				onClickMethod()
+			}
 		}
 
-
-		@Suppress("unused", "RedundantVisibilityModifier")
+		@Suppress("unused")
 		@JavascriptInterface
-		public fun call() {
+		public fun onScroll() {
 			launchUI {
-
-
 				webView.evaluateJavascript("window.pageYOffset") { _yPosition ->
 					val yPosition: Double? = _yPosition.toDoubleOrNull()
 					yPosition ?: logD("Null Y position")
@@ -99,7 +100,7 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 
 	init {
 		webView.settings.javaScriptEnabled = true
-		webView.addJavascriptInterface(ScrollListener(), "scrollInterface")
+		webView.addJavascriptInterface(shosetsuScript, "shosetsuScript")
 
 		webView.webViewClient = object : WebViewClient() {
 			override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -112,7 +113,8 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 				super.onPageFinished(view, url)
 				webView.evaluateJavascript(
 					"""
-						window.addEventListener("scroll",(event)=>{ scrollInterface.call(); });
+						window.addEventListener("scroll",(event)=>{ shosetsuScript.onScroll(); });
+						window.addEventListener("click",(event)=>{ shosetsuScript.onClick(); });
 					""".trimIndent(), null
 				)
 				isPageLoaded = true
@@ -232,7 +234,9 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 		else onPageLoaded = call
 	}
 
-	override fun getFocusTarget(): View = host
+	override fun getFocusTarget(onFocus: () -> Unit) {
+		shosetsuScript.onClickMethod = onFocus
+	}
 
 	override fun hideLoadingProgress() {}
 	override fun showLoadingProgress() {}

@@ -17,7 +17,7 @@ import app.shosetsu.android.common.ext.percentageScrolled
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.common.enums.ReadingStatus
-import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.databinding.ChapterReaderTextViewBinding
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
@@ -48,20 +48,20 @@ class StringReader(
 	itemView: View
 ) : ReaderChapterViewHolder(itemView), KodeinAware, LifecycleObserver {
 	override val kodein: Kodein by kodein(itemView.context)
+	private val binding = ChapterReaderTextViewBinding.bind(itemView)
 
 	/**
 	 * Main way of reading in this view
 	 */
-	private val textView: AppCompatTextView = itemView.findViewById(R.id.textView)
-	private val scrollView: NestedScrollView = itemView.findViewById(R.id.scrollView)
-
-	private val middleBox: View = itemView.findViewById(R.id.reader_middle_box)
-	private val progressBar: ProgressBar = itemView.findViewById(R.id.progressBar)
+	private val textView: AppCompatTextView = binding.textView
+	private val scrollView: NestedScrollView = binding.scrollView
+	private val middleBox: View = binding.readerMiddleBox
+	private val progressBar: ProgressBar = binding.progressBar
 
 	// These handle the error view
-	private val errorView: View = itemView.findViewById(R.id.error_view)
-	private val errorMessage: TextView = itemView.findViewById(R.id.error_message)
-	private val errorButton: Button = itemView.findViewById(R.id.error_button)
+	private val errorView: View = binding.errorView
+	private val errorMessage: TextView = binding.errorMessage
+	private val errorButton: Button = binding.errorButton
 
 	private var unformattedText = ""
 
@@ -150,7 +150,8 @@ class StringReader(
 		scrollView.scrollTo(0, (scrollView.maxY * (progress / 100)).toInt())
 	}
 
-	override fun getFocusTarget(): View = textView
+	override fun getFocusTarget(onFocus: () -> Unit) =
+		textView.setOnClickListener { onFocus() }
 
 	override fun syncTextColor() {
 		textView.setTextColor(chapterReader.viewModel.defaultForeground)

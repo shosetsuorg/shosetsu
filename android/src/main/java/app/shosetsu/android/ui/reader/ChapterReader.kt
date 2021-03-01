@@ -354,7 +354,7 @@ class ChapterReader
 		return super.onKeyDown(keyCode, event)
 	}
 
-	private fun focusListener(view: View) {
+	private fun focusListener() {
 
 		toolbar.isVisible = if (toolbar.isVisible) {
 			toast("hidden")
@@ -379,10 +379,9 @@ class ChapterReader
 		syncTextColor()
 		syncTextSize()
 		syncTextPadding()
-		getFocusTarget()?.setOnClickListener {
-			logI("Click")
-			focusListener(it)
-		} ?: logE("Returned target was null")
+		getFocusTarget {
+			focusListener()
+		}
 	}
 
 	private fun <T> LiveData<T>.observe(observer: (T) -> Unit) =

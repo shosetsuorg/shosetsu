@@ -62,7 +62,7 @@ class MarkdownReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 		TODO("Not yet implemented")
 	}
 
-	override fun getFocusTarget(): View? {
+	override fun getFocusTarget(onFocus: () -> Unit) {
 		TODO("Not yet implemented")
 	}
 
