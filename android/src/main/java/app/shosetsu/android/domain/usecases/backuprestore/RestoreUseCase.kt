@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases.backuprestore
 
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
-import app.shosetsu.common.domain.repositories.base.IChapterEntitiesRepository
+import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 
 /*
@@ -27,7 +27,7 @@ import app.shosetsu.common.domain.repositories.base.ISettingsRepository
  */
 class RestoreUseCase(
 	private val iNovelsRepository: INovelsRepository,
-	private val iChapterEntitiesRepository: IChapterEntitiesRepository,
+	private val iChaptersRepository: IChaptersRepository,
 	private val settings: ISettingsRepository
 ) {
 	operator fun invoke(file: String) {

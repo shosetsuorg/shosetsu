@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases.update
 
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
-import app.shosetsu.common.domain.repositories.base.IChapterEntitiesRepository
+import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 
 /*
  * This file is part of shosetsu.
@@ -25,7 +25,7 @@ import app.shosetsu.common.domain.repositories.base.IChapterEntitiesRepository
  * 07 / 06 / 2020
  */
 class UpdateReaderChapterUseCase(
-	private val chapterRepository: IChapterEntitiesRepository,
+	private val chapterRepository: IChaptersRepository,
 ) {
 	suspend operator fun invoke(chapter: ReaderChapterUI) {
 		chapterRepository.updateReaderChapter(chapter.convertTo())

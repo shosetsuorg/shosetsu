@@ -64,7 +64,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 	 */
 	private val novelSettingsRepository by instance<INovelSettingsRepository>()
 	private val extensionsRepository by instance<IExtensionsRepository>()
-	private val chaptersRepository by instance<IChapterEntitiesRepository>()
+	private val chaptersRepository by instance<IChaptersRepository>()
 	private val extensionRepoRepository by instance<IExtensionRepoRepository>()
 	private val backupRepository by instance<IBackupRepository>()
 

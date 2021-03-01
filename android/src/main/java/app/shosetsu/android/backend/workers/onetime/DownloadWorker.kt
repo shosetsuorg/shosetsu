@@ -68,7 +68,7 @@ class DownloadWorker(
 
 	override val kodein: Kodein by closestKodein(applicationContext)
 	private val downloadsRepo by instance<IDownloadsRepository>()
-	private val chapRepo by instance<IChapterEntitiesRepository>()
+	private val chapRepo by instance<IChaptersRepository>()
 	private val extRepo by instance<IExtensionsRepository>()
 	private val settingRepo by instance<ISettingsRepository>()
 

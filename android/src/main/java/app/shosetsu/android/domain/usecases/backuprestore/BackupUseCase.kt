@@ -2,7 +2,7 @@ package app.shosetsu.android.domain.usecases.backuprestore
 
 import android.content.Context
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
-import app.shosetsu.common.domain.repositories.base.IChapterEntitiesRepository
+import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 
 /*
@@ -29,7 +29,7 @@ import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 @Suppress("unused")
 class BackupUseCase(
 	private val iNovelsRepository: INovelsRepository,
-	private val iChapterEntitiesRepository: IChapterEntitiesRepository,
+	private val iChaptersRepository: IChaptersRepository,
 	private val settings: ISettingsRepository,
 	private val context: Context
 ) {

@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.Flow
  *
  * @author github.com/doomsdayrs
  */
-interface IChapterEntitiesRepository {
+interface IChaptersRepository {
 	/**
 	 * Loads a [ChapterEntity]s text
 	 * First checks memory

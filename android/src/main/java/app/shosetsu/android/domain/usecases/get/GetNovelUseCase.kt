@@ -38,7 +38,7 @@ import app.shosetsu.common.dto.transform
 class GetNovelUseCase(
 	private val nR: INovelsRepository,
 	private val eR: IExtensionsRepository,
-	private val cR: IChapterEntitiesRepository,
+	private val cR: IChaptersRepository,
 	private val uR: IUpdatesRepository,
 	private val sR: ISettingsRepository,
 	private val download: DownloadChapterPassageUseCase

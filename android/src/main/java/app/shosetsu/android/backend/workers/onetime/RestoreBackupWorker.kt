@@ -66,7 +66,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 	private val initializeExtensionsUseCase by instance<InitializeExtensionsUseCase>()
 	private val extensionsRepo by instance<IExtensionsRepository>()
 	private val novelsRepo by instance<INovelsRepository>()
-	private val chaptersRepo by instance<IChapterEntitiesRepository>()
+	private val chaptersRepo by instance<IChaptersRepository>()
 
 	override val baseNotificationBuilder: NotificationCompat.Builder
 		get() = notificationBuilder(applicationContext, Notifications.CHANNEL_BACKUP)

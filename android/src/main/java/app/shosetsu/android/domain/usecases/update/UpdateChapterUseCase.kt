@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases.update
 
 import app.shosetsu.android.view.uimodels.model.ChapterUI
-import app.shosetsu.common.domain.repositories.base.IChapterEntitiesRepository
+import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 
 /*
  * This file is part of shosetsu.
@@ -25,9 +25,9 @@ import app.shosetsu.common.domain.repositories.base.IChapterEntitiesRepository
  * 06 / 06 / 2020
  */
 class UpdateChapterUseCase(
-	private val chapterEntitiesRepository: IChapterEntitiesRepository,
+	private val chaptersRepository: IChaptersRepository,
 ) {
 	suspend operator fun invoke(chapterUI: ChapterUI) {
-		chapterEntitiesRepository.updateChapter(chapterUI.convertTo())
+		chaptersRepository.updateChapter(chapterUI.convertTo())
 	}
 }
