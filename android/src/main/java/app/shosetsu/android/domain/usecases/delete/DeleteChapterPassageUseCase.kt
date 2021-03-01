@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases.delete
 
 import app.shosetsu.android.view.uimodels.model.ChapterUI
-import app.shosetsu.common.domain.repositories.base.IChaptersRepository
+import app.shosetsu.common.domain.repositories.base.IChapterEntitiesRepository
 
 /*
  * This file is part of shosetsu.
@@ -25,9 +25,9 @@ import app.shosetsu.common.domain.repositories.base.IChaptersRepository
  * 26 / 06 / 2020
  */
 class DeleteChapterPassageUseCase(
-	private val iChaptersRepository: IChaptersRepository,
+	private val iChapterEntitiesRepository: IChapterEntitiesRepository,
 ) {
 	suspend operator fun invoke(chapterUI: ChapterUI) {
-		iChaptersRepository.deleteChapterPassage(chapterUI.convertTo())
+		iChapterEntitiesRepository.deleteChapterPassage(chapterUI.convertTo())
 	}
 }

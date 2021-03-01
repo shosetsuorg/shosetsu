@@ -49,7 +49,7 @@ data class NovelUI(
 
 	var bookmarked: Boolean,
 
-	var readerType: Int,
+	var readerType: Novel.ChapterType,
 
 	var title: String,
 
@@ -168,25 +168,5 @@ data class NovelUI(
 			novelSite.text = null
 			novelTitle.text = null
 		}
-	}
-
-	companion object {
-		fun instance() = NovelUI(
-			id = -1,
-			novelURL = "",
-			extID = -1,
-			bookmarked = false,
-			readerType = -1,
-			title = "",
-			imageURL = "",
-			description = "",
-			loaded = true,
-			language = "",
-			genres = listOf(),
-			authors = listOf(),
-			artists = listOf(),
-			tags = listOf(),
-			status = Novel.Status.UNKNOWN
-		)
 	}
 }

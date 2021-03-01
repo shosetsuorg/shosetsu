@@ -1,8 +1,8 @@
 package app.shosetsu.android.providers.database.converters
 
 import androidx.room.TypeConverter
-import app.shosetsu.common.enums.ReaderType
-import app.shosetsu.common.enums.ReaderType.Companion.valueOf
+import app.shosetsu.lib.Novel.ChapterType
+import app.shosetsu.lib.Novel.ChapterType.Companion.valueOf
 
 /*
  * This file is part of Shosetsu.
@@ -23,11 +23,13 @@ import app.shosetsu.common.enums.ReaderType.Companion.valueOf
 
 /**
  * 02 / 01 / 2021
+ *
+ * Converts a [ReaderType] from it's enum form to integer form and back
  */
-class ReaderTypeConverter {
+class ChapterTypeConverter {
 	@TypeConverter
-	fun toString(readerType: ReaderType): Int = readerType.key
+	fun toString(readerType: ChapterType): Int = readerType.key
 
 	@TypeConverter
-	fun toSortType(key: Int): ReaderType = valueOf(key)
+	fun toSortType(key: Int): ChapterType = valueOf(key)
 }

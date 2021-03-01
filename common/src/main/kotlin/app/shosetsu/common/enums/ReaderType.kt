@@ -29,7 +29,10 @@ import app.shosetsu.lib.Novel.ChapterType
  * @param key Identifier
  * @param chapterType What the chapter type being loaded must be
  */
+@Deprecated("Just use a raw usage of ChapterType")
 enum class ReaderType(val key: Int, val chapterType: ChapterType) {
+
+	STRING(1, ChapterType.STRING),
 
 	/**
 	 * Loads the chapter content up as a website
@@ -60,6 +63,10 @@ enum class ReaderType(val key: Int, val chapterType: ChapterType) {
 	MARK_DOWN(5, ChapterType.MARKDOWN);
 
 	companion object {
-		fun valueOf(key: Int) = values().find { it.key == key }!!
+		fun valueOf(key: Int) =
+			values().find { it.key == key } ?: STRING
+
+		fun valueOf(chapterType: ChapterType) =
+			values().find { it.chapterType == chapterType } ?: STRING
 	}
 }

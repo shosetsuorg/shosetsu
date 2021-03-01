@@ -11,6 +11,7 @@ import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.dto.HResult.Error
 import app.shosetsu.common.dto.HResult.Success
 import app.shosetsu.common.dto.handle
+import app.shosetsu.lib.Novel
 import app.shosetsu.lib.Version
 import app.shosetsu.lib.json.RepoExtension
 import app.shosetsu.lib.json.RepoLibrary
@@ -148,6 +149,7 @@ class InitializeExtensionsUseCase(
 					imageURL = imageURL,
 					lang = lang,
 					repositoryVersion = version,
+					chapterType = Novel.ChapterType.STRING,
 					md5 = md5
 				)
 			)

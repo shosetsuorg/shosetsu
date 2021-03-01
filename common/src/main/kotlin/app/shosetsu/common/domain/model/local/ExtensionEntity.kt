@@ -1,5 +1,6 @@
 package app.shosetsu.common.domain.model.local
 
+import app.shosetsu.lib.Novel
 import app.shosetsu.lib.Version
 
 /*
@@ -28,36 +29,41 @@ import app.shosetsu.lib.Version
  * This class represents a formatter
  */
 data class ExtensionEntity(
-		/** Extension ID */
-		val id: Int,
+	/** Extension ID */
+	val id: Int,
 
-		/** Repository extension belongs too*/
-		val repoID: Int,
+	/** Repository extension belongs too*/
+	val repoID: Int,
 
-		/** Name of the extension, can be changed */
-		var name: String = "",
+	/** Name of the extension, can be changed */
+	var name: String = "",
 
-		/** FileName of the extension */
-		val fileName: String = "",
+	/** FileName of the extension */
+	val fileName: String = "",
 
-		/** Image URL of the extension*/
-		var imageURL: String? = null,
+	/** Image URL of the extension*/
+	var imageURL: String? = null,
 
-		/** The language of the extension */
-		val lang: String = "",
+	/** The language of the extension */
+	val lang: String = "",
 
-		/** If extension is enabled */
-		var enabled: Boolean = false,
+	/** If extension is enabled */
+	var enabled: Boolean = false,
 
-		/** If extension is installed*/
-		var installed: Boolean = false,
+	/** If extension is installed*/
+	var installed: Boolean = false,
 
-		/** Version currently installed */
-		var installedVersion: Version? = null,
+	/** Version currently installed */
+	var installedVersion: Version? = null,
 
-		/** Version in repository*/
-		var repositoryVersion: Version = Version(0, 0, 0),
+	/** Version in repository*/
+	var repositoryVersion: Version = Version(0, 0, 0),
 
-		/** MD5 to check against */
-		var md5: String = "",
+	/**
+	 * The chapter type of this extension
+	 */
+	var chapterType: Novel.ChapterType,
+
+	/** MD5 to check against */
+	var md5: String = "",
 )

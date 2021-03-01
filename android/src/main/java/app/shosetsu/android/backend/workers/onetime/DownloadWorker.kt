@@ -1,12 +1,10 @@
 package app.shosetsu.android.backend.workers.onetime
 
-import android.app.NotificationManager
 import android.content.Context
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.getSystemService
 import androidx.work.*
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
@@ -70,7 +68,7 @@ class DownloadWorker(
 
 	override val kodein: Kodein by closestKodein(applicationContext)
 	private val downloadsRepo by instance<IDownloadsRepository>()
-	private val chapRepo by instance<IChaptersRepository>()
+	private val chapRepo by instance<IChapterEntitiesRepository>()
 	private val extRepo by instance<IExtensionsRepository>()
 	private val settingRepo by instance<ISettingsRepository>()
 

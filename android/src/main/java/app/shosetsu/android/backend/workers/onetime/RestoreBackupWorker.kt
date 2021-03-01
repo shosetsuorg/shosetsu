@@ -66,7 +66,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 	private val initializeExtensionsUseCase by instance<InitializeExtensionsUseCase>()
 	private val extensionsRepo by instance<IExtensionsRepository>()
 	private val novelsRepo by instance<INovelsRepository>()
-	private val chaptersRepo by instance<IChaptersRepository>()
+	private val chaptersRepo by instance<IChapterEntitiesRepository>()
 
 	override val baseNotificationBuilder: NotificationCompat.Builder
 		get() = notificationBuilder(applicationContext, Notifications.CHANNEL_BACKUP)
@@ -202,7 +202,8 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 							novelsRepo.insertReturnStripped(
 								siteNovel.asEntity(
 									link = bNovelURL,
-									extensionID = extensionID
+									extensionID = extensionID,
+									readerType = extensionEntity.chapterType
 								).copy(
 									bookmarked = true
 								)

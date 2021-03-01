@@ -194,7 +194,10 @@ class DBHelper(context: Context) :
 						authors = authors.toList(),
 						artists = artists.toList(),
 						tags = tags.toList(),
-						status = publishingStatus
+						status = publishingStatus,
+
+						// Default to string, it's alright as the extension will update this later
+						readerType = Novel.ChapterType.STRING
 					)
 				}
 

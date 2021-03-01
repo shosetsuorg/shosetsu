@@ -2,7 +2,7 @@ package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.common.consts.settings.SettingKey.ReaderStringToHtml
-import app.shosetsu.common.domain.repositories.base.IChaptersRepository
+import app.shosetsu.common.domain.repositories.base.IChapterEntitiesRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.*
 import app.shosetsu.lib.Novel
@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.flow
  * 07 / 06 / 2020
  */
 class GetReaderChaptersUseCase(
-	private val iChaptersRepository: IChaptersRepository,
+	private val iChapterEntitiesRepository: IChapterEntitiesRepository,
 	private var settingsRepository: ISettingsRepository
 ) {
 	@ExperimentalCoroutinesApi
@@ -42,7 +42,7 @@ class GetReaderChaptersUseCase(
 		flow {
 			emit(loading())
 			emitAll(
-				iChaptersRepository.getReaderChaptersFlow(novelID)
+				iChapterEntitiesRepository.getReaderChaptersFlow(novelID)
 					.combine(settingsRepository.getBooleanFlow(ReaderStringToHtml)) { list, convertToHtml ->
 						list.transformToSuccess { it to convertToHtml }
 					}

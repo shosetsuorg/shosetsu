@@ -60,7 +60,7 @@ data class DBNovelEntity(
 	var loaded: Boolean = false,
 
 	/** What kind of reader is this novel using */
-	var readerType: Int = -1,
+	var readerType: Novel.ChapterType,
 
 	@NonNull
 	/** The title of the novel */

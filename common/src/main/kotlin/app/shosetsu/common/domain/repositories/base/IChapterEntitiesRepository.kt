@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.Flow
  *
  * @author github.com/doomsdayrs
  */
-interface IChaptersRepository {
+interface IChapterEntitiesRepository {
 	/**
 	 * Loads a [ChapterEntity]s text
 	 * First checks memory
@@ -84,7 +84,6 @@ interface IChaptersRepository {
 	 *
 	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
-	@Deprecated("Remove foreign entity")
 	suspend fun handleChapters(
 		novelID: Int,
 		extensionID: Int,
@@ -103,7 +102,6 @@ interface IChaptersRepository {
 	 *
 	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
-	@Deprecated("Remove foreign entity")
 	suspend fun handleChaptersReturn(
 		novelID: Int,
 		extensionID: Int,

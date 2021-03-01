@@ -60,7 +60,7 @@ import kotlinx.coroutines.launch
 	DownloadStatusConverter::class,
 	ListConverter::class,
 	NovelStatusConverter::class,
-	ReaderTypeConverter::class,
+	ChapterTypeConverter::class,
 	ReadingStatusConverter::class,
 	StringArrayConverters::class,
 	VersionConverter::class,

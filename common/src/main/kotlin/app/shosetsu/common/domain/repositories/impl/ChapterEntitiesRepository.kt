@@ -7,7 +7,7 @@ import app.shosetsu.common.datasource.memory.base.IMemChaptersDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteChaptersDataSource
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.ReaderChapterEntity
-import app.shosetsu.common.domain.repositories.base.IChaptersRepository
+import app.shosetsu.common.domain.repositories.base.IChapterEntitiesRepository
 import app.shosetsu.common.dto.*
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
@@ -41,13 +41,13 @@ import kotlinx.coroutines.flow.Flow
  * @param remoteSource Source from online
  * @param fileSource Source from storage
  */
-class ChaptersRepository(
+class ChapterEntitiesRepository(
 	private val memorySource: IMemChaptersDataSource,
 	private val cacheSource: IFileCachedChapterDataSource,
 	private val dbSource: IDBChaptersDataSource,
 	private val fileSource: IFileChapterDataSource,
 	private val remoteSource: IRemoteChaptersDataSource,
-) : IChaptersRepository {
+) : IChapterEntitiesRepository {
 
 	private suspend inline fun placeIntoCache(
 		chapterEntity: ChapterEntity,

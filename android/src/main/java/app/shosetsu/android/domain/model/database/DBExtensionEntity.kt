@@ -7,6 +7,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.dto.Convertible
+import app.shosetsu.lib.Novel
 import app.shosetsu.lib.Version
 
 /*
@@ -74,6 +75,11 @@ data class DBExtensionEntity(
 	/** Version in repository*/
 	var repositoryVersion: Version = Version(0, 0, 0),
 
+	/**
+	 * The reader type of this extension
+	 */
+	var chapterType: Novel.ChapterType,
+
 	/** MD5 to check against */
 	var md5: String = "",
 ) : Convertible<ExtensionEntity> {
@@ -88,6 +94,7 @@ data class DBExtensionEntity(
 		installed,
 		installedVersion,
 		repositoryVersion,
+		chapterType,
 		md5
 	)
 }
