@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.settings.sub.TextAssetReader
-import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.view.controller.ViewedController
+import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.viewmodel.abstracted.AAboutViewModel
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
@@ -60,8 +60,11 @@ class AboutController : ViewedController<ControllerAboutBinding>(), PushCapableC
 			patreon.setOnClickListener {
 				viewModel.openPatreon()
 			}
-			sourceLicenses.setOnClickListener {
+			sourceLicensesCard.setOnClickListener {
 				onClickLicense()
+			}
+			disclaimerCard.setOnClickListener {
+				onClickDisclaimer()
 			}
 		}
 	}
@@ -71,4 +74,7 @@ class AboutController : ViewedController<ControllerAboutBinding>(), PushCapableC
 
 	private fun onClickLicense() =
 		pushController(TextAssetReader(TextAssetReader.Target.LICENSE.bundle))
+
+	private fun onClickDisclaimer() =
+		pushController(TextAssetReader(TextAssetReader.Target.DISCLAIMER.bundle))
 }

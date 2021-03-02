@@ -39,3 +39,6 @@ fun Cursor.getDouble(key: String): Double =
 
 fun Cursor.getString(key: String): String =
 	getString(getColumnIndex(key))
+
+fun Cursor.getStringOrNull(key: String): String? =
+	getString(getColumnIndex(key))

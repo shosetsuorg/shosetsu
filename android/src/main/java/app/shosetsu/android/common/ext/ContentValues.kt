@@ -19,8 +19,7 @@ import android.content.ContentValues
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-operator fun ContentValues.set(key: String, value: String) =
+operator fun ContentValues.set(key: String, value: String?) =
 	put(key, value)
 
 operator fun ContentValues.set(key: String, value: Int) =
