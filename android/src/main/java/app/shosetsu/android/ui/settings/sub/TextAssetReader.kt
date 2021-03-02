@@ -41,7 +41,7 @@ class TextAssetReader(bundleI: Bundle) : ViewedController<LargeReaderBinding>(bu
 	}
 
 	enum class Target(val bundle: Bundle) {
-		LICENSE(bundleOf(Pair(BUNDLE_KEY, "license"))),
+		LICENSE(bundleOf(Pair(BUNDLE_KEY, "license-gplv3"))),
 		DISCLAIMER(bundleOf(Pair(BUNDLE_KEY, "disclaimer")));
 	}
 

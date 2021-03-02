@@ -58,7 +58,7 @@ class IntroductionActivity : IntroActivity() {
 
 		override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 			if (message.isEmpty() && savedInstanceState == null)
-				message = activity?.readAsset("license.txt") ?: ""
+				message = activity?.readAsset("license-gplv3.txt") ?: ""
 			else if (message.isEmpty() && savedInstanceState != null)
 				message = savedInstanceState.getString("message", "")
 			introLicenseBinding.title.text = message
