@@ -388,10 +388,10 @@
     <string name="settings_reader_desc_continous_scroll">Smoothly scroll between chapters</string>
 
     <!-- Notification channel names -->
-    <string name="notification_channel_name_novel_update">Update</string>
-    <string name="notification_channel_name_download">Download</string>
+    <string name="notification_channel_name_novel_update">Novel Updates</string>
+    <string name="notification_channel_name_download">Chapter Download</string>
     <string name="notification_channel_name_app_update">App Update</string>
-    <string name="notification_channel_name_backup">Backup</string>
+    <string name="notification_channel_name_backup">Backup and Restore</string>
 
 
     <array name="text_alignments">
