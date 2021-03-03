@@ -376,6 +376,8 @@
     <string name="text_alignment_center">Center</string>
     <string name="text_alignment_justified">Justified</string>
     <string name="text_alignment_end">End</string>
+
+
     <string name="settings_reader_title_string_to_html">Convert string to html</string>
     <string name="settings_reader_desc_string_to_html">All string based extensions are rendered as html</string>
     <string name="settings_reader_title_horizontal_option">Horizontal paging</string>
@@ -384,6 +386,12 @@
     <string name="settings_reader_desc_html_css">CSS injected into html reader</string>
     <string name="settings_reader_title_continous_scroll">Continuous scroll</string>
     <string name="settings_reader_desc_continous_scroll">Smoothly scroll between chapters</string>
+
+    <!-- Notification channel names -->
+    <string name="notification_channel_name_novel_update">Update</string>
+    <string name="notification_channel_name_download">Download</string>
+    <string name="notification_channel_name_app_update">App Update</string>
+    <string name="notification_channel_name_backup">Backup</string>
 
 
     <array name="text_alignments">

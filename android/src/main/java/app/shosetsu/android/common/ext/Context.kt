@@ -2,7 +2,6 @@ package app.shosetsu.android.common.ext
 
 import android.Manifest.permission.*
 import android.app.Activity
-import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.content.res.Resources
@@ -11,6 +10,7 @@ import android.widget.Toast.makeText
 import androidx.annotation.NonNull
 import androidx.annotation.StringRes
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationManagerCompat
 
 /*
  * This file is part of shosetsu.
@@ -65,8 +65,8 @@ fun Context.checkActivitySelfPermission(@NonNull permission: String): Int =
 /**
  * Property to get the notification manager from the context.
  */
-val Context.notificationManager: NotificationManager
-	get() = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+val Context.notificationManager: NotificationManagerCompat
+	get() = NotificationManagerCompat.from(this)
 
 fun Context.requestPerms() {
 	if (
