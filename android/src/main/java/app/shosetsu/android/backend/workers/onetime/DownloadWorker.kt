@@ -64,6 +64,7 @@ class DownloadWorker(
 		get() = notificationBuilder(applicationContext, CHANNEL_DOWNLOAD)
 			.setSmallIcon(R.drawable.download)
 			.setContentTitle("Downloader")
+			.setPriority(NotificationCompat.PRIORITY_HIGH)
 			.setOngoing(true)
 
 	override val kodein: Kodein by closestKodein(applicationContext)
@@ -129,6 +130,26 @@ class DownloadWorker(
 		return count
 	}
 
+
+	private fun notify(downloadEntity: DownloadEntity, isComplete: Boolean = false) {
+		val messageId = if (!isComplete) when (downloadEntity.status) {
+			DownloadStatus.PENDING -> R.string.pending
+			DownloadStatus.WAITING -> R.string.waiting
+			DownloadStatus.DOWNLOADING -> R.string.downloading
+			DownloadStatus.PAUSED -> R.string.paused
+			DownloadStatus.ERROR -> R.string.error
+		} else R.string.completed
+
+		notify(messageId, downloadEntity.chapterID + 2000) {
+			setNotOngoing()
+			setSubText("Download")
+			setContentTitle(downloadEntity.novelName + "\t" + downloadEntity.chapterName)
+			priority = NotificationCompat.PRIORITY_LOW
+			setNotificationSilent()
+		}
+	}
+
+
 	/**
 	 * Creates a sub job that starts downloading a chapter async
 	 * This allows the creation of multiple jobs
@@ -179,7 +200,7 @@ class DownloadWorker(
 					if (downloadEntity.status == DownloadStatus.PENDING) {
 						downloadEntity.status = DownloadStatus.WAITING
 						downloadsRepo.update(downloadEntity)
-						//	notify("Waiting", downloadEntity.chapterID + 100) { setNotOngoing()setSubText("Download")setContentTitle(downloadEntity.chapterName) }
+						notify(downloadEntity)
 					}
 					// Continues the loop, letting the check repeat
 				}
@@ -192,18 +213,16 @@ class DownloadWorker(
 			activeJobs++
 
 			logI("Downloading $downloadEntity")
-			notify("Downloading", downloadEntity.chapterID + 100) {
-				setNotOngoing()
-				setSubText("Download")
-				setContentTitle(downloadEntity.chapterName)
-			}
+			notify(downloadEntity)
 
 			download(downloadEntity).handle(
 				onError = {
 					downloadsRepo.update(
 						downloadEntity.copy(
 							status = DownloadStatus.ERROR
-						)
+						).also {
+							notify(it)
+						}
 					)
 					launchUI {
 						toast { it.message }
@@ -213,7 +232,9 @@ class DownloadWorker(
 					downloadsRepo.update(
 						downloadEntity.copy(
 							status = DownloadStatus.ERROR
-						)
+						).also {
+							notify(it)
+						}
 					)
 					launchUI {
 						toast { "Empty Error" }
@@ -223,13 +244,13 @@ class DownloadWorker(
 					error("Impossible")
 				}
 			) {
+				notify(downloadEntity, isComplete = true)
 				downloadsRepo.deleteEntity(downloadEntity)
 			}
 
+
 			activeJobs-- // Drops active job count once completed task
 			activeExtensions.remove(downloadEntity.extensionID)
-
-			//notify("Completed", downloadEntity.chapterID + 100) { setNotOngoing()setSubText("Downloading")setContentTitle(downloadEntity.chapterName) }
 		}
 	}
 
