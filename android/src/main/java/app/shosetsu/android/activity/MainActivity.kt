@@ -470,12 +470,14 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 			binding.slidingUpBottomMenu.apply {
 				addOnShowListener {
+					logD("Showing bottom menu")
 					if (!created) {
 						addChildView(to.getBottomMenuView().also {
 							this@MainActivity.logV("Created bottom menu #${it.hashCode()}")
 						})
 						created = true
-					}
+					} else
+						logE("Ignoring")
 				}
 
 				// Interaction with FABController
