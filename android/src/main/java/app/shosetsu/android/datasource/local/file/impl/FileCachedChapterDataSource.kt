@@ -4,9 +4,11 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.datasource.file.base.IFileCachedChapterDataSource
-import app.shosetsu.common.dto.*
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.handle
+import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.transmogrify
 import app.shosetsu.common.enums.InternalFileDir.CACHE
 import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import app.shosetsu.lib.Novel
@@ -98,7 +100,8 @@ class FileCachedChapterDataSource(
 	/**
 	 * Simply creates a file object
 	 */
-	private fun createFilePath(id: Int): String = "$chaptersCacheDir/$id.txt"
+	private fun createFilePath(id: Int, chapterType: Novel.ChapterType): String =
+		"$chaptersCacheDir/$id.${chapterType.fileExtension}"
 
 	/**
 	 * Clears out [chaptersCacheInstruction] of its incorrect data
@@ -155,7 +158,7 @@ class FileCachedChapterDataSource(
 				if (id == chapterID) {
 					iFileSystemProvider.writeFile(
 						CACHE,
-						createFilePath(chapterID),
+						createFilePath(chapterID, chapterType),
 						passage
 					)
 					obj.put(TIME_KEY, System.currentTimeMillis())
@@ -168,8 +171,8 @@ class FileCachedChapterDataSource(
 
 			iFileSystemProvider.writeFile(
 				CACHE,
-				createFilePath(chapterID),
-				"${chapterType.key}\n$passage"
+				createFilePath(chapterID, chapterType),
+				passage
 			)
 			chaptersCacheInstruction.put(JSONObject().apply {
 				put(CHAPTER_KEY, chapterID)
@@ -191,26 +194,11 @@ class FileCachedChapterDataSource(
 		chapterType: Novel.ChapterType
 	): HResult<String> {
 		launchIO { launchCleanUp() } // Launch cleanup separately
-		return iFileSystemProvider.readFile(CACHE, createFilePath(chapterID)).transform { passage ->
-			// This block of code uses a sequence to be as performance efficient as possible
-			passage.lineSequence().firstOrNull()?.let { firstLine ->
-				firstLine.toIntOrNull()?.let {
-					if (it != chapterType.key)
-						return@transform mismatchedChapterType
-				} ?: return@transform mismatchedChapterType
-			} ?: return@transform emptyResult()
-
-			successResult(passage.replaceFirst("${chapterType.key}\n", ""))
-		}
+		return iFileSystemProvider.readFile(CACHE, createFilePath(chapterID, chapterType))
 	}
 
 	companion object {
-		private val mismatchedChapterType by lazy {
-			errorResult(
-				ErrorKeys.MISMATCHED_CHAPTER_TYPE,
-				"Cached file chapter not of expected type"
-			)
-		}
+
 
 		const val chaptersCacheDir = "/cachedChapters/"
 		const val mapFile = "$chaptersCacheDir/map.json"

@@ -64,7 +64,7 @@ abstract class INovelViewModel
 	abstract fun share()
 
 	/** Instruction to download a specific chapter */
-	abstract fun downloadChapter(vararg chapterUI: ChapterUI)
+	abstract fun downloadChapter(vararg chapterUI: ChapterUI, startManager: Boolean = false)
 
 
 	/** Deletes the previous chapter */

@@ -418,7 +418,10 @@ class NovelController(bundle: Bundle) :
 	}
 
 	private fun downloadSelected() {
-		viewModel.downloadChapter(*selectedChapterArray())
+		viewModel.downloadChapter(
+			chapterUI = selectedChapterArray(),
+			startManager = true
+		)
 	}
 
 	private fun deleteSelected() {

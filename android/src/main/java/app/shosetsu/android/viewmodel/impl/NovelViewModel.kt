@@ -15,6 +15,7 @@ import app.shosetsu.android.domain.usecases.load.LoadDeletePreviousChapterUseCas
 import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
 import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadChaptersResumeFirstUnreadUseCase
+import app.shosetsu.android.domain.usecases.start.StartDownloadWorkerUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateChapterUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateNovelSettingUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
@@ -68,7 +69,8 @@ class NovelViewModel(
 	private val isChaptersResumeFirstUnread: LoadChaptersResumeFirstUnreadUseCase,
 	private val getNovelSettingFlowUseCase: GetNovelSettingFlowUseCase,
 	private val updateNovelSettingUseCase: UpdateNovelSettingUseCase,
-	private val loadDeletePreviousChapterUseCase: LoadDeletePreviousChapterUseCase
+	private val loadDeletePreviousChapterUseCase: LoadDeletePreviousChapterUseCase,
+	private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase
 ) : INovelViewModel() {
 	@ExperimentalCoroutinesApi
 	@get:Synchronized
@@ -241,8 +243,14 @@ class NovelViewModel(
 		novelIDLive.tryEmit(-1)
 	}
 
-	override fun downloadChapter(vararg chapterUI: ChapterUI) {
-		launchIO { downloadChapterPassageUseCase(*chapterUI) }
+	override fun downloadChapter(vararg chapterUI: ChapterUI, startManager: Boolean) {
+		launchIO {
+			downloadChapterPassageUseCase(*chapterUI)
+
+			if (startManager)
+				startDownloadWorkerUseCase()
+
+		}
 	}
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
@@ -372,6 +380,7 @@ class NovelViewModel(
 			val array = chapters.sortedBy { it.order }
 			val r = array.indexOfFirst { it.readingStatus != ReadingStatus.READ }
 			if (r != -1) downloadChapter(array[r])
+			startDownloadWorkerUseCase()
 		}
 	}
 
@@ -390,6 +399,7 @@ class NovelViewModel(
 				}
 				downloadChapter(*list.toTypedArray())
 			}
+			startDownloadWorkerUseCase()
 		}
 	}
 
@@ -404,6 +414,7 @@ class NovelViewModel(
 		launchIO {
 			downloadChapter(*chapters.filter { it.readingStatus == ReadingStatus.UNREAD }
 				.toTypedArray())
+			startDownloadWorkerUseCase()
 		}
 	}
 
@@ -411,6 +422,7 @@ class NovelViewModel(
 	override fun downloadAllChapters() {
 		launchIO {
 			downloadChapter(*chapters.toTypedArray())
+			startDownloadWorkerUseCase()
 		}
 	}
 

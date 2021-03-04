@@ -29,7 +29,7 @@ interface IFileChapterDataSource {
 	/**
 	 * Save the chapter passage to storage
 	 */
-	suspend fun saveChapterPassageToStorage(
+	suspend fun save(
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType,
 		passage: String
@@ -39,11 +39,14 @@ interface IFileChapterDataSource {
 	 * Gets chapter passage via it's ID
 	 * @return [HResult.Empty] if passage not found, [HResult.Success] if found
 	 */
-	suspend fun loadChapterPassageFromStorage(
+	suspend fun load(
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType
 	): HResult<String>
 
 	/** Deletes a chapter from the filesystem */
-	suspend fun deleteChapter(chapterEntity: ChapterEntity): HResult<*>
+	suspend fun delete(
+		chapterEntity: ChapterEntity,
+		chapterType: Novel.ChapterType
+	): HResult<*>
 }

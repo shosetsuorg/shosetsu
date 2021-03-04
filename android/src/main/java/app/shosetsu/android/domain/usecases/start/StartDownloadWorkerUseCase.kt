@@ -1,6 +1,9 @@
 package app.shosetsu.android.domain.usecases.start
 
 import app.shosetsu.android.backend.workers.onetime.DownloadWorker.Manager
+import app.shosetsu.common.consts.settings.SettingKey
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
 
 /*
  * This file is part of shosetsu.
@@ -25,12 +28,15 @@ import app.shosetsu.android.backend.workers.onetime.DownloadWorker.Manager
  */
 class StartDownloadWorkerUseCase(
 	private val manager: Manager,
+	private val iSettingsRepository: ISettingsRepository
 ) {
 	/**
 	 * Starts the download worker
 	 * @param override if true then will override the current download loop
 	 */
-	operator fun invoke(override: Boolean = false) {
+	suspend operator fun invoke(override: Boolean = false) {
+		if (iSettingsRepository.getBooleanOrDefault(SettingKey.IsDownloadPaused)) return
+
 		if (!manager.isRunning() || override)
 			manager.start()
 	}

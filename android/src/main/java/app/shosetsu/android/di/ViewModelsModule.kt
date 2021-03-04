@@ -119,6 +119,7 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 			i(),
 			i(),
 			i(),
+			i(),
 			i()
 		)
 	}

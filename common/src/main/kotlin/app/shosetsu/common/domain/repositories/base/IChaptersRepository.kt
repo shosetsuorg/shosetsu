@@ -195,5 +195,8 @@ interface IChaptersRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun deleteChapterPassage(chapterEntity: ChapterEntity): HResult<*>
+	suspend fun deleteChapterPassage(
+		chapterEntity: ChapterEntity,
+		chapterType: Novel.ChapterType
+	): HResult<*>
 }

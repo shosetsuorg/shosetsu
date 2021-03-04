@@ -78,7 +78,7 @@ class DownloadWorker(
 	@set:Synchronized
 	private var activeJobs = 0
 
-	/** Which extensions are currently working */
+	/** Which extensions are currently having network calls */
 	@get:Synchronized
 	private val activeExtensions = ArrayList<Int>()
 
@@ -131,7 +131,7 @@ class DownloadWorker(
 	}
 
 
-	private fun notify(downloadEntity: DownloadEntity, isComplete: Boolean = false) {
+	private suspend fun notify(downloadEntity: DownloadEntity, isComplete: Boolean = false) {
 		val messageId = if (!isComplete) when (downloadEntity.status) {
 			DownloadStatus.PENDING -> R.string.pending
 			DownloadStatus.WAITING -> R.string.waiting
@@ -146,6 +146,15 @@ class DownloadWorker(
 			setContentTitle(downloadEntity.novelName + "\t" + downloadEntity.chapterName)
 			priority = NotificationCompat.PRIORITY_LOW
 			setNotificationSilent()
+			if (isComplete)
+				removeProgress()
+			else if (downloadEntity.status == DownloadStatus.DOWNLOADING)
+				setProgress(1, 0, true)
+		}
+
+		if (isComplete) {
+			delay(5000)
+			notificationManager.cancel(downloadEntity.chapterID + 2000)
 		}
 	}
 
@@ -212,7 +221,7 @@ class DownloadWorker(
 			activeExtensions.add(extID)
 			activeJobs++
 
-			logI("Downloading $downloadEntity")
+			logV("Downloading $downloadEntity")
 			notify(downloadEntity)
 
 			download(downloadEntity).handle(
@@ -261,7 +270,7 @@ class DownloadWorker(
 		else {
 			// Notifies that application is downloading chapters
 			notify("Downloading chapters") {
-				setNotOngoing()
+				setOngoing()
 			}
 
 			// Will not run if there are no downloads to complete or if the download is paused
@@ -275,6 +284,9 @@ class DownloadWorker(
 					launchDownload()
 			}
 
+			// Wait untill there are no more jobs
+			while (activeJobs < 0)
+				delay(100)
 
 			// Downloads the chapters
 			notify("Completed") {

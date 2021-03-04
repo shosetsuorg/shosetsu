@@ -63,7 +63,7 @@ object Notifications {
 				notificationChannel(
 					CHANNEL_DOWNLOAD,
 					R.string.notification_channel_name_download,
-					NotificationManager.IMPORTANCE_DEFAULT
+					NotificationManager.IMPORTANCE_LOW
 				),
 				notificationChannel(
 					CHANNEL_APP_UPDATE,

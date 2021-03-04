@@ -79,9 +79,4 @@ object ErrorKeys {
 	const val ERROR_HOST_UNKNOWN: Int = 17
 
 	const val ERROR_INVALID_FEATURE: Int = 18
-
-	/**
-	 * Chapter types are mismatched, maybe the extension updated
-	 */
-	const val MISMATCHED_CHAPTER_TYPE: Int = 19
 }

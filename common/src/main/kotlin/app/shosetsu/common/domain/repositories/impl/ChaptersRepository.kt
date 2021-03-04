@@ -1,6 +1,5 @@
 package app.shosetsu.common.domain.repositories.impl
 
-import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.datasource.database.base.IDBChaptersDataSource
 import app.shosetsu.common.datasource.file.base.IFileCachedChapterDataSource
 import app.shosetsu.common.datasource.file.base.IFileChapterDataSource
@@ -68,15 +67,8 @@ class ChaptersRepository(
 					}
 				}
 			}.catch {
-				fileSource.loadChapterPassageFromStorage(entity, formatter.chapterType)
+				fileSource.load(entity, formatter.chapterType)
 					.also { result ->
-						result.handle(onError = {
-							// Delete a mismatched chapter
-							if (it.code == ErrorKeys.MISMATCHED_CHAPTER_TYPE)
-								fileSource.deleteChapter(entity)
-
-						}) {
-						}
 						placeIntoCache(entity, formatter.chapterType, result)
 					}
 			}.catch {
@@ -112,7 +104,7 @@ class ChaptersRepository(
 		passage: String,
 	): HResult<*> =
 		saveChapterPassageToMemory(entity, chapterType, passage) thenAlso (
-				fileSource.saveChapterPassageToStorage(entity, chapterType, passage) ifSo {
+				fileSource.save(entity, chapterType, passage) ifSo {
 					dbSource.updateChapter(entity.copy(isSaved = true))
 				})
 
@@ -148,11 +140,14 @@ class ChaptersRepository(
 	override suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): HResult<*> =
 		dbSource.updateReaderChapter(readerChapterEntity)
 
-	override suspend fun deleteChapterPassage(chapterEntity: ChapterEntity): HResult<*> =
+	override suspend fun deleteChapterPassage(
+		chapterEntity: ChapterEntity,
+		chapterType: Novel.ChapterType
+	): HResult<*> =
 		dbSource.updateChapter(
 			chapterEntity.copy(
 				isSaved = false
 			)
-		) ifSo { fileSource.deleteChapter(chapterEntity) }
+		) ifSo { fileSource.delete(chapterEntity, chapterType) }
 
 }

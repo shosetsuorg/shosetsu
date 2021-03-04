@@ -3,7 +3,9 @@ package app.shosetsu.android.viewmodel.impl
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.ReportExceptionUseCase
-import app.shosetsu.android.domain.usecases.*
+import app.shosetsu.android.domain.usecases.CanAppSelfUpdateUseCase
+import app.shosetsu.android.domain.usecases.IsOnlineUseCase
+import app.shosetsu.android.domain.usecases.ShareUseCase
 import app.shosetsu.android.domain.usecases.load.LoadAppUpdateFlowLiveUseCase
 import app.shosetsu.android.domain.usecases.load.LoadAppUpdateUseCase
 import app.shosetsu.android.domain.usecases.load.LoadLiveAppThemeUseCase
@@ -66,7 +68,9 @@ class MainViewModel(
 	}
 
 	override fun startDownloadWorker() {
-		startDownloadWorkerUseCase()
+		launchIO {
+			startDownloadWorkerUseCase()
+		}
 	}
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
