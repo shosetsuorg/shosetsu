@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/radioGroupView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <include layout="@layout/drawer_item_expandable" />
+    <include
+        android:id="@+id/expandable_bar"
+        layout="@layout/drawer_item_expandable" />
 
-    <LinearLayout
-        android:id="@+id/radioGroupHolder"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible">
+        android:visibility="gone" />
 
-        <FrameLayout
-            android:id="@+id/frameLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="5dp"
-            android:visibility="gone"
-            tools:ignore="UselessLeaf" />
-    </LinearLayout>
-</LinearLayout>
+    <include
+        android:id="@+id/bottom_divider"
+        layout="@layout/drawer_divider"
+        android:visibility="gone" />
+</androidx.appcompat.widget.LinearLayoutCompat>

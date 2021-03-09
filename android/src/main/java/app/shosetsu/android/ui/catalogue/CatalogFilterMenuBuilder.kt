@@ -2,9 +2,8 @@ package app.shosetsu.android.ui.catalogue
 
 import android.view.View
 import android.widget.LinearLayout
+import app.shosetsu.android.common.ext.createUI
 import app.shosetsu.android.common.ext.handleObserve
-import app.shosetsu.android.common.ext.logV
-import app.shosetsu.android.view.widget.setting.*
 import app.shosetsu.lib.Filter
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerCatalogFilterBottomMenuBinding
 
@@ -35,39 +34,8 @@ class CatalogFilterMenuBuilder(
 	protected val layoutInflater = controller.activity!!.layoutInflater
 
 	private fun LinearLayout.build(list: List<Filter<*>>) {
-		list.forEach {
-			when (it) {
-				is Filter.Header -> {
-					HeaderInput(it, context)
-				}
-				is Filter.Separator -> {
-				}
-				is Filter.Text -> {
-					logV("Filter.Text -> TextFilterInput")
-					addView(TextFilterInput(it, context))
-				}
-				is Filter.Switch -> {
-					logV("Filter.Switch -> SwitchFilterInput")
-					addView(SwitchFilterInput(it, context))
-				}
-				is Filter.Checkbox -> {
-					logV("Filter.Checkbox -> CheckboxFilterInput")
-					addView(CheckboxFilterInput(it, context))
-				}
-				is Filter.TriState -> {
-					logV("Filter.TriState -> TriStateFilterInput")
-					addView(TriStateFilterInput(it, context))
-				}
-				is Filter.Dropdown -> {
-				}
-				is Filter.RadioGroup -> {
-					addView(RadioGroupInput(it, context))
-				}
-				is Filter.List -> {
-				}
-				is Filter.Group<*> -> {
-				}
-			}
+		list.createUI(context).forEach {
+			addView(it)
 		}
 	}
 
