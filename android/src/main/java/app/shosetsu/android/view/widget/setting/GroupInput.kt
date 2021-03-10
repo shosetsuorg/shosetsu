@@ -9,7 +9,6 @@ import app.shosetsu.android.common.ext.createUI
 import app.shosetsu.lib.Filter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.DrawerLayoutExpandableBinding
-import com.github.doomsdayrs.apps.shosetsu.databinding.DrawerLayoutExpandableBinding.inflate
 
 /*
  * This file is part of Shosetsu.
@@ -31,26 +30,26 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.DrawerLayoutExpandableBin
 /**
  * 09 / 03 / 2021
  */
-class ListInput @JvmOverloads constructor(
+class GroupInput @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
 	override val filterID: Int = -1
-) : FilterSettingWidget<Map<Int, Any>>, FrameLayout(context, attrs) {
+) : FilterSettingWidget<Map<Int, Any?>>, FrameLayout(context, attrs) {
 
 
 	private val drawerLayoutExpandableBinding: DrawerLayoutExpandableBinding =
-		inflate(LayoutInflater.from(context), this, true)
+		DrawerLayoutExpandableBinding.inflate(LayoutInflater.from(context), this, true)
 
 	private var expanded: Boolean = false
 
-	private val internalMap = hashMapOf<Int, Any>()
+	private val internalMap = hashMapOf<Int, Any?>()
 
-	override var result: Map<Int, Any>
+	override var result: Map<Int, Any?>
 		get() = internalMap
 		set(value) {}
 
 	constructor(
-		filter: Filter.List,
+		filter: Filter.Group<*>,
 		context: Context,
 		attrs: AttributeSet? = null
 	) : this(
@@ -59,6 +58,7 @@ class ListInput @JvmOverloads constructor(
 		filterID = filter.id
 	) {
 		drawerLayoutExpandableBinding.apply {
+
 			filter.filters.toList().createUI(root.context).forEach {
 				list.addView(it)
 			}

@@ -61,11 +61,13 @@ fun List<Filter<*>>.createUI(context: Context): List<View> =
 				RadioGroupInput(it, context)
 			}
 			is Filter.List -> {
+				logV("Filter.List -> ListInput")
 				ListInput(it, context)
 				null
 			}
 			is Filter.Group<*> -> {
-				null
+				logV("Filter.Group -> GroupInput")
+				GroupInput(it, context)
 			}
 		}
 	}.filterNotNull()

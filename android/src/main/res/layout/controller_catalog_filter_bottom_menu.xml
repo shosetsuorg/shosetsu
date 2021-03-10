@@ -12,23 +12,23 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical">
+        android:layout_gravity="center_vertical"
+        android:elevation="1dp">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/resetButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
             android:layout_toStartOf="@id/applyButton"
-            android:text="@string/filter"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:text="@string/reset" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/applyButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@id/resetButton"
             android:text="@string/apply" />
     </RelativeLayout>
 
@@ -38,11 +38,14 @@
         android:layout_marginTop="8dp"
         android:background="?android:attr/listDivider" />
 
-    <LinearLayout
-        android:id="@+id/extensionFilters"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" />
+        android:layout_height="match_parent">
 
-
+        <LinearLayout
+            android:id="@+id/extensionFilters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
 </LinearLayout>

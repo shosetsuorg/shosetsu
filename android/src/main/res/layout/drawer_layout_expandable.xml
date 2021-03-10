@@ -6,11 +6,12 @@
     android:orientation="vertical">
 
     <include
-        android:id="@+id/expandable_bar"
+        android:id="@+id/expand_bar"
         layout="@layout/drawer_item_expandable" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/list"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone" />
