@@ -1,6 +1,10 @@
 package app.shosetsu.common.consts.settings
 
+import app.shosetsu.common.domain.model.local.LibrarySortFilterEntity
 import app.shosetsu.common.enums.MarkingType.ONVIEW
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.util.*
 
 /*
  * This file is part of shosetsu.
@@ -178,6 +182,9 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	)
 
 	object AppTheme : IntKey("selectedAppTheme", 0)
+
+	object LibraryFilter :
+		StringKey("libraryFilter", Json { }.encodeToString(LibrarySortFilterEntity()))
 
 	companion object {
 		private val map: Map<String, SettingKey<*>> by lazy {

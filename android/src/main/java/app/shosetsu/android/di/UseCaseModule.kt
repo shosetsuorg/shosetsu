@@ -223,4 +223,13 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<UpdateReaderSettingUseCase>() with provider {
 		UpdateReaderSettingUseCase(instance())
 	}
+
+	bind<LoadLibraryFilterSettingsUseCase>() with provider {
+		LoadLibraryFilterSettingsUseCase(instance())
+	}
+
+
+	bind<UpdateLibraryFilterSettingsUseCase>() with provider {
+		UpdateLibraryFilterSettingsUseCase(instance())
+	}
 }

@@ -1,8 +1,10 @@
-package app.shosetsu.common.domain.model.local
+package app.shosetsu.android.domain.usecases.update
 
-import app.shosetsu.common.enums.InclusionState
-import app.shosetsu.common.enums.NovelSortType
-import kotlinx.serialization.Serializable
+import app.shosetsu.common.consts.settings.SettingKey
+import app.shosetsu.common.domain.model.local.LibrarySortFilterEntity
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 /*
  * This file is part of Shosetsu.
@@ -22,16 +24,15 @@ import kotlinx.serialization.Serializable
  */
 
 /**
- * 03 / 01 / 2021
+ * 09 / 03 / 2021
  */
-@Serializable
-data class LibrarySortFilterEntity(
-	var sortType: NovelSortType = NovelSortType.BY_TITLE,
-	var reversedSort: Boolean = false,
-	var unreadInclusion: InclusionState? = null,
-
-	var genreFilter: Map<String, InclusionState> = mapOf(),
-	var authorFilter: Map<String, InclusionState> = mapOf(),
-	var artistFilter: Map<String, InclusionState> = mapOf(),
-	var tagFilter: Map<String, InclusionState> = mapOf(),
-)
+class UpdateLibraryFilterSettingsUseCase(
+	private val iSettingsRepository: ISettingsRepository
+) {
+	suspend operator fun invoke(librarySortFilterEntity: LibrarySortFilterEntity) {
+		iSettingsRepository.setString(
+			SettingKey.LibraryFilter,
+			Json { }.encodeToString(librarySortFilterEntity)
+		)
+	}
+}
