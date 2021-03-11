@@ -17,23 +17,27 @@ package app.shosetsu.android.viewmodel.impl.extension
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import android.R
+import android.app.Application
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.switchMap
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.UninstallExtensionUIUseCase
+import app.shosetsu.android.domain.usecases.get.GetExtensionListingsUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtensionSettingsUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtensionUIUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateExtensionEntityUseCase
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
+import app.shosetsu.android.view.uimodels.settings.dsl.onSpinnerItemSelected
+import app.shosetsu.android.view.uimodels.settings.dsl.spinnerSettingData
+import app.shosetsu.android.view.uimodels.settings.dsl.title
 import app.shosetsu.android.viewmodel.abstracted.IExtensionConfigureViewModel
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.mapLatestResult
-import app.shosetsu.common.dto.successResult
+import app.shosetsu.android.viewmodel.base.spinnerValue
+import app.shosetsu.common.dto.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 
 /**
  * shosetsu
@@ -42,22 +46,23 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * @author github.com/doomsdayrs
  */
 class ExtensionConfigureViewModel(
+	private val application: Application,
 	private val loadExtensionUIUI: GetExtensionUIUseCase,
 	private val updateExtensionEntityUseCase: UpdateExtensionEntityUseCase,
 	private val uninstallExtensionUIUseCase: UninstallExtensionUIUseCase,
 	private val getExtensionSettings: GetExtensionSettingsUseCase,
-	private val reportExceptionUseCase: ReportExceptionUseCase
+	private val reportExceptionUseCase: ReportExceptionUseCase,
+	private val getExtensionLists: GetExtensionListingsUseCase
 ) : IExtensionConfigureViewModel() {
-	private val idLive by lazy {
-		MutableLiveData(internalID)
+	private val idLive: MutableStateFlow<Int> by lazy {
+		MutableStateFlow(-1)
 	}
-	private var internalID: Int = -1
 
 	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<ExtensionUI>> by lazy {
-		idLive.switchMap {
-			loadExtensionUIUI(it).asIOLiveData()
-		}
+		idLive.transformLatest { id ->
+			emitAll(loadExtensionUIUI(id))
+		}.asIOLiveData()
 	}
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
@@ -66,34 +71,56 @@ class ExtensionConfigureViewModel(
 
 	@ExperimentalCoroutinesApi
 	override val extensionSettings: LiveData<HResult<List<SettingsItemData>>> by lazy {
-		idLive.switchMap {
-			getExtensionSettings(it).mapLatestResult {
-				successResult(arrayListOf<SettingsItemData>())
-			}.asIOLiveData()
-		}
+		idLive.transformLatest { id ->
+			getExtensionLists(id).handle(
+				onError = { emit(it) },
+				onEmpty = { emit(empty) },
+				onLoading = { emit(loading) }
+			) {
+				emitAll(
+					getExtensionSettings(id).mapLatestResult {
+						successResult(
+							listOf(
+								spinnerSettingData(0) {
+									title { "Listing" }
+									spinnerValue {
+										0
+									}
+									arrayAdapter = android.widget.ArrayAdapter(
+										application.applicationContext,
+										R.layout.simple_spinner_dropdown_item,
+										it.toTypedArray()
+									)
+									arrayAdapter
+									onSpinnerItemSelected { adapterView, view, position, id ->
+
+									}
+								}
+							)
+						)
+					}
+				)
+			}
+		}.asIOLiveData()
 	}
 
 	override fun setExtensionID(id: Int) {
 		launchIO {
 			when {
-				internalID == id -> {
+				idLive.value == id -> {
 					logI("ID the same, ignoring")
 					return@launchIO
 				}
-				internalID != id -> {
+				idLive.value != id -> {
 					logI("ID not equal, resetting")
 					destroy()
 				}
-				internalID == -1 -> {
+				idLive.value == -1 -> {
 					logI("ID is new, setting")
 				}
 			}
-			internalID = id
-			idLive.postValue(id)
+			idLive.value = id
 		}
-	}
-
-	override suspend fun saveSetting(id: Int, value: Any) {
 	}
 
 	override fun uninstall(extensionUI: ExtensionUI) {
@@ -101,8 +128,7 @@ class ExtensionConfigureViewModel(
 	}
 
 	override fun destroy() {
-		idLive.postValue(-1)
-		internalID = -1
+		idLive.value = -1
 	}
 }
 

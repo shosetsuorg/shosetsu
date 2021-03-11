@@ -11,6 +11,7 @@ import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.IExtensionConfigureViewModel
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ConfigureExtensionViewBinding
 
@@ -51,24 +52,9 @@ class ConfigureExtension(bundle: Bundle) :
 		viewModel.extensionSettings.observe(this) { handleRecyclerUpdate(it) }
 	}
 
-	private fun handleExtensionResult(it: HResult<ExtensionUI>) {
-		when (it) {
-			is HResult.Success -> {
-				it.data.let { extensionUI ->
-					if (!extensionUI.imageURL.isNullOrEmpty())
-						picasso(extensionUI.imageURL!!, binding.imageView)
-					binding.fileName.text = extensionUI.fileName
-					binding.identification.text = extensionUI.id.toString()
-					binding.language.text = extensionUI.lang
-					binding.name.text = extensionUI.name
-					binding.uninstallButton.setOnClickListener {
-						viewModel.uninstall(extensionUI)
-						viewModel.destroy()
-						activity?.onBackPressed()
-					}
-				}
-			}
-			HResult.Loading -> {
+	private fun handleExtensionResult(result: HResult<ExtensionUI>) =
+		result.handle(
+			onLoading = {
 				binding.imageView.setImageResource(R.drawable.animated_refresh)
 				binding.fileName.text = ""
 				binding.identification.text = ""
@@ -76,12 +62,19 @@ class ConfigureExtension(bundle: Bundle) :
 				binding.name.text = ""
 				binding.uninstallButton.setOnClickListener {}
 			}
-			HResult.Empty -> {
-			}
-			is HResult.Error -> {
+		) { extensionUI ->
+			if (!extensionUI.imageURL.isNullOrEmpty())
+				picasso(extensionUI.imageURL!!, binding.imageView)
+			binding.fileName.text = extensionUI.fileName
+			binding.identification.text = extensionUI.id.toString()
+			binding.language.text = extensionUI.lang
+			binding.name.text = extensionUI.name
+			binding.uninstallButton.setOnClickListener {
+				viewModel.uninstall(extensionUI)
+				viewModel.destroy()
+				activity?.onBackPressed()
 			}
 		}
-	}
 
 
 	override fun bindView(inflater: LayoutInflater): ConfigureExtensionViewBinding =

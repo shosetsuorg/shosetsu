@@ -40,9 +40,14 @@ abstract class IExtensionConfigureViewModel
 	/** Set the extension ID to use */
 	abstract fun setExtensionID(id: Int)
 
-	/** Save the setting of this specific formatter */
-	abstract suspend fun saveSetting(id: Int, value: Any)
+	/**
+	 * Uninstall this extension
+	 */
 	abstract fun uninstall(extensionUI: ExtensionUI)
 
+	/**
+	 * Destroy this controller
+	 */
 	abstract fun destroy()
+
 }

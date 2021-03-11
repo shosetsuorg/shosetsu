@@ -4,6 +4,7 @@ import app.shosetsu.android.common.ext.convertTo
 import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.common.consts.settings.SettingKey
+import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.HResult
@@ -36,35 +37,32 @@ import app.shosetsu.lib.IExtension
 class GetCatalogueListingDataUseCase(
 	private val novelsRepository: INovelsRepository,
 	private val convertNCToCNUIUseCase: ConvertNCToCNUIUseCase,
-	private val iSettingsRepository: ISettingsRepository
+	private val settingsRepo: ISettingsRepository,
+	private val extSettingsRepo: IExtensionSettingsRepository
 ) {
 	suspend operator fun invoke(
 		iExtension: IExtension,
 		data: Map<Int, Any>
-	): HResult<List<ACatalogNovelUI>> {
-		val cardType = iSettingsRepository.getInt(SettingKey.SelectedNovelCardType).transmogrify(
-			onError = {
-				return it
-			},
-			onEmpty = {
-				return HResult.Empty
-			}
-		) {
-			it
-		}!!
+	): HResult<List<ACatalogNovelUI>> =
+		settingsRepo.getInt(SettingKey.SelectedNovelCardType).transform { cardType ->
+			extSettingsRepo.getSelectedListing(iExtension.formatterID).transform {
+				// Load catalogue data
 
-		return novelsRepository.getCatalogueData(
-			iExtension,
-			0,
-			data
-		).transform { list ->
-			successResult(list.map { novelListing ->
-				novelListing.convertTo(iExtension)
-			}.mapNotNull { ne ->
-				novelsRepository.insertReturnStripped(ne).transmogrify { result ->
-					convertNCToCNUIUseCase(result, cardType)
+				novelsRepository.getCatalogueData(
+					iExtension,
+					0,
+					data
+				).transform { list ->
+					successResult(list.map { novelListing ->
+						novelListing.convertTo(iExtension)
+					}.mapNotNull { ne ->
+						// For each, insert and return a stripped card
+						// This operation is to pre-cache URL and ID so loading occurs smoothly
+						novelsRepository.insertReturnStripped(ne).transmogrify { result ->
+							convertNCToCNUIUseCase(result, cardType)
+						}
+					})
 				}
-			})
+			}
 		}
-	}
 }
