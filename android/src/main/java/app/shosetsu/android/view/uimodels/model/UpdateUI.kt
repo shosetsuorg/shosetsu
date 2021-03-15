@@ -53,10 +53,11 @@ data class UpdateUI(
 		override val binding = RecyclerUpdateUiBinding.bind(view)
 
 		override fun RecyclerUpdateUiBinding.bindView(item: UpdateUI, payloads: List<Any>) {
-			if (item.novelImageURL.isNotEmpty())
+			if (item.novelImageURL.isNotEmpty()) {
 				picasso(item.novelImageURL, imageView)
+			} else novelTitle.text = item.novelName
+
 			chapterTitle.text = item.chapterName
-			//novelTitle.text = item.novelName
 			date.text = format("hh:mm", Date(item.time))
 		}
 
