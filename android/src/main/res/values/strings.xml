@@ -392,6 +392,7 @@
     <string name="notification_channel_name_download">Chapter Download</string>
     <string name="notification_channel_name_app_update">App Update</string>
     <string name="notification_channel_name_backup">Backup and Restore</string>
+    <string name="controller_catalogue_toast_background_add">Adding to library in background</string>
 
 
     <array name="text_alignments">

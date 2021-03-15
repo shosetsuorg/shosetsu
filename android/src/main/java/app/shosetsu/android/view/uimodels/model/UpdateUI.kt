@@ -55,13 +55,15 @@ data class UpdateUI(
 		override fun RecyclerUpdateUiBinding.bindView(item: UpdateUI, payloads: List<Any>) {
 			if (item.novelImageURL.isNotEmpty())
 				picasso(item.novelImageURL, imageView)
-			title.text = item.chapterName
-			date.text = format("dd/MM/yyyy", Date(item.time))
+			chapterTitle.text = item.chapterName
+			//novelTitle.text = item.novelName
+			date.text = format("hh:mm", Date(item.time))
 		}
 
 		override fun RecyclerUpdateUiBinding.unbindView(item: UpdateUI) {
 			imageView.setImageResource(R.drawable.broken_image)
-			title.text = null
+			chapterTitle.text = null
+			novelTitle.text = null
 			date.text = null
 		}
 	}

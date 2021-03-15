@@ -141,6 +141,7 @@ class CatalogController(
 			}
 			onLongClickListener = { _, _, i, _ ->
 				viewModel.backgroundNovelAdd(i.id)
+				toast(contextR.string.controller_catalogue_toast_background_add)
 				true
 			}
 		}

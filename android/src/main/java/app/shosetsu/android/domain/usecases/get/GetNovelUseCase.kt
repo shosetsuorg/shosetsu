@@ -47,7 +47,7 @@ class GetNovelUseCase(
 		novel: NovelEntity,
 		loadChapters: Boolean,
 		haveChaptersUpdate: () -> Unit = {}
-	): HResult<Boolean> =
+	): HResult<NovelEntity> =
 		eR.getIExtension(novel.extensionID).transform { ext ->
 			nR.retrieveNovelInfo(ext, novel, loadChapters).transform { page ->
 				val currentStatus: Boolean = novel.loaded
@@ -79,7 +79,7 @@ class GetNovelUseCase(
 
 					}
 				}
-				successResult(true)
+				successResult(novel)
 			}
 		}
 
@@ -87,12 +87,12 @@ class GetNovelUseCase(
 		novel: NovelEntity,
 		loadChapters: Boolean,
 		haveChaptersUpdate: () -> Unit = {}
-	): HResult<Any> = main(novel, loadChapters, haveChaptersUpdate)
+	): HResult<NovelEntity> = main(novel, loadChapters, haveChaptersUpdate)
 
 	suspend operator fun invoke(
 		novelID: Int,
 		loadChapters: Boolean
-	): HResult<Any> = nR.getNovel(novelID).transform { novel ->
+	): HResult<NovelEntity> = nR.getNovel(novelID).transform { novel ->
 		main(novel, loadChapters)
 	}
 
