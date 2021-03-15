@@ -1,6 +1,7 @@
 package app.shosetsu.common.domain.repositories.base
 
 import app.shosetsu.common.dto.HResult
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of Shosetsu.
@@ -23,7 +24,8 @@ import app.shosetsu.common.dto.HResult
  * 09 / 03 / 2021
  */
 interface IExtensionSettingsRepository {
-	fun getSelectedListing(extensionID: Int): HResult<Int>
+	suspend fun getSelectedListing(extensionID: Int): HResult<Int>
+	suspend fun observeSelectedListing(extensionID: Int): Flow<HResult<Int>>
 
-
+	suspend fun setSelectedListing(extensionID: Int, selectedListing: Int): HResult<*>
 }

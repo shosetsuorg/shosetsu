@@ -10,7 +10,6 @@ import android.content.Intent
 import android.content.Intent.*
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
@@ -90,7 +89,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			override fun onReceive(context: Context?, intent: Intent?) {
 				intent?.let {
 					handleIntentAction(it)
-				} ?: Log.e(logID(), "Null intent recieved")
+				} ?: logE("Null intent recieved")
 			}
 		}
 	}
@@ -129,7 +128,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		super.onCreate(savedInstanceState)
 		// Do not let the launcher create a new activity http://stackoverflow.com/questions/16283079
 		if (!isTaskRoot) {
-			Log.i(logID(), "Broadcasting intent ${intent.action}")
+			logI("Broadcasting intent ${intent.action}")
 			sendBroadcast(Intent(intent.action))
 			finish()
 			return
@@ -155,7 +154,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	 * When the back button while drawer is open, close it.
 	 */
 	override fun onBackPressed() {
-		logD("Back Pressed")
 		val backStackSize = router.backstackSize
 
 		when {
@@ -187,10 +185,8 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		setSupportActionBar(binding.toolbar)
 
 		binding.toolbar.setNavigationOnClickListener {
-			logD("Toolbar clicked")
 			if (router.backstackSize == 1) {
 				if (viewModel.navigationStyle() == 1) {
-					logD("Opening drawer")
 					binding.drawerLayout.openDrawer(GravityCompat.START)
 				}
 			} else onBackPressed()
@@ -437,13 +433,11 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		val tabLayout = binding.tabLayout
 
 		if (from is TabbedController) {
-			logV("from is a toolbarController")
 			tabLayout.removeAllTabs()
 			tabLayout.clearOnTabSelectedListeners()
 		}
 
 		if (to is TabbedController) {
-			logV("to is a toolbarController")
 			to.acceptTabLayout(tabLayout)
 			to.configureTabs(tabLayout)
 		}
@@ -470,14 +464,10 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 			binding.slidingUpBottomMenu.apply {
 				addOnShowListener {
-					logD("Showing bottom menu")
 					if (!created) {
-						addChildView(to.getBottomMenuView().also {
-							this@MainActivity.logV("Created bottom menu #${it.hashCode()}")
-						})
+						addChildView(to.getBottomMenuView())
 						created = true
-					} else
-						logE("Ignoring")
+					}
 				}
 
 				// Interaction with FABController

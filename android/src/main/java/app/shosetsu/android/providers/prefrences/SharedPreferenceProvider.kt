@@ -3,14 +3,9 @@ package app.shosetsu.android.providers.prefrences
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.consts.settings.*
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.errorResult
-import app.shosetsu.common.dto.successResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import java.io.File
 
 /*
  * This file is part of Shosetsu.
@@ -163,7 +158,18 @@ class SharedPreferenceProvider(
 				}
 
 			override fun onSharedPreferenceChanged(sp: SharedPreferences?, s: String) {
-				val key = SettingKey.valueOf(s)
+				val key: SettingKey<*> =
+					SettingKey.valueOf(s) ?: when (s.substringBefore("_")) {
+						"int" -> SettingKey.CustomInt(s, 0)
+						"string" -> SettingKey.CustomString(s, "")
+						"boolean" -> SettingKey.CustomBoolean(s, false)
+						"long" -> SettingKey.CustomLong(s, 0L)
+						"float" -> SettingKey.CustomFloat(s, 0f)
+						"stringSet" -> SettingKey.CustomStringSet(s, setOf())
+						else -> return
+					}
+
+
 				when (key.default) {
 					is String -> {
 						key as StringKey

@@ -186,6 +186,36 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object LibraryFilter :
 		StringKey("libraryFilter", Json { }.encodeToString(LibrarySortFilterEntity()))
 
+	class CustomString(
+		name: String,
+		default: String
+	) : StringKey("string_$name", default)
+
+	class CustomInt(
+		name: String,
+		default: Int
+	) : IntKey("int_$name", default)
+
+	class CustomBoolean(
+		name: String,
+		default: Boolean
+	) : BooleanKey("boolean_$name", default)
+
+	class CustomLong(
+		name: String,
+		default: Long
+	) : SettingKey<Long>("long_$name", default)
+
+	class CustomFloat(
+		name: String,
+		default: Float
+	) : FloatKey("float_$name", default)
+
+	class CustomStringSet(
+		name: String,
+		default: Set<String>
+	) : StringSetKey("stringSet_$name", default)
+
 	companion object {
 		private val map: Map<String, SettingKey<*>> by lazy {
 			SettingKey::class.sealedSubclasses
@@ -194,7 +224,6 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 				.associateBy { it.name }
 		}
 
-		fun valueOf(key: String): SettingKey<*> =
-			map[key] ?: error("SettingKey: Cannot find $key")
+		fun valueOf(key: String): SettingKey<*>? = map[key]
 	}
 }

@@ -9,8 +9,8 @@ import app.shosetsu.android.viewmodel.impl.settings.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.kodein.di.Kodein
 import org.kodein.di.generic.bind
+import org.kodein.di.generic.instance
 import org.kodein.di.generic.provider
-import org.kodein.di.generic.instance as i
 
 /*
  * This file is part of shosetsu.
@@ -38,131 +38,208 @@ import org.kodein.di.generic.instance as i
 val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	// Main
 	bind<IMainViewModel>() with provider {
-		MainViewModel(i(), i(), i(), i(), i(), i(), i(), i(), i(), i())
+		MainViewModel(
+			startDownloadWorkerUseCase = instance(),
+			loadAppUpdateFlowLiveUseCase = instance(),
+			isOnlineUseCase = instance(),
+			shareUseCase = instance(),
+			loadNavigationStyleUseCase = instance(),
+			reportExceptionUseCase = instance(),
+			loadLiveAppThemeUseCase = instance(),
+			startInstallWorker = instance(),
+			canAppSelfUpdateUseCase = instance(),
+			loadAppUpdateUseCase = instance()
+		)
 	}
 
 	// Library
 	bind<ILibraryViewModel>() with provider {
 		LibraryViewModel(
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i()
+			libraryAsCardsUseCase = instance(),
+			updateBookmarkedNovelUseCase = instance(),
+			isOnlineUseCase = instance(),
+			startUpdateWorkerUseCase = instance(),
+			reportExceptionUseCase = instance(),
+			loadNovelUITypeUseCase = instance(),
+			loadNovelUIColumnsHUseCase = instance(),
+			loadNovelUIColumnsPUseCase = instance(),
+			setNovelUITypeUseCase = instance()
 		)
 	}
 
 	// Other
 	bind<IDownloadsViewModel>() with provider {
-		DownloadsViewModel(i(), i(), i(), i(), i(), i(), i())
+		DownloadsViewModel(
+			getDownloadsUseCase = instance(),
+			startDownloadWorkerUseCase = instance(),
+			updateDownloadUseCase = instance(),
+			deleteDownloadUseCase = instance(),
+			settings = instance(),
+			isOnlineUseCase = instance(),
+			reportExceptionUseCase = instance()
+		)
 	}
-	bind<ISearchViewModel>() with provider { SearchViewModel(i(), i(), i(), i()) }
-	bind<IUpdatesViewModel>() with provider { UpdatesViewModel(i(), i(), i(), i()) }
+	bind<ISearchViewModel>() with provider {
+		SearchViewModel(
+			searchBookMarkedNovelsUseCase = instance(),
+			loadSearchRowUIUseCase = instance(),
+			loadCatalogueQueryDataUseCase = instance(),
+			reportExceptionUseCase = instance()
+		)
+	}
+	bind<IUpdatesViewModel>() with provider {
+		UpdatesViewModel(
+			getUpdatesUseCase = instance(),
+			reportExceptionUseCase = instance(),
+			startUpdateWorkerUseCase = instance(),
+			isOnlineUseCase = instance()
+		)
+	}
 
-	bind<AAboutViewModel>() with provider { AboutViewModel(i(), i(), i()) }
+	bind<AAboutViewModel>() with provider {
+		AboutViewModel(
+			openInWebviewUseCase = instance(),
+			context = instance(),
+			manager = instance()
+		)
+	}
 
 	// Catalog(s)
 	bind<ICatalogViewModel>() with provider {
 		CatalogViewModel(
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i()
+			getExtensionUseCase = instance(),
+			backgroundAddUseCase = instance(),
+			getCatalogueListingData = instance(),
+			loadCatalogueQueryDataUseCase = instance(),
+			reportExceptionUseCase = instance(),
+			loadNovelUITypeUseCase = instance(),
+			loadNovelUIColumnsHUseCase = instance(),
+			loadNovelUIColumnsPUseCase = instance()
 		)
 	}
 
 	// Extensions
 	bind<IExtensionsViewModel>() with provider {
 		ExtensionsViewModel(
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i()
+			getExtensionsUIUseCase = instance(),
+			initializeExtensionsUseCase = instance(),
+			installExtensionUIUseCase = instance(),
+			uninstallExtensionUIUseCase = instance(),
+			stringToastUseCase = instance(),
+			isOnlineUseCase = instance(),
+			reportExceptionUseCase = instance()
 		)
 	}
 	bind<IExtensionConfigureViewModel>() with provider {
 		ExtensionConfigureViewModel(
-			i(),
-			i(),
-			i(),
-			i(),
-			i()
+			application = instance(),
+			loadExtensionUIUI = instance(),
+			updateExtensionEntityUseCase = instance(),
+			uninstallExtensionUIUseCase = instance(),
+			getExtensionSettings = instance(),
+			reportExceptionUseCase = instance(),
+			getExtListNames = instance(),
+			updateExtSelectedListing = instance(),
+			getExtSelectedListing = instance()
 		)
 	}
 
 	// Novel View
 	bind<INovelViewModel>() with provider {
 		NovelViewModel(
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i()
+			getChapterUIsUseCase = instance(),
+			loadNovelUIUseCase = instance(),
+			reportExceptionUseCase = instance(),
+			updateNovelUseCase = instance(),
+			openInBrowserUseCase = instance(),
+			openInWebviewUseCase = instance(),
+			shareUseCase = instance(),
+			loadNovelUseCase = instance(),
+			isOnlineUseCase = instance(),
+			updateChapterUseCase = instance(),
+			downloadChapterPassageUseCase = instance(),
+			deleteChapterPassageUseCase = instance(),
+			isChaptersResumeFirstUnread = instance(),
+			getNovelSettingFlowUseCase = instance(),
+			updateNovelSettingUseCase = instance(),
+			loadDeletePreviousChapterUseCase = instance(),
+			startDownloadWorkerUseCase = instance()
 		)
 	}
 
 	// Chapter
 	bind<IChapterReaderViewModel>() with provider {
 		ChapterReaderViewModel(
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i()
+			application = instance(),
+			settingsRepo = instance(),
+			loadReaderChaptersUseCase = instance(),
+			loadChapterPassageUseCase = instance(),
+			updateReaderChapterUseCase = instance(),
+			reportExceptionUseCase = instance(),
+			getReaderSettingsUseCase = instance(),
+			updateReaderSettingUseCase = instance()
 		)
 	}
-	bind<ARepositoryViewModel>() with provider { RepositoryViewModel(i(), i(), i(), i()) }
+	bind<ARepositoryViewModel>() with provider {
+		RepositoryViewModel(
+			loadRepositoriesUseCase = instance(),
+			reportExceptionUseCase = instance(),
+			addRepositoryUseCase = instance(),
+			deleteRepositoryUseCase = instance()
+		)
+	}
 
 
 	// Settings
 	bind<AAdvancedSettingsViewModel>() with provider {
 		AdvancedSettingsViewModel(
-			i(),
-			i(),
-			i(),
-			i()
+			iSettingsRepository = instance(),
+			context = instance(),
+			reportExceptionUseCase = instance(),
+			purgeNovelCacheUseCase = instance()
 		)
 	}
 	bind<ABackupSettingsViewModel>() with provider {
 		BackupSettingsViewModel(
-			i(),
-			i(),
-			i(),
-			i(),
-			i(),
-			i()
+			iSettingsRepository = instance(),
+			reportExceptionUseCase = instance(),
+			manager = instance(),
+			startBackupWorkerUseCase = instance(),
+			loadInternalBackupNamesUseCase = instance(),
+			startRestoreWorkerUseCase = instance()
 		)
 	}
-	bind<ADownloadSettingsViewModel>() with provider { DownloadSettingsViewModel(i(), i()) }
-	bind<AReaderSettingsViewModel>() with provider { ReaderSettingsViewModel(i(), i(), i(), i()) }
-	bind<AUpdateSettingsViewModel>() with provider { UpdateSettingsViewModel(i(), i()) }
-	bind<AViewSettingsViewModel>() with provider { ViewSettingsViewModel(i(), i(), i()) }
-	bind<ASplashScreenViewModel>() with provider { SplashScreenViewModel(i()) }
+	bind<ADownloadSettingsViewModel>() with provider {
+		DownloadSettingsViewModel(
+			iSettingsRepository = instance(),
+			reportExceptionUseCase = instance()
+		)
+	}
+	bind<AReaderSettingsViewModel>() with provider {
+		ReaderSettingsViewModel(
+			iSettingsRepository = instance(),
+			app = instance(),
+			reportExceptionUseCase = instance(),
+			loadReaderThemes = instance()
+		)
+	}
+	bind<AUpdateSettingsViewModel>() with provider {
+		UpdateSettingsViewModel(
+			iSettingsRepository = instance(),
+			reportExceptionUseCase = instance()
+		)
+	}
+	bind<AViewSettingsViewModel>() with provider {
+		ViewSettingsViewModel(
+			iSettingsRepository = instance(),
+			context = instance(),
+			reportExceptionUseCase = instance()
+		)
+	}
+	bind<ASplashScreenViewModel>() with provider {
+		SplashScreenViewModel(
+			settingsRepository = instance()
+		)
+	}
 
 }

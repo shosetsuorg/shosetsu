@@ -17,16 +17,17 @@ package app.shosetsu.android.viewmodel.impl.extension
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import android.R
 import android.app.Application
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.UninstallExtensionUIUseCase
-import app.shosetsu.android.domain.usecases.get.GetExtensionListingsUseCase
+import app.shosetsu.android.domain.usecases.get.GetExtListingNamessUseCase
+import app.shosetsu.android.domain.usecases.get.GetExtSelectedListingUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtensionSettingsUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtensionUIUseCase
+import app.shosetsu.android.domain.usecases.update.UpdateExtSelectedListing
 import app.shosetsu.android.domain.usecases.update.UpdateExtensionEntityUseCase
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
@@ -52,7 +53,9 @@ class ExtensionConfigureViewModel(
 	private val uninstallExtensionUIUseCase: UninstallExtensionUIUseCase,
 	private val getExtensionSettings: GetExtensionSettingsUseCase,
 	private val reportExceptionUseCase: ReportExceptionUseCase,
-	private val getExtensionLists: GetExtensionListingsUseCase
+	private val getExtListNames: GetExtListingNamessUseCase,
+	private val updateExtSelectedListing: UpdateExtSelectedListing,
+	private val getExtSelectedListing: GetExtSelectedListingUseCase
 ) : IExtensionConfigureViewModel() {
 	private val idLive: MutableStateFlow<Int> by lazy {
 		MutableStateFlow(-1)
@@ -72,28 +75,34 @@ class ExtensionConfigureViewModel(
 	@ExperimentalCoroutinesApi
 	override val extensionSettings: LiveData<HResult<List<SettingsItemData>>> by lazy {
 		idLive.transformLatest { id ->
-			getExtensionLists(id).handle(
+			getExtListNames(id).handle(
 				onError = { emit(it) },
 				onEmpty = { emit(empty) },
 				onLoading = { emit(loading) }
-			) {
+			) { nameList ->
 				emitAll(
-					getExtensionSettings(id).mapLatestResult {
+					getExtensionSettings(id).mapLatestResult { filterList ->
 						successResult(
 							listOf(
 								spinnerSettingData(0) {
 									title { "Listing" }
-									spinnerValue {
-										0
+									getExtSelectedListing(id).handle { selectedListing ->
+										spinnerValue { selectedListing }
 									}
 									arrayAdapter = android.widget.ArrayAdapter(
 										application.applicationContext,
-										R.layout.simple_spinner_dropdown_item,
-										it.toTypedArray()
+										android.R.layout.simple_spinner_dropdown_item,
+										nameList.toTypedArray()
 									)
-									arrayAdapter
-									onSpinnerItemSelected { adapterView, view, position, id ->
-
+									var first = true
+									onSpinnerItemSelected { _, _, position, _ ->
+										if (first) {
+											first = false
+											return@onSpinnerItemSelected
+										}
+										launchIO {
+											updateExtSelectedListing(id, position)
+										}
 									}
 								}
 							)

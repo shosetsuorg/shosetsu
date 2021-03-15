@@ -1,12 +1,6 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.loading
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.lib.Filter
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
 
 /*
  * This file is part of Shosetsu.
@@ -26,16 +20,11 @@ import kotlinx.coroutines.flow.flow
  */
 
 /**
- * shosetsu
- * 14 / 09 / 2020
+ * 11 / 03 / 2021
  */
-class GetExtensionSettingsUseCase(
-	private val iExtensionsRepository: IExtensionsRepository
+class GetExtSelectedListingUseCase(
+	private val iExtensionSettingsRepository: IExtensionSettingsRepository
 ) {
-	operator fun invoke(id: Int): Flow<HResult<List<Filter<*>>>> =
-		flow {
-			emit(loading())
-			if (id != -1)
-				emit(successResult(arrayListOf()))
-		}
+	suspend operator fun invoke(extensionID: Int) =
+		iExtensionSettingsRepository.getSelectedListing(extensionID)
 }

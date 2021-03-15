@@ -79,7 +79,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	}
 
 	bind<GetCatalogueListingDataUseCase>() with provider {
-		GetCatalogueListingDataUseCase(instance(), instance(), instance())
+		GetCatalogueListingDataUseCase(instance(), instance(), instance(), instance())
 	}
 
 	bind<GetChapterUIsUseCase>() with provider { GetChapterUIsUseCase(instance()) }
@@ -232,4 +232,17 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<UpdateLibraryFilterSettingsUseCase>() with provider {
 		UpdateLibraryFilterSettingsUseCase(instance())
 	}
+
+	bind<GetExtListingNamessUseCase>() with provider {
+		GetExtListingNamessUseCase(instance())
+	}
+
+	bind<UpdateExtSelectedListing>() with provider {
+		UpdateExtSelectedListing(instance())
+	}
+
+	bind<GetExtSelectedListingUseCase>() with provider {
+		GetExtSelectedListingUseCase(instance())
+	}
+
 }

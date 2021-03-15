@@ -26,7 +26,7 @@ import app.shosetsu.common.dto.transformToSuccess
  *
  * Returns a list of a
  */
-class GetExtensionListingsUseCase(
+class GetExtListingNamessUseCase(
 	private val iExtensionRepository: IExtensionsRepository
 ) {
 

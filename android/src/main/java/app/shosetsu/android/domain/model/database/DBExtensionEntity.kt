@@ -84,17 +84,17 @@ data class DBExtensionEntity(
 	var md5: String = "",
 ) : Convertible<ExtensionEntity> {
 	override fun convertTo(): ExtensionEntity = ExtensionEntity(
-		id,
-		repoID,
-		name,
-		fileName,
-		imageURL,
-		lang,
-		enabled,
-		installed,
-		installedVersion,
-		repositoryVersion,
-		chapterType,
-		md5
+		id = id,
+		repoID = repoID,
+		name = name,
+		fileName = fileName,
+		imageURL = imageURL,
+		lang = lang,
+		enabled = enabled,
+		installed = installed,
+		installedVersion = installedVersion,
+		repositoryVersion = repositoryVersion,
+		chapterType = chapterType,
+		md5 = md5
 	)
 }

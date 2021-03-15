@@ -68,4 +68,10 @@ val repositoryModule: Kodein.Module = Kodein.Module("repository_module") {
 
 	bind<INovelSettingsRepository>() with singleton { NovelSettingsRepository(instance()) }
 	bind<INovelReaderSettingsRepository>() with singleton { NovelReaderSettingsRepository(instance()) }
+	bind<IExtensionSettingsRepository>() with singleton {
+		ExtensionSettingsRepository(
+			iFileSettingSystem = instance()
+		)
+	}
+
 }
