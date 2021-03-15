@@ -6,6 +6,10 @@
         android:title="@string/migrate_source" />
 
     <item
+        android:id="@+id/option_chapter_jump"
+        android:title="@string/jump_to_chapter" />
+
+    <item
         android:id="@+id/share"
         android:icon="@drawable/share"
         android:title="@string/share"

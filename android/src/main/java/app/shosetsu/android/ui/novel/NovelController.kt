@@ -3,6 +3,7 @@ package app.shosetsu.android.ui.novel
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ext.*
@@ -23,6 +24,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.id
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBinding.inflate
+import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelJumpDialogBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.IAdapter
@@ -192,6 +194,33 @@ class NovelController(bundle: Bundle) :
 		}
 		id.share -> {
 			viewModel.share()
+			true
+		}
+		id.option_chapter_jump -> {
+			val binding =
+				ControllerNovelJumpDialogBinding.inflate(LayoutInflater.from(recyclerView.context))
+
+			AlertDialog.Builder(recyclerView.context)
+				.setView(binding.root)
+				.setTitle(R.string.jump_to_chapter)
+				.setNegativeButton(android.R.string.cancel) { d, id ->
+				}
+				.setPositiveButton(R.string.alert_dialog_jump_positive) { d, id ->
+					val selectedNumber =
+						binding.editTextNumber.text.toString().toDoubleOrNull()?.plus(1.0) ?: run {
+							logE("Invalid number")
+							return@setPositiveButton
+						}
+
+					logD("Selected number: $selectedNumber")
+
+					chapterUIAdapter.adapterItems.indexOfFirst {
+						it.order == selectedNumber
+					}.takeIf { it != -1 }?.let {
+						recyclerView.smoothScrollToPosition(it)
+					} ?: toast { "No chapter found matching input" }
+				}
+				.show()
 			true
 		}
 		id.download_next -> {

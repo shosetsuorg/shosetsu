@@ -393,6 +393,9 @@
     <string name="notification_channel_name_app_update">App Update</string>
     <string name="notification_channel_name_backup">Backup and Restore</string>
     <string name="controller_catalogue_toast_background_add">Adding to library in background</string>
+    <string name="jump_to_chapter">Jump to Chapter</string>
+    <string name="controller_novel_jump_dialog_hint_chapter_number">Chapter Number</string>
+    <string name="alert_dialog_jump_positive">Jump</string>
 
 
     <array name="text_alignments">
