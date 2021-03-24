@@ -1,11 +1,12 @@
 package app.shosetsu.android.view.widget.setting
 
+import android.R
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.TextView
-import androidx.appcompat.widget.AppCompatRadioButton
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import androidx.appcompat.widget.AppCompatSpinner
 import app.shosetsu.lib.Filter
 
 /*
@@ -28,15 +29,15 @@ import app.shosetsu.lib.Filter
 /**
  * 03 / 03 / 2021
  */
-class RadioGroupInput @JvmOverloads constructor(
+class DropdownFilter @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null,
 	override val filterID: Int = -1
-) : RadioGroup(context, attrs), FilterSettingWidget<Int> {
+) : AppCompatSpinner(context, attrs), FilterSettingWidget<Int> {
 	override var result: Int = 0
 
 	constructor(
-		filter: Filter.RadioGroup,
+		filter: Filter.Dropdown,
 		context: Context,
 		attrs: AttributeSet? = null
 	) : this(
@@ -44,25 +45,26 @@ class RadioGroupInput @JvmOverloads constructor(
 		attrs,
 		filterID = filter.id
 	) {
-		addView(
-			TextView(context).apply {
-				text = filter.name
-			}
+		adapter = ArrayAdapter(
+			context,
+			R.layout.simple_spinner_dropdown_item,
+			filter.choices
 		)
+		prompt = filter.name
+		setSelection(filter.state)
+		onItemSelectedListener = object : OnItemSelectedListener {
+			override fun onItemSelected(
+				parent: AdapterView<*>?,
+				view: View?,
+				position: Int,
+				id: Long
+			) {
+				result = position
+			}
 
-		filter.choices.mapIndexed { index, name ->
-			addView(
-				AppCompatRadioButton(context).apply {
-					text = name
-					id = index
-				}
-			)
-		}
+			override fun onNothingSelected(parent: AdapterView<*>?) {
+			}
 
-		(getChildAt(filter.state + 1) as RadioButton).isChecked = true
-
-		setOnCheckedChangeListener { group, checkedId ->
-			result = checkedId
 		}
 	}
 }

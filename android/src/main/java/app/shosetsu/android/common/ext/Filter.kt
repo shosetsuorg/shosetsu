@@ -24,11 +24,10 @@ import app.shosetsu.lib.Filter
 
 /**
  * 09 / 03 / 2021
+ * Converts a list of [Filter] to a UI design
  */
-
-
 fun List<Filter<*>>.createUI(context: Context): List<View> =
-	map {
+	mapNotNull {
 		when (it) {
 			is Filter.Header -> {
 				logV("Filter.Header -> HeaderInput")
@@ -54,7 +53,8 @@ fun List<Filter<*>>.createUI(context: Context): List<View> =
 				TriStateFilterInput(it, context)
 			}
 			is Filter.Dropdown -> {
-				null
+				logV("Filter.Dropdown -> DropdownFilter")
+				DropdownFilter(it, context)
 			}
 			is Filter.RadioGroup -> {
 				logV("Filter.RadioGroup -> RadioGroupInput")
@@ -63,11 +63,10 @@ fun List<Filter<*>>.createUI(context: Context): List<View> =
 			is Filter.List -> {
 				logV("Filter.List -> ListInput")
 				ListInput(it, context)
-				null
 			}
 			is Filter.Group<*> -> {
 				logV("Filter.Group -> GroupInput")
 				GroupInput(it, context)
 			}
 		}
-	}.filterNotNull()
+	}
