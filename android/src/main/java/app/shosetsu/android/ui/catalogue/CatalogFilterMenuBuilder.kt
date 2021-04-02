@@ -1,10 +1,8 @@
 package app.shosetsu.android.ui.catalogue
 
 import android.view.View
-import android.widget.LinearLayout
 import app.shosetsu.android.common.ext.createUI
 import app.shosetsu.android.common.ext.handleObserve
-import app.shosetsu.lib.Filter
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerCatalogFilterBottomMenuBinding
 
 /*
@@ -33,18 +31,14 @@ class CatalogFilterMenuBuilder(
 	@Suppress("ProtectedInFinal")
 	protected val layoutInflater = controller.activity!!.layoutInflater
 
-	private fun LinearLayout.build(list: List<Filter<*>>) {
-		list.createUI(context).forEach {
-			addView(it)
-		}
-	}
-
 	fun build(): View = ControllerCatalogFilterBottomMenuBinding.inflate(layoutInflater)
 		.also { binding ->
 			binding.extensionFilters.apply {
 				controller.viewModel.filterItemsLive.handleObserve(controller) { list ->
 					removeAllViews()
-					build(list)
+					list.createUI(context).forEach {
+						addView(it)
+					}
 				}
 			}
 			binding.applyButton.setOnClickListener {

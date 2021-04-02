@@ -12,6 +12,7 @@ import app.shosetsu.common.consts.ErrorKeys.ERROR_NETWORK
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.errorResult
 import app.shosetsu.lib.exceptions.*
+import kotlinx.serialization.SerializationException
 import org.json.JSONException
 import org.luaj.vm2.LuaError
 import java.io.IOException
@@ -66,6 +67,7 @@ fun Exception.toHError(): HResult.Error = when (this) {
 	is SQLiteException -> errorResult(this)
 	is InvalidParameterException -> errorResult(this)
 	is JSONException -> errorResult(this)
+	is SerializationException -> errorResult(this)
 	is UnknownHostException -> errorResult(this)
 	is android.content.res.Resources.NotFoundException -> errorResult(ERROR_IMPOSSIBLE, this)
 	else -> errorResult(ERROR_GENERAL, message ?: "Unknown General Error", this)

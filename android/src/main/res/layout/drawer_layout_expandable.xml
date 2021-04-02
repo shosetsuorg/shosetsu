@@ -11,6 +11,7 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/list"
+        android:padding="16dp"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
