@@ -9,7 +9,6 @@ import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
-import kotlinx.coroutines.Job
 
 /*
  * This file is part of shosetsu.
@@ -40,17 +39,11 @@ abstract class ICatalogViewModel :
 	ShosetsuViewModel(),
 	ErrorReportingViewModel,
 	ColumnCalculator {
-	/**
-	 * The current max page loaded, if 2, then the current page that has been appended is 2
-	 */
-	var currentMaxPage: Int = 1
-	private var inQuery: Boolean = false
-	private var inSearch: Boolean = false
 
 	/**
-	 * Novels listed by the catalogue listing
+	 * What is currently being displayed to the user
 	 */
-	abstract val listingItemsLive: LiveData<HResult<List<ACatalogNovelUI>>>
+	abstract val itemsLive: LiveData<HResult<List<ACatalogNovelUI>>>
 
 	/**
 	 * TODO, Finish creating UI elements for this
@@ -60,12 +53,16 @@ abstract class ICatalogViewModel :
 	/**
 	 * enable or disable searching
 	 */
-	abstract val hasSearchLive: LiveData<HResult<Boolean>>
+	abstract val hasSearchLive: LiveData<Boolean>
 
 	/**
 	 * Name of the extension that is used for its catalogue
 	 */
 	abstract val extensionName: LiveData<HResult<String>>
+
+
+	abstract val novelCardTypeLive: LiveData<NovelCardType>
+
 
 	/**
 	 * Sets the [IExtension]
@@ -73,31 +70,18 @@ abstract class ICatalogViewModel :
 	abstract fun setExtensionID(extensionID: Int)
 
 	/**
-	 * Initializes [listingItemsLive]
+	 * Initializes [itemsLive]
 	 */
-	abstract fun loadData(): Job
 
-	abstract fun setQuery(string: String)
+	abstract fun applyQuery(newQuery: String)
 
 	/**
-	 * Called when done with [setQuery]
-	 * Removes state of normal listing, and swaps [loadData] to load a query
+	 * Ask for more to be loaded
 	 */
-	abstract fun loadQuery(): Job
-
-	/**
-	 * Load up sequential data
-	 * Action depends on conditions
-	 * If [inQuery] tries to load more for the query
-	 * If [inSearch] it rejects the action
-	 * Else loads more default data
-	 */
-	abstract fun getNovelUIType(): NovelCardType
-
 	abstract fun loadMore()
 
 	/**
-	 * Reset [listingItemsLive], and runs [loadData] once again
+	 * Reset [itemsLive], and runs [loadData] once again
 	 */
 	abstract fun resetView()
 
@@ -108,9 +92,14 @@ abstract class ICatalogViewModel :
 	abstract fun backgroundNovelAdd(novelID: Int)
 
 	/**
-	 * Sets filters
+	 * Updates the filter data, does not apply the result
 	 */
-	abstract fun setFilters(map: Map<Int, Any>)
+	abstract fun applyFilter(map: Map<Int, Any>)
+
+	/**
+	 * Reset the filter data to nothing
+	 */
+	abstract fun resetFilter()
 
 
 	/** Destroy data */

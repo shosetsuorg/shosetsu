@@ -20,6 +20,7 @@ import app.shosetsu.android.view.controller.base.syncFABWithRecyclerView
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.view.widget.SlidingUpBottomMenu
 import app.shosetsu.android.viewmodel.abstracted.ILibraryViewModel
+import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.common.enums.NovelCardType.*
@@ -107,7 +108,8 @@ class LibraryController
 		}
 
 	override fun createLayoutManager(): RecyclerView.LayoutManager =
-		viewModel.getNovelUIType().manager
+		(viewModel.novelCardTypeLiveData.value
+			?: NovelCardType.valueOf(SettingKey.SelectedNovelCardType.default)).manager
 
 	override fun setupRecyclerView() {
 		recyclerView.setHasFixedSize(false)

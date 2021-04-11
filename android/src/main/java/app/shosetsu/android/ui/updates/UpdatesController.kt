@@ -17,6 +17,7 @@ package app.shosetsu.android.ui.updates
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import android.view.View
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.controller.FastAdapterRefreshableRecyclerController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
@@ -54,6 +55,10 @@ class UpdatesController : FastAdapterRefreshableRecyclerController<UpdateUI>(),
 			activity?.openChapter(chapterID, novelID)
 			true
 		}
+	}
+
+	override fun onViewCreated(view: View) {
+		super.onViewCreated(view)
 		startObservation()
 	}
 

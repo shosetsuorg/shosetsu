@@ -8,7 +8,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/filer_menu_divider">
+        android:layout_above="@id/control_layout">
 
         <LinearLayout
             android:id="@+id/extensionFilters"
@@ -18,35 +18,34 @@
             android:padding="16dp" />
     </ScrollView>
 
-    <View
-        android:id="@+id/filer_menu_divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_above="@id/control_layout"
-        android:layout_marginBottom="8dp"
-        android:background="?android:attr/listDivider" />
-
-    <RelativeLayout
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/control_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_gravity="center_vertical"
-        android:elevation="1dp"
-        android:padding="8dp">
+        android:elevation="1dp">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/resetButton"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:text="@string/reset" />
+            android:elevation="1dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:padding="8dp">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/applyButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="@string/apply" />
-    </RelativeLayout>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/resetButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/reset" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/applyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/apply" />
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
 </RelativeLayout>

@@ -219,11 +219,14 @@ class ChapterReaderViewModel(
 	}
 
 	override fun setNovelID(novelID: Int) {
+		logV("novelID=$novelID")
 		when {
-			novelIDLive.value == -1 -> logI("Setting NovelID")
-			novelIDLive.value != novelID -> logI("NovelID not equal, resetting")
+			novelIDLive.value == -1 ->
+				logD("Setting NovelID")
+			novelIDLive.value != novelID ->
+				logD("NovelID not equal, resetting")
 			novelIDLive.value == novelID -> {
-				logI("NovelID equal, ignoring")
+				logD("NovelID equal, ignoring")
 				return
 			}
 		}

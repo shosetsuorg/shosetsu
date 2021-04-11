@@ -93,7 +93,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 	override fun onCreate() {
 		ShosetsuLuaLib.httpClient = okHttpClient
 		ShosetsuLuaLib.libLoader = libLoader@{ name ->
-			Log.i("LibraryLoaderSync", "Loading:\t$name")
+			Log.i("LuaLibLoader", "Loading ($name)")
 			return@libLoader when (val result = extLibRepository.blockingLoadExtLibrary(name)) {
 				is HResult.Success -> {
 					val l = try {

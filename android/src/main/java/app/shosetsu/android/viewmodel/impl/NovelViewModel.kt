@@ -108,8 +108,7 @@ class NovelViewModel(
 		novelIDLive.transformLatest { emitAll(getNovelSettingFlowUseCase(it)) }
 	}
 
-	private val novelIDLive: MutableStateFlow<Int> by lazy { MutableStateFlow(novelIDValue) }
-	private var novelIDValue = -1
+	private val novelIDLive: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
 
 
 	@ExperimentalCoroutinesApi
@@ -239,7 +238,6 @@ class NovelViewModel(
 
 		// resets filters
 
-		novelIDValue = -1
 		novelIDLive.tryEmit(-1)
 	}
 
@@ -302,20 +300,19 @@ class NovelViewModel(
 	override fun refresh(): LiveData<HResult<*>> =
 		liveDataIO {
 			emit(loading())
-			emit(loadNovelUseCase(novelIDValue, true))
+			emit(loadNovelUseCase(novelIDLive.value, true))
 		}
 
 	override fun setNovelID(novelID: Int) {
 		when {
-			novelIDValue == -1 -> logI("Setting NovelID")
-			novelIDValue != novelID -> logI("NovelID not equal, resetting")
-			novelIDValue == novelID -> {
+			novelIDLive.value == -1 -> logI("Setting NovelID")
+			novelIDLive.value != novelID -> logI("NovelID not equal, resetting")
+			novelIDLive.value == novelID -> {
 				logI("NovelID equal, ignoring")
 				return
 			}
 		}
 		novelIDLive.tryEmit(novelID)
-		novelIDValue = novelID
 	}
 
 	@ExperimentalCoroutinesApi

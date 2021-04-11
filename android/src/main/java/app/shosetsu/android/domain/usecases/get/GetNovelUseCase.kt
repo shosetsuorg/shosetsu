@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.common.ext.ifSo
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
 import app.shosetsu.common.consts.settings.SettingKey.IsDownloadOnUpdate
@@ -57,26 +58,44 @@ class GetNovelUseCase(
 
 				// If this novel has been loaded or not
 				if (loadChapters) {
-					if (!currentStatus)
+					if (currentStatus) {
 						cR.handleChapters(
 							novelID = novel.id!!,
 							extensionID = novel.extensionID,
 							list = page.chapters
 						)
-					else cR.handleChaptersReturn(
-						novelID = novel.id!!,
-						extensionID = novel.extensionID,
-						list = page.chapters
-					).handle { chapters ->
-						if (chapters.isNotEmpty()) haveChaptersUpdate()
-						uR.addUpdates(chapters.map {
-							UpdateEntity(it.id!!, novel.id!!, System.currentTimeMillis())
-						})
-						sR.getBoolean(IsDownloadOnUpdate).handle { downloadUpdates ->
-							downloadUpdates ifSo chapters.forEach { download(it) }
-								?: logI("Not installing updates")
-						}
+					} else {
+						cR.handleChaptersReturn(
+							novelID = novel.id!!,
+							extensionID = novel.extensionID,
+							list = page.chapters
+						).handle(
+							onEmpty = {
+								logE("Impossible result (empty)")
+							}, onLoading = {
+								logE("Impossible result (loading)")
+							}, onError = {
+								logE(it.message, it.exception)
+							}
+						) { chapters ->
+							if (chapters.isNotEmpty()) haveChaptersUpdate()
 
+							uR.addUpdates(chapters.map {
+								UpdateEntity(it.id!!, novel.id!!, System.currentTimeMillis())
+							}).handle(onEmpty = {
+								logE("Impossible result (empty)")
+							}, onLoading = {
+								logE("Impossible result (loading)")
+							}, onError = {
+								logE(it.message, it.exception)
+							})
+
+							sR.getBoolean(IsDownloadOnUpdate).handle { downloadUpdates ->
+								downloadUpdates ifSo chapters.forEach { download(it) }
+									?: logI("Not downloading updates")
+							}
+
+						}
 					}
 				}
 				successResult(novel)

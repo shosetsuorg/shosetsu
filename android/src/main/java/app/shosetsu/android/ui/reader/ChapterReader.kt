@@ -110,7 +110,7 @@ class ChapterReader
 
 	/** On Create */
 	public override fun onCreate(savedInstanceState: Bundle?) {
-		logV("On Create")
+		logV("")
 		window.hideBar()
 		viewModel.apply {
 			setNovelID(intent.getIntExtra(BUNDLE_NOVEL_ID, -1))
@@ -132,7 +132,7 @@ class ChapterReader
 
 	/** On Destroy */
 	override fun onDestroy() {
-		logD("Destroying")
+		logV("")
 		viewpager.unregisterOnPageChangeCallback(pageChangeCallback)
 		super.onDestroy()
 	}
@@ -158,9 +158,16 @@ class ChapterReader
 		viewModel.liveData.observe { result ->
 			result.handle(
 				onLoading = {
-					logD("Loading")
+					logD("Loading chapters")
+				},
+				onError = {
+					logE("Error occured while loading chapters", it.exception)
+				},
+				onEmpty = {
+					logD("Recieved an empty result")
 				}
 			) {
+				logD("Handling chapters $it")
 				handleChaptersResult(it)
 			}
 		}
@@ -186,7 +193,6 @@ class ChapterReader
 		viewModel.liveTextSize.observe {
 			applyToReaders { syncTextSize() }
 		}
-
 
 		viewModel.liveVolumeScroll.observe {
 		}
@@ -296,7 +302,7 @@ class ChapterReader
 	}
 
 	private fun setupViewPager() {
-		logV("Setting up ViewPager")
+		logV("")
 		viewpager.apply {
 			adapter = fastAdapter
 			registerOnPageChangeCallback(pageChangeCallback)

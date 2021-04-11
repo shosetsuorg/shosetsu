@@ -21,6 +21,7 @@ import app.shosetsu.common.dto.HResult
  *
  * 14 / 08 / 2020
  */
+const val NULL_METHOD_NAME = "UnknownMethod"
 
 inline fun <reified T : Any> T.logError(error: () -> HResult.Error) {
 	error().let { (k, m, e) ->
@@ -32,24 +33,32 @@ inline fun <reified T : Any> T.logError(error: () -> HResult.Error) {
 	}
 }
 
-inline fun <reified T> T.inform(message: String?, t: Throwable? = null) = logI(message, t)
+inline fun <reified T> T.logI(message: String?, t: Throwable? = null): Int {
+	val name = Thread.currentThread().stackTrace[2].methodName ?: NULL_METHOD_NAME
+	return i(T::class.java.simpleName, "${name}:\t$message", t)
+}
 
-inline fun <reified T> T.logI(message: String?, t: Throwable? = null) =
-	i(T::class.java.simpleName, message, t)
+inline fun <reified T> T.logD(message: String?, t: Throwable? = null): Int {
+	val name = Thread.currentThread().stackTrace[2].methodName ?: NULL_METHOD_NAME
+	return d(T::class.java.simpleName, "${name}:\t$message", t)
+}
 
-inline fun <reified T> T.logD(message: String?, t: Throwable? = null) =
-	d(T::class.java.simpleName, message, t)
+inline fun <reified T> T.logE(message: String?, t: Throwable? = null): Int {
+	val name = Thread.currentThread().stackTrace[2].methodName ?: NULL_METHOD_NAME
+	return e(T::class.java.simpleName, "${name}:\t$message", t)
+}
 
-inline fun <reified T> T.logE(message: String?, t: Throwable? = null) =
-	e(T::class.java.simpleName, message, t)
+inline fun <reified T> T.logW(message: String?, t: Throwable? = null): Int {
+	val name = Thread.currentThread().stackTrace[2].methodName ?: NULL_METHOD_NAME
+	return w(T::class.java.simpleName, "${name}:\t$message", t)
+}
 
-inline fun <reified T> T.warn(message: String?, t: Throwable? = null) = logW(message, t)
+inline fun <reified T> T.logV(message: String?, t: Throwable? = null): Int {
+	val name = Thread.currentThread().stackTrace[2].methodName ?: NULL_METHOD_NAME
+	return v(T::class.java.simpleName, "${name}:\t$message", t)
+}
 
-inline fun <reified T> T.logW(message: String?, t: Throwable? = null) =
-	w(T::class.java.simpleName, message, t)
-
-inline fun <reified T> T.logV(message: String?, t: Throwable? = null) =
-	v(T::class.java.simpleName, message, t)
-
-inline fun <reified T> T.logWTF(message: String?, t: Throwable? = null) =
-	wtf(T::class.java.simpleName, message, t)
+inline fun <reified T> T.logWTF(message: String?, t: Throwable? = null): Int {
+	val name = Thread.currentThread().stackTrace[2].methodName ?: NULL_METHOD_NAME
+	return wtf(T::class.java.simpleName, "${name}:\t$message", t)
+}

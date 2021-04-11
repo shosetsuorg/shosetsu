@@ -49,7 +49,7 @@ interface ExtensionsDao : BaseDao<DBExtensionEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions WHERE id = :formatterID LIMIT 1")
-	fun getExtension(formatterID: Int): DBExtensionEntity
+	fun getExtension(formatterID: Int): DBExtensionEntity?
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions WHERE id = :formatterID LIMIT 1")
@@ -71,7 +71,7 @@ interface ExtensionsDao : BaseDao<DBExtensionEntity> {
 	suspend fun insertOrUpdate(DBExtensionEntity: DBExtensionEntity) {
 		if (doesExtensionExist(DBExtensionEntity.id)) {
 			update(
-				getExtension(DBExtensionEntity.id).copy(
+				getExtension(DBExtensionEntity.id)!!.copy(
 					name = DBExtensionEntity.name,
 					imageURL = DBExtensionEntity.imageURL,
 					repositoryVersion = DBExtensionEntity.repositoryVersion,

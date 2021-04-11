@@ -49,7 +49,7 @@ class DBUpdatesDataSource(
 	}
 
 	override suspend fun insertUpdates(list: List<UpdateEntity>): HResult<Array<Long>> = try {
-		successResult(updatesDao.insertAllIgnore(list.toDB()))
+		successResult(updatesDao.insertAllReplace(list.toDB()))
 	} catch (e: Exception) {
 		e.toHError()
 	}

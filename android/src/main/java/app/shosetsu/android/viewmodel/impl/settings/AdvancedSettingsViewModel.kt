@@ -1,16 +1,13 @@
 package app.shosetsu.android.viewmodel.impl.settings
 
-import android.content.Context
+import android.app.Application
 import android.content.res.Resources
 import android.widget.ArrayAdapter
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.PurgeNovelCacheUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.buttonSettingData
-import app.shosetsu.android.view.uimodels.settings.dsl.onButtonClicked
-import app.shosetsu.android.view.uimodels.settings.dsl.spinnerSettingData
-import app.shosetsu.android.view.uimodels.settings.dsl.title
+import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.AppTheme
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
@@ -40,7 +37,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
  */
 class AdvancedSettingsViewModel(
 	iSettingsRepository: ISettingsRepository,
-	private val context: Context,
+	private val context: Application,
 	private val reportExceptionUseCase: ReportExceptionUseCase,
 	private val purgeNovelCacheUseCase: PurgeNovelCacheUseCase
 ) : AAdvancedSettingsViewModel(iSettingsRepository) {
@@ -61,6 +58,7 @@ class AdvancedSettingsViewModel(
 		},
 		buttonSettingData(2) {
 			title { R.string.remove_novel_cache }
+			text { "Purge" }
 			onButtonClicked {
 				purgeNovelCacheUseCase()
 			}

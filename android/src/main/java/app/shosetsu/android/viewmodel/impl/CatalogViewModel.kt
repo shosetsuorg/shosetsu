@@ -1,10 +1,7 @@
 package app.shosetsu.android.viewmodel.impl
 
-import androidx.lifecycle.MutableLiveData
-import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.common.ext.logV
+import androidx.lifecycle.LiveData
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.NovelBackgroundAddUseCase
 import app.shosetsu.android.domain.usecases.get.GetCatalogueListingDataUseCase
@@ -13,20 +10,15 @@ import app.shosetsu.android.domain.usecases.get.GetExtensionUseCase
 import app.shosetsu.android.domain.usecases.load.*
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ICatalogViewModel
-import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.loading
-import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.PAGE_INDEX
-import app.shosetsu.lib.mapify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.*
 
 /*
  * This file is part of shosetsu.
@@ -60,177 +52,217 @@ class CatalogViewModel(
 	private val loadNovelUIColumnsHUseCase: LoadNovelUIColumnsHUseCase,
 	private val loadNovelUIColumnsPUseCase: LoadNovelUIColumnsPUseCase,
 ) : ICatalogViewModel() {
-	private var novelCardType: NovelCardType =
-		NovelCardType.fromInt(SettingKey.SelectedNovelCardType.default)
-	private var columnP: Int = SettingKey.ChapterColumnsInPortait.default
-	private var columnH: Int = SettingKey.ChapterColumnsInLandscape.default
-	private var iExtension: IExtension? = null
-	private var listingItems: ArrayList<ACatalogNovelUI> = arrayListOf()
-	private var filterData = hashMapOf<Int, Any>()
-	private var query: String = ""
+	private var queryState: String = ""
 
-	override val listingItemsLive: MutableLiveData<HResult<List<ACatalogNovelUI>>> by lazy {
-		MutableLiveData<HResult<List<ACatalogNovelUI>>>(loading())
-	}
-	override val filterItemsLive: MutableLiveData<HResult<List<Filter<*>>>> by lazy {
-		MutableLiveData(loading())
-	}
-	override val hasSearchLive: MutableLiveData<HResult<Boolean>> by lazy {
-		MutableLiveData(loading())
-	}
-	override val extensionName: MutableLiveData<HResult<String>> by lazy {
-		MutableLiveData<HResult<String>>(loading())
+	private var filterDataState: Map<Int, Any> = hashMapOf()
+
+	private var ext: IExtension? = null
+
+	private val iExtensionFlow: Flow<HResult<IExtension>> by lazy {
+		extensionIDFlow.mapLatest { extensionID ->
+			getExtensionUseCase(extensionID).apply { ext = unwrap() }
+		}
 	}
 
 	/**
-	 * Current loading job
+	 * Flow source for extension ID
 	 */
-	private var loadingJob: Job = launchIO { }
+	private val extensionIDFlow: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
 
-	init {
-		launchIO {
-			loadNovelUIColumnsHUseCase().collectLatest {
-				columnH = it
-			}
-			loadNovelUIColumnsPUseCase().collectLatest {
-				columnP = it
-			}
-			loadNovelUITypeUseCase().collectLatest {
-				novelCardType = it
-			}
-		}
+	override val itemsLive: LiveData<HResult<List<ACatalogNovelUI>>> by lazy {
+		itemsFlow.asIOLiveData()
 	}
 
-	private fun setFID(fID: Int): Job = launchIO {
-		when {
-			iExtension == null -> {
-				logI("Loading formatter")
-				when (val v = getExtensionUseCase(fID)) {
-					is HResult.Success -> {
-						iExtension = v.data
-						extensionName.postValue(successResult(v.data.name))
-						hasSearchLive.postValue(successResult(v.data.hasSearch))
-						filterData.putAll(v.data.searchFiltersModel.mapify())
-						filterItemsLive.postValue(successResult(v.data.searchFiltersModel.toList()))
-					}
-					is HResult.Loading -> extensionName.postValue(v)
-					is HResult.Error -> extensionName.postValue(v)
-					is HResult.Empty -> extensionName.postValue(v)
+	private val itemsFlow: MutableStateFlow<HResult<List<ACatalogNovelUI>>> by lazy {
+		MutableStateFlow(loading)
+	}
+
+	override val filterItemsLive: LiveData<HResult<List<Filter<*>>>> by lazy {
+		iExtensionFlow.mapLatestResult { successResult(it.searchFiltersModel.toList()) }
+			.asIOLiveData()
+	}
+
+	override val hasSearchLive: LiveData<Boolean> by lazy {
+		iExtensionFlow.mapLatest { it.unwrap()?.hasSearch == true }.asIOLiveData()
+	}
+
+	override val extensionName: LiveData<HResult<String>> by lazy {
+		iExtensionFlow.mapLatestResult { successResult(it.name) }.asIOLiveData()
+	}
+
+	private var stateManager = StateManager()
+
+
+	/**
+	 * Handles the current state of the UI
+	 */
+	private inner class StateManager {
+		private val loaderManager by lazy { LoaderManager() }
+
+		fun loadMore() {
+			loaderManager.loadMore(QueryFilter(queryState, filterDataState))
+		}
+
+		/**
+		 * The idea behind this class is the squeeze all the loading jobs into a single class.
+		 * There will only be 1 instance at a time
+		 */
+		private inner class LoaderManager {
+			/**
+			 * Current loading job
+			 */
+			private var loadingJob: Job? = null
+
+			private var _canLoadMore = true
+
+			init {
+				itemsFlow.tryEmit(successResult(emptyList()))
+				itemsFlow.tryEmit(loading)
+			}
+
+			/**
+			 * The current max page loaded.
+			 *
+			 * if 2, then the current page that has been appended is 2
+			 */
+			private var currentMaxPage: Int = 0
+
+			private var values = arrayListOf<ACatalogNovelUI>()
+
+			fun loadMore(queryFilter: QueryFilter) {
+				logD("")
+				if (_canLoadMore && ((loadingJob != null && (loadingJob!!.isCancelled || loadingJob!!.isCompleted)) || (loadingJob == null))) {
+					logD("Proceeding with loading")
+					loadingJob = null
+					loadingJob = loadData(queryFilter)
 				}
 			}
-			iExtension!!.formatterID != fID -> {
-				logI("Resetting formatter")
-				destroy()
-				setFID(fID).join()
+
+			private fun loadData(queryFilter: QueryFilter): Job = launchIO {
+				if (ext == null) {
+					logE("formatter was null")
+					this.cancel("Extension not loaded")
+					return@launchIO
+				}
+				logD("Passed null extension check")
+				currentMaxPage++
+				itemsFlow.tryEmit(loading())
+
+				getDataLoaderAndLoad(queryFilter).handle(onError = {
+					_canLoadMore = false
+					reportError(it)
+					logE("Error: ${it.code}|${it.message}", it.exception)
+					itemsFlow.tryEmit(it)
+				}, onEmpty = {
+					_canLoadMore = false
+				}, onLoading = {
+				}) { newList ->
+					values.plusAssign(newList)
+					itemsFlow.tryEmit(successResult(values))
+				}
 			}
-			else -> logI("FID are the same, ignoring")
+
+			private suspend fun getDataLoaderAndLoad(queryFilter: QueryFilter): HResult<List<ACatalogNovelUI>> {
+				return if (queryFilter.query.isEmpty()) {
+					logV("Loading listing data")
+					getCatalogueListingData(
+						ext!!,
+						HashMap<Int, Any>().apply {
+							putAll(queryFilter.filters)
+							this[PAGE_INDEX] = currentMaxPage
+						}
+					)
+				} else {
+					logV("Loading query data")
+					loadCatalogueQueryDataUseCase(
+						ext!!,
+						queryFilter.query,
+						HashMap<Int, Any>().apply {
+							putAll(queryFilter.filters)
+							this[PAGE_INDEX] = currentMaxPage
+						}
+					)
+				}
+			}
 		}
 	}
+
+	private data class QueryFilter(
+		var query: String,
+		var filters: Map<Int, Any>
+	)
+
 
 	override fun setExtensionID(extensionID: Int) {
-		setFID(extensionID)
-	}
-
-	override fun setQuery(string: String) {
-		this.query = string
-	}
-
-	private suspend fun getDataLoaderAndLoad(): HResult<List<ACatalogNovelUI>> {
-		return if (query.isEmpty()) {
-			logV("Loading listing data")
-			getCatalogueListingData(
-				iExtension!!,
-				filterData.apply {
-					this[PAGE_INDEX] = currentMaxPage
-				}
-			)
-		} else {
-			logV("Loading query data")
-			loadCatalogueQueryDataUseCase(
-				iExtension!!,
-				query,
-				filterData.apply {
-					this[PAGE_INDEX] = currentMaxPage
-				}
-			)
+		when {
+			extensionIDFlow.value == -1 ->
+				logI("Setting NovelID")
+			extensionIDFlow.value != extensionID ->
+				logI("NovelID not equal, resetting")
+			extensionIDFlow.value == extensionID -> {
+				logI("Ignore if the same")
+				return
+			}
 		}
+		extensionIDFlow.tryEmit(extensionID)
 	}
 
-	@Synchronized
-	override fun loadData(): Job = launchIO {
-		if (iExtension == null) {
-			logE("formatter was null")
-			this.cancel("Extension not loaded")
-			return@launchIO
-		}
-		currentMaxPage++
-		val values = listingItems
-
-		listingItemsLive.postValue(loading())
-
-		getDataLoaderAndLoad().handle(onError = {
-			reportError(it)
-			logE("Error: ${it.code}|${it.message}", it.exception)
-		}) { newList ->
-			listingItemsLive.postValue(successResult(values + newList))
-			listingItems = values.apply { addAll(newList) }
-		}
-	}
-
-	override fun loadQuery(): Job = launchIO {
-		currentMaxPage = 0
-		loadingJob.cancel("Loading a query")
-		listingItems.clear()
-		listingItemsLive.postValue(successResult(arrayListOf()))
-		loadingJob = loadData()
+	override fun applyQuery(newQuery: String) {
+		logV("")
+		queryState = newQuery
+		stateManager = StateManager()
+		stateManager.loadMore()
 	}
 
 	@Synchronized
 	override fun loadMore() {
-		if (loadingJob.isCompleted)
-			loadingJob = loadData()
+		logV("")
+		stateManager.loadMore()
 	}
 
 	override fun resetView() {
-		listingItemsLive.postValue(successResult(arrayListOf()))
-		listingItems.clear()
-		currentMaxPage = 0
-		loadData()
+		logV("")
+		itemsFlow.tryEmit(successResult(arrayListOf()))
+		stateManager = StateManager()
+		stateManager.loadMore()
 	}
 
 	override fun backgroundNovelAdd(novelID: Int) {
 		launchIO { backgroundAddUseCase(novelID) }
 	}
 
-	override fun setFilters(map: Map<Int, Any>) {
-		launchIO {
-			filterData.putAll(map)
-			listingItems.clear()
-			listingItemsLive.postValue(successResult(arrayListOf()))
-			loadData()
-		}
+	override fun applyFilter(map: Map<Int, Any>) {
+		logV("")
+		filterDataState = map
+		stateManager = StateManager()
+		stateManager.loadMore()
 	}
 
 	override fun destroy() {
-		launchIO {
-			iExtension = null
-			listingItems.clear()
-			filterData.clear()
-			query = ""
-			listingItemsLive.postValue(successResult(arrayListOf()))
-			filterItemsLive.postValue(successResult(arrayListOf()))
-			hasSearchLive.postValue(successResult(false))
-			hasSearchLive.postValue(loading())
-			extensionName.postValue(loading())
-		}
+		queryState = ""
+		extensionIDFlow.value = -1
+		itemsFlow.tryEmit(successResult(arrayListOf()))
+		stateManager = StateManager()
+	}
+
+	override fun resetFilter() {
+		filterDataState = mapOf()
 	}
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) =
 		reportExceptionUseCase(error)
 
-	override fun getColumnsInP(): Int = columnP
-	override fun getColumnsInH(): Int = columnH
-	override fun getNovelUIType(): NovelCardType = novelCardType
 
+	override val novelCardTypeLive: LiveData<NovelCardType> by lazy {
+		loadNovelUITypeUseCase().asIOLiveData()
+	}
+
+	override val columnsInH: LiveData<Int> by lazy {
+		loadNovelUIColumnsHUseCase().asIOLiveData()
+	}
+
+	override val columnsInP: LiveData<Int> by lazy {
+		loadNovelUIColumnsPUseCase().asIOLiveData()
+	}
 }
 

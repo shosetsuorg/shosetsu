@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.getSystemService
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
+import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import app.shosetsu.android.common.consts.*
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
@@ -454,6 +455,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 				clearOnHideListeners()
 				clearOnShowListeners()
 				clearChildren()
+				isVisible = false
 			}
 		}
 
@@ -463,6 +465,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			to.bottomMenuRetriever = { binding.slidingUpBottomMenu }
 
 			binding.slidingUpBottomMenu.apply {
+				isVisible = true
 				addOnShowListener {
 					if (!created) {
 						addChildView(to.getBottomMenuView())

@@ -1,4 +1,8 @@
-package app.shosetsu.common.enums
+package app.shosetsu.android
+
+import android.util.Log
+import app.shosetsu.android.common.ext.enclosingName
+import org.junit.Test
 
 /*
  * This file is part of Shosetsu.
@@ -18,19 +22,27 @@ package app.shosetsu.common.enums
  */
 
 /**
- * shosetsu
- * 08 / 12 / 2020
+ * 10 / 04 / 2021
  */
-enum class NovelCardType(
-	private val code: Int
-) {
-	NORMAL(0),
-	COMPRESSED(1),
-	COZY(2), ;
+class LoggingTest {
 
-	fun toInt(): Int = code
-
-	companion object {
-		fun valueOf(code: Int): NovelCardType = values().find { it.code == code }!!
+	@Test
+	fun log1() {
+		advancedLogV("This is a log")
 	}
+
+	@Test
+	fun log2() {
+		advancedLogV("This is a log")
+	}
+
+	@Test
+	fun log3() {
+		advancedLogV("This is a log")
+	}
+
+	inline fun <reified T> T.advancedLogV(message: String?): Int {
+		return Log.w(T::class.java.simpleName, "${enclosingName()}:\t$message", null)
+	}
+
 }

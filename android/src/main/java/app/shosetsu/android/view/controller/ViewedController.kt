@@ -65,23 +65,24 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 	init {
 		addLifecycleListener(object : LifecycleListener() {
 			override fun postCreateView(controller: Controller, view: View) {
+				logV("Manipulate view for ${controller.instance()}")
 				onViewCreated(view)
 			}
 
 			override fun preCreateView(controller: Controller) {
-				Log.d(logID(), "Create view for ${controller.instance()}")
+				logV("Create view for ${controller.instance()}")
 			}
 
 			override fun preAttach(controller: Controller, view: View) {
-				Log.d(logID(), "Attach view for ${controller.instance()}")
+				logV("Attach view for ${controller.instance()}")
 			}
 
 			override fun preDetach(controller: Controller, view: View) {
-				Log.d(logID(), "Detach view for ${controller.instance()}")
+				logV("Detach view for ${controller.instance()}")
 			}
 
 			override fun preDestroyView(controller: Controller, view: View) {
-				Log.d(logID(), "Destroy view for ${controller.instance()}")
+				logV("Destroy view for ${controller.instance()}")
 			}
 		})
 	}
@@ -89,9 +90,8 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 	constructor()
 	constructor(args: Bundle) : super(args)
 
-	private fun Controller.instance(): String {
-		return "${javaClass.simpleName}@${Integer.toHexString(hashCode())}"
-	}
+	private fun Controller.instance(): String =
+		"${javaClass.simpleName}@${Integer.toHexString(hashCode())}"
 
 	@CallSuper
 	override fun onDestroy() {
@@ -126,12 +126,12 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 	): View {
 		setViewTitle()
 		binding = bindView(inflater)
-		onViewCreated(binding.root)
 		return binding.root
 	}
 
 	/**
 	 * What to do once the view is created
+	 * Called by the [lifecycleListeners] via [LifecycleListener.postCreateView]
 	 */
 	abstract fun onViewCreated(view: View)
 

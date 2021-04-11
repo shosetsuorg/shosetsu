@@ -83,7 +83,7 @@ class BackupTest : KodeinAware {
 					randomString, randomString,
 					Random.nextBoolean(),
 					ReadingStatus.fromInt(Random.nextInt() % 3 + 1),
-					randomInt
+					randomInt.toDouble()
 				)
 			)
 		}

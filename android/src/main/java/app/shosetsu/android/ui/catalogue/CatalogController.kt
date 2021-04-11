@@ -64,7 +64,6 @@ class CatalogController(
 	val bundle: Bundle,
 ) : FastAdapterRecyclerController<ControllerCatalogueBinding, ACatalogNovelUI>(bundle),
 	PushCapableController, ExtendedFABController, BottomMenuController {
-	private var searchView: SearchView? = null
 
 	override var pushController: (Controller) -> Unit = {}
 
@@ -86,13 +85,13 @@ class CatalogController(
 	}
 
 	override fun onDestroy() {
+		logV("")
 		super.onDestroy()
 		viewModel.destroy()
-		searchView = null
 	}
 
 	override fun createLayoutManager(): RecyclerView.LayoutManager {
-		return when (viewModel.getNovelUIType()) {
+		return when (viewModel.novelCardTypeLive.value) {
 			COMPRESSED -> LinearLayoutManager(
 				context,
 				VERTICAL,
@@ -149,7 +148,10 @@ class CatalogController(
 
 	override fun onViewCreated(view: View) {
 		viewModel.setExtensionID(bundle.getInt(BUNDLE_EXTENSION))
-		binding.swipeRefreshLayout.setOnRefreshListener { viewModel.resetView() }
+		binding.swipeRefreshLayout.setOnRefreshListener {
+			logV("Refreshing")
+			viewModel.resetView()
+		}
 		setupObservers()
 		setupRecyclerView()
 	}
@@ -160,8 +162,10 @@ class CatalogController(
 		recyclerView.addOnScrollListener(object : EndlessRecyclerOnScrollListener(progressAdapter) {
 			override fun onLoadMore(currentPage: Int) {
 				// these are throwing exceptions that cant be catched, just ignore em
-				progressAdapter.clear()
-				progressAdapter.add(ProgressItem())
+				launchUI {
+					progressAdapter.clear()
+					progressAdapter.add(ProgressItem())
+				}
 
 				viewModel.loadMore()
 			}
@@ -172,13 +176,21 @@ class CatalogController(
 	/***/
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		menu.clear()
-		inflater.inflate(R.menu.toolbar_library, menu)
-		searchView = menu.findItem(R.id.library_search).actionView as SearchView
-		searchView?.setOnQueryTextListener(CatalogueSearchQuery(this))
-		searchView?.setOnCloseListener {
-			viewModel.setQuery("")
-			viewModel.resetView()
-			true
+		inflater.inflate(R.menu.toolbar_catalogue, menu)
+		menu.findItem(R.id.search_item)?.let { searchItem ->
+			if (viewModel.hasSearchLive.value != true) {
+				searchItem.isVisible = false
+				return@let
+			}
+			(searchItem.actionView as SearchView).apply {
+				setOnQueryTextListener(CatalogueSearchQuery(this@CatalogController))
+				setOnCloseListener {
+					logV("closing search view")
+					viewModel.applyQuery("")
+					viewModel.resetView()
+					true
+				}
+			}
 		}
 	}
 
@@ -199,7 +211,7 @@ class CatalogController(
 	}
 
 	private fun setupObservers() {
-		viewModel.listingItemsLive.observeRecyclerUpdates()
+		viewModel.itemsLive.observeRecyclerUpdates()
 
 		viewModel.extensionName.handleObserve(this, onLoading = {
 			setViewTitle(getString(R.string.loading))
@@ -208,8 +220,8 @@ class CatalogController(
 			if (recyclerArray.isEmpty()) viewModel.resetView()
 		}
 
-		viewModel.hasSearchLive.handleObserve {
-			searchView?.isEnabled = it
+		viewModel.hasSearchLive.observe {
+			activity?.invalidateOptionsMenu()
 		}
 		viewModel.filterItemsLive.observe(this) {
 		}

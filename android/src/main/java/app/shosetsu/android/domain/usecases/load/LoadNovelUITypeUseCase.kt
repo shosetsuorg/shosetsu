@@ -34,7 +34,7 @@ class LoadNovelUITypeUseCase(
 	@ExperimentalCoroutinesApi
 	operator fun invoke(): Flow<NovelCardType> {
 		return repository.getIntFlow(SettingKey.SelectedNovelCardType).mapLatest {
-			NovelCardType.fromInt(it)
+			NovelCardType.valueOf(it)
 		}
 	}
 }

@@ -10,7 +10,7 @@ java {
 }
 
 dependencies {
-	implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.30")
+	implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.32")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
 	implementation("com.github.shosetsuorg:kotlin-lib:1.0.0-rc55")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")

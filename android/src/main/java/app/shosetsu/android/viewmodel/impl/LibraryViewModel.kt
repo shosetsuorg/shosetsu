@@ -30,7 +30,8 @@ import app.shosetsu.android.domain.usecases.start.StartUpdateWorkerUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateBookmarkedNovelUseCase
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ILibraryViewModel
-import app.shosetsu.common.consts.settings.SettingKey.*
+import app.shosetsu.common.consts.settings.SettingKey.ChapterColumnsInLandscape
+import app.shosetsu.common.consts.settings.SettingKey.ChapterColumnsInPortait
 import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.InclusionState
 import app.shosetsu.common.enums.InclusionState.EXCLUDE
@@ -38,7 +39,10 @@ import app.shosetsu.common.enums.InclusionState.INCLUDE
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.common.enums.NovelSortType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.mapLatest
 import java.util.Locale.getDefault as LGD
 
 /**
@@ -58,7 +62,7 @@ class LibraryViewModel(
 	private val loadNovelUIColumnsPUseCase: LoadNovelUIColumnsPUseCase,
 	private val setNovelUITypeUseCase: SetNovelUITypeUseCase
 ) : ILibraryViewModel() {
-	private var novelCardType: NovelCardType = NovelCardType.fromInt(SelectedNovelCardType.default)
+
 
 	private var columnP: Int = ChapterColumnsInPortait.default
 
@@ -142,20 +146,14 @@ class LibraryViewModel(
 			.asIOLiveData()
 	}
 
-	init {
-		launchIO {
-			loadNovelUIColumnsHUseCase().collectLatest {
-				columnH = it
-			}
-			loadNovelUIColumnsPUseCase().collectLatest {
-				columnP = it
-			}
-			@Suppress("EXPERIMENTAL_API_USAGE")
-			loadNovelUITypeUseCase().collectLatest {
-				novelCardType = it
-			}
-		}
+	override val columnsInH: LiveData<Int> by lazy {
+		loadNovelUIColumnsHUseCase().asIOLiveData()
 	}
+
+	override val columnsInP: LiveData<Int> by lazy {
+		loadNovelUIColumnsPUseCase().asIOLiveData()
+	}
+
 
 	/**
 	 * Removes the list for filtering from the [ABookmarkedNovelUI] with the flow
@@ -258,11 +256,6 @@ class LibraryViewModel(
 		reportExceptionUseCase(error)
 	}
 
-	override fun getColumnsInP(): Int = columnP
-
-	override fun getColumnsInH(): Int = columnH
-
-	override fun getNovelUIType(): NovelCardType = novelCardType
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
 

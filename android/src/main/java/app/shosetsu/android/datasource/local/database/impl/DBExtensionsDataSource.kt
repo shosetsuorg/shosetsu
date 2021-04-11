@@ -82,7 +82,8 @@ class DBExtensionsDataSource(
 	}
 
 	override suspend fun loadExtension(formatterID: Int): HResult<ExtensionEntity> = try {
-		successResult(extensionsDao.getExtension(formatterID).convertTo())
+		extensionsDao.getExtension(formatterID)?.convertTo()?.let { successResult(it) }
+			?: emptyResult()
 	} catch (e: Exception) {
 		e.toHError()
 	}

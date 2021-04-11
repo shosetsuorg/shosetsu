@@ -91,6 +91,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 		GetReaderChaptersUseCase(
 			instance(),
 			instance(),
+			instance(),
 			instance()
 		)
 	}

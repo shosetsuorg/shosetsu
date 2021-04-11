@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/library_search"
+        android:id="@+id/search_item"
         android:icon="@drawable/search"
         android:title="@string/search"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/view_type"
+        android:id="@+id/view_type_item"
         android:icon="@drawable/view_module"
         android:title="@string/novel_card_type_selector_title"
         app:showAsAction="ifRoom">
@@ -23,9 +23,10 @@
                 android:title="@string/compressed" />
         </menu>
     </item>
+
     <item
-        android:id="@+id/updater_now"
-        android:icon="@drawable/refresh"
-        android:title="@string/update_now"
+        android:id="@+id/web_view"
+        android:icon="@drawable/open_in_browser"
+        android:title="@string/open_in_browser"
         app:showAsAction="ifRoom" />
 </menu>

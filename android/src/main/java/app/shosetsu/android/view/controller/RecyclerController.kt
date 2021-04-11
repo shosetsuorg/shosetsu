@@ -76,7 +76,6 @@ abstract class RecyclerController<AD, IT, VB> : ViewedController<VB>
 	): View {
 		setViewTitle()
 		binding = bindView(inflater)
-		onViewCreated(binding.root)
 		setupRecyclerView()
 		return binding.root
 	}
@@ -104,6 +103,8 @@ abstract class RecyclerController<AD, IT, VB> : ViewedController<VB>
 
 	/**
 	 * Allows manipulation of the recyclerview
+	 *
+	 * Invoked after [onCreateView]
 	 */
 	@CallSuper
 	open fun setupRecyclerView() {

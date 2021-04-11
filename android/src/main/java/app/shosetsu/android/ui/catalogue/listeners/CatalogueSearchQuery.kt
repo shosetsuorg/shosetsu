@@ -27,13 +27,12 @@ import app.shosetsu.android.ui.catalogue.CatalogController
 class CatalogueSearchQuery(private val catalogFragment: CatalogController) :
 	SearchView.OnQueryTextListener {
 	override fun onQueryTextSubmit(query: String): Boolean {
-		catalogFragment.viewModel.setQuery(query)
-		catalogFragment.viewModel.loadQuery()
+		catalogFragment.viewModel.applyQuery(query)
 		return true
 	}
 
 	override fun onQueryTextChange(newText: String): Boolean {
-		catalogFragment.viewModel.setQuery(newText)
+		catalogFragment.viewModel.applyQuery(newText)
 		return true
 	}
 
