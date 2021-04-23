@@ -154,7 +154,15 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	}
 	bind<ConvertNCToCNUIUseCase>() with provider { ConvertNCToCNUIUseCase() }
 	bind<LoadSearchRowUIUseCase>() with provider { LoadSearchRowUIUseCase((instance())) }
-	bind<GetExtensionSettingsUseCase>() with provider { GetExtensionSettingsUseCase(instance()) }
+	bind<GetExtensionSettingsUseCase>() with provider {
+		GetExtensionSettingsUseCase(
+			instance(),
+			instance(),
+			instance(),
+			instance(),
+			instance()
+		)
+	}
 	bind<GetExtensionUIUseCase>() with provider { GetExtensionUIUseCase(instance()) }
 	bind<LoadRepositoriesUseCase>() with provider { LoadRepositoriesUseCase(instance()) }
 	bind<LoadReaderThemes>() with provider {
@@ -246,4 +254,7 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 		GetExtSelectedListingUseCase(instance())
 	}
 
+	bind<UpdateExtensionSettingUseCase>() with provider {
+		UpdateExtensionSettingUseCase(instance(), instance())
+	}
 }

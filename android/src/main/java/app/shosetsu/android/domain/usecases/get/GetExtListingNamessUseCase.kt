@@ -1,6 +1,5 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.transformToSuccess
 
@@ -27,11 +26,11 @@ import app.shosetsu.common.dto.transformToSuccess
  * Returns a list of a
  */
 class GetExtListingNamessUseCase(
-	private val iExtensionRepository: IExtensionsRepository
+	private val getExt: GetExtensionUseCase
 ) {
 
 	suspend operator fun invoke(extensionID: Int): HResult<List<String>> =
-		iExtensionRepository.getIExtension(extensionID).transformToSuccess { iExtension ->
+		getExt(extensionID).transformToSuccess { iExtension ->
 			iExtension.listings.map { it.name }
 		}
 }

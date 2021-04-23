@@ -14,6 +14,7 @@ import app.shosetsu.android.common.consts.Notifications.CHANNEL_DOWNLOAD
 import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_DOWNLOAD
 import app.shosetsu.android.common.consts.WorkerTags.DOWNLOAD_WORK_ID
 import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.domain.usecases.get.GetExtensionUseCase
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.DownloadEntity
 import app.shosetsu.common.domain.repositories.base.*
@@ -70,8 +71,8 @@ class DownloadWorker(
 	override val kodein: Kodein by closestKodein(applicationContext)
 	private val downloadsRepo by instance<IDownloadsRepository>()
 	private val chapRepo by instance<IChaptersRepository>()
-	private val extRepo by instance<IExtensionsRepository>()
 	private val settingRepo by instance<ISettingsRepository>()
+	private val getExt by instance<GetExtensionUseCase>()
 
 	/** How many jobs are currently running */
 	@get:Synchronized
@@ -101,7 +102,7 @@ class DownloadWorker(
 
 	private suspend fun download(downloadEntity: DownloadEntity): HResult<*> =
 		chapRepo.getChapter(downloadEntity.chapterID).transform { chapterEntity ->
-			extRepo.getIExtension(chapterEntity.extensionID).transform { iExtension ->
+			getExt(chapterEntity.extensionID).transform { iExtension ->
 				chapRepo.getChapterPassage(iExtension, chapterEntity).transform { passage ->
 					chapRepo.saveChapterPassageToStorage(
 						chapterEntity,

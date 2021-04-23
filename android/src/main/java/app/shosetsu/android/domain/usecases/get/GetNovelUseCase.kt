@@ -7,7 +7,10 @@ import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
 import app.shosetsu.common.consts.settings.SettingKey.IsDownloadOnUpdate
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.UpdateEntity
-import app.shosetsu.common.domain.repositories.base.*
+import app.shosetsu.common.domain.repositories.base.IChaptersRepository
+import app.shosetsu.common.domain.repositories.base.INovelsRepository
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.domain.repositories.base.IUpdatesRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.successResult
@@ -38,7 +41,7 @@ import app.shosetsu.common.dto.transform
  */
 class GetNovelUseCase(
 	private val nR: INovelsRepository,
-	private val eR: IExtensionsRepository,
+	private val getExt: GetExtensionUseCase,
 	private val cR: IChaptersRepository,
 	private val uR: IUpdatesRepository,
 	private val sR: ISettingsRepository,
@@ -49,7 +52,7 @@ class GetNovelUseCase(
 		loadChapters: Boolean,
 		haveChaptersUpdate: () -> Unit = {}
 	): HResult<NovelEntity> =
-		eR.getIExtension(novel.extensionID).transform { ext ->
+		getExt(novel.extensionID).transform { ext ->
 			nR.retrieveNovelInfo(ext, novel, loadChapters).transform { page ->
 				val currentStatus: Boolean = novel.loaded
 

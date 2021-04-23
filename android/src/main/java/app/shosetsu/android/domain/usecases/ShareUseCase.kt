@@ -5,7 +5,7 @@ import android.content.Intent
 import android.content.Intent.*
 import android.util.Log
 import app.shosetsu.android.common.ext.logID
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
+import app.shosetsu.android.domain.usecases.get.GetExtensionUseCase
 import app.shosetsu.android.domain.usecases.toast.StringToastUseCase
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
@@ -37,9 +37,9 @@ import app.shosetsu.lib.IExtension.Companion.KEY_NOVEL_URL
  * Opens the chapter into
  */
 class ShareUseCase(
-	private val repository: IExtensionsRepository,
 	private val stringToastUseCase: StringToastUseCase,
 	private val application: Application,
+	private val getExt: GetExtensionUseCase,
 ) {
 	operator fun invoke(url: String, title: String) {
 		Log.d(logID(), "Opening URL $url")
@@ -56,7 +56,7 @@ class ShareUseCase(
 	}
 
 	suspend operator fun invoke(url: String, formatterID: Int, title: String, type: Int) {
-		repository.getIExtension(formatterID).handle(
+		getExt(formatterID).handle(
 			onEmpty = {
 				Log.e(logID(), "Empty")
 				stringToastUseCase { "Empty??" }

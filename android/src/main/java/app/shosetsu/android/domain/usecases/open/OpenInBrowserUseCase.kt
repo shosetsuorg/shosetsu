@@ -4,13 +4,13 @@ import android.app.Application
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logID
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
+import app.shosetsu.android.domain.usecases.get.GetExtensionUseCase
 import app.shosetsu.android.domain.usecases.toast.StringToastUseCase
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.lib.IExtension
+import app.shosetsu.common.dto.handle
 import app.shosetsu.lib.IExtension.Companion.KEY_CHAPTER_URL
 import app.shosetsu.lib.IExtension.Companion.KEY_NOVEL_URL
 
@@ -38,7 +38,7 @@ import app.shosetsu.lib.IExtension.Companion.KEY_NOVEL_URL
  * Opens the chapter into
  */
 class OpenInBrowserUseCase(
-	private val repository: IExtensionsRepository,
+	private val getExt: GetExtensionUseCase,
 	private val stringToastUseCase: StringToastUseCase,
 	private val application: Application,
 ) {
@@ -50,20 +50,19 @@ class OpenInBrowserUseCase(
 		})
 	}
 
-	suspend operator fun invoke(url: String, formatterID: Int, type: Int) {
-		when (val fR: HResult<IExtension> = repository.getIExtension(formatterID)) {
-			is HResult.Success -> {
-				val formatter = fR.data
-				this(formatter.expandURL(url, type))
-			}
-			is HResult.Empty -> {
-				Log.e(logID(), "Empty")
+	suspend operator fun invoke(url: String, extId: Int, type: Int) {
+		getExt(extId).handle(
+			onEmpty = {
+				logE("Empty")
 				stringToastUseCase { "Empty??" }
+			},
+			onError = {
+				logE("Error")
+				stringToastUseCase { "$it" }
+
 			}
-			is HResult.Error -> {
-				Log.e(logID(), "Error")
-				stringToastUseCase { "$fR" }
-			}
+		) {
+			this(it.expandURL(url, type))
 		}
 	}
 
