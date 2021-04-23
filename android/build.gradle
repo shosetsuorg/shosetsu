@@ -147,7 +147,7 @@ dependencies {
     // Core libraries
     implementation 'org.luaj:luaj-jse:3.0.1'
     implementation 'com.github.shosetsuorg:kotlin-lib:1.0.0-rc55'
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1"
+
 
     // Image loading
     implementation 'com.squareup.picasso:picasso:2.71828'
@@ -247,7 +247,8 @@ dependencies {
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.2"
 
-
+    // KTX - Serialization
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1"
 
     // Roomigrant
     implementation 'com.github.MatrixDev.Roomigrant:RoomigrantLib:0.2.0'
