@@ -9,12 +9,14 @@ import app.shosetsu.common.consts.ErrorKeys.ERROR_JSON
 import app.shosetsu.common.consts.ErrorKeys.ERROR_LUA_BROKEN
 import app.shosetsu.common.consts.ErrorKeys.ERROR_LUA_GENERAL
 import app.shosetsu.common.consts.ErrorKeys.ERROR_NETWORK
+import app.shosetsu.common.consts.ErrorKeys.ERROR_NOT_FOUND
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.errorResult
 import app.shosetsu.lib.exceptions.*
 import kotlinx.serialization.SerializationException
 import org.json.JSONException
 import org.luaj.vm2.LuaError
+import java.io.FileNotFoundException
 import java.io.IOException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -70,5 +72,10 @@ fun Exception.toHError(): HResult.Error = when (this) {
 	is SerializationException -> errorResult(this)
 	is UnknownHostException -> errorResult(this)
 	is android.content.res.Resources.NotFoundException -> errorResult(ERROR_IMPOSSIBLE, this)
+	is FileNotFoundException -> errorResult(
+		ERROR_NOT_FOUND,
+		this.message ?: "Unknown file not found",
+		this
+	)
 	else -> errorResult(ERROR_GENERAL, message ?: "Unknown General Error", this)
 }
