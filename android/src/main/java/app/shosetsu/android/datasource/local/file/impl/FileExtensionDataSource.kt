@@ -4,16 +4,15 @@ import app.shosetsu.android.common.consts.FILE_SCRIPT_DIR
 import app.shosetsu.android.common.consts.FILE_SOURCE_DIR
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.common.providers.file.base.IFileSystemProvider
-import app.shosetsu.common.consts.ErrorKeys.ERROR_LUA_GENERAL
-import app.shosetsu.common.consts.ErrorKeys.ERROR_NOT_FOUND
 import app.shosetsu.common.datasource.file.base.IFileExtensionDataSource
-import app.shosetsu.common.dto.*
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.handle
+import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.transform
 import app.shosetsu.common.enums.InternalFileDir.FILES
+import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.lua.LuaExtension
-import org.luaj.vm2.LuaError
-import java.io.FileNotFoundException
 
 /*
  * This file is part of shosetsu.
@@ -55,7 +54,7 @@ class FileExtensionDataSource(
 		"$FILE_SOURCE_DIR$FILE_SCRIPT_DIR$fileName.lua"
 
 
-	override suspend fun loadExtension(fileName: String): HResult<IExtension> = try {
+	override suspend fun loadExtension(fileName: String): HResult<IExtension> =
 		iFileSystemProvider.readFile(FILES, makeExtensionFileURL(fileName)).transform {
 			try {
 				successResult(LuaExtension(it, fileName))
@@ -63,17 +62,6 @@ class FileExtensionDataSource(
 				e.toHError()
 			}
 		}
-	} catch (e: LuaError) {
-		errorResult(
-			ERROR_LUA_GENERAL, e.message
-				?: "Unknown Lua Error", e
-		)
-	} catch (e: FileNotFoundException) {
-		errorResult(
-			ERROR_NOT_FOUND, e.message
-				?: "Unknown file not found", e
-		)
-	}
 
 	override suspend fun writeExtension(fileName: String, data: String): HResult<*> =
 		iFileSystemProvider.writeFile(FILES, makeExtensionFileURL(fileName), data)
