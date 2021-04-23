@@ -31,9 +31,7 @@ import app.shosetsu.android.domain.usecases.update.UpdateExtSelectedListing
 import app.shosetsu.android.domain.usecases.update.UpdateExtensionEntityUseCase
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.onSpinnerItemSelected
-import app.shosetsu.android.view.uimodels.settings.dsl.spinnerSettingData
-import app.shosetsu.android.view.uimodels.settings.dsl.title
+import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.IExtensionConfigureViewModel
 import app.shosetsu.android.viewmodel.base.spinnerValue
 import app.shosetsu.common.dto.*
@@ -57,13 +55,13 @@ class ExtensionConfigureViewModel(
 	private val updateExtSelectedListing: UpdateExtSelectedListing,
 	private val getExtSelectedListing: GetExtSelectedListingUseCase
 ) : IExtensionConfigureViewModel() {
-	private val idLive: MutableStateFlow<Int> by lazy {
+	private val extensionIDFlow: MutableStateFlow<Int> by lazy {
 		MutableStateFlow(-1)
 	}
 
 	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<ExtensionUI>> by lazy {
-		idLive.transformLatest { id ->
+		extensionIDFlow.transformLatest { id ->
 			emitAll(loadExtensionUIUI(id))
 		}.asIOLiveData()
 	}
@@ -74,19 +72,19 @@ class ExtensionConfigureViewModel(
 
 	@ExperimentalCoroutinesApi
 	override val extensionSettings: LiveData<HResult<List<SettingsItemData>>> by lazy {
-		idLive.transformLatest { id ->
-			getExtListNames(id).handle(
+		extensionIDFlow.transformLatest { extensionID ->
+			getExtListNames(extensionID).handle(
 				onError = { emit(it) },
 				onEmpty = { emit(empty) },
 				onLoading = { emit(loading) }
 			) { nameList ->
 				emitAll(
-					getExtensionSettings(id).mapLatestResult { filterList ->
+					getExtensionSettings(extensionID).mapLatestResult { filterList ->
 						successResult(
 							listOf(
 								spinnerSettingData(0) {
 									title { "Listing" }
-									getExtSelectedListing(id).handle { selectedListing ->
+									getExtSelectedListing(extensionID).handle { selectedListing ->
 										spinnerValue { selectedListing }
 									}
 									arrayAdapter = android.widget.ArrayAdapter(
@@ -101,11 +99,11 @@ class ExtensionConfigureViewModel(
 											return@onSpinnerItemSelected
 										}
 										launchIO {
-											updateExtSelectedListing(id, position)
+											updateExtSelectedListing(extensionID, position)
 										}
 									}
 								}
-							)
+							) + filterList
 						)
 					}
 				)
@@ -116,19 +114,19 @@ class ExtensionConfigureViewModel(
 	override fun setExtensionID(id: Int) {
 		launchIO {
 			when {
-				idLive.value == id -> {
+				extensionIDFlow.value == id -> {
 					logI("ID the same, ignoring")
 					return@launchIO
 				}
-				idLive.value != id -> {
+				extensionIDFlow.value != id -> {
 					logI("ID not equal, resetting")
 					destroy()
 				}
-				idLive.value == -1 -> {
+				extensionIDFlow.value == -1 -> {
 					logI("ID is new, setting")
 				}
 			}
-			idLive.value = id
+			extensionIDFlow.value = id
 		}
 	}
 
@@ -137,7 +135,7 @@ class ExtensionConfigureViewModel(
 	}
 
 	override fun destroy() {
-		idLive.value = -1
+		extensionIDFlow.value = -1
 	}
 }
 
