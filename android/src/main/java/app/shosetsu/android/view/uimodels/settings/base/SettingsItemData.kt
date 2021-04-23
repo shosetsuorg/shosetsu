@@ -45,6 +45,10 @@ abstract class SettingsItemData(
 	var descID: Int = -1
 	var descText: String = ""
 
+	override var identifier: Long
+		get() = id.toLong()
+		set(value) {}
+
 	@CallSuper
 	open fun bindBinding(holder: SettingsItemBinding, payloads: List<Any>) = with(holder) {
 		itemView.isSelected = isSelected
