@@ -24,8 +24,20 @@ import app.shosetsu.lib.IExtension
 /**
  * shosetsu
  * 15 / 05 / 2020
+ *
+ * This use case makes sure that all gets for an [IExtension] will always have
+ * the [IExtension] be fully updated (settings wise).
+ *
+ * This ensures that the [IExtension] will always be set with the latest settings,
+ * at the trade off of loading time.
+ *
+ * A possible
+ * TODO Have IExtensionsRepository call a new settings data source and do this massive load call when only pulling from the filesystem
+ *
  */
-class GetExtensionUseCase(private val extensionsRepository: IExtensionsRepository) {
+class GetExtensionUseCase(
+	private val extRepo: IExtensionsRepository
+) {
 	suspend operator fun invoke(formatterID: Int): HResult<IExtension> =
-		extensionsRepository.getIExtension(formatterID)
+		extRepo.getIExtension(formatterID)
 }
