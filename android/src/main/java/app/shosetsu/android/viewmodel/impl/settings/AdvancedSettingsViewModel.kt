@@ -10,6 +10,7 @@ import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.AppTheme
+import app.shosetsu.common.consts.settings.SettingKey.VerifyCheckSum
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -62,6 +63,11 @@ class AdvancedSettingsViewModel(
 			onButtonClicked {
 				purgeNovelCacheUseCase()
 			}
+		},
+		switchSettingData(3) {
+			title { R.string.settings_advanced_verify_checksum_title }
+			description { R.string.settings_advanced_verify_checksum_desc }
+			checkSettingValue(VerifyCheckSum)
 		}
 	)
 

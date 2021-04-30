@@ -397,6 +397,8 @@
     <string name="controller_novel_jump_dialog_hint_chapter_number">Chapter Number</string>
     <string name="alert_dialog_jump_positive">Jump</string>
     <string name="help">Help</string>
+    <string name="settings_advanced_verify_checksum_title">Verify extension check sum</string>
+    <string name="settings_advanced_verify_checksum_desc">Verify if the extension content matches the checksum from the index</string>
 
 
     <array name="text_alignments">

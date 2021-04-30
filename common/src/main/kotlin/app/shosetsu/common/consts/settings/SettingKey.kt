@@ -181,7 +181,12 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 		false
 	)
 
+
+	// Advanced settings
 	object AppTheme : IntKey("selectedAppTheme", 0)
+
+	/** Verify if the check sum of the extension matches or not */
+	object VerifyCheckSum : BooleanKey("verifyCheckSum", false)
 
 	object LibraryFilter :
 		StringKey("libraryFilter", Json { }.encodeToString(LibrarySortFilterEntity()))
