@@ -186,6 +186,9 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 			notify("Completed") {
 				setOngoing(false)
 			}
+
+			// Call GC to clean up the bulky resources
+			System.gc()
 			return Result.success()
 		}
 

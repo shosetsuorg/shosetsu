@@ -97,7 +97,10 @@ class AppUpdatesRepository(
 	override suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): HResult<String> =
 		if (iRemoteAppUpdateDataSource is IRemoteAppUpdateDataSource.Downloadable)
 			iRemoteAppUpdateDataSource.downloadAppUpdate(appUpdateEntity).transform { response ->
-				iFileAppUpdateDataSource.saveAPK(appUpdateEntity, response)
+				iFileAppUpdateDataSource.saveAPK(appUpdateEntity, response).also {
+					// Call GC to clean up the chunky objects
+					System.gc()
+				}
 			}
 		else errorResult(ErrorKeys.ERROR_INVALID_FEATURE, "This flavor cannot self update")
 }

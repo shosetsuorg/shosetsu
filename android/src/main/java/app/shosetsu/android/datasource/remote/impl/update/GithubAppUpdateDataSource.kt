@@ -70,6 +70,7 @@ class GithubAppUpdateDataSource(
 		okHttpClient.quickie(update.url).let { response ->
 			if (response.isSuccessful) {
 				response.body?.let { body ->
+					// TODO One day have kotlin IO to handle this right here
 					return successResult(body.bytes())
 				} ?: errorResult(ERROR_NETWORK, "Empty response body")
 			} else errorResult(ERROR_NETWORK, "Failed to download")
