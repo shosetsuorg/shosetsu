@@ -5,10 +5,7 @@ import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.common.datasource.file.base.IFileCachedChapterDataSource
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transmogrify
+import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.InternalFileDir.CACHE
 import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import app.shosetsu.lib.Novel
@@ -64,13 +61,13 @@ class FileCachedChapterDataSource(
 				iFileSystemProvider.writeFile(
 					CACHE,
 					mapFile,
-					JSONArray().toString()
+					JSONArray().toString().toByteArray()
 				)
 				null
 			}
 		) {
 			try {
-				JSONArray(it)
+				JSONArray(it.decodeToString())
 			} catch (e: Exception) {
 				JSONArray()
 			}
@@ -92,7 +89,7 @@ class FileCachedChapterDataSource(
 		iFileSystemProvider.writeFile(
 			CACHE,
 			mapFile,
-			chaptersCacheInstruction.toString(1)
+			chaptersCacheInstruction.toString(1).toByteArray()
 		)
 	}
 
@@ -159,7 +156,7 @@ class FileCachedChapterDataSource(
 					iFileSystemProvider.writeFile(
 						CACHE,
 						createFilePath(chapterID, chapterType),
-						passage
+						passage.toByteArray()
 					)
 					obj.put(TIME_KEY, System.currentTimeMillis())
 					chaptersCacheInstruction.put(index, obj)
@@ -172,7 +169,7 @@ class FileCachedChapterDataSource(
 			iFileSystemProvider.writeFile(
 				CACHE,
 				createFilePath(chapterID, chapterType),
-				passage
+				passage.toByteArray()
 			)
 			chaptersCacheInstruction.put(JSONObject().apply {
 				put(CHAPTER_KEY, chapterID)
@@ -195,6 +192,7 @@ class FileCachedChapterDataSource(
 	): HResult<String> {
 		launchIO { launchCleanUp() } // Launch cleanup separately
 		return iFileSystemProvider.readFile(CACHE, createFilePath(chapterID, chapterType))
+			.transformToSuccess { it.decodeToString() }
 	}
 
 	companion object {

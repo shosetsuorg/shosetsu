@@ -174,7 +174,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 			val zippedBytes = gzip(stringBackup)
 
 			notify("Encoding via bas64")
-			val base64Bytes = Base64.encodeToString(zippedBytes, Base64.DEFAULT)
+			val base64Bytes = Base64.encode(zippedBytes, Base64.DEFAULT)
 
 			notify("Saving to file")
 			backupRepository.saveBackup(

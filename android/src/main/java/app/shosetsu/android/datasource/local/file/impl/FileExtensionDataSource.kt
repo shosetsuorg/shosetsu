@@ -57,14 +57,18 @@ class FileExtensionDataSource(
 	override suspend fun loadExtension(fileName: String): HResult<IExtension> =
 		iFileSystemProvider.readFile(FILES, makeExtensionFileURL(fileName)).transform {
 			try {
-				successResult(LuaExtension(it, fileName))
+				successResult(LuaExtension(it.decodeToString(), fileName))
 			} catch (e: Exception) {
 				e.toHError()
 			}
 		}
 
 	override suspend fun writeExtension(fileName: String, data: String): HResult<*> =
-		iFileSystemProvider.writeFile(FILES, makeExtensionFileURL(fileName), data)
+		iFileSystemProvider.writeFile(
+			FILES,
+			makeExtensionFileURL(fileName),
+			data.encodeToByteArray()
+		)
 
 
 	override suspend fun deleteExtension(fileName: String): HResult<*> =

@@ -1,11 +1,12 @@
 package app.shosetsu.android.datasource.local.file.impl
 
-import app.shosetsu.android.common.consts.FILE_SOURCE_DIR
 import app.shosetsu.android.common.consts.FILE_LIBRARY_DIR
+import app.shosetsu.android.common.consts.FILE_SOURCE_DIR
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.common.datasource.file.base.IFileExtLibDataSource
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
+import app.shosetsu.common.dto.transformToSuccess
 import app.shosetsu.common.enums.InternalFileDir.FILES
 import app.shosetsu.common.providers.file.base.IFileSystemProvider
 
@@ -53,7 +54,7 @@ class FileExtLibDataSource(
 		iFileSystemProvider.writeFile(
 			FILES,
 			makeLibraryFile(fileName),
-			data
+			data.encodeToByteArray()
 		)
 
 	override suspend fun loadExtLib(fileName: String): HResult<String> =
@@ -61,6 +62,7 @@ class FileExtLibDataSource(
 
 	override fun blockingLoadLib(fileName: String): HResult<String> =
 		iFileSystemProvider.readFile(FILES, makeLibraryFile(fileName))
+			.transformToSuccess { it.decodeToString() }
 
 	override suspend fun deleteExtLib(fileName: String): HResult<*> =
 		iFileSystemProvider.deleteFile(FILES, makeLibraryFile(fileName))

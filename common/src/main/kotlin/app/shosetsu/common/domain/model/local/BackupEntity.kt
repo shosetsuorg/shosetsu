@@ -23,5 +23,18 @@ package app.shosetsu.common.domain.model.local
  * @param content Content of the file
  */
 data class BackupEntity(
-	val content: String
-)
+	val content: ByteArray
+) {
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (other !is BackupEntity) return false
+
+		if (!content.contentEquals(other.content)) return false
+
+		return true
+	}
+
+	override fun hashCode(): Int {
+		return content.contentHashCode()
+	}
+}

@@ -45,14 +45,14 @@ interface IFileSystemProvider {
 	 *
 	 * @return file content
 	 */
-	fun readFile(internalFileDir: InternalFileDir, path: String): HResult<String>
+	fun readFile(internalFileDir: InternalFileDir, path: String): HResult<ByteArray>
 
 	/**
 	 * Loads a file from the user directories (Pictures, Downloads, Etc)
 	 *
 	 * @return file content
 	 */
-	fun readFile(externalFileDir: ExternalFileDir, path: String): HResult<String>
+	fun readFile(externalFileDir: ExternalFileDir, path: String): HResult<ByteArray>
 
 
 	/**
@@ -61,7 +61,7 @@ interface IFileSystemProvider {
 	 * @param path Absolute path to a file
 	 * @return file content
 	 */
-	fun readFile(path: String): HResult<String>
+	fun readFile(path: String): HResult<ByteArray>
 
 	fun deleteFile(internalFileDir: InternalFileDir, path: String): HResult<*>
 
@@ -74,7 +74,7 @@ interface IFileSystemProvider {
 	fun writeFile(
 		internalFileDir: InternalFileDir,
 		path: String,
-		content: String
+		content: ByteArray
 	): HResult<*>
 
 	/**
@@ -83,7 +83,7 @@ interface IFileSystemProvider {
 	fun writeFile(
 		externalFileDir: ExternalFileDir,
 		path: String,
-		content: String
+		content: ByteArray
 	): HResult<*>
 
 

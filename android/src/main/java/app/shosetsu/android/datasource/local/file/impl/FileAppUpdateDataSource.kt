@@ -58,7 +58,7 @@ class FileAppUpdateDataSource(
 		iFileSystemProvider.writeFile(
 			CACHE,
 			APP_UPDATE_CACHE_FILE,
-			Json.encodeToString(debugAppUpdate)
+			Json.encodeToString(debugAppUpdate).encodeToByteArray()
 		)
 	} catch (e: Exception) {
 		e.toHError()
@@ -69,7 +69,11 @@ class FileAppUpdateDataSource(
 			?: iFileSystemProvider.readFile(
 				CACHE,
 				APP_UPDATE_CACHE_FILE
-			).transform { successResult(Json.decodeFromString<AppUpdateDTO>(it).convertTo()) }
+			).transform {
+				successResult(
+					Json.decodeFromString<AppUpdateDTO>(it.decodeToString()).convertTo()
+				)
+			}
 
 	override suspend fun putAppUpdateInCache(
 		appUpdate: AppUpdateEntity,

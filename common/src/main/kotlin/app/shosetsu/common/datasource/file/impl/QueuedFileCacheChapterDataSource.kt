@@ -76,7 +76,7 @@ class QueuedFileCacheChapterDataSource(
 			iFileSystemProvider.readFile(
 				CACHE,
 				mapFile
-			).unwrap()?.let { Json { }.decodeFromString(it) } ?: hashMapOf()
+			).unwrap()?.let { Json { }.decodeFromString(it.decodeToString()) } ?: hashMapOf()
 		}
 
 		/**
@@ -128,7 +128,7 @@ class QueuedFileCacheChapterDataSource(
 			iFileSystemProvider.writeFile(
 				CACHE,
 				mapFile,
-				Json { }.encodeToString(cacheMap)
+				Json { }.encodeToString(cacheMap).encodeToByteArray()
 			)
 		}
 
@@ -153,13 +153,13 @@ class QueuedFileCacheChapterDataSource(
 							iFileSystemProvider.writeFile(
 								CACHE,
 								createFilePath(jobToComplete.chapterID),
-								jobToComplete.data
+								jobToComplete.data.encodeToByteArray()
 							).transform {
 								cacheMap[jobToComplete.chapterID] = System.currentTimeMillis()
-								successResult("")
+								successResult(byteArrayOf())
 							}.also { launchCleanUp() }
 						}
-					}
+					}.transformToSuccess { it.decodeToString() }
 					println("Finished job $jobToComplete")
 					println("$completedJobs")
 				}

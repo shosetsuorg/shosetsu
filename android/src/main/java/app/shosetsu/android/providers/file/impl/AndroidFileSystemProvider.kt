@@ -93,34 +93,34 @@ class AndroidFileSystemProvider(
 	): HResult<Boolean> = if (!File(externalFileDir.path() + path).exists())
 		successResult(false) else successResult(true)
 
-	override fun readFile(internalFileDir: InternalFileDir, path: String): HResult<String> {
+	override fun readFile(internalFileDir: InternalFileDir, path: String): HResult<ByteArray> {
 		val file = File(internalFileDir.path() + path)
 
 		//logV("Reading $path in ${internalFileDir.path()} to $file")
 
 		if (!file.exists()) return emptyResult()
 		if (!file.canRead()) return errorResult(ERROR_LACK_PERM, "Cannot read file: $file")
-		return successResult(file.readText())
+		return successResult(file.readBytes())
 	}
 
-	override fun readFile(externalFileDir: ExternalFileDir, path: String): HResult<String> {
+	override fun readFile(externalFileDir: ExternalFileDir, path: String): HResult<ByteArray> {
 		val file = File(externalFileDir.path() + path)
 
 		//logV("Reading $path in ${externalFileDir.path()} to $file")
 
 		if (!file.exists()) return emptyResult()
 		if (!file.canRead()) return errorResult(ERROR_LACK_PERM, "Cannot read file: $file")
-		return successResult(file.readText())
+		return successResult(file.readBytes())
 	}
 
-	override fun readFile(path: String): HResult<String> {
+	override fun readFile(path: String): HResult<ByteArray> {
 		val file = File(path)
 
 		//	logV("Reading $path to $file")
 
 		if (!file.exists()) return emptyResult()
 		if (!file.canRead()) return errorResult(ERROR_LACK_PERM, "Cannot read file: $file")
-		return successResult(file.readText())
+		return successResult(file.readBytes())
 	}
 
 	override fun deleteFile(internalFileDir: InternalFileDir, path: String): HResult<*> {
@@ -148,7 +148,7 @@ class AndroidFileSystemProvider(
 	override fun writeFile(
 		internalFileDir: InternalFileDir,
 		path: String,
-		content: String
+		content: ByteArray
 	): HResult<*> {
 		val file = File(internalFileDir.path() + path)
 
@@ -162,14 +162,13 @@ class AndroidFileSystemProvider(
 			logE("IOException on attempt to create new file: $file", e)
 			return errorResult(ERROR_IO, e)
 		}
-
-		return successResult(file.writeText(content))
+		return successResult(file.writeBytes(content))
 	}
 
 	override fun writeFile(
 		externalFileDir: ExternalFileDir,
 		path: String,
-		content: String
+		content: ByteArray
 	): HResult<*> {
 		val file = File(externalFileDir.path() + path)
 
@@ -187,7 +186,7 @@ class AndroidFileSystemProvider(
 			return errorResult(ERROR_IO, e)
 		}
 
-		return successResult(file.writeText(content))
+		return successResult(file.writeBytes(content))
 	}
 
 	override fun createDirectory(

@@ -6,6 +6,7 @@ import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.transform
+import app.shosetsu.common.dto.transformToSuccess
 import app.shosetsu.common.enums.ExternalFileDir.DOWNLOADS
 import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import app.shosetsu.lib.Novel
@@ -63,7 +64,7 @@ class FileChapterDataSource(
 			iFileSystemProvider.writeFile(
 				DOWNLOADS,
 				path,
-				passage
+				passage.encodeToByteArray()
 			)
 		}
 	}
@@ -73,6 +74,7 @@ class FileChapterDataSource(
 		chapterType: Novel.ChapterType,
 	): HResult<String> =
 		iFileSystemProvider.readFile(DOWNLOADS, makePath(chapterEntity, chapterType))
+			.transformToSuccess { it.decodeToString() }
 
 	override suspend fun delete(
 		chapterEntity: ChapterEntity,
