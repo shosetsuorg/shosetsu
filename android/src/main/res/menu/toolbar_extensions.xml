@@ -6,10 +6,11 @@
         android:icon="@drawable/search"
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
+
     <item
-        app:showAsAction="ifRoom"
-        android:id="@+id/refresh"
-        android:title="@string/update_list"
-        android:icon="@drawable/refresh" />
+        android:id="@+id/help"
+        android:icon="@drawable/help_outline_24"
+        android:title="@string/help"
+        app:showAsAction="ifRoom" />
 </menu>

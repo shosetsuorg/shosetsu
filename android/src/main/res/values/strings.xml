@@ -396,6 +396,7 @@
     <string name="jump_to_chapter">Jump to Chapter</string>
     <string name="controller_novel_jump_dialog_hint_chapter_number">Chapter Number</string>
     <string name="alert_dialog_jump_positive">Jump</string>
+    <string name="help">Help</string>
 
 
     <array name="text_alignments">

@@ -17,6 +17,9 @@ package app.shosetsu.android.ui.browse
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import android.content.Intent
+import android.content.Intent.ACTION_VIEW
+import android.net.Uri
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -31,6 +34,7 @@ import app.shosetsu.android.view.controller.FastAdapterRefreshableRecyclerContro
 import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.viewmodel.abstracted.IExtensionsViewModel
+import app.shosetsu.common.consts.REPOSITORY_HELP_URL
 import app.shosetsu.common.dto.HResult
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -128,12 +132,16 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-		R.id.refresh -> {
-			refreshExtensions()
+		R.id.help -> {
+			openHelpMenu()
 			true
 		}
 		R.id.catalogues_search -> true
 		else -> false
+	}
+
+	private fun openHelpMenu() {
+		startActivity(Intent(ACTION_VIEW, Uri.parse(REPOSITORY_HELP_URL)))
 	}
 
 	private fun refreshExtensions() {

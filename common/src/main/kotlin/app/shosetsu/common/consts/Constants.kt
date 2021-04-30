@@ -18,3 +18,5 @@ package app.shosetsu.common.consts
  */
 
 const val BACKUP_FILE_EXTENSION = "sbk"
+
+const val REPOSITORY_HELP_URL = "https://shosetsu.app/help/guides/repositories/"
