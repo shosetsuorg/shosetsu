@@ -2,7 +2,6 @@ package app.shosetsu.android.datasource.local.file.impl
 
 import app.shosetsu.android.common.consts.APP_UPDATE_CACHE_FILE
 import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.saveTo
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.datasource.local.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.domain.model.remote.AppUpdateDTO
@@ -17,8 +16,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import okio.BufferedSource
-import java.io.File
 
 /*
  * This file is part of shosetsu.
@@ -85,15 +82,13 @@ class FileAppUpdateDataSource(
 
 	override fun saveAPK(
 		appUpdate: AppUpdateEntity,
-		bufferedSource: BufferedSource
+		bufferedSource: ByteArray
 	): HResult<String> = iFileSystemProvider.doesFileExist(CACHE, updatesCPath)
 		.transform { doesFileExist ->
 			if (doesFileExist) iFileSystemProvider.deleteFile(CACHE, updatesCPath)
 			iFileSystemProvider.createFile(CACHE, updatesCPath)
-			iFileSystemProvider.retrievePath(CACHE, updatesCPath).transform { path ->
-				bufferedSource.saveTo(File(path))
-				successResult(path)
-			}
+			iFileSystemProvider.writeFile(CACHE, updatesCPath, bufferedSource)
+			iFileSystemProvider.retrievePath(CACHE, updatesCPath)
 		}
 
 	companion object {

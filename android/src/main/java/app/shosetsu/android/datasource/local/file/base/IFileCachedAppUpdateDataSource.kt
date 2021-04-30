@@ -3,7 +3,6 @@ package app.shosetsu.android.datasource.local.file.base
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
-import okio.BufferedSource
 
 /*
  * This file is part of shosetsu.
@@ -40,5 +39,10 @@ interface IFileCachedAppUpdateDataSource {
 	/** Puts an update into cache */
 	suspend fun putAppUpdateInCache(appUpdate: AppUpdateEntity, isUpdate: Boolean): HResult<*>
 
-	fun saveAPK(appUpdate: AppUpdateEntity, bufferedSource: BufferedSource): HResult<String>
+	/**
+	 * Saves the APK bytes to the filesystem
+	 *
+	 * @return the path to the APK
+	 */
+	fun saveAPK(appUpdate: AppUpdateEntity, bytes: ByteArray): HResult<String>
 }

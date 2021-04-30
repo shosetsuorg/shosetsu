@@ -15,7 +15,6 @@ import com.github.doomsdayrs.apps.shosetsu.BuildConfig.DEBUG
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
-import okhttp3.Response
 
 /*
  * This file is part of shosetsu.
@@ -67,7 +66,14 @@ class GithubAppUpdateDataSource(
 			}
 	}
 
-	override suspend fun downloadAppUpdate(update: AppUpdateEntity): HResult<Response> =
-		successResult(okHttpClient.quickie(update.url))
+	override suspend fun downloadAppUpdate(update: AppUpdateEntity): HResult<ByteArray> =
+		okHttpClient.quickie(update.url).let { response ->
+			if (response.isSuccessful) {
+				response.body?.let { body ->
+					return successResult(body.bytes())
+				} ?: errorResult(ERROR_NETWORK, "Empty response body")
+			} else errorResult(ERROR_NETWORK, "Failed to download")
+		}
+
 
 }

@@ -2,7 +2,6 @@ package app.shosetsu.android.datasource.remote.base
 
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.dto.HResult
-import okhttp3.Response
 
 /*
  * This file is part of shosetsu.
@@ -35,6 +34,6 @@ interface IRemoteAppUpdateDataSource {
 	 * Specifies that this [IRemoteAppUpdateDataSource] can download the app update itself
 	 */
 	interface Downloadable : IRemoteAppUpdateDataSource {
-		suspend fun downloadAppUpdate(update: AppUpdateEntity): HResult<Response>
+		suspend fun downloadAppUpdate(update: AppUpdateEntity): HResult<ByteArray>
 	}
 }

@@ -1,7 +1,5 @@
 package app.shosetsu.android.domain.repository.impl
 
-import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.datasource.local.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.common.consts.ErrorKeys
@@ -59,15 +57,15 @@ class AppUpdatesRepository(
 
 		return when {
 			remoteV < currentV -> {
-				logI("This a future release compared to $newVersion")
+				//println("This a future release compared to $newVersion")
 				emptyResult()
 			}
 			remoteV > currentV -> {
-				logI("Update found compared to $newVersion")
+				//println("Update found compared to $newVersion")
 				successResult(newVersion)
 			}
 			remoteV == currentV -> {
-				logI("This the current release compared to $newVersion")
+				//println("This the current release compared to $newVersion")
 				emptyResult()
 			}
 			else -> emptyResult()
@@ -99,12 +97,7 @@ class AppUpdatesRepository(
 	override suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): HResult<String> =
 		if (iRemoteAppUpdateDataSource is IRemoteAppUpdateDataSource.Downloadable)
 			iRemoteAppUpdateDataSource.downloadAppUpdate(appUpdateEntity).transform { response ->
-				logV("Retrieved response")
-				if (response.isSuccessful) {
-					response.body?.let { body ->
-						iFileAppUpdateDataSource.saveAPK(appUpdateEntity, body.source())
-					} ?: errorResult(ErrorKeys.ERROR_NETWORK, "Empty response body")
-				} else errorResult(ErrorKeys.ERROR_NETWORK, "Failed to download")
+				iFileAppUpdateDataSource.saveAPK(appUpdateEntity, response)
 			}
 		else errorResult(ErrorKeys.ERROR_INVALID_FEATURE, "This flavor cannot self update")
 }
