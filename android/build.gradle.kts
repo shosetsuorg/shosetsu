@@ -9,6 +9,7 @@ plugins {
 	kotlin("kapt")
 	kotlin("plugin.serialization")
 }
+
 @Throws(IOException::class)
 fun String.execute(): Process = Runtime.getRuntime().exec(this)
 
@@ -51,7 +52,7 @@ android {
 	}
 
 	buildTypes {
-		create("release") {
+		named("release") {
 			minifyEnabled(true)
 			proguardFiles(
 				getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -60,7 +61,7 @@ android {
 			versionNameSuffix = ""
 			multiDexEnabled = true
 		}
-		create("debug") {
+		named("debug") {
 			versionNameSuffix = "-${getCommitCount()}"
 			applicationIdSuffix = ".debug"
 			debuggable(true)
@@ -224,9 +225,8 @@ dependencies {
 	implementation("com.xw.repo:bubbleseekbar:3.20")
 
 	// Room
-	val room_version = "2.3.0"
-	implementation("androidx.room:room-runtime:$room_version")
-	kapt("androidx.room:room-compiler:$room_version")
+	implementation("androidx.room:room-runtime:2.3.0")
+	kapt("androidx.room:room-compiler:2.3.0")
 
 	// Fast Adapter
 	val latestFastAdapterRelease = "5.3.2"
@@ -254,7 +254,7 @@ dependencies {
 	implementation("androidx.core:core-ktx:1.3.2")
 	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1")
 	implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
-	implementation("androidx.room:room-ktx:$room_version")
+	implementation("androidx.room:room-ktx:2.3.0")
 	implementation("androidx.work:work-runtime-ktx:2.5.0")
 	implementation("androidx.collection:collection-ktx:1.1.0")
 
