@@ -42,6 +42,7 @@ data class DBRepositoryEntity(
 	@ColumnInfo
 	val url: String,
 	var name: String,
+	//TODO Add isEnabled : Boolean that will disable a repository from being accessed (?)
 ) : Convertible<RepositoryEntity> {
 	override fun convertTo(): RepositoryEntity = RepositoryEntity(
 		id,
