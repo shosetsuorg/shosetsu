@@ -1,5 +1,6 @@
 package app.shosetsu.android.datasource.remote.impl
 
+import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.common.datasource.remote.base.IRemoteCatalogueDataSource
 import app.shosetsu.common.dto.HResult
@@ -55,14 +56,15 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 
 	override suspend fun loadListing(
 		ext: IExtension,
-		listing: Int,
+		listingIndex: Int,
 		data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>> {
 		return try {
-			val l = ext.listings[listing]
-			if (!l.isIncrementing && (data[PAGE_INDEX] as Int) > 1) {
+			val listing = ext.listings[listingIndex]
+			logD(data.toString())
+			if (!listing.isIncrementing && (data[PAGE_INDEX] as Int) > 1) {
 				emptyResult()
-			} else successResult(l.getListing(data).toList())
+			} else successResult(listing.getListing(data).toList())
 		} catch (e: Exception) {
 			e.toHError()
 		}

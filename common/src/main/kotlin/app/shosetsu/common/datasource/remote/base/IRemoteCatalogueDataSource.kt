@@ -41,8 +41,8 @@ interface IRemoteCatalogueDataSource {
 	 * Loads a listings data from an extension
 	 */
 	suspend fun loadListing(
-			ext: IExtension,
-			listing: Int,
-			data: Map<Int, Any>,
+		ext: IExtension,
+		listingIndex: Int,
+		data: Map<Int, Any>,
 	): HResult<List<Novel.Listing>>
 }
