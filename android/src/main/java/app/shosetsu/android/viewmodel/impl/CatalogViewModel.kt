@@ -15,6 +15,7 @@ import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.PAGE_INDEX
+import app.shosetsu.lib.mapify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -168,6 +169,7 @@ class CatalogViewModel(
 					getCatalogueListingData(
 						ext!!,
 						HashMap<Int, Any>().apply {
+							putAll(ext!!.searchFiltersModel.mapify())
 							putAll(queryFilter.filters)
 							this[PAGE_INDEX] = currentMaxPage
 						}
@@ -178,6 +180,7 @@ class CatalogViewModel(
 						ext!!,
 						queryFilter.query,
 						HashMap<Int, Any>().apply {
+							putAll(ext!!.searchFiltersModel.mapify())
 							putAll(queryFilter.filters)
 							this[PAGE_INDEX] = currentMaxPage
 						}
