@@ -6,6 +6,7 @@ import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
+import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
@@ -262,6 +263,7 @@ class NovelController(bundle: Bundle) :
 			else toast(R.string.you_not_online)
 		}
 
+		(activity as? MainActivity)?.holdAtBottom(binding.bottomMenu)
 	}
 
 	private fun calculateBottomSelectionMenuChanges() {
@@ -358,6 +360,12 @@ class NovelController(bundle: Bundle) :
 
 	private fun openFilterMenu() {
 		bottomMenuRetriever.invoke()?.show()
+	}
+
+	override fun onDestroyView(view: View) {
+		(activity as? MainActivity)?.removeHoldAtBottom(binding.bottomMenu)
+
+		super.onDestroyView(view)
 	}
 
 	override fun onDestroy() {

@@ -10,6 +10,7 @@ import android.content.Intent
 import android.content.Intent.*
 import android.content.IntentFilter
 import android.os.Bundle
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
@@ -21,6 +22,7 @@ import androidx.core.content.getSystemService
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
+import androidx.core.view.marginTop
 import androidx.drawerlayout.widget.DrawerLayout
 import app.shosetsu.android.common.consts.*
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
@@ -43,6 +45,7 @@ import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityMainBinding
+import com.google.android.material.appbar.AppBarLayout
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -367,6 +370,23 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 	private fun transitionView(target: Controller) {
 		router.pushController(target.withFadeTransaction())
+	}
+
+
+	private val holdingAtBottom = hashMapOf<View, AppBarLayout.OnOffsetChangedListener>()
+
+	fun holdAtBottom(view: View) {
+		AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+			val maxAbsOffset = appBarLayout.measuredHeight - binding.tabLayout.measuredHeight
+			view.translationY = -maxAbsOffset - verticalOffset.toFloat() + appBarLayout.marginTop
+		}.let {
+			binding.elevatedAppBarLayout.addOnOffsetChangedListener(it)
+			holdingAtBottom[view] = it
+		}
+	}
+
+	fun removeHoldAtBottom(view: View) {
+		binding.elevatedAppBarLayout.removeOnOffsetChangedListener(holdingAtBottom.remove(view))
 	}
 
 	@SuppressLint("ObjectAnimatorBinding")
