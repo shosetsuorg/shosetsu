@@ -10,6 +10,7 @@ import app.shosetsu.android.backend.workers.NotificationCapable
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_REPOSITORY_UPDATE
+import app.shosetsu.android.common.consts.Notifications.ID_REPOSITORY_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags.REPOSITORY_UPDATE_TAG
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
@@ -27,6 +28,7 @@ import app.shosetsu.lib.Version
 import app.shosetsu.lib.json.RepoExtension
 import app.shosetsu.lib.json.RepoLibrary
 import com.github.doomsdayrs.apps.shosetsu.R
+import kotlinx.coroutines.delay
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -164,7 +166,7 @@ class RepositoryUpdateWorker(
 			).handle {
 				// If an update is ava, notify the user on a separate channel
 				if (it > 0) {
-					notify("Update ava", id + 3000) {
+					notify("$version update available", id + 3000) {
 						setContentTitle(name)
 						removeProgress()
 						setNotOngoing()
@@ -193,7 +195,7 @@ class RepositoryUpdateWorker(
 
 	override suspend fun doWork(): Result {
 		logI("Starting Update")
-		notify("Online, Loading repositories") { setOngoing() }
+		notify("Starting Repository Update") { setOngoing() }
 		extRepoRepo.loadEnabledRepos().handle(
 			onError = {
 				notify("Failed to get repos")
@@ -201,14 +203,22 @@ class RepositoryUpdateWorker(
 			}
 		) { repos: List<RepositoryEntity> ->
 			for (repo in repos) {
+				delay(2000)
 				// gets the latest list for the repo
 				extRepoRepo.getRepoData(repo).handle(
 					onError = {
+						notify(
+							"${it.code} : ${it.message}",
+							notificationId = ID_REPOSITORY_UPDATE + 1
+						) {
+							removeProgress()
+							setContentTitle("${repo.name} failed to load")
+						}
 						logE(
-							"Exception! ${it.code} : ${it.message}",
+							"${repo.name} failed to load ${it.code} : ${it.message}",
 							it.exception
 						)
-						return Result.failure()
+						extRepoRepo.update(repo.copy(isEnabled = false))
 					}
 				) { repoIndex ->
 					updateLibraries(repoIndex.libraries, repo)
