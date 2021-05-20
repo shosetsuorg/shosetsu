@@ -32,15 +32,6 @@ annotation class SettingsItemDSL
 
 // - Builders
 
-
-@SettingsItemDSL
-@Deprecated("Not fun to code")
-inline fun checkBoxSettingData(
-	id: Int,
-	action: CheckBoxSettingData.() -> Unit,
-): SettingsItemData = CheckBoxSettingData(id).also(action)
-
-
 @SettingsItemDSL
 inline fun switchSettingData(
 	id: Int,
@@ -64,6 +55,12 @@ inline fun SettingsItemData.title(value: SettingsItemData.() -> Any): Unit =
 			else -> titleText = it.toString()
 		}
 	}
+
+@SettingsItemDSL
+fun SettingsItemData.boldTitle() {
+	isBoldTitle = true
+}
+
 
 @SettingsItemDSL
 inline fun SettingsItemData.description(value: SettingsItemData.() -> Any): Unit =

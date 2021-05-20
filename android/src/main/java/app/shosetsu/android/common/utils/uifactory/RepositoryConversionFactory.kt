@@ -35,7 +35,8 @@ class RepositoryConversionFactory(data: RepositoryEntity) :
 	override fun RepositoryEntity.convertTo(): RepositoryUI = RepositoryUI(
 		id ?: -1,
 		url,
-		name
+		name,
+		isEnabled
 	)
 }
 

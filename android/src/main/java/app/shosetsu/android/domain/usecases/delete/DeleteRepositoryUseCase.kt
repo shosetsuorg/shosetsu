@@ -1,11 +1,9 @@
 package app.shosetsu.android.domain.usecases.delete
 
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
-import app.shosetsu.common.consts.ErrorKeys.ERROR_LACK_PERM
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.errorResult
 
 /*
  * This file is part of Shosetsu.
@@ -30,11 +28,8 @@ import app.shosetsu.common.dto.errorResult
 class DeleteRepositoryUseCase(
 	private val iExtensionRepoRepository: IExtensionRepoRepository
 ) {
-	suspend operator fun invoke(repositoryEntity: RepositoryEntity): HResult<*> {
-		if (repositoryEntity.id == -1)
-			return errorResult(ERROR_LACK_PERM, "You cannot remove the default extension")
-		return iExtensionRepoRepository.remove(repositoryEntity)
-	}
+	suspend operator fun invoke(repositoryEntity: RepositoryEntity): HResult<*> =
+		iExtensionRepoRepository.remove(repositoryEntity)
 
 	suspend operator fun invoke(repositoryUI: RepositoryUI) = invoke(repositoryUI.convertTo())
 }

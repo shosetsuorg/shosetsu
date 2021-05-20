@@ -46,4 +46,9 @@ abstract class ARepositoryViewModel
 	 * Remove the repo from the app
 	 */
 	abstract fun remove(repositoryInfoUI: RepositoryUI): LiveData<HResult<*>>
+
+	/**
+	 * Toggles the state of [RepositoryUI.isRepoEnabled], returns the new state
+	 */
+	abstract fun toggleIsEnabled(repositoryInfoUI: RepositoryUI): LiveData<HResult<Boolean>>
 }

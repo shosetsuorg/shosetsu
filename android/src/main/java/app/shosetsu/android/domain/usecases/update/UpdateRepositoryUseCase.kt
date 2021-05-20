@@ -1,11 +1,9 @@
-package app.shosetsu.android.domain.model.database
+package app.shosetsu.android.domain.usecases.update
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
+import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.common.domain.model.local.RepositoryEntity
-import app.shosetsu.common.dto.Convertible
+import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
+import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of Shosetsu.
@@ -25,34 +23,13 @@ import app.shosetsu.common.dto.Convertible
  */
 
 /**
- * shosetsu
- * 05 / 12 / 2020
- *
- * @param url must be unique
- *
- * @see RepositoryEntity
+ * 18 / 01 / 2021
  */
-@Entity(
-	tableName = "repositories",
-	indices = [
-		Index("url", unique = true)
-	]
-)
-data class DBRepositoryEntity(
-	@PrimaryKey(autoGenerate = true)
-	var id: Int?,
+class UpdateRepositoryUseCase(
+	private val iExtensionRepoRepository: IExtensionRepoRepository
+) {
+	suspend operator fun invoke(repositoryEntity: RepositoryEntity): HResult<*> =
+		iExtensionRepoRepository.update(repositoryEntity)
 
-	@ColumnInfo
-	val url: String,
-
-	var name: String,
-
-	var isEnabled: Boolean
-) : Convertible<RepositoryEntity> {
-	override fun convertTo(): RepositoryEntity = RepositoryEntity(
-		id,
-		url,
-		name,
-		isEnabled
-	)
+	suspend operator fun invoke(repositoryUI: RepositoryUI) = invoke(repositoryUI.convertTo())
 }

@@ -6,8 +6,16 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
+import androidx.work.*
+import app.shosetsu.android.backend.workers.CoroutineWorkerManager
+import app.shosetsu.android.backend.workers.onetime.DownloadWorker
+import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.notificationManager
+import app.shosetsu.common.consts.settings.SettingKey
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
 import com.github.doomsdayrs.apps.shosetsu.R
+import org.kodein.di.generic.instance
 
 /*
  * This file is part of shosetsu.
@@ -44,6 +52,9 @@ object Notifications {
 	const val CHANNEL_DOWNLOAD: String = "shosetsu_download"
 	const val ID_CHAPTER_DOWNLOAD: Int = 1949
 
+	const val CHANNEL_REPOSITORY_UPDATE = "shosetsu_repository_update"
+	const val ID_REPOSITORY_UPDATE = 1953
+
 	const val CHANNEL_APP_UPDATE: String = "shosetsu_app_update"
 	const val ID_APP_UPDATE: Int = 1991
 	const val ID_APP_UPDATE_INSTALL: Int = 1944
@@ -74,6 +85,11 @@ object Notifications {
 					CHANNEL_BACKUP,
 					R.string.notification_channel_name_backup,
 					NotificationManager.IMPORTANCE_LOW
+				),
+				notificationChannel(
+					CHANNEL_REPOSITORY_UPDATE,
+					R.string.notification_channel_name_repository_update,
+					NotificationManager.IMPORTANCE_DEFAULT
 				)
 			)
 			notificationManager.createNotificationChannels(channels)
@@ -90,4 +106,5 @@ object Notifications {
 		getString(name),
 		importance
 	)
+
 }

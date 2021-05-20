@@ -24,9 +24,16 @@ package app.shosetsu.common.domain.model.local
  * 22 / 04 / 2020
  *
  * @author github.com/doomsdayrs
+ *
+ * @param id of the repository, is nearly always not null, but only null when first being inserted
+ * @param url of the repository. Must be a valid URL
+ * @param name of the repository
+ * @param isEnabled Is the repository enabled?
+ *  Might be disabled due to error or user choice.
  */
 data class RepositoryEntity(
 	val id: Int? = null,
 	val url: String,
 	var name: String,
+	var isEnabled: Boolean
 )

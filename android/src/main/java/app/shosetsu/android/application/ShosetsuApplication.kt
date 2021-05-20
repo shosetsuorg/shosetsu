@@ -9,11 +9,9 @@ import androidx.lifecycle.LifecycleOwner
 import app.shosetsu.android.backend.database.DBHelper
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.ShortCuts
-import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.di.*
-import app.shosetsu.android.domain.usecases.InitializeExtensionsUseCase
+import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.android.viewmodel.factory.ViewModelFactory
 import app.shosetsu.common.domain.repositories.base.IExtensionLibrariesRepository
 import app.shosetsu.common.dto.HResult
@@ -67,7 +65,7 @@ import org.kodein.di.generic.singleton
 class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 	private val extLibRepository by instance<IExtensionLibrariesRepository>()
 	private val okHttpClient by instance<OkHttpClient>()
-	private val initializeExtensionsUseCase: InitializeExtensionsUseCase by instance()
+	private val startRepositoryUpdateManagerUseCase: StartRepositoryUpdateManagerUseCase by instance()
 
 	@ExperimentalCoroutinesApi
 	override val kodein: Kodein by Kodein.lazy {
@@ -115,11 +113,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 		@Suppress("DEPRECATION")
 		DBHelper(this@ShosetsuApplication).writableDatabase.close()
 
-		launchIO {
-			initializeExtensionsUseCase {
-				logI("Initialize: $it")
-			}
-		}
+		startRepositoryUpdateManagerUseCase()
 		super.onCreate()
 	}
 

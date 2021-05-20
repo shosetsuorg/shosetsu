@@ -66,9 +66,12 @@ interface ExtensionsDao : BaseDao<DBExtensionEntity> {
 	@Query("SELECT * FROM extensions WHERE repoID = :repoID")
 	fun getExtensions(repoID: Int): List<DBExtensionEntity>
 
+	/**
+	 * @return 1 if extension updated, 0 if inserted
+	 */
 	@Throws(SQLiteException::class)
 	@Transaction
-	suspend fun insertOrUpdate(DBExtensionEntity: DBExtensionEntity) {
+	suspend fun insertOrUpdate(DBExtensionEntity: DBExtensionEntity): Int =
 		if (doesExtensionExist(DBExtensionEntity.id)) {
 			update(
 				getExtension(DBExtensionEntity.id)!!.copy(
@@ -78,8 +81,9 @@ interface ExtensionsDao : BaseDao<DBExtensionEntity> {
 					md5 = DBExtensionEntity.md5
 				)
 			)
+			1
 		} else {
 			insertReplace(DBExtensionEntity)
+			0
 		}
-	}
 }

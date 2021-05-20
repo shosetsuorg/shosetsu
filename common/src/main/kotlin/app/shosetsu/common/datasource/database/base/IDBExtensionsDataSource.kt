@@ -1,7 +1,7 @@
 package app.shosetsu.common.datasource.database.base
 
-import app.shosetsu.common.domain.model.local.StrippedExtensionEntity
 import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.domain.model.local.StrippedExtensionEntity
 import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
@@ -50,7 +50,7 @@ interface IDBExtensionsDataSource {
 	fun loadExtensionLive(formatterID: Int): Flow<HResult<ExtensionEntity>>
 
 	/** Inserts an [extensionEntity] otherwise updates it */
-	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<*>
+	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<Int>
 
 	suspend fun getExtensions(repoID: Int): HResult<List<ExtensionEntity>>
 }

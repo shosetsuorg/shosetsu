@@ -133,11 +133,18 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object OnlyUpdateOngoing : BooleanKey("onlyUpdateOngoing", false)
 	object UpdateOnStartup : BooleanKey("updateOnStartup", true)
 	object UpdateCycle : IntKey("updateCycle", 1)
+
 	object UpdateOnLowStorage : BooleanKey("updateLowStorage", false)
 	object UpdateOnLowBattery : BooleanKey("updateLowBattery", false)
 	object UpdateOnMeteredConnection : BooleanKey("updateMetered", false)
 	object UpdateOnlyWhenIdle : BooleanKey("updateIdle", false)
+
 	object UpdateNotificationStyle : BooleanKey("updateNotificationStyle", false)
+
+	object RepoUpdateOnLowStorage : BooleanKey("repoUpdateLowStorage", false)
+	object RepoUpdateOnLowBattery : BooleanKey("repoUpdateLowBattery", false)
+	object RepoUpdateOnMeteredConnection : BooleanKey("repoUpdateMetered", false)
+	object RepoUpdateOnlyWhenIdle : BooleanKey("repoUpdateIdle", false)
 
 
 	// App Update Options

@@ -88,7 +88,7 @@ class DBExtensionsDataSource(
 		e.toHError()
 	}
 
-	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<*> = try {
+	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<Int> = try {
 		successResult(extensionsDao.insertOrUpdate(extensionEntity.toDB()))
 	} catch (e: Exception) {
 		e.toHError()

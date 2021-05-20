@@ -58,8 +58,8 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 
 	bind<RefreshRepositoryUseCase>() with provider { RefreshRepositoryUseCase(instance()) }
 
-	bind<InitializeExtensionsUseCase>() with provider {
-		InitializeExtensionsUseCase(instance(), instance(), instance(), instance())
+	bind<StartRepositoryUpdateManagerUseCase>() with provider {
+		StartRepositoryUpdateManagerUseCase(instance())
 	}
 
 	bind<InstallExtensionUIUseCase>() with provider { InstallExtensionUIUseCase(instance()) }
@@ -224,7 +224,9 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<DeleteRepositoryUseCase>() with provider {
 		DeleteRepositoryUseCase(instance())
 	}
-
+	bind<UpdateRepositoryUseCase>() with provider {
+		UpdateRepositoryUseCase(instance())
+	}
 	bind<GetReaderSettingUseCase>() with provider {
 		GetReaderSettingUseCase(instance(), instance())
 	}

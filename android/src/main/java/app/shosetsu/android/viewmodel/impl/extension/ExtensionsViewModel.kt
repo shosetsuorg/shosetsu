@@ -19,9 +19,9 @@ package app.shosetsu.android.viewmodel.impl.extension
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.domain.ReportExceptionUseCase
-import app.shosetsu.android.domain.usecases.InitializeExtensionsUseCase
 import app.shosetsu.android.domain.usecases.InstallExtensionUIUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
+import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.android.domain.usecases.UninstallExtensionUIUseCase
 import app.shosetsu.android.domain.usecases.load.LoadExtensionsUIUseCase
 import app.shosetsu.android.domain.usecases.toast.StringToastUseCase
@@ -38,7 +38,7 @@ import kotlinx.coroutines.*
  */
 class ExtensionsViewModel(
 	private val getExtensionsUIUseCase: LoadExtensionsUIUseCase,
-	private val initializeExtensionsUseCase: InitializeExtensionsUseCase,
+	private val startRepositoryUpdateManagerUseCase: StartRepositoryUpdateManagerUseCase,
 	private val installExtensionUIUseCase: InstallExtensionUIUseCase,
 	private val uninstallExtensionUIUseCase: UninstallExtensionUIUseCase,
 	private val stringToastUseCase: StringToastUseCase,
@@ -51,11 +51,7 @@ class ExtensionsViewModel(
 	}
 
 	override fun refreshRepository() {
-		app.shosetsu.android.common.ext.launchIO {
-			initializeExtensionsUseCase.invoke {
-				stringToastUseCase { it }
-			}
-		}
+		startRepositoryUpdateManagerUseCase()
 	}
 
 	override fun installExtension(extensionUI: ExtensionUI) {

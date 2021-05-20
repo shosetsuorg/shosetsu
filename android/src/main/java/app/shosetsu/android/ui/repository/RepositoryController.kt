@@ -2,7 +2,6 @@ package app.shosetsu.android.ui.repository
 
 import android.view.LayoutInflater
 import android.view.View
-import androidx.appcompat.app.AlertDialog.Builder
 import app.shosetsu.android.common.ext.hookClickEvent
 import app.shosetsu.android.common.ext.logError
 import app.shosetsu.android.common.ext.viewModel
@@ -15,6 +14,8 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.RepositoryAddBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.listeners.addClickListener
+import androidx.appcompat.app.AlertDialog.Builder as AlertDialogBuilder
 
 /*
  * This file is part of Shosetsu.
@@ -64,22 +65,47 @@ class RepositoryController : GenericFastAdapterRecyclerController<RepositoryUI>(
 		hookClickEvent(
 			bind = { it: RepositoryUI.ViewHolder -> it.binding.removeButton }
 		) { _, _, _, item ->
-			// Pass item to viewModel to remove, observe result
-			viewModel.remove(item).handleObserve(
+			AlertDialogBuilder(binding.root.context)
+				.setTitle(R.string.alert_dialog_title_warn_repo_removal)
+				.setMessage(R.string.alert_dialog_message_warn_repo_removal)
+				.setPositiveButton(android.R.string.ok) { d, w ->
+					// Pass item to viewModel to remove, observe result
+					viewModel.remove(item).handleObserve(
+						onError = {
+							toast(R.string.toast_repository_remove_fail)
+						}
+					) {
+						toast(R.string.toast_repository_removed)
+						showWarning()
+					}
+					d.dismiss()
+				}.setNegativeButton(android.R.string.cancel) { d, w ->
+					d.dismiss()
+				}.show()
+
+		}
+
+		addClickListener<RepositoryUI.ViewHolder, RepositoryUI>({ it.binding.switchWidget }) { _, _, _, item ->
+			viewModel.toggleIsEnabled(item).handleObserve(
 				onError = {
-					toast(R.string.toast_repository_remove_fail)
+					toast(R.string.toast_error_repository_toggle_enabled_failed)
 				}
-			) {
-				toast(R.string.toast_repository_removed)
-				showWarning()
+			) { newState ->
+				toast(
+					if (newState)
+						R.string.toast_success_repository_toggled_enabled
+					else
+						R.string.toast_success_repository_toggled_disabled
+				)
 			}
 		}
 	}
 
+
 	/**
 	 * Warn the user that they need to refresh their extension list
 	 */
-	private fun showWarning() = Builder(binding.root.context)
+	private fun showWarning() = AlertDialogBuilder(binding.root.context)
 		.setTitle(R.string.repository_list_change_warning)
 		.show()
 
@@ -92,7 +118,7 @@ class RepositoryController : GenericFastAdapterRecyclerController<RepositoryUI>(
 			val addBinding: RepositoryAddBinding =
 				RepositoryAddBinding.inflate(LayoutInflater.from(fab.context))
 
-			Builder(fab.context)
+			AlertDialogBuilder(fab.context)
 				.setView(addBinding.root)
 				.setTitle(R.string.repository_add_title)
 				.setPositiveButton(android.R.string.ok) { d, w ->

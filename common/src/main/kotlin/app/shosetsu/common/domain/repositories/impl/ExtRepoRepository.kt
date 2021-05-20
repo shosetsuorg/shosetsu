@@ -5,6 +5,8 @@ import app.shosetsu.common.datasource.remote.base.IRemoteExtRepoDataSource
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.transform
 import app.shosetsu.lib.json.RepoIndex
 import kotlinx.coroutines.flow.Flow
 
@@ -39,6 +41,12 @@ class ExtRepoRepository(
 	override suspend fun loadRepositories(): HResult<List<RepositoryEntity>> =
 		databaseSource.loadRepositories()
 
+	/**
+	 * TODO Create a direct to database call that cuts out the kotlin filtering
+	 */
+	override suspend fun loadEnabledRepos(): HResult<List<RepositoryEntity>> =
+		loadRepositories().transform { list -> successResult(list.filter { it.isEnabled }) }
+
 	override fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>> =
 		databaseSource.loadRepositoriesLive()
 
@@ -47,5 +55,8 @@ class ExtRepoRepository(
 
 	override suspend fun remove(entity: RepositoryEntity): HResult<*> =
 		databaseSource.remove(entity)
+
+	override suspend fun update(entity: RepositoryEntity): HResult<*> =
+		databaseSource.update(entity)
 
 }

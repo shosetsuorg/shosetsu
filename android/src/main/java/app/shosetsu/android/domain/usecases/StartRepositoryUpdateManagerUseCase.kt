@@ -1,6 +1,6 @@
-package app.shosetsu.android.common.ext
+package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.common.domain.model.local.ExtLibEntity
+import app.shosetsu.android.backend.workers.onetime.RepositoryUpdateWorker
 
 /*
  * This file is part of shosetsu.
@@ -17,15 +17,21 @@ import app.shosetsu.common.domain.model.local.ExtLibEntity
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
-
-fun List<ExtLibEntity>.containsName(extLibName: String): Int {
-	forEachIndexed { index, (scriptName) ->
-		if (scriptName == extLibName) {
-			return index
-		}
+/**
+ * shosetsu
+ * 13 / 05 / 2020
+ * <p>
+ *     Initializes formatters, libraries, and repositories
+ * </p>
+ */
+class StartRepositoryUpdateManagerUseCase(
+	private val manager: RepositoryUpdateWorker.Manager
+) {
+	operator fun invoke() {
+		if (!manager.isRunning())
+			manager.start()
 	}
-	return -1
+
 }

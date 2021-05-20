@@ -142,7 +142,7 @@ interface IExtensionsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<*>
+	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<Int>
 
 	/**
 	 * Updates an [extensionEntity]

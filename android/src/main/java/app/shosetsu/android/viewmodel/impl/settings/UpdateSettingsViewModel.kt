@@ -4,6 +4,7 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
+import app.shosetsu.android.view.uimodels.settings.headerSettingItemData
 import app.shosetsu.android.viewmodel.abstracted.settings.AUpdateSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
@@ -37,8 +38,13 @@ class UpdateSettingsViewModel(
 ) : AUpdateSettingsViewModel(iSettingsRepository) {
 
 	override suspend fun settings(): List<SettingsItemData> = listOf(
+
+		headerSettingItemData(8) {
+			title { "Novel" }
+		},
+
 		// Update frequency
-		seekBarSettingData(6) {
+		seekBarSettingData(7) {
 			title { "Update frequency" }
 			range { 0F to 6F }
 			progressValue = when (settingsRepo.getIntOrDefault(SettingKey.UpdateCycle)) {
@@ -88,6 +94,7 @@ class UpdateSettingsViewModel(
 			hideBubble = true
 			sectionC = 6
 		},
+
 		// Download on update
 		switchSettingData(0) {
 			title { "Download on update" }
@@ -118,7 +125,28 @@ class UpdateSettingsViewModel(
 		switchSettingData(6) {
 			title { "Notification Style" }
 			checkSettingValue(SettingKey.UpdateNotificationStyle)
-		}
+		},
+
+		headerSettingItemData(8) {
+			title { "Repository" }
+		},
+		switchSettingData(9) {
+			title { "Allow updating on metered connection" }
+			checkSettingValue(SettingKey.RepoUpdateOnMeteredConnection)
+		},
+		switchSettingData(10) {
+			title { "Update on low battery" }
+			checkSettingValue(SettingKey.RepoUpdateOnLowBattery)
+		},
+		switchSettingData(11) {
+			title { "Update on low storage" }
+			checkSettingValue(SettingKey.RepoUpdateOnLowStorage)
+		},
+		switchSettingData(12) {
+			title { "Update only when idle" }
+			requiredVersion { android.os.Build.VERSION_CODES.M }
+			checkSettingValue(SettingKey.RepoUpdateOnlyWhenIdle)
+		},
 	)
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {

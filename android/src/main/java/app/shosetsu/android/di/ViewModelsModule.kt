@@ -122,12 +122,12 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	bind<IExtensionsViewModel>() with provider {
 		ExtensionsViewModel(
 			getExtensionsUIUseCase = instance(),
-			initializeExtensionsUseCase = instance(),
 			installExtensionUIUseCase = instance(),
 			uninstallExtensionUIUseCase = instance(),
 			stringToastUseCase = instance(),
 			isOnlineUseCase = instance(),
-			reportExceptionUseCase = instance()
+			reportExceptionUseCase = instance(),
+			startRepositoryUpdateManagerUseCase = instance()
 		)
 	}
 	bind<IExtensionConfigureViewModel>() with provider {
@@ -185,7 +185,8 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 			loadRepositoriesUseCase = instance(),
 			reportExceptionUseCase = instance(),
 			addRepositoryUseCase = instance(),
-			deleteRepositoryUseCase = instance()
+			deleteRepositoryUseCase = instance(),
+			updateRepositoryUseCase = instance()
 		)
 	}
 

@@ -399,6 +399,12 @@
     <string name="help">Help</string>
     <string name="settings_advanced_verify_checksum_title">Verify extension check sum</string>
     <string name="settings_advanced_verify_checksum_desc">Verify if the extension content matches the checksum from the index</string>
+    <string name="toast_error_repository_toggle_enabled_failed">Failed to toggle enabled state of repository</string>
+    <string name="toast_success_repository_toggled_enabled">Repository has been enabled</string>
+    <string name="toast_success_repository_toggled_disabled">Repository has been disabled</string>
+    <string name="alert_dialog_title_warn_repo_removal">Repo Removal Warning</string>
+    <string name="alert_dialog_message_warn_repo_removal">Are you sure about removing this repository?</string>
+    <string name="notification_channel_name_repository_update">Repository Update</string>
 
 
     <array name="text_alignments">

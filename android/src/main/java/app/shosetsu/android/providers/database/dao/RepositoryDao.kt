@@ -86,7 +86,8 @@ interface RepositoryDao : BaseDao<DBRepositoryEntity> {
 			DBRepositoryEntity(
 				null,
 				url = "https://raw.githubusercontent.com/shosetsuorg/extensions-main/main",
-				name = "Main"
+				name = "Main",
+				isEnabled = true
 			)
 		)
 
@@ -95,8 +96,10 @@ interface RepositoryDao : BaseDao<DBRepositoryEntity> {
 			createIfNotExist(
 				DBRepositoryEntity(
 					null,
-					url = "https://raw.githubusercontent.com/shosetsuorg/extensions/dev",
-					name = "Universe"
+					//url = "https://raw.githubusercontent.com/shosetsuorg/extensions/dev",
+					url = "https://raw.githubusercontent.com/shosetsuorg/extensions/dev/src/main/resources/",
+					name = "Universe",
+					isEnabled = true
 				)
 			)
 	}

@@ -1,5 +1,6 @@
 package app.shosetsu.android.view.uimodels.settings.base
 
+import android.graphics.Typeface
 import android.os.Build
 import android.view.View
 import androidx.annotation.CallSuper
@@ -41,6 +42,7 @@ abstract class SettingsItemData(
 
 	var titleID: Int = -1
 	var titleText: String = ""
+	var isBoldTitle: Boolean = false
 
 	var descID: Int = -1
 	var descText: String = ""
@@ -57,6 +59,9 @@ abstract class SettingsItemData(
 			settingsItemTitle.setText(titleID)
 		else
 			settingsItemTitle.text = titleText
+
+		if (isBoldTitle)
+			settingsItemTitle.setTypeface(null, Typeface.BOLD)
 
 		if (descID != -1) {
 			settingsItemDesc.isVisible = true

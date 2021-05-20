@@ -15,7 +15,7 @@ import app.shosetsu.android.common.consts.WorkerTags.RESTORE_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.backupJSON
 import app.shosetsu.android.domain.model.local.backup.FleshedBackupEntity
-import app.shosetsu.android.domain.usecases.InitializeExtensionsUseCase
+import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.*
@@ -63,7 +63,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 	override val kodein: Kodein by closestKodein(appContext)
 	private val backupRepo by instance<IBackupRepository>()
 	private val extensionsRepoRepo by instance<IExtensionRepoRepository>()
-	private val initializeExtensionsUseCase by instance<InitializeExtensionsUseCase>()
+	private val initializeExtensionsUseCase by instance<StartRepositoryUpdateManagerUseCase>()
 	private val extensionsRepo by instance<IExtensionsRepository>()
 	private val novelsRepo by instance<INovelsRepository>()
 	private val chaptersRepo by instance<IChaptersRepository>()
@@ -155,14 +155,15 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 				extensionsRepoRepo.addRepository(
 					RepositoryEntity(
 						url = url,
-						name = name
+						name = name,
+						isEnabled = true
 					)
 				)
 			}
 
 			notify("Loading repository data")
 			// Load the data from the repositories
-			initializeExtensionsUseCase.invoke { }
+			initializeExtensionsUseCase()
 
 			// Install the extensions
 			val repoNovels: List<NovelEntity> = novelsRepo.loadNovels().unwrap()!!
