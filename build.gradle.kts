@@ -10,14 +10,14 @@ buildscript {
 
 	repositories {
 		google()
-		jcenter()
+		mavenCentral()
 	}
 
 	dependencies {
 		classpath("com.android.tools.build:gradle:4.2.1")
-		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32")
-		classpath(kotlin("gradle-plugin", version = "1.4.30"))
-		classpath(kotlin("serialization", version = "1.4.30"))
+		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.0")
+		classpath(kotlin("gradle-plugin", version = "1.5.0"))
+		classpath(kotlin("serialization", version = "1.5.0"))
 		// NOTE: Do not place your application dependencies here; they belong
 		// in the individual module build.gradle files
 	}
@@ -26,7 +26,7 @@ buildscript {
 allprojects {
 	repositories {
 		google()
-		jcenter()
+		mavenCentral()
 		maven("https://jitpack.io")
 	}
 }

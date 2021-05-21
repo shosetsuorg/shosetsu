@@ -137,13 +137,18 @@ dependencies {
 	implementation("androidx.preference:preference-ktx:1.1.1")
 	implementation("androidx.recyclerview:recyclerview:1.2.0")
 	implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
-	implementation("androidx.appcompat:appcompat:1.2.0")
+	implementation("androidx.appcompat:appcompat:1.3.0")
 	implementation("androidx.multidex:multidex:2.0.1")
 	implementation("androidx.biometric:biometric:1.1.0")
 	implementation("androidx.annotation:annotation:1.2.0")
-	implementation("androidx.appcompat:appcompat:1.2.0")
+	implementation("androidx.appcompat:appcompat:1.3.0")
 	implementation("androidx.cardview:cardview:1.0.0")
 	implementation("androidx.browser:browser:1.3.0")
+	implementation("androidx.core:core-ktx:1.5.0")
+	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1")
+	implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
+	implementation("androidx.room:room-ktx:2.3.0")
+	implementation("androidx.collection:collection-ktx:1.1.0")
 
 	// - Life Cycle
 	implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
@@ -187,9 +192,9 @@ dependencies {
 	implementation("com.squareup.okhttp3:okhttp:4.9.1")
 
 	// Kotlin libraries
-	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.32")
-	implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.32")
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2")
+	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.5.0")
+	implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.0")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3")
 
 	// Async controller
 	implementation("com.zsoltsafrany:needle:1.0.0")
@@ -251,17 +256,11 @@ dependencies {
 	implementation("org.kodein.di:kodein-di-framework-android-x:6.5.5")
 
 	// KTX
-	implementation("androidx.core:core-ktx:1.3.2")
-	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1")
-	implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
-	implementation("androidx.room:room-ktx:2.3.0")
-	implementation("androidx.work:work-runtime-ktx:2.5.0")
-	implementation("androidx.collection:collection-ktx:1.1.0")
 
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.2")
 
 	// KTX - Serialization
-	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.0")
 
 	// Roomigrant
 	implementation("com.github.MatrixDev.Roomigrant:RoomigrantLib:0.2.0")
