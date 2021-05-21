@@ -61,7 +61,6 @@ class RepositoryUpdateWorker(
 	params: WorkerParameters,
 ) : CoroutineWorker(appContext, params), KodeinAware, NotificationCapable {
 
-	private val isOnline: IsOnlineUseCase by instance()
 	private val extRepo: IExtensionsRepository by instance()
 	private val extRepoRepo: IExtensionRepoRepository by instance()
 	private val extensionLibrariesRepo: IExtensionLibrariesRepository by instance()
