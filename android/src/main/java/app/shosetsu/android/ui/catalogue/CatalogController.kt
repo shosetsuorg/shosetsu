@@ -139,6 +139,7 @@ class CatalogController(
 				true
 			}
 			onLongClickListener = { _, _, i, _ ->
+				logI("Adding novel to background")
 				viewModel.backgroundNovelAdd(i.id)
 				toast(R.string.controller_catalogue_toast_background_add)
 				true

@@ -175,7 +175,7 @@ dependencies {
 	//implementation "com.github.kohsuke:github-api:github-api-1.95"
 
 	// Markdown view
-	implementation("us.feras.mdv:markdownview:1.1.0")
+	//implementation("us.feras.mdv:markdownview:1.1.0")
 
 	// Time control
 	implementation("joda-time:joda-time:2.10.5")
@@ -227,7 +227,7 @@ dependencies {
 	implementation("com.github.skydoves:colorpickerview:2.1.6")
 
 	// Seek bar
-	implementation("com.xw.repo:bubbleseekbar:3.20")
+	implementation("com.github.shosetsuorg:bubbleseekbar:4.1.0")
 
 	// Room
 	implementation("androidx.room:room-runtime:2.3.0")

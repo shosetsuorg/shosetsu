@@ -38,19 +38,28 @@ typealias StringSetKey = SettingKey<Set<String>>
 
 sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
+	/**
+	 * Selected reader theme
+	 */
 	object ReaderTheme : IntKey("readerTheme", -1)
 
+	/**
+	 * Is this the first time the application ran?
+	 */
 	object FirstTime : BooleanKey("first_time", true)
 
 
+	/**
+	 * Themes that can be edited by the user
+	 */
 	// How things look in Reader
 	object ReaderUserThemes : StringSetKey("readerThemes", setOf())
 
 
 	object ReaderTextSize : FloatKey("readerTextSize", 14f)
 
-	//TODO turn into float
 	object ReaderParagraphSpacing : FloatKey("readerParagraphSpacing", 1f)
+
 	object ReaderIndentSize : IntKey("readerIndentSize", 1)
 
 	/**
@@ -85,7 +94,12 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	/**
 	 * User customization for CSS in html reader
 	 */
-	object ReaderHtmlCss : StringKey("readerHtmlCss", "")
+	object ReaderHtmlCss : StringKey(
+		"readerHtmlCss",
+		"""
+			
+		""".trimIndent()
+	)
 
 	/**
 	 * Instead of vertically moving between chapters, do a horizontal move
