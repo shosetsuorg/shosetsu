@@ -5,15 +5,15 @@
     <string name="website">Website</string>
     <string name="website_url" translatable="false">https://shosetsu.app</string>
 
-    <string name="github">Github</string>
+    <string name="github" translatable="false">Github</string>
     <string name="github_url" translatable="false">https://github.com/shosetsuorg/android-app</string>
     <string name="extensions_url" translatable="false">https://github.com/shosetsuorg/extensions</string>
 
-    <string name="discord">Discord</string>
+    <string name="discord" translatable="false">Discord</string>
     <string name="discord_url" translatable="false">https://discord.gg/ttSX7gB</string>
 
-    <string name="patreon">Support the dev on Patreon</string>
-    <string name="patreon_url">https://www.patreon.com/doomsdayrs</string>
+    <string name="patreon" translatable="false">Support the dev on Patreon</string>
+    <string name="patreon_url" translatable="false">https://www.patreon.com/doomsdayrs</string>
 
     <string name="report_bug_link" translatable="false">https://github.com/Doomsdayrs/shosetsu/issues</string>
     <string name="author_github" translatable="false">https://github.com/Doomsdayrs</string>
@@ -392,6 +392,8 @@
     <string name="notification_channel_name_download">Chapter Download</string>
     <string name="notification_channel_name_app_update">App Update</string>
     <string name="notification_channel_name_backup">Backup and Restore</string>
+    <string name="notification_channel_name_repository_update">Repository Update</string>
+
     <string name="controller_catalogue_toast_background_add">Adding to library in background</string>
     <string name="jump_to_chapter">Jump to Chapter</string>
     <string name="controller_novel_jump_dialog_hint_chapter_number">Chapter Number</string>
@@ -404,7 +406,9 @@
     <string name="toast_success_repository_toggled_disabled">Repository has been disabled</string>
     <string name="alert_dialog_title_warn_repo_removal">Repo Removal Warning</string>
     <string name="alert_dialog_message_warn_repo_removal">Are you sure about removing this repository?</string>
-    <string name="notification_channel_name_repository_update">Repository Update</string>
+
+
+    <!-- Error Key Messages -->
 
 
     <array name="text_alignments">
