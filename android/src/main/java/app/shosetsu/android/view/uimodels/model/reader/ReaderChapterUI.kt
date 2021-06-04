@@ -67,7 +67,7 @@ data class ReaderChapterUI(
 		when (chapterType) {
 			ChapterType.STRING -> if (!convertStringToHtml) R.layout.chapter_reader_text_view else R.layout.chapter_reader_html
 			ChapterType.HTML -> R.layout.chapter_reader_html
-			ChapterType.MARKDOWN -> R.layout.chapter_reader_mark_down
+			ChapterType.MARKDOWN -> -1
 
 			ChapterType.EPUB -> R.layout.chapter_reader_text_view
 			ChapterType.PDF -> R.layout.chapter_reader_text_view
@@ -78,7 +78,7 @@ data class ReaderChapterUI(
 		when (chapterType) {
 			ChapterType.STRING -> if (!convertStringToHtml) R.layout.chapter_reader_text_view else R.layout.chapter_reader_html
 			ChapterType.HTML -> R.layout.chapter_reader_html
-			ChapterType.MARKDOWN -> R.layout.chapter_reader_mark_down
+			ChapterType.MARKDOWN -> -1
 
 			ChapterType.EPUB -> R.layout.chapter_reader_text_view
 			ChapterType.PDF -> R.layout.chapter_reader_text_view

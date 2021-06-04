@@ -3,8 +3,6 @@ package app.shosetsu.android.ui.reader.types.model
 import android.view.View
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
-import com.github.doomsdayrs.apps.shosetsu.R
-import us.feras.mdv.MarkdownView
 
 /*
  * This file is part of shosetsu.
@@ -28,7 +26,7 @@ import us.feras.mdv.MarkdownView
  * 13 / 12 / 2019
  */
 class MarkdownReader(itemView: View) : ReaderChapterViewHolder(itemView) {
-	private val markdownView: MarkdownView = itemView.findViewById(R.id.markdown_view)
+	//private val markdownView: MarkdownView = itemView.findViewById(R.id.markdown_view)
 
 	override fun setData(data: String) {
 		TODO("Not yet implemented")

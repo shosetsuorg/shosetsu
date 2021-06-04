@@ -1,6 +1,7 @@
 package app.shosetsu.android.ui.reader
 
-import com.xw.repo.BubbleSeekBar
+import app.shosetsu.libs.bubbleseekbar.BubbleSeekBar
+
 
 /*
  * This file is part of shosetsu.

@@ -3,9 +3,8 @@ package app.shosetsu.android.view.uimodels.settings
 import android.util.SparseArray
 import androidx.core.view.isVisible
 import app.shosetsu.android.view.uimodels.settings.base.BottomSettingsItemData
+import app.shosetsu.libs.bubbleseekbar.BubbleSeekBar
 import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
-import com.xw.repo.BubbleSeekBar
-import com.xw.repo.BubbleSeekBar.OnProgressChangedListener
 
 /*
  * This file is part of shosetsu.
@@ -106,34 +105,40 @@ class SeekBarSettingData(id: Int) : BottomSettingsItemData(id) {
 				if (touchToSeek)
 					touchToSeek()
 			}.build()
-			bubbleSeekBar.setCustomSectionTextArray { _, _ -> array }
-			bubbleSeekBar.onProgressChangedListener = object : OnProgressChangedListener {
-				override fun onProgressChanged(
-					bubbleSeekBar: BubbleSeekBar?,
-					progress: Int,
-					progressFloat: Float,
-					fromUser: Boolean,
-				) {
-					onProgressChangedUnit(bubbleSeekBar, progress, progressFloat, fromUser)
-				}
+			bubbleSeekBar.setCustomSectionTextArray(object : BubbleSeekBar.CustomSectionTextArray {
+				override fun onCustomize(
+					sectionCount: Int,
+					array: SparseArray<String?>
+				): SparseArray<String?> = array
+			})
+			bubbleSeekBar.onProgressChangedListener =
+				object : BubbleSeekBar.OnProgressChangedListener {
+					override fun onProgressChanged(
+						bubbleSeekBar: BubbleSeekBar?,
+						progress: Int,
+						progressFloat: Float,
+						fromUser: Boolean,
+					) {
+						onProgressChangedUnit(bubbleSeekBar, progress, progressFloat, fromUser)
+					}
 
-				override fun getProgressOnActionUp(
-					bubbleSeekBar: BubbleSeekBar?,
-					progress: Int,
-					progressFloat: Float,
-				) {
-					onProgressActionUpUnit(bubbleSeekBar, progress, progressFloat)
-				}
+					override fun getProgressOnActionUp(
+						bubbleSeekBar: BubbleSeekBar?,
+						progress: Int,
+						progressFloat: Float,
+					) {
+						onProgressActionUpUnit(bubbleSeekBar, progress, progressFloat)
+					}
 
-				override fun getProgressOnFinally(
-					bubbleSeekBar: BubbleSeekBar?,
-					progress: Int,
-					progressFloat: Float,
-					fromUser: Boolean,
-				) {
-					oProgressOnFinallyUnit(bubbleSeekBar, progress, progressFloat, fromUser)
+					override fun getProgressOnFinally(
+						bubbleSeekBar: BubbleSeekBar?,
+						progress: Int,
+						progressFloat: Float,
+						fromUser: Boolean,
+					) {
+						oProgressOnFinallyUnit(bubbleSeekBar, progress, progressFloat, fromUser)
+					}
 				}
-			}
 		}
 
 	}

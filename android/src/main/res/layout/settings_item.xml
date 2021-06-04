@@ -164,7 +164,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:hint="TEST HINT" />
 
-        <com.xw.repo.BubbleSeekBar
+        <app.shosetsu.libs.bubbleseekbar.BubbleSeekBar
             android:id="@+id/bubbleSeekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

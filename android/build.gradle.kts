@@ -94,7 +94,7 @@ android {
 	kotlinOptions {
 		jvmTarget = "1.8"
 	}
-	buildToolsVersion = "29.0.3"
+	buildToolsVersion = "30.0.3"
 }
 
 android.applicationVariants.forEach { variant ->
@@ -133,6 +133,7 @@ dependencies {
 	// Androidx
 	implementation("androidx.constraintlayout:constraintlayout:2.0.4")
 	implementation("androidx.work:work-runtime:2.5.0")
+	implementation("androidx.work:work-runtime-ktx:2.5.0")
 	implementation("androidx.gridlayout:gridlayout:1.0.0")
 	implementation("androidx.preference:preference-ktx:1.1.1")
 	implementation("androidx.recyclerview:recyclerview:1.2.1")
@@ -186,24 +187,21 @@ dependencies {
 	//implementation "org.mozilla.components:support-base:1.0.0"
 
 	// Cloud flare calculator
-	implementation("com.zhkrb.cloudflare-scrape-android:scrape-webview:0.0.3")
+	//implementation("com.zhkrb.cloudflare-scrape-android:scrape-webview:0.0.3")
 
 	// Network
 	implementation("com.squareup.okhttp3:okhttp:4.9.1")
 
 	// Kotlin libraries
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.5.10")
-	implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.0")
+	implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.10")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3")
-
-	// Async controller
-	implementation("com.zsoltsafrany:needle:1.0.0")
 
 	// Showcase
 	implementation("com.github.deano2390:MaterialShowcaseView:1.3.4")
 
 	// A cuter view
-	implementation("com.yarolegovich:discrete-scrollview:1.4.9")
+	implementation("com.github.shosetsuorg:DiscreteScrollView:1.5.1")
 
 	// Error logging
 	val acra_version = "5.7.0"
@@ -227,7 +225,7 @@ dependencies {
 	implementation("com.github.skydoves:colorpickerview:2.1.6")
 
 	// Seek bar
-	implementation("com.github.shosetsuorg:bubbleseekbar:4.1.0")
+	implementation(project(mapOf("path" to ":bubbleseekbar")))
 
 	// Room
 	implementation("androidx.room:room-runtime:2.3.0")

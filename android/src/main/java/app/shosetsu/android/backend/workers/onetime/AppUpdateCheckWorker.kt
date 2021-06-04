@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
+import androidx.work.CoroutineWorker
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager

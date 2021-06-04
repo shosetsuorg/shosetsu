@@ -3,7 +3,7 @@ package app.shosetsu.android.view.uimodels.settings.dsl
 import app.shosetsu.android.view.uimodels.settings.SeekBarSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsListBuilder
-import com.xw.repo.BubbleSeekBar
+import app.shosetsu.libs.bubbleseekbar.BubbleSeekBar
 
 /*
  * This file is part of shosetsu.
