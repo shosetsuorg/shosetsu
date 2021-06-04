@@ -154,7 +154,7 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 			openInBrowserUseCase = instance(),
 			openInWebviewUseCase = instance(),
 			shareUseCase = instance(),
-			loadNovelUseCase = instance(),
+			loadRemoteNovel = instance(),
 			isOnlineUseCase = instance(),
 			updateChapterUseCase = instance(),
 			downloadChapterPassageUseCase = instance(),
@@ -163,7 +163,8 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 			getNovelSettingFlowUseCase = instance(),
 			updateNovelSettingUseCase = instance(),
 			loadDeletePreviousChapterUseCase = instance(),
-			startDownloadWorkerUseCase = instance()
+			startDownloadWorkerUseCase = instance(),
+			startDownloadWorkerAfterUpdateUseCase = instance()
 		)
 	}
 

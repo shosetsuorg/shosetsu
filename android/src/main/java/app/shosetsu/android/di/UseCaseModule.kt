@@ -69,13 +69,16 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<GetExtensionUseCase>() with provider { GetExtensionUseCase(instance()) }
 
 	bind<NovelBackgroundAddUseCase>() with provider {
-		NovelBackgroundAddUseCase(instance(), instance())
+		NovelBackgroundAddUseCase(instance(), instance(), instance())
 	}
 
 	bind<GetNovelUIUseCase>() with provider { GetNovelUIUseCase(instance(), instance()) }
 
-	bind<GetNovelUseCase>() with provider {
-		GetNovelUseCase(instance(), instance(), instance(), instance(), instance(), instance())
+	bind<GetRemoteNovelUseCase>() with provider {
+		GetRemoteNovelUseCase(instance(), instance(), instance(), instance())
+	}
+	bind<StartDownloadWorkerAfterUpdateUseCase>() with provider {
+		StartDownloadWorkerAfterUpdateUseCase(instance(), instance(), instance())
 	}
 
 	bind<GetCatalogueListingDataUseCase>() with provider {

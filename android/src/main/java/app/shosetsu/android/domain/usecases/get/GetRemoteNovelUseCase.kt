@@ -1,18 +1,12 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.android.common.ext.ifSo
-import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
-import app.shosetsu.common.consts.settings.SettingKey.IsDownloadOnUpdate
+import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.UpdateEntity
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.domain.repositories.base.IUpdatesRepository
 import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.dto.transform
 
@@ -39,19 +33,23 @@ import app.shosetsu.common.dto.transform
  *
  * takes a novelID & parameters, then loads it's data to storage
  */
-class GetNovelUseCase(
+class GetRemoteNovelUseCase(
 	private val nR: INovelsRepository,
 	private val getExt: GetExtensionUseCase,
 	private val cR: IChaptersRepository,
 	private val uR: IUpdatesRepository,
-	private val sR: ISettingsRepository,
-	private val download: DownloadChapterPassageUseCase
 ) {
+	/**
+	 * Details regarding the state of an updated novel
+	 */
+	data class UpdatedNovelInfo(
+		val updatedChapters: List<ChapterEntity> = listOf()
+	)
+
 	private suspend fun main(
 		novel: NovelEntity,
-		loadChapters: Boolean,
-		haveChaptersUpdate: () -> Unit = {}
-	): HResult<NovelEntity> =
+		loadChapters: Boolean = true,
+	): HResult<UpdatedNovelInfo> =
 		getExt(novel.extensionID).transform { ext ->
 			nR.retrieveNovelInfo(ext, novel, loadChapters).transform { page ->
 				val currentStatus: Boolean = novel.loaded
@@ -66,56 +64,44 @@ class GetNovelUseCase(
 							novelID = novel.id!!,
 							extensionID = novel.extensionID,
 							list = page.chapters
-						)
+						).transform {
+							successResult(UpdatedNovelInfo())
+						}
 					} else {
 						cR.handleChaptersReturn(
 							novelID = novel.id!!,
 							extensionID = novel.extensionID,
 							list = page.chapters
-						).handle(
-							onEmpty = {
-								logE("Impossible result (empty)")
-							}, onLoading = {
-								logE("Impossible result (loading)")
-							}, onError = {
-								logE(it.message, it.exception)
-							}
-						) { chapters ->
-							if (chapters.isNotEmpty()) haveChaptersUpdate()
-
+						).transform { chapters ->
 							uR.addUpdates(chapters.map {
 								UpdateEntity(it.id!!, novel.id!!, System.currentTimeMillis())
-							}).handle(onEmpty = {
-								logE("Impossible result (empty)")
-							}, onLoading = {
-								logE("Impossible result (loading)")
-							}, onError = {
-								logE(it.message, it.exception)
-							})
-
-							sR.getBoolean(IsDownloadOnUpdate).handle { downloadUpdates ->
-								downloadUpdates ifSo chapters.forEach { download(it) }
-									?: logI("Not downloading updates")
+							}).transform {
+								successResult(UpdatedNovelInfo(chapters))
 							}
-
 						}
 					}
+				} else {
+					successResult(UpdatedNovelInfo())
 				}
-				successResult(novel)
 			}
 		}
 
 	suspend operator fun invoke(
 		novel: NovelEntity,
-		loadChapters: Boolean,
-		haveChaptersUpdate: () -> Unit = {}
-	): HResult<NovelEntity> = main(novel, loadChapters, haveChaptersUpdate)
+		loadChapters: Boolean = true,
+	): HResult<UpdatedNovelInfo> = main(
+		novel = novel,
+		loadChapters = loadChapters
+	)
 
 	suspend operator fun invoke(
 		novelID: Int,
-		loadChapters: Boolean
-	): HResult<NovelEntity> = nR.getNovel(novelID).transform { novel ->
-		main(novel, loadChapters)
+		loadChapters: Boolean = true,
+	): HResult<UpdatedNovelInfo> = nR.getNovel(novelID).transform { novel ->
+		main(
+			novel = novel,
+			loadChapters = loadChapters
+		)
 	}
 
 }

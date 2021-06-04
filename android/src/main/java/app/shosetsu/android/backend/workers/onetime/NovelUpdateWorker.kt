@@ -18,11 +18,11 @@ import app.shosetsu.android.common.consts.Notifications.CHANNEL_UPDATE
 import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags.UPDATE_WORK_ID
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.domain.usecases.get.GetNovelUseCase
-import app.shosetsu.android.domain.usecases.start.StartDownloadWorkerUseCase
+import app.shosetsu.android.domain.usecases.StartDownloadWorkerAfterUpdateUseCase
+import app.shosetsu.android.domain.usecases.get.GetRemoteNovelUseCase
 import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
 import app.shosetsu.common.consts.settings.SettingKey.*
-import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
@@ -81,9 +81,9 @@ class NovelUpdateWorker(
 	override val kodein: Kodein by closestKodein(appContext)
 
 	private val iNovelsRepository: INovelsRepository by instance()
-	private val loadNovelUseCase: GetNovelUseCase by instance()
+	private val loadRemoteNovelUseCase: GetRemoteNovelUseCase by instance()
 	private val toastErrorUseCase: ToastErrorUseCase by instance()
-	private val startDownloadWorker: StartDownloadWorkerUseCase by instance()
+	private val startDownloadWorker: StartDownloadWorkerAfterUpdateUseCase by instance()
 	private val iSettingsRepository: ISettingsRepository by instance()
 
 	private suspend fun onlyUpdateOngoing(): Boolean =
@@ -104,8 +104,11 @@ class NovelUpdateWorker(
 			setOngoing()
 		}
 
-		/** An array of [NovelEntity] that have had updated chapters */
-		val updateNovels = arrayListOf<NovelEntity>()
+		/** Count of novels that have been updated */
+		var updatedNovelCount = 0
+
+		/** Collect updated chapters to be used */
+		val updatedChapters = arrayListOf<ChapterEntity>()
 
 		iNovelsRepository.loadBookmarkedNovelEntities().transformToSuccess { list ->
 			if (onlyUpdateOngoing())
@@ -128,9 +131,13 @@ class NovelUpdateWorker(
 					setContentTitle(title)
 					setProgress(novels.size, progress, false)
 				}
-				loadNovelUseCase(nE, true) {
-					updateNovels.add(nE)
-				}.handle(onError = { toastErrorUseCase<NovelUpdateWorker>(it) })
+				loadRemoteNovelUseCase(nE, true).handle(
+					onError = { toastErrorUseCase<NovelUpdateWorker>(it) }
+				) {
+					updatedNovelCount++
+					if (it.updatedChapters.isNotEmpty() && downloadOnUpdate())
+						updatedChapters.addAll(it.updatedChapters)
+				}
 				progress++
 			}
 
@@ -142,8 +149,9 @@ class NovelUpdateWorker(
 		}
 
 		// Will update only if downloadOnUpdate is enabled and there have been chapters
-		if (downloadOnUpdate() && updateNovels.isNotEmpty())
-			startDownloadWorker()
+		if (updatedNovelCount > 0 && updatedChapters.size > 0)
+			startDownloadWorker(updatedChapters)
+
 
 		return Result.success()
 	}

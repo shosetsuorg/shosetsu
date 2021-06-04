@@ -6,11 +6,12 @@ import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.ShareUseCase
+import app.shosetsu.android.domain.usecases.StartDownloadWorkerAfterUpdateUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.get.GetChapterUIsUseCase
 import app.shosetsu.android.domain.usecases.get.GetNovelSettingFlowUseCase
 import app.shosetsu.android.domain.usecases.get.GetNovelUIUseCase
-import app.shosetsu.android.domain.usecases.get.GetNovelUseCase
+import app.shosetsu.android.domain.usecases.get.GetRemoteNovelUseCase
 import app.shosetsu.android.domain.usecases.load.LoadDeletePreviousChapterUseCase
 import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
 import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
@@ -61,7 +62,7 @@ class NovelViewModel(
 	private val openInBrowserUseCase: OpenInBrowserUseCase,
 	private val openInWebviewUseCase: OpenInWebviewUseCase,
 	private val shareUseCase: ShareUseCase,
-	private val loadNovelUseCase: GetNovelUseCase,
+	private val loadRemoteNovel: GetRemoteNovelUseCase,
 	private var isOnlineUseCase: IsOnlineUseCase,
 	private val updateChapterUseCase: UpdateChapterUseCase,
 	private val downloadChapterPassageUseCase: DownloadChapterPassageUseCase,
@@ -70,7 +71,8 @@ class NovelViewModel(
 	private val getNovelSettingFlowUseCase: GetNovelSettingFlowUseCase,
 	private val updateNovelSettingUseCase: UpdateNovelSettingUseCase,
 	private val loadDeletePreviousChapterUseCase: LoadDeletePreviousChapterUseCase,
-	private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase
+	private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
+	private val startDownloadWorkerAfterUpdateUseCase: StartDownloadWorkerAfterUpdateUseCase
 ) : INovelViewModel() {
 	@ExperimentalCoroutinesApi
 	@get:Synchronized
@@ -300,7 +302,9 @@ class NovelViewModel(
 	override fun refresh(): LiveData<HResult<*>> =
 		liveDataIO {
 			emit(loading())
-			emit(loadNovelUseCase(novelIDLive.value, true))
+			emit(loadRemoteNovel(novelIDLive.value, true).transform {
+				startDownloadWorkerAfterUpdateUseCase(it.updatedChapters)
+			})
 		}
 
 	override fun setNovelID(novelID: Int) {
