@@ -10,14 +10,18 @@ java {
 }
 
 dependencies {
-	implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.10")
+	// Kotlin libraries
+	implementation(kotlin("stdlib"))
+	implementation(kotlin("reflect"))
 
+	// Kotlin extensions
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
-	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.0")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
 
-	implementation("com.github.shosetsuorg:kotlin-lib:1.0.0-rc55")
+	// Core library
+	implementation("com.github.shosetsuorg:kotlin-lib:v1.0.0-rc57")
 
+	// Testing
 	testImplementation(kotlin("test"))
 	testImplementation(kotlin("test-junit"))
-	implementation(kotlin("reflect"))
 }

@@ -166,7 +166,7 @@ dependencies {
 
 	// Core libraries
 	implementation("org.luaj:luaj-jse:3.0.1")
-	implementation("com.github.shosetsuorg:kotlin-lib:1.0.0-rc55")
+	implementation("com.github.shosetsuorg:kotlin-lib:v1.0.0-rc57")
 
 
 	// Image loading
@@ -193,8 +193,9 @@ dependencies {
 	implementation("com.squareup.okhttp3:okhttp:4.9.1")
 
 	// Kotlin libraries
-	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.10")
-	implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.10")
+	implementation(kotlin("stdlib-jdk8"))
+	implementation(kotlin("reflect"))
+
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3")
 
 	// Showcase
@@ -246,7 +247,7 @@ dependencies {
 	implementation("com.mikepenz:fastadapter-extensions-utils:${latestFastAdapterRelease}")
 
 	// Guava cache
-	implementation("com.google.guava:guava:30.0-android")
+	implementation("com.google.guava:guava:30.1.1-android")
 
 	// kode-in
 	implementation("org.kodein.di:kodein-di-generic-jvm:6.5.5")
@@ -258,7 +259,7 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.2")
 
 	// KTX - Serialization
-	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.0")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
 
 	// Roomigrant
 	implementation("com.github.MatrixDev.Roomigrant:RoomigrantLib:0.2.0")
