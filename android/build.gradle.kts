@@ -135,7 +135,7 @@ dependencies {
 	implementation("androidx.work:work-runtime:2.5.0")
 	implementation("androidx.gridlayout:gridlayout:1.0.0")
 	implementation("androidx.preference:preference-ktx:1.1.1")
-	implementation("androidx.recyclerview:recyclerview:1.2.0")
+	implementation("androidx.recyclerview:recyclerview:1.2.1")
 	implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
 	implementation("androidx.appcompat:appcompat:1.3.0")
 	implementation("androidx.multidex:multidex:2.0.1")
@@ -192,7 +192,7 @@ dependencies {
 	implementation("com.squareup.okhttp3:okhttp:4.9.1")
 
 	// Kotlin libraries
-	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.5.0")
+	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.5.10")
 	implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.0")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3")
 
