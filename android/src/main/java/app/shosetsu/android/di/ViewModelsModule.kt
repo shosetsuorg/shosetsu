@@ -99,7 +99,7 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	bind<AAboutViewModel>() with provider {
 		AboutViewModel(
 			openInWebviewUseCase = instance(),
-			context = instance(),
+			application = instance(),
 			manager = instance()
 		)
 	}
@@ -233,7 +233,7 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	bind<AViewSettingsViewModel>() with provider {
 		ViewSettingsViewModel(
 			iSettingsRepository = instance(),
-			context = instance(),
+			application = instance(),
 			reportExceptionUseCase = instance()
 		)
 	}

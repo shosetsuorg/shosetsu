@@ -1,8 +1,11 @@
 package app.shosetsu.android.viewmodel.base
 
+import android.text.Editable
+import android.view.View
+import android.widget.AdapterView
+import android.widget.CompoundButton
 import android.widget.NumberPicker
 import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.view.uimodels.settings.DoubleNumberSettingData
 import app.shosetsu.android.view.uimodels.settings.NumberPickerSettingData
 import app.shosetsu.android.view.uimodels.settings.SpinnerSettingData
@@ -39,19 +42,10 @@ interface ExposedSettingsRepoViewModel {
 	val settingsRepo: ISettingsRepository
 
 	@SettingsItemDSL
-	suspend fun NumberPickerSettingData.settingValue(
-		key: SettingKey<Int>,
-		action: suspend (
-			@ParameterName("picker") NumberPicker?,
-			@ParameterName("oldVal") Int,
-			@ParameterName("newVal") Int,
-		) -> Unit = { _, _, newVal ->
-			settingsRepo.setInt(key, newVal)
-		},
-	) {
+	suspend fun NumberPickerSettingData.settingValue(key: SettingKey<Int>) {
 		initalValue { settingsRepo.getIntOrDefault(key) }
-		onValueSelected { picker, oldVal, newVal ->
-			launchIO { action(picker, oldVal, newVal) }
+		onValueSelected { _: NumberPicker?, _: Int, newVal: Int ->
+			launchIO { settingsRepo.setInt(key, newVal) }
 		}
 	}
 
@@ -59,12 +53,10 @@ interface ExposedSettingsRepoViewModel {
 	 * Generic function for [SpinnerSettingData]
 	 */
 	@SettingsItemDSL
-	suspend fun SpinnerSettingData.spinnerSettingValue(
-		key: SettingKey<Int>
-	) {
+	suspend fun SpinnerSettingData.spinnerSettingValue(key: SettingKey<Int>) {
 		spinnerValue { settingsRepo.getIntOrDefault(key) }
-		var first = true
-		onSpinnerItemSelected { _, _, position, _ ->
+		var first: Boolean = true
+		onSpinnerItemSelected { _: AdapterView<*>?, _: View?, position: Int, _: Long ->
 			launchIO {
 				if (first) {
 					first = false
@@ -79,11 +71,9 @@ interface ExposedSettingsRepoViewModel {
 	 * Generic function for [ToggleableStateSettingData]
 	 */
 	@SettingsItemDSL
-	suspend fun ToggleableStateSettingData.checkSettingValue(
-		key: SettingKey<Boolean>
-	) {
+	suspend fun ToggleableStateSettingData.checkSettingValue(key: SettingKey<Boolean>) {
 		isChecked = settingsRepo.getBooleanOrDefault(key)
-		onChecked { _, isChecked ->
+		onChecked { _: CompoundButton?, isChecked: Boolean ->
 			launchIO {
 				settingsRepo.setBoolean(key, isChecked)
 			}
@@ -91,45 +81,36 @@ interface ExposedSettingsRepoViewModel {
 	}
 
 	@SettingsItemDSL
-	suspend fun TextInputSettingData.textSettingValue(
-		key: SettingKey<String>
-	) {
-		initialText = settingsRepo.getStringOrDefault(key).also {
-			logV("Value: $it")
-		}
-		doAfterTextChanged {
+	suspend fun TextInputSettingData.textSettingValue(key: SettingKey<String>) {
+		initialText = settingsRepo.getStringOrDefault(key)
+		doAfterTextChanged { editable: Editable ->
 			launchIO {
-				settingsRepo.setString(key, it.toString())
+				settingsRepo.setString(key, editable.toString())
 			}
 		}
 	}
 
 
-	fun Int.orZero() = if (this == -1) 0 else this
+	/**
+	 * I don't know what this does
+	 */
+	fun Int.orZero(): Int = if (this == -1) 0 else this
 
 	/**
 	 * Set min and max before hand
 	 */
 	@SettingsItemDSL
-	suspend fun DoubleNumberSettingData.settingValue(
-		key: SettingKey<Float>
-	) {
-		settingsRepo.getFloatOrDefault(key).let { settingValue ->
-			initialWhole = wholeSteps.indexOfFirst { it == settingValue.toInt() }.orZero()
+	suspend fun DoubleNumberSettingData.settingValue(key: SettingKey<Float>) {
+		settingsRepo.getFloatOrDefault(key).let { settingValue: Float ->
+			initialWhole = wholeSteps.indexOfFirst<Int> { it == settingValue.toInt() }.orZero()
 			val decimal: Int = ((settingValue % 1) * 100).toInt()
-			initialDecimal = decimalSteps.indexOfFirst { it == decimal }.orZero()
+			initialDecimal = decimalSteps.indexOfFirst<Int> { it == decimal }.orZero()
 		}
-		onValueSelected {
+		onValueSelected { value: Double ->
 			launchIO {
-				settingsRepo.setFloat(key, it.toFloat())
+				settingsRepo.setFloat(key, value.toFloat())
 			}
 		}
 	}
 }
 
-@SettingsItemDSL
-inline fun SpinnerSettingData.spinnerValue(
-	value: SpinnerSettingData.() -> Int,
-): Unit = value().let {
-	spinnerSelection = it
-}

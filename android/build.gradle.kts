@@ -193,7 +193,7 @@ dependencies {
 	implementation("com.squareup.okhttp3:okhttp:4.9.1")
 
 	// Kotlin libraries
-	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.5.10")
+	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.10")
 	implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.10")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3")
 

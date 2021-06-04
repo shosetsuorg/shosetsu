@@ -1,6 +1,6 @@
 package app.shosetsu.android.viewmodel.impl.settings
 
-import android.content.Context
+import android.app.Application
 import android.content.res.Resources
 import android.widget.ArrayAdapter
 import app.shosetsu.android.common.ext.toHError
@@ -37,7 +37,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
  */
 class ViewSettingsViewModel(
 	iSettingsRepository: ISettingsRepository,
-	private val context: Context,
+	private val application: Application,
 	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : AViewSettingsViewModel(iSettingsRepository) {
 	override suspend fun settings(): List<SettingsItemData> = listOf(
@@ -62,9 +62,9 @@ class ViewSettingsViewModel(
 
 			try {
 				arrayAdapter = ArrayAdapter(
-					context,
+					application,
 					android.R.layout.simple_spinner_dropdown_item,
-					context.resources!!.getStringArray(R.array.novel_card_types)
+					application.resources!!.getStringArray(R.array.novel_card_types)
 				)
 			} catch (e: Resources.NotFoundException) {
 				reportExceptionUseCase.invoke(e.toHError())

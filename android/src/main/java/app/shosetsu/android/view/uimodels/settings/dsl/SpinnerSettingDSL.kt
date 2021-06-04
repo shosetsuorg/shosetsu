@@ -72,3 +72,4 @@ inline fun SpinnerSettingData.spinnerField(
 	spinnerValue { property.get() }
 	onSpinnerItemSelected { _, _, position, _ -> property.set(position) }
 }
+
