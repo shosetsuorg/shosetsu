@@ -35,14 +35,14 @@ import java.util.concurrent.TimeUnit.MINUTES
  */
 class GuavaMemChaptersDataSource : IMemChaptersDataSource {
 	/** Map of Chapter ID to Chapter Passage */
-	private val chapters: Cache<Int, String> = CacheBuilder.newBuilder()
+	private val chapters: Cache<Int, ByteArray> = CacheBuilder.newBuilder()
 		.maximumSize(MEMORY_MAX_CHAPTERS)
 		.expireAfterWrite(MEMORY_EXPIRE_CHAPTER_TIME, MINUTES)
 		.build()
 
-	override fun saveChapterInCache(chapterID: Int, passage: String): HResult<*> =
-		successResult(chapters.set(chapterID, passage))
+	override fun saveChapterInCache(chapterID: Int, chapter: ByteArray): HResult<*> =
+		successResult(chapters.set(chapterID, chapter))
 
-	override fun loadChapterFromCache(chapterID: Int): HResult<String> =
+	override fun loadChapterFromCache(chapterID: Int): HResult<ByteArray> =
 		chapters[chapterID]?.let { successResult(it) } ?: emptyResult()
 }

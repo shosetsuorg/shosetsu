@@ -27,15 +27,15 @@ import app.shosetsu.common.dto.HResult
  * 19 / 11 / 2020
  */
 class GenericMemChaptersDataSource : IMemChaptersDataSource,
-	AbstractMemoryDataSource<Int, String>() {
+	AbstractMemoryDataSource<Int, ByteArray>() {
 
 	override val expireTime = MEMORY_EXPIRE_CHAPTER_TIME * 1000 * 60
 	override val maxSize = MEMORY_MAX_CHAPTERS
 
-	override fun saveChapterInCache(chapterID: Int, passage: String): HResult<*> =
-		put(chapterID, passage)
+	override fun saveChapterInCache(chapterID: Int, chapter: ByteArray): HResult<*> =
+		put(chapterID, chapter)
 
-	override fun loadChapterFromCache(chapterID: Int): HResult<String> =
+	override fun loadChapterFromCache(chapterID: Int): HResult<ByteArray> =
 		get(chapterID)
 
 }

@@ -38,7 +38,7 @@ interface IFileCachedChapterDataSource {
 	suspend fun saveChapterInCache(
 		chapterID: Int,
 		chapterType: Novel.ChapterType,
-		passage: String
+		passage: ByteArray
 	): HResult<*>
 
 	/**
@@ -46,5 +46,8 @@ interface IFileCachedChapterDataSource {
 	 *
 	 * @return [HResult.Empty] if passage not found, [HResult.Success] if found
 	 */
-	suspend fun loadChapterPassage(chapterID: Int, chapterType: Novel.ChapterType): HResult<String>
+	suspend fun loadChapterPassage(
+		chapterID: Int,
+		chapterType: Novel.ChapterType
+	): HResult<ByteArray>
 }

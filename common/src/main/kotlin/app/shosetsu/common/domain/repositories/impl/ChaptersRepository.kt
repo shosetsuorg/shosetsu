@@ -52,13 +52,13 @@ class ChaptersRepository(
 	private suspend inline fun placeIntoCache(
 		entity: ChapterEntity,
 		chapterType: Novel.ChapterType,
-		result: HResult<String>
+		result: HResult<ByteArray>
 	) = result.handle { saveChapterPassageToMemory(entity, chapterType, it) }
 
 	override suspend fun getChapterPassage(
 		formatter: IExtension,
 		entity: ChapterEntity,
-	): HResult<String> =
+	): HResult<ByteArray> =
 		memorySource.loadChapterFromCache(entity.id!!)
 			.catch {
 				cacheSource.loadChapterPassage(entity.id!!, formatter.chapterType).also { result ->
@@ -81,7 +81,7 @@ class ChaptersRepository(
 	suspend fun saveChapterPassageToMemory(
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType,
-		passage: String,
+		passage: ByteArray,
 	): HResult<*> = memorySource.saveChapterInCache(chapterEntity.id!!, passage) thenAlso
 			cacheSource.saveChapterInCache(chapterEntity.id!!, chapterType, passage)
 
@@ -101,7 +101,7 @@ class ChaptersRepository(
 	override suspend fun saveChapterPassageToStorage(
 		entity: ChapterEntity,
 		chapterType: Novel.ChapterType,
-		passage: String,
+		passage: ByteArray,
 	): HResult<*> =
 		saveChapterPassageToMemory(entity, chapterType, passage) thenAlso (
 				fileSource.save(entity, chapterType, passage) ifSo {

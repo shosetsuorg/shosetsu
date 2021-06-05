@@ -31,7 +31,7 @@ class RemoteChaptersDataSource : IRemoteChaptersDataSource {
 	override suspend fun loadChapterPassage(
 		formatter: IExtension,
 		chapterURL: String,
-	): HResult<String> =
+	): HResult<ByteArray> =
 		try {
 			successResult(formatter.getPassage(chapterURL))
 		} catch (e: Exception) {

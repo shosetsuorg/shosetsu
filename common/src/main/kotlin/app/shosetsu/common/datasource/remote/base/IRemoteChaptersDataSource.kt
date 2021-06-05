@@ -30,5 +30,5 @@ interface IRemoteChaptersDataSource {
 	 * Loads the chapter passage from network
 	 * @return chapter content
 	 */
-	suspend fun loadChapterPassage(formatter: IExtension, chapterURL: String): HResult<String>
+	suspend fun loadChapterPassage(formatter: IExtension, chapterURL: String): HResult<ByteArray>
 }

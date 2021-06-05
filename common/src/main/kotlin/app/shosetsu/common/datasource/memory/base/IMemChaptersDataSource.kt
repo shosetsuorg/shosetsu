@@ -29,11 +29,11 @@ interface IMemChaptersDataSource {
     /**
      * Puts a chapter passage into cache, if cache exists this overwrites
      */
-    fun saveChapterInCache(chapterID: Int, passage: String): HResult<*>
+    fun saveChapterInCache(chapterID: Int, chapter: ByteArray): HResult<*>
 
 	/**
 	 * Gets chapter passage via it's ID
 	 * @return [HResult.Empty] if passage not found, [HResult.Success] if found
 	 */
-	fun loadChapterFromCache(chapterID: Int): HResult<String>
+	fun loadChapterFromCache(chapterID: Int): HResult<ByteArray>
 }

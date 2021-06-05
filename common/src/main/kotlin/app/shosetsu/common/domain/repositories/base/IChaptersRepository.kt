@@ -51,7 +51,7 @@ interface IChaptersRepository {
 	suspend fun getChapterPassage(
 		formatter: IExtension,
 		entity: ChapterEntity,
-	): HResult<String>
+	): HResult<ByteArray>
 
 	/**
 	 * Save the [ChapterEntity] [passage] to storage
@@ -70,7 +70,7 @@ interface IChaptersRepository {
 	suspend fun saveChapterPassageToStorage(
 		entity: ChapterEntity,
 		chapterType: Novel.ChapterType,
-		passage: String
+		passage: ByteArray
 	): HResult<*>
 
 	/**

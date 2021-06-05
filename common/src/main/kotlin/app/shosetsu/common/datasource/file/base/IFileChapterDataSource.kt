@@ -32,7 +32,7 @@ interface IFileChapterDataSource {
 	suspend fun save(
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType,
-		passage: String
+		passage: ByteArray
 	): HResult<*>
 
 	/**
@@ -42,7 +42,7 @@ interface IFileChapterDataSource {
 	suspend fun load(
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType
-	): HResult<String>
+	): HResult<ByteArray>
 
 	/** Deletes a chapter from the filesystem */
 	suspend fun delete(
