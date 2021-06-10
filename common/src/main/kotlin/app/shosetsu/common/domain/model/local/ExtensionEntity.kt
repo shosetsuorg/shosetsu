@@ -1,5 +1,6 @@
 package app.shosetsu.common.domain.model.local
 
+import app.shosetsu.lib.ExtensionType
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.Version
 
@@ -66,4 +67,9 @@ data class ExtensionEntity(
 
 	/** MD5 to check against */
 	var md5: String = "",
+
+	/**
+	 * What language was used to create this extension
+	 */
+	val type: ExtensionType
 )

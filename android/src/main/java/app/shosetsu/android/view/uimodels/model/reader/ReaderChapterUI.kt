@@ -109,6 +109,8 @@ data class ReaderChapterUI(
 					}) {
 					//logD("Successfully loaded :D")
 					holder.hideLoadingProgress()
+
+					//TODO Move the below logic into htmlReader
 					holder.setData(if (!convertStringToHtml) it else asHtml(it, title = title))
 					holder.itemView.post {
 						holder.setProgress(this.readingPosition)

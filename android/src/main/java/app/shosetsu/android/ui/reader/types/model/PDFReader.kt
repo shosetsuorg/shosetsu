@@ -26,7 +26,7 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
  * 11 / 09 / 2020
  */
 class PDFReader(itemView: View) : ReaderChapterViewHolder(itemView) {
-	override fun setData(data: String) {
+	override fun setData(data: ByteArray) {
 		TODO("Not yet implemented")
 	}
 

@@ -80,7 +80,7 @@ class ChapterReaderViewModel(
 	 *
 	 * ChapterID to the data flow for it
 	 */
-	private val hashMap: HashMap<Int, Flow<HResult<String>>> = hashMapOf()
+	private val hashMap: HashMap<Int, Flow<HResult<ByteArray>>> = hashMapOf()
 
 	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HList<ReaderUIItem<*, *>>> by lazy {
@@ -233,9 +233,9 @@ class ChapterReaderViewModel(
 	}
 
 	@WorkerThread
-	override fun getChapterPassage(readerChapterUI: ReaderChapterUI): LiveData<HResult<String>> {
+	override fun getChapterPassage(readerChapterUI: ReaderChapterUI): LiveData<HResult<ByteArray>> {
 		if (hashMap.containsKey(readerChapterUI.id))
-			return hashMap[readerChapterUI.id]!!.asIOLiveData() as LiveData<HResult<String>>
+			return hashMap[readerChapterUI.id]!!.asIOLiveData() as LiveData<HResult<ByteArray>>
 
 		return flow {
 			emit(loading())

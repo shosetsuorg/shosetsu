@@ -41,7 +41,7 @@ class RemoteExtensionDataSource(
 	override suspend fun downloadExtension(
 		repositoryEntity: RepositoryEntity,
 		extensionEntity: ExtensionEntity,
-	): HResult<String> =
+	): HResult<ByteArray> =
 		try {
 			@Suppress("BlockingMethodInNonBlockingContext")
 			(successResult(
@@ -50,7 +50,7 @@ class RemoteExtensionDataSource(
 						repositoryEntity,
 						extensionEntity
 					)
-				).body!!.string()
+				).body!!.bytes()
 			))
 		} catch (e: Exception) {
 			e.toHError()

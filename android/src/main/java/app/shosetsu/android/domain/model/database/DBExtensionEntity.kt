@@ -7,6 +7,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.dto.Convertible
+import app.shosetsu.lib.ExtensionType
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.Version
 
@@ -82,6 +83,8 @@ data class DBExtensionEntity(
 
 	/** MD5 to check against */
 	var md5: String = "",
+
+	val type: ExtensionType
 ) : Convertible<ExtensionEntity> {
 	override fun convertTo(): ExtensionEntity = ExtensionEntity(
 		id = id,
@@ -95,6 +98,7 @@ data class DBExtensionEntity(
 		installedVersion = installedVersion,
 		repositoryVersion = repositoryVersion,
 		chapterType = chapterType,
-		md5 = md5
+		md5 = md5,
+		type = type
 	)
 }

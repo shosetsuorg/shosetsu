@@ -38,7 +38,7 @@ abstract class ReaderChapterViewHolder(
 	/**
 	 * Passes in data
 	 */
-	abstract fun setData(data: String)
+	abstract fun setData(data: ByteArray)
 
 	abstract fun syncTextColor()
 	abstract fun syncBackgroundColor()

@@ -7,6 +7,7 @@ import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.dto.Convertible
+import app.shosetsu.lib.ExtensionType
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.Version
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -46,6 +47,7 @@ data class ExtensionUI(
 	var repositoryVersion: Version,
 	val chapterType: Novel.ChapterType,
 	var md5: String,
+	val extType: ExtensionType
 ) : BaseRecyclerItem<ExtensionUI.ViewHolder>(), Convertible<ExtensionEntity> {
 	override val layoutRes: Int = R.layout.extension_card
 	override val type: Int = R.layout.extension_card
@@ -74,7 +76,8 @@ data class ExtensionUI(
 		installedVersion,
 		repositoryVersion,
 		chapterType,
-		md5
+		md5,
+		extType
 	)
 
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)

@@ -19,7 +19,7 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
 
 	// Core library
-	implementation("com.github.shosetsuorg:kotlin-lib:v1.0.0-rc57")
+	implementation("com.github.shosetsuorg:kotlin-lib:1.0.0-rc59")
 
 	// Testing
 	testImplementation(kotlin("test"))

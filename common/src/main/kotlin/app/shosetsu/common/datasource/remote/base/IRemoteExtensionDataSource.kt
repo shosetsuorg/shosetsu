@@ -1,8 +1,8 @@
 package app.shosetsu.common.datasource.remote.base
 
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
+import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -32,7 +32,7 @@ interface IRemoteExtensionDataSource {
 	 * @return extension content
 	 */
 	suspend fun downloadExtension(
-			repositoryEntity: RepositoryEntity,
-			extensionEntity: ExtensionEntity,
-	): HResult<String>
+		repositoryEntity: RepositoryEntity,
+		extensionEntity: ExtensionEntity,
+	): HResult<ByteArray>
 }

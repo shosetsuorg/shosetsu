@@ -33,7 +33,7 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
  * </p>
  */
 class EPUBReader(itemView: View) : ReaderChapterViewHolder(itemView) {
-	override fun setData(data: String) {
+	override fun setData(data: ByteArray) {
 		TODO("Not yet implemented")
 	}
 

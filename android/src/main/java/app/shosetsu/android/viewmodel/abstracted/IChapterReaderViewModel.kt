@@ -108,7 +108,7 @@ abstract class IChapterReaderViewModel :
 	abstract fun setNovelID(novelID: Int)
 
 	/** Start loading up a [readerChapterUI]'s passage */
-	abstract fun getChapterPassage(readerChapterUI: ReaderChapterUI): LiveData<HResult<String>>
+	abstract fun getChapterPassage(readerChapterUI: ReaderChapterUI): LiveData<HResult<ByteArray>>
 
 	/** An easy method to toggle the state of a bookmark */
 	abstract fun toggleBookmark(readerChapterUI: ReaderChapterUI)

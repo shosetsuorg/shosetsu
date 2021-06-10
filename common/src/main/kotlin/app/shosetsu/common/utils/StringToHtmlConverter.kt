@@ -22,10 +22,10 @@ package app.shosetsu.common.utils
  * Used with the option for converting string sources to html
  */
 fun asHtml(
-	passage: String,
+	passage: ByteArray,
 	title: String = "Converted from string",
 	separator: String = ""
-): String =
+): ByteArray =
 	"""
 	<!DOCTYPE html>
 	<html>
@@ -33,7 +33,9 @@ fun asHtml(
 			<h1>$title</h1>
 		</header>
 		<body>
-			${passage.split("\n").joinToString(separator = separator) { "<p>$it</p>" }}
+			${
+		passage.decodeToString().split("\n").joinToString(separator = separator) { "<p>$it</p>" }
+	}
 		</body>
 	</html> 
-	""".trimIndent()
+	""".encodeToByteArray()

@@ -28,7 +28,7 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 class MarkdownReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	//private val markdownView: MarkdownView = itemView.findViewById(R.id.markdown_view)
 
-	override fun setData(data: String) {
+	override fun setData(data: ByteArray) {
 		TODO("Not yet implemented")
 	}
 

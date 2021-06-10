@@ -13,7 +13,6 @@ import app.shosetsu.android.common.consts.Notifications.CHANNEL_REPOSITORY_UPDAT
 import app.shosetsu.android.common.consts.Notifications.ID_REPOSITORY_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags.REPOSITORY_UPDATE_TAG
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.ExtLibEntity
 import app.shosetsu.common.domain.model.local.ExtensionEntity
@@ -149,7 +148,7 @@ class RepositoryUpdateWorker(
 
 	private suspend fun updateExtensions(repoList: List<RepoExtension>, repo: RepositoryEntity) {
 		val presentExtensions = ArrayList<Int>() // Extensions from repo
-		repoList.forEach { (id, name, fileName, imageURL, lang, version, _, md5) ->
+		repoList.forEach { (id, name, fileName, imageURL, lang, version, _, md5, type) ->
 			extRepo.insertOrUpdate(
 				ExtensionEntity(
 					id = id,
@@ -160,7 +159,8 @@ class RepositoryUpdateWorker(
 					lang = lang,
 					repositoryVersion = version,
 					chapterType = Novel.ChapterType.STRING,
-					md5 = md5
+					md5 = md5,
+					type = type
 				)
 			).handle {
 				// If an update is ava, notify the user on a separate channel

@@ -1,7 +1,6 @@
-package app.shosetsu.android.common.ext
+package app.shosetsu.common.utils
 
-import app.shosetsu.android.domain.model.database.DBExtensionEntity
-import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.lib.ExtensionType
 
 /*
  * This file is part of Shosetsu.
@@ -20,23 +19,8 @@ import app.shosetsu.common.domain.model.local.ExtensionEntity
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * shosetsu
- * 05 / 12 / 2020
- */
-
-fun ExtensionEntity.toDB(): DBExtensionEntity = DBExtensionEntity(
-	id,
-	repoID,
-	name,
-	fileName,
-	imageURL,
-	lang,
-	enabled,
-	installed,
-	installedVersion,
-	repositoryVersion,
-	chapterType,
-	md5,
-	type
-)
+val ExtensionType.fileExtension: String
+	get() = when (this) {
+		ExtensionType.LuaScript -> "lua"
+		ExtensionType.KotlinScript -> "kts"
+	}

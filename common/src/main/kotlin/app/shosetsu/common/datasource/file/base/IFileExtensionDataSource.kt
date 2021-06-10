@@ -1,5 +1,6 @@
 package app.shosetsu.common.datasource.file.base
 
+import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.IExtension
 
@@ -26,9 +27,9 @@ import app.shosetsu.lib.IExtension
  */
 interface IFileExtensionDataSource {
 	/** Loads the formatter from file system */
-	suspend fun loadExtension(fileName: String): HResult<IExtension>
+	suspend fun loadExtension(entity: ExtensionEntity): HResult<IExtension>
 
-	suspend fun writeExtension(fileName: String, data: String): HResult<*>
+	suspend fun writeExtension(entity: ExtensionEntity, data: ByteArray): HResult<*>
 
-	suspend fun deleteExtension(fileName: String): HResult<*>
+	suspend fun deleteExtension(entity: ExtensionEntity): HResult<*>
 }

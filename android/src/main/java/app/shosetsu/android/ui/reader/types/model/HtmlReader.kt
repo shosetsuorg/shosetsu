@@ -188,9 +188,9 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 
 	}
 
-	override fun setData(data: String) {
+	override fun setData(data: ByteArray) {
 		syncStylesWithViewModel()
-		webView.loadData(data, "text/html", "UTF-8")
+		webView.loadData(data.decodeToString(), "text/html", "UTF-8")
 	}
 
 	override fun syncTextColor() {

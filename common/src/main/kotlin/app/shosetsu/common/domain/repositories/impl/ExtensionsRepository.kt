@@ -14,9 +14,9 @@ import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.domain.model.local.StrippedExtensionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.dto.*
+import app.shosetsu.common.utils.asIEntity
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
-import app.shosetsu.lib.lua.LuaExtension
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -151,26 +151,25 @@ class ExtensionsRepository(
 				extensionEntity
 			).transform { extensionContent ->
 				try {
-					val formatter = LuaExtension(extensionContent)
+					val iExt = extensionEntity.asIEntity(extensionContent)
 
 					// Write to storage/cache
-					memorySource.putExtensionInMemory(formatter)
-					fileSource.writeExtension(extensionEntity.fileName, extensionContent)
+					memorySource.putExtensionInMemory(iExt)
+					fileSource.writeExtension(extensionEntity, extensionContent)
 
 					// Update database info
-					formatter.exMetaData.let { meta ->
+					iExt.exMetaData.let { meta ->
 						extensionEntity.installedVersion = meta.version
 						extensionEntity.repositoryVersion = meta.version
 					}
 
-					extensionEntity.name = formatter.name
-					extensionEntity.imageURL = formatter.imageURL
+					extensionEntity.name = iExt.name
+					extensionEntity.imageURL = iExt.imageURL
 					extensionEntity.installed = true
 					extensionEntity.enabled = true
-					val deleteChapters = extensionEntity.chapterType != formatter.chapterType
-					extensionEntity.chapterType = formatter.chapterType
 
-					extensionEntity.fileName
+					val deleteChapters = extensionEntity.chapterType != iExt.chapterType
+					extensionEntity.chapterType = iExt.chapterType
 
 					dbSource.updateExtension(extensionEntity)
 
@@ -187,7 +186,7 @@ class ExtensionsRepository(
 
 	override suspend fun uninstallExtension(extensionEntity: ExtensionEntity): HResult<*> =
 		memorySource.removeExtensionFromMemory(extensionEntity.id) ifSo {
-			fileSource.deleteExtension(extensionEntity.fileName) ifSo {
+			fileSource.deleteExtension(extensionEntity) ifSo {
 				dbSource.updateExtension(
 					extensionEntity.copy(
 						enabled = false,
@@ -206,7 +205,7 @@ class ExtensionsRepository(
 
 	override suspend fun getIExtension(extensionEntity: ExtensionEntity): HResult<IExtension> =
 		memorySource.loadExtensionFromMemory(extensionEntity.id).catch {
-			fileSource.loadExtension(extensionEntity.fileName).transform {
+			fileSource.loadExtension(extensionEntity).transform {
 				if (!it.exMetaData.libVersion.isCompatible())
 					return errorResult(ERROR_EXT_INCOMPATIBLE)
 				setSettings(it, it.settingsModel)
@@ -224,7 +223,7 @@ class ExtensionsRepository(
 
 	override suspend fun removeExtension(extensionEntity: ExtensionEntity): HResult<*> =
 		memorySource.removeExtensionFromMemory(extensionEntity.id) ifSo {
-			fileSource.deleteExtension(extensionEntity.fileName) ifSo {
+			fileSource.deleteExtension(extensionEntity) ifSo {
 				dbSource.deleteExtension(extensionEntity)
 			}
 		}

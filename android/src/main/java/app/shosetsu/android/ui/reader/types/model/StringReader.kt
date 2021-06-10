@@ -125,8 +125,8 @@ class StringReader(
 		textView.text = unformattedText.replace("\n".toRegex(), replaceSpacing.toString())
 	}
 
-	override fun setData(data: String) {
-		unformattedText = data
+	override fun setData(data: ByteArray) {
+		unformattedText = data.decodeToString()
 		bind()
 	}
 

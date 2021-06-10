@@ -166,7 +166,7 @@ dependencies {
 
 	// Core libraries
 	implementation("org.luaj:luaj-jse:3.0.1")
-	implementation("com.github.shosetsuorg:kotlin-lib:v1.0.0-rc57")
+	implementation("com.github.shosetsuorg:kotlin-lib:1.0.0-rc59")
 
 
 	// Image loading

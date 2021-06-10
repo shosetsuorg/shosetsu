@@ -44,7 +44,8 @@ class ExtensionConversionFactory(data: ExtensionEntity) :
 		installedVersion,
 		repositoryVersion,
 		chapterType,
-		md5
+		md5,
+		type
 	)
 }
 
