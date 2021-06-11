@@ -8,6 +8,7 @@ import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.controller.GenericFastAdapterRecyclerController
 import app.shosetsu.android.view.controller.base.FABController
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
+import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.ARepositoryViewModel
 import app.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -48,7 +49,10 @@ class RepositoryController : GenericFastAdapterRecyclerController<RepositoryUI>(
 
 	override fun showEmpty() {
 		super.showEmpty()
-		binding.emptyDataView.show("HOW DO YOU NOT HAVE ANY REPOSITORIES")
+		binding.emptyDataView.show(
+			R.string.empty_repositories_message,
+			EmptyDataView.Action(R.string.empty_repositories_action, ::launchAddRepositoryDialog)
+		)
 	}
 
 	override fun setupRecyclerView() {
@@ -101,6 +105,36 @@ class RepositoryController : GenericFastAdapterRecyclerController<RepositoryUI>(
 		}
 	}
 
+	private fun launchAddRepositoryDialog(view: View) {
+		val addBinding: RepositoryAddBinding =
+			RepositoryAddBinding.inflate(LayoutInflater.from(view.context))
+
+		AlertDialogBuilder(view.context)
+			.setView(addBinding.root)
+			.setTitle(R.string.repository_add_title)
+			.setPositiveButton(android.R.string.ok) { d, w ->
+				addBinding.let {
+					// Pass data to view model, observe result
+					viewModel.addRepository(
+						it.nameInput.text.toString(),
+						it.urlInput.text.toString()
+					).handleObserve(
+						onError = {
+							logError { it }
+							toast(R.string.toast_repository_add_fail)
+						}
+					) {
+						toast(R.string.toast_repository_added)
+						showWarning()
+					}
+					d.dismiss()
+				}
+			}
+			.setNegativeButton(android.R.string.cancel) { d, w ->
+				d.dismiss()
+			}
+			.show()
+	}
 
 	/**
 	 * Warn the user that they need to refresh their extension list
@@ -110,39 +144,9 @@ class RepositoryController : GenericFastAdapterRecyclerController<RepositoryUI>(
 		.show()
 
 	override fun manipulateFAB(fab: FloatingActionButton) {
-
 		fab.setImageResource(R.drawable.add_circle_outline)
 
 		// When the FAB is clicked, open a alert dialog to input a new repository
-		fab.setOnClickListener {
-			val addBinding: RepositoryAddBinding =
-				RepositoryAddBinding.inflate(LayoutInflater.from(fab.context))
-
-			AlertDialogBuilder(fab.context)
-				.setView(addBinding.root)
-				.setTitle(R.string.repository_add_title)
-				.setPositiveButton(android.R.string.ok) { d, w ->
-					addBinding.let {
-						// Pass data to view model, observe result
-						viewModel.addRepository(
-							it.nameInput.text.toString(),
-							it.urlInput.text.toString()
-						).handleObserve(
-							onError = {
-								logError { it }
-								toast(R.string.toast_repository_add_fail)
-							}
-						) {
-							toast(R.string.toast_repository_added)
-							showWarning()
-						}
-						d.dismiss()
-					}
-				}
-				.setNegativeButton(android.R.string.cancel) { d, w ->
-					d.dismiss()
-				}
-				.show()
-		}
+		fab.setOnClickListener(::launchAddRepositoryDialog)
 	}
 }

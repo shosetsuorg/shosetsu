@@ -57,6 +57,11 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 		setHasOptionsMenu(true)
 	}
 
+	override fun showEmpty() {
+		super.showEmpty()
+		binding.emptyDataView.show(R.string.empty_downloads_message)
+	}
+
 	private fun startSelectionAction(): Boolean {
 		if (actionMode != null) return false
 		hideFAB(fab!!)
@@ -257,6 +262,7 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 		}, false)
 		fastAdapter.notifyDataSetChanged()
 	}
+
 
 	private fun selectBetween() {
 		fastAdapter.selectExtension {

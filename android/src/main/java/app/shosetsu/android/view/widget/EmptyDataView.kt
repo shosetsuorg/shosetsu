@@ -35,6 +35,10 @@ class EmptyDataView @JvmOverloads constructor(context: Context, attrs: Attribute
 		show(context.getString(textResource), actions)
 	}
 
+	fun show(@StringRes textResource: Int, vararg actions: Action) {
+		show(textResource, actions.toList())
+	}
+
 	fun show(message: String, actions: List<Action>? = null) {
 		binding.textFace.text = getRandomErrorFace()
 		binding.textLabel.text = message

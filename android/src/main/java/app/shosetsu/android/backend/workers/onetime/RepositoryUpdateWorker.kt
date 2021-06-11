@@ -91,7 +91,7 @@ class RepositoryUpdateWorker(
 			val repoExtLibListSize = repoExtLibList.size
 			repoExtLibList.forEachIndexed { index, (repoExtLibName, repoExtLibVersion) ->
 				notify("Checking $repoExtLibName from ${repository.name}") {
-					setNotificationSilent()
+					setSilent(true)
 					setProgress(repoExtLibListSize, index + 1, false)
 				}
 				/**

@@ -33,6 +33,7 @@ import app.shosetsu.android.ui.extensionsConfigure.ConfigureExtension
 import app.shosetsu.android.view.controller.FastAdapterRefreshableRecyclerController
 import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
+import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.IExtensionsViewModel
 import app.shosetsu.common.consts.REPOSITORY_HELP_URL
 import app.shosetsu.common.dto.HResult
@@ -106,7 +107,11 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 
 	override fun showEmpty() {
 		super.showEmpty()
-		binding.emptyDataView.show("No extensions installed, Press the refresh button on the top right")
+		binding.emptyDataView.show(
+			R.string.empty_browse_message,
+			EmptyDataView.Action(R.string.empty_browse_refresh_action) {
+				onRefresh()
+			})
 	}
 
 	override fun handleErrorResult(e: HResult.Error) {
@@ -144,11 +149,9 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 		startActivity(Intent(ACTION_VIEW, Uri.parse(REPOSITORY_HELP_URL)))
 	}
 
-	private fun refreshExtensions() {
+	override fun onRefresh() {
 		if (viewModel.isOnline())
 			viewModel.refreshRepository()
 		else toast(R.string.you_not_online)
 	}
-
-	override fun onRefresh() = refreshExtensions()
 }

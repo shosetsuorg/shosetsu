@@ -23,6 +23,7 @@ import app.shosetsu.android.view.controller.FastAdapterRefreshableRecyclerContro
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
 import app.shosetsu.android.view.decoration.StickyHeaderDecor
 import app.shosetsu.android.view.uimodels.model.UpdateUI
+import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.IUpdatesViewModel
 import app.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -60,6 +61,16 @@ class UpdatesController : FastAdapterRefreshableRecyclerController<UpdateUI>(),
 	override fun onViewCreated(view: View) {
 		super.onViewCreated(view)
 		startObservation()
+	}
+
+	override fun showEmpty() {
+		super.showEmpty()
+		binding.emptyDataView.show(
+			R.string.empty_updates_message,
+			EmptyDataView.Action(R.string.empty_updates_refresh_action) {
+				onRefresh()
+			}
+		)
 	}
 
 	private fun startObservation() = viewModel.liveData.observeRecyclerUpdates()

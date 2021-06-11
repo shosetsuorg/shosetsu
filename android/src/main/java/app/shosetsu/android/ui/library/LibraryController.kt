@@ -236,7 +236,7 @@ class LibraryController
 
 	override fun showEmpty() {
 		super.showEmpty()
-		binding.emptyDataView.show("You don't have any novels, Go to \"Browse\" and add some!")
+		binding.emptyDataView.show(R.string.empty_library_message)
 	}
 
 	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
