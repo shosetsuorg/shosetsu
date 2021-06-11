@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.work.Configuration
 import app.shosetsu.android.backend.database.DBHelper
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.ShortCuts
@@ -62,7 +63,8 @@ import org.kodein.di.generic.singleton
 	resText = R.string.crashDialogText,
 	resTheme = R.style.AppTheme_CrashReport
 )
-class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
+class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware,
+	Configuration.Provider {
 	private val extLibRepository by instance<IExtensionLibrariesRepository>()
 	private val okHttpClient by instance<OkHttpClient>()
 	private val startRepositoryUpdateManagerUseCase: StartRepositoryUpdateManagerUseCase by instance()
@@ -130,4 +132,8 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware {
 	}
 
 	override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {}
+
+	override fun getWorkManagerConfiguration(): Configuration =
+		Configuration.Builder().apply {
+		}.build()
 }

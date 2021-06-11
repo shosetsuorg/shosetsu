@@ -132,8 +132,8 @@ dependencies {
 
 	// Androidx
 	implementation("androidx.constraintlayout:constraintlayout:2.0.4")
-	implementation("androidx.work:work-runtime:2.5.0")
-	implementation("androidx.work:work-runtime-ktx:2.5.0")
+	implementation("androidx.work:work-runtime:2.6.0-beta01")
+	implementation("androidx.work:work-runtime-ktx:2.6.0-beta01")
 	implementation("androidx.gridlayout:gridlayout:1.0.0")
 	implementation("androidx.preference:preference-ktx:1.1.1")
 	implementation("androidx.recyclerview:recyclerview:1.2.1")
@@ -166,7 +166,7 @@ dependencies {
 
 	// Core libraries
 	implementation("org.luaj:luaj-jse:3.0.1")
-	implementation("com.github.shosetsuorg:kotlin-lib:1.0.0-rc59")
+	implementation("com.github.shosetsuorg:kotlin-lib:1.0.0-rc60")
 
 
 	// Image loading
