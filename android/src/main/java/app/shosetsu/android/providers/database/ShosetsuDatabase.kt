@@ -12,6 +12,7 @@ import app.shosetsu.android.domain.model.database.*
 import app.shosetsu.android.providers.database.converters.*
 import app.shosetsu.android.providers.database.dao.*
 import app.shosetsu.android.providers.database.migrations.RemoveMigration
+import app.shosetsu.lib.ExtensionType
 import dev.matrix.roomigrant.GenerateRoomMigrations
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -64,6 +65,7 @@ import kotlinx.coroutines.launch
 	ReadingStatusConverter::class,
 	StringArrayConverters::class,
 	VersionConverter::class,
+	ExtensionTypeConverter::class
 )
 @GenerateRoomMigrations
 abstract class ShosetsuDatabase : RoomDatabase() {
@@ -184,7 +186,7 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 								val tableName = "extensions"
 
 								// Create new table
-								database.execSQL("CREATE TABLE IF NOT EXISTS `${tableName}_new` (`id` INTEGER NOT NULL, `repoID` INTEGER NOT NULL, `name` TEXT NOT NULL, `fileName` TEXT NOT NULL, `imageURL` TEXT, `lang` TEXT NOT NULL, `enabled` INTEGER NOT NULL, `installed` INTEGER NOT NULL, `installedVersion` TEXT, `repositoryVersion` TEXT NOT NULL, `chapterType` INTEGER NOT NULL, `md5` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`repoID`) REFERENCES `repositories`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )\n")
+								database.execSQL("CREATE TABLE IF NOT EXISTS `${tableName}_new` (`id` INTEGER NOT NULL, `repoID` INTEGER NOT NULL, `name` TEXT NOT NULL, `fileName` TEXT NOT NULL, `imageURL` TEXT, `lang` TEXT NOT NULL, `enabled` INTEGER NOT NULL, `installed` INTEGER NOT NULL, `installedVersion` TEXT, `repositoryVersion` TEXT NOT NULL, `chapterType` INTEGER NOT NULL, `md5` TEXT NOT NULL, `type` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`repoID`) REFERENCES `repositories`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )\n")
 
 								// Migrate
 								val cursor = database.query("SELECT * FROM $tableName")
@@ -207,6 +209,7 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 												cursor.getString("repositoryVersion")
 											this["'chapterType'"] = cursor.getInt("chapterType")
 											this["'md5'"] = cursor.getString("md5")
+											this["`type`"] = ExtensionType.LuaScript.ordinal
 										}
 									)
 								}
