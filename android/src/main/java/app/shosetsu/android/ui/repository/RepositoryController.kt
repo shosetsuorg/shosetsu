@@ -51,7 +51,7 @@ class RepositoryController : GenericFastAdapterRecyclerController<RepositoryUI>(
 		super.showEmpty()
 		binding.emptyDataView.show(
 			R.string.empty_repositories_message,
-			EmptyDataView.Action(R.string.empty_repositories_action, ::launchAddRepositoryDialog)
+			EmptyDataView.Action(R.string.empty_repositories_action) { launchAddRepositoryDialog(it) }
 		)
 	}
 
@@ -147,6 +147,6 @@ class RepositoryController : GenericFastAdapterRecyclerController<RepositoryUI>(
 		fab.setImageResource(R.drawable.add_circle_outline)
 
 		// When the FAB is clicked, open a alert dialog to input a new repository
-		fab.setOnClickListener(::launchAddRepositoryDialog)
+		fab.setOnClickListener { launchAddRepositoryDialog(it) }
 	}
 }
