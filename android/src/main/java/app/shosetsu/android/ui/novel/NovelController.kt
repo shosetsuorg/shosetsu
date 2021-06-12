@@ -3,6 +3,7 @@ package app.shosetsu.android.ui.novel
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.NumberPicker
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
@@ -294,14 +295,13 @@ class NovelController(bundle: Bundle) :
 		val chaptersSelected =
 			fastAdapter.getSelectExtension().selectedItems.filterIsInstance<ChapterUI>()
 
-		// If any are not bookmarked, show bookmark option
-		if (chaptersSelected.any { !it.bookmarked }) {
-			binding.bottomMenu.findItem(id.bookmark)?.isVisible = false
-			binding.bottomMenu.findItem(id.remove_bookmark)?.isVisible = true
-		} else {
-			binding.bottomMenu.findItem(id.bookmark)?.isVisible = true
-			binding.bottomMenu.findItem(id.remove_bookmark)?.isVisible = false
-		}
+		// If any chapters are bookmarked, show the remove bookmark logo
+		binding.bottomMenu.findItem(id.remove_bookmark)?.isVisible =
+			chaptersSelected.any { it.bookmarked }
+
+		// If any chapters are not bookmarked, show bookmark
+		binding.bottomMenu.findItem(id.bookmark)?.isVisible =
+			chaptersSelected.any { !it.bookmarked }
 
 		// If any are downloaded, show delete
 		binding.bottomMenu.findItem(id.chapter_delete_selected)?.isVisible =
@@ -436,17 +436,18 @@ class NovelController(bundle: Bundle) :
 		viewModel.reportError(e)
 	}
 
-	private fun selectedChapters(): List<ChapterUI> =
-		fastAdapter.getSelectExtension().selectedItems.filterIsInstance<ChapterUI>()
+	private val selectedChapters: List<ChapterUI>
+		get() = fastAdapter.getSelectExtension().selectedItems.filterIsInstance<ChapterUI>()
 
-	private fun selectedChapterArray(): Array<ChapterUI> = selectedChapters().toTypedArray()
+	private val selectedChapterArray: Array<ChapterUI>
+		get() = selectedChapters.toTypedArray()
 
 	private fun bookmarkSelected() {
-		viewModel.bookmarkChapters(*selectedChapterArray())
+		viewModel.bookmarkChapters(*selectedChapterArray)
 	}
 
 	private fun removeSelectedBookmark() {
-		viewModel.removeChapterBookmarks(*selectedChapterArray())
+		viewModel.removeChapterBookmarks(*selectedChapterArray)
 	}
 
 	private fun selectAll() {
@@ -480,51 +481,56 @@ class NovelController(bundle: Bundle) :
 
 	private fun downloadSelected() {
 		viewModel.downloadChapter(
-			chapterUI = selectedChapterArray(),
+			chapterUI = selectedChapterArray,
 			startManager = true
 		)
 	}
 
 	private fun deleteSelected() {
-		viewModel.delete(*selectedChapterArray())
+		viewModel.delete(*selectedChapterArray)
 	}
 
 	private fun markSelectedAs(readingStatus: ReadingStatus) {
 		viewModel.markAllChaptersAs(
-			*selectedChapterArray(),
+			*selectedChapterArray,
 			readingStatus = readingStatus
 		)
 	}
 
+	/**
+	 * Selects all chapters between the first and last selected chapter
+	 */
 	private fun selectBetween() {
-		fastAdapter.selectExtension {
-			val selectedItems = selectedChapters().sortedBy { it.order }
-			val adapterList = chapterUIAdapter.adapterItems
-			if (adapterList.isEmpty()) {
-				launchUI { toast(R.string.chapter_select_between_error_empty_adapter) }
-				return
-			}
-
-			val first = adapterList.indexOfFirst { it.id == selectedItems.first().id }
-			val last = adapterList.indexOfFirst { it.id == selectedItems.last().id }
-
-			if (first == -1) return
-			if (last == -1) return
-
-			val smallest: Int
-			val largest: Int
-			when {
-				first > last -> {
-					largest = first
-					smallest = last
+		launchIO {
+			fastAdapter.selectExtension {
+				val selectedItems = selectedChapters.sortedBy { it.order }
+				val adapterList = chapterUIAdapter.adapterItems
+				if (adapterList.isEmpty()) {
+					launchUI { toast(R.string.chapter_select_between_error_empty_adapter) }
+					return@launchIO
 				}
-				else -> {
-					smallest = first
-					largest = last
+
+				val first = adapterList.indexOfFirst { it.id == selectedItems.first().id }
+				val last = adapterList.indexOfFirst { it.id == selectedItems.last().id }
+
+				if (first == -1) return@launchIO
+				if (last == -1) return@launchIO
+
+				val smallest: Int
+				val largest: Int
+				when {
+					first > last -> {
+						largest = first
+						smallest = last
+					}
+					else -> {
+						smallest = first
+						largest = last
+					}
 				}
+				adapterList.subList(smallest, largest).map { fastAdapter.getPosition(it) }
+					.let { launchUI { select(it) } }
 			}
-			adapterList.subList(smallest, largest).map { fastAdapter.getPosition(it) }
-				.let { launchUI { select(it) } }
 		}
 	}
 
