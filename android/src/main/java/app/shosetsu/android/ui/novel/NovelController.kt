@@ -237,6 +237,7 @@ class NovelController(bundle: Bundle) :
 			true
 		}
 		id.download_custom -> {
+			downloadCustom()
 			true
 		}
 		id.download_unread -> {
@@ -248,6 +249,29 @@ class NovelController(bundle: Bundle) :
 			true
 		}
 		else -> super.onOptionsItemSelected(item)
+	}
+
+	/**
+	 * download a custom amount of chapters
+	 */
+	private fun downloadCustom() {
+		if (context == null) return
+		AlertDialog.Builder(context!!).apply {
+			setTitle(R.string.download_custom_chapters)
+			val numberPicker = NumberPicker(context).apply {
+				minValue = 0
+				maxValue = getChapters().size
+			}
+			setView(numberPicker)
+
+			setPositiveButton(android.R.string.ok) { d, i ->
+				viewModel.downloadNextCustomChapters(numberPicker.value)
+				d.dismiss()
+			}
+			setNegativeButton(android.R.string.cancel) { d, i ->
+				d.cancel()
+			}
+		}.show()
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
