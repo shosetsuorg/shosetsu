@@ -154,6 +154,9 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		setupProcesses()
 	}
 
+	private var lastClickedBack = -1L
+	private var clickedBackBuffer = false
+
 	/**
 	 * When the back button while drawer is open, close it.
 	 */
@@ -167,7 +170,21 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			backStackSize == 1 && router.getControllerWithTag("${R.id.nav_library}") == null ->
 				setSelectedDrawerItem(R.id.nav_library)
 
-			backStackSize == 1 || !router.handleBack() -> super.onBackPressed()
+			// When this is true, We want to create a buffer to prevent the user from leaving the app by mistake
+			backStackSize == 1 || !router.handleBack() -> {
+				// If the last click was over 2 seconds ago, reset
+				if (lastClickedBack < System.currentTimeMillis() - 2000) {
+					clickedBackBuffer = false
+					lastClickedBack = System.currentTimeMillis()
+				}
+				if (clickedBackBuffer) {
+					clickedBackBuffer = false
+					super.onBackPressed()
+				} else {
+					toast(R.string.double_back_message)
+					clickedBackBuffer = true
+				}
+			}
 		}
 	}
 
@@ -371,7 +388,6 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	private fun transitionView(target: Controller) {
 		router.pushController(target.withFadeTransaction())
 	}
-
 
 	private val holdingAtBottom = hashMapOf<View, AppBarLayout.OnOffsetChangedListener>()
 

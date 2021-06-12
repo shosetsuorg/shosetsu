@@ -424,6 +424,7 @@
     <string name="toast_success_repository_toggled_disabled">Repository has been disabled</string>
     <string name="alert_dialog_title_warn_repo_removal">Repo Removal Warning</string>
     <string name="alert_dialog_message_warn_repo_removal">Are you sure about removing this repository?</string>
+    <string name="double_back_message">Click back again to exit</string>
 
 
     <!-- Error Key Messages -->
