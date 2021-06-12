@@ -42,9 +42,11 @@ abstract class IMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel,
 	 * If 0, Bottom
 	 * If 1, Drawer
 	 */
-	abstract fun navigationStyle(): Int
+	abstract val navigationStyle: Int
 
 	abstract fun appTheme(): LiveData<AppThemes>
+
+	abstract val requireDoubleBackToExit: Boolean
 
 	/**
 	 * The user requests to update the app

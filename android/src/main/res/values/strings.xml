@@ -425,6 +425,8 @@
     <string name="alert_dialog_title_warn_repo_removal">Repo Removal Warning</string>
     <string name="alert_dialog_message_warn_repo_removal">Are you sure about removing this repository?</string>
     <string name="double_back_message">Click back again to exit</string>
+    <string name="settings_advanced_require_double_back_title">Require double back to exit</string>
+    <string name="settings_advanced_require_double_back_desc">If enabled, will require the user to do the back action 2x to leave the app</string>
 
 
     <!-- Error Key Messages -->

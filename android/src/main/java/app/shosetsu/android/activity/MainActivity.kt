@@ -110,7 +110,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	 * @param savedInstanceState savedData from destruction
 	 */
 	override fun onCreate(savedInstanceState: Bundle?) {
-		viewModel.navigationStyle()
+		viewModel.navigationStyle
 		viewModel.appTheme().observe(this) {
 			when (it!!) {
 				FOLLOW_SYSTEM -> {
@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		setupProcesses()
 	}
 
-	private var lastClickedBack = -1L
+	private var lastClickedBack = 0L
 	private var clickedBackBuffer = false
 
 	/**
@@ -170,19 +170,24 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 			backStackSize == 1 && router.getControllerWithTag("${R.id.nav_library}") == null ->
 				setSelectedDrawerItem(R.id.nav_library)
 
-			// When this is true, We want to create a buffer to prevent the user from leaving the app by mistake
 			backStackSize == 1 || !router.handleBack() -> {
-				// If the last click was over 2 seconds ago, reset
-				if (lastClickedBack < System.currentTimeMillis() - 2000) {
-					clickedBackBuffer = false
-					lastClickedBack = System.currentTimeMillis()
-				}
-				if (clickedBackBuffer) {
-					clickedBackBuffer = false
-					super.onBackPressed()
+
+				// When this is true, We want to create a buffer to prevent the user from leaving the app by mistake
+				if (viewModel.requireDoubleBackToExit) {
+					// If the last click was over 2 seconds ago, reset
+					if (lastClickedBack < System.currentTimeMillis() - 2000) {
+						clickedBackBuffer = false
+						lastClickedBack = System.currentTimeMillis()
+					}
+					if (clickedBackBuffer) {
+						clickedBackBuffer = false
+						super.onBackPressed()
+					} else {
+						toast(R.string.double_back_message)
+						clickedBackBuffer = true
+					}
 				} else {
-					toast(R.string.double_back_message)
-					clickedBackBuffer = true
+					super.onBackPressed()
 				}
 			}
 		}
@@ -191,7 +196,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 	// From tachiyomi
 	private fun setSelectedDrawerItem(id: Int) {
 		if (!isFinishing) {
-			if (viewModel.navigationStyle() == 0) {
+			if (viewModel.navigationStyle == 0) {
 				binding.bottomNavigationView.selectedItemId = id
 				binding.bottomNavigationView.menu.performIdentifierAction(id, 0)
 			} else {
@@ -207,13 +212,13 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 		binding.toolbar.setNavigationOnClickListener {
 			if (router.backstackSize == 1) {
-				if (viewModel.navigationStyle() == 1) {
+				if (viewModel.navigationStyle == 1) {
 					binding.drawerLayout.openDrawer(GravityCompat.START)
 				}
 			} else onBackPressed()
 		}
 
-		if (viewModel.navigationStyle() == 0) {
+		if (viewModel.navigationStyle == 0) {
 			binding.bottomNavigationView.visibility = VISIBLE
 			binding.navView.visibility = GONE
 			setupBottomNavigationDrawer()
@@ -413,7 +418,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 		if (showHamburger) {
 			// Shows navigation
-			if (viewModel.navigationStyle() == 1) {
+			if (viewModel.navigationStyle == 1) {
 				logI("Sync activity view with controller for legacy")
 				supportActionBar?.setDisplayHomeAsUpEnabled(true)
 				actionBarDrawerToggle.isDrawerIndicatorEnabled = true
@@ -428,7 +433,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		} else {
 
 			// Hides navigation
-			if (viewModel.navigationStyle() == 1) {
+			if (viewModel.navigationStyle == 1) {
 				logI("Sync activity view with controller for legacy")
 				supportActionBar?.setDisplayHomeAsUpEnabled(false)
 				actionBarDrawerToggle.isDrawerIndicatorEnabled = false

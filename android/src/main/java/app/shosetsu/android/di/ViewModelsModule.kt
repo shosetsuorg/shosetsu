@@ -48,7 +48,8 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 			loadLiveAppThemeUseCase = instance(),
 			startInstallWorker = instance(),
 			canAppSelfUpdateUseCase = instance(),
-			loadAppUpdateUseCase = instance()
+			loadAppUpdateUseCase = instance(),
+			loadRequireDoubleBackUseCase = instance()
 		)
 	}
 
