@@ -257,9 +257,9 @@ class NovelController(bundle: Bundle) :
 	 */
 	private fun downloadCustom() {
 		if (context == null) return
-		AlertDialog.Builder(context!!).apply {
+		AlertDialog.Builder(binding.root.context!!).apply {
 			setTitle(R.string.download_custom_chapters)
-			val numberPicker = NumberPicker(context).apply {
+			val numberPicker = NumberPicker(binding.root.context).apply {
 				minValue = 0
 				maxValue = getChapters().size
 			}
