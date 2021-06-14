@@ -173,25 +173,25 @@ class ChapterReader
 		}
 
 		viewModel.liveTheme.observe {
-			applyToReaders {
+			applyToChapterViews {
 				syncTextColor()
 				syncBackgroundColor()
 			}
 		}
 
 		viewModel.liveIndentSize.observe {
-			applyToReaders {
+			applyToChapterViews {
 				syncParagraphIndent()
 			}
 		}
 
 		viewModel.liveParagraphSpacing.observe {
 			logD("Updating paragraph spacing to reader UI")
-			applyToReaders { syncParagraphSpacing() }
+			applyToChapterViews { syncParagraphSpacing() }
 		}
 
 		viewModel.liveTextSize.observe {
-			applyToReaders { syncTextSize() }
+			applyToChapterViews { syncTextSize() }
 		}
 
 		viewModel.liveVolumeScroll.observe {
@@ -202,7 +202,7 @@ class ChapterReader
 		}
 	}
 
-	private fun applyToReaders(
+	private fun applyToChapterViews(
 		onlyCurrent: Boolean = false,
 		action: ReaderChapterViewHolder.() -> Unit
 	) {
@@ -342,22 +342,20 @@ class ChapterReader
 	 * Adds the
 	 */
 	override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-		if (viewModel.defaultVolumeScroll)
+
+		return if (viewModel.defaultVolumeScroll)
 			when (keyCode) {
 				KeyEvent.KEYCODE_VOLUME_DOWN -> {
-					applyToReaders(true) {
-						incrementScroll()
-					}
-					return true
+					applyToChapterViews(true) { incrementScroll() }
+					true
 				}
 				KeyEvent.KEYCODE_VOLUME_UP -> {
-					applyToReaders(true) {
-						depleteScroll()
-					}
-					return true
+					applyToChapterViews(true) { depleteScroll() }
+					true
 				}
+				else -> false
 			}
-		return super.onKeyDown(keyCode, event)
+		else super.onKeyDown(keyCode, event)
 	}
 
 	private fun focusListener() {
