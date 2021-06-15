@@ -326,7 +326,7 @@ class NovelController(bundle: Bundle) :
 			isSelectable = true
 			multiSelect = true
 			selectOnLongClick = true
-			setSelectionListener { item, _ ->
+			setSelectionListener { item, isSelected ->
 				// Recreates the item view
 				this@setupFastAdapter.notifyItemChanged(this@setupFastAdapter.getPosition(item))
 
@@ -335,6 +335,16 @@ class NovelController(bundle: Bundle) :
 
 				// Swaps the options menu on top
 				val size = selectedItems.size
+
+				// Incase the size is empty and the item is selected, add the item and try again
+				if (size == 0 && isSelected) {
+					logE("Migrating selection bug")
+					(fastAdapter.getItemById(item.identifier)?.first as? ChapterUI)?.isSelected =
+						true
+					this.select(item, true)
+					return@setSelectionListener
+				}
+
 				if (size == 1) startSelectionAction() else if (size == 0) finishSelectionAction()
 			}
 		}
