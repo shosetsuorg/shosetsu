@@ -2,6 +2,7 @@ package app.shosetsu.android.view.uimodels.model
 
 import android.text.format.DateFormat.format
 import android.view.View
+import androidx.core.view.isVisible
 import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
@@ -48,14 +49,19 @@ data class UpdateUI(
 
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 
-	/**  */
+	/**
+	 * ViewHolder for [UpdateUI]
+	 */
 	class ViewHolder(itemView: View) : BindViewHolder<UpdateUI, RecyclerUpdateUiBinding>(itemView) {
 		override val binding = RecyclerUpdateUiBinding.bind(view)
 
 		override fun RecyclerUpdateUiBinding.bindView(item: UpdateUI, payloads: List<Any>) {
 			if (item.novelImageURL.isNotEmpty()) {
 				picasso(item.novelImageURL, imageView)
-			} else novelTitle.text = item.novelName
+			} else {
+				novelTitle.isVisible = true
+				novelTitle.text = item.novelName
+			}
 
 			chapterTitle.text = item.chapterName
 			date.text = format("hh:mm", Date(item.time))
@@ -64,6 +70,7 @@ data class UpdateUI(
 		override fun RecyclerUpdateUiBinding.unbindView(item: UpdateUI) {
 			imageView.setImageResource(R.drawable.broken_image)
 			chapterTitle.text = null
+			novelTitle.isVisible = false
 			novelTitle.text = null
 			date.text = null
 		}
