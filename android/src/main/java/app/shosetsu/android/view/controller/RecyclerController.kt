@@ -124,7 +124,14 @@ abstract class RecyclerController<AD, IT, VB> : ViewedController<VB>
 		recyclerView.adapter = adapter
 	}
 
+	/**
+	 * Called when the [HResult] for the data is empty
+	 */
 	open fun showEmpty() {}
+
+	/**
+	 * Undo [showEmpty]
+	 */
 	open fun hideEmpty() {}
 
 	/**
