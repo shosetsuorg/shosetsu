@@ -73,6 +73,9 @@ class UpdatesController : FastAdapterRefreshableRecyclerController<UpdateUI>(),
 		)
 	}
 
+	/**
+	 * Start observing [IUpdatesViewModel] for changes
+	 */
 	private fun startObservation() = viewModel.liveData.observeRecyclerUpdates()
 
 	override fun handleErrorResult(e: HResult.Error) {
@@ -103,7 +106,7 @@ class UpdatesController : FastAdapterRefreshableRecyclerController<UpdateUI>(),
 					else -> "${dateTime.dayOfMonth}/${dateTime.monthOfYear}/${dateTime.year}"
 				}
 			}
-			return "No Bogga"
+			return "Unknown"
 		}
 	}
 
