@@ -1,6 +1,8 @@
 package app.shosetsu.android.ui.novel
 
 import android.os.Bundle
+import android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+import android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 import android.util.Log
 import android.view.*
 import android.widget.NumberPicker
@@ -199,30 +201,7 @@ class NovelController(bundle: Bundle) :
 			true
 		}
 		id.option_chapter_jump -> {
-			val binding =
-				ControllerNovelJumpDialogBinding.inflate(LayoutInflater.from(recyclerView.context))
-
-			AlertDialog.Builder(recyclerView.context)
-				.setView(binding.root)
-				.setTitle(R.string.jump_to_chapter)
-				.setNegativeButton(android.R.string.cancel) { d, id ->
-				}
-				.setPositiveButton(R.string.alert_dialog_jump_positive) { d, id ->
-					val selectedNumber =
-						binding.editTextNumber.text.toString().toDoubleOrNull()?.plus(1.0) ?: run {
-							logE("Invalid number")
-							return@setPositiveButton
-						}
-
-					logD("Selected number: $selectedNumber")
-
-					chapterUIAdapter.adapterItems.indexOfFirst {
-						it.order == selectedNumber
-					}.takeIf { it != -1 }?.let {
-						recyclerView.smoothScrollToPosition(it)
-					} ?: toast { "No chapter found matching input" }
-				}
-				.show()
+			openChapterJumpDialog()
 			true
 		}
 		id.download_next -> {
@@ -250,6 +229,65 @@ class NovelController(bundle: Bundle) :
 			true
 		}
 		else -> super.onOptionsItemSelected(item)
+	}
+
+	private fun openChapterJumpDialog() {
+		val binding =
+			ControllerNovelJumpDialogBinding.inflate(LayoutInflater.from(recyclerView.context))
+
+		// Change hint & input type depending on findByChapterName state
+		binding.findByChapterName.setOnCheckedChangeListener { _, isChecked ->
+			if (isChecked) {
+				binding.editTextNumber.inputType = TYPE_TEXT_FLAG_NO_SUGGESTIONS
+				binding.editTextNumber.setHint(R.string.controller_novel_jump_dialog_hint_chapter_title)
+			} else {
+				binding.editTextNumber.inputType = TYPE_NUMBER_FLAG_DECIMAL
+				binding.editTextNumber.setHint(R.string.controller_novel_jump_dialog_hint_chapter_number)
+			}
+		}
+
+		AlertDialog.Builder(recyclerView.context)
+			.setView(binding.root)
+			.setTitle(R.string.jump_to_chapter)
+			.setNegativeButton(android.R.string.cancel) { d, id ->
+			}
+			.setPositiveButton(R.string.alert_dialog_jump_positive) { d, id ->
+				/**
+				 * The predicate to use to find the chapter to scroll to
+				 */
+				val predicate: (ChapterUI) -> Boolean
+
+				@Suppress("LiftReturnOrAssignment")
+				if (binding.findByChapterName.isChecked) {
+					// Predicate will be searching if the title contains the text
+					val text = binding.editTextNumber.text.toString()
+					if (text.isBlank()) {
+						toast(R.string.toast_error_chapter_jump_empty_title)
+						return@setPositiveButton
+					}
+
+					predicate = { it.title.contains(text) }
+				} else {
+					// Predicate will be searching if the # is equal
+
+					val selectedNumber =
+						binding.editTextNumber.text.toString().toDoubleOrNull()?.plus(1.0) ?: run {
+							toast(R.string.toast_error_chapter_jump_invalid_number)
+							return@setPositiveButton
+						}
+
+					predicate = { it.order == selectedNumber }
+				}
+
+				// Search for chapter on IO, then jump to it on UI
+				launchIO {
+					chapterUIAdapter.adapterItems.indexOfFirst(predicate).takeIf { it != -1 }?.let {
+						launchUI {
+							recyclerView.smoothScrollToPosition(it)
+						}
+					} ?: launchUI { toast(R.string.toast_error_chapter_jump_invalid_target) }
+				}
+			}.show()
 	}
 
 	/**

@@ -2,16 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <EditText
         android:id="@+id/editTextNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         android:ems="10"
         android:hint="@string/controller_novel_jump_dialog_hint_chapter_number"
         android:importantForAutofill="no"
         android:inputType="numberDecimal" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/find_by_chapter_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/controller_novel_jum_dialog_by_title" />
 
 </LinearLayout>

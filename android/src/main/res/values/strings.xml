@@ -415,6 +415,7 @@
     <string name="controller_catalogue_toast_background_add">Adding to library in background</string>
     <string name="jump_to_chapter">Jump to Chapter</string>
     <string name="controller_novel_jump_dialog_hint_chapter_number">Chapter Number</string>
+    <string name="controller_novel_jump_dialog_hint_chapter_title">Chapter Title</string>
     <string name="alert_dialog_jump_positive">Jump</string>
     <string name="help">Help</string>
     <string name="settings_advanced_verify_checksum_title">Verify extension check sum</string>
@@ -430,6 +431,11 @@
 
     <string name="settings_reader_keep_screen_on">Keep screen on</string>
     <string name="settings_reader_keep_screen_on_desc">The chapter reader will keep the screen on while open</string>
+    <string name="toast_error_chapter_jump_invalid_target">No chapter found</string>
+    <string name="controller_novel_jum_dialog_by_title">Search by chapter title</string>
+
+    <string name="toast_error_chapter_jump_invalid_number">Chapter number required</string>
+    <string name="toast_error_chapter_jump_empty_title">Chapter title needed</string>
 
 
     <!-- Error Key Messages -->
