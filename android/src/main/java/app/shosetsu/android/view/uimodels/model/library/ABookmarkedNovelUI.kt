@@ -1,5 +1,6 @@
 package app.shosetsu.android.view.uimodels.model.library
 
+import android.content.res.Resources
 import android.view.View
 import androidx.core.view.isVisible
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
@@ -93,7 +94,20 @@ abstract class ABookmarkedNovelUI
 			super.bindView(item, payloads)
 			setUnreadCount(this, item.unread)
 			materialCardView.strokeWidth = if (item.isSelected) SELECTED_STROKE_WIDTH else 0
-			chip.setOnClickListener { it.context.toast(it.context.getString(R.string.chapters_unread_label) + chip.text) }
+
+			chip.setOnClickListener {
+				try {
+					it.context.toast(
+						it.context.resources.getQuantityString(
+							R.plurals.toast_unread_count,
+							item.unread,
+							item.unread
+						)
+					)
+				} catch (e: Resources.NotFoundException) {
+					it.context.toast(it.context.getString(R.string.chapters_unread_label) + " " + item.unread)
+				}
+			}
 		}
 
 		override fun unbindView(item: ABookmarkedNovelUI) {
