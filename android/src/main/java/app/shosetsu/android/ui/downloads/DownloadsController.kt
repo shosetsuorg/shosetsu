@@ -19,10 +19,7 @@ package app.shosetsu.android.ui.downloads
 
 import android.view.*
 import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.android.common.ext.launchUI
-import app.shosetsu.android.common.ext.setOnPreClickListener
-import app.shosetsu.android.common.ext.setSelectionListener
-import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.controller.BottomMenuBasicFastAdapterRecyclerController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.PushCapableController
@@ -34,10 +31,8 @@ import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.IAdapter
 import com.mikepenz.fastadapter.select.getSelectExtension
 import com.mikepenz.fastadapter.select.selectExtension
-import com.mikepenz.fastadapter.utils.AdapterPredicate
 
 /**
  * Shosetsu
@@ -239,61 +234,12 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 	}
 
 	private fun invertSelection() {
-		fastAdapter.recursive(object : AdapterPredicate<DownloadUI> {
-			override fun apply(
-				lastParentAdapter: IAdapter<DownloadUI>,
-				lastParentPosition: Int,
-				item: DownloadUI,
-				position: Int
-			): Boolean {
-				if (item.isSelected) {
-					fastAdapter.getSelectExtension().deselect(item)
-				} else {
-					fastAdapter.getSelectExtension().select(
-						adapter = lastParentAdapter,
-						item = item,
-						position = RecyclerView.NO_POSITION,
-						fireEvent = false,
-						considerSelectableFlag = true
-					)
-				}
-				return false
-			}
-		}, false)
-		fastAdapter.notifyDataSetChanged()
+		fastAdapter.invertSelection()
 	}
 
 
 	private fun selectBetween() {
-		fastAdapter.selectExtension {
-			val selectedItems = fastAdapter.getSelectExtension().selectedItems
-			val adapterList = itemAdapter.adapterItems
-			if (adapterList.isEmpty()) {
-				launchUI { toast(R.string.chapter_select_between_error_empty_adapter) }
-				return
-			}
-
-			val first = adapterList.indexOfFirst { it.chapterID == selectedItems.first().chapterID }
-			val last = adapterList.indexOfFirst { it.chapterID == selectedItems.last().chapterID }
-
-			if (first == -1) return
-			if (last == -1) return
-
-			val smallest: Int
-			val largest: Int
-			when {
-				first > last -> {
-					largest = first
-					smallest = last
-				}
-				else -> {
-					smallest = first
-					largest = last
-				}
-			}
-			adapterList.subList(smallest, largest).map { fastAdapter.getPosition(it) }
-				.let { launchUI { select(it) } }
-		}
+		fastAdapter.selectBetween(itemAdapter)
 	}
 
 	private inner class SelectionActionMode : ActionMode.Callback {

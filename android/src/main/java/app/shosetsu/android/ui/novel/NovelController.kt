@@ -526,8 +526,8 @@ class NovelController(bundle: Bundle) :
 	 */
 	private fun selectBetween() {
 		fastAdapter.selectBetween(
-			selectedChapters,
-			chapterUIAdapter as ItemAdapter<AbstractItem<*>>
+			chapterUIAdapter as ItemAdapter<AbstractItem<*>>,
+			selectedChapters
 		)
 	}
 

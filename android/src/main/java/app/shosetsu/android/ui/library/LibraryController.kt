@@ -259,7 +259,7 @@ class LibraryController
 	}
 
 	private fun selectBetween() {
-		fastAdapter.selectBetween(selectedNovels, itemAdapter)
+		fastAdapter.selectBetween(itemAdapter, selectedNovels)
 	}
 
 	override fun showEmpty() {

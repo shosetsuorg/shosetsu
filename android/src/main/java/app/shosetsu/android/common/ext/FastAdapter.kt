@@ -46,8 +46,8 @@ fun <T : GenericItem> FastAdapter<T>.setOnClickListener(listener: ClickListener<
  * Launches on the IO thread a selection task, which will effect the UI in return
  */
 fun <ITEM : GenericItem> FastAdapter<ITEM>.selectBetween(
+	itemAdapter: ItemAdapter<ITEM>,
 	selected: List<ITEM> = getSelectExtension().selectedItems.toList(),
-	itemAdapter: ItemAdapter<ITEM>
 ) = launchIO {
 	selectExtension {
 		val adapterList = itemAdapter.adapterItems
