@@ -62,8 +62,8 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 	val viewModel: IExtensionsViewModel by viewModel()
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-		inflater.inflate(R.menu.toolbar_extensions, menu)
-		(menu.findItem(R.id.catalogues_search).actionView as SearchView)
+		inflater.inflate(R.menu.toolbar_browse, menu)
+		(menu.findItem(R.id.search).actionView as SearchView)
 			.setOnQueryTextListener(BrowseSearchQuery(pushController))
 	}
 
@@ -141,7 +141,11 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 			openHelpMenu()
 			true
 		}
-		R.id.catalogues_search -> true
+		R.id.search -> true
+		R.id.browse_import -> {
+			toast(R.string.regret)
+			true
+		}
 		else -> false
 	}
 

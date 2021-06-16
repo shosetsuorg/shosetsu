@@ -65,7 +65,7 @@ class SearchController(bundle: Bundle) : GenericFastAdapterRecyclerController<Se
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_search, menu)
-		searchView = menu.findItem(R.id.catalogues_search).actionView as SearchView
+		searchView = menu.findItem(R.id.search).actionView as SearchView
 		searchView?.setOnQueryTextListener(InternalQuery())
 	}
 

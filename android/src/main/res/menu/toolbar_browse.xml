@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/catalogues_search"
+        android:id="@+id/search"
         android:icon="@drawable/search"
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
@@ -13,4 +13,10 @@
         android:icon="@drawable/help_outline_24"
         android:title="@string/help"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/browse_import"
+        android:title="@string/controller_browse_option_Import"
+        android:visible="false"
+        app:showAsAction="never" />
 </menu>
