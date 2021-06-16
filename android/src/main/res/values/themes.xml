@@ -16,6 +16,7 @@
         <item name="appBarLayoutStyle">@style/AppTheme.Widget.AppBarLayout</item>
         <item name="floatingActionButtonStyle">@style/AppTheme.Widget.FAB</item>
         <item name="extendedFloatingActionButtonStyle">@style/AppTheme.Widget.ExtendedFAB</item>
+        <item name="strokeColor">?colorPrimary</item>
     </style>
 
     <style name="ChipStyle" parent="AppTheme.Main" />

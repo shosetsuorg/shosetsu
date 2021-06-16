@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardView"
+    style="@style/AppTheme.Widget.MaterialCardView"
     android:layout_width="match_parent"
     android:layout_height="75dp"
-    app:cardCornerRadius="0dp"
-    app:strokeColor="@color/colorPrimary">
+    app:cardCornerRadius="0dp">
 
     <RelativeLayout
         android:id="@+id/constraint"

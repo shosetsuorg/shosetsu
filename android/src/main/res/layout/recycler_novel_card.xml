@@ -7,11 +7,11 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/novel_item_card"
+        style="@style/AppTheme.Widget.MaterialCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
-        app:layout_constraintDimensionRatio="2:3"
-        app:strokeColor="@color/colorPrimary">
+        app:layout_constraintDimensionRatio="2:3">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint"

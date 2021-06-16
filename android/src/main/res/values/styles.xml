@@ -45,6 +45,9 @@
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
+    <style name="AppTheme.Widget.MaterialCardView" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="strokeColor">?colorPrimary</item>
+    </style>
 
     <style name="SplashScreen" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/launcher_theme</item>
