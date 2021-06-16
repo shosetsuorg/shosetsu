@@ -7,7 +7,6 @@ import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.setPadding
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.LifecycleObserver
@@ -16,6 +15,7 @@ import app.shosetsu.android.common.ext.maxY
 import app.shosetsu.android.common.ext.percentageScrolled
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
+import app.shosetsu.android.view.widget.TappingTextView
 import app.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.databinding.ChapterReaderTextViewBinding
 import org.kodein.di.Kodein
@@ -53,7 +53,7 @@ class StringReader(
 	/**
 	 * Main way of reading in this view
 	 */
-	private val textView: AppCompatTextView = binding.textView
+	private val textView: TappingTextView = binding.textView
 	private val scrollView: NestedScrollView = binding.scrollView
 	private val middleBox: View = binding.readerMiddleBox
 	private val progressBar: ProgressBar = binding.progressBar
@@ -150,8 +150,10 @@ class StringReader(
 		scrollView.scrollTo(0, (scrollView.maxY * (progress / 100)).toInt())
 	}
 
-	override fun getFocusTarget(onFocus: () -> Unit) =
-		textView.setOnClickListener { onFocus() }
+	override fun getFocusTarget(onFocus: () -> Unit) {
+//		textView.setOnClickListener { onFocus() }
+		textView.middleTappedListener = onFocus
+	}
 
 	override fun syncTextColor() {
 		textView.setTextColor(chapterReader.viewModel.defaultForeground)
@@ -187,27 +189,39 @@ class StringReader(
 	override fun depleteScroll() {
 		val currentY = scrollView.scrollY
 
-		if (currentY > scrollSpeed)
-			scrollView.smoothScrollTo(0, currentY - scrollSpeed)
+		if (currentY > scrollStep)
+			scrollView.smoothScrollBy(0, -1 * scrollStep, scrollDuration)
+		else scrollView.smoothScrollTo(0, 0)
 	}
 
 	override fun bindView(item: ReaderChapterUI, payloads: List<Any>) {
+		textView.bottomTappedListener = {
+			if (tapToScroll)
+				depleteScroll()
+		}
+		textView.topTappedListener = {
+			if (tapToScroll)
+				incrementScroll()
+		}
 	}
 
 	override fun unbindView(item: ReaderChapterUI) {
-		textView.setOnClickListener(null)
+		textView.topTappedListener = null
+		textView.middleTappedListener = null
+		textView.bottomTappedListener = null
 	}
 
 	override fun incrementScroll() {
 		val currentY = scrollView.scrollY
 		val maxY = scrollView.getChildAt(0).height - scrollView.height
 
-		if (currentY < maxY - scrollSpeed)
-			scrollView.smoothScrollTo(0, currentY + scrollSpeed)
+		if (currentY < maxY - scrollStep)
+			scrollView.smoothScrollBy(0, scrollStep, scrollDuration)
 		else scrollView.smoothScrollTo(0, maxY)
 	}
 
 	companion object {
-		private const val scrollSpeed = 300
+		private const val scrollDuration = 750
+		private const val scrollStep = 500
 	}
 }

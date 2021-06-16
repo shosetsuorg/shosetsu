@@ -394,10 +394,12 @@ class ChapterReader
 
 		toolbar.isVisible = if (toolbar.isVisible) {
 			toast("hidden")
+			logV("hidden")
 			chapterReaderBottom.isVisible = false
 			false
 		} else {
 			toast("shown")
+			logV("shown")
 			chapterReaderBottom.isVisible = true
 			true
 		}

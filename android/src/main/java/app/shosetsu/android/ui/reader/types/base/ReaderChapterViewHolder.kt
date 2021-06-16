@@ -3,6 +3,7 @@ package app.shosetsu.android.ui.reader.types.base
 import android.view.View
 import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
+import app.shosetsu.android.viewmodel.abstracted.IChapterReaderViewModel
 import com.mikepenz.fastadapter.FastAdapter
 
 /*
@@ -32,8 +33,11 @@ abstract class ReaderChapterViewHolder(
 	lateinit var chapter: ReaderChapterUI
 	lateinit var chapterReader: ChapterReader
 
-	val viewModel
+	val viewModel: IChapterReaderViewModel
 		get() = chapterReader.viewModel
+
+	val tapToScroll: Boolean
+		get() = viewModel.tapToScroll
 
 	/**
 	 * Passes in data

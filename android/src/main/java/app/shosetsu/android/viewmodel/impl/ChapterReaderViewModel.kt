@@ -377,6 +377,20 @@ class ChapterReaderViewModel(
 		}.asIOLiveData()
 
 	private val isScreenRotationLockedFlow = MutableStateFlow(false)
+
+	private var _tapToScroll: Boolean = ReaderIsTapToScroll.default
+
+	override val tapToScroll: Boolean
+		get() = _tapToScroll
+
+	init {
+		launchIO {
+			settingsRepo.getBooleanFlow(ReaderIsTapToScroll).collectLatest {
+				_tapToScroll = it
+			}
+		}
+	}
+
 	override val liveIsScreenRotationLocked: LiveData<Boolean>
 		get() = isScreenRotationLockedFlow.asIOLiveData()
 

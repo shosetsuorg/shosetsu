@@ -38,6 +38,11 @@ abstract class IChapterReaderViewModel :
 	ExposedSettingsRepoViewModel {
 
 	/**
+	 * Is tap to scroll enabled
+	 */
+	abstract val tapToScroll: Boolean
+
+	/**
 	 * Should the screen be locked
 	 */
 	abstract val liveIsScreenRotationLocked: LiveData<Boolean>
