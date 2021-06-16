@@ -38,6 +38,11 @@ abstract class IChapterReaderViewModel :
 	ExposedSettingsRepoViewModel {
 
 	/**
+	 * Should the screen be locked
+	 */
+	abstract val liveIsScreenRotationLocked: LiveData<Boolean>
+
+	/**
 	 * Should the reader keep the screen on
 	 */
 	abstract val liveKeepScreenOn: LiveData<Boolean>
@@ -141,5 +146,11 @@ abstract class IChapterReaderViewModel :
 	 * Loads the settings list for the bottom bar
 	 */
 	abstract fun getSettings(): LiveData<HResult<List<SettingsItemData>>>
+
+
+	/**
+	 * Toggle the screen lock state
+	 */
+	abstract fun toggleScreenRotationLock()
 
 }

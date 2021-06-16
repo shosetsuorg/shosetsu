@@ -376,6 +376,14 @@ class ChapterReaderViewModel(
 			}
 		}.asIOLiveData()
 
+	private val isScreenRotationLockedFlow = MutableStateFlow(false)
+	override val liveIsScreenRotationLocked: LiveData<Boolean>
+		get() = isScreenRotationLockedFlow.asIOLiveData()
+
+	override fun toggleScreenRotationLock() {
+		isScreenRotationLockedFlow.value = !isScreenRotationLockedFlow.value
+	}
+
 	suspend fun settings(): List<SettingsItemData> = listOf(
 		// Quick settings
 		textSizeOption(0),

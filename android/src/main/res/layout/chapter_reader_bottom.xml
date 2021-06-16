@@ -61,7 +61,8 @@
                 android:background="?selectableItemBackgroundBorderless"
                 android:scaleX="1.5"
                 android:scaleY="1.5"
-                android:src="@drawable/color_lens" />
+                android:src="@drawable/color_lens"
+                android:visibility="gone" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/bookmark"
@@ -71,6 +72,15 @@
                 android:scaleX="1.5"
                 android:scaleY="1.5"
                 android:src="@drawable/empty_bookmark" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/rotation_lock_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:scaleX="1.5"
+                android:scaleY="1.5"
+                android:src="@drawable/ic_baseline_screen_rotation_24" />
 
         </LinearLayout>
 

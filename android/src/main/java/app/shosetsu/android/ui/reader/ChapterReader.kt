@@ -1,5 +1,7 @@
 package app.shosetsu.android.ui.reader
 
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MenuItem
@@ -39,6 +41,7 @@ import com.skydoves.colorpickerview.ColorPickerDialog
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
+
 
 /*
  * This file is part of shosetsu.
@@ -86,9 +89,14 @@ class ChapterReader
 	private val pageChangeCallback: OnPageChangeCallback by lazy { ChapterReaderPageChange() }
 	private val itemAdapter by lazy { ItemAdapter<ReaderUIItem<*, *>>() }
 	private val fastAdapter by lazy { FastAdapter.with(itemAdapter) }
-	private val bookmark
+
+	private val bookmarkButton
 		get() = binding.chapterReaderBottom.bookmark
-	private val themeSelect
+
+	private val rotationLockButton
+		get() = binding.chapterReaderBottom.rotationLockButton
+
+	private val themeSelectButton
 		get() = binding.chapterReaderBottom.themeSelect
 
 	/** Gets chapters from the [itemAdapter] */
@@ -208,6 +216,15 @@ class ChapterReader
 		viewModel.liveKeepScreenOn.observe {
 			binding.root.keepScreenOn = it
 		}
+		viewModel.liveIsScreenRotationLocked.observe {
+			if (it) {
+				lockRotation()
+				rotationLockButton.setImageResource(R.drawable.ic_baseline_screen_lock_rotation_24)
+			} else {
+				unlockRotation()
+				rotationLockButton.setImageResource(R.drawable.ic_baseline_screen_rotation_24)
+			}
+		}
 	}
 
 	private fun applyToChapterViews(
@@ -241,7 +258,7 @@ class ChapterReader
 	}
 
 	private fun setBookmarkIcon(readerChapterUI: ReaderChapterUI) {
-		bookmark.setImageResource(
+		bookmarkButton.setImageResource(
 			if (readerChapterUI.bookmarked)
 				R.drawable.filled_bookmark
 			else R.drawable.empty_bookmark
@@ -249,7 +266,7 @@ class ChapterReader
 	}
 
 	private fun setupBottomMenu() {
-		bookmark.apply {
+		bookmarkButton.apply {
 			setOnClickListener {
 				getCurrentChapter()?.apply {
 					bookmarked = !bookmarked
@@ -258,7 +275,14 @@ class ChapterReader
 				}
 			}
 		}
-		themeSelect.apply {
+
+		rotationLockButton.apply {
+			setOnClickListener {
+				viewModel.toggleScreenRotationLock()
+			}
+		}
+
+		themeSelectButton.apply {
 			setOnClickListener {
 				ColorPickerDialog.Builder(context)
 					.setPositiveButton("") { _, _ ->
@@ -431,6 +455,20 @@ class ChapterReader
 				}
 			}
 		}
+	}
+
+	private fun lockRotation() {
+		val currentOrientation = resources.configuration.orientation
+		requestedOrientation = if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+			ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+		} else {
+			ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+		}
+	}
+
+	private fun unlockRotation() {
+		//window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+		requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_USER
 	}
 }
 
