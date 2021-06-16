@@ -166,6 +166,11 @@ class ChapterReaderViewModel(
 			it
 		}.asIOLiveData()
 	}
+
+	override val liveKeepScreenOn: LiveData<Boolean> by lazy {
+		settingsRepo.getBooleanFlow(ReaderKeepScreenOn).asIOLiveData()
+	}
+
 	override var currentChapterID: Int = -1
 
 	private val novelIDLive: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
@@ -382,6 +387,7 @@ class ChapterReaderViewModel(
 		horizontalSwitchOption(5),
 		continuousScrollOption(6),
 		invertChapterSwipeOption(8),
+		readerKeepScreenOnOption(9),
 
 		// Major changes
 		stringAsHtmlOption(7),

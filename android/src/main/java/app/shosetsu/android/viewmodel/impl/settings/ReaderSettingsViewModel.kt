@@ -130,6 +130,7 @@ class ReaderSettingsViewModel(
 			}
 			checkSettingValue(ChaptersResumeFirstUnread)
 		},
+		readerKeepScreenOnOption(14)
 	)
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
@@ -169,6 +170,13 @@ suspend fun ExposedSettingsRepoViewModel.tapToScrollOption(id: Int) =
 	switchSettingData(id) {
 		title { R.string.tap_to_scroll }
 		checkSettingValue(ReaderIsTapToScroll)
+	}
+
+suspend fun ExposedSettingsRepoViewModel.readerKeepScreenOnOption(id: Int) =
+	switchSettingData(id) {
+		title { R.string.settings_reader_keep_screen_on }
+		description { R.string.settings_reader_keep_screen_on_desc }
+		checkSettingValue(ReaderKeepScreenOn)
 	}
 
 suspend fun ExposedSettingsRepoViewModel.volumeScrollingOption(id: Int) =

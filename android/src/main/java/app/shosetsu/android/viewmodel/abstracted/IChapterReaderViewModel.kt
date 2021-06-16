@@ -38,6 +38,11 @@ abstract class IChapterReaderViewModel :
 	ExposedSettingsRepoViewModel {
 
 	/**
+	 * Should the reader keep the screen on
+	 */
+	abstract val liveKeepScreenOn: LiveData<Boolean>
+
+	/**
 	 * The current chapter ID that is being read
 	 */
 	abstract var currentChapterID: Int

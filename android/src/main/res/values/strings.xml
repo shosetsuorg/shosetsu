@@ -428,6 +428,9 @@
     <string name="settings_advanced_require_double_back_title">Require double back to exit</string>
     <string name="settings_advanced_require_double_back_desc">If enabled, will require the user to do the back action 2x to leave the app</string>
 
+    <string name="settings_reader_keep_screen_on">Keep screen on</string>
+    <string name="settings_reader_keep_screen_on_desc">The chapter reader will keep the screen on while open</string>
+
 
     <!-- Error Key Messages -->
 

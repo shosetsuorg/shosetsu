@@ -111,6 +111,10 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	 */
 	object ReaderContinuousScroll : BooleanKey("readerContinuousScroll", false)
 
+	/**
+	 * The reader should keep the screen on
+	 */
+	object ReaderKeepScreenOn : BooleanKey("reader_keep_screen_on", false)
 
 	//- Some things
 	object ChaptersResumeFirstUnread : BooleanKey(

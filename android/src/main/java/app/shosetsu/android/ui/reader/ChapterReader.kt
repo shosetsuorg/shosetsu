@@ -120,8 +120,12 @@ class ChapterReader
 		super.onCreate(savedInstanceState)
 		setContentView(ActivityReaderBinding.inflate(layoutInflater).also { binding = it }.root)
 		setSupportActionBar(toolbar as Toolbar)
+
+		// Show back button
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
 		//slidingUpPanelLayout.setGravity(Gravity.BOTTOM)
+
 		setupViewPager()
 		setupBottomMenu()
 		setObservers()
@@ -199,6 +203,10 @@ class ChapterReader
 
 		viewModel.liveChapterDirection.observe {
 			viewpager.orientation = if (it) ORIENTATION_HORIZONTAL else ORIENTATION_VERTICAL
+		}
+
+		viewModel.liveKeepScreenOn.observe {
+			binding.root.keepScreenOn = it
 		}
 	}
 
