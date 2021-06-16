@@ -4,25 +4,35 @@
 
     <item
         android:id="@+id/remove_from_library"
+        android:icon="@drawable/trash"
         android:title="@string/remove" />
 
     <item
         android:id="@+id/source_migrate"
         android:title="@string/migrate_sources"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
 
-    <item android:title="@string/selection_options">
-        <menu>
-            <item
-                android:id="@+id/chapter_deselect_all"
-                android:title="@string/deselect_all"
-                app:showAsAction="never" />
-            <item
-                android:id="@+id/chapter_select_all"
-                android:icon="@drawable/select_all"
-                android:title="@string/select_all"
-                app:showAsAction="ifRoom" />
-        </menu>
-    </item>
+    <item
+        android:id="@+id/library_deselect_all"
+        android:title="@string/deselect_all"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/library_inverse_selection"
+        android:icon="@drawable/flip_to_back"
+        android:title="@string/inverse_selection"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/library_select_all"
+        android:icon="@drawable/select_all"
+        android:title="@string/select_all"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/library_select_between"
+        android:icon="@drawable/unfold_less"
+        android:title="@string/select_between"
+        app:showAsAction="ifRoom" />
 
 </menu>

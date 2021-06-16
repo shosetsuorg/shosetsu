@@ -5,7 +5,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mikepenz.fastadapter.ClickListener
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.GenericItem
+import com.mikepenz.fastadapter.IAdapter
+import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.listeners.ClickEventHook
+import com.mikepenz.fastadapter.select.getSelectExtension
+import com.mikepenz.fastadapter.select.selectExtension
+import com.mikepenz.fastadapter.utils.AdapterPredicate
 
 /*
  * This file is part of shosetsu.
@@ -36,6 +41,73 @@ fun <T : GenericItem> FastAdapter<T>.setOnPreClickListener(listener: ClickListen
 fun <T : GenericItem> FastAdapter<T>.setOnClickListener(listener: ClickListener<T>) {
 	onClickListener = listener
 }
+
+/**
+ * Launches on the IO thread a selection task, which will effect the UI in return
+ */
+fun <ITEM : GenericItem> FastAdapter<ITEM>.selectBetween(
+	selected: List<ITEM> = getSelectExtension().selectedItems.toList(),
+	itemAdapter: ItemAdapter<ITEM>
+) = launchIO {
+	selectExtension {
+		val adapterList = itemAdapter.adapterItems
+
+		if (adapterList.isEmpty()) return@launchIO
+
+		val first = adapterList.indexOfFirst { it.identifier == selected.first().identifier }
+		val last = adapterList.indexOfFirst { it.identifier == selected.last().identifier }
+
+		// Completely ignore the task if the following are true
+		if (first == -1 || last == -1 || first == last || first + 1 == last) {
+			return@launchIO
+		}
+
+		val smallest: Int
+		val largest: Int
+		when {
+			first > last -> {
+				largest = first
+				smallest = last
+			}
+			else -> {
+				smallest = first
+				largest = last
+			}
+		}
+		adapterList.subList(smallest, largest)
+			.map { this@selectBetween.getPosition(it) }
+			.let { launchUI { select(it) } }
+	}
+}
+
+/**
+ * Inverts the selection of items in this [FastAdapter]
+ */
+fun <ITEM : GenericItem> FastAdapter<ITEM>.invertSelection() {
+	recursive(object : AdapterPredicate<ITEM> {
+		override fun apply(
+			lastParentAdapter: IAdapter<ITEM>,
+			lastParentPosition: Int,
+			item: ITEM,
+			position: Int
+		): Boolean {
+			if (item.isSelected) {
+				getSelectExtension().deselect(item)
+			} else {
+				getSelectExtension().select(
+					adapter = lastParentAdapter,
+					item = item,
+					position = RecyclerView.NO_POSITION,
+					fireEvent = false,
+					considerSelectableFlag = true
+				)
+			}
+			return false
+		}
+	}, false)
+	notifyDataSetChanged()
+}
+
 
 inline fun <ITEM : GenericItem, reified VH : RecyclerView.ViewHolder> FastAdapter<ITEM>.hookClickEvent(
 	crossinline bind: (VH) -> View? = { null },

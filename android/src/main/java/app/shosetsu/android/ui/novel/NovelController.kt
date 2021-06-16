@@ -8,7 +8,6 @@ import android.view.*
 import android.widget.NumberPicker
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
-import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController
@@ -31,12 +30,10 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBindin
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelJumpDialogBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.IAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
 import com.mikepenz.fastadapter.select.getSelectExtension
 import com.mikepenz.fastadapter.select.selectExtension
-import com.mikepenz.fastadapter.utils.AdapterPredicate
 import javax.security.auth.DestroyFailedException
 
 /*
@@ -503,28 +500,7 @@ class NovelController(bundle: Bundle) :
 	}
 
 	private fun invertSelection() {
-		fastAdapter.recursive(object : AdapterPredicate<AbstractItem<*>> {
-			override fun apply(
-				lastParentAdapter: IAdapter<AbstractItem<*>>,
-				lastParentPosition: Int,
-				item: AbstractItem<*>,
-				position: Int
-			): Boolean {
-				if (item.isSelected) {
-					fastAdapter.getSelectExtension().deselect(item)
-				} else {
-					fastAdapter.getSelectExtension().select(
-						adapter = lastParentAdapter,
-						item = item,
-						position = RecyclerView.NO_POSITION,
-						fireEvent = false,
-						considerSelectableFlag = true
-					)
-				}
-				return false
-			}
-		}, false)
-		fastAdapter.notifyDataSetChanged()
+		fastAdapter.invertSelection()
 	}
 
 	private fun downloadSelected() {
@@ -549,37 +525,10 @@ class NovelController(bundle: Bundle) :
 	 * Selects all chapters between the first and last selected chapter
 	 */
 	private fun selectBetween() {
-		launchIO {
-			fastAdapter.selectExtension {
-				val selectedItems = selectedChapters.sortedBy { it.order }
-				val adapterList = chapterUIAdapter.adapterItems
-				if (adapterList.isEmpty()) {
-					launchUI { toast(R.string.chapter_select_between_error_empty_adapter) }
-					return@launchIO
-				}
-
-				val first = adapterList.indexOfFirst { it.id == selectedItems.first().id }
-				val last = adapterList.indexOfFirst { it.id == selectedItems.last().id }
-
-				if (first == -1) return@launchIO
-				if (last == -1) return@launchIO
-
-				val smallest: Int
-				val largest: Int
-				when {
-					first > last -> {
-						largest = first
-						smallest = last
-					}
-					else -> {
-						smallest = first
-						largest = last
-					}
-				}
-				adapterList.subList(smallest, largest).map { fastAdapter.getPosition(it) }
-					.let { launchUI { select(it) } }
-			}
-		}
+		fastAdapter.selectBetween(
+			selectedChapters,
+			chapterUIAdapter as ItemAdapter<AbstractItem<*>>
+		)
 	}
 
 	private inner class SelectionActionMode : ActionMode.Callback {
@@ -587,9 +536,9 @@ class NovelController(bundle: Bundle) :
 			// Hides the original action bar
 			// (activity as MainActivity?)?.supportActionBar?.hide()
 
-			mode.menuInflater.inflate(R.menu.toolbar_chapters_selected, menu)
+			mode.menuInflater.inflate(R.menu.toolbar_novel_chapters_selected, menu)
 			mode.setTitle(R.string.selection)
-			binding.bottomMenu.show(mode, R.menu.toolbar_chapters_selected_bottom) {
+			binding.bottomMenu.show(mode, R.menu.toolbar_novel_chapters_selected_bottom) {
 				when (it.itemId) {
 					id.chapter_download_selected -> {
 						downloadSelected()

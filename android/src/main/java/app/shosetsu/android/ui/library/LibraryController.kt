@@ -171,6 +171,10 @@ class LibraryController
 		}
 	}
 
+	private val selectedNovels: List<ABookmarkedNovelUI>
+		get() = fastAdapter.getSelectExtension().selectedItems.toList()
+
+
 	/***/
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		if (fastAdapter.getSelectExtension().selectedItems.isEmpty()) {
@@ -196,12 +200,20 @@ class LibraryController
 				else toast(R.string.you_not_online)
 				return true
 			}
-			R.id.chapter_select_all -> {
-				fastAdapter.getSelectExtension().select()
+			R.id.library_select_all -> {
+				selectAll()
 				return true
 			}
-			R.id.chapter_deselect_all -> {
-				fastAdapter.getSelectExtension().deselect()
+			R.id.library_deselect_all -> {
+				deselectAll()
+				return true
+			}
+			R.id.library_inverse_selection -> {
+				invertSelection()
+				return true
+			}
+			R.id.library_select_between -> {
+				selectBetween()
 				return true
 			}
 			R.id.remove_from_library -> {
@@ -232,6 +244,22 @@ class LibraryController
 			}
 			else -> return false
 		}
+	}
+
+	private fun deselectAll() {
+		fastAdapter.getSelectExtension().deselect()
+	}
+
+	private fun selectAll() {
+		fastAdapter.getSelectExtension().select(true)
+	}
+
+	private fun invertSelection() {
+		fastAdapter.invertSelection()
+	}
+
+	private fun selectBetween() {
+		fastAdapter.selectBetween(selectedNovels, itemAdapter)
 	}
 
 	override fun showEmpty() {

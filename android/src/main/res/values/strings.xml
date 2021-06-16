@@ -437,6 +437,7 @@
     <string name="toast_error_chapter_jump_invalid_number">Chapter number required</string>
     <string name="toast_error_chapter_jump_empty_title">Chapter title needed</string>
     <string name="controller_browse_option_Import">Import Novel</string>
+    <string name="toast_error_select_between_needs_two">Select between needs at least 2 selected items</string>
 
 
     <!-- Error Key Messages -->
