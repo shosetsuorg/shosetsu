@@ -27,13 +27,13 @@
 
     <item
         android:id="@+id/bookmark"
-        android:icon="@drawable/empty_bookmark"
+        android:icon="@drawable/ic_outline_bookmark_add_24"
         android:title="@string/bookmark"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/remove_bookmark"
-        android:icon="@drawable/filled_bookmark"
+        android:icon="@drawable/ic_baseline_bookmark_remove_24"
         android:title="@string/remove_bookmark"
         app:showAsAction="always" />
 </menu>
