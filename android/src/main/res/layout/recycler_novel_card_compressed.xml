@@ -9,7 +9,7 @@
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
     android:layout_marginEnd="8dp"
-    app:strokeColor="@color/selected_blue">
+    app:strokeColor="@color/colorPrimary">
 
     <FrameLayout
         android:id="@+id/constraint"
