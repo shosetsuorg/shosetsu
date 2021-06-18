@@ -264,4 +264,8 @@ val useCaseModule: Kodein.Module = Kodein.Module("useCase") {
 	bind<UpdateExtensionSettingUseCase>() with provider {
 		UpdateExtensionSettingUseCase(instance(), instance())
 	}
+
+	bind<ForceInsertRepositoryUseCase>() with provider {
+		ForceInsertRepositoryUseCase(instance())
+	}
 }

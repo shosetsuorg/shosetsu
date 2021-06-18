@@ -51,4 +51,10 @@ abstract class ARepositoryViewModel
 	 * Toggles the state of [RepositoryUI.isRepoEnabled], returns the new state
 	 */
 	abstract fun toggleIsEnabled(repositoryInfoUI: RepositoryUI): LiveData<HResult<Boolean>>
+
+	/**
+	 * Start the repository updater
+	 */
+	abstract fun updateRepositories()
+	abstract fun undoRemove(item: RepositoryUI):LiveData<HResult<*>>
 }

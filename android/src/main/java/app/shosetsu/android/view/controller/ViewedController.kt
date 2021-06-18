@@ -158,6 +158,7 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 	}
 
 	/** @see [toast] */
+	@Deprecated("Use snackbar instead")
 	fun toast(
 		@StringRes message: Int,
 		length: Int = Toast.LENGTH_SHORT,

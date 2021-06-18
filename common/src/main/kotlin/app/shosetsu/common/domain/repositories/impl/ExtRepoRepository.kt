@@ -59,4 +59,6 @@ class ExtRepoRepository(
 	override suspend fun update(entity: RepositoryEntity): HResult<*> =
 		databaseSource.update(entity)
 
+	override suspend fun insert(entity: RepositoryEntity): HResult<*> =
+		databaseSource.insert(entity)
 }

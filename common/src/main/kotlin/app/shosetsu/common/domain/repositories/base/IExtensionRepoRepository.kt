@@ -89,4 +89,5 @@ interface IExtensionRepoRepository {
 
 	suspend fun update(entity: RepositoryEntity): HResult<*>
 
+	suspend fun insert(entity: RepositoryEntity): HResult<*>
 }

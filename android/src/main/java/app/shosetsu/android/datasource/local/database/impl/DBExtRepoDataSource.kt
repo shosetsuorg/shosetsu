@@ -79,6 +79,12 @@ class DBExtRepoDataSource(
 		errorResult(e)
 	}
 
+	override suspend fun insert(entity: RepositoryEntity): HResult<*> = try {
+		successResult(repositoryDao.insertReplace(entity.toDB()))
+	} catch (e: SQLiteException) {
+		errorResult(e)
+	}
+
 	fun RepositoryEntity.toDB() = DBRepositoryEntity(id, url, name, isEnabled)
 
 	fun List<RepositoryEntity>.toDB() = map { it.toDB() }

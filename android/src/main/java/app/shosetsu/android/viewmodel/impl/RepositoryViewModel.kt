@@ -3,6 +3,8 @@ package app.shosetsu.android.viewmodel.impl
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.AddRepositoryUseCase
+import app.shosetsu.android.domain.usecases.ForceInsertRepositoryUseCase
+import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteRepositoryUseCase
 import app.shosetsu.android.domain.usecases.load.LoadRepositoriesUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateRepositoryUseCase
@@ -41,7 +43,9 @@ class RepositoryViewModel(
 	private val reportExceptionUseCase: ReportExceptionUseCase,
 	private val addRepositoryUseCase: AddRepositoryUseCase,
 	private val deleteRepositoryUseCase: DeleteRepositoryUseCase,
-	private val updateRepositoryUseCase: UpdateRepositoryUseCase
+	private val updateRepositoryUseCase: UpdateRepositoryUseCase,
+	private val startRepositoryUpdateManagerUseCase: StartRepositoryUpdateManagerUseCase,
+	private val forceInsertRepositoryUseCase: ForceInsertRepositoryUseCase
 ) : ARepositoryViewModel() {
 
 	@ExperimentalCoroutinesApi
@@ -51,6 +55,10 @@ class RepositoryViewModel(
 
 	override fun addRepository(name: String, url: String) = flow {
 		emit(addRepositoryUseCase(RepositoryEntity(url = url, name = name, isEnabled = true)))
+	}.asIOLiveData()
+
+	override fun undoRemove(item: RepositoryUI): LiveData<HResult<*>> = flow {
+		emit(forceInsertRepositoryUseCase(item))
 	}.asIOLiveData()
 
 	override fun isURL(string: String): Boolean {
@@ -73,5 +81,10 @@ class RepositoryViewModel(
 				successResult(newState)
 			})
 		}.asIOLiveData()
+
+	override fun updateRepositories() {
+		startRepositoryUpdateManagerUseCase()
+	}
+
 
 }

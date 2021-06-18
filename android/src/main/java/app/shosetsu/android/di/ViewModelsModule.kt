@@ -120,7 +120,7 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	}
 
 	// Extensions
-	bind<IExtensionsViewModel>() with provider {
+	bind<IBrowseViewModel>() with provider {
 		ExtensionsViewModel(
 			getExtensionsUIUseCase = instance(),
 			installExtensionUIUseCase = instance(),
@@ -188,7 +188,9 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 			reportExceptionUseCase = instance(),
 			addRepositoryUseCase = instance(),
 			deleteRepositoryUseCase = instance(),
-			updateRepositoryUseCase = instance()
+			updateRepositoryUseCase = instance(),
+			startRepositoryUpdateManagerUseCase = instance(),
+			forceInsertRepositoryUseCase = instance()
 		)
 	}
 

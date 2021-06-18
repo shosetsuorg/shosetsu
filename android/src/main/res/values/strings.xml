@@ -382,7 +382,8 @@
     <string name="toast_repository_added">Repository Added</string>
     <string name="toast_repository_add_fail">Failed to add repository</string>
     <string name="toast_repository_remove_fail">Failed to remove repository!</string>
-    <string name="repository_list_change_warning">Please refresh the repository list in Browse</string>
+    <string name="controller_repositories_snackbar_repo_changed">Refresh the repositories?</string>
+    <string name="controller_repositories_snackbar_repo_removed">Repository removed.</string>
 
 
     <string name="text_alignment_start">Start</string>
@@ -446,6 +447,10 @@
     <string name="toast_error_chapter_jump_empty_title">Chapter title needed</string>
     <string name="controller_browse_option_Import">Import Novel</string>
     <string name="toast_error_select_between_needs_two">Select between needs at least 2 selected items</string>
+    <string name="controller_repositories_action_repo_update">Refresh</string>
+    <string name="generic_undo">Undo</string>
+    <string name="generic_question_retry">Retry?</string>
+    <string name="controller_repositories_snackbar_fail_undo_repo_removal">Failed to undo repository removal</string>
 
 
     <!-- Error Key Messages -->

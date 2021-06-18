@@ -26,7 +26,7 @@ import app.shosetsu.android.domain.usecases.UninstallExtensionUIUseCase
 import app.shosetsu.android.domain.usecases.load.LoadExtensionsUIUseCase
 import app.shosetsu.android.domain.usecases.toast.StringToastUseCase
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
-import app.shosetsu.android.viewmodel.abstracted.IExtensionsViewModel
+import app.shosetsu.android.viewmodel.abstracted.IBrowseViewModel
 import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.*
 
@@ -44,7 +44,7 @@ class ExtensionsViewModel(
 	private val stringToastUseCase: StringToastUseCase,
 	private var isOnlineUseCase: IsOnlineUseCase,
 	private val reportExceptionUseCase: ReportExceptionUseCase
-) : IExtensionsViewModel() {
+) : IBrowseViewModel() {
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
 		reportExceptionUseCase(error)
