@@ -208,10 +208,11 @@ class RepositoryUpdateWorker(
 					onError = {
 						notify(
 							"${it.code} : ${it.message}",
-							notificationId = ID_REPOSITORY_UPDATE + 1
+							notificationId = ID_REPOSITORY_UPDATE + 1 + (repo.id ?: 0)
 						) {
 							removeProgress()
 							setContentTitle("${repo.name} failed to load")
+							setNotOngoing()
 						}
 						logE(
 							"${repo.name} failed to load ${it.code} : ${it.message}",
