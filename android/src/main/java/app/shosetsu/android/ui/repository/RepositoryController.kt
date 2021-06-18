@@ -12,6 +12,7 @@ import app.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.RepositoryAddBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.BaseTransientBottomBar.BaseCallback.DISMISS_EVENT_CONSECUTIVE
 import com.google.android.material.snackbar.Snackbar
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.listeners.addClickListener
@@ -149,8 +150,9 @@ class RepositoryController : GenericFastAdapterRecyclerController<RepositoryUI>(
 					R.string.toast_success_repository_toggled_disabled
 			)
 				// After, ask the user if they want to refresh
-				?.setOnDismissed { _, _ ->
-					showWarning()
+				?.setOnDismissed { _, event ->
+					if (event != DISMISS_EVENT_CONSECUTIVE)
+						showWarning()
 				}?.show()
 		}
 	}
