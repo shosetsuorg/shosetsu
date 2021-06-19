@@ -3,7 +3,7 @@ package app.shosetsu.android.ui.repository
 import android.view.LayoutInflater
 import android.view.View
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.view.controller.GenericFastAdapterRecyclerController
+import app.shosetsu.android.view.controller.FastAdapterRefreshableRecyclerController
 import app.shosetsu.android.view.controller.base.FABController
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.android.view.widget.EmptyDataView
@@ -39,13 +39,11 @@ import androidx.appcompat.app.AlertDialog.Builder as AlertDialogBuilder
  * shosetsu
  * 16 / 09 / 2020
  */
-class RepositoryController : GenericFastAdapterRecyclerController<RepositoryUI>(), FABController {
+class RepositoryController : FastAdapterRefreshableRecyclerController<RepositoryUI>(),
+	FABController {
 	private val viewModel: ARepositoryViewModel by viewModel()
 
 	override val viewTitleRes: Int = R.string.repositories
-
-	override fun onViewCreated(view: View) {
-	}
 
 	override fun showEmpty() {
 		super.showEmpty()
@@ -206,7 +204,7 @@ class RepositoryController : GenericFastAdapterRecyclerController<RepositoryUI>(
 		)
 			// Ask the user if they want to refresh
 			?.setAction(R.string.controller_repositories_action_repo_update) {
-				viewModel.updateRepositories()
+				onRefresh()
 			}?.show()
 	}
 
@@ -215,5 +213,11 @@ class RepositoryController : GenericFastAdapterRecyclerController<RepositoryUI>(
 
 		// When the FAB is clicked, open a alert dialog to input a new repository
 		fab.setOnClickListener { launchAddRepositoryDialog(it) }
+	}
+
+	override fun onRefresh() {
+		if (viewModel.isOnline()) {
+			viewModel.updateRepositories()
+		} else displayOfflineSnackBar(R.string.controller_repositories_snackbar_offline_no_update)
 	}
 }

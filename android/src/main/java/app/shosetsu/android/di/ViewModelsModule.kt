@@ -190,7 +190,8 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 			deleteRepositoryUseCase = instance(),
 			updateRepositoryUseCase = instance(),
 			startRepositoryUpdateManagerUseCase = instance(),
-			forceInsertRepositoryUseCase = instance()
+			forceInsertRepositoryUseCase = instance(),
+			isOnlineUseCase = instance()
 		)
 	}
 

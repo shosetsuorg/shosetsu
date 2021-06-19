@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.AddRepositoryUseCase
 import app.shosetsu.android.domain.usecases.ForceInsertRepositoryUseCase
+import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteRepositoryUseCase
 import app.shosetsu.android.domain.usecases.load.LoadRepositoriesUseCase
@@ -45,7 +46,8 @@ class RepositoryViewModel(
 	private val deleteRepositoryUseCase: DeleteRepositoryUseCase,
 	private val updateRepositoryUseCase: UpdateRepositoryUseCase,
 	private val startRepositoryUpdateManagerUseCase: StartRepositoryUpdateManagerUseCase,
-	private val forceInsertRepositoryUseCase: ForceInsertRepositoryUseCase
+	private val forceInsertRepositoryUseCase: ForceInsertRepositoryUseCase,
+	private val isOnlineUseCase: IsOnlineUseCase
 ) : ARepositoryViewModel() {
 
 	@ExperimentalCoroutinesApi
@@ -86,5 +88,5 @@ class RepositoryViewModel(
 		startRepositoryUpdateManagerUseCase()
 	}
 
-
+	override fun isOnline(): Boolean = isOnlineUseCase()
 }

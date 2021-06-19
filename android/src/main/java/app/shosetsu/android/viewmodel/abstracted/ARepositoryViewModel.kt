@@ -3,6 +3,7 @@ package app.shosetsu.android.viewmodel.abstracted
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
+import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
 import app.shosetsu.common.dto.HResult
@@ -29,7 +30,7 @@ import app.shosetsu.common.dto.HResult
  * 16 / 09 / 2020
  */
 abstract class ARepositoryViewModel
-	: SubscribeHandleViewModel<List<RepositoryUI>>, ShosetsuViewModel(), ErrorReportingViewModel {
+	: SubscribeHandleViewModel<List<RepositoryUI>>, ShosetsuViewModel(), ErrorReportingViewModel,IsOnlineCheckViewModel {
 	/**
 	 * Adds a URL via a string the user provides
 	 *
@@ -56,5 +57,9 @@ abstract class ARepositoryViewModel
 	 * Start the repository updater
 	 */
 	abstract fun updateRepositories()
+
+	/**
+	 * Try to restore a repository
+	 */
 	abstract fun undoRemove(item: RepositoryUI):LiveData<HResult<*>>
 }
