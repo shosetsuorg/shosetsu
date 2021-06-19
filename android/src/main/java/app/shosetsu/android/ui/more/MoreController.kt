@@ -9,6 +9,7 @@ import app.shosetsu.android.ui.settings.SettingsController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
 import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.view.controller.ViewedController
+import app.shosetsu.common.dto.HResult
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerMoreBinding
 
@@ -56,5 +57,9 @@ class MoreController
 
 	override fun bindView(inflater: LayoutInflater): ControllerMoreBinding =
 		ControllerMoreBinding.inflate(inflater)
+
+	override fun handleErrorResult(e: HResult.Error) {
+		TODO("Not yet implemented")
+	}
 
 }

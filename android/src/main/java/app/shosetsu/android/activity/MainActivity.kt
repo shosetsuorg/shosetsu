@@ -52,6 +52,7 @@ import com.google.android.material.snackbar.Snackbar
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
+import java.util.*
 
 
 /*
@@ -545,6 +546,24 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 		}
 	}
 
-	fun makeSnackBar(@StringRes stringRes: Int, @Duration length: Int = Snackbar.LENGTH_SHORT) =
-		Snackbar.make(binding.coordinator, stringRes, length)
+	@SuppressLint("ShowToast")
+	fun makeSnackBar(
+		@StringRes stringRes: Int,
+		@Duration length: Int = Snackbar.LENGTH_SHORT
+	): Snackbar =
+		makeSnackBar(getString(stringRes), length)
+
+	@SuppressLint("ShowToast")
+	fun makeSnackBar(
+		string: String,
+		@Duration length: Int = Snackbar.LENGTH_SHORT
+	): Snackbar =
+		Snackbar.make(binding.coordinator, string, length).apply {
+			when {
+				binding.fab.isVisible -> anchorView = binding.fab
+				binding.efab.isVisible -> anchorView = binding.efab
+				binding.bottomNavigationView.isVisible -> anchorView = binding.bottomNavigationView
+			}
+		}
+
 }

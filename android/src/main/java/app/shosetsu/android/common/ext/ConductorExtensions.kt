@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Build
+import android.provider.Settings
 import android.util.Log
-import android.view.View
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import app.shosetsu.android.activity.MainActivity
@@ -13,6 +13,7 @@ import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler
+import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 
@@ -45,6 +46,20 @@ fun Controller.makeSnackBar(
 	@StringRes stringRes: Int,
 	@BaseTransientBottomBar.Duration length: Int = Snackbar.LENGTH_SHORT,
 ) = (activity as? MainActivity)?.makeSnackBar(stringRes, length)
+
+fun Controller.displayOfflineSnackBar(@StringRes res: Int = R.string.you_not_online) {
+	makeSnackBar(
+		res,
+		Snackbar.LENGTH_LONG
+	)?.setAction(R.string.generic_wifi_settings) {
+		startActivity(android.content.Intent(Settings.ACTION_WIFI_SETTINGS))
+	}?.show()
+}
+
+fun Controller.makeSnackBar(
+	string: String,
+	@BaseTransientBottomBar.Duration length: Int = Snackbar.LENGTH_SHORT,
+) = (activity as? MainActivity)?.makeSnackBar(string, length)
 
 
 fun Controller.withFadeTransaction(): RouterTransaction = RouterTransaction.with(this)

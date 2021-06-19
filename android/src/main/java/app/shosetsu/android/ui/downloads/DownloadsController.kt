@@ -138,7 +138,7 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 	}
 
 	private fun togglePause() {
-		if (viewModel.isOnline()) viewModel.togglePause() else toast(R.string.you_not_online)
+		if (viewModel.isOnline()) viewModel.togglePause() else displayOfflineSnackBar(R.string.controller_downloads_snackbar_offline_no_download)
 	}
 
 	override fun onViewCreated(view: View) {
@@ -158,7 +158,6 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 	}
 
 	override fun handleErrorResult(e: HResult.Error) {
-		super.handleErrorResult(e)
 		viewModel.reportError(e)
 	}
 

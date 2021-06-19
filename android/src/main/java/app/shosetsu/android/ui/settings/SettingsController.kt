@@ -7,6 +7,7 @@ import app.shosetsu.android.ui.settings.sub.backup.BackupSettings
 import app.shosetsu.android.view.controller.GenericFastAdapterRecyclerController
 import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.SettingsCategoryUI
+import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.SettingCategory.*
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -72,5 +73,9 @@ class SettingsController : GenericFastAdapterRecyclerController<SettingsCategory
 			true
 		}
 		updateUI(recyclerArray)
+	}
+
+	override fun handleErrorResult(e: HResult.Error) {
+		TODO("Not yet implemented")
 	}
 }

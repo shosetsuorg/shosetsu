@@ -152,7 +152,7 @@
     <string name="default_reader">Default</string>
     <string name="markdown_reader">MarkDown reader</string>
 
-    <string name="chapters_unread_label">Chapters unread: </string>    <!-- Deprecated -->
+    <string name="chapters_unread_label">Chapters unread: %d</string>    <!-- Deprecated -->
 
     <plurals name="toast_unread_count">
         <item quantity="one">%d unread chapter.</item>
@@ -451,6 +451,13 @@
     <string name="generic_undo">Undo</string>
     <string name="generic_question_retry">Retry?</string>
     <string name="controller_repositories_snackbar_fail_undo_repo_removal">Failed to undo repository removal</string>
+    <string name="generic_wifi_settings">Wi-Fi Settings</string>
+    <string name="controller_browse_snackbar_not_installed">Extension is not installed</string>
+    <string name="controller_browse_snackbar_offline_no_extension">Extensions cannot be used offline</string>
+    <string name="controller_browse_snackbar_offline_no_update_extension">Cannot update when offline</string>
+    <string name="controller_browse_snackbar_offline_no_install_extension">Cannot install when offline</string>
+    <string name="generic_error_cannot_update_library_offline">Novels cannot be updated offline</string>
+    <string name="controller_downloads_snackbar_offline_no_download">Cannot download when offline</string>
 
 
     <!-- Error Key Messages -->

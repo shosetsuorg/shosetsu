@@ -67,10 +67,29 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 			.setOnQueryTextListener(BrowseSearchQuery(pushController))
 	}
 
+	private fun installExtension(extension: ExtensionUI) {
+		var installed = false
+		var update = false
+		if (extension.installed && extension.isExtEnabled) {
+			installed = true
+			if (extension.updateState() == ExtensionUI.State.UPDATE) update = true
+		}
+
+		if (!installed || update) {
+			if (viewModel.isOnline()) {
+				viewModel.installExtension(extension)
+			} else {
+				displayOfflineSnackBar(R.string.controller_browse_snackbar_offline_no_install_extension)
+			}
+		}
+	}
+
 	override fun FastAdapter<ExtensionUI>.setupFastAdapter() {
 		setOnClickListener { _, _, item, _ ->
-			if (item.installed)
-				if (viewModel.isOnline()) {
+			// First check if the user is online or not
+			if (viewModel.isOnline()) {
+				// If the extension is installed, push to it, otherwise prompt the user to install
+				if (item.installed) {
 					pushController(
 						CatalogController(
 							bundleOf(
@@ -78,8 +97,10 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 							)
 						)
 					)
-				} else context?.toast(R.string.you_not_online)
-			else toast(R.string.ext_not_installed)
+				} else makeSnackBar(R.string.controller_browse_snackbar_not_installed)?.setAction(R.string.install) {
+					installExtension(item)
+				}?.show()
+			} else displayOfflineSnackBar(R.string.controller_browse_snackbar_offline_no_extension)
 			true
 		}
 
@@ -87,14 +108,7 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 		hookClickEvent(
 			bind = { it: ExtensionUI.ViewHolder -> it.binding.button }
 		) { _, _, _, item ->
-			var installed = false
-			var update = false
-			if (item.installed && item.isExtEnabled) {
-				installed = true
-				if (item.updateState() == ExtensionUI.State.UPDATE) update = true
-			}
-
-			if (!installed || update) viewModel.installExtension(item)
+			installExtension(item)
 		}
 
 		hookClickEvent(
@@ -115,7 +129,6 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 	}
 
 	override fun handleErrorResult(e: HResult.Error) {
-		super.handleErrorResult(e)
 		viewModel.reportError(e)
 	}
 
@@ -143,7 +156,7 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 		}
 		R.id.search -> true
 		R.id.browse_import -> {
-			toast(R.string.regret)
+			makeSnackBar(R.string.regret)?.show()
 			true
 		}
 		else -> false
@@ -156,6 +169,6 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 	override fun onRefresh() {
 		if (viewModel.isOnline())
 			viewModel.refreshRepository()
-		else toast(R.string.you_not_online)
+		else displayOfflineSnackBar(R.string.controller_browse_snackbar_offline_no_update_extension)
 	}
 }

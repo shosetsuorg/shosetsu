@@ -1,6 +1,8 @@
 package app.shosetsu.android.ui.library
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.view.*
 import android.widget.SearchView
 import androidx.core.os.bundleOf
@@ -120,6 +122,7 @@ class LibraryController
 		startObservation()
 	}
 
+	@SuppressLint("StringFormatInvalid")
 	override fun FastAdapter<ABookmarkedNovelUI>.setupFastAdapter() {
 		selectExtension {
 			isSelectable = true
@@ -154,6 +157,24 @@ class LibraryController
 			false
 		}
 
+		hookClickEvent<ABookmarkedNovelUI, ABookmarkedNovelUI.ViewHolder>(bind = { it.chip }) { v, p, a, item ->
+			try {
+				makeSnackBar(
+					resources!!.getQuantityString(
+						R.plurals.toast_unread_count,
+						item.unread,
+						item.unread
+					)
+				)?.show()
+			} catch (e: Resources.NotFoundException) {
+				makeSnackBar(
+					resources!!.getString(
+						R.string.chapters_unread_label,
+						item.unread
+					)
+				)?.show()
+			}
+		}
 		setOnClickListener { _, _, item, _ ->
 			pushController(
 				NovelController(
@@ -197,7 +218,7 @@ class LibraryController
 			R.id.updater_now -> {
 				if (viewModel.isOnline())
 					viewModel.startUpdateManager()
-				else toast(R.string.you_not_online)
+				else displayOfflineSnackBar()
 				return true
 			}
 			R.id.library_select_all -> {
@@ -278,9 +299,14 @@ class LibraryController
 		LibraryFilterMenuBuilder(this, viewModel).build()
 
 	override fun onRefresh() {
+
 		if (viewModel.isOnline())
 			viewModel.startUpdateManager()
-		else toast(R.string.you_not_online)
+		else displayOfflineSnackBar(R.string.generic_error_cannot_update_library_offline)
+	}
+
+	override fun handleErrorResult(e: HResult.Error) {
+		TODO("Not yet implemented")
 	}
 
 }

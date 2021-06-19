@@ -201,7 +201,6 @@ class CatalogController(
 	}
 
 	override fun handleErrorResult(e: HResult.Error) {
-		super.handleErrorResult(e)
 		viewModel.reportError(e)
 	}
 

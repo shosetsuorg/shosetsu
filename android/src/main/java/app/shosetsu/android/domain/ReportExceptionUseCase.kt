@@ -33,6 +33,7 @@ import org.acra.ACRA
  * to determine how errors are reported
  *
  */
+@Deprecated("Feed to UI instead")
 class ReportExceptionUseCase(
 	private val iSettingsRepository: ISettingsRepository,
 	private val toastUseCase: ToastErrorUseCase

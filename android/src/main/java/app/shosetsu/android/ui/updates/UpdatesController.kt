@@ -79,7 +79,6 @@ class UpdatesController : FastAdapterRefreshableRecyclerController<UpdateUI>(),
 	private fun startObservation() = viewModel.liveData.observeRecyclerUpdates()
 
 	override fun handleErrorResult(e: HResult.Error) {
-		super.handleErrorResult(e)
 		viewModel.reportError(e)
 	}
 
@@ -113,6 +112,6 @@ class UpdatesController : FastAdapterRefreshableRecyclerController<UpdateUI>(),
 	override fun onRefresh() {
 		if (viewModel.isOnline())
 			viewModel.startUpdateManager()
-		else toast(R.string.you_not_online)
+		else displayOfflineSnackBar(R.string.generic_error_cannot_update_library_offline)
 	}
 }

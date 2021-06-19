@@ -143,11 +143,9 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 	/**
 	 * Show an error on screen
 	 */
-	open fun handleErrorResult(e: HResult.Error) {
-		toast { e.message }
-	}
+	abstract fun handleErrorResult(e: HResult.Error)
 
-	/** @see [toast] */
+	@Deprecated("Use snackbar")
 	fun toast(
 		length: Int = Toast.LENGTH_SHORT,
 		message: () -> String,
@@ -157,7 +155,6 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 		}
 	}
 
-	/** @see [toast] */
 	@Deprecated("Use snackbar instead")
 	fun toast(
 		@StringRes message: Int,

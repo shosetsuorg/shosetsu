@@ -263,5 +263,8 @@ dependencies {
 
 	// Roomigrant
 	implementation("com.github.MatrixDev.Roomigrant:RoomigrantLib:0.2.0")
-	kapt("com.github.MatrixDev.Roomigrant:RoomigrantCompiler:0.2.0")
+	//kapt("com.github.MatrixDev.Roomigrant:RoomigrantCompiler:0.2.0")
+
+	// Banner
+	//implementation("com.github.shosetsuorg:MaterialBanner:2.0.7")
 }

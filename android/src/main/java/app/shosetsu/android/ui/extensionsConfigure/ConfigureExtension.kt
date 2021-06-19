@@ -79,4 +79,8 @@ class ConfigureExtension(bundle: Bundle) :
 
 	override fun bindView(inflater: LayoutInflater): ConfigureExtensionViewBinding =
 		ConfigureExtensionViewBinding.inflate(inflater).also { recyclerView = it.settings }
+
+	override fun handleErrorResult(e: HResult.Error) {
+		TODO("Not yet implemented")
+	}
 }

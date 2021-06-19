@@ -182,7 +182,7 @@ class NovelController(bundle: Bundle) :
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
 		id.source_migrate -> {
 			// migrateOpen()
-			toast { "Sorry, This hasn't been implemented yet" }
+			makeSnackBar(R.string.regret)?.dismiss()
 			true
 		}
 		id.webview -> {
@@ -320,7 +320,7 @@ class NovelController(bundle: Bundle) :
 		binding.swipeRefreshLayout.setOnRefreshListener {
 			if (viewModel.isOnline())
 				refresh()
-			else toast(R.string.you_not_online)
+			else displayOfflineSnackBar()
 		}
 
 		(activity as? MainActivity)?.holdAtBottom(binding.bottomMenu)
@@ -477,7 +477,6 @@ class NovelController(bundle: Bundle) :
 	}
 
 	override fun handleErrorResult(e: HResult.Error) {
-		super.handleErrorResult(e)
 		viewModel.reportError(e)
 	}
 

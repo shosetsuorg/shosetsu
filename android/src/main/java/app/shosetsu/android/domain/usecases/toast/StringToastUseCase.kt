@@ -25,6 +25,7 @@ import app.shosetsu.android.common.ext.toast
  * shosetsu
  * 14 / 08 / 2020
  */
+@Deprecated("Do not use")
 class StringToastUseCase(
 	private val application: Application,
 ) {

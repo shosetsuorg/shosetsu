@@ -84,7 +84,6 @@ class DownloadsViewModel(
 	}
 
 	override fun togglePause() {
-		if (!isOnline()) return
 		launchIO {
 			settings.getBoolean(IsDownloadPaused).handle { isPaused ->
 				settings.setBoolean(IsDownloadPaused, !isPaused)

@@ -70,7 +70,6 @@ class SearchController(bundle: Bundle) : GenericFastAdapterRecyclerController<Se
 	}
 
 	override fun handleErrorResult(e: HResult.Error) {
-		super.handleErrorResult(e)
 		viewModel.reportError(e)
 	}
 

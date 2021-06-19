@@ -28,6 +28,7 @@ import app.shosetsu.lib.exceptions.HTTPException
  * 14 / 08 / 2020
  * @param
  */
+@Deprecated("Broken, Feed to UI instead")
 class ToastErrorUseCase(
 	val application: Application,
 ) {

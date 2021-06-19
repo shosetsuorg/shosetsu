@@ -61,7 +61,6 @@ class RepositoryController : GenericFastAdapterRecyclerController<RepositoryUI>(
 	}
 
 	override fun handleErrorResult(e: HResult.Error) {
-		super.handleErrorResult(e)
 		viewModel.reportError(e)
 	}
 

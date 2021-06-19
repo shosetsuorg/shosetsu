@@ -7,6 +7,7 @@ import app.shosetsu.android.ui.settings.sub.TextAssetReader
 import app.shosetsu.android.view.controller.ViewedController
 import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.viewmodel.abstracted.AAboutViewModel
+import app.shosetsu.common.dto.HResult
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -77,4 +78,8 @@ class AboutController : ViewedController<ControllerAboutBinding>(), PushCapableC
 
 	private fun onClickDisclaimer() =
 		pushController(TextAssetReader(TextAssetReader.Target.DISCLAIMER.bundle))
+
+	override fun handleErrorResult(e: HResult.Error) {
+		TODO("Not yet implemented")
+	}
 }
