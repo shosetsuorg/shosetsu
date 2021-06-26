@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases.update
 
-import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
+import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.convertList
 

@@ -35,7 +35,7 @@
             app:menu="@menu/toolbar_reader" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/progress_percentage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

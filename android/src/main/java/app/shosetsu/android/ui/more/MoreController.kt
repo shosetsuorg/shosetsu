@@ -6,9 +6,9 @@ import app.shosetsu.android.ui.about.AboutController
 import app.shosetsu.android.ui.downloads.DownloadsController
 import app.shosetsu.android.ui.repository.RepositoryController
 import app.shosetsu.android.ui.settings.SettingsController
+import app.shosetsu.android.view.controller.ViewedController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
 import app.shosetsu.android.view.controller.base.PushCapableController
-import app.shosetsu.android.view.controller.ViewedController
 import app.shosetsu.common.dto.HResult
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerMoreBinding

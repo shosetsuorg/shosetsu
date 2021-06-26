@@ -44,7 +44,7 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/novel_card_gradient" />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

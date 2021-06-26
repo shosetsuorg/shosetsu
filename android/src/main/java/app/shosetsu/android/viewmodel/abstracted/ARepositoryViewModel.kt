@@ -30,7 +30,8 @@ import app.shosetsu.common.dto.HResult
  * 16 / 09 / 2020
  */
 abstract class ARepositoryViewModel
-	: SubscribeHandleViewModel<List<RepositoryUI>>, ShosetsuViewModel(), ErrorReportingViewModel,IsOnlineCheckViewModel {
+	: SubscribeHandleViewModel<List<RepositoryUI>>, ShosetsuViewModel(), ErrorReportingViewModel,
+	IsOnlineCheckViewModel {
 	/**
 	 * Adds a URL via a string the user provides
 	 *
@@ -61,5 +62,5 @@ abstract class ARepositoryViewModel
 	/**
 	 * Try to restore a repository
 	 */
-	abstract fun undoRemove(item: RepositoryUI):LiveData<HResult<*>>
+	abstract fun undoRemove(item: RepositoryUI): LiveData<HResult<*>>
 }

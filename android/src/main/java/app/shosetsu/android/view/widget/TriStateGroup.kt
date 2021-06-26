@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.children
 import app.shosetsu.android.view.widget.TriState.State
-import app.shosetsu.android.view.widget.TriState.State.*
+import app.shosetsu.android.view.widget.TriState.State.IGNORED
 
 /*
  * This file is part of Shosetsu.

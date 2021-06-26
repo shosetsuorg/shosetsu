@@ -6,16 +6,8 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
-import androidx.work.*
-import app.shosetsu.android.backend.workers.CoroutineWorkerManager
-import app.shosetsu.android.backend.workers.onetime.DownloadWorker
-import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.notificationManager
-import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
 import com.github.doomsdayrs.apps.shosetsu.R
-import org.kodein.di.generic.instance
 
 /*
  * This file is part of shosetsu.

@@ -27,7 +27,10 @@ class TriStateIcon @JvmOverloads constructor(
 					uncheckedRes = getResourceId(R.styleable.TriStateIcon_icon_unchecked, -1)
 					ignoredRes = getResourceId(R.styleable.TriStateIcon_icon_ignored, -1)
 					state =
-						TriState.State.values()[getResourceId(R.styleable.TriStateIcon_icon_state, 0)]
+						TriState.State.values()[getResourceId(
+							R.styleable.TriStateIcon_icon_state,
+							0
+						)]
 				} finally {
 					recycle()
 				}

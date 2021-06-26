@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.common.utils.uifactory.ExtensionConversionFactory
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.dto.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

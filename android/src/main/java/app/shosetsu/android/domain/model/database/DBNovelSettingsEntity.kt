@@ -63,7 +63,7 @@ data class DBNovelSettingsEntity(
 	var reverseOrder: Boolean = false,
 
 
-) : Convertible<NovelSettingEntity> {
+	) : Convertible<NovelSettingEntity> {
 	override fun convertTo(): NovelSettingEntity = NovelSettingEntity(
 		novelID,
 		sortType,

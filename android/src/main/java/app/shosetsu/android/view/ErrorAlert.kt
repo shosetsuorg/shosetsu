@@ -3,7 +3,7 @@ package app.shosetsu.android.view
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -33,7 +33,7 @@ class ErrorAlert(
 		{ dialog, _: Int -> dialog?.dismiss() },
 ) : AlertDialog.Builder(activity) {
 	private val view = activity.layoutInflater.inflate(R.layout.error_view, null)!!
-	private val messageView: TextView = view.findViewById(R.id.error_message)
+	private val messageView: AppCompatTextView = view.findViewById(R.id.error_message)
 	private var e: Exception? = null
 
 	init {

@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.usecases.update
 
-import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.dto.HResult
 
 /*

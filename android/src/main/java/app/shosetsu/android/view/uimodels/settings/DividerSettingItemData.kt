@@ -2,8 +2,6 @@ package app.shosetsu.android.view.uimodels.settings
 
 import androidx.core.view.isVisible
 import app.shosetsu.android.view.uimodels.settings.base.BottomSettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.SettingsItemDSL
-import app.shosetsu.android.view.uimodels.settings.dsl.boldTitle
 import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
 
 /*

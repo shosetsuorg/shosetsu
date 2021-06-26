@@ -2,8 +2,8 @@ package app.shosetsu.android.view.uimodels.settings
 
 import android.view.Gravity
 import android.widget.NumberPicker
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog.Builder
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.view.setPadding
 import app.shosetsu.android.view.uimodels.settings.dsl.onButtonClicked
@@ -97,7 +97,7 @@ class DoubleNumberSettingData(id: Int) : ButtonSettingData(id) {
 							initialWhole = newVal
 						}
 					})
-					addView(TextView(context).apply {
+					addView(AppCompatTextView(context).apply {
 						text = "."
 					})
 					addView(NumberPicker(context).apply {

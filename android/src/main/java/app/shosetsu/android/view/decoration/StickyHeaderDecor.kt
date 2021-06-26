@@ -6,7 +6,7 @@ import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -41,7 +41,7 @@ class StickyHeaderDecor(
 	private var sticky: Boolean = true,
 ) : ItemDecoration() {
 	private var headerView: View? = null
-	private var tvTitle: TextView? = null
+	private var tvTitle: AppCompatTextView? = null
 
 	override fun getItemOffsets(
 		outRect: Rect,

@@ -6,7 +6,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.ProgressBar
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.setPadding
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.LifecycleObserver
@@ -60,7 +60,7 @@ class StringReader(
 
 	// These handle the error view
 	private val errorView: View = binding.errorView
-	private val errorMessage: TextView = binding.errorMessage
+	private val errorMessage: AppCompatTextView = binding.errorMessage
 	private val errorButton: Button = binding.errorButton
 
 	private var unformattedText = ""

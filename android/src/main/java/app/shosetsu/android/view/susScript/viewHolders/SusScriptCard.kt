@@ -2,7 +2,7 @@ package app.shosetsu.android.view.susScript.viewHolders
 
 import android.view.View
 import android.widget.Spinner
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.doomsdayrs.apps.shosetsu.R
 
@@ -31,13 +31,13 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * @author github.com/doomsdayrs
  */
 class SusScriptCard(itemView: View) : RecyclerView.ViewHolder(itemView) {
-	val title1: TextView = itemView.findViewById(R.id.title)
-	val version1: TextView = itemView.findViewById(R.id.version)
-	val hash1: TextView = itemView.findViewById(R.id.hash)
+	val title1: AppCompatTextView = itemView.findViewById(R.id.title)
+	val version1: AppCompatTextView = itemView.findViewById(R.id.version)
+	val hash1: AppCompatTextView = itemView.findViewById(R.id.hash)
 
-	val title2: TextView = itemView.findViewById(R.id.title2)
-	val version2: TextView = itemView.findViewById(R.id.version2)
-	val hash2: TextView = itemView.findViewById(R.id.hash2)
+	val title2: AppCompatTextView = itemView.findViewById(R.id.title2)
+	val version2: AppCompatTextView = itemView.findViewById(R.id.version2)
+	val hash2: AppCompatTextView = itemView.findViewById(R.id.hash2)
 
 	val spinner: Spinner = itemView.findViewById(R.id.spinner)
 }

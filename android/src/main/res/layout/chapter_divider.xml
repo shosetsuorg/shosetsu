@@ -15,13 +15,13 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:textColor="@color/grey_B_40"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Last chapter: " />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/previous_chapter"
             android:layout_width="wrap_content"
             android:textColor="@color/grey_B_40"
@@ -38,13 +38,13 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:textColor="@color/grey_B_40"
             android:layout_height="wrap_content"
             android:text="Next chapter: " />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/next_chapter"
             android:textColor="@color/grey_B_40"
             android:layout_width="wrap_content"
@@ -54,7 +54,7 @@
     </LinearLayout>
 
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/no_more_chapters"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

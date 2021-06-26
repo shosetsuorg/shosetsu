@@ -1,6 +1,5 @@
 package app.shosetsu.android.view.uimodels.model.library
 
-import android.content.res.Resources
 import android.view.View
 import androidx.core.view.isVisible
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH

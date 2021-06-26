@@ -8,7 +8,6 @@ import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.NovelCardType
-import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
 
 /*

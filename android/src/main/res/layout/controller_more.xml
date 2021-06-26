@@ -32,7 +32,7 @@
         app:cardForegroundColor="@android:color/transparent"
         app:strokeWidth="0dp">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -58,7 +58,7 @@
         app:cardForegroundColor="@android:color/transparent"
         app:strokeWidth="0dp">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -83,7 +83,7 @@
         app:cardForegroundColor="@android:color/transparent"
         app:strokeWidth="0dp">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -110,7 +110,7 @@
         app:cardForegroundColor="@android:color/transparent"
         app:strokeWidth="0dp">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"

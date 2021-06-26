@@ -9,7 +9,7 @@
     android:padding="8dp">
 
     <!-- Title -->
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/settings_item_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
         tools:text="This is a setting" />
 
     <!-- Description -->
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/settings_item_desc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

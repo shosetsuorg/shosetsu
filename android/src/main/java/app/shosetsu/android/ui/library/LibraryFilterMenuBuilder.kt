@@ -3,7 +3,7 @@ package app.shosetsu.android.ui.library
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.isVisible
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
+import app.shosetsu.android.view.widget.TriState.State.*
 import app.shosetsu.android.viewmodel.abstracted.ILibraryViewModel
 import app.shosetsu.common.enums.InclusionState
 import app.shosetsu.common.enums.InclusionState.EXCLUDE
@@ -26,7 +27,6 @@ import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.calculateDiff
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL as LLM_VERTICAL
-import app.shosetsu.android.view.widget.TriState.State.*
 
 /*
  * This file is part of Shosetsu.
@@ -70,7 +70,7 @@ class LibraryFilterMenuBuilder constructor(
 	/** Creates the first menu */
 	private inner class Menu0 {
 		inner class ListModel(
-			val textView: TextView,
+			val textView: AppCompatTextView,
 			val recyclerView: RecyclerView,
 			val liveData: LiveData<List<String>>,
 			val retrieveState: () -> HashMap<String, InclusionState>,

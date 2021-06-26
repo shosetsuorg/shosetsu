@@ -43,7 +43,7 @@
         android:src="@drawable/broken_image"
         app:layout_constraintDimensionRatio="2:3" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/novel_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
         android:background="@android:color/transparent"
         tools:text="Isekai something" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/novel_site"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
         android:textSize="12sp"
         tools:text="boxnovel" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/novel_author"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
         android:textSize="12sp"
         tools:text="A, B, C" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/novel_artists"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
         android:textSize="12sp"
         tools:text="C, D, E" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/novel_publish"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -106,7 +106,7 @@
         android:textSize="12sp"
         tools:text="Unknown" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/title_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -119,7 +119,7 @@
         android:textSize="12sp"
         android:textStyle="bold" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/site_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -132,7 +132,7 @@
         android:textSize="12sp"
         android:textStyle="bold" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/author_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -145,7 +145,7 @@
         android:textSize="12sp"
         android:textStyle="bold" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/artists_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -158,7 +158,7 @@
         android:textSize="12sp"
         android:textStyle="bold" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/publishing_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -214,7 +214,7 @@
         android:theme="@style/ChipStyle"
         android:visibility="visible" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/novel_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -237,7 +237,7 @@
         android:paddingEnd="16dp"
         tools:context="app.shosetsu.android.activity.MainActivity">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/chapters_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

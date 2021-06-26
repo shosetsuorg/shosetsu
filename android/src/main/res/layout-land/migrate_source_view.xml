@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:visibility="gone">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/selection_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/selection_text" />
 
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/mapping_text"
                 android:layout_width="0dp"
                 android:layout_height="19dp"
@@ -111,7 +111,8 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_conversion_absoluteHeight="50dp"
             tools:layout_conversion_absoluteWidth="50dp" />
-        <TextView
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/console_output"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

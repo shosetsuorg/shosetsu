@@ -11,7 +11,7 @@
         android:orientation="vertical"
         app:cardCornerRadius="0dp">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/header_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

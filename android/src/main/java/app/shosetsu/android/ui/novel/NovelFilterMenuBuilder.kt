@@ -10,6 +10,7 @@ import androidx.viewpager.widget.PagerAdapter
 import app.shosetsu.android.common.ext.handleObserve
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logV
+import app.shosetsu.android.view.widget.TriState.State.*
 import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.ChapterSortType.SOURCE
@@ -19,7 +20,6 @@ import app.shosetsu.common.enums.ReadingStatus.UNREAD
 import app.shosetsu.common.view.uimodel.NovelSettingUI
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.*
-import app.shosetsu.android.view.widget.TriState.State.*
 
 /*
  * This file is part of Shosetsu.

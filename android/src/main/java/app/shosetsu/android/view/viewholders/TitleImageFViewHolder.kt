@@ -2,8 +2,8 @@ package app.shosetsu.android.view.viewholders
 
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.annotation.CallSuper
+import androidx.appcompat.widget.AppCompatTextView
 import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.view.uimodels.base.GetImageURL
 import app.shosetsu.android.view.uimodels.base.GetTitle
@@ -36,7 +36,7 @@ open class TitleImageFViewHolder<ITEM>(itemView: View) : FastAdapter.ViewHolder<
 		where ITEM : GenericItem,
 		      ITEM : GetImageURL,
 		      ITEM : GetTitle {
-	val title: TextView = itemView.findViewById(R.id.title)
+	val title: AppCompatTextView = itemView.findViewById(R.id.title)
 	val imageView: ImageView = itemView.findViewById(R.id.imageView)
 	var oldType: ImageView.ScaleType? = null
 

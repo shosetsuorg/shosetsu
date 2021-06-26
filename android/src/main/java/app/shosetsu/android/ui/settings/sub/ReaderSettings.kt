@@ -2,7 +2,7 @@ package app.shosetsu.android.ui.settings.sub
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.getSystemService
 import androidx.core.view.postDelayed
 import androidx.recyclerview.widget.RecyclerView
@@ -106,14 +106,14 @@ class ReaderSettings : SettingsSubController() {
 				null,
 				false
 			).apply {
-				findViewById<TextView>(R.id.textView).apply textView@{
+				findViewById<AppCompatTextView>(R.id.textView).apply textView@{
 					val exampleText =
 						"Because there are so many lines. I had lost sense of time. Plz help" +
 								"me escape this horror called" +
 								"\nThis is some sample text. With lots of testing. Lots of paragraph," +
 								"Lots of lines. Plenty to read"
 
-					val function = { textView: TextView ->
+					val function = { textView: AppCompatTextView ->
 						val replaceSpacing = StringBuilder("\n")
 						//for (x in 0 until shosetsuSettings.readerParagraphSpacing)
 						//	replaceSpacing.append("\n")

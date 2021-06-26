@@ -2,7 +2,7 @@ package app.shosetsu.android.view.uimodels.model
 
 import android.view.View
 import android.widget.ImageButton
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.common.ext.serializeToString
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -60,7 +60,7 @@ data class ColorChoiceUI(
 	 */
 	class ViewHolder(val view: View) : FastAdapter.ViewHolder<ColorChoiceUI>(view) {
 		override fun bindView(item: ColorChoiceUI, payloads: List<Any>) {
-			view.findViewById<TextView>(R.id.textView).apply {
+			view.findViewById<AppCompatTextView>(R.id.textView).apply {
 				setTextColor(item.textColor)
 				setBackgroundColor(item.backgroundColor)
 			}

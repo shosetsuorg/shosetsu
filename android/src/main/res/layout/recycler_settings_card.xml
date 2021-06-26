@@ -12,7 +12,7 @@
     app:cardElevation="0dp"
     app:cardForegroundColor="@android:color/transparent">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

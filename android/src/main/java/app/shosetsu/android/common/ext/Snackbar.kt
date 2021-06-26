@@ -2,6 +2,7 @@ package app.shosetsu.android.common.ext
 
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+
 /*
  * This file is part of Shosetsu.
  *

@@ -6,7 +6,7 @@ import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ext.context
@@ -99,7 +99,7 @@ class MigrationController(bundle: Bundle) : ViewedController<MigrationViewBindin
 		RecyclerView.Adapter<TransfereeAdapter.TransfereeViewHolder>() {
 		class TransfereeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 			val imageView: ImageView = itemView.findViewById(R.id.imageView)
-			val title: TextView = itemView.findViewById(R.id.title)
+			val title: AppCompatTextView = itemView.findViewById(R.id.title)
 		}
 
 		override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransfereeViewHolder {
@@ -130,7 +130,7 @@ class MigrationController(bundle: Bundle) : ViewedController<MigrationViewBindin
 	) : RecyclerView.Adapter<CatalogueSelectionAdapter.CatalogueHolder>() {
 		class CatalogueHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 			val imageView: ImageView = itemView.findViewById(R.id.imageView)
-			val title: TextView = itemView.findViewById(R.id.title)
+			val title: AppCompatTextView = itemView.findViewById(R.id.title)
 			var id: Int = -1
 		}
 
