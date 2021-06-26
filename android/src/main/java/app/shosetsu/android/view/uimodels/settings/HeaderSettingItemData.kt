@@ -41,10 +41,3 @@ class HeaderSettingItemData(id: Int) : BottomSettingsItemData(id) {
 	}
 }
 
-@SettingsItemDSL
-inline fun headerSettingItemData(
-	id: Int,
-	action: HeaderSettingItemData.() -> Unit,
-): HeaderSettingItemData = HeaderSettingItemData(id).also(action).apply {
-	boldTitle()
-}

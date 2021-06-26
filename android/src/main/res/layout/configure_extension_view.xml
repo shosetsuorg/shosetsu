@@ -6,15 +6,15 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/constraintLayout4"
+        android:id="@+id/details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="5dp"
+        android:elevation="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imageView"
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -23,11 +23,12 @@
             android:contentDescription="@string/extension_image_desc"
             app:srcCompat="@drawable/broken_image" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:layout_toStartOf="@id/uninstallButton"
             android:layout_toEndOf="@id/imageView"
             android:contentDescription="@string/extension_name_desc"
@@ -37,7 +38,7 @@
             android:textStyle="bold"
             tools:text="FAKE EXTENSION" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/fileName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -50,7 +51,7 @@
             android:textIsSelectable="true"
             tools:text="fakeFileName.lua" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/identification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,7 +63,7 @@
             android:textIsSelectable="true"
             tools:text="10" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/language"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -87,16 +88,28 @@
 
     </RelativeLayout>
 
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:elevation="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@id/settings"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/details"
+        tools:layout_editor_absoluteY="100dp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/settings"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:contentDescription="@string/extension_settings_desc"
-        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
+        app:layout_constraintTop_toBottomOf="@+id/details"
         tools:listitem="@layout/settings_item" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,6 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
-import app.shosetsu.android.view.uimodels.settings.headerSettingItemData
 import app.shosetsu.android.viewmodel.abstracted.settings.AUpdateSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository

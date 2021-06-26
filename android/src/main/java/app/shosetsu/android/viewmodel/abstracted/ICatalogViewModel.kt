@@ -45,9 +45,6 @@ abstract class ICatalogViewModel :
 	 */
 	abstract val itemsLive: LiveData<HResult<List<ACatalogNovelUI>>>
 
-	/**
-	 * TODO, Finish creating UI elements for this
-	 */
 	abstract val filterItemsLive: LiveData<HResult<List<Filter<*>>>>
 
 	/**

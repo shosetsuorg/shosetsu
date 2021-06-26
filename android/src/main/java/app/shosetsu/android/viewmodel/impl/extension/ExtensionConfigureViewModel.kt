@@ -21,6 +21,7 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.UninstallExtensionUIUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtListingNamessUseCase
@@ -34,6 +35,7 @@ import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.IExtensionConfigureViewModel
 import app.shosetsu.common.dto.*
+import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
@@ -80,29 +82,31 @@ class ExtensionConfigureViewModel(
 				emitAll(
 					getExtensionSettings(extensionID).mapLatestResult { filterList ->
 						successResult(
-							listOf(
-								spinnerSettingData(0) {
-									title { "Listing" }
-									getExtSelectedListing(extensionID).handle { selectedListing ->
-										spinnerValue { selectedListing }
-									}
-									arrayAdapter = android.widget.ArrayAdapter(
-										application.applicationContext,
-										android.R.layout.simple_spinner_dropdown_item,
-										nameList.toTypedArray()
-									)
-									var first = true
-									onSpinnerItemSelected { _, _, position, _ ->
-										if (first) {
-											first = false
-											return@onSpinnerItemSelected
+							ArrayList(filterList).apply {
+								if (nameList.size > 1) {
+									add(0, spinnerSettingData(0) {
+										titleID = R.string.listings
+										getExtSelectedListing(extensionID).handle { selectedListing ->
+											spinnerValue { selectedListing }
 										}
-										launchIO {
-											updateExtSelectedListing(extensionID, position)
+										arrayAdapter = android.widget.ArrayAdapter(
+											application.applicationContext,
+											android.R.layout.simple_spinner_dropdown_item,
+											nameList.toTypedArray()
+										)
+										var first = true
+										onSpinnerItemSelected { _, _, position, _ ->
+											if (first) {
+												first = false
+												return@onSpinnerItemSelected
+											}
+											launchIO {
+												updateExtSelectedListing(extensionID, position)
+											}
 										}
-									}
+									})
 								}
-							) + filterList
+							}
 						)
 					}
 				)
@@ -111,18 +115,19 @@ class ExtensionConfigureViewModel(
 	}
 
 	override fun setExtensionID(id: Int) {
+		logV("Setting extension id = $id")
 		launchIO {
 			when {
 				extensionIDFlow.value == id -> {
-					logI("ID the same, ignoring")
+					this@ExtensionConfigureViewModel.logI("id is the same, ignoring")
 					return@launchIO
 				}
 				extensionIDFlow.value != id -> {
-					logI("ID not equal, resetting")
+					this@ExtensionConfigureViewModel.logI("id is different, resetting")
 					destroy()
 				}
 				extensionIDFlow.value == -1 -> {
-					logI("ID is new, setting")
+					this@ExtensionConfigureViewModel.logI("id is new, setting")
 				}
 			}
 			extensionIDFlow.value = id

@@ -7,6 +7,7 @@ import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.ext.picasso
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.controller.FastAdapterRecyclerController
+import app.shosetsu.android.view.controller.base.CollapsedToolBarController
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.IExtensionConfigureViewModel
@@ -39,7 +40,8 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ConfigureExtensionViewBin
  * Opens up detailed view of an extension, allows modifications
  */
 class ConfigureExtension(bundle: Bundle) :
-	FastAdapterRecyclerController<ConfigureExtensionViewBinding, SettingsItemData>(bundle) {
+	FastAdapterRecyclerController<ConfigureExtensionViewBinding, SettingsItemData>(bundle),
+	CollapsedToolBarController {
 	val viewModel: IExtensionConfigureViewModel by viewModel()
 
 	override fun onViewCreated(view: View) {
@@ -71,11 +73,14 @@ class ConfigureExtension(bundle: Bundle) :
 			binding.name.text = extensionUI.name
 			binding.uninstallButton.setOnClickListener {
 				viewModel.uninstall(extensionUI)
-				viewModel.destroy()
 				activity?.onBackPressed()
 			}
 		}
 
+	override fun onDestroy() {
+		super.onDestroy()
+		viewModel.destroy()
+	}
 
 	override fun bindView(inflater: LayoutInflater): ConfigureExtensionViewBinding =
 		ConfigureExtensionViewBinding.inflate(inflater).also { recyclerView = it.settings }

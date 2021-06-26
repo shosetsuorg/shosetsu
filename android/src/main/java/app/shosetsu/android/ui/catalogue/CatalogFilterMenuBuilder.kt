@@ -1,9 +1,12 @@
 package app.shosetsu.android.ui.catalogue
 
 import android.view.View
-import app.shosetsu.android.common.ext.createUI
 import app.shosetsu.android.common.ext.handleObserve
+import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerCatalogFilterBottomMenuBinding
+import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.adapters.ItemAdapter
+import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 
 /*
  * This file is part of Shosetsu.
@@ -34,11 +37,13 @@ class CatalogFilterMenuBuilder(
 	fun build(): View = ControllerCatalogFilterBottomMenuBinding.inflate(layoutInflater)
 		.also { binding ->
 			binding.extensionFilters.apply {
+				val itemAdapter = ItemAdapter<SettingsItemData>()
+				adapter = FastAdapter.with(itemAdapter)
 				controller.viewModel.filterItemsLive.handleObserve(controller) { list ->
-					removeAllViews()
-					list.createUI(context).forEach {
-						addView(it)
-					}
+					//FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(
+					//	itemAdapter,
+					//	list.toSettingItemData(context)
+					//)
 				}
 			}
 			binding.applyButton.setOnClickListener {

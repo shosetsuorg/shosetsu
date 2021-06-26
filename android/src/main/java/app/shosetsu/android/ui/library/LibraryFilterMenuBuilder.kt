@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
-import app.shosetsu.android.view.widget.TriStateButton.State.*
 import app.shosetsu.android.viewmodel.abstracted.ILibraryViewModel
 import app.shosetsu.common.enums.InclusionState
 import app.shosetsu.common.enums.InclusionState.EXCLUDE
@@ -27,6 +26,7 @@ import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.calculateDiff
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL as LLM_VERTICAL
+import app.shosetsu.android.view.widget.TriState.State.*
 
 /*
  * This file is part of Shosetsu.
@@ -106,7 +106,7 @@ class LibraryFilterMenuBuilder constructor(
 									EXCLUDE -> UNCHECKED
 								}
 							} ?: IGNORED
-							addOnStateChangeListener {
+							onStateChangeListeners.add {
 								when (it) {
 									CHECKED -> setState(item.filterKeyName, INCLUDE)
 									UNCHECKED -> setState(item.filterKeyName, EXCLUDE)
@@ -118,7 +118,7 @@ class LibraryFilterMenuBuilder constructor(
 
 					override fun TriStateCheckboxBinding.unbindView(item: FilterModel) {
 						this.root.apply {
-							clearOnStateChangeListener()
+							onStateChangeListeners.clear()
 							clearOnClickListeners()
 							setText(null)
 							state = IGNORED
@@ -151,7 +151,7 @@ class LibraryFilterMenuBuilder constructor(
 					EXCLUDE -> UNCHECKED
 					null -> IGNORED
 				}
-				addOnStateChangeListener {
+				onStateChangeListeners.add {
 					when (it) {
 						IGNORED -> viewModel.setUnreadFilter(null)
 						CHECKED -> viewModel.setUnreadFilter(INCLUDE)

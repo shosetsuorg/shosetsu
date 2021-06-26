@@ -47,6 +47,7 @@ inline fun textSettingData(
 // - Functions
 
 @SettingsItemDSL
+@Deprecated("Use propery accessor")
 inline fun SettingsItemData.title(value: SettingsItemData.() -> Any): Unit =
 	value().let {
 		when (it) {

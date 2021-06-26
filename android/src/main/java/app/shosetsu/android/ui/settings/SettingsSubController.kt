@@ -44,7 +44,9 @@ abstract class SettingsSubController : GenericFastAdapterRecyclerController<Sett
 	}
 
 	override fun handleErrorResult(e: HResult.Error) {
+		e.exception?.printStackTrace()
 		viewModel.reportError(e)
+
 	}
 
 	/** Finds a setting via its data ID */

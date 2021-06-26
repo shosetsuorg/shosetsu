@@ -5,7 +5,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.children
-import app.shosetsu.android.view.widget.TriStateButton.State
+import app.shosetsu.android.view.widget.TriState.State
+import app.shosetsu.android.view.widget.TriState.State.*
 
 /*
  * This file is part of Shosetsu.
@@ -34,18 +35,17 @@ class TriStateGroup @JvmOverloads constructor(
 ) : LinearLayout(context, attrs) {
 	private val stateChangeListeners = ArrayList<(Int, State) -> Unit>()
 
-	private val buttons: List<TriStateButton>
-		get() = children.filterIsInstance<TriStateButton>().toList()
+	private val buttons: List<TriState>
+		get() = children.filterIsInstance<TriState>().toList()
 
 	override fun onViewAdded(child: View?) {
-		super.onViewAdded(child)
 		if (child is TriStateButton) {
 			child.addOnClickListener {
-				buttonClicked(child)
+				triStateClicked(child)
 			}
 
-			child.addOnStateChangeListener {
-				if (it != State.IGNORED)
+			child.onStateChangeListeners.add {
+				if (it != IGNORED)
 					stateChangeListeners.forEach { listener ->
 						listener(child.id, it)
 					}
@@ -54,18 +54,17 @@ class TriStateGroup @JvmOverloads constructor(
 	}
 
 	override fun onViewRemoved(child: View?) {
-		super.onViewRemoved(child)
 		if (child is TriStateButton) {
 			child.clearOnClickListeners()
-			child.clearOnStateChangeListener()
+			child.onStateChangeListeners.clear()
 		}
 	}
 
-	private fun buttonClicked(triStateButton: TriStateButton) {
+	private fun triStateClicked(triStateButton: TriStateButton) {
 		triStateButton.skipIgnored = true
 		buttons.filterNot { it == triStateButton }.forEach {
 			it.skipIgnored = false
-			it.state = State.IGNORED
+			it.state = IGNORED
 		}
 	}
 
