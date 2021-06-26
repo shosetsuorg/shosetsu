@@ -108,6 +108,7 @@ val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
 	// Catalog(s)
 	bind<ICatalogViewModel>() with provider {
 		CatalogViewModel(
+			application = instance(),
 			getExtensionUseCase = instance(),
 			backgroundAddUseCase = instance(),
 			getCatalogueListingData = instance(),

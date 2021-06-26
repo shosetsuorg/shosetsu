@@ -3,6 +3,7 @@ package app.shosetsu.android.viewmodel.abstracted
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.utils.ColumnCalculator
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
+import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.common.dto.HResult
@@ -45,7 +46,10 @@ abstract class ICatalogViewModel :
 	 */
 	abstract val itemsLive: LiveData<HResult<List<ACatalogNovelUI>>>
 
-	abstract val filterItemsLive: LiveData<HResult<List<Filter<*>>>>
+	/**
+	 * The list of items that will be presented as the filter menu
+	 */
+	abstract val filterItemsLive: LiveData<HResult<List<SettingsItemData>>>
 
 	/**
 	 * enable or disable searching
@@ -58,27 +62,34 @@ abstract class ICatalogViewModel :
 	abstract val extensionName: LiveData<HResult<String>>
 
 
+	/**
+	 * What type of card to display
+	 */
 	abstract val novelCardTypeLive: LiveData<NovelCardType>
-
 
 	/**
 	 * Sets the [IExtension]
+	 *
+	 * This will reset the view completely
 	 */
 	abstract fun setExtensionID(extensionID: Int)
 
 	/**
-	 * Initializes [itemsLive]
+	 * Apply a query
+	 *
+	 * This will reload the view
 	 */
-
 	abstract fun applyQuery(newQuery: String)
 
 	/**
 	 * Ask for more to be loaded
+	 *
+	 * Will append new data to [itemsLive]
 	 */
 	abstract fun loadMore()
 
 	/**
-	 * Reset [itemsLive], and runs [loadData] once again
+	 * Resets the view back to what it was when it first opened
 	 */
 	abstract fun resetView()
 
@@ -89,16 +100,22 @@ abstract class ICatalogViewModel :
 	abstract fun backgroundNovelAdd(novelID: Int)
 
 	/**
-	 * Updates the filter data, does not apply the result
+	 * Apply filters
+	 *
+	 * This will reset [itemsLive]
 	 */
-	abstract fun applyFilter(map: Map<Int, Any>)
+	abstract fun applyFilter()
 
 	/**
 	 * Reset the filter data to nothing
+	 *
+	 * This will reset [itemsLive]
 	 */
 	abstract fun resetFilter()
 
 
-	/** Destroy data */
+	/**
+	 * This will reset the view model completely so it can be reused later
+	 */
 	abstract fun destroy()
 }

@@ -1,5 +1,7 @@
 package app.shosetsu.android.viewmodel.impl
 
+import android.app.Application
+import android.widget.ArrayAdapter
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.ReportExceptionUseCase
@@ -9,6 +11,12 @@ import app.shosetsu.android.domain.usecases.get.GetCatalogueQueryDataUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtensionUseCase
 import app.shosetsu.android.domain.usecases.load.*
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
+import app.shosetsu.android.view.uimodels.settings.DividerSettingItemData
+import app.shosetsu.android.view.uimodels.settings.ListSettingData
+import app.shosetsu.android.view.uimodels.settings.TriStateButtonSettingData
+import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
+import app.shosetsu.android.view.uimodels.settings.dsl.*
+import app.shosetsu.android.view.widget.TriState
 import app.shosetsu.android.viewmodel.abstracted.ICatalogViewModel
 import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.NovelCardType
@@ -16,6 +24,8 @@ import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.PAGE_INDEX
 import app.shosetsu.lib.mapify
+import com.github.doomsdayrs.apps.shosetsu.R
+import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -44,6 +54,7 @@ import kotlinx.coroutines.flow.*
  */
 @ExperimentalCoroutinesApi
 class CatalogViewModel(
+	private val application: Application,
 	private val getExtensionUseCase: GetExtensionUseCase,
 	private val backgroundAddUseCase: NovelBackgroundAddUseCase,
 	private val getCatalogueListingData: GetCatalogueListingDataUseCase,
@@ -55,7 +66,10 @@ class CatalogViewModel(
 ) : ICatalogViewModel() {
 	private var queryState: String = ""
 
-	private var filterDataState: Map<Int, Any> = hashMapOf()
+	/**
+	 * Map of filter id to the state to pass into the extension
+	 */
+	private var filterDataState: HashMap<Int, Any> = hashMapOf()
 
 	private var ext: IExtension? = null
 
@@ -78,9 +92,143 @@ class CatalogViewModel(
 		MutableStateFlow(loading)
 	}
 
-	override val filterItemsLive: LiveData<HResult<List<Filter<*>>>> by lazy {
-		iExtensionFlow.mapLatestResult { successResult(it.searchFiltersModel.toList()) }
-			.asIOLiveData()
+	private val filterItemFlow: Flow<HResult<Array<Filter<*>>>> by lazy {
+		iExtensionFlow.mapLatestResult { successResult(it.searchFiltersModel) }
+	}
+
+	private fun Array<Filter<*>>.convert(): List<SettingsItemData> = convertToSettingItems(this)
+
+	private fun convertToSettingItems(filters: Array<Filter<*>>): List<SettingsItemData> =
+		filters.map { filter ->
+			when (filter) {
+				is Filter.Header -> headerSettingItemData(filter.id) {
+					titleText = filter.name
+				}
+				is Filter.Separator -> DividerSettingItemData(filter.id)
+				is Filter.Text -> textInputSettingData(filter.id) {
+					titleText = filter.name
+
+					// Check if the result is of the expected type
+					val result = filterDataState.getOrElse(filter.id) { filter.state }
+					(result as? String)?.let {
+						initialText = it
+					}
+						?: this@CatalogViewModel.logE("Filter(${filter.id}) expected String, received ${result.javaClass.simpleName}")
+					doAfterTextChanged { editable ->
+						filterDataState[filter.id] = editable.toString()
+					}
+				}
+				is Filter.Switch -> asSettingItem(filter)
+				is Filter.Checkbox -> asSettingItem(filter)
+				is Filter.TriState -> TriStateButtonSettingData(filter.id).apply {
+					titleText = filter.name
+					checkedRes = R.drawable.checkbox_checked
+					uncheckedRes = R.drawable.checkbox_inter
+					ignoredRes = R.drawable.checkbox_ignored
+
+					onStateChanged = {
+						filterDataState[filter.id] = state.ordinal
+					}
+
+					// Check if the result is of the expected type
+					val result = filterDataState.getOrElse(filter.id) { filter.state }
+					(result as? Int)?.let {
+						state = when (it) {
+							Filter.TriState.STATE_EXCLUDE -> TriState.State.UNCHECKED
+							Filter.TriState.STATE_IGNORED -> TriState.State.IGNORED
+							Filter.TriState.STATE_INCLUDE -> TriState.State.CHECKED
+							else -> TriState.State.IGNORED
+						}
+					}
+						?: this@CatalogViewModel.logE("Filter(${filter.id}) expected Int, received ${result.javaClass.simpleName}")
+
+
+				}
+
+				is Filter.Dropdown -> spinnerSettingData(filter.id) {
+					titleText = filter.name
+					arrayAdapter = ArrayAdapter(
+						application,
+						android.R.layout.simple_spinner_dropdown_item,
+						filter.choices
+					)
+
+					// Check if the result is of the expected type
+					val result = filterDataState.getOrElse(filter.id) { filter.state }
+					(result as? Int)?.let {
+						spinnerValue { it }
+					}
+						?: this@CatalogViewModel.logE("Filter(${filter.id}) expected Int, received ${result.javaClass.simpleName}")
+
+					onSpinnerItemSelected { _, _, position, _ ->
+						filterDataState[filter.id] = position
+					}
+				}
+
+				is Filter.RadioGroup -> spinnerSettingData(filter.id) {
+					titleText = filter.name
+					arrayAdapter = ArrayAdapter(
+						application,
+						android.R.layout.simple_spinner_dropdown_item,
+						filter.choices
+					)
+					val result = filterDataState.getOrElse(filter.id) { filter.state }
+					(result as? Int)?.let {
+						spinnerValue { it }
+					}
+						?: this@CatalogViewModel.logE("Filter(${filter.id}) expected Int, received ${result.javaClass.simpleName}")
+					onSpinnerItemSelected { _, _, position, _ ->
+						filterDataState[filter.id] = position
+					}
+				}
+				is Filter.List -> ListSettingData(filter.id).apply {
+					titleText = filter.name
+
+					val f: Array<Filter<*>> = filter.filters.toList().toTypedArray()
+					launchIO {
+						val result = f.convert()
+						launchUI {
+							FastAdapterDiffUtil[itemAdapter] =
+								FastAdapterDiffUtil.calculateDiff(itemAdapter, result)
+						}
+					}
+
+				}
+				is Filter.Group<*> -> ListSettingData(filter.id).apply {
+					titleText = filter.name
+
+					val f: Array<Filter<*>> = filter.filters.toList().toTypedArray()
+					launchIO {
+						val result = f.convert()
+						launchUI {
+							FastAdapterDiffUtil[itemAdapter] =
+								FastAdapterDiffUtil.calculateDiff(itemAdapter, result)
+						}
+					}
+
+				}
+			}
+		}
+
+
+	private fun asSettingItem(filter: Filter<Boolean>) = switchSettingData(filter.id) {
+		titleText = filter.name
+
+		// Check if the result is of the expected type
+		val result = filterDataState.getOrElse(filter.id) { filter.state }
+		(result as? Boolean)?.let {
+			isChecked = it
+		}
+			?: this@CatalogViewModel.logE("Filter(${filter.id}) expected Boolean, received ${result.javaClass.simpleName}")
+
+		isChecked = filterDataState.getOrElse(filter.id) { filter.state } as Boolean
+		onChecked { _, isChecked ->
+			filterDataState[filter.id] = isChecked
+		}
+	}
+
+	override val filterItemsLive: LiveData<HResult<List<SettingsItemData>>> by lazy {
+		filterItemFlow.mapLatestResult { successResult(convertToSettingItems(it)) }.asIOLiveData()
 	}
 
 	override val hasSearchLive: LiveData<Boolean> by lazy {
@@ -211,7 +359,6 @@ class CatalogViewModel(
 	}
 
 	override fun applyQuery(newQuery: String) {
-		logV("")
 		queryState = newQuery
 		stateManager = StateManager()
 		stateManager.loadMore()
@@ -219,24 +366,19 @@ class CatalogViewModel(
 
 	@Synchronized
 	override fun loadMore() {
-		logV("")
 		stateManager.loadMore()
 	}
 
 	override fun resetView() {
-		logV("")
 		itemsFlow.tryEmit(successResult(arrayListOf()))
-		stateManager = StateManager()
-		stateManager.loadMore()
+		applyFilter()
 	}
 
 	override fun backgroundNovelAdd(novelID: Int) {
 		launchIO { backgroundAddUseCase(novelID) }
 	}
 
-	override fun applyFilter(map: Map<Int, Any>) {
-		logV("")
-		filterDataState = map
+	override fun applyFilter() {
 		stateManager = StateManager()
 		stateManager.loadMore()
 	}
@@ -249,7 +391,8 @@ class CatalogViewModel(
 	}
 
 	override fun resetFilter() {
-		filterDataState = mapOf()
+		filterDataState.clear()
+		applyFilter()
 	}
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) =

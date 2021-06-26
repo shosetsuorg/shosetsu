@@ -36,14 +36,15 @@ class CatalogFilterMenuBuilder(
 
 	fun build(): View = ControllerCatalogFilterBottomMenuBinding.inflate(layoutInflater)
 		.also { binding ->
+			binding.extensionFilters
 			binding.extensionFilters.apply {
 				val itemAdapter = ItemAdapter<SettingsItemData>()
 				adapter = FastAdapter.with(itemAdapter)
 				controller.viewModel.filterItemsLive.handleObserve(controller) { list ->
-					//FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(
-					//	itemAdapter,
-					//	list.toSettingItemData(context)
-					//)
+					FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(
+						itemAdapter,
+						list
+					)
 				}
 			}
 			binding.applyButton.setOnClickListener {

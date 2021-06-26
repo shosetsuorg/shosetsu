@@ -51,6 +51,26 @@ class GetExtensionSettingsUseCase(
 	private val updateSetting: UpdateExtensionSettingUseCase,
 	private val getExt: GetExtensionUseCase
 ) {
+	private suspend fun asSettingItem(extensionID: Int, filter: Filter<Boolean>) =
+		extSettingsRepository.getBooleanFlow(
+			extensionID,
+			filter.id,
+			filter.state
+		).map { state ->
+			switchSettingData(filter.id) {
+				titleText = filter.name
+				isChecked = state
+				onChecked { _, isChecked ->
+					launchIO {
+						updateSetting(
+							extensionID,
+							filter.id,
+							isChecked
+						)
+					}
+				}
+			}
+		}
 
 	private suspend fun Array<Filter<*>>.convert(extensionID: Int): Array<Flow<SettingsItemData>> =
 		mapNotNull { filter ->
@@ -79,47 +99,11 @@ class GetExtensionSettingsUseCase(
 				}
 				is Filter.Switch -> {
 					this@GetExtensionSettingsUseCase.logV("Converting Filter.Switch")
-					extSettingsRepository.getBooleanFlow(
-						extensionID,
-						filter.id,
-						filter.state
-					).map { state ->
-						switchSettingData(filter.id) {
-							titleText = filter.name
-							isChecked = state
-							onChecked { _, isChecked ->
-								launchIO {
-									updateSetting(
-										extensionID,
-										filter.id,
-										isChecked
-									)
-								}
-							}
-						}
-					}
+					asSettingItem(extensionID, filter)
 				}
 				is Filter.Checkbox -> {
 					this@GetExtensionSettingsUseCase.logV("Converting Filter.Checkbox")
-					extSettingsRepository.getBooleanFlow(
-						extensionID,
-						filter.id,
-						filter.state
-					).map { state ->
-						switchSettingData(filter.id) {
-							titleText = filter.name
-							isChecked = state
-							onChecked { _, isChecked ->
-								launchIO {
-									updateSetting(
-										extensionID,
-										filter.id,
-										isChecked
-									)
-								}
-							}
-						}
-					}
+					asSettingItem(extensionID, filter)
 				}
 				is Filter.TriState -> {
 					this@GetExtensionSettingsUseCase.logV("Converting Filter.TriState")

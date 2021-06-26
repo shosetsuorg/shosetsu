@@ -71,10 +71,10 @@ open class TriStateButton @JvmOverloads constructor(
 		context.theme.obtainStyledAttributes(attrs, R.styleable.TriStateButton, defStyleAttr, 0)
 			.apply {
 				try {
-					checkedRes = getResourceIdOrThrow(R.styleable.TriState_button_checked)
-					uncheckedRes = getResourceIdOrThrow(R.styleable.TriState_button_unchecked)
-					ignoredRes = getResourceId(R.styleable.TriState_button_ignored, 0)
-					state = values()[getResourceId(R.styleable.TriState_state, 0)]
+					checkedRes = getResourceIdOrThrow(R.styleable.TriStateButton_button_checked)
+					uncheckedRes = getResourceIdOrThrow(R.styleable.TriStateButton_button_unchecked)
+					ignoredRes = getResourceId(R.styleable.TriStateButton_button_ignored, -1)
+					state = values()[getResourceId(R.styleable.TriStateButton_button_state, 0)]
 
 					binding.textView.text = getString(R.styleable.TriStateButton_android_text)
 						?: ""
@@ -115,7 +115,7 @@ open class TriStateButton @JvmOverloads constructor(
 
 	private fun setDrawable() {
 		if (state == IGNORED) {
-			if (ignoredRes != 0) {
+			if (ignoredRes != -1) {
 				binding.imageView.setImageResource(ignoredRes)
 			} else binding.imageView.visibility = INVISIBLE
 			return

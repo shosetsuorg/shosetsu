@@ -71,4 +71,4 @@ inline fun <reified I : Convertible<O>, reified O : Any> HFlow<List<I>>.mapLates
 /** Converts a [HResult.Success] of a [Convertible] from its [I] form to its [O] form */
 @ExperimentalCoroutinesApi
 inline fun <reified I : Convertible<O>, reified O : Any> HFlow<I>.mapLatestResultTo()
-		: HFlow<O> = mapLatest { it.convert() }
+		: HFlow<O> = mapLatest { it.convertToSettingItems() }

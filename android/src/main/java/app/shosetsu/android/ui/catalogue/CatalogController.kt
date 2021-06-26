@@ -223,8 +223,6 @@ class CatalogController(
 		viewModel.hasSearchLive.observe {
 			activity?.invalidateOptionsMenu()
 		}
-		viewModel.filterItemsLive.observe(this) {
-		}
 	}
 
 	override fun bindView(inflater: LayoutInflater): ControllerCatalogueBinding =

@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-
-    <declare-styleable name="TriState">
-        <attr name="state" format="enum">
+    <declare-styleable name="TriStateButton">
+        <attr name="android:text" format="string" />
+        <attr name="button_checked" format="reference" />
+        <attr name="button_unchecked" format="reference" />
+        <attr name="button_ignored" format="reference" />
+        <attr name="button_state" format="enum">
             <enum name="IGNORED" value="0" />
             <enum name="CHECKED" value="1" />
             <enum name="UNCHECKED" value="2" />
         </attr>
-
-        <attr name="button_checked" format="reference" />
-        <attr name="button_unchecked" format="reference" />
-        <attr name="button_ignored" format="reference" />
     </declare-styleable>
 
-    <declare-styleable name="TriStateButton" parent="TriState">
-        <attr name="android:text" format="string" />
-    </declare-styleable>
-
-    <declare-styleable name="TriStateIcon" parent="TriState">
+    <declare-styleable name="TriStateIcon" >
+        <attr name="icon_checked" format="reference" />
+        <attr name="icon_unchecked" format="reference" />
+        <attr name="icon_ignored" format="reference" />
+        <attr name="icon_state" format="enum">
+            <enum name="IGNORED" value="0" />
+            <enum name="CHECKED" value="1" />
+            <enum name="UNCHECKED" value="2" />
+        </attr>
     </declare-styleable>
 
     <declare-styleable name="BottomActionBar">

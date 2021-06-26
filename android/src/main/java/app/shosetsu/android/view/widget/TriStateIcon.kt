@@ -23,11 +23,11 @@ class TriStateIcon @JvmOverloads constructor(
 		context.theme.obtainStyledAttributes(attrs, R.styleable.TriStateIcon, defStyleAttr, 0)
 			.apply {
 				try {
-					checkedRes = getResourceId(R.styleable.TriState_button_checked, 0)
-					uncheckedRes = getResourceId(R.styleable.TriState_button_unchecked, 0)
-					ignoredRes = getResourceId(R.styleable.TriState_button_ignored, 0)
+					checkedRes = getResourceId(R.styleable.TriStateIcon_icon_checked, -1)
+					uncheckedRes = getResourceId(R.styleable.TriStateIcon_icon_unchecked, -1)
+					ignoredRes = getResourceId(R.styleable.TriStateIcon_icon_ignored, -1)
 					state =
-						TriState.State.values()[getResourceId(R.styleable.TriState_state, 0)]
+						TriState.State.values()[getResourceId(R.styleable.TriStateIcon_icon_state, 0)]
 				} finally {
 					recycle()
 				}
@@ -37,7 +37,7 @@ class TriStateIcon @JvmOverloads constructor(
 	override var state: TriState.State = TriState.State.IGNORED
 		set(value) {
 			if (value == TriState.State.IGNORED) {
-				if (ignoredRes != 0) {
+				if (ignoredRes != -1) {
 					setImageResource(ignoredRes)
 				} else visibility = INVISIBLE
 				return
@@ -45,7 +45,7 @@ class TriStateIcon @JvmOverloads constructor(
 			// If checked / unchecked, set visibility to visible
 			isVisible = true
 
-			if (checkedRes != 0 && uncheckedRes != 0)
+			if (checkedRes != -1 && uncheckedRes != -1)
 				setImageResource(if (value == TriState.State.CHECKED) checkedRes else uncheckedRes)
 
 			if (onStateChangeListeners != null)

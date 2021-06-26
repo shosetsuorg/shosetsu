@@ -20,7 +20,7 @@
             android:text="By title"
             app:button_checked="@drawable/expand_more"
             app:button_unchecked="@drawable/expand_less"
-            app:state="CHECKED" />
+            app:button_state="CHECKED" />
 
         <app.shosetsu.android.view.widget.TriStateButton
             android:id="@+id/by_unread_count"

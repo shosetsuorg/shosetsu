@@ -29,7 +29,7 @@ inline fun <reified O, reified I> HList<I>.convertList(): HList<O>
  * Converts a [Convertible] from their [I] form to their [O] form while
  * maintaining itself in an [HResult]
  */
-inline fun <reified O, reified I : Convertible<O>> HResult<I>.convert(): HResult<O> =
+inline fun <reified O, reified I : Convertible<O>> HResult<I>.convertToSettingItems(): HResult<O> =
 	this.transform {
 		successResult(it.convertTo())
 	}
