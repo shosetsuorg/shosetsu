@@ -78,7 +78,8 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class MainActivity : AppCompatActivity(), KodeinAware {
+class MainActivity : AppCompatActivity(), KodeinAware,
+	ControllerChangeHandler.ControllerChangeListener {
 	private lateinit var binding: ActivityMainBinding
 
 	private var registered = false
@@ -292,26 +293,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
 	private fun setupRouter(savedInstanceState: Bundle?) {
 		router = attachRouter(this, binding.controllerContainer, savedInstanceState)
-		router.addChangeListener(object : ControllerChangeHandler.ControllerChangeListener {
-			override fun onChangeStarted(
-				to: Controller?,
-				from: Controller?,
-				isPush: Boolean,
-				container: ViewGroup,
-				handler: ControllerChangeHandler,
-			) {
-				syncActivityViewWithController(to, from)
-			}
-
-			override fun onChangeCompleted(
-				to: Controller?,
-				from: Controller?,
-				isPush: Boolean,
-				container: ViewGroup,
-				handler: ControllerChangeHandler,
-			) {
-			}
-		})
+		router.addChangeListener(this)
 		syncActivityViewWithController(router.backstack.lastOrNull()?.controller)
 	}
 
@@ -565,5 +547,24 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 				binding.bottomNavigationView.isVisible -> anchorView = binding.bottomNavigationView
 			}
 		}
+
+	override fun onChangeStarted(
+		to: Controller?,
+		from: Controller?,
+		isPush: Boolean,
+		container: ViewGroup,
+		handler: ControllerChangeHandler,
+	) {
+		syncActivityViewWithController(to, from)
+	}
+
+	override fun onChangeCompleted(
+		to: Controller?,
+		from: Controller?,
+		isPush: Boolean,
+		container: ViewGroup,
+		handler: ControllerChangeHandler,
+	) {
+	}
 
 }
