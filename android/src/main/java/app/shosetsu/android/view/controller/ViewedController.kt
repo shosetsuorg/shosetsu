@@ -95,24 +95,24 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 
 	@CallSuper
 	override fun onDestroy() {
-		Log.d(logID(), "Destroying Controller")
+		logV("Destroying Controller")
 		super.onDestroy()
 	}
 
 	@CallSuper
 	override fun onDetach(view: View) {
-		Log.d(logID(), "Detaching View")
+		logV("Detaching View")
 		super.onDetach(view)
 	}
 
 	@CallSuper
 	override fun onAttach(view: View) {
-		Log.d(logID(), "Attaching View")
+		logV("Attaching View")
 		super.onAttach(view)
 	}
 
 	open fun setViewTitle(viewTitle: String = this.viewTitle) {
-		Log.i(logID(), "Activity title $viewTitle")
+		logV("Activity title $viewTitle")
 		activity?.title = viewTitle
 	}
 
