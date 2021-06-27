@@ -246,9 +246,9 @@ class NovelController(bundle: Bundle) :
 		AlertDialog.Builder(recyclerView.context)
 			.setView(binding.root)
 			.setTitle(R.string.jump_to_chapter)
-			.setNegativeButton(android.R.string.cancel) { d, id ->
+			.setNegativeButton(android.R.string.cancel) { _, _ ->
 			}
-			.setPositiveButton(R.string.alert_dialog_jump_positive) { d, id ->
+			.setPositiveButton(R.string.alert_dialog_jump_positive) { _, _ ->
 				/**
 				 * The predicate to use to find the chapter to scroll to
 				 */
@@ -259,7 +259,9 @@ class NovelController(bundle: Bundle) :
 					// Predicate will be searching if the title contains the text
 					val text = binding.editTextNumber.text.toString()
 					if (text.isBlank()) {
-						toast(R.string.toast_error_chapter_jump_empty_title)
+						makeSnackBar(R.string.toast_error_chapter_jump_empty_title)
+							?.setAction(R.string.generic_question_retry) { openChapterJumpDialog() }
+							?.show()
 						return@setPositiveButton
 					}
 
@@ -269,7 +271,9 @@ class NovelController(bundle: Bundle) :
 
 					val selectedNumber =
 						binding.editTextNumber.text.toString().toDoubleOrNull()?.plus(1.0) ?: run {
-							toast(R.string.toast_error_chapter_jump_invalid_number)
+							makeSnackBar(R.string.toast_error_chapter_jump_invalid_number)
+								?.setAction(R.string.generic_question_retry) { openChapterJumpDialog() }
+								?.show()
 							return@setPositiveButton
 						}
 
@@ -278,11 +282,19 @@ class NovelController(bundle: Bundle) :
 
 				// Search for chapter on IO, then jump to it on UI
 				launchIO {
-					chapterUIAdapter.adapterItems.indexOfFirst(predicate).takeIf { it != -1 }?.let {
-						launchUI {
-							recyclerView.smoothScrollToPosition(it)
-						}
-					} ?: launchUI { toast(R.string.toast_error_chapter_jump_invalid_target) }
+					chapterUIAdapter.adapterItems
+						.indexOfFirst(predicate)
+						.takeIf { it != -1 }?.let { index ->
+							launchUI {
+								recyclerView.smoothScrollToPosition(index)
+							}
+						} ?: launchUI {
+						makeSnackBar(R.string.toast_error_chapter_jump_invalid_target)
+							?.setAction(R.string.generic_question_retry) {
+								openChapterJumpDialog()
+							}
+							?.show()
+					}
 				}
 			}.show()
 	}
