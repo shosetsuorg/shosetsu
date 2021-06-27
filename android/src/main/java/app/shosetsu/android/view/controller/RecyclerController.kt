@@ -146,7 +146,6 @@ abstract class RecyclerController<AD, IT, VB> : ViewedController<VB>
 	/**
 	 * The data for this view is loading
 	 */
-	@CallSuper
 	open fun showLoading() {}
 
 	/**
