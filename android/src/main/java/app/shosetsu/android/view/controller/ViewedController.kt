@@ -145,27 +145,6 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 	 */
 	abstract fun handleErrorResult(e: HResult.Error)
 
-	@Deprecated("Use snackbar")
-	fun toast(
-		length: Int = Toast.LENGTH_SHORT,
-		message: () -> String,
-	) {
-		launchUI {
-			applicationContext?.toast(message(), length)
-		}
-	}
-
-	@Deprecated("Use snackbar instead")
-	fun toast(
-		@StringRes message: Int,
-		length: Int = Toast.LENGTH_SHORT,
-	) {
-		launchUI {
-			applicationContext?.toast(message, length)
-		}
-	}
-
-
 	/**
 	 * Convenience method to observe [LiveData]
 	 */
