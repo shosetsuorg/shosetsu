@@ -8,6 +8,7 @@ import android.view.MenuInflater
 import android.view.View
 import android.widget.SearchView
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
@@ -69,14 +70,14 @@ class CatalogController(
 
 	/***/
 	val viewModel: ICatalogViewModel by viewModel()
-	private val progressAdapter by lazy { ItemAdapter<ProgressItem>() }
+	//private val progressAdapter by lazy { ItemAdapter<ProgressItem>() }
 
 
 	override val fastAdapter: FastAdapter<ACatalogNovelUI> by lazy {
 		FastAdapter<ACatalogNovelUI>().apply {
 			addAdapter(0, itemAdapter)
-			@Suppress("UNCHECKED_CAST")
-			addAdapter(1, progressAdapter as ItemAdapter<ACatalogNovelUI>)
+			//@Suppress("UNCHECKED_CAST")
+			//addAdapter(1, progressAdapter as ItemAdapter<ACatalogNovelUI>)
 		}
 	}
 
@@ -141,7 +142,7 @@ class CatalogController(
 			onLongClickListener = { _, _, i, _ ->
 				logI("Adding novel to background")
 				viewModel.backgroundNovelAdd(i.id)
-				toast(R.string.controller_catalogue_toast_background_add)
+				makeSnackBar(R.string.controller_catalogue_toast_background_add)?.show()
 				true
 			}
 		}
@@ -149,10 +150,7 @@ class CatalogController(
 
 	override fun onViewCreated(view: View) {
 		viewModel.setExtensionID(bundle.getInt(BUNDLE_EXTENSION))
-		binding.swipeRefreshLayout.setOnRefreshListener {
-			logV("Refreshing")
-			viewModel.resetView()
-		}
+		binding.swipeRefreshLayout.setOnRefreshListener { viewModel.resetView() }
 		setupObservers()
 		setupRecyclerView()
 	}
@@ -160,18 +158,13 @@ class CatalogController(
 	override fun setupRecyclerView() {
 		recyclerView.setHasFixedSize(false)
 		//recyclerView.addOnScrollListener(CatalogueHitBottom(viewModel))
-		recyclerView.addOnScrollListener(object : EndlessRecyclerOnScrollListener(progressAdapter) {
+		super.setupRecyclerView()
+		recyclerView.addOnScrollListener(object : EndlessRecyclerOnScrollListener(recyclerView.layoutManager!!) {
 			override fun onLoadMore(currentPage: Int) {
-				// these are throwing exceptions that cant be catched, just ignore em
-				launchUI {
-					progressAdapter.clear()
-					progressAdapter.add(ProgressItem())
-				}
-
+				binding.fragmentCatalogueProgressBottom.isVisible = true
 				viewModel.loadMore()
 			}
 		})
-		super.setupRecyclerView()
 	}
 
 	/***/
@@ -197,6 +190,7 @@ class CatalogController(
 
 	override fun updateUI(newList: List<ACatalogNovelUI>) {
 		super.updateUI(newList)
+		binding.fragmentCatalogueProgressBottom.isVisible = false
 		binding.swipeRefreshLayout.isRefreshing = false
 	}
 
