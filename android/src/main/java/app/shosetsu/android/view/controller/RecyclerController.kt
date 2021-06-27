@@ -108,7 +108,6 @@ abstract class RecyclerController<AD, IT, VB> : ViewedController<VB>
 	 */
 	@CallSuper
 	open fun setupRecyclerView() {
-		Log.d(logID(), "Setup of recyclerView")
 		recyclerView.layoutManager = createLayoutManager()
 		adapter = createRecyclerAdapter()
 		recyclerView.adapter = adapter
@@ -148,9 +147,7 @@ abstract class RecyclerController<AD, IT, VB> : ViewedController<VB>
 	 * The data for this view is loading
 	 */
 	@CallSuper
-	open fun showLoading() {
-		Log.i(logID(), "Loading UWU")
-	}
+	open fun showLoading() {}
 
 	/**
 	 * Updates the UI with a new list
