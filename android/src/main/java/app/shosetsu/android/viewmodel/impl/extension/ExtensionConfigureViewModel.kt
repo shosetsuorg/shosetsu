@@ -80,9 +80,9 @@ class ExtensionConfigureViewModel(
 				onLoading = { emit(loading) }
 			) { nameList ->
 				emitAll(
-					getExtensionSettings(extensionID).mapLatestResult { filterList ->
+					getExtensionSettings(extensionID).mapLatestResult { extensionSettings ->
 						successResult(
-							ArrayList(filterList).apply {
+							ArrayList(extensionSettings).apply {
 								if (nameList.size > 1) {
 									add(0, spinnerSettingData(0) {
 										titleID = R.string.listings
