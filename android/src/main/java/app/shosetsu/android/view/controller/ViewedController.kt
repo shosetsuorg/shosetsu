@@ -1,11 +1,9 @@
 package app.shosetsu.android.view.controller
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.CallSuper
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
@@ -56,10 +54,8 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 	override val kodein: Kodein by lazy { (applicationContext as KodeinAware).kodein }
 
 	/**
-	 * Should this be attached to root
+	 * The ViewBinding that is used by child views
 	 */
-	open val attachToRoot: Boolean = false
-
 	lateinit var binding: VB
 
 	init {
@@ -111,6 +107,9 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 		super.onAttach(view)
 	}
 
+	/**
+	 * Set the title of the view
+	 */
 	open fun setViewTitle(viewTitle: String = this.viewTitle) {
 		logV("Activity title $viewTitle")
 		activity?.title = viewTitle
@@ -146,7 +145,7 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 	abstract fun handleErrorResult(e: HResult.Error)
 
 	/**
-	 * Convenience method to observe [LiveData]
+	 * Convenience method to observe [LiveData] without having to pass the owner argument
 	 */
 	fun <T> LiveData<T>.observe(observer: (T) -> Unit) =
 		observe(this@ViewedController, observer)
