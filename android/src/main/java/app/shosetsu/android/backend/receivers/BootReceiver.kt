@@ -26,7 +26,11 @@ class BootReceiver : BroadcastReceiver() {
 	 * Handles reception
 	 */
 	override fun onReceive(context: Context, intent: Intent) {
-		Log.i(logID(), "Received BOOT_COMPLETED signal")
+		logI( "Received BOOT_COMPLETED signal")
+		if (intent.action != Intent.ACTION_BOOT_COMPLETED) {
+			logE("Action did not match")
+			return
+		}
 		// Starts perodic workers
 		AutoStartUpdateWorker(context).invoke()
 		AutoStartAppUpdateWorker(context).invoke()
