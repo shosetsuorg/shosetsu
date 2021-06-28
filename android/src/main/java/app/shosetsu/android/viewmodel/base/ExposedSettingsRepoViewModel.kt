@@ -55,7 +55,7 @@ interface ExposedSettingsRepoViewModel {
 	@SettingsItemDSL
 	suspend fun SpinnerSettingData.spinnerSettingValue(key: SettingKey<Int>) {
 		spinnerValue { settingsRepo.getIntOrDefault(key) }
-		var first: Boolean = true
+		var first = true
 		onSpinnerItemSelected { _: AdapterView<*>?, _: View?, position: Int, _: Long ->
 			launchIO {
 				if (first) {
