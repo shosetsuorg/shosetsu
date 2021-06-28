@@ -206,7 +206,7 @@ dependencies {
 
 	// Error logging
 	val acraVersion = "5.8.3"
-	fun DependencyHandler.acra(module: String, version: String = acraVersion) =
+	fun acra(module: String, version: String = acraVersion) =
 		"ch.acra:$module:$version"
 
 	implementation(acra("acra-http"))
@@ -215,7 +215,7 @@ dependencies {
 
 	// Conductor
 	val conductorVersion = "3.0.1"
-	fun DependencyHandler.conductor(module: String, version: String = conductorVersion) =
+	fun conductor(module: String, version: String = conductorVersion) =
 		"com.bluelinelabs:$module:$version"
 
 	implementation(conductor("conductor"))
@@ -241,7 +241,7 @@ dependencies {
 
 	// Fast Adapter
 	val latestFastAdapterRelease = "5.4.1"
-	fun DependencyHandler.fastadapter(module: String, version: String = latestFastAdapterRelease) =
+	fun fastadapter(module: String, version: String = latestFastAdapterRelease) =
 		"com.mikepenz:$module:$version"
 
 	implementation(fastadapter("fastadapter"))
