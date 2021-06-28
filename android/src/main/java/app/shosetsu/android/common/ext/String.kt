@@ -98,5 +98,5 @@ fun String.md5(): String {
 }
 
 
-fun String.toLowerCaseR(): String = this.toLowerCase(Locale.ROOT)
-fun String.toLowerCaseD(): String = this.toLowerCase(Locale.getDefault())
+fun String.toLowerCaseR(): String = this.lowercase(Locale.ROOT)
+fun String.toLowerCaseD(): String = this.lowercase(Locale.getDefault())

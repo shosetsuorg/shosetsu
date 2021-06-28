@@ -166,8 +166,8 @@ class LibraryViewModel(
 			result.handle { list ->
 				list.forEach { ui ->
 					strip(ui).forEach { key ->
-						if (!contains(key.capitalize(LGD())) && key.isNotBlank()) {
-							add(key.capitalize(LGD()))
+						if (!contains(key.replaceFirstChar { if (it.isLowerCase()) it.titlecase(LGD()) else it.toString() }) && key.isNotBlank()) {
+							add(key.replaceFirstChar { if (it.isLowerCase()) it.titlecase(LGD()) else it.toString() })
 						}
 					}
 				}
@@ -190,12 +190,20 @@ class LibraryViewModel(
 					filters.forEach { (s, inclusionState) ->
 						result = when (inclusionState) {
 							INCLUDE ->
-								result.filter {
-									against(it).any { g -> g.capitalize(LGD()) == s }
+								result.filter { novelUI ->
+									against(novelUI).any { g -> g.replaceFirstChar {
+										if (it.isLowerCase()) it.titlecase(
+											LGD()
+										) else it.toString()
+									} == s }
 								}
 							EXCLUDE ->
-								result.filterNot {
-									against(it).any { g -> g.capitalize(LGD()) == s }
+								result.filterNot { novelUI ->
+									against(novelUI).any { g -> g.replaceFirstChar {
+										if (it.isLowerCase()) it.titlecase(
+											LGD()
+										) else it.toString()
+									} == s }
 								}
 						}
 					}

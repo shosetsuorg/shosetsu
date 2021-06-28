@@ -14,16 +14,17 @@ import kotlinx.coroutines.future.future
 import kotlinx.serialization.encodeToString
 import okhttp3.internal.toHexString
 import org.junit.Test
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 import kotlin.random.Random
 import kotlin.system.measureTimeMillis
+import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
@@ -47,13 +48,13 @@ import kotlin.time.measureTimedValue
 /**
  * 18 / 01 / 2021
  */
-class BackupTest : KodeinAware {
+class BackupTest : DIAware {
 
 	private val context: Context by lazy {
 		InstrumentationRegistry.getInstrumentation().targetContext
 	}
 
-	override val kodein: Kodein by closestKodein(context)
+	override val di: DI by closestDI(context)
 
 	private val backupRepository by instance<IBackupRepository>()
 
@@ -137,7 +138,7 @@ class BackupTest : KodeinAware {
 	fun test() {
 		GlobalScope.future {
 			measureTimedValue { backup }.also {
-				println("Created backup randomly in ${it.duration.inMilliseconds}ms")
+				println("Created backup randomly in ${it.duration.toDouble(DurationUnit.MILLISECONDS)}ms")
 			}.value.let {
 				measureTimeMillis {
 					println("Repository count ${it.repos.size}")
@@ -164,16 +165,16 @@ class BackupTest : KodeinAware {
 			}
 
 			val stringBackup = measureTimedValue { backupJSON.encodeToString(backup) }.also {
-				println("Serialized backup in ${it.duration.inMilliseconds}ms")
+				println("Serialized backup in ${it.duration.toDouble(DurationUnit.MILLISECONDS)}ms")
 			}.value
 
 			val zippedBytes = measureTimedValue { gzip(stringBackup) }.also {
-				println("Zipped backup in ${it.duration.inMilliseconds}ms")
+				println("Zipped backup in ${it.duration.toDouble(DurationUnit.MILLISECONDS)}ms")
 			}.value
 
 			val base64Bytes =
-				measureTimedValue { Base64.encodeToString(zippedBytes, Base64.DEFAULT) }.also {
-					println("Base64 backup in ${it.duration.inMilliseconds}ms")
+				measureTimedValue { Base64.encode(zippedBytes, Base64.DEFAULT) }.also {
+					println("Base64 backup in ${it.duration.toDouble(DurationUnit.MILLISECONDS)}ms")
 				}.value
 
 			measureTimeMillis {

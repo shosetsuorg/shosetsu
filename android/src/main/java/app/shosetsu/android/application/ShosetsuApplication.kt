@@ -16,6 +16,7 @@ import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.android.viewmodel.factory.ViewModelFactory
 import app.shosetsu.common.domain.repositories.base.IExtensionLibrariesRepository
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.lib.ShosetsuSharedLib
 import app.shosetsu.lib.lua.ShosetsuLuaLib
 import app.shosetsu.lib.lua.shosetsuGlobals
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
@@ -87,7 +88,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, DIAware,
 	}
 
 	override fun onCreate() {
-		ShosetsuLuaLib.httpClient = okHttpClient
+		ShosetsuSharedLib.httpClient = okHttpClient
 		ShosetsuLuaLib.libLoader = libLoader@{ name ->
 			Log.i("LuaLibLoader", "Loading ($name)")
 			return@libLoader when (val result = extLibRepository.blockingLoadExtLibrary(name)) {

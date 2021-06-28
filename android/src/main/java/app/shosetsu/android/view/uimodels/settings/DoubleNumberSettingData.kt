@@ -40,7 +40,7 @@ class DoubleNumberSettingData(id: Int) : ButtonSettingData(id) {
 
 	val wholeSteps: List<Int> by lazy {
 		ArrayList<Int>().apply {
-			var position: Int = minWhole;
+			var position: Int = minWhole
 			do {
 				add(position)
 				position += 1
@@ -51,7 +51,7 @@ class DoubleNumberSettingData(id: Int) : ButtonSettingData(id) {
 	val decimalSteps: List<Int> by lazy {
 		ArrayList<Int>().apply {
 			val wholeStep = (step * 100).toInt()
-			var position = 0;
+			var position = 0
 			do {
 				add(position)
 				position += wholeStep

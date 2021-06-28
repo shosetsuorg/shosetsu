@@ -332,7 +332,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		private const val MESSAGE_LOG_JSON_MISSING = "BACKUP JSON DOES NOT CONTAIN KEY 'version'"
 
 
-		private const val MESSAGE_LOG_JSON_OUTDATED = "BACKUP JSON MISMATCH";
+		private const val MESSAGE_LOG_JSON_OUTDATED = "BACKUP JSON MISMATCH"
 
 
 		/**

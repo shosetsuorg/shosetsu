@@ -240,7 +240,7 @@ class ChapterReaderViewModel(
 	@WorkerThread
 	override fun getChapterPassage(readerChapterUI: ReaderChapterUI): LiveData<HResult<ByteArray>> {
 		if (hashMap.containsKey(readerChapterUI.id))
-			return hashMap[readerChapterUI.id]!!.asIOLiveData() as LiveData<HResult<ByteArray>>
+			return hashMap[readerChapterUI.id]!!.asIOLiveData()
 
 		return flow {
 			emit(loading())

@@ -72,7 +72,7 @@ class NovelFilterMenuBuilder(
 						if (isInitialSetup) {
 							isInitialSetup = false
 							this@NovelFilterMenuBuilder.logD("Initial setup")
-							menuAdapter.menu0?.apply {
+							menuAdapter.menu0.apply {
 								bookmarked.isChecked = settings.showOnlyBookmarked
 								downloaded.isChecked = settings.showOnlyDownloaded
 								when (settings.showOnlyReadingStatusOf) {
@@ -81,7 +81,7 @@ class NovelFilterMenuBuilder(
 									else -> allRadioButton.isChecked = true
 								}
 							}
-							menuAdapter.menu1?.apply {
+							menuAdapter.menu1.apply {
 								val reversed = settings.reverseOrder
 
 								when (settings.sortType) {

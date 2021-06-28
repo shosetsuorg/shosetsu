@@ -68,7 +68,7 @@ class TextAssetReader(bundleI: Bundle) : ViewedController<LargeReaderBinding>(bu
 	@ExperimentalStdlibApi
 	override fun onViewCreated(view: View) {
 		if (message.isEmpty()) handleB()
-		activity?.title = (type.capitalize(Locale.ROOT))
+		activity?.title = (type.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() })
 		binding.title.text = message
 	}
 
