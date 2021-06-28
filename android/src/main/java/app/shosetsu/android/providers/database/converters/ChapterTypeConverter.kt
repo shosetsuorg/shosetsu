@@ -24,7 +24,7 @@ import app.shosetsu.lib.Novel.ChapterType.Companion.valueOf
 /**
  * 02 / 01 / 2021
  *
- * Converts a [ReaderType] from it's enum form to integer form and back
+ * Converts a [ChapterType] from it's enum form to integer form and back
  */
 class ChapterTypeConverter {
 	@TypeConverter
