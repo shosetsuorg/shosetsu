@@ -69,7 +69,6 @@ class RepositoryUpdateWorker(
 	 *
 	 * @param repoExtLibList of the application
 	 * @param repository Repo of the index
-	 * @param progressUpdate Upstream reporting
 	 */
 	private suspend fun updateLibraries(
 		repoExtLibList: List<RepoLibrary>,
