@@ -1,5 +1,6 @@
 package app.shosetsu.android.ui.reader.types.model
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.view.View
 import android.webkit.JavascriptInterface
@@ -99,6 +100,7 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	}
 
 	init {
+		@SuppressLint("SetJavaScriptEnabled") // kotlin-lib should implement xml scrubbing
 		webView.settings.javaScriptEnabled = true
 		webView.addJavascriptInterface(shosetsuScript, "shosetsuScript")
 
