@@ -62,7 +62,7 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 			}
 		}
 
-		@Suppress("unused")
+		@Suppress("unused", "RedundantVisibilityModifier")
 		@JavascriptInterface
 		public fun onScroll() {
 			launchUI {
