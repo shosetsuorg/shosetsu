@@ -102,9 +102,9 @@ interface ExposedSettingsRepoViewModel {
 	@SettingsItemDSL
 	suspend fun DoubleNumberSettingData.settingValue(key: SettingKey<Float>) {
 		settingsRepo.getFloatOrDefault(key).let { settingValue: Float ->
-			initialWhole = wholeSteps.indexOfFirst<Int> { it == settingValue.toInt() }.orZero()
+			initialWhole = wholeSteps.indexOfFirst { it == settingValue.toInt() }.orZero()
 			val decimal: Int = ((settingValue % 1) * 100).toInt()
-			initialDecimal = decimalSteps.indexOfFirst<Int> { it == decimal }.orZero()
+			initialDecimal = decimalSteps.indexOfFirst { it == decimal }.orZero()
 		}
 		onValueSelected { value: Double ->
 			launchIO {

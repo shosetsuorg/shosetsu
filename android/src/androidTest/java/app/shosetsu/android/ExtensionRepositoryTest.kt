@@ -10,10 +10,10 @@ import app.shosetsu.common.dto.unwrap
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.future.future
 import org.junit.Test
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 
 /*
  * This file is part of Shosetsu.
@@ -35,32 +35,32 @@ import org.kodein.di.generic.instance
 /**
  * 16 / 01 / 2021
  */
-class ExtensionRepositoryTest : KodeinAware {
+class ExtensionRepositoryTest : DIAware {
 	private val context: Context by lazy {
 		InstrumentationRegistry.getInstrumentation().targetContext
 	}
-	override val kodein: Kodein by closestKodein(context)
+	override val di: DI by closestDI(context)
 
 	private val repo: IExtensionRepoRepository by instance()
 
 	private suspend fun print() {
 		repo.loadRepositories().handle(
 			onLoading = {
-				logD<ExtensionRepositoryTest>("Loading")
+				logD("Loading")
 			},
 			onError = {
-				logD<ExtensionRepositoryTest>(it.toString())
+				logD(it.toString())
 				it.exception?.printStackTrace()
 			},
 			onEmpty = {
-				logD<ExtensionRepositoryTest>("Empty")
+				logD("Empty")
 			},
 			onSuccess = { list ->
-				logD<ExtensionRepositoryTest>("========================")
+				logD("========================")
 				list.forEach {
-					logD<ExtensionRepositoryTest>(it.toString())
+					logD(it.toString())
 				}
-				logD<ExtensionRepositoryTest>("========================")
+				logD("========================")
 			})
 	}
 
@@ -73,7 +73,8 @@ class ExtensionRepositoryTest : KodeinAware {
 			// Create the temp entity
 			val tempRepoValue = RepositoryEntity(
 				url = "Build test",
-				name = "Temporary test"
+				name = "Temporary test",
+				isEnabled = true
 			)
 
 			// Add the temp entity

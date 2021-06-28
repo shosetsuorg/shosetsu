@@ -22,7 +22,6 @@ import app.shosetsu.android.view.controller.FastAdapterRecyclerController
 import app.shosetsu.android.view.controller.base.BottomMenuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.PushCapableController
-import app.shosetsu.android.view.uimodels.model.ProgressItem
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.widget.SlidingUpBottomMenu
 import app.shosetsu.android.viewmodel.abstracted.ICatalogViewModel
@@ -33,7 +32,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerCatalogueBinding
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.scroll.EndlessRecyclerOnScrollListener
 
 /*
