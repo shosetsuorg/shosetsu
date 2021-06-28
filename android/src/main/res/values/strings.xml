@@ -345,7 +345,7 @@
     <string name="settings_reader_title_mark_read_as_reading">Mark read as reading</string>
     <string name="settings_reader_desc_mark_read_as_reading">Allows the reader to mark a read chapter as reading when its opened up.</string>
     <string name="no_more_chapters">No more chapters</string>
-    <string name="next_chapter">Next Chapter...</string>
+    <string name="next_chapter">Next Chapter…</string>
 
     <string name="follow_system_theme">Follow System</string>
     <string name="sort">Sort</string>
