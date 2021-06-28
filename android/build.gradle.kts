@@ -132,8 +132,8 @@ dependencies {
 
 	// Androidx
 	implementation("androidx.constraintlayout:constraintlayout:2.0.4")
-	implementation("androidx.work:work-runtime:2.6.0-beta01")
-	implementation("androidx.work:work-runtime-ktx:2.6.0-beta01")
+	implementation("androidx.work:work-runtime:2.7.0-alpha04")
+	implementation("androidx.work:work-runtime-ktx:2.7.0-alpha04")
 	implementation("androidx.gridlayout:gridlayout:1.0.0")
 	implementation("androidx.preference:preference-ktx:1.1.1")
 	implementation("androidx.recyclerview:recyclerview:1.2.1")
@@ -162,7 +162,7 @@ dependencies {
 	androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
 
 	// Annotations
-	implementation("org.jetbrains:annotations:19.0.0")
+	implementation("org.jetbrains:annotations:21.0.1")
 
 	// Core libraries
 	implementation("org.luaj:luaj-jse:3.0.1")
@@ -179,7 +179,7 @@ dependencies {
 	//implementation("us.feras.mdv:markdownview:1.1.0")
 
 	// Time control
-	implementation("joda-time:joda-time:2.10.5")
+	implementation("joda-time:joda-time:2.10.10")
 
 
 	// TODO Implement readerview provided by Mozilla
@@ -190,13 +190,13 @@ dependencies {
 	//implementation("com.zhkrb.cloudflare-scrape-android:scrape-webview:0.0.3")
 
 	// Network
-	implementation("com.squareup.okhttp3:okhttp:4.9.1")
+	implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.2")
 
 	// Kotlin libraries
 	implementation(kotlin("stdlib-jdk8"))
 	implementation(kotlin("reflect"))
 
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0")
 
 	// Showcase
 	implementation("com.github.deano2390:MaterialShowcaseView:1.3.4")
@@ -205,16 +205,23 @@ dependencies {
 	implementation("com.github.shosetsuorg:DiscreteScrollView:1.5.1")
 
 	// Error logging
-	val acra_version = "5.7.0"
-	implementation("ch.acra:acra-http:$acra_version")
-	implementation("ch.acra:acra-mail:$acra_version")
-	implementation("ch.acra:acra-dialog:$acra_version")
+	val acraVersion = "5.8.3"
+	fun DependencyHandler.acra(module: String, version: String = acraVersion) =
+		"ch.acra:$module:$version"
+
+	implementation(acra("acra-http"))
+	implementation(acra("acra-mail"))
+	implementation(acra("acra-dialog"))
 
 	// Conductor
-	implementation("com.bluelinelabs:conductor:3.0.0")
-	implementation("com.bluelinelabs:conductor-support:3.0.0-rc2")
-	implementation("com.bluelinelabs:conductor-androidx-transition:3.0.0")
-	implementation("com.bluelinelabs:conductor-archlifecycle:3.0.0")
+	val conductorVersion = "3.0.1"
+	fun DependencyHandler.conductor(module: String, version: String = conductorVersion) =
+		"com.bluelinelabs:$module:$version"
+
+	implementation(conductor("conductor"))
+	implementation(conductor("conductor-support", "3.0.0-rc2"))
+	implementation(conductor("conductor-androidx-transition"))
+	implementation(conductor("conductor-archlifecycle"))
 
 	// FastScroll
 	implementation("com.github.turing-tech:MaterialScrollBar:13.3.4")
@@ -223,7 +230,7 @@ dependencies {
 	implementation("com.heinrichreimersoftware:material-intro:2.0.0")
 
 	// Color Picker
-	implementation("com.github.skydoves:colorpickerview:2.1.6")
+	implementation("com.github.skydoves:colorpickerview:2.2.3")
 
 	// Seek bar
 	implementation(project(mapOf("path" to ":bubbleseekbar")))
@@ -233,30 +240,38 @@ dependencies {
 	kapt("androidx.room:room-compiler:2.3.0")
 
 	// Fast Adapter
-	val latestFastAdapterRelease = "5.3.2"
+	val latestFastAdapterRelease = "5.4.1"
+	fun DependencyHandler.fastadapter(module: String, version: String = latestFastAdapterRelease) =
+		"com.mikepenz:$module:$version"
 
-	implementation("com.mikepenz:fastadapter:${latestFastAdapterRelease}")
-	implementation("com.mikepenz:fastadapter-extensions-expandable:${latestFastAdapterRelease}")
-	implementation("com.mikepenz:fastadapter-extensions-binding:${latestFastAdapterRelease}")
-	implementation("com.mikepenz:fastadapter-extensions-diff:${latestFastAdapterRelease}")
-	implementation("com.mikepenz:fastadapter-extensions-drag:${latestFastAdapterRelease}")
-	implementation("com.mikepenz:fastadapter-extensions-paged:${latestFastAdapterRelease}")
-	implementation("com.mikepenz:fastadapter-extensions-scroll:${latestFastAdapterRelease}")
-	implementation("com.mikepenz:fastadapter-extensions-swipe:${latestFastAdapterRelease}")
-	implementation("com.mikepenz:fastadapter-extensions-ui:${latestFastAdapterRelease}")
-	implementation("com.mikepenz:fastadapter-extensions-utils:${latestFastAdapterRelease}")
+	implementation(fastadapter("fastadapter"))
+	implementation(fastadapter("fastadapter-extensions-expandable"))
+	implementation(fastadapter("fastadapter-extensions-binding"))
+	implementation(fastadapter("fastadapter-extensions-diff"))
+	implementation(fastadapter("fastadapter-extensions-drag"))
+	implementation(fastadapter("fastadapter-extensions-paged"))
+	implementation(fastadapter("fastadapter-extensions-scroll"))
+	implementation(fastadapter("fastadapter-extensions-swipe"))
+	implementation(fastadapter("fastadapter-extensions-ui"))
+	implementation(fastadapter("fastadapter-extensions-utils"))
 
 	// Guava cache
 	implementation("com.google.guava:guava:30.1.1-android")
 
 	// kode-in
-	implementation("org.kodein.di:kodein-di-generic-jvm:6.5.5")
-	implementation("org.kodein.di:kodein-di-framework-android-core:6.5.5")
-	implementation("org.kodein.di:kodein-di-framework-android-x:6.5.5")
+	val kodeinVersion = "7.6.0"
+	fun DependencyHandler.kodein(module: String, version: String = kodeinVersion) =
+		"org.kodein.di:$module:$version"
+
+	implementation(kodein("kodein-di"))
+	implementation(kodein("kodein-di-jvm"))
+	implementation(kodein("kodein-di-framework-android-core"))
+	implementation(kodein("kodein-di-framework-android-support"))
+	implementation(kodein("kodein-di-framework-android-x"))
 
 	// KTX
 
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.2")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.5.0")
 
 	// KTX - Serialization
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
@@ -268,3 +283,4 @@ dependencies {
 	// Banner
 	//implementation("com.github.shosetsuorg:MaterialBanner:2.0.7")
 }
+
