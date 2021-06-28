@@ -11,9 +11,9 @@ import app.shosetsu.common.datasource.memory.base.IMemExtensionsDataSource
 import app.shosetsu.common.datasource.memory.impl.GenericMemChaptersDataSource
 import app.shosetsu.common.datasource.memory.impl.GenericMemExtLibDataSource
 import app.shosetsu.common.datasource.memory.impl.GenericMemExtensionDataSource
-import org.kodein.di.Kodein
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.singleton
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.singleton
 
 /*
  * This file is part of shosetsu.
@@ -38,7 +38,7 @@ import org.kodein.di.generic.singleton
  * These modules handle cached data that is in memory
  */
 
-val memoryDataSourceModule: Kodein.Module = Kodein.Module("cache_data_source") {
+val memoryDataSourceModule: DI.Module = DI.Module("cache_data_source") {
 	bind<IMemChaptersDataSource>() with singleton {
 		if (SDK_INT <= M)
 			GenericMemChaptersDataSource() else

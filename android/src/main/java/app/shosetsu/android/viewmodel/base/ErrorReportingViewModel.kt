@@ -34,7 +34,7 @@ interface ErrorReportingViewModel {
 
 	fun basicReport(error: Error, isSilent: Boolean = true) {
 		val reporter = try {
-			ACRA.getErrorReporter()
+			ACRA.errorReporter
 		} catch (e: IllegalStateException) {
 			null
 		}

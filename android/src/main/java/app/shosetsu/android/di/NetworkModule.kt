@@ -2,9 +2,7 @@ package app.shosetsu.android.di
 
 import app.shosetsu.android.providers.network.createOkHttpClient
 import okhttp3.OkHttpClient
-import org.kodein.di.Kodein
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.singleton
+import org.kodein.di.*
 
 /*
  * This file is part of shosetsu.
@@ -28,6 +26,6 @@ import org.kodein.di.generic.singleton
  * shosetsu
  * 01 / 05 / 2020
  */
-val networkModule: Kodein.Module = Kodein.Module("network_module") {
+internal val networkModule = DI.Module("network_module") {
 	bind<OkHttpClient>() with singleton { createOkHttpClient() }
 }

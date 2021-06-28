@@ -28,10 +28,10 @@ import com.squareup.picasso.Picasso
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 import java.io.IOException
 import java.util.zip.GZIPInputStream
 
@@ -58,9 +58,9 @@ import java.util.zip.GZIPInputStream
 class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(
 	appContext,
 	params
-), KodeinAware, NotificationCapable {
+), DIAware, NotificationCapable {
+	override val di: DI by closestDI(applicationContext)
 
-	override val kodein: Kodein by closestKodein(appContext)
 	private val backupRepo by instance<IBackupRepository>()
 	private val extensionsRepoRepo by instance<IExtensionRepoRepository>()
 	private val initializeExtensionsUseCase by instance<StartRepositoryUpdateManagerUseCase>()

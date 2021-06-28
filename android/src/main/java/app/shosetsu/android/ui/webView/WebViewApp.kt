@@ -15,10 +15,10 @@ import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityWebviewBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityWebviewBinding.inflate
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 import java.util.*
 
 /*
@@ -47,8 +47,8 @@ import java.util.*
  * Opens a URL in the apps internal webview
  * This allows cross saving cookies, allowing the app to access features such as logins
  */
-class WebViewApp : AppCompatActivity(), KodeinAware {
-	override val kodein: Kodein by closestKodein()
+class WebViewApp : AppCompatActivity(), DIAware {
+	override val di: DI by closestDI()
 	private val openInBrowserUseCase: OpenInBrowserUseCase by instance()
 
 	private lateinit var binding: ActivityWebviewBinding

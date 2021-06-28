@@ -18,7 +18,7 @@ import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
 import app.shosetsu.common.domain.repositories.base.getIntOrDefault
-import org.kodein.di.generic.instance
+import org.kodein.di.instance
 import java.util.concurrent.TimeUnit.HOURS
 import androidx.work.PeriodicWorkRequestBuilder as PWRB
 

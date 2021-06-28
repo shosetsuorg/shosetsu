@@ -18,9 +18,9 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.android.view.widget.TappingTextView
 import app.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.databinding.ChapterReaderTextViewBinding
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.kodein
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
 
 /*
  * This file is part of shosetsu.
@@ -46,8 +46,8 @@ import org.kodein.di.android.kodein
 @Deprecated("No longer supported, moving to WebView")
 class StringReader(
 	itemView: View
-) : ReaderChapterViewHolder(itemView), KodeinAware, LifecycleObserver {
-	override val kodein: Kodein by kodein(itemView.context)
+) : ReaderChapterViewHolder(itemView), DIAware, LifecycleObserver {
+	override val di: DI by closestDI(itemView.context)
 	private val binding = ChapterReaderTextViewBinding.bind(itemView)
 
 	/**

@@ -23,10 +23,10 @@ import app.shosetsu.common.enums.DownloadStatus
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 
 /*
  * This file is part of shosetsu.
@@ -54,7 +54,7 @@ import org.kodein.di.generic.instance
 class DownloadWorker(
 	appContext: Context,
 	params: WorkerParameters,
-) : CoroutineWorker(appContext, params), KodeinAware, NotificationCapable {
+) : CoroutineWorker(appContext, params), DIAware, NotificationCapable {
 	override val notifyContext: Context
 		get() = applicationContext
 	override val defaultNotificationID: Int = ID_CHAPTER_DOWNLOAD
@@ -68,7 +68,7 @@ class DownloadWorker(
 			.setPriority(NotificationCompat.PRIORITY_HIGH)
 			.setOngoing(true)
 
-	override val kodein: Kodein by closestKodein(applicationContext)
+	override val di: DI by closestDI(applicationContext)
 	private val downloadsRepo by instance<IDownloadsRepository>()
 	private val chapRepo by instance<IChaptersRepository>()
 	private val settingRepo by instance<ISettingsRepository>()

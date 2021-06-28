@@ -4,10 +4,7 @@ import app.shosetsu.android.domain.repository.impl.AppUpdatesRepository
 import app.shosetsu.android.domain.repository.impl.ExtensionLibrariesRepository
 import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.domain.repositories.impl.*
-import org.kodein.di.Kodein
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.singleton
+import org.kodein.di.*
 
 /*
  * This file is part of shosetsu.
@@ -33,7 +30,7 @@ import org.kodein.di.generic.singleton
  * @author github.com/doomsdayrs
  */
 
-val repositoryModule: Kodein.Module = Kodein.Module("repository_module") {
+val repositoryModule: DI.Module = DI.Module("repository_module") {
 	bind<IChaptersRepository>() with singleton {
 		ChaptersRepository(instance(), instance(), instance(), instance(), instance())
 	}

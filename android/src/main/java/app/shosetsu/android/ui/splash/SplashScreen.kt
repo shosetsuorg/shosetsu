@@ -10,10 +10,8 @@ import app.shosetsu.android.common.ext.requestPerms
 import app.shosetsu.android.ui.intro.IntroductionActivity
 import app.shosetsu.android.viewmodel.abstracted.ASplashScreenViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.*
+import org.kodein.di.android.closestDI
 
 
 /*
@@ -38,12 +36,12 @@ import org.kodein.di.generic.instance
  * Shosetsu
  * 9 / June / 2019
  */
-class SplashScreen : AppCompatActivity(R.layout.splash_screen), KodeinAware {
+class SplashScreen : AppCompatActivity(R.layout.splash_screen), DIAware {
 	companion object {
 		const val INTRO_CODE: Int = 1944
 	}
 
-	override val kodein: Kodein by closestKodein()
+	override val di: DI by closestDI()
 
 	private val viewModel: ASplashScreenViewModel by instance()
 

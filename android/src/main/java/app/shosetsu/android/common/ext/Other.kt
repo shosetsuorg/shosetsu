@@ -21,9 +21,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.bluelinelabs.conductor.archlifecycle.LifecycleController
-import org.kodein.di.KodeinAware
+import org.kodein.di.DIAware
 import org.kodein.di.direct
-import org.kodein.di.generic.instance
+import org.kodein.di.instance
 
 /**
  * shosetsu
@@ -36,7 +36,7 @@ import org.kodein.di.generic.instance
  * KODEIN EXT
  **/
 inline fun <reified VM : ViewModel, T> T.viewModel()
-		: Lazy<VM> where T : KodeinAware, T : LifecycleController =
+		: Lazy<VM> where T : DIAware, T : LifecycleController =
 	lazy(LazyThreadSafetyMode.NONE) {
 		ViewModelProvider(
 			this.activity as AppCompatActivity,
@@ -45,7 +45,7 @@ inline fun <reified VM : ViewModel, T> T.viewModel()
 	}
 
 inline fun <reified VM : ViewModel, T> T.viewModel()
-		: Lazy<VM> where T : KodeinAware, T : AppCompatActivity =
+		: Lazy<VM> where T : DIAware, T : AppCompatActivity =
 	lazy(LazyThreadSafetyMode.NONE) {
 		ViewModelProvider(
 			this,

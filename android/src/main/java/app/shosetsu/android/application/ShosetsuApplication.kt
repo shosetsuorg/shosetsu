@@ -29,12 +29,8 @@ import org.acra.config.CoreConfigurationBuilder
 import org.acra.config.HttpSenderConfigurationBuilder
 import org.acra.data.StringFormat
 import org.acra.sender.HttpSender
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
+import org.kodein.di.*
 import org.kodein.di.android.x.androidXModule
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.singleton
 
 /*
  * This file is part of shosetsu.
@@ -63,14 +59,14 @@ import org.kodein.di.generic.singleton
 	resText = R.string.crashDialogText,
 	resTheme = R.style.AppTheme_CrashReport
 )
-class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware,
+class ShosetsuApplication : Application(), LifecycleEventObserver, DIAware,
 	Configuration.Provider {
 	private val extLibRepository by instance<IExtensionLibrariesRepository>()
 	private val okHttpClient by instance<OkHttpClient>()
 	private val startRepositoryUpdateManagerUseCase: StartRepositoryUpdateManagerUseCase by instance()
 
 	@ExperimentalCoroutinesApi
-	override val kodein: Kodein by Kodein.lazy {
+	override val di: DI by DI.lazy {
 		bind<ViewModelFactory>() with singleton { ViewModelFactory(applicationContext) }
 		import(othersModule)
 		import(providersModule)
@@ -120,15 +116,18 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, KodeinAware,
 	}
 
 	private fun setupACRA() {
-		val config = CoreConfigurationBuilder(this)
-		config.setBuildConfigClass(BuildConfig::class.java).setReportFormat(StringFormat.JSON)
-
-		config.getPluginConfigurationBuilder(HttpSenderConfigurationBuilder::class.java)
-			.setHttpMethod(HttpSender.Method.POST)
-			.setUri("https://technojo4.com/acra.php")
-			.setEnabled(true)
-
-		ACRA.init(this, config)
+		ACRA.init(
+			this,
+			CoreConfigurationBuilder(this).apply {
+				buildConfigClass = BuildConfig::class.java
+				reportFormat = StringFormat.JSON
+				getPluginConfigurationBuilder(HttpSenderConfigurationBuilder::class.java).apply {
+					httpMethod = HttpSender.Method.POST
+					uri = "https://technojo4.com/acra.php"
+					enabled = true
+				}
+			}
+		)
 	}
 
 	override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {}

@@ -30,10 +30,10 @@ import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.transformToSuccess
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 
 /*
  * This file is part of shosetsu.
@@ -63,7 +63,7 @@ import org.kodein.di.generic.instance
 class NovelUpdateWorker(
 	appContext: Context,
 	params: WorkerParameters,
-) : CoroutineWorker(appContext, params), KodeinAware, NotificationCapable {
+) : CoroutineWorker(appContext, params), DIAware, NotificationCapable {
 	override val notifyContext: Context
 		get() = applicationContext
 
@@ -78,7 +78,7 @@ class NovelUpdateWorker(
 			.setOnlyAlertOnce(true)
 
 
-	override val kodein: Kodein by closestKodein(appContext)
+	override val di: DI by closestDI(appContext)
 
 	private val iNovelsRepository: INovelsRepository by instance()
 	private val loadRemoteNovelUseCase: GetRemoteNovelUseCase by instance()

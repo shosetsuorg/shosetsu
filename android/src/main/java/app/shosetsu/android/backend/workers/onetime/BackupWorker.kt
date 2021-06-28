@@ -22,10 +22,10 @@ import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.unwrap
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.serialization.encodeToString
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.zip.GZIPOutputStream
@@ -53,9 +53,9 @@ import java.util.zip.GZIPOutputStream
 class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(
 	appContext,
 	params,
-), KodeinAware, NotificationCapable {
+), DIAware, NotificationCapable {
 
-	override val kodein: Kodein by closestKodein(appContext)
+	override val di: DI by closestDI(appContext)
 	private val novelRepository by instance<INovelsRepository>()
 	private val iSettingsRepository by instance<ISettingsRepository>()
 

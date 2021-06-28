@@ -7,10 +7,10 @@ import app.shosetsu.android.viewmodel.impl.extension.ExtensionConfigureViewModel
 import app.shosetsu.android.viewmodel.impl.extension.ExtensionsViewModel
 import app.shosetsu.android.viewmodel.impl.settings.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.kodein.di.Kodein
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.provider
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.provider
 
 /*
  * This file is part of shosetsu.
@@ -35,7 +35,7 @@ import org.kodein.di.generic.provider
  * 01 / 05 / 2020
  */
 @ExperimentalCoroutinesApi
-val viewModelsModule: Kodein.Module = Kodein.Module("view_models_module") {
+val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 	// Main
 	bind<IMainViewModel>() with provider {
 		MainViewModel(

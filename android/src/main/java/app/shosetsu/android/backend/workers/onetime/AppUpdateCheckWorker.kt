@@ -25,10 +25,10 @@ import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
 import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 
 /*
  * This file is part of shosetsu.
@@ -56,8 +56,8 @@ import org.kodein.di.generic.instance
 class AppUpdateCheckWorker(
 	appContext: Context,
 	params: WorkerParameters
-) : CoroutineWorker(appContext, params), KodeinAware, NotificationCapable {
-	override val kodein: Kodein by closestKodein(applicationContext)
+) : CoroutineWorker(appContext, params), DIAware, NotificationCapable {
+	override val di: DI by closestDI(applicationContext)
 	private val openAppForUpdateIntent: Intent
 		get() = Intent(applicationContext, SplashScreen::class.java).apply {
 			action = ACTION_OPEN_APP_UPDATE

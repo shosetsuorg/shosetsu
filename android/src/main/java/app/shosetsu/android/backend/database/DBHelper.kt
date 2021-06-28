@@ -21,10 +21,11 @@ import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.lib.Novel
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.kodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.di
+import org.kodein.di.instance
+
 import java.io.IOException
 
 /*
@@ -50,9 +51,9 @@ import java.io.IOException
  */
 @Deprecated("SQL Database removed")
 class DBHelper(context: Context) :
-	SQLiteOpenHelper(context, "database.db", null, 10), KodeinAware {
-	override val kodein: Kodein by kodein(context)
-	private val novelDAO by kodein.instance<NovelsDao>()
+	SQLiteOpenHelper(context, "database.db", null, 10), DIAware {
+	override val di: DI by di(context)
+	private val novelDAO by di.instance<NovelsDao>()
 	private val chapterDAO by instance<ChaptersDao>()
 
 	private enum class Columns(private val key: String) {

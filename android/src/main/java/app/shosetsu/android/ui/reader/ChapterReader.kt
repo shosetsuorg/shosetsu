@@ -38,9 +38,9 @@ import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.calculateDiff
 import com.skydoves.colorpickerview.ColorPickerDialog
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
 
 
 /*
@@ -65,8 +65,8 @@ import org.kodein.di.android.closestKodein
  * 13 / 12 / 2019
  */
 class ChapterReader
-	: AppCompatActivity(), KodeinAware {
-	override val kodein: Kodein by closestKodein()
+	: AppCompatActivity(), DIAware {
+	override val di: DI by closestDI()
 	internal val viewModel: IChapterReaderViewModel by viewModel()
 	private lateinit var binding: ActivityReaderBinding
 

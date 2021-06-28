@@ -3,7 +3,7 @@ package app.shosetsu.android.datasource.local
 import app.shosetsu.android.datasource.local.database.dbDataSourceModule
 import app.shosetsu.android.datasource.local.file.fileDataSourceModule
 import app.shosetsu.android.datasource.local.memory.memoryDataSourceModule
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 
 /*
  * This file is part of shosetsu.
@@ -27,7 +27,7 @@ import org.kodein.di.Kodein
  * 01 / 05 / 2020
  * Should all be singletons
  */
-val localDataSourceModule: Kodein.Module = Kodein.Module("local_data_source") {
+val localDataSourceModule: DI.Module = DI.Module("local_data_source") {
 	import(dbDataSourceModule)
 	import(fileDataSourceModule)
 	import(memoryDataSourceModule)

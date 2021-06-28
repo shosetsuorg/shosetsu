@@ -13,8 +13,8 @@ import app.shosetsu.common.dto.HResult
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.archlifecycle.LifecycleController
 import com.github.doomsdayrs.apps.shosetsu.R
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
+import org.kodein.di.DI
+import org.kodein.di.DIAware
 
 /*
  * This file is part of shosetsu.
@@ -40,7 +40,7 @@ import org.kodein.di.KodeinAware
  *
  * @author github.com/doomsdayrs
  */
-abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinAware {
+abstract class ViewedController<VB : ViewBinding> : LifecycleController, DIAware {
 	/** Title of this view, Applies to the app system */
 	@StringRes
 	open val viewTitleRes: Int = -1
@@ -51,7 +51,7 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, KodeinA
 			getString(viewTitleRes)
 		else getString(R.string.app_name)
 	}
-	override val kodein: Kodein by lazy { (applicationContext as KodeinAware).kodein }
+	override val di: DI by lazy { (applicationContext as DIAware).di }
 
 	/**
 	 * The ViewBinding that is used by child views

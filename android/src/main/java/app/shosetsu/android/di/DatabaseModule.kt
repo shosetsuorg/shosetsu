@@ -3,10 +3,7 @@ package app.shosetsu.android.di
 import app.shosetsu.android.providers.database.ShosetsuDatabase
 import app.shosetsu.android.providers.database.ShosetsuDatabase.Companion.getRoomDatabase
 import app.shosetsu.android.providers.database.dao.*
-import org.kodein.di.Kodein
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.singleton
+import org.kodein.di.*
 
 /*
  * This file is part of shosetsu.
@@ -32,7 +29,7 @@ import org.kodein.di.generic.singleton
  * @author github.com/doomsdayrs
  */
 
-val databaseModule: Kodein.Module = Kodein.Module("database_module") {
+val databaseModule: DI.Module = DI.Module("database_module") {
 	bind<ShosetsuDatabase>() with singleton { getRoomDatabase(instance()) }
 
 	bind<ChaptersDao>() with singleton { instance<ShosetsuDatabase>().chaptersDao }

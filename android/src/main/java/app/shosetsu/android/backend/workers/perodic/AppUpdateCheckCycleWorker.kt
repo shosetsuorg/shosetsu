@@ -16,7 +16,7 @@ import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
 import app.shosetsu.common.domain.repositories.base.getIntOrDefault
-import org.kodein.di.generic.instance
+import org.kodein.di.instance
 import java.util.concurrent.TimeUnit
 
 /*
@@ -73,7 +73,7 @@ class AppUpdateCheckCycleWorker(
 		 * @return true if the service is running, false otherwise.
 		 */
 		override fun isRunning(): Boolean = try {
-			workerManager.getWorkInfosForUniqueWork(WorkerTags.APP_UPDATE_CYCLE_WORK_ID)
+			workerManager.getWorkInfosForUniqueWork(APP_UPDATE_CYCLE_WORK_ID)
 				.get()[0].state == WorkInfo.State.RUNNING
 		} catch (e: Exception) {
 			false

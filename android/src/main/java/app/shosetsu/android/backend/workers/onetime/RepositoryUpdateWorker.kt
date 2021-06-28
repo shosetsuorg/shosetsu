@@ -28,10 +28,10 @@ import app.shosetsu.lib.json.RepoExtension
 import app.shosetsu.lib.json.RepoLibrary
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.delay
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 
 /*
  * This file is part of Shosetsu.
@@ -58,7 +58,7 @@ import org.kodein.di.generic.instance
 class RepositoryUpdateWorker(
 	appContext: Context,
 	params: WorkerParameters,
-) : CoroutineWorker(appContext, params), KodeinAware, NotificationCapable {
+) : CoroutineWorker(appContext, params), DIAware, NotificationCapable {
 
 	private val extRepo: IExtensionsRepository by instance()
 	private val extRepoRepo: IExtensionRepoRepository by instance()
@@ -231,7 +231,7 @@ class RepositoryUpdateWorker(
 		return Result.success()
 	}
 
-	override val kodein: Kodein by closestKodein(appContext)
+	override val di: DI by closestDI(appContext)
 
 	override val baseNotificationBuilder: NotificationCompat.Builder
 		get() = notificationBuilder(applicationContext, CHANNEL_REPOSITORY_UPDATE)

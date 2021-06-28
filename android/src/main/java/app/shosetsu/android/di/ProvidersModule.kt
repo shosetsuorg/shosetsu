@@ -3,10 +3,7 @@ package app.shosetsu.android.di
 import app.shosetsu.android.providers.file.impl.AndroidFileSystemProvider
 import app.shosetsu.android.providers.prefrences.SharedPreferenceProvider
 import app.shosetsu.common.providers.file.base.IFileSystemProvider
-import org.kodein.di.Kodein
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.singleton
+import org.kodein.di.*
 
 /*
  * This file is part of Shosetsu.
@@ -30,7 +27,7 @@ import org.kodein.di.generic.singleton
  * 23 / 10 / 2020
  */
 
-val providersModule = Kodein.Module("providers_module") {
+val providersModule = DI.Module("providers_module") {
 	bind<SharedPreferenceProvider>() with singleton { SharedPreferenceProvider((instance())) }
 	bind<IFileSystemProvider>() with singleton { AndroidFileSystemProvider(instance()) }
 }

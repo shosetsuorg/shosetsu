@@ -20,10 +20,10 @@ import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
 import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 import java.io.File
 
 /*
@@ -50,8 +50,8 @@ import java.io.File
 class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(
 	appContext,
 	params
-), KodeinAware, NotificationCapable {
-	override val kodein: Kodein by closestKodein(appContext)
+), DIAware, NotificationCapable {
+	override val di: DI by closestDI(appContext)
 	private val updateRepo by instance<IAppUpdatesRepository>()
 	override val notificationManager: NotificationManagerCompat by notificationManager()
 

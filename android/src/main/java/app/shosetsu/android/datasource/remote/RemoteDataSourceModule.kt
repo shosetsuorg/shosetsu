@@ -9,10 +9,10 @@ import app.shosetsu.android.datasource.remote.impl.update.GithubAppUpdateDataSou
 import app.shosetsu.android.datasource.remote.impl.update.PlayAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.impl.update.UpToDownAppUpdateDataSource
 import app.shosetsu.common.datasource.remote.base.*
-import org.kodein.di.Kodein
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.singleton
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.singleton
 
 /*
  * This file is part of shosetsu.
@@ -36,7 +36,7 @@ import org.kodein.di.generic.singleton
  * 01 / 05 / 2020
  * These modules load chapters from online
  */
-val remoteDataSouceModule: Kodein.Module = Kodein.Module("remote_data_source") {
+val remoteDataSouceModule: DI.Module = DI.Module("remote_data_source") {
 	bind<IRemoteCatalogueDataSource>() with singleton { RemoteCatalogueDataSource() }
 
 	bind<IRemoteChaptersDataSource>() with singleton { RemoteChaptersDataSource() }

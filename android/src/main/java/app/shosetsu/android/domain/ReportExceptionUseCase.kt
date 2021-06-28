@@ -41,7 +41,7 @@ class ReportExceptionUseCase(
 
 	private fun report(result: HResult.Error, isSilent: Boolean = true) {
 		try {
-			ACRA.getErrorReporter()
+			ACRA.errorReporter
 		} catch (e: IllegalStateException) {
 			null
 		}?.let { reporter ->

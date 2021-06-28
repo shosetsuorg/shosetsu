@@ -1,15 +1,14 @@
 package app.shosetsu.android.viewmodel.factory
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import app.shosetsu.android.common.ext.logID
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.TT
-import org.kodein.di.android.kodein
+import app.shosetsu.android.common.ext.logV
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
 import org.kodein.di.direct
+import org.kodein.type.erased
 
 /*
  * This file is part of shosetsu.
@@ -35,10 +34,10 @@ import org.kodein.di.direct
  *
  * @author github.com/doomsdayrs
  */
-class ViewModelFactory(context: Context) : ViewModelProvider.Factory, KodeinAware {
-	override val kodein: Kodein by kodein(context)
+class ViewModelFactory(context: Context) : ViewModelProvider.Factory, DIAware {
+	override val di: DI by closestDI(context)
 	override fun <T : ViewModel> create(modelClass: Class<T>): T {
-		Log.d(logID(), "Creating instance of ${modelClass.name}")
-		return kodein.direct.Instance(TT(modelClass))
+		logV("Creating instance of ${modelClass.name}")
+		return di.direct.Instance(erased(modelClass))
 	}
 }

@@ -49,9 +49,9 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityMainBinding
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.BaseTransientBottomBar.Duration
 import com.google.android.material.snackbar.Snackbar
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
 import java.util.*
 
 
@@ -78,7 +78,7 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
-class MainActivity : AppCompatActivity(), KodeinAware,
+class MainActivity : AppCompatActivity(), DIAware,
 	ControllerChangeHandler.ControllerChangeListener {
 	private lateinit var binding: ActivityMainBinding
 
@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity(), KodeinAware,
 	private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
 
 	private val downloadManager by lazy { getSystemService<DownloadManager>()!! }
-	override val kodein: Kodein by closestKodein()
+	override val di: DI by closestDI()
 	private val viewModel: IMainViewModel by viewModel()
 
 	private val broadcastReceiver by lazy {

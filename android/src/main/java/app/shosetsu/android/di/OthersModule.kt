@@ -4,10 +4,7 @@ import app.shosetsu.android.backend.workers.onetime.*
 import app.shosetsu.android.backend.workers.perodic.AppUpdateCheckCycleWorker
 import app.shosetsu.android.backend.workers.perodic.BackupCycleWorker
 import app.shosetsu.android.backend.workers.perodic.NovelUpdateCycleWorker
-import org.kodein.di.Kodein
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.singleton
+import org.kodein.di.*
 
 /*
  * This file is part of shosetsu.
@@ -30,8 +27,7 @@ import org.kodein.di.generic.singleton
  * shosetsu
  * 30 / 07 / 2020
  */
-@Suppress("PublicApiImplicitType")
-val othersModule = Kodein.Module("others") {
+internal val othersModule = DI.Module("others") {
 
 	// Workers
 

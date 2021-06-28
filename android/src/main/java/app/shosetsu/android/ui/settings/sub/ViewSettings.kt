@@ -12,7 +12,7 @@ import app.shosetsu.android.viewmodel.abstracted.settings.AViewSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.NavStyle
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import com.github.doomsdayrs.apps.shosetsu.R
-import org.kodein.di.generic.instance
+import org.kodein.di.instance
 
 /*
  * This file is part of Shosetsu.
