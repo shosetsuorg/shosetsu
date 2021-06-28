@@ -245,7 +245,7 @@ class RepositoryUpdateWorker(
 		get() = applicationContext
 
 	override val defaultNotificationID: Int
-		get() = Notifications.ID_REPOSITORY_UPDATE
+		get() = ID_REPOSITORY_UPDATE
 
 	class Manager(context: Context) : CoroutineWorkerManager(context) {
 		private val iSettingsRepository by instance<ISettingsRepository>()
