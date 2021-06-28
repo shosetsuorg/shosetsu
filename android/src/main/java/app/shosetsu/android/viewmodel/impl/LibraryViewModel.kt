@@ -68,7 +68,7 @@ class LibraryViewModel(
 
 	private var columnH: Int = ChapterColumnsInLandscape.default
 
-	private val librarySourceFlow: Flow<HResult<List<ABookmarkedNovelUI>>> = libraryAsCardsUseCase()
+	private val librarySourceFlow: Flow<HResult<List<ABookmarkedNovelUI>>> by lazy { libraryAsCardsUseCase() }
 
 	@ExperimentalCoroutinesApi
 	override val genresLiveData: LiveData<List<String>> by lazy {
