@@ -260,7 +260,7 @@ dependencies {
 
 	// kode-in
 	val kodeinVersion = "7.6.0"
-	fun DependencyHandler.kodein(module: String, version: String = kodeinVersion) =
+	fun kodein(module: String, version: String = kodeinVersion) =
 		"org.kodein.di:$module:$version"
 
 	implementation(kodein("kodein-di"))
