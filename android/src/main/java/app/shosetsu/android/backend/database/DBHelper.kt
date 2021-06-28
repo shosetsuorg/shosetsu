@@ -23,7 +23,7 @@ import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.lib.Novel
 import org.kodein.di.DI
 import org.kodein.di.DIAware
-import org.kodein.di.android.di
+import org.kodein.di.android.closestDI
 import org.kodein.di.instance
 
 import java.io.IOException
@@ -52,7 +52,7 @@ import java.io.IOException
 @Deprecated("SQL Database removed")
 class DBHelper(context: Context) :
 	SQLiteOpenHelper(context, "database.db", null, 10), DIAware {
-	override val di: DI by di(context)
+	override val di: DI by closestDI(context)
 	private val novelDAO by di.instance<NovelsDao>()
 	private val chapterDAO by instance<ChaptersDao>()
 
