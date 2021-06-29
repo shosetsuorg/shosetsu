@@ -7,14 +7,13 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import app.shosetsu.android.common.consts.BundleKeys
+import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.search.adapters.SearchRowAdapter
 import app.shosetsu.android.view.controller.GenericFastAdapterRecyclerController
-import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ISearchViewModel
 import app.shosetsu.common.dto.HResult
-import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.mikepenz.fastadapter.FastAdapter
 
@@ -41,19 +40,17 @@ import com.mikepenz.fastadapter.FastAdapter
  *
  * @author github.com/doomsdayrs
  */
-class SearchController(bundle: Bundle) : GenericFastAdapterRecyclerController<SearchRowUI>(bundle),
-	PushCapableController {
+class SearchController(bundle: Bundle) : GenericFastAdapterRecyclerController<SearchRowUI>(bundle) {
 	override val viewTitleRes: Int = R.string.search
 	internal val viewModel: ISearchViewModel by viewModel()
 	private var searchView: SearchView? = null
-	override var pushController: (Controller) -> Unit = {}
 
 	init {
 		setHasOptionsMenu(true)
 	}
 
 	override val fastAdapter: FastAdapter<SearchRowUI> by lazy {
-		val adapter = SearchRowAdapter(this, pushController, viewModel)
+		val adapter = SearchRowAdapter(this, { router.shosetsuPush(it) }, viewModel)
 		adapter.addAdapter(0, itemAdapter)
 		adapter
 	}

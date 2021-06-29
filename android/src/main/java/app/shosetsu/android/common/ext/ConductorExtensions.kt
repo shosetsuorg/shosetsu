@@ -66,6 +66,13 @@ fun Controller.withFadeTransaction(): RouterTransaction = RouterTransaction.with
 	.pushChangeHandler(FadeChangeHandler())
 	.popChangeHandler(FadeChangeHandler())
 
+/**
+ * Invoke [Router.pushController] while applying [withFadeTransaction] on [target]
+ */
+fun Router.shosetsuPush(target: Controller) {
+	pushController(target.withFadeTransaction())
+}
+
 
 val Controller.context: Context?
 	get() = applicationContext

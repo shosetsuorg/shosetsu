@@ -24,24 +24,6 @@ import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
  * 01 / 10 / 2020
  */
 abstract class AAboutViewModel : ShosetsuViewModel() {
-	/** Call action to create popup window to open shosetsu github */
-	abstract fun openGithub()
-
-	/** Call action to create popup window to open shosetsu website */
-	abstract fun openWebsite()
-
 	/** Run an app update check */
 	abstract fun appUpdateCheck()
-
-	/** Call action to create popup window to open extensions github */
-	abstract fun openExtensions()
-
-	/** Call action to create popup window to open shosetsu discord */
-	abstract fun openDiscord()
-
-	/** Call action to create popup window to open licenses */
-	abstract fun openLicenses()
-
-	/** Call action to create popup window to open Doomsdayrs patreon */
-	abstract fun openPatreon()
 }

@@ -1,14 +1,19 @@
 package app.shosetsu.android.ui.about
 
+import android.content.Intent
+import android.content.Intent.ACTION_VIEW
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
+import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.settings.sub.TextAssetReader
+import app.shosetsu.android.ui.settings.sub.TextAssetReader.Target.DISCLAIMER
+import app.shosetsu.android.ui.settings.sub.TextAssetReader.Target.LICENSE
 import app.shosetsu.android.view.controller.ViewedController
-import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.viewmodel.abstracted.AAboutViewModel
+import app.shosetsu.common.consts.*
 import app.shosetsu.common.dto.HResult
-import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerAboutBinding
@@ -34,52 +39,51 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerAboutBinding
  * shosetsu
  * 01 / 10 / 2020
  */
-class AboutController : ViewedController<ControllerAboutBinding>(), PushCapableController {
+class AboutController : ViewedController<ControllerAboutBinding>() {
 	override val viewTitleRes: Int = R.string.about
 	private val viewModel: AAboutViewModel by viewModel()
-	override var pushController: (Controller) -> Unit = {}
-
 
 	override fun onViewCreated(view: View) {
 		binding.apply {
 			versionTag.text = BuildConfig.VERSION_NAME
-			appUpdateCheck.setOnClickListener {
-				viewModel.appUpdateCheck()
-			}
-			website.setOnClickListener {
-				viewModel.openWebsite()
-			}
-			github.setOnClickListener {
-				viewModel.openGithub()
-			}
-			extensions.setOnClickListener {
-				viewModel.openExtensions()
-			}
-			discord.setOnClickListener {
-				viewModel.openDiscord()
-			}
-			patreon.setOnClickListener {
-				viewModel.openPatreon()
-			}
-			sourceLicensesCard.setOnClickListener {
-				onClickLicense()
-			}
-			disclaimerCard.setOnClickListener {
-				onClickDisclaimer()
-			}
+			appUpdateCheck.setOnClickListener { viewModel.appUpdateCheck() }
+			website.setOnClickListener { openWebsite() }
+			github.setOnClickListener { openGithub() }
+			extensions.setOnClickListener { openExtensions() }
+			discord.setOnClickListener { openDiscord() }
+			patreon.setOnClickListener { openPatreon() }
+			sourceLicensesCard.setOnClickListener { onClickLicense() }
+			disclaimerCard.setOnClickListener { onClickDisclaimer() }
 		}
 	}
+
+	private fun openSite(url: String) {
+		startActivity(Intent(ACTION_VIEW, Uri.parse(url)))
+	}
+
+	private fun openWebsite() =
+		openSite(URL_WEBSITE)
+
+	private fun openExtensions() =
+		openSite(URL_GITHUB_EXTENSIONS)
+
+	private fun openDiscord() =
+		openSite(URL_DISCORD)
+
+	private fun openPatreon() =
+		openSite(URL_PATREON)
+
+	private fun openGithub() =
+		openSite(URL_GITHUB_APP)
 
 	override fun bindView(inflater: LayoutInflater): ControllerAboutBinding =
 		ControllerAboutBinding.inflate(inflater)
 
 	private fun onClickLicense() =
-		pushController(TextAssetReader(TextAssetReader.Target.LICENSE.bundle))
+		router.shosetsuPush(TextAssetReader(LICENSE))
 
 	private fun onClickDisclaimer() =
-		pushController(TextAssetReader(TextAssetReader.Target.DISCLAIMER.bundle))
+		router.shosetsuPush(TextAssetReader(DISCLAIMER))
 
-	override fun handleErrorResult(e: HResult.Error) {
-		TODO("Not yet implemented")
-	}
+	override fun handleErrorResult(e: HResult.Error) {}
 }

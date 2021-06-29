@@ -31,13 +31,11 @@ import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.CatalogController
 import app.shosetsu.android.ui.extensionsConfigure.ConfigureExtension
 import app.shosetsu.android.view.controller.FastAdapterRefreshableRecyclerController
-import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.IBrowseViewModel
 import app.shosetsu.common.consts.REPOSITORY_HELP_URL
 import app.shosetsu.common.dto.HResult
-import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.mikepenz.fastadapter.FastAdapter
 
@@ -47,16 +45,12 @@ import com.mikepenz.fastadapter.FastAdapter
  *
  * @author github.com/doomsdayrs
  */
-class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>(),
-	PushCapableController {
+class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>() {
 	override val viewTitleRes: Int = R.string.browse
 
 	init {
 		setHasOptionsMenu(true)
 	}
-
-	override var pushController: (Controller) -> Unit = {}
-
 
 	/***/
 	val viewModel: IBrowseViewModel by viewModel()
@@ -64,7 +58,7 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_browse, menu)
 		(menu.findItem(R.id.search).actionView as SearchView)
-			.setOnQueryTextListener(BrowseSearchQuery(pushController))
+			.setOnQueryTextListener(BrowseSearchQuery { router.shosetsuPush(it) })
 	}
 
 	private fun installExtension(extension: ExtensionUI) {
@@ -90,7 +84,7 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 			if (viewModel.isOnline()) {
 				// If the extension is installed, push to it, otherwise prompt the user to install
 				if (item.installed) {
-					pushController(
+					router.shosetsuPush(
 						CatalogController(
 							bundleOf(
 								BUNDLE_EXTENSION to item.id
@@ -114,7 +108,7 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 		hookClickEvent(
 			bind = { it: ExtensionUI.ViewHolder -> it.binding.settings }
 		) { _, _, _, item ->
-			pushController(ConfigureExtension(bundleOf(BUNDLE_EXTENSION to item.id)))
+			router.shosetsuPush(ConfigureExtension(bundleOf(BUNDLE_EXTENSION to item.id)))
 		}
 	}
 

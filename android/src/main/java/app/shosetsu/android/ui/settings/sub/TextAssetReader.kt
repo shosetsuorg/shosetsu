@@ -41,6 +41,11 @@ class TextAssetReader(bundleI: Bundle) : ViewedController<LargeReaderBinding>(bu
 		const val BUNDLE_KEY: String = "target"
 	}
 
+	/**
+	 * Constructor via [Target]
+	 */
+	constructor(target: Target) : this(target.bundle)
+
 	enum class Target(val bundle: Bundle) {
 		LICENSE(bundleOf(Pair(BUNDLE_KEY, "license-gplv3"))),
 		DISCLAIMER(bundleOf(Pair(BUNDLE_KEY, "disclaimer")));
@@ -68,7 +73,8 @@ class TextAssetReader(bundleI: Bundle) : ViewedController<LargeReaderBinding>(bu
 	@ExperimentalStdlibApi
 	override fun onViewCreated(view: View) {
 		if (message.isEmpty()) handleB()
-		activity?.title = (type.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() })
+		activity?.title =
+			(type.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() })
 		binding.title.text = message
 	}
 

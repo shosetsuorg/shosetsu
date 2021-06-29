@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.controller.BottomMenuBasicFastAdapterRecyclerController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
-import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.IDownloadsViewModel
 import app.shosetsu.common.dto.HResult
@@ -40,8 +39,7 @@ import com.mikepenz.fastadapter.select.selectExtension
  *
  * @author github.com/doomsdayrs
  */
-class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<DownloadUI>(),
-	PushCapableController, ExtendedFABController {
+class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<DownloadUI>(), ExtendedFABController {
 
 	override val viewTitleRes: Int = R.string.downloads
 	private val viewModel: IDownloadsViewModel by viewModel()
@@ -305,6 +303,4 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 			fastAdapter.getSelectExtension().deselect()
 		}
 	}
-
-	override var pushController: (Controller) -> Unit = {}
 }

@@ -17,7 +17,6 @@ import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.controller.*
 import app.shosetsu.android.view.controller.base.BottomMenuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
-import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.view.controller.base.syncFABWithRecyclerView
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.view.widget.SlidingUpBottomMenu
@@ -26,7 +25,6 @@ import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.common.enums.NovelCardType.*
-import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter
@@ -58,9 +56,7 @@ import com.mikepenz.fastadapter.select.selectExtension
  * @author github.com/doomsdayrs
  */
 class LibraryController
-	: FastAdapterRefreshableRecyclerController<ABookmarkedNovelUI>(),
-	PushCapableController, ExtendedFABController, BottomMenuController {
-	override var pushController: (Controller) -> Unit = {}
+	: FastAdapterRefreshableRecyclerController<ABookmarkedNovelUI>(), ExtendedFABController, BottomMenuController {
 
 	override var bottomMenuRetriever: (() -> SlidingUpBottomMenu?) = { null }
 
@@ -176,7 +172,7 @@ class LibraryController
 			}
 		}
 		setOnClickListener { _, _, item, _ ->
-			pushController(
+			router.shosetsuPush(
 				NovelController(
 					bundleOf(BundleKeys.BUNDLE_NOVEL_ID to item.id)
 				)

@@ -306,7 +306,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 			ACTION_SEARCH -> {
 				if (!router.hasRootController()) setSelectedDrawerItem(R.id.nav_library)
 
-				transitionView(
+				router.shosetsuPush(
 					SearchController(
 						bundleOf(
 							BUNDLE_QUERY to (intent.getStringExtra(SearchManager.QUERY) ?: "")
@@ -317,7 +317,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 			ACTION_OPEN_SEARCH -> {
 				if (!router.hasRootController()) setSelectedDrawerItem(R.id.nav_library)
 
-				transitionView(
+				router.shosetsuPush(
 					SearchController(
 						bundleOf(
 							BUNDLE_QUERY to (intent.getStringExtra(SearchManager.QUERY) ?: "")
@@ -376,6 +376,10 @@ class MainActivity : AppCompatActivity(), DIAware,
 		}
 	}
 
+	@Deprecated(
+		"",
+		ReplaceWith("router.shosetsuPush(target)", "app.shosetsu.android.common.ext.shosetsuPush")
+	)
 	private fun transitionView(target: Controller) {
 		router.pushController(target.withFadeTransaction())
 	}
@@ -454,9 +458,6 @@ class MainActivity : AppCompatActivity(), DIAware,
 			to.manipulateFAB(eFab)
 			to.showFAB(eFab)
 		}
-
-		if (to is PushCapableController)
-			to.pushController = { transitionView(it) }
 
 		val tabLayout = binding.tabLayout
 

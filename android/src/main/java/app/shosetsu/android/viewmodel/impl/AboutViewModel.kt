@@ -1,12 +1,9 @@
 package app.shosetsu.android.viewmodel.impl
 
 import android.app.Application
-import android.content.Intent
-import android.net.Uri
 import app.shosetsu.android.backend.workers.onetime.AppUpdateCheckWorker
 import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
 import app.shosetsu.android.viewmodel.abstracted.AAboutViewModel
-import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
  * This file is part of Shosetsu.
@@ -35,46 +32,8 @@ class AboutViewModel(
 	private val manager: AppUpdateCheckWorker.Manager,
 ) : AAboutViewModel() {
 
-	override fun openGithub() {
-		application.startActivity(Intent(
-			Intent.ACTION_VIEW,
-			Uri.parse(application.getString(R.string.github_url))
-		).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK })
-	}
-
-	override fun openWebsite() {
-		application.startActivity(Intent(
-			Intent.ACTION_VIEW,
-			Uri.parse(application.getString(R.string.website_url))
-		).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK })
-	}
-
 	override fun appUpdateCheck() {
 		if (!manager.isRunning())
 			manager.start()
-	}
-
-	override fun openExtensions() {
-		application.startActivity(Intent(
-			Intent.ACTION_VIEW,
-			Uri.parse(application.getString(R.string.extensions_url))
-		).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK })
-	}
-
-	override fun openDiscord() {
-		application.startActivity(Intent(
-			Intent.ACTION_VIEW,
-			Uri.parse(application.getString(R.string.discord_url))
-		).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK })
-	}
-
-	override fun openLicenses() {
-	}
-
-	override fun openPatreon() {
-		application.startActivity(Intent(
-			Intent.ACTION_VIEW,
-			Uri.parse(application.getString(R.string.patreon_url))
-		).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK })
 	}
 }

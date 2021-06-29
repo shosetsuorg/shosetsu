@@ -21,13 +21,11 @@ import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.controller.FastAdapterRecyclerController
 import app.shosetsu.android.view.controller.base.BottomMenuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
-import app.shosetsu.android.view.controller.base.PushCapableController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.widget.SlidingUpBottomMenu
 import app.shosetsu.android.viewmodel.abstracted.ICatalogViewModel
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.NovelCardType.COMPRESSED
-import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerCatalogueBinding
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -61,10 +59,7 @@ import com.mikepenz.fastadapter.scroll.EndlessRecyclerOnScrollListener
 class CatalogController(
 	/** data bundle uwu */
 	val bundle: Bundle,
-) : FastAdapterRecyclerController<ControllerCatalogueBinding, ACatalogNovelUI>(bundle),
-	PushCapableController, ExtendedFABController, BottomMenuController {
-
-	override var pushController: (Controller) -> Unit = {}
+) : FastAdapterRecyclerController<ControllerCatalogueBinding, ACatalogNovelUI>(bundle), ExtendedFABController, BottomMenuController {
 
 	/***/
 	val viewModel: ICatalogViewModel by viewModel()
@@ -127,7 +122,7 @@ class CatalogController(
 	override fun FastAdapter<ACatalogNovelUI>.setupFastAdapter() {
 		fastAdapter.apply {
 			setOnClickListener { _, _, item, _ ->
-				pushController(
+				router.shosetsuPush(
 					NovelController(
 						bundleOf(
 							BUNDLE_NOVEL_ID to item.id,
