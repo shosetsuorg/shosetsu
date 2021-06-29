@@ -2,6 +2,7 @@ package app.shosetsu.common.dto
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 
 /*
@@ -38,6 +39,23 @@ inline fun <reified I, O> HFlow<I>.mapLatestResult(
 	noinline onError: suspend (HResult.Error) -> HResult<O> = { it },
 	noinline onSuccess: suspend (I) -> HResult<O>
 ): HFlow<O> = mapLatest { result ->
+	result.transform(
+		onLoading = { onLoading() },
+		onEmpty = { onEmpty() },
+		onError = { onError(it) },
+		transformSuccess = { onSuccess(it) }
+	)
+}
+
+/**
+ * Maps each result of a Flow<HResult<*>>
+ */
+inline fun <reified I, O> HFlow<I>.mapResult(
+	noinline onLoading: suspend () -> HResult<O> = { loading() },
+	noinline onEmpty: suspend () -> HResult<O> = { emptyResult() },
+	noinline onError: suspend (HResult.Error) -> HResult<O> = { it },
+	noinline onSuccess: suspend (I) -> HResult<O>
+): HFlow<O> = map { result ->
 	result.transform(
 		onLoading = { onLoading() },
 		onEmpty = { onEmpty() },
