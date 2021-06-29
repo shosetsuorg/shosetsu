@@ -1,6 +1,7 @@
 package app.shosetsu.android.common.ext
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
@@ -70,7 +71,7 @@ fun Activity.openChapter(chapterID: Int, novelID: Int) {
 	})
 }
 
-fun Activity.readAsset(name: String): String {
+fun Context.readAsset(name: String): String {
 	val string = StringBuilder()
 	try {
 		val reader = BufferedReader(InputStreamReader(assets.open(name)))
