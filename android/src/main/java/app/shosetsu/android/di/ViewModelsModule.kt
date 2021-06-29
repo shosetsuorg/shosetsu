@@ -248,5 +248,8 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			settingsRepository = instance()
 		)
 	}
+	bind<ATextAssetReaderViewModel>() with provider {
+		TextAssetReaderViewModel(instance())
+	}
 
 }

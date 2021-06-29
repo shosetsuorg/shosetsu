@@ -5,11 +5,11 @@ import android.content.Intent.ACTION_VIEW
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
+import app.shosetsu.android.common.enums.TextAsset.DISCLAIMER
+import app.shosetsu.android.common.enums.TextAsset.LICENSE
 import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.settings.sub.TextAssetReader
-import app.shosetsu.android.ui.settings.sub.TextAssetReader.Target.DISCLAIMER
-import app.shosetsu.android.ui.settings.sub.TextAssetReader.Target.LICENSE
 import app.shosetsu.android.view.controller.ViewedController
 import app.shosetsu.android.viewmodel.abstracted.AAboutViewModel
 import app.shosetsu.common.consts.*
