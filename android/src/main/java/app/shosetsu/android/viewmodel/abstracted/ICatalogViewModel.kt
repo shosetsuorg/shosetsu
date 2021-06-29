@@ -27,9 +27,6 @@ import app.shosetsu.lib.IExtension
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
-
 /**
  * shosetsu
  * 01 / 05 / 2020
@@ -59,7 +56,6 @@ abstract class ICatalogViewModel :
 	 * Name of the extension that is used for its catalogue
 	 */
 	abstract val extensionName: LiveData<HResult<String>>
-
 
 	/**
 	 * What type of card to display

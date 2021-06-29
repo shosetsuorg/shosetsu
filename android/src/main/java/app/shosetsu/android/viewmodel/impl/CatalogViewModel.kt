@@ -30,6 +30,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 /*
  * This file is part of shosetsu.
@@ -227,8 +228,26 @@ class CatalogViewModel(
 		}
 	}
 
+	/**
+	 * This flow is used to reload the filters
+	 */
+	private val filterReloadFlow = MutableStateFlow(true)
+
 	override val filterItemsLive: LiveData<HResult<List<SettingsItemData>>> by lazy {
-		filterItemFlow.mapLatestResult { successResult(convertToSettingItems(it)) }.asIOLiveData()
+		channelFlow {
+			launch {
+				// We ignore any results from filterReloadFlow, as we are using it to trigger the reload
+				filterItemFlow.combine(filterReloadFlow) { a, b -> a }
+					.collectLatest { result ->
+						result.handle {
+							logD("Mapping filter array to setting item array")
+							send(successResult(listOf()))
+							send(successResult(convertToSettingItems(it)))
+						}
+					}
+			}
+		}.asIOLiveData()
+
 	}
 
 	override val hasSearchLive: LiveData<Boolean> by lazy {
@@ -293,7 +312,6 @@ class CatalogViewModel(
 					this.cancel("Extension not loaded")
 					return@launchIO
 				}
-				logD("Passed null extension check")
 				currentMaxPage++
 				itemsFlow.tryEmit(loading())
 
@@ -392,7 +410,10 @@ class CatalogViewModel(
 
 	override fun resetFilter() {
 		filterDataState.clear()
-		applyFilter()
+		launchIO {
+			filterReloadFlow.emit(!filterReloadFlow.value)
+			applyFilter()
+		}
 	}
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) =

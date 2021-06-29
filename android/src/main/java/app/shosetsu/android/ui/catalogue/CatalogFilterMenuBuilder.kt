@@ -1,7 +1,7 @@
 package app.shosetsu.android.ui.catalogue
 
 import android.view.View
-import app.shosetsu.android.common.ext.handleObserve
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerCatalogFilterBottomMenuBinding
 import com.mikepenz.fastadapter.FastAdapter
@@ -36,11 +36,19 @@ class CatalogFilterMenuBuilder(
 
 	fun build(): View = ControllerCatalogFilterBottomMenuBinding.inflate(layoutInflater)
 		.also { binding ->
-			binding.extensionFilters
 			binding.extensionFilters.apply {
 				val itemAdapter = ItemAdapter<SettingsItemData>()
 				adapter = FastAdapter.with(itemAdapter)
-				controller.viewModel.filterItemsLive.handleObserve(controller) { list ->
+				controller.viewModel.filterItemsLive.handleObserve(controller,
+					onLoading = {
+						logD("Loading")
+					}, onEmpty = {
+						logD("Empty")
+					},
+					onError = {
+						logE("Error")
+					}) { list ->
+					logV("Reloading")
 					FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(
 						itemAdapter,
 						list
@@ -48,7 +56,12 @@ class CatalogFilterMenuBuilder(
 				}
 			}
 			binding.applyButton.setOnClickListener {
-
+				logI("Apply button clicked")
+				controller.viewModel.applyFilter()
+			}
+			binding.resetButton.setOnClickListener {
+				logI("Reset button clicked")
+				controller.viewModel.resetFilter()
 			}
 
 		}.root
