@@ -1,6 +1,5 @@
 package app.shosetsu.common.domain.repositories.impl
 
-import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionDownloadRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.emptyResult
@@ -8,6 +7,8 @@ import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.enums.DownloadStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 
 /*
  * This file is part of shosetsu.
@@ -33,38 +34,44 @@ import kotlinx.coroutines.flow.MutableStateFlow
  * @author Doomsdayrs
  */
 class ExtensionDownloadRepository : IExtensionDownloadRepository {
-	private val statusMap = HashMap<ExtensionEntity, MutableStateFlow<DownloadStatus>>()
+	private val statusMap = HashMap<Int, MutableStateFlow<HResult<DownloadStatus>>>()
 
 	override val size: Int
-		get() = statusMap.count { it.value.value == DownloadStatus.PENDING }
-
-	override val first: HResult<ExtensionEntity>
-		get() {
-			val v = statusMap.entries.firstOrNull { it.value.value == DownloadStatus.PENDING }?.key
-				?: return emptyResult()
-			return successResult(v)
+		get() = statusMap.count {
+			it.value.value is HResult.Success &&
+					(it.value.value as HResult.Success).data == DownloadStatus.PENDING
 		}
 
-	override suspend fun add(extension: ExtensionEntity): HResult<*> =
-		successResult(statusMap.set(extension, MutableStateFlow(DownloadStatus.PENDING)))
+	override val first: HResult<Int>
+		get() {
+			return successResult(statusMap.entries.firstOrNull {
+				it.value.value is HResult.Success
+						&& (it.value.value as HResult.Success).data == DownloadStatus.PENDING
+			}?.key ?: return emptyResult())
+		}
 
-	override suspend fun remove(extension: ExtensionEntity): HResult<*> {
-		successResult(statusMap.remove(extension))
+	override suspend fun add(extension: Int): HResult<*> =
+		successResult(
+			statusMap.set(
+				extension,
+				MutableStateFlow(successResult(DownloadStatus.PENDING))
+			)
+		)
+
+	override suspend fun remove(extension: Int): HResult<*> {
 		return successResult()
 	}
 
-	override suspend fun getStatus(extension: ExtensionEntity): HResult<DownloadStatus> {
-		val flow = statusMap[extension] ?: return emptyResult()
-		return successResult(flow.value)
-	}
+	override suspend fun getStatus(extension: Int): HResult<DownloadStatus> =
+		statusMap.getOrPut(extension) { MutableStateFlow(emptyResult()) }.value
 
-	override suspend fun getStatusFlow(extension: ExtensionEntity): HResult<Flow<DownloadStatus>> {
-		val flow = statusMap[extension] ?: return emptyResult()
-		return successResult(flow)
-	}
+	override suspend fun getStatusFlow(extension: Int): Flow<HResult<DownloadStatus>> =
+		flow {
+			emitAll(statusMap.getOrPut(extension) { MutableStateFlow(emptyResult()) })
+		}
 
 	override suspend fun updateStatus(
-		extension: ExtensionEntity,
+		extension: Int,
 		status: DownloadStatus
-	): HResult<*> = successResult(statusMap[extension]?.tryEmit(status))
+	): HResult<*> = successResult(statusMap[extension]?.tryEmit(successResult(status)))
 }

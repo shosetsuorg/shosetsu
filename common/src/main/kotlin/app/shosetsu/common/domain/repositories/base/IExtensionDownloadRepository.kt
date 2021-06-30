@@ -1,6 +1,5 @@
 package app.shosetsu.common.domain.repositories.base
 
-import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.DownloadStatus
 import kotlinx.coroutines.flow.Flow
@@ -42,15 +41,15 @@ interface IExtensionDownloadRepository {
 	/**
 	 * Provides the first extension to install
 	 */
-	val first: HResult<ExtensionEntity>
+	val first: HResult<Int>
 
-	suspend fun add(extension: ExtensionEntity): HResult<*>
+	suspend fun add(extension: Int): HResult<*>
 
-	suspend fun remove(extension: ExtensionEntity): HResult<*>
+	suspend fun remove(extension: Int): HResult<*>
 
-	suspend fun getStatus(extension: ExtensionEntity): HResult<DownloadStatus>
+	suspend fun getStatus(extension: Int): HResult<DownloadStatus>
 
-	suspend fun getStatusFlow(extension: ExtensionEntity): HResult<Flow<DownloadStatus>>
+	suspend fun getStatusFlow(extension: Int): Flow<HResult<DownloadStatus>>
 
-	suspend fun updateStatus(extension: ExtensionEntity, status: DownloadStatus): HResult<*>
+	suspend fun updateStatus(extension: Int, status: DownloadStatus): HResult<*>
 }
