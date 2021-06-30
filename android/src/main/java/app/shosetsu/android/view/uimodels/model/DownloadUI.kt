@@ -87,6 +87,10 @@ data class DownloadUI(
 						progress.isIndeterminate = true
 						R.string.waiting
 					}
+					else ->{
+						progress.isIndeterminate = false
+						R.string.completed
+					}
 				}
 			)
 			cardView.strokeWidth = if (item.isSelected) SELECTED_STROKE_WIDTH else 0

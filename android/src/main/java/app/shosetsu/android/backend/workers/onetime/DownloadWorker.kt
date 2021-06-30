@@ -139,6 +139,7 @@ class DownloadWorker(
 			DownloadStatus.DOWNLOADING -> R.string.downloading
 			DownloadStatus.PAUSED -> R.string.paused
 			DownloadStatus.ERROR -> R.string.error
+			else -> R.string.completed
 		} else R.string.completed
 
 		notify(messageId, downloadEntity.chapterID + 2000) {
