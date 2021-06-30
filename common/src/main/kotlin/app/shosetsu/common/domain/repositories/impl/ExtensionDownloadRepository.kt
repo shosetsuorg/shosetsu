@@ -35,6 +35,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class ExtensionDownloadRepository : IExtensionDownloadRepository {
 	private val statusMap = HashMap<ExtensionEntity, MutableStateFlow<DownloadStatus>>()
 
+	override val size: Int
+		get() = statusMap.count { it.value.value == DownloadStatus.PENDING }
+
+	override val first: HResult<ExtensionEntity>
+		get() {
+			val v = statusMap.entries.firstOrNull { it.value.value == DownloadStatus.PENDING }?.key
+				?: return emptyResult()
+			return successResult(v)
+		}
+
 	override suspend fun add(extension: ExtensionEntity): HResult<*> =
 		successResult(statusMap.set(extension, MutableStateFlow(DownloadStatus.PENDING)))
 
