@@ -4,7 +4,10 @@ import app.shosetsu.android.domain.repository.impl.AppUpdatesRepository
 import app.shosetsu.android.domain.repository.impl.ExtensionLibrariesRepository
 import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.domain.repositories.impl.*
-import org.kodein.di.*
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.singleton
 
 /*
  * This file is part of shosetsu.
@@ -70,5 +73,7 @@ val repositoryModule: DI.Module = DI.Module("repository_module") {
 			iFileSettingSystem = instance()
 		)
 	}
+
+	bind<IExtensionDownloadRepository>() with singleton { ExtensionDownloadRepository() }
 
 }
