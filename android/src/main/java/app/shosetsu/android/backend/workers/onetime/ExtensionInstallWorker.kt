@@ -19,7 +19,6 @@ import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.enums.DownloadStatus
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.delay
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -78,7 +77,6 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 				setProgress(0, 0, true)
 				setLargeIcon(bitmap)
 			}
-			delay(5000)
 			extensionDownloadRepository.updateStatus(
 				extensionId,
 				DownloadStatus.DOWNLOADING
