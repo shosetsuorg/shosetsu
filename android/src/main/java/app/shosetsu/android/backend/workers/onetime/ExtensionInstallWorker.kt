@@ -17,6 +17,7 @@ import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.ifSo
 import app.shosetsu.common.enums.DownloadStatus
+import kotlinx.coroutines.delay
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -68,6 +69,7 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 				extensionId,
 				DownloadStatus.DOWNLOADING
 			).handle {
+				delay(5000)
 				extensionRepository.installExtension(extension).handle(
 					onError = {
 						extensionDownloadRepository.updateStatus(

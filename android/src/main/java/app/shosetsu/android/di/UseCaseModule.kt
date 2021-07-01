@@ -53,7 +53,7 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 	bind<SearchBookMarkedNovelsUseCase>() with provider { SearchBookMarkedNovelsUseCase(instance()) }
 
 
-	bind<LoadExtensionsUIUseCase>() with provider { LoadExtensionsUIUseCase(instance()) }
+	bind<LoadExtensionsUIUseCase>() with provider { LoadExtensionsUIUseCase(instance(),instance()) }
 
 	bind<LoadUpdatesUseCase>() with provider { LoadUpdatesUseCase(instance()) }
 

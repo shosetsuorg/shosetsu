@@ -100,7 +100,7 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 
 
 		hookClickEvent(
-			bind = { it: ExtensionUI.ViewHolder -> it.binding.button }
+			bind = { it: ExtensionUI.ViewHolder -> it.binding.installButton }
 		) { _, _, _, item ->
 			installExtension(item)
 		}

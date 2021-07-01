@@ -2,14 +2,12 @@ package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.android.common.utils.uifactory.mapLatestToResultFlowWithFactory
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
+import app.shosetsu.common.domain.repositories.base.IExtensionDownloadRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.loading
-import app.shosetsu.common.dto.mapLatestResultListTo
+import app.shosetsu.common.dto.*
+import app.shosetsu.common.enums.DownloadStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 
 /*
  * This file is part of shosetsu.
@@ -34,13 +32,52 @@ import kotlinx.coroutines.flow.flow
  */
 class LoadExtensionsUIUseCase(
 	private val extensionsRepository: IExtensionsRepository,
+	private val extensionDownloadRepository: IExtensionDownloadRepository
 ) {
 	@ExperimentalCoroutinesApi
 	operator fun invoke(): Flow<HResult<List<ExtensionUI>>> = flow {
 		loading()
-		emitAll(
-			extensionsRepository.loadExtensionEntitiesFLow().mapLatestToResultFlowWithFactory()
-				.mapLatestResultListTo()
-		)
+		val flow = extensionsRepository.loadExtensionEntitiesFLow()
+			.mapLatestToResultFlowWithFactory() // First convert to UI factories
+			.mapLatestResultListTo() // Convert to UI entities
+			.transformLatest { result -> // Merge with downloadStatus
+				result.handle(
+					onEmpty = {
+						emit(empty)
+					},
+					onError = {
+						emit(it)
+					},
+					onLoading = {
+						emit(loading)
+					}
+				) { extensionList ->
+					val listOfFlows: List<Flow<ExtensionUI?>> =
+						extensionList.map { it to extensionDownloadRepository.getStatusFlow(it.id) }
+							.map { (extensionUI, statusFlow) ->
+
+								statusFlow.transform { statusResult ->
+									if (statusResult is HResult.Success) {
+										val status = statusResult.data
+										emit(null) // I am smart
+										emit(
+											extensionUI.apply {
+												isInstalling =
+													status == DownloadStatus.PENDING || status == DownloadStatus.DOWNLOADING
+											}
+										)
+									} else emit(extensionUI)
+								}
+							}
+
+					// Merge the flows
+					val b: Flow<List<ExtensionUI>> =
+						combine(*listOfFlows.toTypedArray()) { it.filterNotNull().toList() }
+
+					// Emit as a success
+					emitAll(b.mapLatestToSuccess())
+				}
+			}
+		emitAll(flow)
 	}
 }

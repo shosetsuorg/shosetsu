@@ -55,6 +55,11 @@ data class ExtensionUI(
 		get() = id.toLong()
 		set(_) {}
 
+	/**
+	 * Is the extension being updated currently?
+	 */
+	var isInstalling = false
+
 	enum class State { UPDATE, NO_UPDATE, OBSOLETE }
 
 	fun updateState(): State {
@@ -89,32 +94,39 @@ data class ExtensionUI(
 		override val binding = ExtensionCardBinding.bind(view)
 
 		override fun ExtensionCardBinding.bindView(item: ExtensionUI, payloads: List<Any>) {
-			if (item.installed && item.isExtEnabled) {
-				button.isVisible = false
-				version.text = item.installedVersion?.let { with(it) { "$major.$minor.$patch" } }
-
-				when (item.updateState()) {
-					State.UPDATE -> {
-						button.isVisible = true
-						button.setImageResource(R.drawable.download_tinted)
-						button.rotation = 180f
-
-						updateVersion.visibility = View.VISIBLE
-						updateVersion.text = with(item.repositoryVersion) { "$major.$minor.$patch" }
-					}
-					State.NO_UPDATE -> {
-						updateVersion.visibility = View.GONE
-					}
-					State.OBSOLETE -> {
-						updateVersion.visibility = View.VISIBLE
-						updateVersion.setText(R.string.obsolete_extension)
-						updateVersion.textSize = 32f
-					}
-				}
-			} else {
-				version.text = with(item.repositoryVersion) { "$major.$minor.$patch" }
+			if (item.isInstalling) {
+				installButton.isVisible = true
+				installButton.setImageResource(R.drawable.animated_refresh)
 				settings.isVisible = false
-			}
+			} else
+				if (item.installed && item.isExtEnabled) {
+					installButton.isVisible = false
+					version.text =
+						item.installedVersion?.let { with(it) { "$major.$minor.$patch" } }
+
+					when (item.updateState()) {
+						State.UPDATE -> {
+							installButton.isVisible = true
+							installButton.setImageResource(R.drawable.download_tinted)
+							installButton.rotation = 180f
+
+							updateVersion.isVisible = true
+							updateVersion.text =
+								with(item.repositoryVersion) { "$major.$minor.$patch" }
+						}
+						State.NO_UPDATE -> {
+							updateVersion.isVisible = false
+						}
+						State.OBSOLETE -> {
+							updateVersion.isVisible = true
+							updateVersion.setText(R.string.obsolete_extension)
+							updateVersion.textSize = 32f
+						}
+					}
+				} else {
+					version.text = with(item.repositoryVersion) { "$major.$minor.$patch" }
+					settings.isVisible = false
+				}
 
 			title.text = item.name
 			language.text = item.lang
@@ -123,9 +135,9 @@ data class ExtensionUI(
 		}
 
 		override fun ExtensionCardBinding.unbindView(item: ExtensionUI) {
-			button.setImageResource(R.drawable.download)
-			button.rotation = 0f
-			button.isVisible = true
+			installButton.setImageResource(R.drawable.download)
+			installButton.rotation = 0f
+			installButton.isVisible = true
 
 			settings.isVisible = true
 

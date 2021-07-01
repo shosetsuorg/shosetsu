@@ -56,5 +56,5 @@ fun HResult<List<ExtensionEntity>>.mapResultWithFactory() =
 	transform { successResult(it.mapToFactory()) }
 
 @ExperimentalCoroutinesApi
-fun Flow<HResult<List<ExtensionEntity>>>.mapLatestToResultFlowWithFactory() =
+fun Flow<HResult<List<ExtensionEntity>>>.mapLatestToResultFlowWithFactory(): Flow<HResult<List<ExtensionConversionFactory>>> =
 	mapLatest { it.mapResultWithFactory() }

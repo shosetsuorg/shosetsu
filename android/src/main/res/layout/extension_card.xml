@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imageView"
             android:layout_width="64dp"
             android:layout_height="64dp"
@@ -44,8 +44,8 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp">
 
-            <ImageButton
-                android:id="@+id/button"
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/installButton"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:background="@android:color/transparent"
@@ -54,7 +54,7 @@
                 android:src="@drawable/download"
                 android:text="@string/download" />
 
-            <ImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/settings"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
