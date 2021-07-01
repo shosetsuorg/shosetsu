@@ -126,7 +126,6 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			getExtensionsUIUseCase = instance(),
 			installExtensionUIUseCase = instance(),
 			uninstallExtensionUIUseCase = instance(),
-			stringToastUseCase = instance(),
 			isOnlineUseCase = instance(),
 			reportExceptionUseCase = instance(),
 			startRepositoryUpdateManagerUseCase = instance()

@@ -1,8 +1,13 @@
 package app.shosetsu.android.domain.usecases
 
+import androidx.work.Data
+import app.shosetsu.android.backend.workers.onetime.ExtensionInstallWorker
+import app.shosetsu.android.backend.workers.onetime.ExtensionInstallWorker.Companion.KEY_EXTENSION_ID
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionDownloadRepository
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.ifSo
+import app.shosetsu.common.dto.successResult
 
 /*
  * This file is part of shosetsu.
@@ -26,9 +31,17 @@ import app.shosetsu.common.dto.HResult
  * 13 / 05 / 2020
  */
 class InstallExtensionUIUseCase(
-	private val extensionsRepository: IExtensionsRepository,
+	private val repo: IExtensionDownloadRepository,
+	private val manager: ExtensionInstallWorker.Manager
 ) {
-	suspend operator fun invoke(extension: ExtensionUI): HResult<*> {
-		return extensionsRepository.installExtension(extension.convertTo())
-	}
+	suspend operator fun invoke(extension: ExtensionUI): HResult<*> =
+		repo.add(extension.id).ifSo {
+			successResult(
+				manager.start(
+					Data.Builder().apply {
+						putInt(KEY_EXTENSION_ID, extension.id)
+					}.build()
+				)
+			)
+		}
 }

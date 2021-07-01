@@ -33,16 +33,6 @@ import kotlinx.coroutines.flow.Flow
  * @author Doomsdayrs
  */
 interface IExtensionDownloadRepository {
-	/**
-	 * How many entries are pending
-	 */
-	val size: Int
-
-	/**
-	 * Provides the first extension to install
-	 */
-	val first: HResult<Int>
-
 	suspend fun add(extension: Int): HResult<*>
 
 	suspend fun remove(extension: Int): HResult<*>

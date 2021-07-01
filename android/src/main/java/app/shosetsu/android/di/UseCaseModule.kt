@@ -63,7 +63,12 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 		StartRepositoryUpdateManagerUseCase(instance())
 	}
 
-	bind<InstallExtensionUIUseCase>() with provider { InstallExtensionUIUseCase(instance()) }
+	bind<InstallExtensionUIUseCase>() with provider {
+		InstallExtensionUIUseCase(
+			instance(),
+			instance()
+		)
+	}
 
 	bind<UpdateNovelUseCase>() with provider { UpdateNovelUseCase(instance()) }
 

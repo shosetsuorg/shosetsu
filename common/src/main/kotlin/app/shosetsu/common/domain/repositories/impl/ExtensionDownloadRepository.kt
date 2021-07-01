@@ -7,8 +7,6 @@ import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.enums.DownloadStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
 
 /*
  * This file is part of shosetsu.
@@ -36,42 +34,24 @@ import kotlinx.coroutines.flow.flow
 class ExtensionDownloadRepository : IExtensionDownloadRepository {
 	private val statusMap = HashMap<Int, MutableStateFlow<HResult<DownloadStatus>>>()
 
-	override val size: Int
-		get() = statusMap.count {
-			it.value.value is HResult.Success &&
-					(it.value.value as HResult.Success).data == DownloadStatus.PENDING
-		}
-
-	override val first: HResult<Int>
-		get() {
-			return successResult(statusMap.entries.firstOrNull {
-				it.value.value is HResult.Success
-						&& (it.value.value as HResult.Success).data == DownloadStatus.PENDING
-			}?.key ?: return emptyResult())
-		}
+	private fun HashMap<Int, MutableStateFlow<HResult<DownloadStatus>>>.iGet(extension: Int) =
+		getOrPut(extension) { MutableStateFlow(emptyResult()) }
 
 	override suspend fun add(extension: Int): HResult<*> =
-		successResult(
-			statusMap.set(
-				extension,
-				MutableStateFlow(successResult(DownloadStatus.PENDING))
-			)
-		)
+		successResult(statusMap.iGet(extension).emit(successResult(DownloadStatus.PENDING)))
 
-	override suspend fun remove(extension: Int): HResult<*> {
-		return successResult()
-	}
+	override suspend fun remove(extension: Int): HResult<*> =
+		successResult(statusMap.iGet(extension).tryEmit(emptyResult()))
 
 	override suspend fun getStatus(extension: Int): HResult<DownloadStatus> =
-		statusMap.getOrPut(extension) { MutableStateFlow(emptyResult()) }.value
+		statusMap.iGet(extension).value
 
 	override suspend fun getStatusFlow(extension: Int): Flow<HResult<DownloadStatus>> =
-		flow {
-			emitAll(statusMap.getOrPut(extension) { MutableStateFlow(emptyResult()) })
-		}
+		statusMap.iGet(extension)
 
 	override suspend fun updateStatus(
 		extension: Int,
 		status: DownloadStatus
-	): HResult<*> = successResult(statusMap[extension]?.tryEmit(successResult(status)))
+	): HResult<*> =
+		successResult(statusMap.iGet(extension).emit(successResult(status)))
 }

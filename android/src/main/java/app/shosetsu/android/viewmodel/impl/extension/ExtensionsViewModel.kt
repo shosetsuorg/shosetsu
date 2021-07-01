@@ -18,17 +18,17 @@ package app.shosetsu.android.viewmodel.impl.extension
  */
 
 import androidx.lifecycle.LiveData
+import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.InstallExtensionUIUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.android.domain.usecases.UninstallExtensionUIUseCase
 import app.shosetsu.android.domain.usecases.load.LoadExtensionsUIUseCase
-import app.shosetsu.android.domain.usecases.toast.StringToastUseCase
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.viewmodel.abstracted.IBrowseViewModel
 import app.shosetsu.common.dto.HResult
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * shosetsu
@@ -41,7 +41,6 @@ class ExtensionsViewModel(
 	private val startRepositoryUpdateManagerUseCase: StartRepositoryUpdateManagerUseCase,
 	private val installExtensionUIUseCase: InstallExtensionUIUseCase,
 	private val uninstallExtensionUIUseCase: UninstallExtensionUIUseCase,
-	private val stringToastUseCase: StringToastUseCase,
 	private var isOnlineUseCase: IsOnlineUseCase,
 	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : IBrowseViewModel() {
@@ -55,21 +54,8 @@ class ExtensionsViewModel(
 	}
 
 	override fun installExtension(extensionUI: ExtensionUI) {
-		GlobalScope.launch(Dispatchers.IO, start = CoroutineStart.DEFAULT) {
-			when (val result = installExtensionUIUseCase(extensionUI)) {
-				is HResult.Success -> {
-					stringToastUseCase {
-						"Installed!"
-					}
-				}
-				is HResult.Error -> {
-					result.exception?.printStackTrace()
-					stringToastUseCase {
-						"Cannot install due to error ${result.code} by ${result.message} due to " +
-								"${result.exception?.let { it::class.simpleName }}"
-					}
-				}
-			}
+		launchIO {
+			installExtensionUIUseCase(extensionUI)
 		}
 	}
 
