@@ -44,7 +44,7 @@ abstract class SettingsItemData(
 	var titleText: String = ""
 	var isBoldTitle: Boolean = false
 
-	var descID: Int = -1
+	var descRes: Int = -1
 	var descText: String = ""
 
 	override var identifier: Long
@@ -63,9 +63,9 @@ abstract class SettingsItemData(
 		if (isBoldTitle)
 			settingsItemTitle.setTypeface(null, Typeface.BOLD)
 
-		if (descID != -1) {
+		if (descRes != -1) {
 			settingsItemDesc.isVisible = true
-			settingsItemDesc.setText(descID)
+			settingsItemDesc.setText(descRes)
 		} else if (descText.isNotEmpty()) {
 			settingsItemDesc.isVisible = true
 			settingsItemDesc.text = descText

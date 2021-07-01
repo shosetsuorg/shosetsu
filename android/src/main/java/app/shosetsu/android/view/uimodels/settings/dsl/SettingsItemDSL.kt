@@ -68,7 +68,7 @@ inline fun SettingsItemData.description(value: SettingsItemData.() -> Any): Unit
 	value().let {
 		when (it) {
 			is String -> descText = it
-			is Int -> descID = it
+			is Int -> descRes = it
 			else -> titleText = it.toString()
 		}
 	}
