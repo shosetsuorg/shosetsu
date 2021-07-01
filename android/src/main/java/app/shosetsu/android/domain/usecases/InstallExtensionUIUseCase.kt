@@ -5,10 +5,8 @@ import app.shosetsu.android.backend.workers.onetime.ExtensionInstallWorker
 import app.shosetsu.android.backend.workers.onetime.ExtensionInstallWorker.Companion.KEY_EXTENSION_ID
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.common.domain.repositories.base.IExtensionDownloadRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.catch
-import app.shosetsu.common.dto.ifSo
-import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.*
+import app.shosetsu.common.enums.DownloadStatus
 
 /*
  * This file is part of shosetsu.
@@ -35,8 +33,8 @@ class InstallExtensionUIUseCase(
 	private val repo: IExtensionDownloadRepository,
 	private val manager: ExtensionInstallWorker.Manager
 ) {
-	suspend operator fun invoke(extension: ExtensionUI): HResult<*> =
-		repo.getStatus(extension.id).catch { // Prevents the extension from being dup installed
+	suspend operator fun invoke(extension: ExtensionUI): HResult<*> {
+		val doIt = suspend {
 			repo.add(extension.id).ifSo {
 				successResult(
 					manager.start(
@@ -47,4 +45,14 @@ class InstallExtensionUIUseCase(
 				)
 			}
 		}
+		return repo.getStatus(extension.id).transform(
+			onEmpty = {
+				doIt()
+			}
+		) {
+			if (it == DownloadStatus.ERROR || it == DownloadStatus.COMPLETE)
+				doIt()
+			else emptyResult()
+		}
+	}
 }
