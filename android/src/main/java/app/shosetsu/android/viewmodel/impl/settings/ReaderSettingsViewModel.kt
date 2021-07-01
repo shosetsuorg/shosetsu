@@ -140,54 +140,55 @@ class ReaderSettingsViewModel(
 
 suspend fun ExposedSettingsRepoViewModel.stringAsHtmlOption(id: Int) =
 	switchSettingData(id) {
-		title { R.string.settings_reader_title_string_to_html }
+		titleID = R.string.settings_reader_title_string_to_html
 		description { R.string.settings_reader_desc_string_to_html }
 		checkSettingValue(ReaderStringToHtml)
 	}
 
 suspend fun ExposedSettingsRepoViewModel.horizontalSwitchOption(id: Int) =
 	switchSettingData(id) {
-		title { R.string.settings_reader_title_horizontal_option }
+		titleID = R.string.settings_reader_title_horizontal_option
 		description { R.string.settings_reader_desc_horizontal_option }
 		checkSettingValue(ReaderHorizontalPageSwap)
 	}
 
 suspend fun ExposedSettingsRepoViewModel.invertChapterSwipeOption(id: Int) =
 	switchSettingData(id) {
-		title { R.string.inverted_swipe }
-		description { "Invert the chapter swipe" }
+		titleID = R.string.settings_reader_inverted_swipe_title
+
+		description { R.string.settings_reader_inverted_swipe_desc }
 		checkSettingValue(ReaderIsInvertedSwipe)
 	}
 
 suspend fun ExposedSettingsRepoViewModel.continuousScrollOption(id: Int) =
 	switchSettingData(id) {
-		title { R.string.settings_reader_title_continous_scroll }
+		titleID = R.string.settings_reader_title_continous_scroll
 		description { R.string.settings_reader_desc_continous_scroll }
 		checkSettingValue(ReaderContinuousScroll)
 	}
 
 suspend fun ExposedSettingsRepoViewModel.tapToScrollOption(id: Int) =
 	switchSettingData(id) {
-		title { R.string.tap_to_scroll }
+		titleID = R.string.tap_to_scroll
 		checkSettingValue(ReaderIsTapToScroll)
 	}
 
 suspend fun ExposedSettingsRepoViewModel.readerKeepScreenOnOption(id: Int) =
 	switchSettingData(id) {
-		title { R.string.settings_reader_keep_screen_on }
+		titleID = R.string.settings_reader_keep_screen_on
 		description { R.string.settings_reader_keep_screen_on_desc }
 		checkSettingValue(ReaderKeepScreenOn)
 	}
 
 suspend fun ExposedSettingsRepoViewModel.volumeScrollingOption(id: Int) =
 	switchSettingData(id) {
-		title { R.string.volume_scroll }
+		titleID = R.string.volume_scroll
 		checkSettingValue(ReaderVolumeScroll)
 	}
 
 suspend fun ExposedSettingsRepoViewModel.textSizeOption(id: Int) =
 	floatButtonSettingData(id) {
-		title { R.string.text_size }
+		titleID = R.string.text_size
 		minWhole = 7
 		maxWhole = 50
 		settingValue(ReaderTextSize)
@@ -195,7 +196,7 @@ suspend fun ExposedSettingsRepoViewModel.textSizeOption(id: Int) =
 
 suspend fun ExposedSettingsRepoViewModel.paragraphIndentOption(id: Int, context: Context) =
 	spinnerSettingData(id) {
-		title { R.string.paragraph_indent }
+		titleID = R.string.paragraph_indent
 		arrayAdapter = ArrayAdapter(
 			context,
 			android.R.layout.simple_spinner_dropdown_item,
@@ -206,7 +207,7 @@ suspend fun ExposedSettingsRepoViewModel.paragraphIndentOption(id: Int, context:
 
 suspend fun ExposedSettingsRepoViewModel.paragraphSpacingOption(id: Int) =
 	floatButtonSettingData(id) {
-		title { R.string.paragraph_spacing }
+		titleID = R.string.paragraph_spacing
 		minWhole = 0
 
 		settingValue(ReaderParagraphSpacing)

@@ -466,6 +466,8 @@
     <string name="notification_content_text_extension_download">Downloading %s</string>
     <string name="notification_content_text_extension_installed">Installed %s</string>
     <string name="notification_content_text_extension_installed_failed">Failed to install %s</string>
+    <string name="settings_reader_inverted_swipe_title">Invert chapter swipe</string>
+    <string name="settings_reader_inverted_swipe_desc">Invert the chapter swipe when horizontally paging</string>
 
     <!-- Error Key Messages -->
 
