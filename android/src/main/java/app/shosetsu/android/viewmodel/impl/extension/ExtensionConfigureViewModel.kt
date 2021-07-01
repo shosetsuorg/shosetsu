@@ -85,7 +85,7 @@ class ExtensionConfigureViewModel(
 							ArrayList(extensionSettings).apply {
 								if (nameList.size > 1) {
 									add(0, spinnerSettingData(0) {
-										titleID = R.string.listings
+										titleRes = R.string.listings
 										getExtSelectedListing(extensionID).handle { selectedListing ->
 											spinnerValue { selectedListing }
 										}

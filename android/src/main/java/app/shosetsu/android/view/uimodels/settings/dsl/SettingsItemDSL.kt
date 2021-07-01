@@ -52,7 +52,7 @@ inline fun SettingsItemData.title(value: SettingsItemData.() -> Any): Unit =
 	value().let {
 		when (it) {
 			is String -> titleText = it
-			is Int -> titleID = it
+			is Int -> titleRes = it
 			else -> titleText = it.toString()
 		}
 	}

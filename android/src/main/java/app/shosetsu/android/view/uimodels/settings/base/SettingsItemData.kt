@@ -40,7 +40,7 @@ abstract class SettingsItemData(
 	/** Min version required for this setting to be visible */
 	var minVersionCode: Int = Build.VERSION_CODES.Q
 
-	var titleID: Int = -1
+	var titleRes: Int = -1
 	var titleText: String = ""
 	var isBoldTitle: Boolean = false
 
@@ -55,8 +55,8 @@ abstract class SettingsItemData(
 	open fun bindBinding(holder: SettingsItemBinding, payloads: List<Any>) = with(holder) {
 		itemView.isSelected = isSelected
 
-		if (titleID != -1)
-			settingsItemTitle.setText(titleID)
+		if (titleRes != -1)
+			settingsItemTitle.setText(titleRes)
 		else
 			settingsItemTitle.text = titleText
 

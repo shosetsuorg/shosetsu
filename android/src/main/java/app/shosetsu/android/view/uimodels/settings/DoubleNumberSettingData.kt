@@ -71,8 +71,8 @@ class DoubleNumberSettingData(id: Int) : ButtonSettingData(id) {
 		onButtonClicked {
 			val context = holder.root.context
 			Builder(context).apply {
-				if (titleID != -1)
-					setTitle(titleID)
+				if (titleRes != -1)
+					setTitle(titleRes)
 				else
 					setTitle(titleText)
 
