@@ -106,7 +106,18 @@ class ChapterReaderViewModel(
 					})
 				}
 			}.let { emitAll(it) }
-		}.asIOLiveData()
+		}
+			// Invert chapters after all processing has been done
+			.combine(
+				// Only invert if horizontalSwipe && invertSwipe are true.
+				// Because who will read with an inverted vertical scroll??
+				settingsRepo.getBooleanFlow(ReaderIsInvertedSwipe)
+					.combine(settingsRepo.getBooleanFlow(ReaderHorizontalPageSwap)) { invertSwipe, horizontalSwipe ->
+						horizontalSwipe && invertSwipe
+					}) { listResult, b ->
+				listResult.transform { list -> if (b) list.reverse(); successResult(list) }
+			}
+			.asIOLiveData()
 	}
 
 	@ExperimentalCoroutinesApi
