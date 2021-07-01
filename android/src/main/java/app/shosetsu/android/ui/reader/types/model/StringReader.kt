@@ -209,6 +209,7 @@ class StringReader(
 		textView.topTappedListener = null
 		textView.middleTappedListener = null
 		textView.bottomTappedListener = null
+		textView.text = null
 	}
 
 	override fun incrementScroll() {
