@@ -6,6 +6,7 @@ import app.shosetsu.android.backend.workers.onetime.ExtensionInstallWorker.Compa
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.common.domain.repositories.base.IExtensionDownloadRepository
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.catch
 import app.shosetsu.common.dto.ifSo
 import app.shosetsu.common.dto.successResult
 
@@ -35,13 +36,15 @@ class InstallExtensionUIUseCase(
 	private val manager: ExtensionInstallWorker.Manager
 ) {
 	suspend operator fun invoke(extension: ExtensionUI): HResult<*> =
-		repo.add(extension.id).ifSo {
-			successResult(
-				manager.start(
-					Data.Builder().apply {
-						putInt(KEY_EXTENSION_ID, extension.id)
-					}.build()
+		repo.getStatus(extension.id).catch { // Prevents the extension from being dup installed
+			repo.add(extension.id).ifSo {
+				successResult(
+					manager.start(
+						Data.Builder().apply {
+							putInt(KEY_EXTENSION_ID, extension.id)
+						}.build()
+					)
 				)
-			)
+			}
 		}
 }
