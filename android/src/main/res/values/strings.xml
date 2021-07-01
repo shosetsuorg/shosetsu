@@ -461,7 +461,11 @@
     <string name="controller_repositories_snackbar_offline_no_update">Cannot update repositories offline</string>
     <string name="controller_configure_extension_empty_settings">This extension has no settings!</string>
     <string name="controller_configure_extension_empty_settings_rety">Reload extension?</string>
+    <string name="notification_content_title_extension_download">Extension Downloader</string>
 
+    <string name="notification_content_text_extension_download">Downloading %s</string>
+    <string name="notification_content_text_extension_installed">Installed %s</string>
+    <string name="notification_content_text_extension_installed_failed">Failed to install %s</string>
 
     <!-- Error Key Messages -->
 

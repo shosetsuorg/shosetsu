@@ -1,22 +1,25 @@
 package app.shosetsu.android.backend.workers.onetime
 
 import android.content.Context
+import android.graphics.Bitmap
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
 import app.shosetsu.android.common.consts.LogConstants
+import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.WorkerTags.EXTENSION_INSTALL_WORK_ID
-import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.logD
-import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.common.domain.repositories.base.IExtensionDownloadRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.ifSo
+import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.enums.DownloadStatus
+import com.github.doomsdayrs.apps.shosetsu.R
+import com.squareup.picasso.Picasso
+import kotlinx.coroutines.delay
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -64,6 +67,18 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 
 		// Notify progress
 		extensionRepository.getExtensionEntity(extensionId).handle { extension ->
+			// Load image, this tbh may take longer then the actual extension
+			val bitmap: Bitmap = Picasso.get().load(extension.imageURL).get()
+			notify(
+				applicationContext.getString(
+					R.string.notification_content_text_extension_download,
+					extension.name
+				),
+			) {
+				setProgress(0, 0, true)
+				setLargeIcon(bitmap)
+			}
+			delay(5000)
 			extensionDownloadRepository.updateStatus(
 				extensionId,
 				DownloadStatus.DOWNLOADING
@@ -74,33 +89,73 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 							extensionId,
 							DownloadStatus.ERROR
 						)
-						//TODO notify issue
+						notificationManager.cancel(defaultNotificationID)
+						notify(
+							it.message,
+							extensionId * -1
+						) {
+							setContentTitle(
+								applicationContext.getString(
+									R.string.notification_content_text_extension_installed_failed,
+									extension.name
+								)
+							)
+							setContentInfo(
+								getString(
+									R.string.notification_content_title_extension_download
+								)
+							)
+							setNotOngoing()
+						}
 					}
 				) {
 					extensionDownloadRepository.updateStatus(
 						extensionId,
 						DownloadStatus.COMPLETE
 					).ifSo {
-						extensionDownloadRepository.remove(extensionId)
-						//TODO notify completion
+						notificationManager.cancel(defaultNotificationID)
+						extensionDownloadRepository.remove(extensionId).ifSo {
+							notificationManager.notify(
+								extensionId * -1,
+								baseNotificationBuilder.apply {
+									setContentTitle(
+										applicationContext.getString(
+											R.string.notification_content_text_extension_installed,
+											extension.name
+										)
+									)
+									setContentInfo(
+										getString(
+											R.string.notification_content_title_extension_download
+										)
+									)
+									setLargeIcon(bitmap)
+									removeProgress()
+									setNotOngoing()
+								}.build()
+							)
+							successResult()
+						}
 					}
 				}
 			}
-
 		}
-
 		logD("Completed install")
 		return Result.success()
 	}
 
-	override val baseNotificationBuilder: NotificationCompat.Builder
-		get() = TODO("Not yet implemented")
-	override val notificationManager: NotificationManagerCompat
-		get() = TODO("Not yet implemented")
 	override val notifyContext: Context
-		get() = TODO("Not yet implemented")
-	override val defaultNotificationID: Int
-		get() = TODO("Not yet implemented")
+		get() = applicationContext
+	override val defaultNotificationID: Int = Notifications.ID_EXTENSION_DOWNLOAD
+
+	override val notificationManager: NotificationManagerCompat by notificationManager()
+
+	override val baseNotificationBuilder: NotificationCompat.Builder
+		get() = notificationBuilder(applicationContext, Notifications.CHANNEL_DOWNLOAD)
+			.setSmallIcon(R.drawable.download)
+			.setContentTitle(getString(R.string.notification_content_title_extension_download))
+			.setPriority(NotificationCompat.PRIORITY_HIGH)
+			.setOngoing(true)
 
 	companion object {
 		const val KEY_EXTENSION_ID = "extensionId"

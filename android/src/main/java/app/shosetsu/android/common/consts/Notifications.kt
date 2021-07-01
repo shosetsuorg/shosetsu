@@ -43,6 +43,7 @@ object Notifications {
 
 	const val CHANNEL_DOWNLOAD: String = "shosetsu_download"
 	const val ID_CHAPTER_DOWNLOAD: Int = 1949
+	const val ID_EXTENSION_DOWNLOAD: Int = 1948
 
 	const val CHANNEL_REPOSITORY_UPDATE = "shosetsu_repository_update"
 	const val ID_REPOSITORY_UPDATE = 1953
