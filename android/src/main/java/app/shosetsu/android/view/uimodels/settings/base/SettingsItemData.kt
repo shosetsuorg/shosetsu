@@ -4,6 +4,7 @@ import android.graphics.Typeface
 import android.os.Build
 import android.view.View
 import androidx.annotation.CallSuper
+import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
@@ -37,10 +38,12 @@ abstract class SettingsItemData(
 	/** Min version required for this setting to be visible */
 	var minVersionCode: Int = Build.VERSION_CODES.Q
 
+	@StringRes
 	var titleRes: Int = -1
 	var titleText: String = ""
 	var isBoldTitle: Boolean = false
 
+	@StringRes
 	var descRes: Int = -1
 	var descText: String = ""
 
