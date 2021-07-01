@@ -5,7 +5,6 @@ import android.os.Build
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.core.view.isVisible
-import androidx.lifecycle.LifecycleOwner
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -35,8 +34,6 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
 abstract class SettingsItemData(
 	val id: Int
 ) : BaseRecyclerItem<SettingsItemData.ViewHolder>() {
-	lateinit var lifecycleOwner: LifecycleOwner
-
 	/** Min version required for this setting to be visible */
 	var minVersionCode: Int = Build.VERSION_CODES.Q
 
