@@ -1,6 +1,7 @@
 package app.shosetsu.android.ui.reader.types.base
 
 import android.view.View
+import androidx.annotation.CallSuper
 import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.android.viewmodel.abstracted.IChapterReaderViewModel
@@ -30,8 +31,16 @@ import com.mikepenz.fastadapter.FastAdapter
 abstract class ReaderChapterViewHolder(
 	itemView: View
 ) : FastAdapter.ViewHolder<ReaderChapterUI>(itemView) {
+	/**
+	 * item this ViewHolder was created with
+	 */
 	lateinit var chapter: ReaderChapterUI
-	lateinit var chapterReader: ChapterReader
+
+	/**
+	 * reference to the chapter reader
+	 */
+	val chapterReader: ChapterReader
+		get() = chapter.chapterReader!!
 
 	val viewModel: IChapterReaderViewModel
 		get() = chapterReader.viewModel
@@ -62,6 +71,11 @@ abstract class ReaderChapterViewHolder(
 
 	abstract fun hideLoadingProgress()
 	abstract fun showLoadingProgress()
+
+	@CallSuper
+	override fun bindView(item: ReaderChapterUI, payloads: List<Any>) {
+		chapter = item // Save the item so the view can self reference
+	}
 
 	abstract fun incrementScroll()
 

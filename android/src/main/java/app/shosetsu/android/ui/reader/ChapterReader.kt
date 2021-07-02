@@ -34,9 +34,11 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.IItemVHFactory
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.calculateDiff
+import com.mikepenz.fastadapter.listeners.OnCreateViewHolderListenerImpl
 import com.skydoves.colorpickerview.ColorPickerDialog
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -88,7 +90,26 @@ class ChapterReader
 
 	private val pageChangeCallback: OnPageChangeCallback by lazy { ChapterReaderPageChange() }
 	private val itemAdapter by lazy { ItemAdapter<ReaderUIItem<*, *>>() }
-	private val fastAdapter by lazy { FastAdapter.with(itemAdapter) }
+
+	private var chapterViewHolders = ArrayList<ReaderChapterViewHolder?>()
+
+	val viewHolderListener = object : OnCreateViewHolderListenerImpl<ReaderUIItem<*, *>>() {
+		override fun onPostCreateViewHolder(
+			fastAdapter: FastAdapter<ReaderUIItem<*, *>>,
+			viewHolder: RecyclerView.ViewHolder,
+			itemVHFactory: IItemVHFactory<*>
+		): RecyclerView.ViewHolder {
+			chapterViewHolders.removeAll { it == null }
+			if (viewHolder is ReaderChapterViewHolder) chapterViewHolders.add(viewHolder)
+
+			return super.onPostCreateViewHolder(fastAdapter, viewHolder, itemVHFactory)
+		}
+	}
+	private val fastAdapter by lazy {
+		FastAdapter.with(itemAdapter).apply {
+			this.onCreateViewHolderListener = viewHolderListener
+		}
+	}
 
 	private val bookmarkButton
 		get() = binding.chapterReaderBottom.bookmark
@@ -179,7 +200,6 @@ class ChapterReader
 					logD("Recieved an empty result")
 				}
 			) {
-				logD("Handling chapters $it")
 				handleChaptersResult(it)
 			}
 		}
@@ -231,11 +251,12 @@ class ChapterReader
 		onlyCurrent: Boolean = false,
 		action: ReaderChapterViewHolder.() -> Unit
 	) {
-		val textTypedReaders = chapterItems.mapNotNull { it.viewHolder }
+		val textTypedReaders = chapterViewHolders.filterNotNull()
 		// Apply to the current chapter first
+		logD("Found ${textTypedReaders.map { it.chapter.id }}")
 		textTypedReaders.find {
 			it.chapter.id == viewModel.currentChapterID
-		}?.action()
+		}?.action() ?: logE("Did not find current chapter: ${viewModel.currentChapterID}")
 
 		// Sets other views down
 		if (!onlyCurrent)
@@ -374,7 +395,6 @@ class ChapterReader
 	 * Adds the
 	 */
 	override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-
 		return if (viewModel.defaultVolumeScroll)
 			when (keyCode) {
 				KeyEvent.KEYCODE_VOLUME_DOWN -> {
@@ -412,7 +432,6 @@ class ChapterReader
 	}
 
 	fun syncReader(typedReaderViewHolder: ReaderChapterViewHolder) = typedReaderViewHolder.apply {
-		chapterReader = this@ChapterReader
 		syncBackgroundColor()
 		syncTextColor()
 		syncTextSize()
@@ -430,17 +449,20 @@ class ChapterReader
 
 	inner class ChapterReaderPageChange : OnPageChangeCallback() {
 		override fun onPageSelected(position: Int) {
+			logV("New position: $position")
 			when (val item = itemAdapter.getAdapterItem(position)) {
 				is ReaderChapterUI -> {
-					item.apply {
-						viewModel.currentChapterID = id
-						viewModel.markAsReadingOnView(this)    // Mark read if set to onview
-						viewHolder?.let { syncReader(it) } ?: logE("Reader is null")
-						supportActionBar?.title = title
-						setBookmarkIcon(this)
-					}
+					logV("New is a Chapter")
+					viewModel.currentChapterID = item.id
+					viewModel.markAsReadingOnView(item)    // Mark read if set to onview
+					chapterViewHolders.filterNotNull().find { it.chapter.id == item.id }
+						?.let { syncReader(it) } ?: logE("Reader is null")
+					supportActionBar?.title = item.title
+					setBookmarkIcon(item)
 				}
 				is ReaderDividerUI -> {
+					logV("New is a Divider")
+					viewModel.currentChapterID = -1
 					supportActionBar?.setTitle(R.string.next_chapter)
 					// Marks the previous chapter as read when you hit the divider
 					// This was implemented due to performance shortcuts taken due to excessive

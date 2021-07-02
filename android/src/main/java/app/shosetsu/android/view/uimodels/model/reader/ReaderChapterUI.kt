@@ -45,23 +45,6 @@ data class ReaderChapterUI(
 		set(_) {}
 
 	var chapterReader: ChapterReader? = null
-		set(value) {
-			field = value?.apply {
-				viewHolder?.chapterReader = value
-			}
-		}
-
-	var viewHolder: ReaderChapterViewHolder? = null
-		set(value) {
-			field = value?.apply {
-				logV("Applying view holder")
-				this.chapter = this@ReaderChapterUI
-				this@ReaderChapterUI.chapterReader?.let {
-					this.chapterReader = it
-				} ?: logE("ChapterReader reference is null")
-				this.chapterReader.syncReader(this)
-			}
-		}
 
 	override val layoutRes: Int by lazy {
 		when (chapterType) {
@@ -95,7 +78,6 @@ data class ReaderChapterUI(
 
 	override fun bindView(holder: ReaderChapterViewHolder, payloads: List<Any>) {
 		super.bindView(holder, payloads)
-		viewHolder = holder
 		chapterReader?.let { reader ->
 			reader.viewModel.getChapterPassage(this).observe(reader) { result ->
 				result.handle(
@@ -118,6 +100,10 @@ data class ReaderChapterUI(
 				}
 			}
 		}
+	}
+
+	override fun unbindView(holder: ReaderChapterViewHolder) {
+		super.unbindView(holder)
 	}
 
 	override fun convertTo(): ReaderChapterEntity = ReaderChapterEntity(

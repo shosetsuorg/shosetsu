@@ -252,6 +252,7 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	}
 
 	override fun bindView(item: ReaderChapterUI, payloads: List<Any>) {
+		super.bindView(item, payloads)
 		syncStylesWithViewModel()
 		injectCss()
 		viewModel.loadChapterCss().observe(chapterReader) { userCss = it;injectCss() }

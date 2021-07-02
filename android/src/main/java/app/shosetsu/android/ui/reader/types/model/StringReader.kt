@@ -195,6 +195,8 @@ class StringReader(
 	}
 
 	override fun bindView(item: ReaderChapterUI, payloads: List<Any>) {
+		super.bindView(item, payloads)
+		chapter = item
 		textView.bottomTappedListener = {
 			if (tapToScroll)
 				depleteScroll()
