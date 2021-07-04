@@ -2,6 +2,7 @@ package app.shosetsu.android.ui.reader.types.model
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
+import android.util.Base64
 import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
@@ -15,6 +16,7 @@ import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.databinding.ChapterReaderHtmlBinding
+import java.util.*
 
 /*
  * This file is part of Shosetsu.
@@ -125,7 +127,8 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 		}
 	}
 
-	private var userCss: String = ""
+	private val userCss: String
+		get() = viewModel.userCss
 
 	private fun Int.cssColor(): String = "rgb($red,$green,$blue)"
 
@@ -171,23 +174,25 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 		syncStylesWithViewModel()
 
 		// READ AND INJECT STYLE
-		val css = generateShosetsuCss() + userCss
+		updateCss("shosetsu-style", generateShosetsuCss())
+		updateCss("user-style", userCss)
+	}
 
+	private fun updateCss(id: String, css: String) {
+		val base64String = Base64.encodeToString(css.encodeToByteArray(), Base64.DEFAULT)
 		webView.evaluateJavascript(
 			"""
-				style = document.getElementById('shosetsu-style');
+				style = document.getElementById('$id');
 				if(!style){
 					style = document.createElement('style');
-					style.id = 'shosetsu-style';
+					style.id = '$id';
 					style.type = 'text/css';
 					document.head.appendChild(style);
 				}
-				style.textContent = '$css';
+				style.textContent = atob(`$base64String`);
 			""".trimIndent(),
 			null
 		)
-
-
 	}
 
 	override fun setData(data: ByteArray) {
@@ -255,7 +260,9 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 		super.bindView(item, payloads)
 		syncStylesWithViewModel()
 		injectCss()
-		viewModel.loadChapterCss().observe(chapterReader) { userCss = it;injectCss() }
+		viewModel.loadChapterCss().observe(chapterReader) {
+			injectCss()
+		}
 	}
 
 	override fun unbindView(item: ReaderChapterUI) {

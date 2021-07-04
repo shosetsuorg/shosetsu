@@ -38,6 +38,11 @@ abstract class IChapterReaderViewModel :
 	ExposedSettingsRepoViewModel {
 
 	/**
+	 * User CSS to store for repeat use from reader
+	 */
+	abstract val userCss: String
+
+	/**
 	 * Is tap to scroll enabled
 	 */
 	abstract val tapToScroll: Boolean
