@@ -143,6 +143,8 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 	object DownloadOnlyWhenIdle : BooleanKey("downloadIdle", false)
 
+	object NotifyExtensionDownload : BooleanKey("notifyExtensionDownloading", false)
+
 	/** Bookmark a novel if it is not bookmarked when a chapter from it is downloaded */
 	object BookmarkOnDownload : BooleanKey("bookmarkOnDownload", false)
 

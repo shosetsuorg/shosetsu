@@ -133,6 +133,11 @@ class DownloadSettingsViewModel(
 		switchSettingData(6) {
 			title { "Bookmarked novel on download" }
 			description { "If a novel is not bookmarked when a chapter is downloaded, this will" }
+		},
+		switchSettingData(7) {
+			titleRes = R.string.settings_download_notify_extension_install_title
+			descRes = R.string.settings_download_notify_extension_install_desc
+			checkSettingValue(NotifyExtensionDownload)
 		}
 	)
 

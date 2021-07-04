@@ -11,8 +11,11 @@ import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.WorkerTags.EXTENSION_INSTALL_WORK_ID
 import app.shosetsu.android.common.ext.*
+import app.shosetsu.common.consts.settings.SettingKey.NotifyExtensionDownload
 import app.shosetsu.common.domain.repositories.base.IExtensionDownloadRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.ifSo
 import app.shosetsu.common.dto.successResult
@@ -54,6 +57,7 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 	override val di: DI by closestDI(appContext)
 	private val extensionDownloadRepository: IExtensionDownloadRepository by instance()
 	private val extensionRepository: IExtensionsRepository by instance()
+	private val settingsRepository: ISettingsRepository by instance()
 
 	override suspend fun doWork(): Result {
 		val extensionId = this.inputData.getInt(KEY_EXTENSION_ID, -1)
@@ -61,22 +65,29 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 			logE("Received negative extension id, aborting")
 			return Result.failure()
 		}
+		val notify: Boolean = settingsRepository.getBooleanOrDefault(NotifyExtensionDownload)
 
 		logD("Starting ExtensionInstallWorker for $extensionId")
 
 		// Notify progress
 		extensionRepository.getExtensionEntity(extensionId).handle { extension ->
 			// Load image, this tbh may take longer then the actual extension
-			val bitmap: Bitmap = Picasso.get().load(extension.imageURL).get()
-			notify(
-				applicationContext.getString(
-					R.string.notification_content_text_extension_download,
-					extension.name
-				),
-			) {
-				setProgress(0, 0, true)
-				setLargeIcon(bitmap)
-			}
+
+			val bitmap: Bitmap? =
+				if (notify)
+					Picasso.get().load(extension.imageURL).get()
+				else null
+
+			if (notify)
+				notify(
+					applicationContext.getString(
+						R.string.notification_content_text_extension_download,
+						extension.name
+					),
+				) {
+					setProgress(0, 0, true)
+					setLargeIcon(bitmap)
+				}
 			extensionDownloadRepository.updateStatus(
 				extensionId,
 				DownloadStatus.DOWNLOADING
@@ -87,7 +98,9 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 							extensionId,
 							DownloadStatus.ERROR
 						)
-						notificationManager.cancel(defaultNotificationID)
+						if (notify)
+							notificationManager.cancel(defaultNotificationID)
+
 						notify(
 							it.message,
 							extensionId * -1
@@ -111,9 +124,12 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 						extensionId,
 						DownloadStatus.COMPLETE
 					).ifSo {
-						notificationManager.cancel(defaultNotificationID)
+						if (notify)
+							notificationManager.cancel(defaultNotificationID)
+
 						extensionDownloadRepository.remove(extensionId).ifSo {
-							notificationManager.notify(
+							if (notify)
+								notificationManager.notify(
 								extensionId * -1,
 								baseNotificationBuilder.apply {
 									setContentTitle(

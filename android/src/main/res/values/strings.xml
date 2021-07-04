@@ -468,6 +468,8 @@
     <string name="notification_content_text_extension_installed_failed">Failed to install %s</string>
     <string name="settings_reader_inverted_swipe_title">Invert chapter swipe</string>
     <string name="settings_reader_inverted_swipe_desc">Invert the chapter swipe when horizontally paging</string>
+    <string name="settings_download_notify_extension_install_title">Notify extension downloading</string>
+    <string name="settings_download_notify_extension_install_desc">Create a notification displaying progress when an extension is being downloaded/installed.</string>
 
     <!-- Error Key Messages -->
 
