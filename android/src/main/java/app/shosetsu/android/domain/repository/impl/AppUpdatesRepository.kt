@@ -72,21 +72,15 @@ class AppUpdatesRepository(
 		}
 	}
 
-	@Synchronized
-	override suspend fun loadRemoteUpdate(): HResult<AppUpdateEntity> {
-		if (running) return errorResult(ERROR_DUPLICATE, "Cannot run duplicate")
-		else running = true
-
-		val rR = iRemoteAppUpdateDataSource.loadAppUpdate().unwrap(
-			onEmpty = { return emptyResult().also { running = false } },
-			onError = { return it.also { running = false } }
-		)!!
-
-		return compareVersion(rR).also {
-			iFileAppUpdateDataSource.putAppUpdateInCache(rR, it is HResult.Success)
-			running = false
+	override suspend fun loadRemoteUpdate(): HResult<AppUpdateEntity> =
+		iRemoteAppUpdateDataSource.loadAppUpdate().transform { appUpdateEntity ->
+			compareVersion(appUpdateEntity).also {
+				iFileAppUpdateDataSource.putAppUpdateInCache(
+					appUpdateEntity,
+					it is HResult.Success
+				)
+			}
 		}
-	}
 
 	override suspend fun loadAppUpdate(): HResult<AppUpdateEntity> =
 		iFileAppUpdateDataSource.loadCachedAppUpdate()
