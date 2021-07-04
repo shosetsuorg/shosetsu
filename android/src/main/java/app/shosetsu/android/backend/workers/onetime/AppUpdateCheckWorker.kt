@@ -91,8 +91,10 @@ class AppUpdateCheckWorker(
 				}
 			}) {
 				notify(
-					applicationContext.getString(R.string.notification_app_update_available)
-							+ " " + it.version
+					applicationContext.getString(
+						R.string.notification_app_update_available_version,
+						it.version
+					)
 				) {
 					setOngoing(false)
 				}
