@@ -1,5 +1,6 @@
 package app.shosetsu.android.backend.workers.onetime
 
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -97,6 +98,16 @@ class AppUpdateCheckWorker(
 					)
 				) {
 					setOngoing(false)
+					addAction(
+						R.drawable.app_update,
+						"",
+						PendingIntent.getActivity(
+							applicationContext,
+							0,
+							openAppForUpdateIntent,
+							0
+						)
+					)
 				}
 			}
 			return Result.success()

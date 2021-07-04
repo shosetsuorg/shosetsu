@@ -297,6 +297,14 @@ class MainActivity : AppCompatActivity(), DIAware,
 		syncActivityViewWithController(router.backstack.lastOrNull()?.controller)
 	}
 
+	private fun actionMain() {
+		if (!router.hasRootController()) {
+			setSelectedDrawerItem(R.id.nav_library)
+		} else {
+			logE("Router has a root controller")
+		}
+	}
+
 	internal fun handleIntentAction(intent: Intent) {
 		logD("Intent received was ${intent.action}")
 		when (intent.action) {
@@ -325,13 +333,11 @@ class MainActivity : AppCompatActivity(), DIAware,
 					)
 				)
 			}
-			ACTION_MAIN -> {
-				if (!router.hasRootController()) {
-					setSelectedDrawerItem(R.id.nav_library)
-				} else {
-					logE("Router has a root controller")
-				}
+			ACTION_OPEN_APP_UPDATE -> {
+				viewModel.handleAppUpdate()
+				actionMain()
 			}
+			ACTION_MAIN -> actionMain()
 			else -> if (!router.hasRootController()) {
 				setSelectedDrawerItem(R.id.nav_library)
 			} else {
