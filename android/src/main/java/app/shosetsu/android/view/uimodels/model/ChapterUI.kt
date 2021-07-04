@@ -115,7 +115,7 @@ data class ChapterUI(
 					if (item.readingPosition > 0) {
 						readTag.isVisible = true
 						readProgressValue.isVisible = true
-						readProgressValue.text = ("${"%2.1f".format(item.readingPosition)}%")
+						readProgressValue.text = ("%2.1f%%".format(item.readingPosition))
 					}
 				}
 				ReadingStatus.UNREAD -> setAlpha()
@@ -133,6 +133,7 @@ data class ChapterUI(
 		override fun RecyclerNovelChapterBinding.unbindView(item: ChapterUI) {
 			title.text = null
 			oldColors.let { title.setTextColor(it) }
+			readProgressValue.isVisible = false
 			readProgressValue.text = null
 			readTag.isVisible = false
 			downloadTag.isVisible = false
