@@ -141,11 +141,11 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 			this["color"] = viewModel.defaultForeground.cssColor()
 			this["font-size"] = "${viewModel.defaultTextSize}pt"
 			this["scroll-behavior"] = "smooth"
-			this["text-indent"] = "${viewModel.defaultIndentSize * 10}px"
+			this["text-indent"] = "${viewModel.defaultIndentSize * 10}em"
 		}
 
 		setShosetsuStyle("p") {
-			this["margin"] = "${viewModel.defaultParaSpacing * 10}px 0"
+			this["margin-top"] = "${viewModel.defaultParaSpacing * 10}em"
 		}
 
 		setShosetsuStyle("img") {
