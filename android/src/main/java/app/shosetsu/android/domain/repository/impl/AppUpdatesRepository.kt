@@ -3,12 +3,10 @@ package app.shosetsu.android.domain.repository.impl
 import app.shosetsu.android.datasource.local.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.common.consts.ErrorKeys
-import app.shosetsu.common.consts.ErrorKeys.ERROR_DUPLICATE
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
 import app.shosetsu.common.dto.*
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -36,9 +34,7 @@ class AppUpdatesRepository(
 	private val iRemoteAppUpdateDataSource: IRemoteAppUpdateDataSource,
 	private val iFileAppUpdateDataSource: IFileCachedAppUpdateDataSource,
 ) : IAppUpdatesRepository {
-	private var running = false
 
-	@ExperimentalCoroutinesApi
 	override fun loadAppUpdateFlow(): Flow<HResult<AppUpdateEntity>> =
 		iFileAppUpdateDataSource.updateAvaLive
 
