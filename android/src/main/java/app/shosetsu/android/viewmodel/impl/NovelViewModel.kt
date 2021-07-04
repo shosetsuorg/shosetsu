@@ -236,11 +236,7 @@ class NovelViewModel(
 
 	@ExperimentalCoroutinesApi
 	override fun destroy() {
-		chapters.clear()
-
-		// resets filters
-
-		novelIDLive.tryEmit(-1)
+		novelIDLive.tryEmit(-1) // Reset view to nothing
 	}
 
 	override fun downloadChapter(vararg chapterUI: ChapterUI, startManager: Boolean) {
