@@ -11,6 +11,7 @@ import app.shosetsu.android.backend.workers.NotificationCapable
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.Notifications.ID_RESTORE
+import app.shosetsu.android.common.consts.VERSION_BACKUP
 import app.shosetsu.android.common.consts.WorkerTags.RESTORE_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.backupJSON
@@ -138,7 +139,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 					// Checks if the version is compatible
 					logV("Version in backup: $value")
 
-					if (!Version(value).isCompatible(Version(SUPPORTED_VERSION))) {
+					if (!Version(value).isCompatible(Version(VERSION_BACKUP))) {
 						logE(MESSAGE_LOG_JSON_OUTDATED)
 						notify(R.string.restore_notification_content_text_outdated) { setNotOngoing() }
 						return Result.failure()
@@ -328,7 +329,6 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 	}
 
 	companion object {
-		const val SUPPORTED_VERSION = "1.0.0"
 		private const val MESSAGE_LOG_JSON_MISSING = "BACKUP JSON DOES NOT CONTAIN KEY 'version'"
 
 
