@@ -87,4 +87,5 @@ fun flavor(): ProductFlavors = ProductFlavors.fromKey(BuildConfig.FLAVOR)
 val backupJSON
 	get() = Json {
 		encodeDefaults = true
+		ignoreUnknownKeys = true // Ignore to allow unknown values
 	}
