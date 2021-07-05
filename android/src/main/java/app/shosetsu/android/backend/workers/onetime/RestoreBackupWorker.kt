@@ -183,10 +183,11 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 
 					backupNovels.forEach novelLoop@{ (bNovelURL, name, imageURL, bChapters) ->
 						// If none match the extension ID and URL, time to load it up
-						launchIO {
+						val loadImageJob = launchIO {
 							try {
 								bitmap = Picasso.get().load(imageURL).get()
 							} catch (e: IOException) {
+								logE("Failed to download novel image", e)
 							}
 						}
 
@@ -265,8 +266,9 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 							}
 						}
 
-						// Remove data from bitmap
-						bitmap = null
+						loadImageJob.join() // Finish the image loading job
+
+						bitmap = null // Remove data from bitmap
 					}
 				}
 			}
