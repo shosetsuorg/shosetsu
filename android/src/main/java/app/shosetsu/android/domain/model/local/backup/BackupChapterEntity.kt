@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 data class BackupChapterEntity(
 	val url: String,
 	val name: String,
-	val bookmarked: Boolean,
-	val rS: ReadingStatus,
-	val rP: Double
+	val bookmarked: Boolean = false,
+	val rS: ReadingStatus = ReadingStatus.UNREAD,
+	val rP: Double = 0.0
 )

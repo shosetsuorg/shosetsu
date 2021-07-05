@@ -1,5 +1,6 @@
 package app.shosetsu.android.domain.model.local.backup
 
+import app.shosetsu.android.common.consts.VERSION_BACKUP
 import kotlinx.serialization.Serializable
 
 /**
@@ -8,7 +9,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class FleshedBackupEntity(
-	val version: String = "1.0.0",
-	val repos: List<BackupRepositoryEntity>,
-	val extensions: List<BackupExtensionEntity>,
+	val version: String = VERSION_BACKUP,
+	val repos: List<BackupRepositoryEntity> = listOf(),
+	val extensions: List<BackupExtensionEntity> = listOf(),
 )

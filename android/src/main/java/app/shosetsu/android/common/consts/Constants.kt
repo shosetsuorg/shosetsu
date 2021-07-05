@@ -50,3 +50,8 @@ const val APP_UPDATE_CACHE_FILE = "SHOSETSU_APP_UPDATE.json"
 const val READER_BAR_ALPHA: Float = 0.8F
 
 const val APK_MIME = "application/vnd.android.package-archive"
+
+/**
+ * The version of backups this build of shosetsu supports
+ */
+const val VERSION_BACKUP: String = "1.0.0"

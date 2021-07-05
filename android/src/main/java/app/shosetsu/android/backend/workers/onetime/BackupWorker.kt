@@ -117,6 +117,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 		// Load novels
 		logV(LogConstants.SERVICE_EXECUTE)
 		notify("Starting...")
+		val backupSettings = backupSettings()
 
 		novelRepository.loadBookmarkedNovelEntities().handle { novels ->
 			notify("Loaded ${novels.size} novel(s)")
@@ -156,11 +157,26 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 						novelsToChapters.filter { (novel, _) ->
 							novel.extensionID == extensionEntity.id
 						}.map { (novel, chapters) ->
+							val settings =
+								if (backupSettings)
+									novelSettingsRepository.get(novel.id!!).unwrap()
+								else null
+
+							val bSettings = settings?.let {
+								BackupNovelSettingEntity(
+									it.sortType,
+									it.showOnlyReadingStatusOf,
+									it.showOnlyBookmarked,
+									it.showOnlyDownloaded
+								)
+							} ?: BackupNovelSettingEntity()
+
 							BackupNovelEntity(
 								novel.url,
 								novel.title,
 								novel.imageURL,
-								chapters
+								chapters,
+								settings = bSettings
 							)
 						}
 					)
