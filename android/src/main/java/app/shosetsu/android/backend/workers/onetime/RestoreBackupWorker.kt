@@ -18,6 +18,7 @@ import app.shosetsu.android.common.utils.backupJSON
 import app.shosetsu.android.domain.model.local.backup.FleshedBackupEntity
 import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.domain.model.local.NovelSettingEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.dto.handle
@@ -67,6 +68,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 	private val initializeExtensionsUseCase by instance<StartRepositoryUpdateManagerUseCase>()
 	private val extensionsRepo by instance<IExtensionsRepository>()
 	private val novelsRepo by instance<INovelsRepository>()
+	private val novelsSettingsRepo by instance<INovelSettingsRepository>()
 	private val chaptersRepo by instance<IChaptersRepository>()
 
 	override val baseNotificationBuilder: NotificationCompat.Builder
@@ -86,6 +88,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 
 	@Throws(IOException::class)
 	override suspend fun doWork(): Result {
+		logI("Starting restore")
 		val backupName = inputData.getString(BACKUP_DATA_KEY) ?: return Result.failure()
 		val isExternal = inputData.getBoolean(BACKUP_DIR_KEY, false)
 
@@ -181,7 +184,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 					// Use a single memory location for the bitmap
 					var bitmap: Bitmap? = null
 
-					backupNovels.forEach novelLoop@{ (bNovelURL, name, imageURL, bChapters) ->
+					backupNovels.forEach novelLoop@{ (bNovelURL, name, imageURL, bChapters, bSettings) ->
 						// If none match the extension ID and URL, time to load it up
 						val loadImageJob = launchIO {
 							try {
@@ -230,7 +233,10 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 						}
 
 						// if the ID is still -1, return
-						if (targetNovelID == -1) return@novelLoop
+						if (targetNovelID == -1) {
+							logE("Could not find novel, even after injecting, aborting")
+							return@novelLoop
+						}
 
 						notify(R.string.restore_notification_content_chapters_load) {
 							setContentTitle(name)
@@ -266,6 +272,41 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 							}
 						}
 
+						notify(R.string.restore_notification_content_settings_restore) {
+							setContentTitle(name)
+							setLargeIcon(bitmap)
+						}
+						novelsSettingsRepo.get(targetNovelID).handle(
+							onEmpty = {
+								logI("Inserting novel settings")
+								novelsSettingsRepo.insert(
+									NovelSettingEntity(
+										targetNovelID,
+										sortType = bSettings.sortType,
+										showOnlyReadingStatusOf = bSettings.showOnlyReadingStatusOf,
+										showOnlyBookmarked = bSettings.showOnlyBookmarked,
+										showOnlyDownloaded = bSettings.showOnlyDownloaded,
+										reverseOrder = bSettings.reverseOrder,
+									)
+								)
+							},
+							onError = {
+								logE("Failed to load novel settings")
+							}
+						) {
+							logI("Updating novel settings")
+							novelsSettingsRepo.update(
+								it.copy(
+									sortType = bSettings.sortType,
+									showOnlyReadingStatusOf = bSettings.showOnlyReadingStatusOf,
+									showOnlyBookmarked = bSettings.showOnlyBookmarked,
+									showOnlyDownloaded = bSettings.showOnlyDownloaded,
+									reverseOrder = bSettings.reverseOrder,
+								)
+							)
+						}
+
+
 						loadImageJob.join() // Finish the image loading job
 
 						bitmap = null // Remove data from bitmap
@@ -276,6 +317,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		notify(R.string.restore_notification_content_completed) {
 			setNotOngoing()
 		}
+		logI("Completed restore")
 		return Result.success()
 	}
 
