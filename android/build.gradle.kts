@@ -233,7 +233,8 @@ dependencies {
 	implementation("com.github.skydoves:colorpickerview:2.2.3")
 
 	// Seek bar
-	implementation(project(mapOf("path" to ":bubbleseekbar")))
+//	implementation(project(mapOf("path" to ":bubbleseekbar")))
+	implementation("com.github.shosetsuorg:Bubbleseekbar:2dae010baf")
 
 	// Room
 	implementation("androidx.room:room-runtime:2.3.0")
