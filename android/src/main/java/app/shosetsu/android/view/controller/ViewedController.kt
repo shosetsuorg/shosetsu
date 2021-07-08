@@ -91,19 +91,19 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, DIAware
 
 	@CallSuper
 	override fun onDestroy() {
-		logV("Destroying Controller")
+		logI("Destroying Controller")
 		super.onDestroy()
 	}
 
 	@CallSuper
 	override fun onDetach(view: View) {
-		logV("Detaching View")
+		logI("Detaching View")
 		super.onDetach(view)
 	}
 
 	@CallSuper
 	override fun onAttach(view: View) {
-		logV("Attaching View")
+		logI("Attaching View")
 		super.onAttach(view)
 	}
 
@@ -111,7 +111,7 @@ abstract class ViewedController<VB : ViewBinding> : LifecycleController, DIAware
 	 * Set the title of the view
 	 */
 	open fun setViewTitle(viewTitle: String = this.viewTitle) {
-		logV("Activity title $viewTitle")
+		logI("Activity title $viewTitle")
 		activity?.title = viewTitle
 	}
 
