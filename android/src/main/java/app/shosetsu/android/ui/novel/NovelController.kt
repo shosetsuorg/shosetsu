@@ -107,11 +107,20 @@ class NovelController(bundle: Bundle) :
 
 	/** Refreshes the novel */
 	private fun refresh() {
-		logD("Refreshing")
-
-		viewModel.refresh().observe {
-			binding.swipeRefreshLayout.isRefreshing = (it is HResult.Loading)
-			logE("$it")
+		logI("Refreshing the novel data")
+		viewModel.refresh().observe { refreshResult ->
+			binding.swipeRefreshLayout.isRefreshing = (refreshResult is HResult.Loading)
+			refreshResult.handle(
+				onEmpty = {
+					makeSnackBar(R.string.controller_novel_snackbar_refresh_empty_result)?.show()
+				},
+				onError = {
+					logE("Failed refreshing the novel data", it.exception)
+					makeSnackBar(it.message)?.show()
+				}
+			) {
+				logI("Successfully reloaded novel")
+			}
 		}
 	}
 
@@ -446,8 +455,6 @@ class NovelController(bundle: Bundle) :
 
 	override fun onDestroyView(view: View) {
 		(activity as? MainActivity)?.removeHoldAtBottom(binding.bottomMenu)
-
-		super.onDestroyView(view)
 	}
 
 	override fun onDestroy() {
@@ -461,11 +468,15 @@ class NovelController(bundle: Bundle) :
 	}
 
 	private fun setObserver() {
-		viewModel.novelLive.observe(this) { result ->
+		viewModel.novelLive.observe { result ->
 			result.handle(onError = { handleErrorResult(it) }) {
 				activity?.invalidateOptionsMenu()
 				// If the data is not present, loads it
-				if (!it.loaded) refresh()
+				if (!it.loaded) {
+					refresh()
+				} else {
+					displayOfflineSnackBar(R.string.controller_novel_snackbar_cannot_inital_load_offline)
+				}
 			}
 		}
 		/**
