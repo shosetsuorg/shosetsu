@@ -111,6 +111,7 @@ class NovelController(bundle: Bundle) :
 
 		viewModel.refresh().observe {
 			binding.swipeRefreshLayout.isRefreshing = (it is HResult.Loading)
+			logE("$it")
 		}
 	}
 

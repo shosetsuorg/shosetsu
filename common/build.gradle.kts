@@ -4,6 +4,8 @@ plugins {
 	kotlin("plugin.serialization")
 }
 
+val shosetsuLibVersion: String by extra
+
 java {
 	sourceCompatibility = JavaVersion.VERSION_1_8
 	targetCompatibility = JavaVersion.VERSION_1_8
@@ -19,7 +21,7 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
 
 	// Core library
-	implementation("com.github.shosetsuorg:kotlin-lib:1.0.0-rc60")
+	implementation("com.github.shosetsuorg:kotlin-lib:v1.0.0-rc62")
 
 	// Testing
 	testImplementation(kotlin("test"))

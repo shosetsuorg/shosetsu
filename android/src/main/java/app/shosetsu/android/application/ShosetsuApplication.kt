@@ -89,6 +89,9 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, DIAware,
 
 	override fun onCreate() {
 		ShosetsuSharedLib.httpClient = okHttpClient
+		ShosetsuSharedLib.logger = { ext, arg ->
+			Log.i(ext, arg)
+		}
 		ShosetsuLuaLib.libLoader = libLoader@{ name ->
 			Log.i("LuaLibLoader", "Loading ($name)")
 			return@libLoader when (val result = extLibRepository.blockingLoadExtLibrary(name)) {

@@ -15,6 +15,8 @@ import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.common.enums.ReadingStatus
+import app.shosetsu.common.utils.asHtml
+import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.databinding.ChapterReaderHtmlBinding
 import java.util.*
 
@@ -197,7 +199,13 @@ class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 
 	override fun setData(data: ByteArray) {
 		syncStylesWithViewModel()
-		webView.loadData(data.decodeToString(), "text/html", "UTF-8")
+		var content: String = data.decodeToString()
+
+		// Convert string to html if the chapter is a string chapter
+		if (chapter.chapterType == Novel.ChapterType.STRING && chapter.convertStringToHtml)
+			content = asHtml(content, chapter.title)
+
+		webView.loadData(content, "text/html", "UTF-8")
 	}
 
 	override fun syncTextColor() {

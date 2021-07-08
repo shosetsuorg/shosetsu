@@ -1,9 +1,7 @@
 package app.shosetsu.android.view.uimodels.model.reader
 
 import android.view.View
-import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logError
-import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.ui.reader.types.model.HtmlReader
@@ -12,7 +10,6 @@ import app.shosetsu.common.domain.model.local.ReaderChapterEntity
 import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.enums.ReadingStatus
-import app.shosetsu.common.utils.asHtml
 import app.shosetsu.lib.Novel.ChapterType
 import com.github.doomsdayrs.apps.shosetsu.R
 
@@ -37,8 +34,8 @@ data class ReaderChapterUI(
 	var readingPosition: Double,
 	var readingStatus: ReadingStatus,
 	var bookmarked: Boolean,
-	private val chapterType: ChapterType,
-	private val convertStringToHtml: Boolean = false
+	val chapterType: ChapterType,
+	val convertStringToHtml: Boolean = false
 ) : Convertible<ReaderChapterEntity>, ReaderUIItem<ReaderChapterUI, ReaderChapterViewHolder>() {
 	override var identifier: Long
 		get() = id.toLong()
@@ -81,19 +78,17 @@ data class ReaderChapterUI(
 		chapterReader?.let { reader ->
 			reader.viewModel.getChapterPassage(this).observe(reader) { result ->
 				result.handle(
-					{ holder.showLoadingProgress() },
-					{ holder.hideLoadingProgress() },
-					{
+					onLoading = { holder.showLoadingProgress() },
+					onEmpty = { holder.hideLoadingProgress() },
+					onError = {
 						logError { it }
 						//	holder.setError(it.message, "Retry") {
 						//		TODO("Figure out how to restart the liveData")
 						//		}
-					}) {
+					}) { data ->
 					//logD("Successfully loaded :D")
 					holder.hideLoadingProgress()
-
-					//TODO Move the below logic into htmlReader
-					holder.setData(if (!convertStringToHtml) it else asHtml(it, title = title))
+					holder.setData(data)
 					holder.itemView.post {
 						holder.setProgress(this.readingPosition)
 					}

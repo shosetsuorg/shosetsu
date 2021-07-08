@@ -145,7 +145,7 @@ dependencies {
 	implementation("androidx.appcompat:appcompat:1.3.0")
 	implementation("androidx.cardview:cardview:1.0.0")
 	implementation("androidx.browser:browser:1.3.0")
-	implementation("androidx.core:core-ktx:1.5.0")
+	implementation("androidx.core:core-ktx:1.6.0")
 	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1")
 	implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
 	implementation("androidx.room:room-ktx:2.3.0")
@@ -157,16 +157,17 @@ dependencies {
 
 	// Test classes
 	testImplementation("junit:junit:4.13.2")
-	testImplementation("androidx.test.ext:junit:1.1.2")
-	androidTestImplementation("androidx.test:runner:1.3.0")
-	androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
+	testImplementation("androidx.test.ext:junit:1.1.3")
+	androidTestImplementation("androidx.test:runner:1.4.0")
+	androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
 
 	// Annotations
 	implementation("org.jetbrains:annotations:21.0.1")
 
 	// Core libraries
+	val shosetsuLibVersion: String by extra
 	implementation("org.luaj:luaj-jse:3.0.1")
-	implementation("com.github.shosetsuorg:kotlin-lib:1.0.0-rc60")
+	implementation("com.github.shosetsuorg:kotlin-lib:v1.0.0-rc62")
 
 
 	// Image loading
