@@ -3,7 +3,6 @@ package app.shosetsu.android.ui.novel
 import android.os.Bundle
 import android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
 import android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
-import android.util.Log
 import android.view.*
 import android.widget.NumberPicker
 import androidx.appcompat.app.AlertDialog
@@ -155,7 +154,6 @@ class NovelController(bundle: Bundle) :
 					}
 					is HResult.Success -> {
 						val chapterIndex = result.data
-						Log.d(logID(), "Got a value of $chapterIndex")
 						if (chapterIndex != -1) {
 							recyclerView.scrollToPosition(itemAdapter.getAdapterPosition(getChapters()[chapterIndex].identifier))
 							activity?.openChapter(getChapters()[chapterIndex])
