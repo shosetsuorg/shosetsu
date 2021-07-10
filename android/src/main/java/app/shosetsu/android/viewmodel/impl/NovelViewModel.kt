@@ -276,12 +276,19 @@ class NovelViewModel(
 	override fun openLastRead(array: List<ChapterUI>): LiveData<HResult<Int>> =
 		liveDataIO {
 			emit(loading())
-			val array = array.sortedBy { it.order }
+			val sortedArray = array.sortedBy { it.order }
 			val result = isChaptersResumeFirstUnread()
-			val r = if (result is HResult.Success && !result.data)
-				array.indexOfFirst { it.readingStatus != ReadingStatus.READ }
-			else array.indexOfFirst { it.readingStatus == ReadingStatus.UNREAD }
-			emit(if (r == -1) emptyResult() else successResult(r))
+			val index: Int = if (result is HResult.Success && !result.data)
+				sortedArray.indexOfFirst { it.readingStatus != ReadingStatus.READ }
+			else sortedArray.indexOfFirst { it.readingStatus == ReadingStatus.UNREAD }
+
+			emit(
+				if (index == -1) emptyResult() else {
+					// Find the original index
+					val chapter = sortedArray[index]
+					successResult(array.indexOf(chapter))
+				}
+			)
 		}
 
 	override fun openWebView(chapterUI: ChapterUI) {
