@@ -77,8 +77,8 @@ abstract class FastAdapterRecyclerController<VB, ITEM> :
 		onLoading = { showLoading() },
 		onError = { handleErrorResult(it) },
 		onEmpty = { showEmpty() }
-	) {
-		updateUI(itemAdapter, showEmpty, hideEmpty, it)
+	) { newList ->
+		updateUI(itemAdapter, showEmpty, hideEmpty, newList)
 	}
 
 
