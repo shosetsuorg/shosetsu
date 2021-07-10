@@ -473,9 +473,11 @@ class NovelController(bundle: Bundle) :
 				activity?.invalidateOptionsMenu()
 				// If the data is not present, loads it
 				if (!it.loaded) {
-					refresh()
-				} else {
-					displayOfflineSnackBar(R.string.controller_novel_snackbar_cannot_inital_load_offline)
+					if (viewModel.isOnline()) {
+						refresh()
+					} else {
+						displayOfflineSnackBar(R.string.controller_novel_snackbar_cannot_inital_load_offline)
+					}
 				}
 			}
 		}
