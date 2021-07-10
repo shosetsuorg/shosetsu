@@ -135,11 +135,11 @@ class NovelController(bundle: Bundle) :
 	private fun getChapters(): List<ChapterUI> = chapterUIAdapter.itemList.items
 
 	override fun hideFAB(fab: FloatingActionButton) {
-		if (getChapters().isNotEmpty()) super.hideFAB(fab)
+		super.hideFAB(fab)
 	}
 
 	override fun showFAB(fab: FloatingActionButton) {
-		if (getChapters().isNotEmpty() && actionMode == null) super.showFAB(fab)
+		if (actionMode == null) super.showFAB(fab)
 	}
 
 	override fun manipulateFAB(fab: FloatingActionButton) {

@@ -474,6 +474,7 @@
     <string name="restore_notification_content_settings_restore">Restore novel settings</string>
     <string name="controller_novel_snackbar_refresh_empty_result">Error: Received empty result while reloading</string>
     <string name="controller_novel_snackbar_cannot_inital_load_offline">Cannot load novel content while offline</string>
+    <string name="controller_novel_snackbar_finished_reading">You have read all the chapters.</string>
 
     <!-- Error Key Messages -->
 
