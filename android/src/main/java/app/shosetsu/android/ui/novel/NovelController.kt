@@ -148,10 +148,10 @@ class NovelController(bundle: Bundle) :
 			viewModel.openLastRead(getChapters()).observe(this, { result ->
 				when (result) {
 					is HResult.Error -> {
-						Log.e(logID(), "Loading last read hit an error")
+						logE("Loading last read hit an error")
 					}
 					is HResult.Empty -> {
-						context?.toast("You already read all the chapters")
+						makeSnackBar(R.string.controller_novel_snackbar_finished_reading)?.show()
 					}
 					is HResult.Success -> {
 						val chapterIndex = result.data
