@@ -196,7 +196,7 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 										OnConflictStrategy.ABORT,
 										ContentValues().apply {
 											this["'id'"] = cursor.getInt("id")
-											this["'ID'"] = cursor.getInt("repoID")
+											this["'repoID'"] = cursor.getInt("repoID")
 											this["'name'"] = cursor.getString("name")
 											this["'fileName'"] = cursor.getString("fileName")
 											this["'imageURL'"] = cursor.getString("imageURL")
@@ -207,9 +207,9 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 												cursor.getStringOrNull("installedVersion")
 											this["'repositoryVersion'"] =
 												cursor.getString("repositoryVersion")
-											this["'chapterType'"] = cursor.getInt("chapterType")
+											this["'chapterType'"] = 0
 											this["'md5'"] = cursor.getString("md5")
-											this["`type`"] = ExtensionType.LuaScript.ordinal
+											this["'type'"] = ExtensionType.LuaScript.ordinal
 										}
 									)
 								}
