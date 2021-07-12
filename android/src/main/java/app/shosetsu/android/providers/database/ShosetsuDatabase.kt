@@ -106,7 +106,7 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 								val tableName = "repositories"
 
 								// Creates new table
-								database.execSQL("CREATE TABLE IF NOT EXISTS `${tableName}_new` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `url` TEXT NOT NULL UNIQUE, `name` TEXT NOT NULL, `isEnabled` INTEGER)")
+								database.execSQL("CREATE TABLE IF NOT EXISTS `${tableName}_new` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `url` TEXT NOT NULL UNIQUE, `name` TEXT NOT NULL, `isEnabled` INTEGER NOT NULL)")
 
 								// Migrate
 								val cursor = database.query("SELECT * FROM $tableName")
