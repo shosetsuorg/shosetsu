@@ -224,7 +224,14 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 								database.execSQL("CREATE INDEX IF NOT EXISTS `index_extensions_repoID` ON `${tableName}` (`repoID`)")
 							}
 
-							// Migration to create novel_settings
+							// Handle novel migration
+							object :RemoveMigration(2,3){
+								override fun migrate(database: SupportSQLiteDatabase) {
+									deleteColumnFromTable(database, "novels", "readerType")
+								}
+							}.migrate(database)
+
+							// Create novel_settings
 							run {
 								database.execSQL("CREATE TABLE IF NOT EXISTS `novel_settings` (`novelID` INTEGER NOT NULL, `sortType` TEXT NOT NULL, `showOnlyReadingStatusOf` INTEGER, `showOnlyBookmarked` INTEGER NOT NULL, `showOnlyDownloaded` INTEGER NOT NULL, `reverseOrder` INTEGER NOT NULL, PRIMARY KEY(`novelID`), FOREIGN KEY(`novelID`) REFERENCES `novels`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )")
 								database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_novel_settings_novelID` ON `novel_settings` (`novelID`)")
