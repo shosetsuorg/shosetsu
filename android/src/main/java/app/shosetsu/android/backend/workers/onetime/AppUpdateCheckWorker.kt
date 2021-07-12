@@ -130,6 +130,9 @@ class AppUpdateCheckWorker(
 		private suspend fun appUpdateOnlyIdle(): Boolean =
 			iSettingsRepository.getBooleanOrDefault(AppUpdateOnlyWhenIdle)
 
+		override fun getWorkerState(index: Int): WorkInfo.State =
+			workerManager.getWorkInfosForUniqueWork(APP_UPDATE_WORK_ID).get()[index].state
+
 		/**
 		 * Returns the status of the service.
 		 *
@@ -137,8 +140,7 @@ class AppUpdateCheckWorker(
 		 */
 		override fun isRunning(): Boolean = try {
 			// Is this running
-			val a = (workerManager.getWorkInfosForUniqueWork(APP_UPDATE_WORK_ID)
-				.get()[0].state == WorkInfo.State.RUNNING)
+			val a = (getWorkerState() == WorkInfo.State.RUNNING)
 
 			// Don't run if update is being installed
 			val b = !AppUpdateInstallWorker.Manager(context).isRunning()

@@ -154,11 +154,13 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 
 	class Manager(context: Context) : CoroutineWorkerManager(context) {
 		override fun isRunning(): Boolean = try {
-			workerManager.getWorkInfosForUniqueWork(APP_UPDATE_INSTALL_WORK_ID)
-				.get()[0].state == WorkInfo.State.RUNNING
+			getWorkerState() == WorkInfo.State.RUNNING
 		} catch (e: Exception) {
 			false
 		}
+
+		override fun getWorkerState(index: Int): WorkInfo.State =
+			workerManager.getWorkInfosForUniqueWork(APP_UPDATE_INSTALL_WORK_ID).get()[index].state
 
 
 		override fun start(data: Data) {

@@ -232,11 +232,14 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 		 * @return true if the service is running, false otherwise.
 		 */
 		override fun isRunning(): Boolean = try {
-			workerManager.getWorkInfosForUniqueWork(BACKUP_WORK_ID)
-				.get()[0].state == WorkInfo.State.RUNNING
+			getWorkerState() == WorkInfo.State.RUNNING
 		} catch (e: Exception) {
 			false
 		}
+
+		override fun getWorkerState(index: Int): WorkInfo.State =
+			workerManager.getWorkInfosForUniqueWork(BACKUP_WORK_ID).get()[index].state
+
 
 		/**
 		 * Starts the service. It will be started only if there isn't another instance already

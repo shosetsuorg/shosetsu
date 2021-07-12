@@ -333,8 +333,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		 */
 		override fun isRunning(): Boolean = try {
 			// Is this running
-			val a = (workerManager.getWorkInfosForUniqueWork(RESTORE_WORK_ID)
-				.get()[0].state == WorkInfo.State.RUNNING)
+			val a = (getWorkerState() == WorkInfo.State.RUNNING)
 
 			// Don't run if update is being installed
 			val b = !AppUpdateInstallWorker.Manager(context).isRunning()
@@ -342,6 +341,9 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		} catch (e: Exception) {
 			false
 		}
+
+		override fun getWorkerState(index: Int): WorkInfo.State =
+			workerManager.getWorkInfosForUniqueWork(RESTORE_WORK_ID).get()[index].state
 
 		/**
 		 * Starts the service. It will be started only if there isn't another instance already

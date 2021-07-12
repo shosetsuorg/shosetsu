@@ -130,24 +130,24 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 						extensionDownloadRepository.remove(extensionId).ifSo {
 							if (notify)
 								notificationManager.notify(
-								extensionId * -1,
-								baseNotificationBuilder.apply {
-									setContentTitle(
-										applicationContext.getString(
-											R.string.notification_content_text_extension_installed,
-											extension.name
+									extensionId * -1,
+									baseNotificationBuilder.apply {
+										setContentTitle(
+											applicationContext.getString(
+												R.string.notification_content_text_extension_installed,
+												extension.name
+											)
 										)
-									)
-									setContentInfo(
-										getString(
-											R.string.notification_content_title_extension_download
+										setContentInfo(
+											getString(
+												R.string.notification_content_title_extension_download
+											)
 										)
-									)
-									setLargeIcon(bitmap)
-									removeProgress()
-									setNotOngoing()
-								}.build()
-							)
+										setLargeIcon(bitmap)
+										removeProgress()
+										setNotOngoing()
+									}.build()
+								)
 							successResult()
 						}
 					}
@@ -187,11 +187,13 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 		 */
 		override fun isRunning(): Boolean = try {
 			// Is this running
-			(workerManager.getWorkInfosForUniqueWork(EXTENSION_INSTALL_WORK_ID)
-				.get()[0].state == WorkInfo.State.RUNNING)
+			(getWorkerState() == WorkInfo.State.RUNNING)
 		} catch (e: Exception) {
 			false
 		}
+
+		override fun getWorkerState(index: Int): WorkInfo.State =
+			workerManager.getWorkInfosForUniqueWork(EXTENSION_INSTALL_WORK_ID).get()[index].state
 
 		/**
 		 * Starts the service.

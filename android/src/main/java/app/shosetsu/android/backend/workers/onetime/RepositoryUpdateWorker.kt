@@ -8,7 +8,6 @@ import androidx.work.*
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
 import app.shosetsu.android.common.consts.LogConstants
-import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_REPOSITORY_UPDATE
 import app.shosetsu.android.common.consts.Notifications.ID_REPOSITORY_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags.REPOSITORY_UPDATE_TAG
@@ -268,11 +267,13 @@ class RepositoryUpdateWorker(
 		 * @return true if the service is running, false otherwise.
 		 */
 		override fun isRunning(): Boolean = try {
-			workerManager.getWorkInfosForUniqueWork(REPOSITORY_UPDATE_TAG)
-				.get()[0].state == WorkInfo.State.RUNNING
+			getWorkerState() == WorkInfo.State.RUNNING
 		} catch (e: Exception) {
 			false
 		}
+
+		override fun getWorkerState(index: Int): WorkInfo.State =
+			workerManager.getWorkInfosForUniqueWork(REPOSITORY_UPDATE_TAG).get()[index].state
 
 		/**
 		 * Starts the service. It will be started only if there isn't another instance already
