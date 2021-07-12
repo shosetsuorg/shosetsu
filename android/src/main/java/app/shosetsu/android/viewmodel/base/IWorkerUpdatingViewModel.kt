@@ -36,6 +36,12 @@ interface IWorkerUpdatingViewModel {
 	 */
 	val workerSettingsChanged: LiveData<HResult<WorkerIdentifier>>
 
+
+	/**
+	 * Restart the worker manager identified by [WorkerIdentifier]
+	 */
+	fun restartManager(id: String)
+
 	/**
 	 * Identifies which worker has been changed, prompting the user to update its settings
 	 */

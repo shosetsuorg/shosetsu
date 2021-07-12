@@ -12,8 +12,10 @@ import app.shosetsu.android.view.uimodels.settings.TextSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.onClicked
 import app.shosetsu.android.viewmodel.abstracted.settings.ADownloadSettingsViewModel
+import app.shosetsu.android.viewmodel.base.IWorkerUpdatingViewModel
 import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.google.android.material.snackbar.Snackbar
 
 /*
  * This file is part of Shosetsu.
@@ -61,19 +63,36 @@ class DownloadSettings : SettingsSubController() {
 		activity?.startActivityForResult(Intent.createChooser(i, "Choose directory"), 42)
 	}
 
+	private var workersToRestart: IWorkerUpdatingViewModel.WorkerIdentifier? = null
+
 	override fun onViewCreated(view: View) {
 		super.onViewCreated(view)
 		viewModel.workerSettingsChanged.observe { hResult ->
 			hResult.handle {
-				makeSnackBar(
-					getString(
-						R.string.controller_settings_restart_worker,
-						getString(it.nameRes)
-					)
-				)?.show()
+				workersToRestart = it
 			}
 		}
 	}
+
+	override fun onDestroy() {
+		super.onDestroy()
+		launchUI {
+			val workersToRestart = workersToRestart
+			workersToRestart?.let { identifier ->
+				makeSnackBar(
+					getString(
+						R.string.controller_settings_restart_worker,
+						getString(identifier.nameRes)
+					),
+					Snackbar.LENGTH_LONG
+				)?.setAction(R.string.restart) {
+					viewModel.restartManager(identifier.id)
+				}?.show()
+			}
+		}
+
+	}
+
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)

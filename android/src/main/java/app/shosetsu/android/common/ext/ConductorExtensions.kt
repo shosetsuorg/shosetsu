@@ -76,4 +76,4 @@ val Controller.context: Context?
 	get() = applicationContext
 
 fun Controller.getString(@StringRes resId: Int, vararg formatArgs: Any): String =
-	resources?.getString(resId, formatArgs)!!
+	resources?.getString(resId, *formatArgs)!!
