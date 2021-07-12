@@ -12,7 +12,7 @@ import app.shosetsu.android.common.ext.setOnClickListener
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
-import app.shosetsu.android.viewmodel.abstracted.ISearchViewModel
+import app.shosetsu.android.viewmodel.abstracted.ASearchViewModel
 import app.shosetsu.common.dto.HResult
 import com.bluelinelabs.conductor.Controller
 import com.mikepenz.fastadapter.FastAdapter
@@ -43,7 +43,7 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 class SearchRowAdapter(
 	private val lifecycleOwner: LifecycleOwner,
 	private val pushController: (Controller) -> Unit,
-	private val viewModel: ISearchViewModel
+	private val viewModel: ASearchViewModel
 ) : FastAdapter<SearchRowUI>() {
 	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 		super.onBindViewHolder(holder, position)

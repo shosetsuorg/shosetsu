@@ -31,7 +31,7 @@ import app.shosetsu.common.dto.HResult
  * shosetsu
  * 06 / 05 / 2020
  */
-abstract class IChapterReaderViewModel :
+abstract class AChapterReaderViewModel :
 	SubscribeHandleViewModel<List<ReaderUIItem<*, *>>>,
 	ShosetsuViewModel(),
 	ErrorReportingViewModel,

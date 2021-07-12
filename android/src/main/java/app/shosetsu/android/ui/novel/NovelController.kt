@@ -18,7 +18,7 @@ import app.shosetsu.android.view.controller.base.syncFABWithRecyclerView
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.view.widget.SlidingUpBottomMenu
-import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
+import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
 import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.ReadingStatus
@@ -72,7 +72,7 @@ class NovelController(bundle: Bundle) :
 			}
 	*/
 
-	internal val viewModel: INovelViewModel by viewModel()
+	internal val viewModel: ANovelViewModel by viewModel()
 	override val viewTitle: String
 		get() = ""
 	private var resume: FloatingActionButton? = null

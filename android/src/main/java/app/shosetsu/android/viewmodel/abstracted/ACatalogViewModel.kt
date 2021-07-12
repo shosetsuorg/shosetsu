@@ -32,7 +32,7 @@ import app.shosetsu.lib.IExtension
  * 01 / 05 / 2020
  * Used for showing the specific listing of a novel
  */
-abstract class ICatalogViewModel :
+abstract class ACatalogViewModel :
 	ShosetsuViewModel(),
 	ErrorReportingViewModel,
 	ColumnCalculator {

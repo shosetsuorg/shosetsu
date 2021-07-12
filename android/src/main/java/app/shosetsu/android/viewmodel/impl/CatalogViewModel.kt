@@ -17,7 +17,7 @@ import app.shosetsu.android.view.uimodels.settings.TriStateButtonSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.view.widget.TriState
-import app.shosetsu.android.viewmodel.abstracted.ICatalogViewModel
+import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
 import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.lib.Filter
@@ -64,7 +64,7 @@ class CatalogViewModel(
 	private val loadNovelUITypeUseCase: LoadNovelUITypeUseCase,
 	private val loadNovelUIColumnsHUseCase: LoadNovelUIColumnsHUseCase,
 	private val loadNovelUIColumnsPUseCase: LoadNovelUIColumnsPUseCase,
-) : ICatalogViewModel() {
+) : ACatalogViewModel() {
 	private var queryState: String = ""
 
 	/**

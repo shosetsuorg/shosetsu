@@ -24,7 +24,7 @@ import app.shosetsu.android.view.controller.base.CollapsedToolBarController
 import app.shosetsu.android.view.decoration.StickyHeaderDecor
 import app.shosetsu.android.view.uimodels.model.UpdateUI
 import app.shosetsu.android.view.widget.EmptyDataView
-import app.shosetsu.android.viewmodel.abstracted.IUpdatesViewModel
+import app.shosetsu.android.viewmodel.abstracted.AUpdatesViewModel
 import app.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.mikepenz.fastadapter.FastAdapter
@@ -39,7 +39,7 @@ import org.joda.time.DateTime
 class UpdatesController : FastAdapterRefreshableRecyclerController<UpdateUI>(),
 	CollapsedToolBarController {
 
-	val viewModel: IUpdatesViewModel by viewModel()
+	val viewModel: AUpdatesViewModel by viewModel()
 
 	override val viewTitleRes: Int = R.string.updates
 
@@ -74,7 +74,7 @@ class UpdatesController : FastAdapterRefreshableRecyclerController<UpdateUI>(),
 	}
 
 	/**
-	 * Start observing [IUpdatesViewModel] for changes
+	 * Start observing [AUpdatesViewModel] for changes
 	 */
 	private fun startObservation() = viewModel.liveData.observeRecyclerUpdates()
 

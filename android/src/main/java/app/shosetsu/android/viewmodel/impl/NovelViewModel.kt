@@ -22,7 +22,7 @@ import app.shosetsu.android.domain.usecases.update.UpdateNovelSettingUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
-import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
+import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
 import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.ChapterSortType
 import app.shosetsu.common.enums.ChapterSortType.SOURCE
@@ -73,7 +73,7 @@ class NovelViewModel(
 	private val loadDeletePreviousChapterUseCase: LoadDeletePreviousChapterUseCase,
 	private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
 	private val startDownloadWorkerAfterUpdateUseCase: StartDownloadWorkerAfterUpdateUseCase
-) : INovelViewModel() {
+) : ANovelViewModel() {
 	@ExperimentalCoroutinesApi
 	@get:Synchronized
 	private val chapters: ArrayList<ChapterUI>

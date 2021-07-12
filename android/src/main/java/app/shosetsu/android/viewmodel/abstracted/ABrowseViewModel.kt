@@ -30,7 +30,7 @@ import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
  *
  * @author github.com/doomsdayrs
  */
-abstract class IBrowseViewModel :
+abstract class ABrowseViewModel :
 	ShosetsuViewModel(),
 	SubscribeHandleViewModel<List<ExtensionUI>>,
 	IsOnlineCheckViewModel,

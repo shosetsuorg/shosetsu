@@ -1,11 +1,12 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
-import app.shosetsu.android.view.uimodels.model.DownloadUI
+import app.shosetsu.android.view.uimodels.model.ExtensionUI
+import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
-import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
+import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -24,43 +25,29 @@ import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 /**
  * shosetsu
- * 29 / 04 / 2020
+ * 16 / 07 / 2020
  *
- * @author github.com/doomsdayrs
+ * This file is mainly to configure settings of a formatter
+ *
+ * [liveData] is of the formatter object itself
  */
-abstract class IDownloadsViewModel :
-	SubscribeHandleViewModel<List<DownloadUI>>,
-	ShosetsuViewModel(),
-	IsOnlineCheckViewModel,
-	ErrorReportingViewModel {
+abstract class AExtensionConfigureViewModel
+	: ShosetsuViewModel(), SubscribeHandleViewModel<ExtensionUI>, ErrorReportingViewModel {
+	abstract val extensionSettings: LiveData<HResult<List<SettingsItemData>>>
 
-	abstract val isDownloadPaused: LiveData<Boolean>
+	/** Set the extension ID to use */
+	abstract fun setExtensionID(id: Int)
 
 	/**
-	 * Toggles paused downloads
-	 *
-	 * @return if paused or not
+	 * Uninstall this extension
 	 */
-	abstract fun togglePause()
+	abstract fun uninstall(extensionUI: ExtensionUI)
 
-	/** Deletes a download */
-	abstract fun delete(downloadUI: DownloadUI)
+	/**
+	 * Destroy this controller
+	 */
+	abstract fun destroy()
 
-	/** Pauses a download */
-	abstract fun pause(downloadUI: DownloadUI)
-
-	/** Starts a download */
-	abstract fun start(downloadUI: DownloadUI)
-
-	/** Marks all as pending */
-	abstract fun startAll(list: List<DownloadUI>)
-
-	/** Marks all as paused*/
-	abstract fun pauseAll(list: List<DownloadUI>)
-
-
-	abstract fun deleteAll(list: List<DownloadUI>)
 }

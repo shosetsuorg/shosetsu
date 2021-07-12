@@ -29,7 +29,7 @@ import app.shosetsu.android.domain.usecases.settings.SetNovelUITypeUseCase
 import app.shosetsu.android.domain.usecases.start.StartUpdateWorkerUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateBookmarkedNovelUseCase
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
-import app.shosetsu.android.viewmodel.abstracted.ILibraryViewModel
+import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
 import app.shosetsu.common.consts.settings.SettingKey.ChapterColumnsInLandscape
 import app.shosetsu.common.consts.settings.SettingKey.ChapterColumnsInPortait
 import app.shosetsu.common.dto.*
@@ -61,7 +61,7 @@ class LibraryViewModel(
 	private val loadNovelUIColumnsHUseCase: LoadNovelUIColumnsHUseCase,
 	private val loadNovelUIColumnsPUseCase: LoadNovelUIColumnsPUseCase,
 	private val setNovelUITypeUseCase: SetNovelUITypeUseCase
-) : ILibraryViewModel() {
+) : ALibraryViewModel() {
 
 
 	private var columnP: Int = ChapterColumnsInPortait.default

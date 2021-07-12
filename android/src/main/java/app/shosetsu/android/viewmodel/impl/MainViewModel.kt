@@ -13,7 +13,7 @@ import app.shosetsu.android.domain.usecases.settings.LoadNavigationStyleUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadRequireDoubleBackUseCase
 import app.shosetsu.android.domain.usecases.start.StartAppUpdateInstallWorkerUseCase
 import app.shosetsu.android.domain.usecases.start.StartDownloadWorkerUseCase
-import app.shosetsu.android.viewmodel.abstracted.IMainViewModel
+import app.shosetsu.android.viewmodel.abstracted.AMainViewModel
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.dto.HResult
@@ -55,7 +55,7 @@ class MainViewModel(
 	private val startInstallWorker: StartAppUpdateInstallWorkerUseCase,
 	private val canAppSelfUpdateUseCase: CanAppSelfUpdateUseCase,
 	private val loadAppUpdateUseCase: LoadAppUpdateUseCase
-) : IMainViewModel() {
+) : AMainViewModel() {
 	private var _navigationStyle = 0
 	private var _requireDoubleBackToExit = SettingKey.RequireDoubleBackToExit.default
 

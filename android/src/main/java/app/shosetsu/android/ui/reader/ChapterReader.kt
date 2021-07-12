@@ -24,7 +24,7 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.viewmodel.abstracted.IChapterReaderViewModel
+import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.enums.ReadingStatus
@@ -69,7 +69,7 @@ import org.kodein.di.android.closestDI
 class ChapterReader
 	: AppCompatActivity(), DIAware {
 	override val di: DI by closestDI()
-	internal val viewModel: IChapterReaderViewModel by viewModel()
+	internal val viewModel: AChapterReaderViewModel by viewModel()
 	private lateinit var binding: ActivityReaderBinding
 
 	private val toolbar: MaterialToolbar

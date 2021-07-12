@@ -19,7 +19,7 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
-import app.shosetsu.android.viewmodel.abstracted.IChapterReaderViewModel
+import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
 import app.shosetsu.android.viewmodel.impl.settings.*
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
@@ -70,7 +70,7 @@ class ChapterReaderViewModel(
 	private val reportExceptionUseCase: ReportExceptionUseCase,
 	private val getReaderSettingsUseCase: GetReaderSettingUseCase,
 	private val updateReaderSettingUseCase: UpdateReaderSettingUseCase
-) : IChapterReaderViewModel() {
+) : AChapterReaderViewModel() {
 	private val isHorizontalPageSwapping by lazy {
 		settingsRepo.getBooleanFlow(ReaderHorizontalPageSwap)
 	}

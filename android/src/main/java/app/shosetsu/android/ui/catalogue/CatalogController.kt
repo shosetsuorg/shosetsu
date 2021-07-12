@@ -23,7 +23,7 @@ import app.shosetsu.android.view.controller.base.BottomMenuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.widget.SlidingUpBottomMenu
-import app.shosetsu.android.viewmodel.abstracted.ICatalogViewModel
+import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.NovelCardType.COMPRESSED
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -62,7 +62,7 @@ class CatalogController(
 ) : FastAdapterRecyclerController<ControllerCatalogueBinding, ACatalogNovelUI>(bundle), ExtendedFABController, BottomMenuController {
 
 	/***/
-	val viewModel: ICatalogViewModel by viewModel()
+	val viewModel: ACatalogViewModel by viewModel()
 	//private val progressAdapter by lazy { ItemAdapter<ProgressItem>() }
 
 

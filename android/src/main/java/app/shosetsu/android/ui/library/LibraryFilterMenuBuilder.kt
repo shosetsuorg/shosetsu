@@ -12,7 +12,7 @@ import androidx.viewpager.widget.PagerAdapter
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import app.shosetsu.android.view.widget.TriState.State.*
-import app.shosetsu.android.viewmodel.abstracted.ILibraryViewModel
+import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
 import app.shosetsu.common.enums.InclusionState
 import app.shosetsu.common.enums.InclusionState.EXCLUDE
 import app.shosetsu.common.enums.InclusionState.INCLUDE
@@ -53,7 +53,7 @@ import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL as LLM_VERTICAL
  */
 class LibraryFilterMenuBuilder constructor(
 	private val controller: LibraryController,
-	private val viewModel: ILibraryViewModel
+	private val viewModel: ALibraryViewModel
 ) {
 	@Suppress("ProtectedInFinal")
 	protected val layoutInflater = controller.activity!!.layoutInflater

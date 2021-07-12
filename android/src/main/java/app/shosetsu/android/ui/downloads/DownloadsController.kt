@@ -23,10 +23,9 @@ import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.controller.BottomMenuBasicFastAdapterRecyclerController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.uimodels.model.DownloadUI
-import app.shosetsu.android.viewmodel.abstracted.IDownloadsViewModel
+import app.shosetsu.android.viewmodel.abstracted.ADownloadsViewModel
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.DownloadStatus.*
-import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter
@@ -42,7 +41,7 @@ import com.mikepenz.fastadapter.select.selectExtension
 class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<DownloadUI>(), ExtendedFABController {
 
 	override val viewTitleRes: Int = R.string.downloads
-	private val viewModel: IDownloadsViewModel by viewModel()
+	private val viewModel: ADownloadsViewModel by viewModel()
 	private var fab: ExtendedFloatingActionButton? = null
 	private var actionMode: ActionMode? = null
 

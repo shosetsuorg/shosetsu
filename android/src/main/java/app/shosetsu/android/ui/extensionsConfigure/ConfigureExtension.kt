@@ -10,7 +10,7 @@ import app.shosetsu.android.view.controller.FastAdapterRecyclerController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.viewmodel.abstracted.IExtensionConfigureViewModel
+import app.shosetsu.android.viewmodel.abstracted.AExtensionConfigureViewModel
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -43,7 +43,7 @@ import kotlinx.coroutines.delay
 class ConfigureExtension(bundle: Bundle) :
 	FastAdapterRecyclerController<ConfigureExtensionViewBinding, SettingsItemData>(bundle),
 	CollapsedToolBarController {
-	val viewModel: IExtensionConfigureViewModel by viewModel()
+	val viewModel: AExtensionConfigureViewModel by viewModel()
 
 	override fun onViewCreated(view: View) {
 		viewModel.setExtensionID(args.getInt(BUNDLE_EXTENSION))

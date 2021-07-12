@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.CallSuper
 import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
-import app.shosetsu.android.viewmodel.abstracted.IChapterReaderViewModel
+import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
 import com.mikepenz.fastadapter.FastAdapter
 
 /*
@@ -42,7 +42,7 @@ abstract class ReaderChapterViewHolder(
 	val chapterReader: ChapterReader
 		get() = chapter.chapterReader!!
 
-	val viewModel: IChapterReaderViewModel
+	val viewModel: AChapterReaderViewModel
 		get() = chapterReader.viewModel
 
 	val tapToScroll: Boolean

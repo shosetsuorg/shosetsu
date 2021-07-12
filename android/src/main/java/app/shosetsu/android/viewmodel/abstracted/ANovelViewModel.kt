@@ -35,7 +35,7 @@ import javax.security.auth.Destroyable
  *
  * @author github.com/doomsdayrs
  */
-abstract class INovelViewModel
+abstract class ANovelViewModel
 	: ShosetsuViewModel(), IsOnlineCheckViewModel, Destroyable, ErrorReportingViewModel {
 
 	abstract val novelLive: LiveData<HResult<NovelUI>>

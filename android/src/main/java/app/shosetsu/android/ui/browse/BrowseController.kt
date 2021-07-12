@@ -33,7 +33,7 @@ import app.shosetsu.android.ui.extensionsConfigure.ConfigureExtension
 import app.shosetsu.android.view.controller.FastAdapterRefreshableRecyclerController
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.view.widget.EmptyDataView
-import app.shosetsu.android.viewmodel.abstracted.IBrowseViewModel
+import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.common.consts.REPOSITORY_HELP_URL
 import app.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -53,7 +53,7 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 	}
 
 	/***/
-	val viewModel: IBrowseViewModel by viewModel()
+	val viewModel: ABrowseViewModel by viewModel()
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_browse, menu)

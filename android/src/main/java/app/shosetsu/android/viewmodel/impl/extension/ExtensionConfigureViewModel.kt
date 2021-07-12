@@ -33,7 +33,7 @@ import app.shosetsu.android.domain.usecases.update.UpdateExtensionEntityUseCase
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
-import app.shosetsu.android.viewmodel.abstracted.IExtensionConfigureViewModel
+import app.shosetsu.android.viewmodel.abstracted.AExtensionConfigureViewModel
 import app.shosetsu.common.dto.*
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -55,7 +55,7 @@ class ExtensionConfigureViewModel(
 	private val getExtListNames: GetExtListingNamessUseCase,
 	private val updateExtSelectedListing: UpdateExtSelectedListing,
 	private val getExtSelectedListing: GetExtSelectedListingUseCase
-) : IExtensionConfigureViewModel() {
+) : AExtensionConfigureViewModel() {
 	private val extensionIDFlow: MutableStateFlow<Int> by lazy {
 		MutableStateFlow(-1)
 	}

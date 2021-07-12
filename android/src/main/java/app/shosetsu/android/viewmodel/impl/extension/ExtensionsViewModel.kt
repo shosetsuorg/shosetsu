@@ -26,7 +26,7 @@ import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.android.domain.usecases.UninstallExtensionUIUseCase
 import app.shosetsu.android.domain.usecases.load.LoadExtensionsUIUseCase
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
-import app.shosetsu.android.viewmodel.abstracted.IBrowseViewModel
+import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -43,7 +43,7 @@ class ExtensionsViewModel(
 	private val uninstallExtensionUIUseCase: UninstallExtensionUIUseCase,
 	private var isOnlineUseCase: IsOnlineUseCase,
 	private val reportExceptionUseCase: ReportExceptionUseCase
-) : IBrowseViewModel() {
+) : ABrowseViewModel() {
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
 		reportExceptionUseCase(error)

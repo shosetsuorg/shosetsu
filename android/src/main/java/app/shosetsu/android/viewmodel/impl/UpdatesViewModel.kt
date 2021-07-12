@@ -6,7 +6,7 @@ import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.load.LoadUpdatesUseCase
 import app.shosetsu.android.domain.usecases.start.StartUpdateWorkerUseCase
 import app.shosetsu.android.view.uimodels.model.UpdateUI
-import app.shosetsu.android.viewmodel.abstracted.IUpdatesViewModel
+import app.shosetsu.android.viewmodel.abstracted.AUpdatesViewModel
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.mapLatestResult
 import app.shosetsu.common.dto.successResult
@@ -42,7 +42,7 @@ class UpdatesViewModel(
 	private val reportExceptionUseCase: ReportExceptionUseCase,
 	private val startUpdateWorkerUseCase: StartUpdateWorkerUseCase,
 	private val isOnlineUseCase: IsOnlineUseCase
-) : IUpdatesViewModel() {
+) : AUpdatesViewModel() {
 	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<List<UpdateUI>>> by lazy {
 		getUpdatesUseCase()

@@ -29,7 +29,7 @@ import app.shosetsu.common.enums.AppThemes
  * shosetsu
  * 20 / 06 / 2020
  */
-abstract class IMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel,
+abstract class AMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel,
 	ErrorReportingViewModel {
 	abstract fun share(string: String, int: String)
 

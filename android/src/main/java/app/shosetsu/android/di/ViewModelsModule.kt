@@ -37,7 +37,7 @@ import org.kodein.di.provider
 @ExperimentalCoroutinesApi
 val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 	// Main
-	bind<IMainViewModel>() with provider {
+	bind<AMainViewModel>() with provider {
 		MainViewModel(
 			startDownloadWorkerUseCase = instance(),
 			loadAppUpdateFlowLiveUseCase = instance(),
@@ -54,7 +54,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 	}
 
 	// Library
-	bind<ILibraryViewModel>() with provider {
+	bind<ALibraryViewModel>() with provider {
 		LibraryViewModel(
 			libraryAsCardsUseCase = instance(),
 			updateBookmarkedNovelUseCase = instance(),
@@ -69,7 +69,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 	}
 
 	// Other
-	bind<IDownloadsViewModel>() with provider {
+	bind<ADownloadsViewModel>() with provider {
 		DownloadsViewModel(
 			getDownloadsUseCase = instance(),
 			startDownloadWorkerUseCase = instance(),
@@ -80,7 +80,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			reportExceptionUseCase = instance()
 		)
 	}
-	bind<ISearchViewModel>() with provider {
+	bind<ASearchViewModel>() with provider {
 		SearchViewModel(
 			searchBookMarkedNovelsUseCase = instance(),
 			loadSearchRowUIUseCase = instance(),
@@ -88,7 +88,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			reportExceptionUseCase = instance()
 		)
 	}
-	bind<IUpdatesViewModel>() with provider {
+	bind<AUpdatesViewModel>() with provider {
 		UpdatesViewModel(
 			getUpdatesUseCase = instance(),
 			reportExceptionUseCase = instance(),
@@ -106,7 +106,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 	}
 
 	// Catalog(s)
-	bind<ICatalogViewModel>() with provider {
+	bind<ACatalogViewModel>() with provider {
 		CatalogViewModel(
 			application = instance(),
 			getExtensionUseCase = instance(),
@@ -121,7 +121,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 	}
 
 	// Extensions
-	bind<IBrowseViewModel>() with provider {
+	bind<ABrowseViewModel>() with provider {
 		ExtensionsViewModel(
 			getExtensionsUIUseCase = instance(),
 			installExtensionUIUseCase = instance(),
@@ -131,7 +131,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			startRepositoryUpdateManagerUseCase = instance()
 		)
 	}
-	bind<IExtensionConfigureViewModel>() with provider {
+	bind<AExtensionConfigureViewModel>() with provider {
 		ExtensionConfigureViewModel(
 			application = instance(),
 			loadExtensionUIUI = instance(),
@@ -146,7 +146,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 	}
 
 	// Novel View
-	bind<INovelViewModel>() with provider {
+	bind<ANovelViewModel>() with provider {
 		NovelViewModel(
 			getChapterUIsUseCase = instance(),
 			loadNovelUIUseCase = instance(),
@@ -170,7 +170,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 	}
 
 	// Chapter
-	bind<IChapterReaderViewModel>() with provider {
+	bind<AChapterReaderViewModel>() with provider {
 		ChapterReaderViewModel(
 			application = instance(),
 			settingsRepo = instance(),

@@ -11,7 +11,7 @@ import app.shosetsu.android.common.ext.handleObserve
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.view.widget.TriState.State.*
-import app.shosetsu.android.viewmodel.abstracted.INovelViewModel
+import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.ChapterSortType.SOURCE
 import app.shosetsu.common.enums.ChapterSortType.UPLOAD
@@ -47,7 +47,7 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.*
 class NovelFilterMenuBuilder(
 	private val novelControllerLifeCycle: LifecycleOwner,
 	private val inflater: LayoutInflater,
-	private val viewModel: INovelViewModel
+	private val viewModel: ANovelViewModel
 ) {
 	private val novelSettingFlow: LiveData<HResult<NovelSettingUI>> =
 		viewModel.novelSettingFlow

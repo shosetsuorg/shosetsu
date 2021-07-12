@@ -1,8 +1,11 @@
 package app.shosetsu.android.viewmodel.abstracted
 
-import app.shosetsu.android.view.uimodels.model.UpdateUI
-import app.shosetsu.android.viewmodel.base.*
-import app.shosetsu.common.enums.ReadingStatus
+import androidx.lifecycle.LiveData
+import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
+import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
+import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
+import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
+import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -22,16 +25,18 @@ import app.shosetsu.common.enums.ReadingStatus
  */
 
 
+
+
 /**
  * shosetsu
- * 29 / 04 / 2020
- *
- * @author github.com/doomsdayrs
+ * 01 / 05 / 2020
  */
-abstract class IUpdatesViewModel
-	: ShosetsuViewModel(),
-	SubscribeHandleViewModel<List<UpdateUI>>,
-	ErrorReportingViewModel,
-	StartUpdateManagerViewModel, IsOnlineCheckViewModel {
-	abstract suspend fun updateChapter(updateUI: UpdateUI, readingStatus: ReadingStatus)
+abstract class ASearchViewModel : ShosetsuViewModel(), ErrorReportingViewModel {
+	abstract val listings: LiveData<HResult<List<SearchRowUI>>>
+
+	abstract fun setQuery(query: String)
+	abstract fun searchLibrary(): LiveData<HResult<List<ACatalogNovelUI>>>
+	abstract fun searchExtension(formatterID: Int): LiveData<HResult<List<ACatalogNovelUI>>>
+
+	abstract fun loadQuery()
 }

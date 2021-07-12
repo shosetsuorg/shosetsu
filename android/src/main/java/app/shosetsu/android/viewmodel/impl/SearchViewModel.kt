@@ -12,7 +12,7 @@ import app.shosetsu.android.view.uimodels.model.IDTitleImageUI
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
-import app.shosetsu.android.viewmodel.abstracted.ISearchViewModel
+import app.shosetsu.android.viewmodel.abstracted.ASearchViewModel
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.loading
 import app.shosetsu.common.dto.successResult
@@ -47,7 +47,7 @@ class SearchViewModel(
 	private val loadSearchRowUIUseCase: LoadSearchRowUIUseCase,
 	private val loadCatalogueQueryDataUseCase: GetCatalogueQueryDataUseCase,
 	private val reportExceptionUseCase: ReportExceptionUseCase
-) : ISearchViewModel() {
+) : ASearchViewModel() {
 	private val hashMap = HashMap<Int, MutableLiveData<HResult<List<ACatalogNovelUI>>>>()
 	private val jobMap = HashMap<Int, Job>()
 

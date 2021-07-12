@@ -37,7 +37,7 @@ import app.shosetsu.android.ui.search.SearchController
 import app.shosetsu.android.ui.updates.UpdatesController
 import app.shosetsu.android.view.controller.*
 import app.shosetsu.android.view.controller.base.*
-import app.shosetsu.android.viewmodel.abstracted.IMainViewModel
+import app.shosetsu.android.viewmodel.abstracted.AMainViewModel
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.enums.AppThemes.*
 import com.bluelinelabs.conductor.Conductor.attachRouter
@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 
 	private val downloadManager by lazy { getSystemService<DownloadManager>()!! }
 	override val di: DI by closestDI()
-	private val viewModel: IMainViewModel by viewModel()
+	private val viewModel: AMainViewModel by viewModel()
 
 	private val broadcastReceiver by lazy {
 		object : BroadcastReceiver() {
