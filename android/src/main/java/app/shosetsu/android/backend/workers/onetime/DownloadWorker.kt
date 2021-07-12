@@ -320,6 +320,9 @@ class DownloadWorker(
 		override fun getWorkerState(index: Int) =
 			workerManager.getWorkInfosForUniqueWork(DOWNLOAD_WORK_ID).get()[index].state
 
+		override val count: Int
+			get() = workerManager.getWorkInfosForUniqueWork(DOWNLOAD_WORK_ID).get().size
+
 		/**
 		 * Returns the status of the service.
 		 *

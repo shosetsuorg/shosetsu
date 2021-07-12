@@ -133,6 +133,9 @@ class AppUpdateCheckWorker(
 		override fun getWorkerState(index: Int): WorkInfo.State =
 			workerManager.getWorkInfosForUniqueWork(APP_UPDATE_WORK_ID).get()[index].state
 
+		override val count: Int
+			get() = workerManager.getWorkInfosForUniqueWork(APP_UPDATE_WORK_ID).get().size
+
 		/**
 		 * Returns the status of the service.
 		 *

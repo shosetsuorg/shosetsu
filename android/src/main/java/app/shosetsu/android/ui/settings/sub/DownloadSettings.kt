@@ -3,16 +3,16 @@ package app.shosetsu.android.ui.settings.sub
 import android.app.Activity
 import android.content.Intent
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import app.shosetsu.android.common.consts.ActivityRequestCodes.REQUEST_CODE_DIRECTORY
-import app.shosetsu.android.common.ext.context
-import app.shosetsu.android.common.ext.toast
-import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.settings.SettingsSubController
 import app.shosetsu.android.view.uimodels.settings.TextSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.onClicked
 import app.shosetsu.android.viewmodel.abstracted.settings.ADownloadSettingsViewModel
+import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -59,6 +59,20 @@ class DownloadSettings : SettingsSubController() {
 		val i = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
 		i.addCategory(Intent.CATEGORY_DEFAULT)
 		activity?.startActivityForResult(Intent.createChooser(i, "Choose directory"), 42)
+	}
+
+	override fun onViewCreated(view: View) {
+		super.onViewCreated(view)
+		viewModel.workerSettingsChanged.observe { hResult ->
+			hResult.handle {
+				makeSnackBar(
+					getString(
+						R.string.controller_settings_restart_worker,
+						getString(it.nameRes)
+					)
+				)?.show()
+			}
+		}
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

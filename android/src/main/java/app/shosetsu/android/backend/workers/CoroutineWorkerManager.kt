@@ -42,6 +42,11 @@ abstract class CoroutineWorkerManager(
 	 */
 	val workerManager: WorkManager by lazy { getInstance(context) }
 
+	/**
+	 * Count of workers that match the ID
+	 */
+	abstract val count: Int
+
 	abstract fun getWorkerState(index: Int = 0): WorkInfo.State
 
 	open fun isRunning(): Boolean =

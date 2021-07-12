@@ -195,6 +195,9 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 		override fun getWorkerState(index: Int): WorkInfo.State =
 			workerManager.getWorkInfosForUniqueWork(EXTENSION_INSTALL_WORK_ID).get()[index].state
 
+		override val count: Int
+			get() = workerManager.getWorkInfosForUniqueWork(EXTENSION_INSTALL_WORK_ID).get().size
+
 		/**
 		 * Starts the service.
 		 * If there is one currently running, will append

@@ -162,6 +162,8 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 		override fun getWorkerState(index: Int): WorkInfo.State =
 			workerManager.getWorkInfosForUniqueWork(APP_UPDATE_INSTALL_WORK_ID).get()[index].state
 
+		override val count: Int
+			get() = workerManager.getWorkInfosForUniqueWork(APP_UPDATE_INSTALL_WORK_ID).get().size
 
 		override fun start(data: Data) {
 			launchIO {

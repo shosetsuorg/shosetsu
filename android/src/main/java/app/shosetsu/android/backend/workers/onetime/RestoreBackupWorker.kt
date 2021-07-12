@@ -345,6 +345,9 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		override fun getWorkerState(index: Int): WorkInfo.State =
 			workerManager.getWorkInfosForUniqueWork(RESTORE_WORK_ID).get()[index].state
 
+		override val count: Int
+			get() = workerManager.getWorkInfosForUniqueWork(RESTORE_WORK_ID).get().size
+
 		/**
 		 * Starts the service. It will be started only if there isn't another instance already
 		 * running.

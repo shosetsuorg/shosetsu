@@ -2,10 +2,8 @@ package app.shosetsu.android.common.ext
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.content.res.Resources
 import android.os.Build
 import android.provider.Settings
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import app.shosetsu.android.activity.MainActivity
@@ -77,9 +75,5 @@ fun Router.shosetsuPush(target: Controller) {
 val Controller.context: Context?
 	get() = applicationContext
 
-fun Controller.getString(@StringRes resId: Int, default: String = "NULL"): String = try {
-	resources?.getString(resId) ?: default
-} catch (e: Resources.NotFoundException) {
-	Log.d(logID(), "Could not find string resource: $resId")
-	default
-}
+fun Controller.getString(@StringRes resId: Int, vararg formatArgs: Any): String =
+	resources?.getString(resId, formatArgs)!!

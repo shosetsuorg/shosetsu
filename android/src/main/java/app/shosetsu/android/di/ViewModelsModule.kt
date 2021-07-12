@@ -218,7 +218,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 	bind<ADownloadSettingsViewModel>() with provider {
 		DownloadSettingsViewModel(
 			iSettingsRepository = instance(),
-			reportExceptionUseCase = instance()
+			instance()
 		)
 	}
 	bind<AReaderSettingsViewModel>() with provider {
