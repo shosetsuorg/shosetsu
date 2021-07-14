@@ -2,10 +2,17 @@ package app.shosetsu.android.ui.settings.sub
 
 import android.content.res.Resources
 import android.view.View
+import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.makeSnackBar
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.settings.SettingsSubController
+import app.shosetsu.android.view.uimodels.settings.ButtonSettingData
+import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
+import app.shosetsu.android.view.uimodels.settings.dsl.onButtonClicked
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
+import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.google.android.material.snackbar.Snackbar
 
 
 /*
@@ -33,6 +40,33 @@ class AdvancedSettings : SettingsSubController() {
 	override val viewModel: AAdvancedSettingsViewModel by viewModel()
 	override val viewTitleRes: Int = R.string.settings_advanced
 
+	/**
+	 * Execute a purge from the view model, prompt to retry if failed
+	 */
+	private fun purge() {
+		viewModel.purgeUselessData().observe {
+			it.handle(
+				onError = {
+					logE("Failed to purge")
+					makeSnackBar(
+						R.string.controller_settings_advanced_snackbar_purge_failure,
+						Snackbar.LENGTH_LONG
+					)
+						?.setAction(R.string.retry) { purge() }
+						?.show()
+				}
+			) {
+				makeSnackBar(R.string.controller_settings_advanced_snackbar_purge_success)
+					?.show()
+			}
+		}
+	}
+
+	override val adjustments: List<SettingsItemData>.() -> Unit = {
+		find<ButtonSettingData>(2)?.onButtonClicked {
+			purge()
+		}
+	}
 
 	@Throws(Resources.NotFoundException::class)
 	override fun onViewCreated(view: View) {

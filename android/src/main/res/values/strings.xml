@@ -481,6 +481,9 @@
     <string name="settings_update_header_novel">Novels</string>
     <string name="settings_update_worker_id_novel_updaters">Novel Updaters</string>
     <string name="worker_title_update_repository">Repository Updater</string>
+    <string name="settings_advanced_purge_button">PURGE</string>
+    <string name="controller_settings_advanced_snackbar_purge_failure">Failed to purge</string>
+    <string name="controller_settings_advanced_snackbar_purge_success">Purged unbookmarked novels</string>
 
     <!-- Error Key Messages -->
 
