@@ -84,10 +84,16 @@ interface ExtensionsDao : BaseDao<DBExtensionEntity> {
 					if (isInstalled)
 						oldVersion = it.installedVersion!!
 				}.copy(
+					repoID = dbExtensionEntity.repoID,
 					name = dbExtensionEntity.name,
+					fileName = dbExtensionEntity.fileName,
 					imageURL = dbExtensionEntity.imageURL,
+					lang = dbExtensionEntity.lang,
+					// Ignore enabled, installed, installedVersion as those are independent
 					repositoryVersion = dbExtensionEntity.repositoryVersion,
-					md5 = dbExtensionEntity.md5
+					chapterType = dbExtensionEntity.chapterType,
+					md5 = dbExtensionEntity.md5,
+					type = dbExtensionEntity.type
 				)
 			)
 
