@@ -107,6 +107,7 @@ class RepositoryController : FastAdapterRefreshableRecyclerController<Repository
 		// Pass item to viewModel to remove, observe result
 		viewModel.remove(item).handleObserve(
 			onError = {
+				logE("Failed to remove repository $item", it.exception)
 				makeSnackBar(R.string.toast_repository_remove_fail)
 					?.setAction(R.string.generic_question_retry) {
 						removeRepository(item)
