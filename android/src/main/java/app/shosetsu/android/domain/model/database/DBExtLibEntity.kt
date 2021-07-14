@@ -36,7 +36,7 @@ import app.shosetsu.lib.Version
 			entity = DBRepositoryEntity::class,
 			parentColumns = ["id"],
 			childColumns = ["repoID"],
-			onDelete = ForeignKey.CASCADE
+			onDelete = ForeignKey.NO_ACTION
 		)
 	],
 	indices = [Index("repoID")]

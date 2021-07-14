@@ -54,7 +54,7 @@ import kotlinx.coroutines.launch
 		DBRepositoryEntity::class,
 		DBUpdate::class,
 	],
-	version = 3
+	version = 4
 )
 @TypeConverters(
 	ChapterSortTypeConverter::class,
@@ -225,7 +225,7 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 							}
 
 							// Handle novel migration
-							object :RemoveMigration(2,3){
+							object : RemoveMigration(2, 3) {
 								override fun migrate(database: SupportSQLiteDatabase) {
 									deleteColumnFromTable(database, "novels", "readerType")
 								}
@@ -243,6 +243,86 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 								database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_novel_reader_settings_novelID` ON `novel_reader_settings` (`novelID`)")
 							}
 						}
+					}
+				).addMigrations(
+					object : Migration(3, 4) {
+						override fun migrate(database: SupportSQLiteDatabase) {
+							// Migrate extensions
+							run {
+								val tableName = "extensions"
+
+								// Create new table
+								database.execSQL("CREATE TABLE IF NOT EXISTS `${tableName}_new` (`id` INTEGER NOT NULL, `repoID` INTEGER NOT NULL, `name` TEXT NOT NULL, `fileName` TEXT NOT NULL, `imageURL` TEXT, `lang` TEXT NOT NULL, `enabled` INTEGER NOT NULL, `installed` INTEGER NOT NULL, `installedVersion` TEXT, `repositoryVersion` TEXT NOT NULL, `chapterType` INTEGER NOT NULL, `md5` TEXT NOT NULL, `type` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`repoID`) REFERENCES `repositories`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )")
+
+								// Migrate
+								val cursor = database.query("SELECT * FROM $tableName")
+								while (cursor.moveToNext()) {
+									database.insert(
+										"${tableName}_new",
+										OnConflictStrategy.ABORT,
+										ContentValues().apply {
+											this["'id'"] = cursor.getInt("id")
+											this["'repoID'"] = cursor.getInt("repoID")
+											this["'name'"] = cursor.getString("name")
+											this["'fileName'"] = cursor.getString("fileName")
+											this["'imageURL'"] = cursor.getString("imageURL")
+											this["'lang'"] = cursor.getString("lang")
+											this["'enabled'"] = cursor.getInt("enabled")
+											this["'installed'"] = cursor.getInt("installed")
+											this["'installedVersion'"] =
+												cursor.getStringOrNull("installedVersion")
+											this["'repositoryVersion'"] =
+												cursor.getString("repositoryVersion")
+											this["'chapterType'"] = cursor.getInt("chapterType")
+											this["'md5'"] = cursor.getString("md5")
+											this["'type'"] = cursor.getInt("type")
+										}
+									)
+								}
+
+								// Drop
+								database.execSQL("DROP TABLE $tableName")
+
+								// Rename table_new to table
+								database.execSQL("ALTER TABLE `${tableName}_new` RENAME TO `${tableName}`")
+
+								// Create indexes
+								database.execSQL("CREATE INDEX IF NOT EXISTS `index_extensions_repoID` ON `${tableName}` (`repoID`)")
+
+							}
+
+							// Migrate extension libraries
+							run {
+								val tableName = "libs"
+
+								// Create new table
+								database.execSQL("CREATE TABLE IF NOT EXISTS `${tableName}_new` (`scriptName` TEXT NOT NULL, `version` TEXT NOT NULL, `repoID` INTEGER NOT NULL, PRIMARY KEY(`scriptName`), FOREIGN KEY(`repoID`) REFERENCES `repositories`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )")
+
+								// Migrate
+								val cursor = database.query("SELECT * FROM $tableName")
+								while (cursor.moveToNext()) {
+									database.insert(
+										"${tableName}_new",
+										OnConflictStrategy.ABORT,
+										ContentValues().apply {
+											this["'scriptName'"] = cursor.getString("scriptName")
+											this["'version'"] = cursor.getString("version")
+											this["'repoID'"] = cursor.getInt("repoID")
+										}
+									)
+								}
+
+								// Drop
+								database.execSQL("DROP TABLE $tableName")
+
+								// Rename table_new to table
+								database.execSQL("ALTER TABLE `${tableName}_new` RENAME TO `${tableName}`")
+
+								// Create indexes
+								database.execSQL("CREATE INDEX IF NOT EXISTS `index_libs_repoID` ON `${tableName}` (`repoID`)")
+							}
+						}
+
 					}
 				).build()
 			GlobalScope.launch {
