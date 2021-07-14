@@ -26,6 +26,5 @@ import android.os.Bundle
  * 07 / 06 / 2020
  */
 
-@Suppress("FunctionName")
-inline fun Intent(packageContext: Context, cls: Class<*>, bundle: () -> Bundle): Intent =
+inline fun intent(packageContext: Context, cls: Class<*>, bundle: () -> Bundle): Intent =
 	Intent(packageContext, cls).also { it.putExtras(bundle()) }

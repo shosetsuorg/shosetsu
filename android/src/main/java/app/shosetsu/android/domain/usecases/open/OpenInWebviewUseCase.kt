@@ -5,7 +5,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.os.bundleOf
 import app.shosetsu.android.common.consts.BundleKeys
-import app.shosetsu.android.common.ext.Intent
+import app.shosetsu.android.common.ext.intent
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.domain.usecases.get.GetExtensionUseCase
@@ -46,7 +46,7 @@ class OpenInWebviewUseCase(
 ) {
 	operator fun invoke(url: String) {
 		Log.d(logID(), "Opening URL $url")
-		val i = Intent(application, WebViewApp::class.java) {
+		val i = intent(application, WebViewApp::class.java) {
 			bundleOf(
 				BundleKeys.BUNDLE_URL to url,
 				BundleKeys.BUNDLE_ACTION to WebViewApp.Actions.VIEW.action
