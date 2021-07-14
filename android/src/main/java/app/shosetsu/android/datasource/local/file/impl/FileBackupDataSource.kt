@@ -1,15 +1,12 @@
 package app.shosetsu.android.datasource.local.file.impl
 
 import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.common.consts.BACKUP_FILE_EXTENSION
 import app.shosetsu.common.datasource.file.base.IFileBackupDataSource
 import app.shosetsu.common.domain.model.local.BackupEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.transformToSuccess
 import app.shosetsu.common.enums.ExternalFileDir.APP
 import app.shosetsu.common.providers.file.base.IFileSystemProvider
-import java.text.SimpleDateFormat
-import java.util.*
 
 /*
  * This file is part of Shosetsu.
@@ -34,8 +31,6 @@ import java.util.*
 class FileBackupDataSource(
 	private val iFileSystemProvider: IFileSystemProvider
 ) : IFileBackupDataSource {
-	private val currentDate
-		get() = SimpleDateFormat("yyyy-MM-dd-hh-mm-ss", Locale.ROOT).format(Date())
 
 	init {
 		launchIO {
@@ -57,7 +52,7 @@ class FileBackupDataSource(
 	override suspend fun saveBackup(backupEntity: BackupEntity): HResult<*> =
 		iFileSystemProvider.writeFile(
 			APP,
-			"$BACKUP_DIRECTORY/shosetsu-backup-${currentDate}.${BACKUP_FILE_EXTENSION}",
+			"$BACKUP_DIRECTORY/${backupEntity.fileName}",
 			backupEntity.content
 		)
 
