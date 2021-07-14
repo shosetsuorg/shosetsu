@@ -30,6 +30,7 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.select.getSelectExtension
 import com.mikepenz.fastadapter.select.selectExtension
+import kotlinx.coroutines.delay
 
 /*
  * This file is part of Shosetsu.
@@ -56,7 +57,8 @@ import com.mikepenz.fastadapter.select.selectExtension
  * @author github.com/doomsdayrs
  */
 class LibraryController
-	: FastAdapterRefreshableRecyclerController<ABookmarkedNovelUI>(), ExtendedFABController, BottomMenuController {
+	: FastAdapterRefreshableRecyclerController<ABookmarkedNovelUI>(), ExtendedFABController,
+	BottomMenuController {
 
 	override var bottomMenuRetriever: (() -> SlidingUpBottomMenu?) = { null }
 
@@ -196,42 +198,75 @@ class LibraryController
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		if (fastAdapter.getSelectExtension().selectedItems.isEmpty()) {
 			inflater.inflate(R.menu.toolbar_library, menu)
-			val searchView =
-				menu.findItem(R.id.library_search).actionView as SearchView?
-			searchView?.setOnQueryTextListener(LibrarySearchQuery(this))
-			searchView?.setOnCloseListener {
-				val v = viewModel.liveData.value
-				return@setOnCloseListener v is HResult.Success
-			}
 		} else {
 			inflater.inflate(R.menu.toolbar_library_selected, menu)
 		}
 	}
 
+	override fun onPrepareOptionsMenu(menu: Menu) {
+		logI("Preparing options menu")
+		(menu.findItem(R.id.library_search)?.actionView as? SearchView)?.apply {
+			setOnQueryTextListener(LibrarySearchQuery(this@LibraryController))
+			setOnCloseListener {
+				val v = viewModel.liveData.value
+				return@setOnCloseListener v is HResult.Success
+			}
+		}
+		configureViewTypeMenu(menu)
+	}
+
+	private fun configureViewTypeMenu(menu: Menu, isRetry: Boolean = false) {
+		logI("Syncing menu")
+		when (viewModel.novelCardTypeLiveData.value) {
+			NORMAL -> {
+				menu.findItem(R.id.view_type_normal)?.isChecked = true
+			}
+			COMPRESSED -> {
+				menu.findItem(R.id.view_type_comp)?.isChecked = true
+			}
+			COZY -> logE("Not cozy card implemented")
+			null -> {
+				if (isRetry) {
+					logE("No value still found for novelCardType, aborting")
+					return
+				}
+
+				logE("No value found for novelCardType, retrying in a 100 ms")
+				launchIO {
+					delay(100)
+					launchUI {
+						configureViewTypeMenu(menu, true)
+					}
+				}
+			}
+		}
+	}
+
+
 	/***/
-	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+	override fun onOptionsItemSelected(item: MenuItem): Boolean =
 		when (item.itemId) {
 			R.id.updater_now -> {
 				if (viewModel.isOnline())
 					viewModel.startUpdateManager()
 				else displayOfflineSnackBar()
-				return true
+				true
 			}
 			R.id.library_select_all -> {
 				selectAll()
-				return true
+				true
 			}
 			R.id.library_deselect_all -> {
 				deselectAll()
-				return true
+				true
 			}
 			R.id.library_inverse_selection -> {
 				invertSelection()
-				return true
+				true
 			}
 			R.id.library_select_between -> {
 				selectBetween()
-				return true
+				true
 			}
 			R.id.remove_from_library -> {
 				launchIO {
@@ -239,7 +274,7 @@ class LibraryController
 						fastAdapter.getSelectExtension().selectedItems.toList()
 					)
 				}
-				return true
+				true
 			}
 			R.id.source_migrate -> {
 				router.pushController(
@@ -249,19 +284,21 @@ class LibraryController
 						)
 					).withFadeTransaction()
 				)
-				return true
+				true
 			}
 			R.id.view_type_normal -> {
+				item.isChecked = !item.isChecked
 				viewModel.setViewType(NORMAL)
-				return true
+				true
 			}
 			R.id.view_type_comp -> {
+				item.isChecked = !item.isChecked
 				viewModel.setViewType(COMPRESSED)
-				return true
+				true
 			}
-			else -> return false
+			else -> false
 		}
-	}
+
 
 	private fun deselectAll() {
 		fastAdapter.getSelectExtension().deselect()

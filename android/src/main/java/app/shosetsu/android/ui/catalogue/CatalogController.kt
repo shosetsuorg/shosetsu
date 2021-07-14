@@ -165,20 +165,15 @@ class CatalogController(
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		menu.clear()
 		inflater.inflate(R.menu.toolbar_catalogue, menu)
-		optionsMenu = menu
 	}
-
-	private lateinit var optionsMenu: Menu
 
 	private fun configureViewTypeMenu(menu: Menu, isRetry: Boolean = false) {
 		logI("Syncing menu")
 		when (viewModel.novelCardTypeLive.value) {
 			NORMAL -> {
 				menu.findItem(R.id.view_type_normal)?.isChecked = true
-				menu.findItem(R.id.view_type_comp)?.isChecked = false
 			}
 			COMPRESSED -> {
-				menu.findItem(R.id.view_type_normal)?.isChecked = false
 				menu.findItem(R.id.view_type_comp)?.isChecked = true
 			}
 			NovelCardType.COZY -> logE("Not cozy card implemented")
@@ -224,13 +219,11 @@ class CatalogController(
 		when (item.itemId) {
 			R.id.view_type_normal -> {
 				item.isChecked = true
-				optionsMenu.findItem(R.id.view_type_comp)?.isChecked = false
 				viewModel.setViewType(NORMAL)
 				true
 			}
 			R.id.view_type_comp -> {
 				item.isChecked = true
-				optionsMenu.findItem(R.id.view_type_normal)?.isChecked = false
 				viewModel.setViewType(COMPRESSED)
 				true
 			}

@@ -14,15 +14,19 @@
         android:icon="@drawable/view_module"
         android:title="@string/novel_card_type_selector_title"
         app:showAsAction="ifRoom">
+
         <menu>
-            <item
-                android:id="@+id/view_type_normal"
-                android:title="@string/normal" />
-            <item
-                android:id="@+id/view_type_comp"
-                android:title="@string/compressed" />
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/view_type_normal"
+                    android:title="@string/normal" />
+                <item
+                    android:id="@+id/view_type_comp"
+                    android:title="@string/compressed" />
+            </group>
         </menu>
     </item>
+
     <item
         android:id="@+id/updater_now"
         android:icon="@drawable/refresh"
