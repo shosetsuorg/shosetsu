@@ -26,7 +26,6 @@ import app.shosetsu.lib.Version
 import app.shosetsu.lib.json.RepoExtension
 import app.shosetsu.lib.json.RepoLibrary
 import com.github.doomsdayrs.apps.shosetsu.R
-import kotlinx.coroutines.delay
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -200,7 +199,7 @@ class RepositoryUpdateWorker(
 			}
 		) { repos: List<RepositoryEntity> ->
 			for (repo in repos) {
-				delay(2000)
+				logI("Updating $repo")
 				// gets the latest list for the repo
 				extRepoRepo.getRepoData(repo).handle(
 					onError = {
@@ -217,6 +216,9 @@ class RepositoryUpdateWorker(
 							it.exception
 						)
 						extRepoRepo.update(repo.copy(isEnabled = false))
+					},
+					onEmpty = {
+						logE("Received no data for $repo")
 					}
 				) { repoIndex ->
 					updateLibraries(repoIndex.libraries, repo)
