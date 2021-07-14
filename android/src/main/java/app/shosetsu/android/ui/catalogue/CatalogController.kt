@@ -2,10 +2,7 @@ package app.shosetsu.android.ui.catalogue
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.View
+import android.view.*
 import android.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -25,12 +22,15 @@ import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.widget.SlidingUpBottomMenu
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.common.enums.NovelCardType.COMPRESSED
+import app.shosetsu.common.enums.NovelCardType.NORMAL
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerCatalogueBinding
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.scroll.EndlessRecyclerOnScrollListener
+import kotlinx.coroutines.delay
 
 /*
  * This file is part of Shosetsu.
@@ -59,12 +59,12 @@ import com.mikepenz.fastadapter.scroll.EndlessRecyclerOnScrollListener
 class CatalogController(
 	/** data bundle uwu */
 	val bundle: Bundle,
-) : FastAdapterRecyclerController<ControllerCatalogueBinding, ACatalogNovelUI>(bundle), ExtendedFABController, BottomMenuController {
+) : FastAdapterRecyclerController<ControllerCatalogueBinding, ACatalogNovelUI>(bundle),
+	ExtendedFABController, BottomMenuController {
 
 	/***/
 	val viewModel: ACatalogViewModel by viewModel()
 	//private val progressAdapter by lazy { ItemAdapter<ProgressItem>() }
-
 
 	override val fastAdapter: FastAdapter<ACatalogNovelUI> by lazy {
 		FastAdapter<ACatalogNovelUI>().apply {
@@ -152,7 +152,8 @@ class CatalogController(
 		recyclerView.setHasFixedSize(false)
 		//recyclerView.addOnScrollListener(CatalogueHitBottom(viewModel))
 		super.setupRecyclerView()
-		recyclerView.addOnScrollListener(object : EndlessRecyclerOnScrollListener(recyclerView.layoutManager!!) {
+		recyclerView.addOnScrollListener(object :
+			EndlessRecyclerOnScrollListener(recyclerView.layoutManager!!) {
 			override fun onLoadMore(currentPage: Int) {
 				binding.fragmentCatalogueProgressBottom.isVisible = true
 				viewModel.loadMore()
@@ -164,6 +165,44 @@ class CatalogController(
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		menu.clear()
 		inflater.inflate(R.menu.toolbar_catalogue, menu)
+		optionsMenu = menu
+	}
+
+	private lateinit var optionsMenu: Menu
+
+	private fun configureViewTypeMenu(menu: Menu, isRetry: Boolean = false) {
+		logI("Syncing menu")
+		when (viewModel.novelCardTypeLive.value) {
+			NORMAL -> {
+				menu.findItem(R.id.view_type_normal)?.isChecked = true
+				menu.findItem(R.id.view_type_comp)?.isChecked = false
+			}
+			COMPRESSED -> {
+				menu.findItem(R.id.view_type_normal)?.isChecked = false
+				menu.findItem(R.id.view_type_comp)?.isChecked = true
+			}
+			NovelCardType.COZY -> logE("Not cozy card implemented")
+			null -> {
+				if (isRetry) {
+					logE("No value still found for novelCardType, aborting")
+					return
+				}
+
+				logE("No value found for novelCardType, retrying in a 100 ms")
+				launchIO {
+					delay(100)
+					launchUI {
+						configureViewTypeMenu(menu, true)
+					}
+				}
+			}
+		}
+	}
+
+	override fun onPrepareOptionsMenu(menu: Menu) {
+		logI("Preparing option menu")
+		configureViewTypeMenu(menu)
+
 		menu.findItem(R.id.search_item)?.let { searchItem ->
 			if (viewModel.hasSearchLive.value != true) {
 				searchItem.isVisible = false
@@ -180,6 +219,23 @@ class CatalogController(
 			}
 		}
 	}
+
+	override fun onOptionsItemSelected(item: MenuItem): Boolean =
+		when (item.itemId) {
+			R.id.view_type_normal -> {
+				item.isChecked = true
+				optionsMenu.findItem(R.id.view_type_comp)?.isChecked = false
+				viewModel.setViewType(NORMAL)
+				true
+			}
+			R.id.view_type_comp -> {
+				item.isChecked = true
+				optionsMenu.findItem(R.id.view_type_normal)?.isChecked = false
+				viewModel.setViewType(COMPRESSED)
+				true
+			}
+			else -> false
+		}
 
 	override fun updateUI(newList: List<ACatalogNovelUI>) {
 		super.updateUI(newList)
@@ -209,6 +265,10 @@ class CatalogController(
 
 		viewModel.hasSearchLive.observe {
 			activity?.invalidateOptionsMenu()
+		}
+
+		viewModel.novelCardTypeLive.observe {
+			binding.recyclerView.layoutManager = createLayoutManager()
 		}
 	}
 

@@ -29,5 +29,5 @@ data class FullCatalogNovelUI(
 ) : ACatalogNovelUI() {
 	override val layoutRes: Int = com.github.doomsdayrs.apps.shosetsu.R.layout.recycler_novel_card
 	override val type: Int =
-		com.github.doomsdayrs.apps.shosetsu.R.layout.recycler_novel_card_compressed
+		com.github.doomsdayrs.apps.shosetsu.R.layout.recycler_novel_card
 }

@@ -10,7 +10,10 @@ import app.shosetsu.android.domain.usecases.get.GetCatalogueListingDataUseCase
 import app.shosetsu.android.domain.usecases.get.GetCatalogueQueryDataUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtensionUseCase
 import app.shosetsu.android.domain.usecases.load.*
+import app.shosetsu.android.domain.usecases.settings.SetNovelUITypeUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
+import app.shosetsu.android.view.uimodels.model.catlog.CompactCatalogNovelUI
+import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
 import app.shosetsu.android.view.uimodels.settings.DividerSettingItemData
 import app.shosetsu.android.view.uimodels.settings.ListSettingData
 import app.shosetsu.android.view.uimodels.settings.TriStateButtonSettingData
@@ -64,6 +67,7 @@ class CatalogViewModel(
 	private val loadNovelUITypeUseCase: LoadNovelUITypeUseCase,
 	private val loadNovelUIColumnsHUseCase: LoadNovelUIColumnsHUseCase,
 	private val loadNovelUIColumnsPUseCase: LoadNovelUIColumnsPUseCase,
+	private val setNovelUIType: SetNovelUITypeUseCase,
 ) : ACatalogViewModel() {
 	private var queryState: String = ""
 
@@ -86,7 +90,38 @@ class CatalogViewModel(
 	private val extensionIDFlow: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
 
 	override val itemsLive: LiveData<HResult<List<ACatalogNovelUI>>> by lazy {
-		itemsFlow.asIOLiveData()
+		itemsFlow.combine(novelCardTypeFlow) { items, type ->
+			items.transformToSuccess { list ->
+				list.map { card ->
+					when (type) {
+						NovelCardType.NORMAL -> {
+							if (card is FullCatalogNovelUI)
+								card
+							else FullCatalogNovelUI(
+								card.id,
+								card.title,
+								card.imageURL,
+								card.bookmarked
+							)
+						}
+						NovelCardType.COMPRESSED -> {
+							if (card is CompactCatalogNovelUI)
+								card
+							else CompactCatalogNovelUI(
+								card.id,
+								card.title,
+								card.imageURL,
+								card.bookmarked
+							)
+						}
+						NovelCardType.COZY -> {
+							logE("Cozy type not implemented")
+							card
+						}
+					}
+				}
+			}
+		}.asIOLiveData()
 	}
 
 	private val itemsFlow: MutableStateFlow<HResult<List<ACatalogNovelUI>>> by lazy {
@@ -210,7 +245,6 @@ class CatalogViewModel(
 				}
 			}
 		}
-
 
 	private fun asSettingItem(filter: Filter<Boolean>) = switchSettingData(filter.id) {
 		titleText = filter.name
@@ -416,12 +450,18 @@ class CatalogViewModel(
 		}
 	}
 
+	override fun setViewType(cardType: NovelCardType) {
+		launchIO { setNovelUIType(cardType) }
+	}
+
 	override fun reportError(error: HResult.Error, isSilent: Boolean) =
 		reportExceptionUseCase(error)
 
 
+	private val novelCardTypeFlow = loadNovelUITypeUseCase()
+
 	override val novelCardTypeLive: LiveData<NovelCardType> by lazy {
-		loadNovelUITypeUseCase().asIOLiveData()
+		novelCardTypeFlow.asIOLiveData()
 	}
 
 	override val columnsInH: LiveData<Int> by lazy {

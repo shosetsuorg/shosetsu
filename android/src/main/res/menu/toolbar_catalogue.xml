@@ -17,9 +17,11 @@
         <menu>
             <item
                 android:id="@+id/view_type_normal"
+                android:checkable="true"
                 android:title="@string/normal" />
             <item
                 android:id="@+id/view_type_comp"
+                android:checkable="true"
                 android:title="@string/compressed" />
         </menu>
     </item>
