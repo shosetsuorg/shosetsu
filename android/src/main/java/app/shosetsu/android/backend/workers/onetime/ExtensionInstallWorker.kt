@@ -118,6 +118,8 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 							)
 							setNotOngoing()
 						}
+
+						logE("Failed to install ${extension.name}", it.exception)
 					}
 				) {
 					extensionDownloadRepository.updateStatus(
