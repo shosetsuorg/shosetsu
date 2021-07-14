@@ -232,7 +232,9 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 	bind<AUpdateSettingsViewModel>() with provider {
 		UpdateSettingsViewModel(
 			iSettingsRepository = instance(),
-			reportExceptionUseCase = instance()
+			instance(),
+			instance(),
+			instance()
 		)
 	}
 	bind<AViewSettingsViewModel>() with provider {

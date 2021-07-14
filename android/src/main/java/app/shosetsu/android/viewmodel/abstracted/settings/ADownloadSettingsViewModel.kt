@@ -1,6 +1,5 @@
 package app.shosetsu.android.viewmodel.abstracted.settings
 
-import app.shosetsu.android.viewmodel.base.IWorkerUpdatingViewModel
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 
 /*
@@ -25,4 +24,7 @@ import app.shosetsu.common.domain.repositories.base.ISettingsRepository
  * 31 / 08 / 2020
  */
 abstract class ADownloadSettingsViewModel(iSettingsRepository: ISettingsRepository) :
-	ASubSettingsViewModel(iSettingsRepository), IWorkerUpdatingViewModel
+	ASubSettingsViewModel(iSettingsRepository) {
+	abstract var downloadWorkerSettingsChanged: Boolean
+	abstract fun restartDownloadWorker()
+}

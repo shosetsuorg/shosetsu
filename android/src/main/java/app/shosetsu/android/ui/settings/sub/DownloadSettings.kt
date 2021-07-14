@@ -3,7 +3,6 @@ package app.shosetsu.android.ui.settings.sub
 import android.app.Activity
 import android.content.Intent
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import app.shosetsu.android.common.consts.ActivityRequestCodes.REQUEST_CODE_DIRECTORY
 import app.shosetsu.android.common.ext.*
@@ -12,8 +11,6 @@ import app.shosetsu.android.view.uimodels.settings.TextSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.onClicked
 import app.shosetsu.android.viewmodel.abstracted.settings.ADownloadSettingsViewModel
-import app.shosetsu.android.viewmodel.base.IWorkerUpdatingViewModel
-import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.snackbar.Snackbar
 
@@ -63,32 +60,22 @@ class DownloadSettings : SettingsSubController() {
 		activity?.startActivityForResult(Intent.createChooser(i, "Choose directory"), 42)
 	}
 
-	private var workersToRestart: IWorkerUpdatingViewModel.WorkerIdentifier? = null
-
-	override fun onViewCreated(view: View) {
-		super.onViewCreated(view)
-		viewModel.workerSettingsChanged.observe { hResult ->
-			hResult.handle {
-				workersToRestart = it
-			}
-		}
-	}
-
 	override fun onDestroy() {
 		super.onDestroy()
 		launchUI {
-			val workersToRestart = workersToRestart
-			workersToRestart?.let { identifier ->
-				makeSnackBar(
-					getString(
-						R.string.controller_settings_restart_worker,
-						getString(identifier.nameRes)
-					),
-					Snackbar.LENGTH_LONG
-				)?.setAction(R.string.restart) {
-					viewModel.restartManager(identifier.id)
-				}?.show()
-			}
+			if (!viewModel.downloadWorkerSettingsChanged) return@launchUI
+
+			makeSnackBar(
+				getString(
+					R.string.controller_settings_restart_worker,
+					getString(R.string.worker_title_download)
+				),
+				Snackbar.LENGTH_LONG
+			)?.setAction(R.string.restart) {
+				viewModel.restartDownloadWorker()
+			}?.setOnDismissed { _, _ ->
+				viewModel.downloadWorkerSettingsChanged = false
+			}?.show()
 		}
 
 	}

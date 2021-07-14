@@ -1,22 +1,16 @@
 package app.shosetsu.android.viewmodel.impl.settings
 
-import androidx.lifecycle.LiveData
 import androidx.work.WorkInfo
 import app.shosetsu.android.backend.workers.onetime.DownloadWorker
-import app.shosetsu.android.common.consts.WorkerTags
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.ADownloadSettingsViewModel
-import app.shosetsu.android.viewmodel.base.IWorkerUpdatingViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.*
 import com.github.doomsdayrs.apps.shosetsu.R
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.flow.*
 
 /*
  * This file is part of shosetsu.
@@ -152,39 +146,29 @@ class DownloadSettingsViewModel(
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
 	}
 
-	var ran = false
+	override var downloadWorkerSettingsChanged: Boolean = false
 
-	override val workerSettingsChanged: LiveData<HResult<IWorkerUpdatingViewModel.WorkerIdentifier>> =
-		flow {
-			emitAll(
-				settingsRepo.getBooleanFlow(DownloadOnlyWhenIdle)
-					.combine(settingsRepo.getBooleanFlow(DownloadOnLowStorage)) { _, _ -> }
-					.combine(settingsRepo.getBooleanFlow(DownloadOnLowBattery)) { _, _ -> }
-					.combine(settingsRepo.getBooleanFlow(DownloadOnMeteredConnection)) { _, _ -> }
-					.transform {
-						if (!ran) {
-							ran = true
-							return@transform
-						}
-						emit(loading)
-						if (manager.count != 0 && manager.getWorkerState() == WorkInfo.State.ENQUEUED)
-							emit(
-								successResult(
-									IWorkerUpdatingViewModel.WorkerIdentifier(
-										WorkerTags.DOWNLOAD_WORK_ID,
-										R.string.worker_title_download
-									)
-								)
-							)
-						else emit(emptyResult())
+	init {
+		launchIO {
+			var ran = false
+			settingsRepo.getBooleanFlow(DownloadOnlyWhenIdle)
+				.combine(settingsRepo.getBooleanFlow(DownloadOnLowStorage)) { _, _ -> }
+				.combine(settingsRepo.getBooleanFlow(DownloadOnLowBattery)) { _, _ -> }
+				.combine(settingsRepo.getBooleanFlow(DownloadOnMeteredConnection)) { _, _ -> }
+				.collect {
+					if (!ran) {
+						ran = true
+						return@collect
 					}
-			)
-		}.asIOLiveData()
 
-	override fun restartManager(id: String) {
-		if (id == WorkerTags.DOWNLOAD_WORK_ID) {
-			manager.stop()
-			manager.start()
+					if (manager.count != 0 && manager.getWorkerState() == WorkInfo.State.ENQUEUED)
+						downloadWorkerSettingsChanged = true
+				}
 		}
+	}
+
+	override fun restartDownloadWorker() {
+		manager.stop()
+		manager.start()
 	}
 }

@@ -24,4 +24,24 @@ import app.shosetsu.common.domain.repositories.base.ISettingsRepository
  * 31 / 08 / 2020
  */
 abstract class AUpdateSettingsViewModel(iSettingsRepository: ISettingsRepository) :
-	ASubSettingsViewModel(iSettingsRepository)
+	ASubSettingsViewModel(iSettingsRepository) {
+	/**
+	 * Has the novel updater settings changed?
+	 */
+	abstract var novelUpdateSettingsChanged: Boolean
+
+	/**
+	 * Has the repository updater settings changed?
+	 */
+	abstract var repoUpdateSettingsChanged: Boolean
+
+	/**
+	 * Restart the Novel updater to apply the new settings
+	 */
+	abstract fun restartNovelUpdater()
+
+	/**
+	 * Restart the Repository Updater to apply the new settings
+	 */
+	abstract fun restartRepoUpdater()
+}
