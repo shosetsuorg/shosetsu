@@ -7,6 +7,7 @@ import android.view.*
 import android.widget.NumberPicker
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController
@@ -108,8 +109,10 @@ class NovelController(bundle: Bundle) :
 	private fun refresh() {
 		logI("Refreshing the novel data")
 		viewModel.refresh().observe { refreshResult ->
-			binding.swipeRefreshLayout.isRefreshing = (refreshResult is HResult.Loading)
 			refreshResult.handle(
+				onLoading = {
+					binding.progressBar.isVisible = true
+				},
 				onEmpty = {
 					makeSnackBar(R.string.controller_novel_snackbar_refresh_empty_result)?.show()
 				},
@@ -341,6 +344,7 @@ class NovelController(bundle: Bundle) :
 			if (viewModel.isOnline())
 				refresh()
 			else displayOfflineSnackBar()
+			binding.swipeRefreshLayout.isRefreshing = false
 		}
 
 		(activity as? MainActivity)?.holdAtBottom(binding.bottomMenu)
@@ -478,26 +482,25 @@ class NovelController(bundle: Bundle) :
 					}
 				}
 			}
-		}
-		/**
-		viewModel.chaptersLive.observe(this, {
-		handleRecyclerUpdate(it)
-		})
-		 */
 
-		//viewModel.novelUILive().observe(this) { handleRecyclerUpdate(it) }
-		viewModel.novelLive.observe(this) { hResult ->
 			handleRecyclerUpdate(
 				novelUIAdapter,
 				{ showEmpty() },
 				{ hideEmpty() },
-				hResult.transform { successResult(listOf(it)) }
+				result.transform { successResult(listOf(it)) }
 			)
 		}
 
 		viewModel.chaptersLive.observe(this) {
 			handleRecyclerUpdate(chapterUIAdapter, { showEmpty() }, { hideEmpty() }, it)
+			it.handle {
+				binding.progressBar.isVisible = false
+			}
 		}
+	}
+
+	override fun showLoading() {
+		binding.progressBar.isVisible = true
 	}
 
 	override fun handleErrorResult(e: HResult.Error) {

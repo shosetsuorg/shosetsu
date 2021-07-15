@@ -31,6 +31,17 @@
             tools:listitem="@layout/recycler_novel_chapter" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:foregroundGravity="top"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_dodgeInsetEdges="top"
+        tools:visibility="visible" />
+
     <app.shosetsu.android.view.widget.BottomActionBar
         android:id="@+id/bottom_menu"
         android:layout_width="match_parent"

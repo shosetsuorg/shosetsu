@@ -84,6 +84,10 @@ class NovelViewModel(
 		novelIDLive.transformLatest { id: Int ->
 			emitAll(
 				getChapterUIsUseCase(id)
+					.transform {
+						emit(loading)
+						emit(it)
+					}
 					.combineBookmarked()
 					.combineDownloaded()
 					.combineStatus()
