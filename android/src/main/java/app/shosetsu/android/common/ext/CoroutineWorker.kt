@@ -28,4 +28,8 @@ fun CoroutineWorker.notificationManager(): Lazy<NotificationManagerCompat> =
 		NotificationManagerCompat.from(applicationContext)
 	}
 
-fun CoroutineWorker.getString(@StringRes resId: Int) = applicationContext.getString(resId)
+fun CoroutineWorker.getString(@StringRes resId: Int) =
+	applicationContext.getString(resId)
+
+fun CoroutineWorker.getString(@StringRes resId: Int, vararg any: Any) =
+	applicationContext.getString(resId, *any)
