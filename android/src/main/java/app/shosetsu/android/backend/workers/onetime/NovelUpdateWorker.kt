@@ -20,7 +20,6 @@ import app.shosetsu.android.common.consts.WorkerTags.UPDATE_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerAfterUpdateUseCase
 import app.shosetsu.android.domain.usecases.get.GetRemoteNovelUseCase
-import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
@@ -82,7 +81,6 @@ class NovelUpdateWorker(
 
 	private val iNovelsRepository: INovelsRepository by instance()
 	private val loadRemoteNovelUseCase: GetRemoteNovelUseCase by instance()
-	private val toastErrorUseCase: ToastErrorUseCase by instance()
 	private val startDownloadWorker: StartDownloadWorkerAfterUpdateUseCase by instance()
 	private val iSettingsRepository: ISettingsRepository by instance()
 
@@ -130,9 +128,28 @@ class NovelUpdateWorker(
 				notify(content) {
 					setContentTitle(title)
 					setProgress(novels.size, progress, false)
+					setOngoing()
 				}
+
 				loadRemoteNovelUseCase(nE, true).handle(
-					onError = { toastErrorUseCase<NovelUpdateWorker>(it) }
+					onError = {
+						logE("Failed to load novel: $nE", it.exception)
+						notify(
+							"${it.code} : ${it.message}",
+							10000 + nE.id!!
+						) {
+							setContentTitle(
+								getString(
+									R.string.worker_novel_update_load_failure,
+									nE.title
+								)
+							)
+
+							setNotOngoing()
+							removeProgress()
+							this.priority = NotificationCompat.PRIORITY_HIGH
+						}
+					}
 				) {
 					updatedNovelCount++
 					if (it.updatedChapters.isNotEmpty() && downloadOnUpdate())

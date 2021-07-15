@@ -484,6 +484,7 @@
     <string name="settings_advanced_purge_button">PURGE</string>
     <string name="controller_settings_advanced_snackbar_purge_failure">Failed to purge</string>
     <string name="controller_settings_advanced_snackbar_purge_success">Purged unbookmarked novels</string>
+    <string name="worker_novel_update_load_failure">Failed to update %s</string>
 
     <!-- Error Key Messages -->
 
