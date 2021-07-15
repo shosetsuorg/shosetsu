@@ -40,6 +40,7 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.calculateDiff
 import com.mikepenz.fastadapter.listeners.OnCreateViewHolderListenerImpl
 import com.skydoves.colorpickerview.ColorPickerDialog
+import kotlinx.coroutines.delay
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -93,7 +94,7 @@ class ChapterReader
 
 	private var chapterViewHolders = ArrayList<ReaderChapterViewHolder?>()
 
-	val viewHolderListener = object : OnCreateViewHolderListenerImpl<ReaderUIItem<*, *>>() {
+	private val viewHolderListener = object : OnCreateViewHolderListenerImpl<ReaderUIItem<*, *>>() {
 		override fun onPostCreateViewHolder(
 			fastAdapter: FastAdapter<ReaderUIItem<*, *>>,
 			viewHolder: RecyclerView.ViewHolder,
@@ -449,6 +450,10 @@ class ChapterReader
 
 	inner class ChapterReaderPageChange : OnPageChangeCallback() {
 		override fun onPageSelected(position: Int) {
+			onPageSelected(position, false)
+		}
+
+		private fun onPageSelected(position: Int, retry: Boolean) {
 			logV("New position: $position")
 			when (val item = itemAdapter.getAdapterItem(position)) {
 				is ReaderChapterUI -> {
@@ -456,7 +461,19 @@ class ChapterReader
 					viewModel.currentChapterID = item.id
 					viewModel.markAsReadingOnView(item)    // Mark read if set to onview
 					chapterViewHolders.filterNotNull().find { it.chapter.id == item.id }
-						?.let { syncReader(it) } ?: logE("Reader is null")
+						?.let { syncReader(it) } ?: run {
+
+						if (!retry) {
+							logE("Reader is null, retry in 200ms")
+						} else {
+							logE("Reader is still null, aborting")
+							return@run
+						}
+						launchIO {
+							delay(200)
+							launchUI { onPageSelected(position, true) }
+						}
+					}
 					supportActionBar?.title = item.title
 					setBookmarkIcon(item)
 				}
