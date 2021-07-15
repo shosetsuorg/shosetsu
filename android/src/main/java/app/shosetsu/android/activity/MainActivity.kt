@@ -117,6 +117,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 	override fun onCreate(savedInstanceState: Bundle?) {
 		viewModel.navigationStyle
 		viewModel.appThemeLiveData.observe(this) {
+			logI("Setting theme to $it")
 			when (it) {
 				FOLLOW_SYSTEM -> {
 					delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM

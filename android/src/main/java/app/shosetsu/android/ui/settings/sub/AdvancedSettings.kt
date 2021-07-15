@@ -2,14 +2,16 @@ package app.shosetsu.android.ui.settings.sub
 
 import android.content.res.Resources
 import android.view.View
-import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.common.ext.makeSnackBar
-import app.shosetsu.android.common.ext.viewModel
+import android.widget.AdapterView
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.settings.SettingsSubController
 import app.shosetsu.android.view.uimodels.settings.ButtonSettingData
+import app.shosetsu.android.view.uimodels.settings.SpinnerSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.onButtonClicked
+import app.shosetsu.android.view.uimodels.settings.dsl.onSpinnerItemSelected
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
+import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.snackbar.Snackbar
@@ -65,6 +67,25 @@ class AdvancedSettings : SettingsSubController() {
 	override val adjustments: List<SettingsItemData>.() -> Unit = {
 		find<ButtonSettingData>(2)?.onButtonClicked {
 			purge()
+		}
+
+		var first = true
+		find<SpinnerSettingData>(1)?.onSpinnerItemSelected { _: AdapterView<*>?, _: View?, position: Int, _: Long ->
+			if (first) {
+				first = false
+				return@onSpinnerItemSelected
+			}
+			launchUI {
+				activity?.onBackPressed()
+				makeSnackBar(
+					R.string.controller_settings_advanced_snackbar_ui_change,
+					Snackbar.LENGTH_INDEFINITE
+				)?.setAction(R.string.apply) {
+					launchIO {
+						viewModel.settingsRepo.setInt(SettingKey.AppTheme, position)
+					}
+				}?.show()
+			}
 		}
 	}
 

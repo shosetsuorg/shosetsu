@@ -12,6 +12,7 @@ import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.domain.repositories.base.getIntOrDefault
 import app.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.flow.flow
@@ -61,7 +62,7 @@ class AdvancedSettingsViewModel(
 				reportError(e.toHError())
 			}
 
-			spinnerSettingValue(AppTheme)
+			spinnerValue { settingsRepo.getIntOrDefault(AppTheme) }
 		},
 		buttonSettingData(2) {
 			titleRes = R.string.remove_novel_cache
