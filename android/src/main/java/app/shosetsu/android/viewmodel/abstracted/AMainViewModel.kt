@@ -44,7 +44,7 @@ abstract class AMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel,
 	 */
 	abstract val navigationStyle: Int
 
-	abstract fun appTheme(): LiveData<AppThemes>
+	abstract val appThemeLiveData: LiveData<AppThemes>
 
 	abstract val requireDoubleBackToExit: Boolean
 

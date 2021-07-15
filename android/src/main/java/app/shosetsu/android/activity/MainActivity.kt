@@ -116,8 +116,8 @@ class MainActivity : AppCompatActivity(), DIAware,
 	 */
 	override fun onCreate(savedInstanceState: Bundle?) {
 		viewModel.navigationStyle
-		viewModel.appTheme().observe(this) {
-			when (it!!) {
+		viewModel.appThemeLiveData.observe(this) {
+			when (it) {
 				FOLLOW_SYSTEM -> {
 					delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 				}
@@ -131,6 +131,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 					// TODO Implement amoled mode
 					delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
 				}
+				else -> logE("Null theme received")
 			}
 		}
 		this.requestPerms()
