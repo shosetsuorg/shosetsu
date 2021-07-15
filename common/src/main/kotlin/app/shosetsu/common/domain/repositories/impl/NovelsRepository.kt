@@ -8,10 +8,7 @@ import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.StrippedBookmarkedNovelEntity
 import app.shosetsu.common.domain.model.local.StrippedNovelEntity
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.emptyResult
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
+import app.shosetsu.common.dto.*
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
@@ -108,11 +105,16 @@ class NovelsRepository(
 		database.update(list)
 
 	override suspend fun retrieveNovelInfo(
-		iExtension: IExtension,
+		extension: IExtension,
 		novelEntity: NovelEntity,
 		loadChapters: Boolean,
 	): HResult<Novel.Info> =
-		remoteSource.loadNovel(iExtension, novelEntity.url, loadChapters)
+		remoteSource.loadNovel(extension, novelEntity.url, loadChapters)
+			.transformToSuccess { info ->
+				info.copy(
+					chapters = info.chapters.distinctBy { it.link }
+				)
+			}
 
 	override suspend fun clearUnBookmarkedNovels(): HResult<*> =
 		database.clearUnBookmarkedNovels()

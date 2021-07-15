@@ -199,7 +199,7 @@ interface INovelsRepository {
 	 * [HResult.Loading] never
 	 */
 	suspend fun retrieveNovelInfo(
-		formatter: IExtension,
+		extension: IExtension,
 		novelEntity: NovelEntity,
 		loadChapters: Boolean,
 	): HResult<Novel.Info>
