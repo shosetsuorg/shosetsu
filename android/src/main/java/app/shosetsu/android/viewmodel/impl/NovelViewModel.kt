@@ -274,7 +274,7 @@ class NovelViewModel(
 	}
 
 	override fun openLastRead(array: List<ChapterUI>): LiveData<HResult<Int>> =
-		liveDataIO {
+		flow {
 			emit(loading())
 			val sortedArray = array.sortedBy { it.order }
 			val result = isChaptersResumeFirstUnread()
@@ -289,7 +289,7 @@ class NovelViewModel(
 					successResult(array.indexOf(chapter))
 				}
 			)
-		}
+		}.asIOLiveData()
 
 	override fun openWebView(chapterUI: ChapterUI) {
 		launchIO {
@@ -303,12 +303,14 @@ class NovelViewModel(
 	}
 
 	override fun refresh(): LiveData<HResult<*>> =
-		liveDataIO {
+		flow {
 			emit(loading())
-			emit(loadRemoteNovel(novelIDLive.value, true).transform {
-				startDownloadWorkerAfterUpdateUseCase(it.updatedChapters)
-			})
-		}
+			emit(
+				loadRemoteNovel(novelIDLive.value, true).transform {
+					startDownloadWorkerAfterUpdateUseCase(it.updatedChapters)
+				}
+			)
+		}.asIOLiveData()
 
 	override fun setNovelID(novelID: Int) {
 		when {

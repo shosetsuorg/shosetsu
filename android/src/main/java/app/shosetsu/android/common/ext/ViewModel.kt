@@ -1,8 +1,8 @@
 package app.shosetsu.android.common.ext
 
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
-import kotlin.experimental.ExperimentalTypeInference
 
 /*
  * This file is part of Shosetsu.
@@ -25,12 +25,6 @@ import kotlin.experimental.ExperimentalTypeInference
  * shosetsu
  * 30 / 09 / 2020
  */
-
-@OptIn(ExperimentalTypeInference::class)
-fun <T> ViewModel.liveDataIO(
-	@BuilderInference block: suspend LiveDataScope<T>.() -> Unit
-): LiveData<T> = liveData(viewModelScope.coroutineContext + Dispatchers.IO) { block() }
-
 
 fun ViewModel.launchUI(block: suspend CoroutineScope.() -> Unit): Job =
 	GlobalScope.launch(
