@@ -96,8 +96,7 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 						override fun migrate(database: SupportSQLiteDatabase) {
 							deleteColumnFromTable(database, "chapters", "savePath")
 						}
-					}
-				).addMigrations(
+					},
 					object : Migration(2, 3) {
 						@Throws(SQLException::class)
 						override fun migrate(database: SupportSQLiteDatabase) {
@@ -243,8 +242,7 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 								database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_novel_reader_settings_novelID` ON `novel_reader_settings` (`novelID`)")
 							}
 						}
-					}
-				).addMigrations(
+					},
 					object : Migration(3, 4) {
 						override fun migrate(database: SupportSQLiteDatabase) {
 							// Migrate extensions
@@ -322,9 +320,9 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 								database.execSQL("CREATE INDEX IF NOT EXISTS `index_libs_repoID` ON `${tableName}` (`repoID`)")
 							}
 						}
-
 					}
 				).build()
+
 			GlobalScope.launch {
 				try {
 					databaseShosetsu.repositoryDao.initializeData()
