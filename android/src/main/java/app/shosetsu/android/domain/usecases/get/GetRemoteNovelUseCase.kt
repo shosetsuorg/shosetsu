@@ -1,5 +1,6 @@
 package app.shosetsu.android.domain.usecases.get
 
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.UpdateEntity
@@ -49,8 +50,9 @@ class GetRemoteNovelUseCase(
 	private suspend fun main(
 		novel: NovelEntity,
 		loadChapters: Boolean = true,
-	): HResult<UpdatedNovelInfo> =
-		getExt(novel.extensionID).transform { ext ->
+	): HResult<UpdatedNovelInfo> {
+		logI("Loading novel data from internet for $novel")
+		return getExt(novel.extensionID).transform { ext ->
 			nR.retrieveNovelInfo(ext, novel, loadChapters).transform { page ->
 				val currentStatus: Boolean = novel.loaded
 
@@ -85,6 +87,7 @@ class GetRemoteNovelUseCase(
 				}
 			}
 		}
+	}
 
 	suspend operator fun invoke(
 		novel: NovelEntity,
