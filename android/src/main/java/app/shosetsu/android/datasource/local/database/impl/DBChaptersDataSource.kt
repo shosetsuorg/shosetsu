@@ -81,7 +81,7 @@ class DBChaptersDataSource(
 		list: List<Novel.Chapter>,
 	): HResult<*> =
 		try {
-			successResult(chaptersDao.handleChapters(novelID, extensionID, list))
+			successResult(chaptersDao.handleNewData(novelID, extensionID, list))
 		} catch (e: Exception) {
 			e.toHError()
 		}
@@ -92,7 +92,7 @@ class DBChaptersDataSource(
 		extensionID: Int,
 		list: List<Novel.Chapter>,
 	): HList<ChapterEntity> = try {
-		chaptersDao.handleChaptersReturnNew(novelID, extensionID, list).convertList()
+		chaptersDao.handleNewDataReturn(novelID, extensionID, list).convertList()
 			.let { successResult(it) }
 	} catch (e: Exception) {
 		e.toHError()
@@ -107,7 +107,7 @@ class DBChaptersDataSource(
 
 	override suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): HResult<*> =
 		try {
-			successResult(chaptersDao.updateReaderChapter(readerChapterEntity))
+			successResult(chaptersDao.update(readerChapterEntity))
 		} catch (e: Exception) {
 			e.toHError()
 		}
