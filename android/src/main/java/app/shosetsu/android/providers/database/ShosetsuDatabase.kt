@@ -13,6 +13,7 @@ import app.shosetsu.android.providers.database.converters.*
 import app.shosetsu.android.providers.database.dao.*
 import app.shosetsu.android.providers.database.migrations.RemoveMigration
 import app.shosetsu.lib.ExtensionType
+import app.shosetsu.lib.Novel
 import dev.matrix.roomigrant.GenerateRoomMigrations
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -271,9 +272,18 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 												cursor.getStringOrNull("installedVersion")
 											this["'repositoryVersion'"] =
 												cursor.getString("repositoryVersion")
-											this["'chapterType'"] = cursor.getInt("chapterType")
+											this["'chapterType'"] =
+												cursor.getColumnIndex("chapterType")
+													.takeIf { it != -1 }?.let {
+														cursor.getInt(it)
+													} ?: Novel.ChapterType.STRING.key
 											this["'md5'"] = cursor.getString("md5")
-											this["'type'"] = cursor.getInt("type")
+											this["'type'"] =
+												cursor.getColumnIndex("type")
+													.takeIf { it != -1 }
+													?.let {
+														cursor.getInt(it)
+													} ?: ExtensionType.LuaScript.ordinal
 										}
 									)
 								}
