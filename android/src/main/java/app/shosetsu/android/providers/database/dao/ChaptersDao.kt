@@ -5,7 +5,6 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import app.shosetsu.android.common.ext.entity
-import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.domain.model.database.DBChapterEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
@@ -113,7 +112,6 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 	) {
 		val databaseChapterEntities: List<DBChapterEntity> = getChapters(novelId)
 		list.forEach { novelChapter ->
-			logV("Processing $novelChapter")
 			databaseChapterEntities.find { it.url == novelChapter.link }?.let { dbChapterEntity ->
 				update(
 					chapterEntity = dbChapterEntity,
