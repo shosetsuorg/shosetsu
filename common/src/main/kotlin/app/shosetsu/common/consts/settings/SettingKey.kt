@@ -136,10 +136,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 	object DownloadOnLowStorage : BooleanKey("downloadNotLowStorage", false)
 	object DownloadOnLowBattery : BooleanKey("downloadNotLowBattery", false)
-	object DownloadOnMeteredConnection : BooleanKey(
-		"downloadNotMetered",
-		false
-	)
+	object DownloadOnMeteredConnection : BooleanKey("downloadNotMetered", true)
 
 	object DownloadOnlyWhenIdle : BooleanKey("downloadIdle", false)
 
@@ -156,23 +153,20 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 	object UpdateOnLowStorage : BooleanKey("updateLowStorage", false)
 	object UpdateOnLowBattery : BooleanKey("updateLowBattery", false)
-	object UpdateOnMeteredConnection : BooleanKey("updateMetered", false)
+	object UpdateOnMeteredConnection : BooleanKey("updateMetered", true)
 	object UpdateOnlyWhenIdle : BooleanKey("updateIdle", false)
 
 	object UpdateNotificationStyle : BooleanKey("updateNotificationStyle", false)
 
 	object RepoUpdateOnLowStorage : BooleanKey("repoUpdateLowStorage", false)
 	object RepoUpdateOnLowBattery : BooleanKey("repoUpdateLowBattery", false)
-	object RepoUpdateOnMeteredConnection : BooleanKey("repoUpdateMetered", false)
+	object RepoUpdateOnMeteredConnection : BooleanKey("repoUpdateMetered", true)
 	object RepoUpdateOnlyWhenIdle : BooleanKey("repoUpdateIdle", false)
 
 
 	// App Update Options
 	object AppUpdateOnStartup : BooleanKey("appUpdateOnStartup", true)
-	object AppUpdateOnMeteredConnection : BooleanKey(
-		"appUpdateMetered",
-		false
-	)
+	object AppUpdateOnMeteredConnection : BooleanKey("appUpdateMetered", true)
 
 	object AppUpdateOnlyWhenIdle : BooleanKey("appUpdateIdle", false)
 	object AppUpdateCycle : IntKey("appUpdateCycle", 1)
