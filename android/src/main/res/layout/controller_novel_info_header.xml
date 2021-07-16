@@ -225,9 +225,17 @@
         android:background="@android:color/transparent"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
+        android:layout_marginBottom="8dp"
         android:textIsSelectable="true"
         tools:text="A\nB\nC\nD\nE\nF" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/novel_description"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:background="?android:attr/listDivider" />
 
     <RelativeLayout
         android:id="@+id/chapter_control"
