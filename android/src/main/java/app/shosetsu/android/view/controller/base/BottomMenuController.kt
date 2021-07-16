@@ -26,6 +26,7 @@ import app.shosetsu.android.view.widget.SlidingUpBottomMenu
  *
  * For controllers to have a sliding up bottom menu
  */
+@Deprecated("Use BottomSheetDialog")
 interface BottomMenuController {
 	var bottomMenuRetriever: (() -> SlidingUpBottomMenu?)
 
