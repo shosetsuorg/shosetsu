@@ -446,6 +446,12 @@ class NovelController(bundle: Bundle) :
 			openFilterMenu()
 		}
 
+		hookClickEvent(
+			bind = { it: NovelUI.ViewHolder -> it.binding.chipJumpTo }
+		) { _, _, _, _ ->
+			openChapterJumpDialog()
+		}
+
 		setObserver()
 	}
 

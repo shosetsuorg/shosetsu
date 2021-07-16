@@ -251,10 +251,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:layout_toStartOf="@id/filter_chip"
+            android:layout_toStartOf="@id/chip_jump_to"
             android:text="@string/chapters" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_jump_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="8dp"
+            android:layout_toStartOf="@id/filter_chip"
+            android:text="@string/jump_to_chapter_short" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/filter_chip"
@@ -268,7 +279,6 @@
     </RelativeLayout>
 
     <View
-        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/chapter_control"

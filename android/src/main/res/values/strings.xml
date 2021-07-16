@@ -487,6 +487,7 @@
     <string name="worker_novel_update_load_failure">Failed to update %s</string>
     <string name="controller_settings_advanced_snackbar_ui_change">Press apply to change the UI</string>
     <string name="controller_catalogue_toast_background_add_success">Added \"%s\" to Library</string>
+    <string name="jump_to_chapter_short">Jump</string>
 
     <!-- Error Key Messages -->
 
