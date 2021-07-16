@@ -13,12 +13,10 @@ import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
 import app.shosetsu.android.view.controller.FastAdapterRecyclerController
-import app.shosetsu.android.view.controller.base.BottomMenuController
 import app.shosetsu.android.view.controller.base.FABController
 import app.shosetsu.android.view.controller.base.syncFABWithRecyclerView
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
-import app.shosetsu.android.view.widget.SlidingUpBottomMenu
 import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
 import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.dto.*
@@ -28,6 +26,7 @@ import com.github.doomsdayrs.apps.shosetsu.R.id
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBinding.inflate
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelJumpDialogBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
@@ -62,8 +61,7 @@ import javax.security.auth.DestroyFailedException
 class NovelController(bundle: Bundle) :
 	FastAdapterRecyclerController<ControllerNovelInfoBinding,
 			AbstractItem<*>>(bundle),
-	FABController,
-	BottomMenuController {
+	FABController {
 
 	/*
 	/** Fixes invalid adapter postion errors */
@@ -452,7 +450,9 @@ class NovelController(bundle: Bundle) :
 	}
 
 	private fun openFilterMenu() {
-		bottomMenuRetriever.invoke()?.show()
+		BottomSheetDialog(binding.root.context).apply {
+			setContentView(bottomMenuView)
+		}.show()
 	}
 
 	override fun onDestroyView(view: View) {
@@ -631,11 +631,10 @@ class NovelController(bundle: Bundle) :
 		}
 	}
 
-	override var bottomMenuRetriever: (() -> SlidingUpBottomMenu?) = { null }
-
-	override fun getBottomMenuView(): View = NovelFilterMenuBuilder(
-		this,
-		activity!!.layoutInflater,
-		viewModel
-	).build()
+	private val bottomMenuView: View
+		get() = NovelFilterMenuBuilder(
+			this,
+			activity!!.layoutInflater,
+			viewModel
+		).build()
 }
