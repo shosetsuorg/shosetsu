@@ -279,9 +279,13 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
 
 	// Roomigrant
-	val roomigrantVersion = "0.3.4"
-	implementation("com.github.MatrixDev.Roomigrant:RoomigrantLib:$roomigrantVersion")
-	kapt("com.github.MatrixDev.Roomigrant:RoomigrantCompiler:$roomigrantVersion")
+	val enableRoomigrant = false
+
+	if (enableRoomigrant) {
+		val roomigrantVersion = "0.3.4"
+		implementation("com.github.MatrixDev.Roomigrant:RoomigrantLib:$roomigrantVersion")
+		kapt("com.github.MatrixDev.Roomigrant:RoomigrantCompiler:$roomigrantVersion")
+	}
 
 	// Banner
 	//implementation("com.github.shosetsuorg:MaterialBanner:2.0.7")
