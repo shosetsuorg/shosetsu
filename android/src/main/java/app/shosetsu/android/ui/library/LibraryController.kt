@@ -15,17 +15,16 @@ import app.shosetsu.android.ui.library.listener.LibrarySearchQuery
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.controller.*
-import app.shosetsu.android.view.controller.base.BottomMenuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.syncFABWithRecyclerView
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
-import app.shosetsu.android.view.widget.SlidingUpBottomMenu
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.common.enums.NovelCardType.*
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.select.getSelectExtension
@@ -57,10 +56,7 @@ import kotlinx.coroutines.delay
  * @author github.com/doomsdayrs
  */
 class LibraryController
-	: FastAdapterRefreshableRecyclerController<ABookmarkedNovelUI>(), ExtendedFABController,
-	BottomMenuController {
-
-	override var bottomMenuRetriever: (() -> SlidingUpBottomMenu?) = { null }
+	: FastAdapterRefreshableRecyclerController<ABookmarkedNovelUI>(), ExtendedFABController {
 
 	private var fab: ExtendedFloatingActionButton? = null
 
@@ -323,16 +319,20 @@ class LibraryController
 
 	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
 		this.fab = fab
-		fab.setOnClickListener { bottomMenuRetriever.invoke()?.show() }
+		fab.setOnClickListener {
+			//bottomMenuRetriever.invoke()?.show()
+			BottomSheetDialog(binding.root.context).apply {
+				setContentView(getBottomMenuView())
+			}.show()
+		}
 		fab.setText(R.string.filter)
 		fab.setIconResource(R.drawable.filter)
 	}
 
-	override fun getBottomMenuView(): View =
+	private fun getBottomMenuView(): View =
 		LibraryFilterMenuBuilder(this, viewModel).build()
 
 	override fun onRefresh() {
-
 		if (viewModel.isOnline())
 			viewModel.startUpdateManager()
 		else displayOfflineSnackBar(R.string.generic_error_cannot_update_library_offline)
