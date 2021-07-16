@@ -190,7 +190,6 @@ class LibraryController
 		get() = fastAdapter.getSelectExtension().selectedItems.toList()
 
 
-	/***/
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		if (fastAdapter.getSelectExtension().selectedItems.isEmpty()) {
 			inflater.inflate(R.menu.toolbar_library, menu)
@@ -199,14 +198,13 @@ class LibraryController
 		}
 	}
 
+	private var searchView: SearchView? = null
+
 	override fun onPrepareOptionsMenu(menu: Menu) {
 		logI("Preparing options menu")
-		(menu.findItem(R.id.library_search)?.actionView as? SearchView)?.apply {
+		searchView = (menu.findItem(R.id.library_search)?.actionView as? SearchView)
+		searchView?.apply {
 			setOnQueryTextListener(LibrarySearchQuery(this@LibraryController))
-			setOnCloseListener {
-				val v = viewModel.liveData.value
-				return@setOnCloseListener v is HResult.Success
-			}
 		}
 		configureViewTypeMenu(menu)
 	}
@@ -238,6 +236,11 @@ class LibraryController
 		}
 	}
 
+	override fun handleBack(): Boolean =
+		if (searchView != null && searchView!!.isIconified) {
+			searchView!!.onActionViewCollapsed()
+			true
+		} else super.handleBack()
 
 	/***/
 	override fun onOptionsItemSelected(item: MenuItem): Boolean =
