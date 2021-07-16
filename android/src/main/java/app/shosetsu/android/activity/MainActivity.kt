@@ -485,44 +485,6 @@ class MainActivity : AppCompatActivity(), DIAware,
 		// setup TabbedController
 		if (from !is TabbedController && to is TabbedController) tabLayout.expand()
 
-		// Clean up from BottomMenuController
-		if (from is BottomMenuController) {
-			binding.slidingUpBottomMenu.apply {
-				clearOnHideListeners()
-				clearOnShowListeners()
-				clearChildren()
-				isVisible = false
-			}
-		}
-
-		// if the to is a BottomMenuController, set it up
-		if (to is BottomMenuController) {
-			var created = false
-			to.bottomMenuRetriever = { binding.slidingUpBottomMenu }
-
-			binding.slidingUpBottomMenu.apply {
-				isVisible = true
-				addOnShowListener {
-					if (!created) {
-						addChildView(to.getBottomMenuView())
-						created = true
-					}
-				}
-
-				// Interaction with FABController
-				if (to is FABController) {
-					addOnShowListener { to.hideFAB(fab) }
-					addOnHideListener { to.showFAB(fab) }
-				}
-
-				// Interaction with the EFABController
-				if (to is ExtendedFABController) {
-					addOnShowListener { to.hideFAB(eFab) }
-					addOnHideListener { to.showFAB(eFab) }
-				}
-			}
-		}
-
 		// Change the elevation for the app bar layout
 		when (to) {
 			is CollapsedToolBarController -> {
