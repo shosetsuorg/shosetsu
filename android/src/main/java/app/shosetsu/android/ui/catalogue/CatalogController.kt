@@ -22,6 +22,7 @@ import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.widget.SlidingUpBottomMenu
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.handle
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.common.enums.NovelCardType.COMPRESSED
 import app.shosetsu.common.enums.NovelCardType.NORMAL
@@ -119,6 +120,43 @@ class CatalogController(
 		}
 	}
 
+	/**
+	 * A [ACatalogNovelUI] was long clicked, invoking a background add
+	 */
+	private fun itemLongClicked(item: ACatalogNovelUI, position: Int): Boolean {
+		logI("Adding novel to library in background: $item")
+
+		if (item.bookmarked) {
+			logI("Ignoring, already bookmarked: $item")
+			return false
+		}
+
+		viewModel.backgroundNovelAdd(item.id).observe { result ->
+			result.handle(
+				onLoading = {
+					makeSnackBar(R.string.controller_catalogue_toast_background_add)?.show()
+				},
+			) {
+				makeSnackBar(
+					getString(
+						R.string.controller_catalogue_toast_background_add_success,
+						item.title.let {
+							if (it.length > 20)
+								it.substring(0, 20) + "..."
+							else it
+						}
+					)
+				)?.show()
+			}
+		}
+
+		//itemAdapter[position] = item.apply { bookmarked = true }
+		//fastAdapter.notifyItemChanged(position)
+
+		return true
+	}
+
+
 	override fun FastAdapter<ACatalogNovelUI>.setupFastAdapter() {
 		fastAdapter.apply {
 			setOnClickListener { _, _, item, _ ->
@@ -132,11 +170,8 @@ class CatalogController(
 				)
 				true
 			}
-			onLongClickListener = { _, _, i, _ ->
-				logI("Adding novel to background")
-				viewModel.backgroundNovelAdd(i.id)
-				makeSnackBar(R.string.controller_catalogue_toast_background_add)?.show()
-				true
+			onLongClickListener = longClick@{ _, _, item, position ->
+				itemLongClicked(item, position)
 			}
 		}
 	}

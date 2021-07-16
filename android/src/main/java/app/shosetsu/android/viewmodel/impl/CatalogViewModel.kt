@@ -426,9 +426,11 @@ class CatalogViewModel(
 		applyFilter()
 	}
 
-	override fun backgroundNovelAdd(novelID: Int) {
-		launchIO { backgroundAddUseCase(novelID) }
-	}
+	override fun backgroundNovelAdd(novelID: Int): LiveData<HResult<*>> =
+		flow {
+			emit(loading)
+			emit(backgroundAddUseCase(novelID))
+		}.asIOLiveData()
 
 	override fun applyFilter() {
 		stateManager = StateManager()

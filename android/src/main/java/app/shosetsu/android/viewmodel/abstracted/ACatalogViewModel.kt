@@ -92,7 +92,7 @@ abstract class ACatalogViewModel :
 	 * Bookmarks and loads the specific novel in the background
 	 * @param novelID ID of novel to load
 	 */
-	abstract fun backgroundNovelAdd(novelID: Int)
+	abstract fun backgroundNovelAdd(novelID: Int): LiveData<HResult<*>>
 
 	/**
 	 * Apply filters
