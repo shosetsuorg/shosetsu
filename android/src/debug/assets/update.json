@@ -1,11 +1,17 @@
 {
-  "latestVersion": "1136",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1136/shosetsu-r1136.apk",
+  "latestVersion": "1469",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1469/shosetsu-r1469.apk",
   "releaseNotes": [
-    "### The in-app updater may or may not work, If it does not go here https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1136/shosetsu-r1136.apk",
-    "- Added use cases for more advanced handling of UI",
-    "- Added new data sources for fdroid, uptodown & playstore releases",
-    "- Trying to figure out issue with timeout exceptions",
-    "- Minor update to in-app updater"
+    "### The in-app updater may or may not work, If it does not go here https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1469/shosetsu-r1469.apk",
+    "- HTML Reader",
+    "- New extension repository standard",
+    "- New BottomSheetDialog",
+    "- New \"Jump to Chapter\" feature in novel UI",
+    "- New notifications",
+    "- Lots of SnackBars",
+    "- New novel UI refresh style",
+    "- New DB",
+    "- Lot's of bugs fixed",
+    "- Some regressions that are being worked on"
   ]
 }
