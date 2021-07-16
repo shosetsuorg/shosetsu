@@ -16,10 +16,8 @@ import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.listeners.CatalogueSearchQuery
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.controller.FastAdapterRecyclerController
-import app.shosetsu.android.view.controller.base.BottomMenuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
-import app.shosetsu.android.view.widget.SlidingUpBottomMenu
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
@@ -28,6 +26,7 @@ import app.shosetsu.common.enums.NovelCardType.COMPRESSED
 import app.shosetsu.common.enums.NovelCardType.NORMAL
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerCatalogueBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.scroll.EndlessRecyclerOnScrollListener
@@ -61,7 +60,7 @@ class CatalogController(
 	/** data bundle uwu */
 	val bundle: Bundle,
 ) : FastAdapterRecyclerController<ControllerCatalogueBinding, ACatalogNovelUI>(bundle),
-	ExtendedFABController, BottomMenuController {
+	ExtendedFABController {
 
 	/***/
 	val viewModel: ACatalogViewModel by viewModel()
@@ -305,9 +304,13 @@ class CatalogController(
 
 	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
 		fab.setIconResource(R.drawable.filter)
+		fab.setOnClickListener {
+			BottomSheetDialog(binding.root.context).apply {
+				setContentView(bottomMenuView)
+			}.show()
+		}
 	}
 
-	override var bottomMenuRetriever: () -> SlidingUpBottomMenu? = { null }
-
-	override fun getBottomMenuView(): View = CatalogFilterMenuBuilder(this).build()
+	private val bottomMenuView: View
+		get() = CatalogFilterMenuBuilder(this).build()
 }
