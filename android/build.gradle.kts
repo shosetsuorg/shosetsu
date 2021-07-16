@@ -281,9 +281,9 @@ dependencies {
 	// Roomigrant
 	val enableRoomigrant = false
 
+	val roomigrantVersion = "0.3.4"
+	implementation("com.github.MatrixDev.Roomigrant:RoomigrantLib:$roomigrantVersion")
 	if (enableRoomigrant) {
-		val roomigrantVersion = "0.3.4"
-		implementation("com.github.MatrixDev.Roomigrant:RoomigrantLib:$roomigrantVersion")
 		kapt("com.github.MatrixDev.Roomigrant:RoomigrantCompiler:$roomigrantVersion")
 	}
 
