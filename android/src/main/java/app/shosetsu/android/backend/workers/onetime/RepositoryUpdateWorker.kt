@@ -26,6 +26,7 @@ import app.shosetsu.lib.Version
 import app.shosetsu.lib.json.RepoExtension
 import app.shosetsu.lib.json.RepoLibrary
 import com.github.doomsdayrs.apps.shosetsu.R
+import kotlinx.coroutines.delay
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -227,6 +228,8 @@ class RepositoryUpdateWorker(
 			}
 		}
 		notify("Completed") { setNotOngoing() }
+		delay(1000)
+		notificationManager.cancel(defaultNotificationID)
 		logI("Completed Repository Update")
 		return Result.success()
 	}
