@@ -137,6 +137,11 @@ class UpdateSettingsViewModel(
 			title { "Show novel update progress" }
 			checkSettingValue(SettingKey.NovelUpdateShowProgress)
 		},
+		switchSettingData(14) {
+			title { "Classic novel update completion" }
+			description { "Instead of showing you which how many chapters are in each novel, simply says \"Completed Update\"" }
+			checkSettingValue(SettingKey.NovelUpdateClassicFinish)
+		},
 		headerSettingItemData(9) {
 			titleRes = R.string.settings_update_header_repositories
 		},
@@ -157,7 +162,7 @@ class UpdateSettingsViewModel(
 			requiredVersion { android.os.Build.VERSION_CODES.M }
 			checkSettingValue(RepoUpdateOnlyWhenIdle)
 		},
-		// next 15
+		// next 16
 	)
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {

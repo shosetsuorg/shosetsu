@@ -100,6 +100,9 @@ class NovelUpdateWorker(
 	private suspend fun showProgress(): Boolean =
 		iSettingsRepository.getBooleanOrDefault(NovelUpdateShowProgress)
 
+	private suspend fun classicFinale(): Boolean =
+		iSettingsRepository.getBooleanOrDefault(NovelUpdateClassicFinish)
+
 	override suspend fun doWork(): Result {
 		// Log that the worker is executing
 		logI(SERVICE_EXECUTE)
@@ -178,42 +181,44 @@ class NovelUpdateWorker(
 			}
 
 			// Get rid of the complete notification after 5 seconds
-			launchIO {
-				delay(5000)
-				notificationManager.cancel(defaultNotificationID)
-			}
+			if (!classicFinale())
+				launchIO {
+					delay(5000)
+					notificationManager.cancel(defaultNotificationID)
+				}
 		}
 
-		for (novel in updateNovels) {
-			launchIO { // Run each novel notification on it's own seperate thread
-				val chapterSize: Int = updatedChapters.filter { it.novelID == novel.id }.size
-				notify(
-					applicationContext.resources.getQuantityString(
-						R.plurals.worker_novel_update_updated_novel_count,
-						chapterSize,
-						chapterSize
-					),
-					10000 + novel.id!!
-				) {
-					setContentTitle(
-						getString(
-							R.string.worker_novel_update_updated_novel,
-							novel.title
+		if (!classicFinale())
+			for (novel in updateNovels) {
+				launchIO { // Run each novel notification on it's own seperate thread
+					val chapterSize: Int = updatedChapters.filter { it.novelID == novel.id }.size
+					notify(
+						applicationContext.resources.getQuantityString(
+							R.plurals.worker_novel_update_updated_novel_count,
+							chapterSize,
+							chapterSize
+						),
+						10000 + novel.id!!
+					) {
+						setContentTitle(
+							getString(
+								R.string.worker_novel_update_updated_novel,
+								novel.title
+							)
 						)
-					)
-					val bitmap: Bitmap? = try {
-						Picasso.get().load(novel.imageURL).get()
-					} catch (e: Exception) {
-						null
+						val bitmap: Bitmap? = try {
+							Picasso.get().load(novel.imageURL).get()
+						} catch (e: Exception) {
+							null
+						}
+
+						setLargeIcon(bitmap)
+
+						setNotOngoing()
+						removeProgress()
 					}
-
-					setLargeIcon(bitmap)
-
-					setNotOngoing()
-					removeProgress()
 				}
 			}
-		}
 
 		// Will update only if downloadOnUpdate is enabled and there have been chapters
 		if (downloadOnUpdate() && updateNovels.size > 0 && updatedChapters.size > 0)
