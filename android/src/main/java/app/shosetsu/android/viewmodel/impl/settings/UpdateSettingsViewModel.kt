@@ -133,7 +133,10 @@ class UpdateSettingsViewModel(
 			title { "Notification Style" }
 			checkSettingValue(SettingKey.UpdateNotificationStyle)
 		},
-
+		switchSettingData(14) {
+			title { "Show novel update progress" }
+			checkSettingValue(SettingKey.NovelUpdateShowProgress)
+		},
 		headerSettingItemData(9) {
 			titleRes = R.string.settings_update_header_repositories
 		},
@@ -154,6 +157,7 @@ class UpdateSettingsViewModel(
 			requiredVersion { android.os.Build.VERSION_CODES.M }
 			checkSettingValue(RepoUpdateOnlyWhenIdle)
 		},
+		// next 15
 	)
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {

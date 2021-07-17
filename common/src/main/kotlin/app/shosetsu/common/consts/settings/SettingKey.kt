@@ -157,6 +157,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object UpdateOnlyWhenIdle : BooleanKey("updateIdle", false)
 
 	object UpdateNotificationStyle : BooleanKey("updateNotificationStyle", false)
+	object NovelUpdateShowProgress : BooleanKey("novelUpdateShowProgress", true)
 
 	object RepoUpdateOnLowStorage : BooleanKey("repoUpdateLowStorage", false)
 	object RepoUpdateOnLowBattery : BooleanKey("repoUpdateLowBattery", false)

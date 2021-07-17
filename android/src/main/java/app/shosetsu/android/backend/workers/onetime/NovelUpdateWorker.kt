@@ -97,6 +97,9 @@ class NovelUpdateWorker(
 	private suspend fun notificationStyle(): Boolean =
 		iSettingsRepository.getBooleanOrDefault(UpdateNotificationStyle)
 
+	private suspend fun showProgress(): Boolean =
+		iSettingsRepository.getBooleanOrDefault(NovelUpdateShowProgress)
+
 	override suspend fun doWork(): Result {
 		// Log that the worker is executing
 		logI(SERVICE_EXECUTE)
@@ -129,10 +132,16 @@ class NovelUpdateWorker(
 					if (style) nE.title else applicationContext.getString(R.string.updating)
 				val content: String = if (style) "" else nE.title
 
-				notify(content) {
-					setContentTitle(title)
-					setProgress(novels.size, progress, false)
+				if (showProgress()) {
+					notify(content) {
+						setContentTitle(title)
+						setProgress(novels.size, progress, false)
+						setOngoing()
+						setSilent(true)
+					}
+				} else notify(R.string.worker_novel_updating_silent) {
 					setOngoing()
+					setSilent(true)
 				}
 
 				loadRemoteNovelUseCase(nE, true).handle(
