@@ -69,7 +69,9 @@ class MainViewModel(
 			}
 		}
 		launchIO {
-
+			loadRequireDoubleBackUseCase().collect {
+				_requireDoubleBackToExit = it
+			}
 		}
 	}
 

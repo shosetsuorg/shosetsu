@@ -49,6 +49,7 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityMainBinding
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.BaseTransientBottomBar.Duration
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.delay
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -161,15 +162,35 @@ class MainActivity : AppCompatActivity(), DIAware,
 		setupProcesses()
 	}
 
-	private var lastClickedBack = 0L
-	private var clickedBackBuffer = false
+	private var inProtectingBack = false
+
+	private fun protectedBackWait() {
+		launchIO {
+			inProtectingBack = true
+			val snackBar =
+				makeSnackBar(R.string.double_back_message, Snackbar.LENGTH_INDEFINITE).apply {
+					setOnDismissed { snackbar, event ->
+						inProtectingBack = false
+					}
+				}
+			snackBar.show()
+			delay(2000)
+			snackBar.dismiss()
+		}
+	}
+
+	private fun shouldProtectBack(): Boolean =
+		router.backstackSize == 1 &&
+				router.getControllerWithTag("${R.id.nav_library}") != null &&
+				viewModel.requireDoubleBackToExit &&
+				!inProtectingBack
 
 	/**
 	 * When the back button while drawer is open, close it.
 	 */
 	override fun onBackPressed() {
 		val backStackSize = router.backstackSize
-
+		logD("Back stack size: $backStackSize")
 		when {
 			binding.drawerLayout.isDrawerOpen(GravityCompat.START) ->
 				binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -177,26 +198,9 @@ class MainActivity : AppCompatActivity(), DIAware,
 			backStackSize == 1 && router.getControllerWithTag("${R.id.nav_library}") == null ->
 				setSelectedDrawerItem(R.id.nav_library)
 
-			backStackSize == 1 || !router.handleBack() -> {
+			shouldProtectBack() -> protectedBackWait()
 
-				// When this is true, We want to create a buffer to prevent the user from leaving the app by mistake
-				if (viewModel.requireDoubleBackToExit) {
-					// If the last click was over 2 seconds ago, reset
-					if (lastClickedBack < System.currentTimeMillis() - 2000) {
-						clickedBackBuffer = false
-						lastClickedBack = System.currentTimeMillis()
-					}
-					if (clickedBackBuffer) {
-						clickedBackBuffer = false
-						super.onBackPressed()
-					} else {
-						toast(R.string.double_back_message)
-						clickedBackBuffer = true
-					}
-				} else {
-					super.onBackPressed()
-				}
-			}
+			backStackSize == 1 || !router.handleBack() -> super.onBackPressed()
 		}
 	}
 
