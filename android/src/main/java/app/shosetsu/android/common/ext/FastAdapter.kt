@@ -54,8 +54,8 @@ fun <ITEM : GenericItem> FastAdapter<ITEM>.selectBetween(
 
 		if (adapterList.isEmpty()) return@launchIO
 
-		val first = adapterList.indexOfFirst { it.identifier == selected.first().identifier }
-		val last = adapterList.indexOfFirst { it.identifier == selected.last().identifier }
+		val first = adapterList.indexOfFirst { it.identifier == selected.firstOrNull()?.identifier }
+		val last = adapterList.indexOfFirst { it.identifier == selected.lastOrNull()?.identifier }
 
 		// Completely ignore the task if the following are true
 		if (first == -1 || last == -1 || first == last || first + 1 == last) {
