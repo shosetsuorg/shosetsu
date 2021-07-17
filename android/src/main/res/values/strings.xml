@@ -488,6 +488,14 @@
     <string name="controller_settings_advanced_snackbar_ui_change">Press apply to change the UI</string>
     <string name="controller_catalogue_toast_background_add_success">Added \"%s\" to Library</string>
     <string name="jump_to_chapter_short">Jump</string>
+    <string name="worker_novel_update_updated_novel">New chapters available for \"%s\"</string>
+
+    <plurals name="worker_novel_update_updated_novel_count">
+        <item quantity="one">%d new chapter.</item>
+        <item quantity="zero">No new chapters.</item>
+        <item quantity="other">%d new chapters.</item>
+    </plurals>
+
 
     <!-- Error Key Messages -->
 

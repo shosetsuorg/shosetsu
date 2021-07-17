@@ -1,6 +1,7 @@
 package app.shosetsu.android.backend.workers.onetime
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import android.util.Log
@@ -22,6 +23,7 @@ import app.shosetsu.android.domain.usecases.StartDownloadWorkerAfterUpdateUseCas
 import app.shosetsu.android.domain.usecases.get.GetRemoteNovelUseCase
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.ChapterEntity
+import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
@@ -29,6 +31,8 @@ import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.transformToSuccess
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.squareup.picasso.Picasso
+import kotlinx.coroutines.delay
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -103,7 +107,7 @@ class NovelUpdateWorker(
 		}
 
 		/** Count of novels that have been updated */
-		var updatedNovelCount = 0
+		val updateNovels = arrayListOf<NovelEntity>()
 
 		/** Collect updated chapters to be used */
 		val updatedChapters = arrayListOf<ChapterEntity>()
@@ -151,9 +155,10 @@ class NovelUpdateWorker(
 						}
 					}
 				) {
-					updatedNovelCount++
-					if (it.updatedChapters.isNotEmpty() && downloadOnUpdate())
+					if (it.updatedChapters.isNotEmpty()) {
+						updateNovels.add(nE)
 						updatedChapters.addAll(it.updatedChapters)
+					}
 				}
 				progress++
 			}
@@ -163,10 +168,46 @@ class NovelUpdateWorker(
 				removeProgress()
 			}
 
+			// Get rid of the complete notification after 5 seconds
+			launchIO {
+				delay(5000)
+				notificationManager.cancel(defaultNotificationID)
+			}
+		}
+
+		for (novel in updateNovels) {
+			launchIO { // Run each novel notification on it's own seperate thread
+				val chapterSize: Int = updatedChapters.filter { it.novelID == novel.id }.size
+				notify(
+					applicationContext.resources.getQuantityString(
+						R.plurals.worker_novel_update_updated_novel_count,
+						chapterSize,
+						chapterSize
+					),
+					10000 + novel.id!!
+				) {
+					setContentTitle(
+						getString(
+							R.string.worker_novel_update_updated_novel,
+							novel.title
+						)
+					)
+					val bitmap: Bitmap? = try {
+						Picasso.get().load(novel.imageURL).get()
+					} catch (e: Exception) {
+						null
+					}
+
+					setLargeIcon(bitmap)
+
+					setNotOngoing()
+					removeProgress()
+				}
+			}
 		}
 
 		// Will update only if downloadOnUpdate is enabled and there have been chapters
-		if (updatedNovelCount > 0 && updatedChapters.size > 0)
+		if (downloadOnUpdate() && updateNovels.size > 0 && updatedChapters.size > 0)
 			startDownloadWorker(updatedChapters)
 
 
