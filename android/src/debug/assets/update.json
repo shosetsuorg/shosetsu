@@ -1,17 +1,11 @@
 {
-  "latestVersion": "1469",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1469/shosetsu-r1469.apk",
+  "latestVersion": "1480",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/1480/shosetsu-1480.apk",
   "releaseNotes": [
-    "### The in-app updater may or may not work, If it does not go here https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1469/shosetsu-r1469.apk",
-    "- HTML Reader",
-    "- New extension repository standard",
-    "- New BottomSheetDialog",
-    "- New \"Jump to Chapter\" feature in novel UI",
-    "- New notifications",
-    "- Lots of SnackBars",
-    "- New novel UI refresh style",
-    "- New DB",
-    "- Lot's of bugs fixed",
-    "- Some regressions that are being worked on"
+    "- Fixed backspace confirm option",
+    "- Fixed chapters not being listed as updated",
+    "- Added novel updater results in notifications",
+    "- Added option to hide progress of novel updater",
+    "- Added option to use classic novel updater finale"
   ]
 }
