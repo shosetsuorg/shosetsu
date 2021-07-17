@@ -21,7 +21,10 @@
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
+            android:paddingLeft="16dp"
+            android:paddingTop="?attr/actionBarSize"
+            android:paddingRight="16dp"
+            android:paddingBottom="@dimen/reader_bottom_bar_height"
             android:textIsSelectable="true"
             android:visibility="visible"
             tools:text="this\nis\na\nstpry\npf\ntje\nworld\nyou\nnever\nknew\ntoday\nwe\nare\nkilling\napples\nfor\npie" />

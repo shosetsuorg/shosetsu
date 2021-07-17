@@ -11,7 +11,7 @@
     android:focusable="true"
     android:gravity="center"
     android:orientation="vertical"
-    app:behavior_peekHeight="64dp"
+    app:behavior_peekHeight="@dimen/reader_bottom_bar_height"
     app:layout_behavior="app.shosetsu.android.ui.reader.ChapterReaderBottomBar"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
