@@ -51,17 +51,21 @@ class GetRemoteNovelUseCase(
 		novel: NovelEntity,
 		loadChapters: Boolean = true,
 	): HResult<UpdatedNovelInfo> {
-		logI("Loading novel data from internet for $novel")
+		logI("Loading novel data from internet for ${novel.id}")
+		if (loadChapters) logI("And loading chapters for ${novel.id}")
+		else logI("and not loading chapters for ${novel.id}")
 		return getExt(novel.extensionID).transform { ext ->
 			nR.retrieveNovelInfo(ext, novel, loadChapters).transform { page ->
-				val currentStatus: Boolean = novel.loaded
+				val hadNovelBeenLoaded: Boolean = novel.loaded
 
 				// Fills the novel with new data
 				nR.updateNovelData(novel, page)
 
 				// If this novel has been loaded or not
 				if (loadChapters) {
-					if (currentStatus) {
+					if (!hadNovelBeenLoaded) {
+						// If the novel has not been loaded, just handle the chapters
+						logI("Novel has never been loaded, just inserting the chapters")
 						cR.handleChapters(
 							novelID = novel.id!!,
 							extensionID = novel.extensionID,
@@ -70,6 +74,8 @@ class GetRemoteNovelUseCase(
 							successResult(UpdatedNovelInfo())
 						}
 					} else {
+						// If the novel has been loaded, handle the chapters and set them as updates
+						logI("Novel has been loaded, sending update")
 						cR.handleChaptersReturn(
 							novelID = novel.id!!,
 							extensionID = novel.extensionID,
