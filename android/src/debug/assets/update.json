@@ -1,11 +1,8 @@
 {
-  "latestVersion": "1480",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1480/shosetsu-r1480.apk",
+  "latestVersion": "1489",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1489/shosetsu-r1489.apk",
   "releaseNotes": [
-    "- Fixed backspace confirm option",
-    "- Fixed chapters not being listed as updated",
-    "- Added novel updater results in notifications",
-    "- Added option to hide progress of novel updater",
-    "- Added option to use classic novel updater finale"
+    "- New error reporting server :D",
+    "- Fixes(?) crash when selecting in between"
   ]
 }
