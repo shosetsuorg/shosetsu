@@ -41,7 +41,7 @@ import java.util.*
  * shosetsu
  * 11 / 09 / 2020
  */
-class HtmlReader(itemView: View) : ReaderChapterViewHolder(itemView) {
+class HTMLReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	private val binding = ChapterReaderHtmlBinding.bind(itemView)
 	private val webView: WebView = binding.webView
 	private val host = binding.nestScrollableHost

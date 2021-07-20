@@ -4,7 +4,7 @@ import android.view.View
 import app.shosetsu.android.common.ext.logError
 import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
-import app.shosetsu.android.ui.reader.types.model.HtmlReader
+import app.shosetsu.android.ui.reader.types.model.HTMLReader
 import app.shosetsu.android.ui.reader.types.model.StringReader
 import app.shosetsu.common.domain.model.local.ReaderChapterEntity
 import app.shosetsu.common.dto.Convertible
@@ -67,8 +67,8 @@ data class ReaderChapterUI(
 
 	override fun getViewHolder(v: View): ReaderChapterViewHolder {
 		return when (chapterType) {
-			ChapterType.STRING -> if (!convertStringToHtml) StringReader(v) else HtmlReader(v)
-			ChapterType.HTML -> HtmlReader(v)
+			ChapterType.STRING -> if (!convertStringToHtml) StringReader(v) else HTMLReader(v)
+			ChapterType.HTML -> HTMLReader(v)
 			else -> TODO("Not implemented")
 		}
 	}
