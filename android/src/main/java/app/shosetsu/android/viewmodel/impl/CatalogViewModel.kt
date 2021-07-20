@@ -256,7 +256,6 @@ class CatalogViewModel(
 		}
 			?: this@CatalogViewModel.logE("Filter(${filter.id}) expected Boolean, received ${result.javaClass.simpleName}")
 
-		isChecked = filterDataState.getOrElse(filter.id) { filter.state } as Boolean
 		onChecked { _, isChecked ->
 			filterDataState[filter.id] = isChecked
 		}
