@@ -21,15 +21,12 @@ import app.shosetsu.lib.lua.ShosetsuLuaLib
 import app.shosetsu.lib.lua.shosetsuGlobals
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import okhttp3.OkHttpClient
-import org.acra.ACRA
-import org.acra.annotation.AcraCore
-import org.acra.annotation.AcraDialog
-import org.acra.config.CoreConfigurationBuilder
-import org.acra.config.HttpSenderConfigurationBuilder
+import org.acra.config.dialog
+import org.acra.config.httpSender
 import org.acra.data.StringFormat
-import org.acra.sender.HttpSender
+import org.acra.ktx.initAcra
+import org.acra.sender.HttpSender.Method
 import org.kodein.di.*
 import org.kodein.di.android.x.androidXModule
 
@@ -54,19 +51,12 @@ import org.kodein.di.android.x.androidXModule
  * shosetsu
  * 28 / 01 / 2020
  */
-@AcraCore(buildConfigClass = BuildConfig::class)
-@AcraDialog(
-	resCommentPrompt = R.string.crashCommentPromt,
-	resText = R.string.crashDialogText,
-	resTheme = R.style.AppTheme_CrashReport
-)
 class ShosetsuApplication : Application(), LifecycleEventObserver, DIAware,
 	Configuration.Provider {
 	private val extLibRepository by instance<IExtensionLibrariesRepository>()
 	private val okHttpClient by instance<OkHttpClient>()
 	private val startRepositoryUpdateManagerUseCase: StartRepositoryUpdateManagerUseCase by instance()
 
-	@ExperimentalCoroutinesApi
 	override val di: DI by DI.lazy {
 		bind<ViewModelFactory>() with singleton { ViewModelFactory(applicationContext) }
 		import(othersModule)
@@ -120,18 +110,21 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, DIAware,
 	}
 
 	private fun setupACRA() {
-		ACRA.init(
-			this,
-			CoreConfigurationBuilder(this).apply {
-				buildConfigClass = BuildConfig::class.java
-				reportFormat = StringFormat.JSON
-				getPluginConfigurationBuilder(HttpSenderConfigurationBuilder::class.java).apply {
-					httpMethod = HttpSender.Method.POST
-					uri = "https://technojo4.com/acra.php"
-					enabled = true
-				}
+		initAcra {
+			buildConfigClass = BuildConfig::class.java
+			reportFormat = StringFormat.JSON
+			dialog {
+				commentPrompt = getString(R.string.crashCommentPromt)
+				text = getString(R.string.crashDialogText)
+				resTheme = R.style.AppTheme_CrashReport
 			}
-		)
+			httpSender {
+				uri = "https://acra.shosetsu.app/report" /*best guess, you may need to adjust this*/
+				basicAuthLogin = BuildConfig.acraUsername
+				basicAuthPassword = BuildConfig.acraPassword
+				httpMethod = Method.POST
+			}
+		}
 	}
 
 	override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {}

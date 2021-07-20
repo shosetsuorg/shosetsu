@@ -1,5 +1,7 @@
 import com.android.build.gradle.api.BaseVariantOutput
+import org.jetbrains.kotlin.konan.properties.Properties
 import java.io.BufferedReader
+import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStreamReader
 
@@ -28,6 +30,10 @@ fun Process.getText(): String =
 @Throws(IOException::class)
 fun getCommitCount(): String = "git rev-list --count HEAD".execute().getText().trim()
 
+val acraPropertiesFile = rootProject.file("acra.properties")
+val acraProperties = Properties()
+acraProperties.load(FileInputStream(acraPropertiesFile))
+
 android {
 	compileSdkVersion(30)
 	defaultConfig {
@@ -44,6 +50,10 @@ android {
 				arguments += "room.schemaLocation" to "$projectDir/schemas"
 			}
 		}
+
+		buildConfigField("String", "acraUsername", acraProperties["username"].toString())
+		buildConfigField("String", "acraPassword", acraProperties["password"].toString())
+
 	}
 
 	buildFeatures {
@@ -88,8 +98,8 @@ android {
 		}
 	}
 	compileOptions {
-		targetCompatibility("1.8")
-		sourceCompatibility("1.8")
+		sourceCompatibility = JavaVersion.VERSION_1_8
+		targetCompatibility = JavaVersion.VERSION_1_8
 	}
 	kotlinOptions {
 		jvmTarget = "1.8"
@@ -211,8 +221,12 @@ dependencies {
 		"ch.acra:$module:$version"
 
 	implementation(acra("acra-http"))
-	implementation(acra("acra-mail"))
+	//implementation(acra("acra-mail"))
 	implementation(acra("acra-dialog"))
+
+	// Auto service
+	//kapt("com.google.auto.service:auto-service:+")
+	//compileOnly("com.google.auto.service:auto-service-annotations:1.0")
 
 	// Conductor
 	val conductorVersion = "3.0.1"

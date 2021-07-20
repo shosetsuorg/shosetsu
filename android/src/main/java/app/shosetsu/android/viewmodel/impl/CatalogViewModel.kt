@@ -456,8 +456,10 @@ class CatalogViewModel(
 		launchIO { setNovelUIType(cardType) }
 	}
 
-	override fun reportError(error: HResult.Error, isSilent: Boolean) =
-		reportExceptionUseCase(error)
+	override fun reportError(error: HResult.Error, isSilent: Boolean) {
+		logE("Exception", error.exception)
+		//reportExceptionUseCase(error)
+	}
 
 
 	private val novelCardTypeFlow = loadNovelUITypeUseCase()

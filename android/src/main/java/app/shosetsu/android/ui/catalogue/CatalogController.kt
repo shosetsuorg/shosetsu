@@ -271,7 +271,7 @@ class CatalogController(
 	}
 
 	override fun handleErrorResult(e: HResult.Error) {
-		viewModel.reportError(e)
+		logE("Exception", e.exception)
 	}
 
 	override fun showLoading() {
