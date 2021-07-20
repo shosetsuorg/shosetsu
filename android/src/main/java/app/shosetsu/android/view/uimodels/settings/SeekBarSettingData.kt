@@ -108,8 +108,8 @@ class SeekBarSettingData(id: Int) : BottomSettingsItemData(id) {
 			bubbleSeekBar.setCustomSectionTextArray(object : BubbleSeekBar.CustomSectionTextArray {
 				override fun onCustomize(
 					sectionCount: Int,
-					array: SparseArray<String?>
-				): SparseArray<String?> = array
+					ignored: SparseArray<String?>
+				): SparseArray<String?> = array as SparseArray<String?>
 			})
 			bubbleSeekBar.onProgressChangedListener =
 				object : BubbleSeekBar.OnProgressChangedListener {
