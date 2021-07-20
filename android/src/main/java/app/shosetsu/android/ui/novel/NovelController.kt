@@ -134,10 +134,6 @@ class NovelController(bundle: Bundle) :
 
 	private fun getChapters(): List<ChapterUI> = chapterUIAdapter.itemList.items
 
-	override fun hideFAB(fab: FloatingActionButton) {
-		super.hideFAB(fab)
-	}
-
 	override fun showFAB(fab: FloatingActionButton) {
 		if (actionMode == null) super.showFAB(fab)
 	}
@@ -321,11 +317,11 @@ class NovelController(bundle: Bundle) :
 			}
 			setView(numberPicker)
 
-			setPositiveButton(android.R.string.ok) { d, i ->
+			setPositiveButton(android.R.string.ok) { d, _ ->
 				viewModel.downloadNextCustomChapters(numberPicker.value)
 				d.dismiss()
 			}
-			setNegativeButton(android.R.string.cancel) { d, i ->
+			setNegativeButton(android.R.string.cancel) { d, _ ->
 				d.cancel()
 			}
 		}.show()
