@@ -22,3 +22,6 @@ android/database
 
 common/build/*
 common/build/intermediates/*
+
+# Secrets
+acra.properties
