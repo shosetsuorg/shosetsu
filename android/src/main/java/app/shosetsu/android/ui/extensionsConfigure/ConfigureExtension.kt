@@ -104,6 +104,7 @@ class ConfigureExtension(bundle: Bundle) :
 		}
 
 	override fun showEmpty() {
+		binding.settingsProgressBar.isVisible = false
 		binding.emptyDataView.show(R.string.controller_configure_extension_empty_settings)
 	}
 
@@ -127,6 +128,7 @@ class ConfigureExtension(bundle: Bundle) :
 	override fun updateUI(newList: List<SettingsItemData>) {
 		logD("updateUI with ${newList.size}")
 		super.updateUI(newList)
+		binding.settingsProgressBar.isVisible = false
 	}
 
 	override fun handleErrorResult(e: HResult.Error) {
