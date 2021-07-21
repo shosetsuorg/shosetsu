@@ -18,7 +18,6 @@ import app.shosetsu.common.dto.*
 import app.shosetsu.lib.Filter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
 /*
@@ -244,21 +243,19 @@ class GetExtensionSettingsUseCase(
 	private fun Array<Flow<SettingsItemData>>.combine(): Flow<List<SettingsItemData>> =
 		combine(*this) { it.toList() }
 
-	@ExperimentalCoroutinesApi
 	operator fun invoke(extensionID: Int): Flow<HResult<List<SettingsItemData>>> =
 		flow {
+			if (extensionID == -1) {
+				emit(empty)
+				return@flow
+			}
+
 			getExt(extensionID).handle(
-				onLoading = {
-					emit(loading)
-				},
-				onEmpty = {
-					emit(empty)
-				},
-				onError = {
-					emit(it)
-				}
+				onLoading = { emit(loading) },
+				onEmpty = { emit(empty) },
+				onError = { emit(it) }
 			) { extension ->
-				emitAll(extension.settingsModel.convert(extensionID).combine().mapLatestToSuccess())
+				emitAll(extension.settingsModel.convert(extensionID).combine().mapToSuccess())
 			}
 		}
 }

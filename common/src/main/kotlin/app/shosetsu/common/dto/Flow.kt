@@ -80,6 +80,10 @@ inline fun <reified I : Convertible<O>, reified O : Any> Flow<List<I>>.mapLatest
 inline fun <reified I> Flow<I>.mapLatestToSuccess(): HFlow<I> =
 	mapLatest { successResult(it) }
 
+/** Converts each value emitted by the [Flow] as an [HResult.Success] */
+inline fun <reified I> Flow<I>.mapToSuccess(): HFlow<I> =
+	map { successResult(it) }
+
 /** Converts a [HResult.Success] of a [List] of [Convertible]s from its [I] form to its [O] form */
 @ExperimentalCoroutinesApi
 inline fun <reified I : Convertible<O>, reified O : Any> HFlow<List<I>>.mapLatestResultListTo()
@@ -90,3 +94,7 @@ inline fun <reified I : Convertible<O>, reified O : Any> HFlow<List<I>>.mapLates
 @ExperimentalCoroutinesApi
 inline fun <reified I : Convertible<O>, reified O : Any> HFlow<I>.mapLatestResultTo()
 		: HFlow<O> = mapLatest { it.convertToSettingItems() }
+
+/** Converts a [HResult.Success] of a [Convertible] from its [I] form to its [O] form */
+inline fun <reified I : Convertible<O>, reified O : Any> HFlow<I>.mapResultTo()
+		: HFlow<O> = map { it.convertToSettingItems() }
