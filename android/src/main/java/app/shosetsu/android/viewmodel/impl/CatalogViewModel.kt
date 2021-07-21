@@ -345,7 +345,6 @@ class CatalogViewModel(
 					this.cancel("Extension not loaded")
 					return@launchIO
 				}
-				currentMaxPage++
 				itemsFlow.tryEmit(loading())
 
 				getDataLoaderAndLoad(queryFilter).handle(onError = {
@@ -360,6 +359,7 @@ class CatalogViewModel(
 					values.plusAssign(newList)
 					itemsFlow.tryEmit(successResult(values))
 				}
+				currentMaxPage++
 			}
 
 			private suspend fun getDataLoaderAndLoad(queryFilter: QueryFilter): HResult<List<ACatalogNovelUI>> {
