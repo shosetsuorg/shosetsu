@@ -72,19 +72,27 @@ class ConfigureExtension(bundle: Bundle) :
 		}
 	}
 
+	override fun onDestroyView(view: View) {
+		binding.imageView.setImageResource(R.drawable.animated_refresh)
+		binding.fileName.text = null
+		binding.identification.text = null
+		binding.language.text = null
+		binding.name.text = null
+		binding.uninstallButton.setOnClickListener(null)
+	}
+
 	private fun handleExtensionResult(result: HResult<ExtensionUI>) =
 		result.handle(
+			onEmpty = {
+				onDestroyView(binding.root)
+			},
 			onLoading = {
-				binding.imageView.setImageResource(R.drawable.animated_refresh)
-				binding.fileName.text = ""
-				binding.identification.text = ""
-				binding.language.text = ""
-				binding.name.text = ""
-				binding.uninstallButton.setOnClickListener {}
+				onDestroyView(binding.root)
 			}
 		) { extensionUI ->
 			if (!extensionUI.imageURL.isNullOrEmpty())
 				picasso(extensionUI.imageURL!!, binding.imageView)
+
 			binding.fileName.text = extensionUI.fileName
 			binding.identification.text = extensionUI.id.toString()
 			binding.language.text = extensionUI.lang
