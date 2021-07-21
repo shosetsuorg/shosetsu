@@ -254,8 +254,8 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 		UpdateLibraryFilterSettingsUseCase(instance())
 	}
 
-	bind<GetExtListingNamessUseCase>() with provider {
-		GetExtListingNamessUseCase(instance())
+	bind<GetExtListingNamesUseCase>() with provider {
+		GetExtListingNamesUseCase(instance())
 	}
 
 	bind<UpdateExtSelectedListing>() with provider {

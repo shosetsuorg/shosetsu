@@ -25,7 +25,7 @@ import app.shosetsu.common.dto.transformToSuccess
  *
  * Returns a list of a
  */
-class GetExtListingNamessUseCase(
+class GetExtListingNamesUseCase(
 	private val getExt: GetExtensionUseCase
 ) {
 

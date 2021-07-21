@@ -135,14 +135,13 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 	bind<AExtensionConfigureViewModel>() with provider {
 		ExtensionConfigureViewModel(
 			application = instance(),
-			loadExtensionUIUI = instance(),
-			updateExtensionEntityUseCase = instance(),
-			uninstallExtensionUIUseCase = instance(),
-			getExtensionSettings = instance(),
-			reportExceptionUseCase = instance(),
-			getExtListNames = instance(),
-			updateExtSelectedListing = instance(),
-			getExtSelectedListing = instance()
+			instance(),
+			instance(),
+			instance(),
+			instance(),
+			instance(),
+			instance(),
+			instance()
 		)
 	}
 
