@@ -2,6 +2,7 @@ package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.empty
 
 /*
  * This file is part of Shosetsu.
@@ -26,6 +27,10 @@ import app.shosetsu.common.dto.HResult
 class GetExtSelectedListingUseCase(
 	private val iExtensionSettingsRepository: IExtensionSettingsRepository
 ) {
-	suspend operator fun invoke(extensionID: Int): HResult<Int> =
-		iExtensionSettingsRepository.getSelectedListing(extensionID)
+	suspend operator fun invoke(extensionId: Int): HResult<Int> {
+		if (extensionId == -1)
+			return empty
+
+		return iExtensionSettingsRepository.getSelectedListing(extensionId)
+	}
 }

@@ -1,7 +1,8 @@
 package app.shosetsu.android.domain.usecases.update
 
-import app.shosetsu.android.common.ext.logV
 import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.empty
 
 /*
  * This file is part of Shosetsu.
@@ -26,12 +27,11 @@ import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
 class UpdateExtSelectedListing(
 	private val iExtensionSettingsRepository: IExtensionSettingsRepository
 ) {
-	suspend operator fun invoke(extensionID: Int, selectedListing: Int) =
-		logV("Setting $extensionID to $selectedListing").let {
-			iExtensionSettingsRepository.setSelectedListing(
-				extensionID,
-				selectedListing
-			)
-		}
+	suspend operator fun invoke(extensionID: Int, selectedListing: Int): HResult<*> {
+		if (extensionID == -1)
+			return empty
+
+		return iExtensionSettingsRepository.setSelectedListing(extensionID, selectedListing)
+	}
 
 }
