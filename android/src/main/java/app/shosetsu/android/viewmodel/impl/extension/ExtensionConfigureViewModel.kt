@@ -143,7 +143,9 @@ class ExtensionConfigureViewModel(
 	}
 
 	override fun uninstall(extensionUI: ExtensionUI) {
-		uninstallExtensionUIUseCase(extensionUI)
+		launchIO {
+			uninstallExtensionUI(extensionUI)
+		}
 	}
 
 	override fun destroy() {

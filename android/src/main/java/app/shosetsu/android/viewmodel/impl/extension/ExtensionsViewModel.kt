@@ -59,8 +59,11 @@ class ExtensionsViewModel(
 		}
 	}
 
-	override fun uninstallExtension(extensionUI: ExtensionUI): Unit =
-		uninstallExtensionUIUseCase(extensionUI)
+	override fun uninstallExtension(extensionUI: ExtensionUI) {
+		launchIO {
+			uninstallExtensionUIUseCase(extensionUI)
+		}
+	}
 
 	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<List<ExtensionUI>>> by lazy {
