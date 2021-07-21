@@ -45,17 +45,18 @@ class GetCatalogueListingDataUseCase(
 		data: Map<Int, Any>
 	): HResult<List<ACatalogNovelUI>> =
 		settingsRepo.getInt(SettingKey.SelectedNovelCardType).transform { cardType ->
-			extSettingsRepo.getSelectedListing(iExtension.formatterID).transform {
-				// Load catalogue data
+			extSettingsRepo.getSelectedListing(iExtension.formatterID)
+				.transform { selectedListing ->
+					// Load catalogue data
 
-				novelsRepository.getCatalogueData(
-					iExtension,
-					0,
-					data
-				).transform { list ->
-					successResult(list.map { novelListing ->
-						novelListing.convertTo(iExtension)
-					}.mapNotNull { ne ->
+					novelsRepository.getCatalogueData(
+						iExtension,
+						selectedListing,
+						data
+					).transform { list ->
+						successResult(list.map { novelListing ->
+							novelListing.convertTo(iExtension)
+						}.mapNotNull { ne ->
 						// For each, insert and return a stripped card
 						// This operation is to pre-cache URL and ID so loading occurs smoothly
 						novelsRepository.insertReturnStripped(ne).transmogrify { result ->
