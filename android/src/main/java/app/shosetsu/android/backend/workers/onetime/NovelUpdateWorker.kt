@@ -37,6 +37,7 @@ import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
+import kotlin.coroutines.cancellation.CancellationException
 
 /*
  * This file is part of shosetsu.
@@ -148,7 +149,11 @@ class NovelUpdateWorker(
 				}
 
 				loadRemoteNovelUseCase(nE, true).handle(
-					onError = {
+					onError = onError@{
+						if (it.exception is CancellationException) {
+							logE("Job was canceled", it.exception)
+							return@onError
+						}
 						logE("Failed to load novel: $nE", it.exception)
 						notify(
 							"${it.code} : ${it.message}",
