@@ -293,7 +293,6 @@ class CatalogViewModel(
 
 	private var stateManager = StateManager()
 
-
 	/**
 	 * Handles the current state of the UI
 	 */
@@ -394,7 +393,6 @@ class CatalogViewModel(
 		var filters: Map<Int, Any>
 	)
 
-
 	override fun setExtensionID(extensionID: Int) {
 		when {
 			extensionIDFlow.value == -1 ->
@@ -440,6 +438,7 @@ class CatalogViewModel(
 		queryState = ""
 		extensionIDFlow.value = -1
 		itemsFlow.tryEmit(successResult(arrayListOf()))
+		itemsFlow.tryEmit(loading)
 		stateManager = StateManager()
 	}
 
