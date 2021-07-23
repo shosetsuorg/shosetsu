@@ -32,7 +32,9 @@ fun getCommitCount(): String = "git rev-list --count HEAD".execute().getText().t
 
 val acraPropertiesFile = rootProject.file("acra.properties")
 val acraProperties = Properties()
-acraProperties.load(FileInputStream(acraPropertiesFile))
+
+if (acraPropertiesFile.exists())
+	acraProperties.load(FileInputStream(acraPropertiesFile))
 
 android {
 	compileSdkVersion(30)
@@ -51,8 +53,8 @@ android {
 			}
 		}
 
-		buildConfigField("String", "acraUsername", acraProperties["username"].toString())
-		buildConfigField("String", "acraPassword", acraProperties["password"].toString())
+		buildConfigField("String", "acraUsername", acraProperties["username"]?.toString() ?: "")
+		buildConfigField("String", "acraPassword", acraProperties["password"]?.toString() ?: "")
 
 	}
 
