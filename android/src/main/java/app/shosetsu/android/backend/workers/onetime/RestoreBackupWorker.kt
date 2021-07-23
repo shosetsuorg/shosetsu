@@ -223,8 +223,14 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 							chaptersRepo.handleChapters(
 								novelID = targetNovelID,
 								extensionID = extensionID,
-								list = siteNovel.chapters
-							)
+								list = siteNovel.chapters.distinctBy { it.link }
+							).handle(
+								onError = {
+									logE("Failed to handle chapters", it.exception)
+								}
+							) {
+								logI("Inserted new chapters")
+							}
 						} else {
 							// Get the novelID from the present novels, or just end this update
 							repoNovels.find { it.extensionID == extensionEntity.id && it.url == bNovelURL }?.id?.let { it ->
