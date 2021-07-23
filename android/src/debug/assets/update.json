@@ -1,8 +1,14 @@
 {
-  "latestVersion": "1489",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1489/shosetsu-r1489.apk",
+  "latestVersion": "1508",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1508/shosetsu-r1508.apk",
   "releaseNotes": [
-    "- New error reporting server :D",
-    "- Fixes(?) crash when selecting in between"
+    "- Fix backup restore",
+    "- Fix bug in catalogue when switch filter had its default value as an integer",
+    "- Fix incorrect customized marks for slider settings",
+    "- Remove indent & margin multiplier from HtmlReader",
+    "- Fix CatalogViewModel not loading page 0",
+    "- Add proper view destruction in the configure extension view",
+    "- Fix listing selection in catalogue",
+    "- Hopefully patch JobCancellationException when updating (no ui feedback when it occurs yet)"
   ]
 }
