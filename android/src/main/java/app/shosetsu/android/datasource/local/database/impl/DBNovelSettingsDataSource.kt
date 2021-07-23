@@ -56,7 +56,7 @@ class DBNovelSettingsDataSource(
 		}
 
 	override suspend fun get(novelID: Int): HResult<NovelSettingEntity> = try {
-		successResult(dao.get(novelID).convertTo())
+		dao.get(novelID)?.let { successResult(it.convertTo()) } ?: emptyResult()
 	} catch (e: SQLiteException) {
 		errorResult(e)
 	}
