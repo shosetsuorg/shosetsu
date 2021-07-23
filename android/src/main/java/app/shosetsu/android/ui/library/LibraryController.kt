@@ -342,7 +342,9 @@ class LibraryController
 	}
 
 	override fun handleErrorResult(e: HResult.Error) {
-		TODO("Not yet implemented")
+		logE("Error occurred", e.exception)
+		viewModel.reportError(e)
+		makeSnackBar(e.message)?.show()
 	}
 
 }
