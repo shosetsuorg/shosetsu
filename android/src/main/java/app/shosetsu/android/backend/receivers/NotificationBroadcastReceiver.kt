@@ -1,0 +1,68 @@
+package app.shosetsu.android.backend.receivers
+
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import app.shosetsu.android.backend.workers.onetime.DownloadWorker
+import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
+
+/*
+ * This file is part of shosetsu.
+ *
+ * shosetsu is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * shosetsu is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * Shosetsu
+ *
+ * @since 23 / 07 / 2021
+ * @author Doomsdayrs
+ */
+class NotificationBroadcastReceiver : BroadcastReceiver() {
+
+	override fun onReceive(context: Context?, intent: Intent?) {
+		if (context == null) return
+		if (intent == null) return
+		val di by closestDI(context)
+		val notificationManager by lazy { NotificationManagerCompat.from(context) }
+
+		when (intent.action) {
+			NovelUpdateWorker.ACTION_CANCEL_NOVEL_UPDATE -> {
+				val manager by di.instance<NovelUpdateWorker.Manager>()
+				manager.stop()
+				notificationManager.cancel(
+					intent.getIntExtra(
+						NotificationCompat.EXTRA_NOTIFICATION_ID,
+						-1
+					)
+				)
+			}
+			DownloadWorker.ACTION_CANCEL_CHAPTER_DOWNLOAD -> {
+				val manager by di.instance<DownloadWorker.Manager>()
+				manager.stop()
+				notificationManager.cancel(
+					intent.getIntExtra(
+						NotificationCompat.EXTRA_NOTIFICATION_ID,
+						-1
+					)
+				)
+			}
+		}
+	}
+
+}

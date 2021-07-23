@@ -1,16 +1,20 @@
 package app.shosetsu.android.backend.workers.onetime
 
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.EXTRA_NOTIFICATION_ID
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import androidx.work.ExistingWorkPolicy.REPLACE
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
+import app.shosetsu.android.backend.receivers.NotificationBroadcastReceiver
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
 import app.shosetsu.android.common.consts.LogConstants
@@ -74,13 +78,30 @@ class NovelUpdateWorker(
 	override val defaultNotificationID: Int = ID_CHAPTER_UPDATE
 
 	override val notificationManager: NotificationManagerCompat by notificationManager()
+
+	private fun NotificationCompat.Builder.addCancelAction() {
+		addAction(
+			R.drawable.ic_baseline_cancel_24, getString(android.R.string.cancel),
+			PendingIntent.getBroadcast(
+				applicationContext,
+				0,
+				Intent(applicationContext, NotificationBroadcastReceiver::class.java).apply {
+					action = ACTION_CANCEL_NOVEL_UPDATE
+					putExtra(EXTRA_NOTIFICATION_ID, defaultNotificationID)
+
+				},
+				0
+			)
+		)
+	}
+
+
 	override val baseNotificationBuilder: NotificationCompat.Builder
 		get() = notificationBuilder(applicationContext, CHANNEL_UPDATE)
 			.setSmallIcon(R.drawable.refresh)
 			.setSubText(applicationContext.getString(R.string.update_novel))
 			.setContentText("Update in progress")
 			.setOnlyAlertOnce(true)
-
 
 	override val di: DI by closestDI(appContext)
 
@@ -111,6 +132,7 @@ class NovelUpdateWorker(
 		// Notify the user the worker is working
 		notify(R.string.update) {
 			setOngoing()
+			addCancelAction()
 		}
 
 		/** Count of novels that have been updated */
@@ -142,10 +164,12 @@ class NovelUpdateWorker(
 						setProgress(novels.size, progress, false)
 						setOngoing()
 						setSilent(true)
+						addCancelAction()
 					}
 				} else notify(R.string.worker_novel_updating_silent) {
 					setOngoing()
 					setSilent(true)
+					addCancelAction()
 				}
 
 				loadRemoteNovelUseCase(nE, true).handle(
@@ -168,6 +192,7 @@ class NovelUpdateWorker(
 
 							setNotOngoing()
 							removeProgress()
+							addCancelAction()
 							this.priority = NotificationCompat.PRIORITY_HIGH
 						}
 					}
@@ -305,6 +330,7 @@ class NovelUpdateWorker(
 	}
 
 	companion object {
+		const val ACTION_CANCEL_NOVEL_UPDATE = "shosetsu_action_cancel_novel_update"
 		const val KEY_TARGET: String = "Target"
 		const val KEY_CHAPTERS: String = "Novels"
 

@@ -1,13 +1,17 @@
 package app.shosetsu.android.backend.workers.onetime
 
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.EXTRA_NOTIFICATION_ID
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
+import app.shosetsu.android.backend.receivers.NotificationBroadcastReceiver
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_DOWNLOAD
@@ -60,6 +64,21 @@ class DownloadWorker(
 	override val defaultNotificationID: Int = ID_CHAPTER_DOWNLOAD
 
 	override val notificationManager: NotificationManagerCompat by notificationManager()
+
+	private fun NotificationCompat.Builder.addCancelAction() {
+		addAction(
+			R.drawable.ic_baseline_cancel_24, getString(android.R.string.cancel),
+			PendingIntent.getBroadcast(
+				applicationContext,
+				0,
+				Intent(applicationContext, NotificationBroadcastReceiver::class.java).apply {
+					action = ACTION_CANCEL_CHAPTER_DOWNLOAD
+					putExtra(EXTRA_NOTIFICATION_ID, defaultNotificationID)
+				},
+				0
+			)
+		)
+	}
 
 	override val baseNotificationBuilder: NotificationCompat.Builder
 		get() = notificationBuilder(applicationContext, CHANNEL_DOWNLOAD)
@@ -273,6 +292,7 @@ class DownloadWorker(
 			// Notifies that application is downloading chapters
 			notify("Downloading chapters") {
 				setOngoing()
+				addCancelAction()
 			}
 
 			// Will not run if there are no downloads to complete or if the download is paused
@@ -364,5 +384,9 @@ class DownloadWorker(
 		 * Stops the service.
 		 */
 		override fun stop(): Operation = workerManager.cancelUniqueWork(DOWNLOAD_WORK_ID)
+	}
+
+	companion object {
+		const val ACTION_CANCEL_CHAPTER_DOWNLOAD = "shosetsu_action_cancel_chapter_download"
 	}
 }
