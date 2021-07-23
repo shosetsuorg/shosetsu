@@ -7,9 +7,7 @@ import app.shosetsu.common.datasource.memory.base.IMemExtLibDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteExtLibDataSource
 import app.shosetsu.common.domain.model.local.ExtLibEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionLibrariesRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.*
 import app.shosetsu.lib.Version
 import app.shosetsu.lib.json.J_VERSION
 import org.json.JSONException
@@ -51,26 +49,27 @@ class ExtensionLibrariesRepository(
 	override suspend fun installExtLibrary(
 		repoURL: String,
 		extLibEntity: ExtLibEntity,
-	): HResult<*> {
-		remoteSource.downloadLibrary(repoURL, extLibEntity).handle {
+	): HResult<*> =
+		remoteSource.downloadLibrary(repoURL, extLibEntity).transform {
 			val data = it
 			val json = JSONObject(data.substring(0, data.indexOf("\n")).replace("--", "").trim())
 			try {
 				extLibEntity.version = Version(json.getString(J_VERSION))
-				databaseSource.updateOrInsert(extLibEntity)
-				memSource.setLibrary(extLibEntity.scriptName, data)
-				fileSource.writeExtLib(extLibEntity.scriptName, data)
+				databaseSource.updateOrInsert(extLibEntity).ifSo {
+					memSource.setLibrary(extLibEntity.scriptName, data).ifSo {
+						fileSource.writeExtLib(extLibEntity.scriptName, data)
+					}
+				}
 			} catch (e: JSONException) {
-				return errorResult(e)
+				errorResult(e)
 			}
 		}
-		return successResult("")
-	}
 
 	override fun blockingLoadExtLibrary(name: String): HResult<String> =
-		memSource.loadLibrary(name).takeIf { it is HResult.Success }
-			?: fileSource.blockingLoadLib(name).also {
-				if (it is HResult.Success)
-					memSource.setLibrary(name, it.data)
+		memSource.loadLibrary(name).catch {
+			fileSource.blockingLoadLib(name).transform {
+				memSource.setLibrary(name, it)
+				successResult(it)
 			}
+		}
 }
