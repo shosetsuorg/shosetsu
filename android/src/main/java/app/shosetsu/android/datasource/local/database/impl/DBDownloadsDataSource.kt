@@ -78,7 +78,7 @@ class DBDownloadsDataSource(
 	}
 
 	override suspend fun loadDownload(chapterID: Int): HResult<DownloadEntity> = try {
-		successResult(downloadsDao.loadDownload(chapterID).convertTo())
+		downloadsDao.loadDownload(chapterID)?.let { successResult(it.convertTo()) } ?: emptyResult()
 	} catch (e: Exception) {
 		e.toHError()
 	}
