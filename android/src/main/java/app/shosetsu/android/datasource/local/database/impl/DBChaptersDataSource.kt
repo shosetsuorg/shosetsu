@@ -58,7 +58,7 @@ class DBChaptersDataSource(
 	}
 
 	override suspend fun getChapter(chapterID: Int): HResult<ChapterEntity> = try {
-		successResult(chaptersDao.getChapter(chapterID).convertTo())
+		chaptersDao.getChapter(chapterID)?.let { successResult(it.convertTo()) } ?: emptyResult()
 	} catch (e: Exception) {
 		e.toHError()
 	}

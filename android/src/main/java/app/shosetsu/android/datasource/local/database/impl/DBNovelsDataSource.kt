@@ -13,6 +13,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 /*
  * This file is part of shosetsu.
@@ -56,7 +57,7 @@ class DBNovelsDataSource(
 	}
 
 	override suspend fun getNovel(novelID: Int): HResult<NovelEntity> = try {
-		successResult(novelsDao.getNovel(novelID).convertTo())
+		novelsDao.getNovel(novelID)?.let { successResult(it.convertTo()) } ?: emptyResult()
 	} catch (e: Exception) {
 		e.toHError()
 	}
@@ -64,7 +65,11 @@ class DBNovelsDataSource(
 	@ExperimentalCoroutinesApi
 	override suspend fun getNovelFlow(novelID: Int): Flow<HResult<NovelEntity>> = flow {
 		try {
-			emitAll(novelsDao.getNovelFlow(novelID).mapLatestTo().mapLatestToSuccess())
+			emitAll(
+				novelsDao.getNovelFlow(novelID).map {
+					it?.let { successResult(it.convertTo()) } ?: emptyResult()
+				}
+			)
 		} catch (e: Exception) {
 			emit(e.toHError())
 		}
@@ -87,7 +92,9 @@ class DBNovelsDataSource(
 	override suspend fun insertReturnStripped(
 		novelEntity: NovelEntity,
 	): HResult<StrippedNovelEntity> = try {
-		successResult(novelsDao.insertReturnStripped(novelEntity.toDB()).convertTo())
+		novelsDao.insertReturnStripped(novelEntity.toDB())?.let {
+			successResult(it.convertTo())
+		} ?: emptyResult()
 	} catch (e: Exception) {
 		e.toHError()
 	}

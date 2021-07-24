@@ -40,23 +40,24 @@ import kotlinx.coroutines.flow.Flow
 interface RepositoryDao : BaseDao<DBRepositoryEntity> {
 	@Throws(SQLiteException::class)
 	@Transaction
-	suspend fun insertRepositoryAndReturn(DBRepositoryEntity: DBRepositoryEntity): DBRepositoryEntity =
-		loadRepositoryFromROWID(insertReplace(DBRepositoryEntity))
+	suspend fun insertRepositoryAndReturn(
+		entity: DBRepositoryEntity
+	): DBRepositoryEntity? = loadRepositoryFromROWID(insertReplace(entity))
 
 	/**
 	 * Run only if you know for sure the data exists
 	 */
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM repositories WHERE url = :url LIMIT 1")
-	fun loadRepositoryFromURL(url: String): DBRepositoryEntity
+	fun loadRepositoryFromURL(url: String): DBRepositoryEntity?
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM repositories WHERE id = :rowID LIMIT 1")
-	fun loadRepositoryFromROWID(rowID: Long): DBRepositoryEntity
+	fun loadRepositoryFromROWID(rowID: Long): DBRepositoryEntity?
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM repositories WHERE id = :repositoryID LIMIT 1")
-	fun loadRepositoryFromID(repositoryID: Int): DBRepositoryEntity
+	fun loadRepositoryFromID(repositoryID: Int): DBRepositoryEntity?
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM repositories ORDER BY id ASC")
@@ -72,7 +73,7 @@ interface RepositoryDao : BaseDao<DBRepositoryEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT COUNT(*), id FROM repositories WHERE url = :url LIMIT 1")
-	fun repositoryCountAndROWIDFromURL(url: String): CountIDTuple
+	fun repositoryCountAndROWIDFromURL(url: String): CountIDTuple?
 
 	@Ignore
 	@Throws(SQLiteException::class)
@@ -107,9 +108,11 @@ interface RepositoryDao : BaseDao<DBRepositoryEntity> {
 	@Transaction
 	@Throws(SQLiteException::class)
 	suspend fun createIfNotExist(DBRepositoryEntity: DBRepositoryEntity): Int {
-		val tuple = repositoryCountAndROWIDFromURL(DBRepositoryEntity.url)
-		if (tuple.count == 0)
-			return insertRepositoryAndReturn(DBRepositoryEntity).id!!
-		return tuple.id
+		repositoryCountAndROWIDFromURL(DBRepositoryEntity.url)?.let { tuple ->
+			if (tuple.count == 0)
+				return insertRepositoryAndReturn(DBRepositoryEntity)?.id ?: -1
+			return tuple.id
+		}
+		return -1
 	}
 }

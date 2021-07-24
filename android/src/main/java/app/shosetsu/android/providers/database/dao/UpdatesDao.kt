@@ -3,14 +3,10 @@ package app.shosetsu.android.providers.database.dao
 import android.database.sqlite.SQLiteException
 import androidx.room.Dao
 import androidx.room.Query
-import androidx.room.Transaction
-import app.shosetsu.android.common.ext.trimDate
 import app.shosetsu.android.domain.model.database.DBUpdate
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import kotlinx.coroutines.flow.Flow
-import org.joda.time.DateTime
-import org.joda.time.Days
 
 /*
  * This file is part of shosetsu.
@@ -45,56 +41,6 @@ interface UpdatesDao : BaseDao<DBUpdate> {
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM updates")
 	fun loadUpdates(): Flow<List<DBUpdate>>
-
-	@Throws(SQLiteException::class)
-	@Query("SELECT time FROM updates ORDER BY ROWID DESC LIMIT 1")
-	fun loadLatestDayTime(): Long
-
-	@Throws(SQLiteException::class)
-	suspend fun getStartingDayTime(): Long =
-		DateTime(loadStartingDayTime()).trimDate().millis
-
-	@Throws(SQLiteException::class)
-	fun getLatestDayTime(): Long =
-		DateTime(loadLatestDayTime()).trimDate().millis
-
-	@Throws(SQLiteException::class)
-	@Query("SELECT COUNT(*) FROM updates WHERE time < :date2 AND time >= :date1")
-	fun loadDayCountBetweenDates(date1: Long, date2: Long): Int
-
-	/**
-	 * Raw query without checking dates
-	 */
-	@Throws(SQLiteException::class)
-	@Query("SELECT * FROM updates WHERE time < :date2 AND time >= :date1")
-	fun loadUpdatesBetweenDates(date1: Long, date2: Long): Flow<Array<DBUpdate>>
-
-	@Transaction
-	@Throws(SQLiteException::class)
-	suspend fun getTotalDays(): Int {
-		val firstDay = DateTime(getStartingDayTime())
-		val latest = DateTime(getLatestDayTime())
-		return Days.daysBetween(firstDay, latest).days
-	}
-
-
-	@Query("DELETE FROM updates WHERE novelID = :novelID")
-	@Throws(SQLiteException::class)
-	fun deleteUpdateByNovelID(novelID: Int)
-
-	@Transaction
-	@Throws(SQLiteException::class)
-	fun removeDaysWithoutUpdates(list: ArrayList<Long>): ArrayList<Long> {
-		for (x in list.size - 1 downTo 1) {
-			val updateDate = list[x]
-			val c = loadDayCountBetweenDates(
-				updateDate,
-				updateDate + 86399999
-			)
-			if (c <= 0) list.removeAt(x)
-		}
-		return list
-	}
 
 	@Throws(SQLiteException::class)
 	@Query(

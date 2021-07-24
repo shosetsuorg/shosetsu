@@ -53,9 +53,8 @@ class DBExtRepoDataSource(
 	}
 
 	override suspend fun loadRepository(repoID: Int): HResult<RepositoryEntity> = try {
-		successResult(
-			repositoryDao.loadRepositoryFromID(repoID).convertTo()
-		)
+		repositoryDao.loadRepositoryFromID(repoID)?.let { successResult(it.convertTo()) }
+			?: emptyResult()
 	} catch (e: Exception) {
 		e.toHError()
 	}

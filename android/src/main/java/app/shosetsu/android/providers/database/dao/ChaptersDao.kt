@@ -69,14 +69,14 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 	 */
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM chapters WHERE id = :chapterID LIMIT 1")
-	suspend fun getChapter(chapterID: Int): DBChapterEntity
+	suspend fun getChapter(chapterID: Int): DBChapterEntity?
 
 	/**
 	 * Get a chapter by its rowId
 	 */
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM chapters WHERE _rowid_ = :rowId LIMIT 1")
-	suspend fun getChapter(rowId: Long): DBChapterEntity
+	suspend fun getChapter(rowId: Long): DBChapterEntity?
 
 	//# Transactions
 
@@ -86,14 +86,15 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 	@Transaction
 	@Throws(SQLiteException::class)
 	suspend fun update(entity: ReaderChapterEntity) {
-		val updatedChapter: DBChapterEntity =
-			getChapter(entity.id)
-				.copy(
-					readingPosition = entity.readingPosition,
-					readingStatus = entity.readingStatus,
-					bookmarked = entity.bookmarked
-				)
-		update(updatedChapter)
+		val updatedChapter: DBChapterEntity? =
+			getChapter(entity.id)?.copy(
+				readingPosition = entity.readingPosition,
+				readingStatus = entity.readingStatus,
+				bookmarked = entity.bookmarked
+			)
+		updatedChapter?.let {
+			update(it)
+		}
 	}
 
 	/**
@@ -149,13 +150,15 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 					chapterEntity = dbChapterEntity,
 					newData = novelChapter
 				)
-			} ?: newChapters.add(
+			} ?: run {
 				insertReturn(
 					novelID = novelId,
 					extensionID = extensionId,
 					novelChapter = novelChapter
-				)
-			)
+				)?.let {
+					newChapters.add(it)
+				}
+			}
 		}
 		return newChapters
 	}
@@ -171,7 +174,7 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 		novelID: Int,
 		extensionID: Int,
 		novelChapter: Novel.Chapter,
-	): DBChapterEntity =
+	): DBChapterEntity? =
 		insertAbort(
 			novelChapter = novelChapter,
 			novelID = novelID,

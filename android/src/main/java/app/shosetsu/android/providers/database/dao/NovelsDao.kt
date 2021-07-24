@@ -45,11 +45,11 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
-	fun getNovel(novelID: Int): DBNovelEntity
+	fun getNovel(novelID: Int): DBNovelEntity?
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
-	fun getNovelFlow(novelID: Int): Flow<DBNovelEntity>
+	fun getNovelFlow(novelID: Int): Flow<DBNovelEntity?>
 
 	@Throws(SQLiteException::class)
 	@Query(
@@ -73,19 +73,18 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT id,title,imageURL,bookmarked FROM novels WHERE _rowid_ = :rowID LIMIT 1")
-	fun loadDBStrippedNovelEntityViaRow(rowID: Long): DBStrippedNovelEntity
-
+	fun loadDBStrippedNovelEntityViaRow(rowID: Long): DBStrippedNovelEntity?
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT id,title,imageURL,bookmarked FROM novels WHERE id = :id LIMIT 1")
-	fun loadDBStrippedNovelEntity(id: Int): DBStrippedNovelEntity
+	fun loadDBStrippedNovelEntity(id: Int): DBStrippedNovelEntity?
 
 	@Query("SELECT id FROM novels WHERE url = :novelURL AND formatterID = :extensionID LIMIT 1")
 	fun loadNovelID(novelURL: String, extensionID: Int): Int?
 
 	@Transaction
 	@Throws(SQLiteException::class)
-	suspend fun insertReturnStripped(entity: DBNovelEntity): DBStrippedNovelEntity =
+	suspend fun insertReturnStripped(entity: DBNovelEntity): DBStrippedNovelEntity? =
 		loadNovelID(entity.url, entity.extensionID)?.let { id ->
 			loadDBStrippedNovelEntity(id)
 		} ?: loadDBStrippedNovelEntityViaRow(insertAbort(entity))
@@ -94,18 +93,17 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 	@Throws(SQLiteException::class)
 	suspend fun update(list: List<LibraryNovelEntity>) {
 		list.forEach { bookMarked ->
-			update(
-				getNovel(bookMarked.id).copy(
-					bookmarked = bookMarked.bookmarked
-				)
-			)
+			getNovel(bookMarked.id)?.copy(
+				bookmarked = bookMarked.bookmarked
+			)?.let {
+				update(it)
+			}
 		}
 	}
 
 	@Throws(SQLiteException::class)
 	@Query("DELETE FROM novels WHERE bookmarked = 0")
 	fun clearUnBookmarkedNovels()
-
 
 	@Query("SELECT * FROM novels")
 	fun loadNovels(): List<DBNovelEntity>
