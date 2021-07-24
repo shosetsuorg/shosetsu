@@ -10,7 +10,9 @@ import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
+import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_URL
+import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityWebviewBinding
@@ -102,8 +104,14 @@ class WebViewApp : AppCompatActivity(), DIAware {
 				}
 			}
 		}
-		binding.webview.loadUrl(intent.getStringExtra(BUNDLE_URL)!!)
-
+		intent.getStringExtra(BUNDLE_URL)?.let {
+			binding.webview.loadUrl(it)
+		} ?: run {
+			launchUI {
+				(parent as? MainActivity)?.makeSnackBar(R.string.activity_webview_null_url)?.show()
+			}
+			onBackPressed()
+		}
 	}
 
 	enum class Actions(val action: Int) {
