@@ -57,6 +57,13 @@ class DBChaptersDataSource(
 		e.toHError()
 	}
 
+	override suspend fun getChaptersByExtension(extensionId: Int): HResult<List<ChapterEntity>> =
+		try {
+			successResult(chaptersDao.getChaptersByExtension(extensionId).convertList())
+		} catch (e: Exception) {
+			e.toHError()
+		}
+
 	override suspend fun getChapter(chapterID: Int): HResult<ChapterEntity> = try {
 		chaptersDao.getChapter(chapterID)?.let { successResult(it.convertTo()) } ?: emptyResult()
 	} catch (e: Exception) {

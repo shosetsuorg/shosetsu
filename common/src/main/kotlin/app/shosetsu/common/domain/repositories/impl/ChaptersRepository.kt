@@ -127,6 +127,9 @@ class ChaptersRepository(
 	override suspend fun getChapters(novelID: Int): HResult<List<ChapterEntity>> =
 		dbSource.getChapters(novelID)
 
+	override suspend fun getChaptersByExtension(extensionId: Int): HResult<List<ChapterEntity>> =
+		dbSource.getChaptersByExtension(extensionId)
+
 	override suspend fun updateChapter(chapterEntity: ChapterEntity): HResult<*> =
 		dbSource.updateChapter(chapterEntity)
 

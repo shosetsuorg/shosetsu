@@ -167,14 +167,20 @@ class ExtensionsRepository(
 					extensionEntity.imageURL = iExt.imageURL
 					extensionEntity.installed = true
 					extensionEntity.enabled = true
+					val oldType = extensionEntity.chapterType
 
-					val deleteChapters = extensionEntity.chapterType != iExt.chapterType
+					val deleteChapters = oldType != iExt.chapterType
+
 					extensionEntity.chapterType = iExt.chapterType
 
 					dbSource.updateExtension(extensionEntity)
 
-					successResult(IExtensionsRepository.InstallExtensionFlags(deleteChapters))
-
+					successResult(
+						IExtensionsRepository.InstallExtensionFlags(
+							deleteChapters,
+							oldType
+						)
+					)
 				} catch (e: IllegalArgumentException) {
 					errorResult(ERROR_LUA_BROKEN, e)
 				} catch (e: Exception) {

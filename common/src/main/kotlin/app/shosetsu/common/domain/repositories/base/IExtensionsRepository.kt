@@ -4,6 +4,7 @@ import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.domain.model.local.StrippedExtensionEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.IExtension
+import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -105,9 +106,14 @@ interface IExtensionsRepository {
 
 	/**
 	 * Flags returned after installing an extension
+	 *
+	 * @param deleteChapters True if old chapters should be deleted
+	 * @param oldType not null if [deleteChapters] is true,
+	 *  otherwise provides the expected type to delete
 	 */
 	data class InstallExtensionFlags(
-		val deleteChapters: Boolean
+		val deleteChapters: Boolean,
+		val oldType: Novel.ChapterType? = null
 	)
 
 	/**

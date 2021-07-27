@@ -12,10 +12,7 @@ import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.WorkerTags.EXTENSION_INSTALL_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.common.consts.settings.SettingKey.NotifyExtensionDownload
-import app.shosetsu.common.domain.repositories.base.IExtensionDownloadRepository
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
+import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.ifSo
 import app.shosetsu.common.dto.successResult
@@ -58,6 +55,7 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 	private val extensionDownloadRepository: IExtensionDownloadRepository by instance()
 	private val extensionRepository: IExtensionsRepository by instance()
 	private val settingsRepository: ISettingsRepository by instance()
+	private val chaptersRepository: IChaptersRepository by instance()
 
 	override suspend fun doWork(): Result {
 		val extensionId = this.inputData.getInt(KEY_EXTENSION_ID, -1)
@@ -121,7 +119,7 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 
 						logE("Failed to install ${extension.name}", it.exception)
 					}
-				) {
+				) { flags ->
 					extensionDownloadRepository.updateStatus(
 						extensionId,
 						DownloadStatus.COMPLETE
@@ -151,6 +149,17 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 									}.build()
 								)
 							successResult()
+						}
+					}
+					if (flags.deleteChapters) {
+						chaptersRepository.getChaptersByExtension(extensionId).handle(
+							onError = {
+								logE("Failed to get chapters by extension", it.exception)
+							}
+						) { list ->
+							list.forEach {
+								chaptersRepository.deleteChapterPassage(it, flags.oldType!!)
+							}
 						}
 					}
 				}

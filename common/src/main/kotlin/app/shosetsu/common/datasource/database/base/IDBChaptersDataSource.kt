@@ -36,6 +36,8 @@ interface IDBChaptersDataSource {
 
 	suspend fun getChapters(novelID: Int): HResult<List<ChapterEntity>>
 
+	suspend fun getChaptersByExtension(extensionId: Int): HResult<List<ChapterEntity>>
+
 	/** Loads a chapter by its ID */
 	suspend fun getChapter(chapterID: Int): HResult<ChapterEntity>
 

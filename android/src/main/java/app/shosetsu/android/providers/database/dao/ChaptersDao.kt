@@ -218,4 +218,7 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 			)
 		)
 	}
+
+	@Query("SELECT * FROM chapters WHERE formatterID = :extensionId")
+	fun getChaptersByExtension(extensionId: Int): List<DBChapterEntity>
 }
