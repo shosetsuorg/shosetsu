@@ -116,6 +116,11 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	 */
 	object ReaderKeepScreenOn : BooleanKey("reader_keep_screen_on", false)
 
+	/**
+	 * Should the reader display a separator between chapters
+	 */
+	object ReaderShowChapterDivider : BooleanKey("reader_show_divider_page", true)
+
 	//- Some things
 	object ChaptersResumeFirstUnread : BooleanKey(
 		"readerResumeFirstUnread",

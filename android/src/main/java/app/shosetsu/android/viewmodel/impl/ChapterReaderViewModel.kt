@@ -32,10 +32,8 @@ import app.shosetsu.common.enums.MarkingType.ONVIEW
 import app.shosetsu.common.enums.ReadingStatus.READ
 import app.shosetsu.common.enums.ReadingStatus.READING
 import com.github.doomsdayrs.apps.shosetsu.R
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.withContext
 import app.shosetsu.common.enums.MarkingType.valueOf as markingValueOf
 
 /*
@@ -82,43 +80,70 @@ class ChapterReaderViewModel(
 	 */
 	private val hashMap: HashMap<Int, Flow<HResult<ByteArray>>> = hashMapOf()
 
+
 	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HList<ReaderUIItem<*, *>>> by lazy {
 		novelIDLive.transformLatest { nId ->
-			loadReaderChaptersUseCase(nId).mapLatestResult {
-				withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
-					successResult(ArrayList<ReaderUIItem<*, *>>(it).apply {
-						// Adds the "No more chapters" marker
-						add(size, ReaderDividerUI(prev = it.last().title))
-
-						/**
-						 * Loops down the list, adding in betweens
-						 */
-						val startPoint = size - 2
-						for (index in startPoint downTo 1)
-							add(
-								index, ReaderDividerUI(
-									(this[index - 1] as ReaderChapterUI).title,
-									(this[index] as ReaderChapterUI).title
-								)
-							)
-
-					})
-				}
-			}.let { emitAll(it) }
+			emitAll(
+				loadReaderChaptersUseCase(nId)
+			)
 		}
+			.combineDividers() // Add dividers
+
 			// Invert chapters after all processing has been done
-			.combine(
-				// Only invert if horizontalSwipe && invertSwipe are true.
-				// Because who will read with an inverted vertical scroll??
-				settingsRepo.getBooleanFlow(ReaderIsInvertedSwipe)
-					.combine(settingsRepo.getBooleanFlow(ReaderHorizontalPageSwap)) { invertSwipe, horizontalSwipe ->
-						horizontalSwipe && invertSwipe
-					}) { listResult, b ->
-				listResult.transform { list -> if (b) list.reverse(); successResult(list) }
-			}
+			.combineInvert()
 			.asIOLiveData()
 	}
+
+	private fun HFlow<List<ReaderUIItem<*, *>>>.combineInvert(): Flow<HResult<List<ReaderUIItem<*, *>>>> =
+		combine(
+			// Only invert if horizontalSwipe && invertSwipe are true.
+			// Because who will read with an inverted vertical scroll??
+			settingsRepo.getBooleanFlow(ReaderIsInvertedSwipe)
+				.combine(settingsRepo.getBooleanFlow(ReaderHorizontalPageSwap)) { invertSwipe, horizontalSwipe ->
+					horizontalSwipe && invertSwipe
+				}
+		) { listResult, b ->
+			listResult.transform { list ->
+				if (b) {
+					successResult(
+						ArrayList(list).apply {
+							reverse()
+						}
+					)
+				} else {
+					successResult(list)
+				}
+			}
+		}
+
+	private fun HListFlow<ReaderChapterUI>.combineDividers(): Flow<HResult<List<ReaderUIItem<*, *>>>> =
+		combine(settingsRepo.getBooleanFlow(ReaderShowChapterDivider)) { result, value ->
+			result.transform {
+				if (value) {
+					val modified = ArrayList<ReaderUIItem<*, *>>(it)
+					// Adds the "No more chapters" marker
+					modified.add(modified.size, ReaderDividerUI(prev = it.last().title))
+
+					/**
+					 * Loops down the list, adding in the seperators
+					 */
+					val startPoint = modified.size - 2
+					for (index in startPoint downTo 1)
+						modified.add(
+							index, ReaderDividerUI(
+								(modified[index - 1] as ReaderChapterUI).title,
+								(modified[index] as ReaderChapterUI).title
+							)
+						)
+
+					successResult(modified)
+				} else {
+					successResult(it)
+				}
+			}
+		}
+
 
 	@ExperimentalCoroutinesApi
 	private val readerSettingsFlow: Flow<HResult<NovelReaderSettingEntity>> by lazy {
@@ -430,6 +455,7 @@ class ChapterReaderViewModel(
 		continuousScrollOption(6),
 		invertChapterSwipeOption(8),
 		readerKeepScreenOnOption(9),
+		showReaderDivider(10),
 
 		// Major changes
 		stringAsHtmlOption(7),

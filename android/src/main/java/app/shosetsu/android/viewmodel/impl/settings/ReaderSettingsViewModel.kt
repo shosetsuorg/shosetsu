@@ -130,7 +130,8 @@ class ReaderSettingsViewModel(
 			}
 			checkSettingValue(ChaptersResumeFirstUnread)
 		},
-		readerKeepScreenOnOption(14)
+		readerKeepScreenOnOption(14),
+		showReaderDivider(15),
 	)
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
@@ -158,6 +159,14 @@ suspend fun ExposedSettingsRepoViewModel.invertChapterSwipeOption(id: Int) =
 
 		description { R.string.settings_reader_inverted_swipe_desc }
 		checkSettingValue(ReaderIsInvertedSwipe)
+	}
+
+suspend fun ExposedSettingsRepoViewModel.showReaderDivider(id: Int) =
+	switchSettingData(id) {
+		titleRes = R.string.settings_reader_show_divider
+
+		description { R.string.settings_reader_show_divider_desc }
+		checkSettingValue(ReaderShowChapterDivider)
 	}
 
 suspend fun ExposedSettingsRepoViewModel.continuousScrollOption(id: Int) =
