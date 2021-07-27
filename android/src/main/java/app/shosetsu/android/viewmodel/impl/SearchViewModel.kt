@@ -1,14 +1,13 @@
 package app.shosetsu.android.viewmodel.impl
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
-import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logD
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.SearchBookMarkedNovelsUseCase
 import app.shosetsu.android.domain.usecases.get.GetCatalogueQueryDataUseCase
 import app.shosetsu.android.domain.usecases.load.LoadSearchRowUIUseCase
-import app.shosetsu.android.view.uimodels.model.IDTitleImageUI
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
@@ -17,9 +16,10 @@ import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.loading
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.dto.transform
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
-import kotlin.collections.set
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.transformLatest
 
 /*
  * This file is part of shosetsu.
@@ -48,8 +48,10 @@ class SearchViewModel(
 	private val loadCatalogueQueryDataUseCase: GetCatalogueQueryDataUseCase,
 	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : ASearchViewModel() {
-	private val hashMap = HashMap<Int, MutableLiveData<HResult<List<ACatalogNovelUI>>>>()
-	private val jobMap = HashMap<Int, Job>()
+	private val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
+
+	private val searchFlows =
+		HashMap<Int, Flow<HResult<List<ACatalogNovelUI>>>>()
 
 	override val listings: LiveData<HResult<List<SearchRowUI>>> by lazy {
 		liveData {
@@ -62,36 +64,58 @@ class SearchViewModel(
 		reportExceptionUseCase(error)
 	}
 
-	private var query: String = ""
-
 	override fun setQuery(query: String) {
-		this.query = query
+		this.queryFlow.value = query
 	}
 
-	override fun searchLibrary(): LiveData<HResult<List<ACatalogNovelUI>>> {
-		if (!hashMap.containsKey(-1)) {
-			hashMap[-1] = MutableLiveData(loading())
-			loadLibrary()
-		}
-		return hashMap[-1]!!
+	@ExperimentalCoroutinesApi
+	override fun searchLibrary(): LiveData<HResult<List<ACatalogNovelUI>>> =
+		searchFlows.getOrPut(-1) {
+			libraryResultFlow
+		}.asIOLiveData()
+
+	@ExperimentalCoroutinesApi
+	override fun searchExtension(extensionId: Int): LiveData<HResult<List<ACatalogNovelUI>>> =
+		searchFlows.getOrPut(extensionId) {
+			logD("Creating new flow for extension")
+			loadExtension(extensionId)
+		}.asIOLiveData()
+
+	/**
+	 * Clears out all the data
+	 */
+	override fun destroy() {
+		logI("Clearing out all flows")
+		searchFlows.clear()
 	}
 
-	private fun loadLibrary(): Job {
-		jobMap[-1] = launchIO {
-			hashMap[-1]?.postValue(searchBookMarkedNovelsUseCase(query).let { result: HResult<List<IDTitleImageUI>> ->
-				result.transform {
-					successResult(it.map { (id, title, imageURL) ->
-						FullCatalogNovelUI(id, title, imageURL, false)
-					})
-				}
+	/**
+	 * Creates a flow for a library query
+	 */
+	@ExperimentalCoroutinesApi
+	private val libraryResultFlow: Flow<HResult<List<ACatalogNovelUI>>> by lazy {
+		queryFlow.transformLatest { query ->
+			emit(successResult(listOf()))
+			emit(loading)
+
+			emit(searchBookMarkedNovelsUseCase(query).transform {
+				successResult(it.map { (id, title, imageURL) ->
+					FullCatalogNovelUI(id, title, imageURL, false)
+				})
 			})
 		}
-		return jobMap[-1]!!
 	}
 
-	private fun loadExtension(extensionID: Int): Job {
-		jobMap[extensionID] = launchIO {
-			hashMap[extensionID]?.postValue(
+	/**
+	 * Creates a flow for an extension query
+	 */
+	@ExperimentalCoroutinesApi
+	private fun loadExtension(extensionID: Int): Flow<HResult<List<ACatalogNovelUI>>> =
+		queryFlow.transformLatest { query ->
+			emit(successResult(listOf()))
+			emit(loading)
+
+			emit(
 				loadCatalogueQueryDataUseCase(
 					extensionID,
 					query,
@@ -99,26 +123,4 @@ class SearchViewModel(
 				)
 			)
 		}
-		return jobMap[extensionID]!!
-	}
-
-	override fun loadQuery() {
-		jobMap.forEach { it.value.cancel("New query") }
-
-		val keys = hashMap.keys
-		keys.forEach { key ->
-			hashMap[key]?.postValue(successResult(arrayListOf()))
-			hashMap[key]?.postValue(loading())
-			jobMap[key] = if (key == -1) loadLibrary()
-			else loadExtension(key)
-		}
-	}
-
-	override fun searchExtension(formatterID: Int): LiveData<HResult<List<ACatalogNovelUI>>> {
-		if (!hashMap.containsKey(formatterID)) {
-			hashMap[formatterID] = MutableLiveData(loading())
-			loadExtension(formatterID)
-		}
-		return hashMap[formatterID]!!
-	}
 }

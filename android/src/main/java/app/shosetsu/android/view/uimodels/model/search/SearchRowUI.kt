@@ -1,6 +1,7 @@
 package app.shosetsu.android.view.uimodels.model.search
 
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import app.shosetsu.android.common.ext.picasso
@@ -56,7 +57,8 @@ data class SearchRowUI(
 
 		override fun RecyclerSearchRowBinding.unbindView(item: SearchRowUI) {
 			title.text = null
-			progressBar.visibility = View.GONE
+			imageView.setImageResource(R.drawable.library)
+			progressBar.isVisible = false
 		}
 	}
 }

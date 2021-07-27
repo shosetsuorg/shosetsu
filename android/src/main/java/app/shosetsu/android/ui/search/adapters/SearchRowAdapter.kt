@@ -1,15 +1,15 @@
 package app.shosetsu.android.ui.search.adapters
 
 import android.util.Log
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.lifecycle.LifecycleOwner
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.setOnClickListener
 import app.shosetsu.android.ui.novel.NovelController
+import app.shosetsu.android.ui.search.SearchController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ASearchViewModel
@@ -41,14 +41,14 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
  * 09 / 09 / 2020
  */
 class SearchRowAdapter(
-	private val lifecycleOwner: LifecycleOwner,
+	private val controller: SearchController,
 	private val pushController: (Controller) -> Unit,
 	private val viewModel: ASearchViewModel
 ) : FastAdapter<SearchRowUI>() {
 	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 		super.onBindViewHolder(holder, position)
-		@Suppress("NAME_SHADOWING")
-		val holder = holder as SearchRowUI.ViewHolder
+		if (holder !is SearchRowUI.ViewHolder) return
+		val binding = holder.binding
 
 		val itemAdapter = ItemAdapter<ACatalogNovelUI>()
 		val fastAdapter = object : FastAdapter<ACatalogNovelUI>() {
@@ -59,6 +59,7 @@ class SearchRowAdapter(
 				}
 			}
 		}
+
 		fastAdapter.addAdapter(0, itemAdapter)
 		fastAdapter.setOnClickListener { _, _, item, _ ->
 			Log.d(logID(), "Pushing")
@@ -66,20 +67,21 @@ class SearchRowAdapter(
 			true
 		}
 
-		holder.binding.recyclerView.adapter = fastAdapter
+		binding.recyclerView.adapter = fastAdapter
 
 		val handleUpdate = { result: HResult<List<ACatalogNovelUI>> ->
 			when (result) {
 				is HResult.Loading -> {
-					holder.binding.progressBar.visibility = View.VISIBLE
+					binding.progressBar.isVisible = true
 				}
 				is HResult.Empty -> {
-					holder.binding.progressBar.visibility = View.GONE
+					binding.progressBar.isVisible = false
 				}
 				is HResult.Error -> {
+					binding.progressBar.isVisible = false
 				}
 				is HResult.Success -> {
-					holder.binding.progressBar.visibility = View.GONE
+					binding.progressBar.isVisible = false
 					FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(
 						itemAdapter,
 						result.data
@@ -90,11 +92,11 @@ class SearchRowAdapter(
 
 		getItem(position)?.let { (formatterID) ->
 			if (formatterID != -1) {
-				viewModel.searchExtension(formatterID).observe(lifecycleOwner) {
+				viewModel.searchExtension(formatterID).observe(controller) {
 					handleUpdate(it)
 				}
 			} else {
-				viewModel.searchLibrary().observe(lifecycleOwner) {
+				viewModel.searchLibrary().observe(controller) {
 					handleUpdate(it)
 				}
 			}

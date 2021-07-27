@@ -6,6 +6,7 @@ import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.common.dto.HResult
+import javax.security.auth.Destroyable
 
 /*
  * This file is part of shosetsu.
@@ -31,12 +32,10 @@ import app.shosetsu.common.dto.HResult
  * shosetsu
  * 01 / 05 / 2020
  */
-abstract class ASearchViewModel : ShosetsuViewModel(), ErrorReportingViewModel {
+abstract class ASearchViewModel : ShosetsuViewModel(), ErrorReportingViewModel, Destroyable {
 	abstract val listings: LiveData<HResult<List<SearchRowUI>>>
 
 	abstract fun setQuery(query: String)
 	abstract fun searchLibrary(): LiveData<HResult<List<ACatalogNovelUI>>>
-	abstract fun searchExtension(formatterID: Int): LiveData<HResult<List<ACatalogNovelUI>>>
-
-	abstract fun loadQuery()
+	abstract fun searchExtension(extensionId: Int): LiveData<HResult<List<ACatalogNovelUI>>>
 }

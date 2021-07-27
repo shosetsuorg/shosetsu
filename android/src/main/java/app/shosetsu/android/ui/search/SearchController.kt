@@ -58,6 +58,7 @@ class SearchController(bundle: Bundle) : GenericFastAdapterRecyclerController<Se
 	override fun onDestroy() {
 		super.onDestroy()
 		searchView = null
+		viewModel.destroy()
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -84,12 +85,10 @@ class SearchController(bundle: Bundle) : GenericFastAdapterRecyclerController<Se
 		: SearchView.OnQueryTextListener {
 		override fun onQueryTextSubmit(query: String): Boolean {
 			viewModel.setQuery(query)
-			viewModel.loadQuery()
 			return true
 		}
 
 		override fun onQueryTextChange(newText: String?): Boolean {
-			newText?.let { viewModel.setQuery(it) }
 			return true
 		}
 	}
