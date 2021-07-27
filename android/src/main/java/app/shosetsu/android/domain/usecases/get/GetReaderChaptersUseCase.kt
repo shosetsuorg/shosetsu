@@ -52,7 +52,7 @@ class GetReaderChaptersUseCase(
 				}.mapLatestResult { (pair, novel) ->
 					pair.let { (list, convertToHtml) ->
 						extRepo.getExtensionEntity(novel.extensionID)
-							.transform { novelEntity ->
+							.transform { extensionEntity ->
 								successResult(list.map { (id, url, title, readingPosition, readingStatus, bookmarked) ->
 									ReaderChapterUI(
 										id,
@@ -61,7 +61,7 @@ class GetReaderChaptersUseCase(
 										readingPosition,
 										readingStatus,
 										bookmarked,
-										novelEntity.chapterType,
+										extensionEntity.chapterType,
 										convertToHtml
 									)
 								})
