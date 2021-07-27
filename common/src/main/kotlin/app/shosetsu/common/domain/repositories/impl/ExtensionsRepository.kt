@@ -17,6 +17,7 @@ import app.shosetsu.common.dto.*
 import app.shosetsu.common.utils.asIEntity
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
+import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -167,12 +168,19 @@ class ExtensionsRepository(
 					extensionEntity.imageURL = iExt.imageURL
 					extensionEntity.installed = true
 					extensionEntity.enabled = true
-					val oldType = extensionEntity.chapterType
 
-					val deleteChapters = oldType != iExt.chapterType
+					val oldType: Novel.ChapterType?
+					val deleteChapters: Boolean
+
+					if (extensionEntity.installedVersion != null && extensionEntity.installedVersion!! < iExt.exMetaData.version) {
+						oldType = extensionEntity.chapterType
+						deleteChapters = oldType != iExt.chapterType
+					} else {
+						deleteChapters = false
+						oldType = null
+					}
 
 					extensionEntity.chapterType = iExt.chapterType
-
 					dbSource.updateExtension(extensionEntity)
 
 					successResult(

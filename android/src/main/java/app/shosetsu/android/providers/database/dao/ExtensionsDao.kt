@@ -74,35 +74,41 @@ interface ExtensionsDao : BaseDao<DBExtensionEntity> {
 	 */
 	@Throws(SQLiteException::class)
 	@Transaction
-	suspend fun insertOrUpdate(dbExtensionEntity: DBExtensionEntity): Int =
-		if (doesExtensionExist(dbExtensionEntity.id)) {
+	suspend fun insertOrUpdate(newEntity: DBExtensionEntity): Int =
+		if (doesExtensionExist(newEntity.id)) {
 			var isInstalled: Boolean
 			var oldVersion = Version(0, 0, 0)
 			update(
-				getExtension(dbExtensionEntity.id)!!.also {
+				getExtension(newEntity.id)!!.also {
 					isInstalled = it.installed
 					if (isInstalled)
 						oldVersion = it.installedVersion!!
 				}.copy(
-					repoID = dbExtensionEntity.repoID,
-					name = dbExtensionEntity.name,
-					fileName = dbExtensionEntity.fileName,
-					imageURL = dbExtensionEntity.imageURL,
-					lang = dbExtensionEntity.lang,
+					repoID = newEntity.repoID,
+					name = newEntity.name,
+					fileName = newEntity.fileName,
+					imageURL = newEntity.imageURL,
+					lang = newEntity.lang,
 					// Ignore enabled, installed, installedVersion as those are independent
-					repositoryVersion = dbExtensionEntity.repositoryVersion,
-					chapterType = dbExtensionEntity.chapterType,
-					md5 = dbExtensionEntity.md5,
-					type = dbExtensionEntity.type
-				)
+					repositoryVersion = newEntity.repositoryVersion,
+					md5 = newEntity.md5,
+					type = newEntity.type
+				).let {
+					if (!it.installed) // Only do this if the extension is not installed
+						it.copy(
+							chapterType = newEntity.chapterType
+						)
+					else
+						it
+				}
 			)
 
-			if (isInstalled && oldVersion.compareTo(dbExtensionEntity.repositoryVersion) == -1)
+			if (isInstalled && oldVersion.compareTo(newEntity.repositoryVersion) == -1)
 				1
 			else
 				0
 		} else {
-			insertReplace(dbExtensionEntity)
+			insertReplace(newEntity)
 			0
 		}
 }
