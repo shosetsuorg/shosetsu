@@ -38,7 +38,10 @@ import app.shosetsu.lib.Novel
 			onUpdate = ForeignKey.CASCADE
 		)
 	],
-	indices = [Index("formatterID")]
+	indices = [
+		Index("formatterID"),
+		Index(value = ["url", "formatterID"], unique = true)
+	]
 )
 data class DBNovelEntity(
 	@PrimaryKey(autoGenerate = true)

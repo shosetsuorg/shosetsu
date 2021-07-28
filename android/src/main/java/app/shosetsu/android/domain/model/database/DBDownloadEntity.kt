@@ -41,18 +41,11 @@ import app.shosetsu.common.enums.DownloadStatus
 			parentColumns = ["id"],
 			childColumns = ["novelID"],
 			onDelete = ForeignKey.CASCADE
-		),
-		ForeignKey(
-			entity = DBChapterEntity::class,
-			parentColumns = ["url"],
-			childColumns = ["chapterURL"],
-			onDelete = ForeignKey.CASCADE
 		)
 	],
 	indices = [
 		Index("chapterID"),
 		Index("novelID"),
-		Index("chapterURL")
 	]
 )
 data class DBDownloadEntity(

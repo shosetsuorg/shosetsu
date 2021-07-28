@@ -44,7 +44,11 @@ import app.shosetsu.common.enums.ReadingStatus
 			onUpdate = ForeignKey.CASCADE
 		)
 	],
-	indices = [Index("novelID"), Index("url", unique = true), Index("formatterID")]
+	indices = [
+		Index("novelID"),
+		Index(value = ["url", "formatterID"], unique = true),
+		Index("formatterID")
+	]
 )
 data class DBChapterEntity(
 	@PrimaryKey(autoGenerate = true)

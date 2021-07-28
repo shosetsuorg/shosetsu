@@ -55,7 +55,7 @@ import kotlinx.coroutines.launch
 		DBRepositoryEntity::class,
 		DBUpdate::class,
 	],
-	version = 4
+	version = 5
 )
 @TypeConverters(
 	ChapterSortTypeConverter::class,
@@ -330,6 +330,32 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 								database.execSQL("CREATE INDEX IF NOT EXISTS `index_libs_repoID` ON `${tableName}` (`repoID`)")
 							}
 						}
+					},
+					object : Migration(4, 5) {
+						override fun migrate(database: SupportSQLiteDatabase) {
+							// Download migrate
+							run {
+								database.execSQL("DROP INDEX IF EXISTS `index_downloads_chapterURL`")
+								database.execSQL("ALTER TABLE `downloads` RENAME TO `downloads_old`")
+								database.execSQL("CREATE TABLE IF NOT EXISTS `downloads` (`chapterID` INTEGER NOT NULL, `novelID` INTEGER NOT NULL, `chapterURL` TEXT NOT NULL, `chapterName` TEXT NOT NULL, `novelName` TEXT NOT NULL, `formatterID` INTEGER NOT NULL, `status` INTEGER NOT NULL, PRIMARY KEY(`chapterID`), FOREIGN KEY(`chapterID`) REFERENCES `chapters`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`novelID`) REFERENCES `novels`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )")
+								database.execSQL("INSERT INTO `downloads` SELECT * FROM `downloads_old`")
+								database.execSQL("DROP TABLE IF EXISTS `downloads_old`")
+								database.execSQL("CREATE INDEX IF NOT EXISTS `index_downloads_chapterID` ON `downloads` (`chapterID`)")
+								database.execSQL("CREATE INDEX IF NOT EXISTS `index_downloads_novelID` ON `downloads` (`novelID`)")
+							}
+
+							// Chapter migrate
+							run {
+								database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_chapters_url_formatterID` ON `chapters` (`url`, `formatterID`)")
+								database.execSQL("DROP INDEX IF EXISTS `index_chapters_url`")
+							}
+
+							// Novels migrate
+							run {
+								database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_novels_url_formatterID` ON `novels` (`url`, `formatterID`)")
+							}
+						}
+
 					}
 				).build()
 
