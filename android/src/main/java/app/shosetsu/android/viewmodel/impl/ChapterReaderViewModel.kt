@@ -274,17 +274,13 @@ class ChapterReaderViewModel(
 	}
 
 	@WorkerThread
-	override fun getChapterPassage(readerChapterUI: ReaderChapterUI): LiveData<HResult<ByteArray>> {
-		if (hashMap.containsKey(readerChapterUI.id))
-			return hashMap[readerChapterUI.id]!!.asIOLiveData()
-
-		return flow {
-			emit(loading())
-			emit(loadChapterPassageUseCase(readerChapterUI))
-		}.also {
-			hashMap[readerChapterUI.id] = it
+	override fun getChapterPassage(readerChapterUI: ReaderChapterUI): LiveData<HResult<ByteArray>> =
+		hashMap.getOrPut(readerChapterUI.id) {
+			flow {
+				emit(loading())
+				emit(loadChapterPassageUseCase(readerChapterUI))
+			}
 		}.asIOLiveData()
-	}
 
 	override fun toggleBookmark(readerChapterUI: ReaderChapterUI) {
 		updateChapter(
