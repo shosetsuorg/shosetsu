@@ -82,12 +82,17 @@ class ChapterReaderViewModel(
 
 
 	@ExperimentalCoroutinesApi
-	override val liveData: LiveData<HList<ReaderUIItem<*, *>>> by lazy {
+	private val chaptersFlow by lazy {
 		novelIDLive.transformLatest { nId ->
 			emitAll(
 				loadReaderChaptersUseCase(nId)
 			)
 		}
+	}
+
+	@ExperimentalCoroutinesApi
+	override val liveData: LiveData<HList<ReaderUIItem<*, *>>> by lazy {
+		chaptersFlow
 			.combineDividers() // Add dividers
 
 			// Invert chapters after all processing has been done
