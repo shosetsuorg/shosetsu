@@ -1,7 +1,9 @@
 package app.shosetsu.android.view.uimodels.model.reader
 
 import android.view.View
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logError
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.ui.reader.types.model.HTMLReader
@@ -74,6 +76,7 @@ data class ReaderChapterUI(
 	}
 
 	override fun bindView(holder: ReaderChapterViewHolder, payloads: List<Any>) {
+		logI("Binding view")
 		super.bindView(holder, payloads)
 		chapterReader?.let { reader ->
 			reader.viewModel.getChapterPassage(this).observe(reader) { result ->
@@ -94,7 +97,7 @@ data class ReaderChapterUI(
 					}
 				}
 			}
-		}
+		} ?: logE("Provided reader is null")
 	}
 
 	override fun unbindView(holder: ReaderChapterViewHolder) {
