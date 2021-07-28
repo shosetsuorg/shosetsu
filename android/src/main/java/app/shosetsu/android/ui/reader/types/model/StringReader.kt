@@ -168,7 +168,7 @@ class StringReader(
 	private fun scrollHitBottom() {
 		val yPosition = scrollView.scrollY
 		val percentage = scrollView.percentageScrolled()
-		if (percentage < 99) {
+		if (percentage < 97) {
 			if (yPosition % 5 == 0) {
 				logD("Percentage: $percentage")
 				// Mark as reading if on scroll
