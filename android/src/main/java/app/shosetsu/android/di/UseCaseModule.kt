@@ -273,4 +273,6 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 	bind<ForceInsertRepositoryUseCase>() with provider {
 		ForceInsertRepositoryUseCase(instance())
 	}
+
+	bind<CancelExtensionInstallUseCase>() with provider { CancelExtensionInstallUseCase(instance()) }
 }

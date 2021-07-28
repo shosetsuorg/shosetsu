@@ -37,7 +37,9 @@ import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.common.consts.REPOSITORY_HELP_URL
 import app.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.databinding.ExtensionCardBinding
 import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.binding.listeners.addLongClickListener
 
 /**
  * shosetsu
@@ -109,6 +111,14 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 			bind = { it: ExtensionUI.ViewHolder -> it.binding.settings }
 		) { _, _, _, item ->
 			router.shosetsuPush(ConfigureExtension(bundleOf(BUNDLE_EXTENSION to item.id)))
+		}
+
+		addLongClickListener<ExtensionCardBinding, ExtensionUI>({ it.installButton }) { _, _, _, item ->
+			if (item.isInstalling) {
+				viewModel.cancelInstall(item)
+				true
+			} else
+				false
 		}
 	}
 

@@ -124,12 +124,13 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 	// Extensions
 	bind<ABrowseViewModel>() with provider {
 		ExtensionsViewModel(
-			getExtensionsUIUseCase = instance(),
-			installExtensionUIUseCase = instance(),
-			uninstallExtensionUIUseCase = instance(),
-			isOnlineUseCase = instance(),
-			reportExceptionUseCase = instance(),
-			startRepositoryUpdateManagerUseCase = instance()
+			instance(),
+			instance(),
+			instance(),
+			instance(),
+			instance(),
+			instance(),
+			instance(),
 		)
 	}
 	bind<AExtensionConfigureViewModel>() with provider {

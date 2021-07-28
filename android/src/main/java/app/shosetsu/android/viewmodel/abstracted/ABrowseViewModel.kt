@@ -44,4 +44,7 @@ abstract class ABrowseViewModel :
 
 	/** Uninstalls an extension */
 	abstract fun uninstallExtension(extensionUI: ExtensionUI)
+
+	/** Cancel an extension install */
+	abstract fun cancelInstall(extensionUI: ExtensionUI)
 }

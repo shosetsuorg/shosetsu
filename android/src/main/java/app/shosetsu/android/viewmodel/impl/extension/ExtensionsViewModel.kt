@@ -20,10 +20,7 @@ package app.shosetsu.android.viewmodel.impl.extension
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.ReportExceptionUseCase
-import app.shosetsu.android.domain.usecases.InstallExtensionUIUseCase
-import app.shosetsu.android.domain.usecases.IsOnlineUseCase
-import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
-import app.shosetsu.android.domain.usecases.UninstallExtensionUIUseCase
+import app.shosetsu.android.domain.usecases.*
 import app.shosetsu.android.domain.usecases.load.LoadExtensionsUIUseCase
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
@@ -37,38 +34,46 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * @author github.com/doomsdayrs
  */
 class ExtensionsViewModel(
-	private val getExtensionsUIUseCase: LoadExtensionsUIUseCase,
-	private val startRepositoryUpdateManagerUseCase: StartRepositoryUpdateManagerUseCase,
-	private val installExtensionUIUseCase: InstallExtensionUIUseCase,
-	private val uninstallExtensionUIUseCase: UninstallExtensionUIUseCase,
+	private val getExtensionsUI: LoadExtensionsUIUseCase,
+	private val startRepositoryUpdateManager: StartRepositoryUpdateManagerUseCase,
+	private val installExtensionUI: InstallExtensionUIUseCase,
+	private val uninstallExtensionUI: UninstallExtensionUIUseCase,
+	private val cancelExtensionInstall: CancelExtensionInstallUseCase,
 	private var isOnlineUseCase: IsOnlineUseCase,
-	private val reportExceptionUseCase: ReportExceptionUseCase
+	private val reportException: ReportExceptionUseCase
 ) : ABrowseViewModel() {
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-		reportExceptionUseCase(error)
+		reportException(error)
 	}
 
 	override fun refreshRepository() {
-		startRepositoryUpdateManagerUseCase()
+		startRepositoryUpdateManager()
 	}
 
 	override fun installExtension(extensionUI: ExtensionUI) {
 		launchIO {
-			installExtensionUIUseCase(extensionUI)
+			installExtensionUI(extensionUI)
 		}
 	}
 
 	override fun uninstallExtension(extensionUI: ExtensionUI) {
 		launchIO {
-			uninstallExtensionUIUseCase(extensionUI)
+			uninstallExtensionUI(extensionUI)
+		}
+	}
+
+	override fun cancelInstall(extensionUI: ExtensionUI) {
+		launchIO {
+			cancelExtensionInstall(extensionUI)
 		}
 	}
 
 	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<List<ExtensionUI>>> by lazy {
-		getExtensionsUIUseCase().asIOLiveData()
+		getExtensionsUI().asIOLiveData()
 	}
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
+
 }
