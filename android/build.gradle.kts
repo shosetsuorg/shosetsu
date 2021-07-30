@@ -37,11 +37,11 @@ if (acraPropertiesFile.exists())
 	acraProperties.load(FileInputStream(acraPropertiesFile))
 
 android {
-	compileSdkVersion(30)
+	compileSdk = 30
 	defaultConfig {
 		applicationId = "com.github.doomsdayrs.apps.shosetsu"
-		minSdkVersion(22)
-		targetSdkVersion(30)
+		minSdk = 22
+		targetSdk = 30
 		versionCode = 26
 		versionName = "2.0.0"
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -61,11 +61,17 @@ android {
 	buildFeatures {
 		viewBinding = true
 		dataBinding = true
+		compose = true
+	}
+
+	composeOptions {
+		kotlinCompilerVersion = "1.5.10"
+		kotlinCompilerExtensionVersion = "1.0.0"
 	}
 
 	buildTypes {
 		named("release") {
-			minifyEnabled(true)
+			isMinifyEnabled = true
 			proguardFiles(
 				getDefaultProguardFile("proguard-android-optimize.txt"),
 				"proguard-rules.pro"
@@ -76,7 +82,7 @@ android {
 		named("debug") {
 			versionNameSuffix = "-${getCommitCount()}"
 			applicationIdSuffix = ".debug"
-			debuggable(true)
+			isDebuggable = true
 		}
 	}
 	flavorDimensions("default")
@@ -140,21 +146,21 @@ dependencies {
 	implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
 	// Google view things
-	implementation("com.google.android.material:material:1.3.0")
+	implementation("com.google.android.material:material:1.4.0")
 
 	// Androidx
 	implementation("androidx.constraintlayout:constraintlayout:2.0.4")
-	implementation("androidx.work:work-runtime:2.7.0-alpha04")
-	implementation("androidx.work:work-runtime-ktx:2.7.0-alpha04")
+	implementation("androidx.work:work-runtime:2.7.0-alpha05")
+	implementation("androidx.work:work-runtime-ktx:2.7.0-alpha05")
 	implementation("androidx.gridlayout:gridlayout:1.0.0")
 	implementation("androidx.preference:preference-ktx:1.1.1")
 	implementation("androidx.recyclerview:recyclerview:1.2.1")
 	implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
-	implementation("androidx.appcompat:appcompat:1.3.0")
+	implementation("androidx.appcompat:appcompat:1.3.1")
 	implementation("androidx.multidex:multidex:2.0.1")
 	implementation("androidx.biometric:biometric:1.1.0")
 	implementation("androidx.annotation:annotation:1.2.0")
-	implementation("androidx.appcompat:appcompat:1.3.0")
+	implementation("androidx.appcompat:appcompat:1.3.1")
 	implementation("androidx.cardview:cardview:1.0.0")
 	implementation("androidx.browser:browser:1.3.0")
 	implementation("androidx.core:core-ktx:1.6.0")
@@ -306,4 +312,3 @@ dependencies {
 	// Banner
 	//implementation("com.github.shosetsuorg:MaterialBanner:2.0.7")
 }
-
