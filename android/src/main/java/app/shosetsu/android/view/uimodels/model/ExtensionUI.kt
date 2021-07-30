@@ -118,9 +118,7 @@ data class ExtensionUI(
 							updateVersion.isVisible = false
 						}
 						State.OBSOLETE -> {
-							updateVersion.isVisible = true
-							updateVersion.setText(R.string.obsolete_extension)
-							updateVersion.textSize = 32f
+							obsoleteLabel.isVisible = true
 						}
 					}
 				} else {
@@ -146,6 +144,7 @@ data class ExtensionUI(
 			title.text = null
 			language.text = null
 			imageView.setImageResource(R.drawable.broken_image)
+			obsoleteLabel.isVisible = false
 		}
 	}
 

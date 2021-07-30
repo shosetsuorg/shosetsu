@@ -326,7 +326,7 @@
     <string name="never_mind">Nevermind</string>
     <string name="in_library">In library</string>
     <string name="add_to_library">Add to library</string>
-    <string name="obsolete_extension">Obsolete extension!</string>
+    <string name="obsolete_extension">Obsolete extension! Please uninstall.</string>
     <string name="ext_not_installed">Extension not installed</string>
     <string name="id_label">ID:</string>
     <string name="negative_one">-1</string>

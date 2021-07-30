@@ -101,5 +101,17 @@
             android:layout_toEndOf="@id/update_version"
             android:text="@string/todo" />
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/obsolete_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imageView"
+            android:background="@android:color/holo_red_dark"
+            android:padding="8dp"
+            android:text="@string/obsolete_extension"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:visibility="gone"
+            tools:visibility="visible" />
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>
