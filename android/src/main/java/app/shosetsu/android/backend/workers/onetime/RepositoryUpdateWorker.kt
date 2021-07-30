@@ -138,13 +138,40 @@ class RepositoryUpdateWorker(
 			}
 
 			notify("Completed extension library update for ${repository.name}") {
-				setNotificationSilent()
+				setSilent(true)
 				removeProgress()
 			}
 			successResult(0)
 		}
 
-	private suspend fun updateExtensions(repoList: List<RepoExtension>, repo: RepositoryEntity) {
+
+	private suspend inline fun handlePresentExtensions(
+		list: List<ExtensionEntity>,
+		presentExtensions: List<Int>
+	) {
+		list.filterNot { presentExtensions.contains(it.id) }.forEach {
+			if (it.installed)
+				extRepo.updateExtensionEntity(
+					it.copy(
+						repositoryVersion = Version(-9, -9, -9)
+					)
+				)
+			else {
+				logI("Removing Extension: $it")
+				extRepo.removeExtension(it)
+			}
+		}
+	}
+
+	/**
+	 * Updates database with [repoList]
+	 *
+	 * @return list of extension ids that are present in this repository
+	 */
+	private suspend fun updateExtensions(
+		repoList: List<RepoExtension>,
+		repo: RepositoryEntity
+	): List<Int> {
 		val presentExtensions = ArrayList<Int>() // Extensions from repo
 		repoList.forEach { (id, name, fileName, imageURL, lang, version, _, md5, type) ->
 			extRepo.insertOrUpdate(
@@ -175,19 +202,10 @@ class RepositoryUpdateWorker(
 
 		// Loop through extensions from the repository, remove obsolete or warn about obsolete
 		extRepo.getExtensionEntities(repo.id!!).handle { r ->
-			r.filterNot { presentExtensions.contains(it.id) }.forEach {
-				if (it.installed)
-					extRepo.updateExtensionEntity(
-						it.copy(
-							repositoryVersion = Version(-9, -9, -9)
-						)
-					)
-				else {
-					logI("Removing Extension: $it")
-					extRepo.removeExtension(it)
-				}
-			}
+			handlePresentExtensions(r, presentExtensions)
 		}
+
+		return presentExtensions
 	}
 
 	override suspend fun doWork(): Result {
@@ -199,6 +217,7 @@ class RepositoryUpdateWorker(
 				return Result.failure()
 			}
 		) { repos: List<RepositoryEntity> ->
+			var presentExtensions = ArrayList<Int>()
 			for (repo in repos) {
 				logI("Updating $repo")
 				// gets the latest list for the repo
@@ -223,8 +242,14 @@ class RepositoryUpdateWorker(
 					}
 				) { repoIndex ->
 					updateLibraries(repoIndex.libraries, repo)
-					updateExtensions(repoIndex.extensions, repo)
+					val result = updateExtensions(repoIndex.extensions, repo)
+					presentExtensions.addAll(result)
+					presentExtensions = ArrayList(presentExtensions.distinct())
 				}
+			}
+
+			extRepo.loadExtensionEntities().handle { entityList ->
+				handlePresentExtensions(entityList, presentExtensions)
 			}
 		}
 		notify("Completed") { setNotOngoing() }

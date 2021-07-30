@@ -88,6 +88,11 @@ interface IExtensionsRepository {
 	suspend fun getExtensionEntities(repoID: Int): HResult<List<ExtensionEntity>>
 
 	/**
+	 * Loads all [ExtensionEntity] present
+	 */
+	suspend fun loadExtensionEntities(): HResult<List<ExtensionEntity>>
+
+	/**
 	 * Installs an [extensionEntity]
 	 *
 	 * Adds the [IExtension] to the filesystem & memory

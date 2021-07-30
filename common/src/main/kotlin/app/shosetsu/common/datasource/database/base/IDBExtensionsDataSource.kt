@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.Flow
  */
 interface IDBExtensionsDataSource {
 	/** Loads LiveData of extensions */
-	fun loadExtensions(): Flow<HResult<List<ExtensionEntity>>>
+	fun loadExtensionsFlow(): Flow<HResult<List<ExtensionEntity>>>
 
 	/** Loads LiveData of extension cards that are enabled */
 	fun loadPoweredExtensionsCards(): Flow<HResult<List<StrippedExtensionEntity>>>
@@ -53,4 +53,6 @@ interface IDBExtensionsDataSource {
 	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<Int>
 
 	suspend fun getExtensions(repoID: Int): HResult<List<ExtensionEntity>>
+
+	suspend fun loadExtensions(): HResult<List<ExtensionEntity>>
 }

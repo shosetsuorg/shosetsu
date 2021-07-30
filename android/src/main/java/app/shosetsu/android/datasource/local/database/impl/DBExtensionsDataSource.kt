@@ -38,10 +38,10 @@ class DBExtensionsDataSource(
 	private val extensionsDao: ExtensionsDao,
 ) : IDBExtensionsDataSource {
 	@ExperimentalCoroutinesApi
-	override fun loadExtensions(): Flow<HResult<List<ExtensionEntity>>> = flow {
+	override fun loadExtensionsFlow(): Flow<HResult<List<ExtensionEntity>>> = flow {
 		emit(loading())
 		try {
-			emitAll(extensionsDao.loadExtensions().mapLatestListTo().mapLatestToSuccess())
+			emitAll(extensionsDao.loadExtensionsFlow().mapLatestListTo().mapLatestToSuccess())
 		} catch (e: Exception) {
 			emit(e.toHError())
 		}
@@ -100,4 +100,9 @@ class DBExtensionsDataSource(
 		e.toHError()
 	}
 
+	override suspend fun loadExtensions(): HResult<List<ExtensionEntity>> = try {
+		successResult(extensionsDao.loadExtensions().convertList())
+	} catch (e: Exception) {
+		e.toHError()
+	}
 }

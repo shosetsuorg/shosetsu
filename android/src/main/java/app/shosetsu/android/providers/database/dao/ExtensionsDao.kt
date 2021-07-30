@@ -38,7 +38,10 @@ import kotlinx.coroutines.flow.Flow
 interface ExtensionsDao : BaseDao<DBExtensionEntity> {
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions")
-	fun loadExtensions(): Flow<List<DBExtensionEntity>>
+	fun loadExtensionsFlow(): Flow<List<DBExtensionEntity>>
+
+	@Query("SELECT * FROM extensions")
+	fun loadExtensions(): List<DBExtensionEntity>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions WHERE installed = 1 AND enabled = 1")

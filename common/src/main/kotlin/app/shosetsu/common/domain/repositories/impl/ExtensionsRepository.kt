@@ -133,7 +133,7 @@ class ExtensionsRepository(
 
 
 	override fun loadExtensionEntitiesFLow(): Flow<HResult<List<ExtensionEntity>>> =
-		dbSource.loadExtensions()
+		dbSource.loadExtensionsFlow()
 
 
 	override fun getExtensionEntityFlow(id: Int): Flow<HResult<ExtensionEntity>> =
@@ -144,6 +144,9 @@ class ExtensionsRepository(
 
 	override suspend fun getExtensionEntities(repoID: Int): HResult<List<ExtensionEntity>> =
 		dbSource.getExtensions(repoID)
+
+	override suspend fun loadExtensionEntities(): HResult<List<ExtensionEntity>> =
+		dbSource.loadExtensions()
 
 	override suspend fun installExtension(extensionEntity: ExtensionEntity): HResult<IExtensionsRepository.InstallExtensionFlags> =
 		dbRepoSource.loadRepository(extensionEntity.repoID).transform { repo ->
