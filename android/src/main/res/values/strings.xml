@@ -493,6 +493,7 @@
     <string name="activity_webview_null_url">URL to load was null, Sorry!</string>
     <string name="settings_reader_show_divider">Show divider between chapters</string>
     <string name="settings_reader_show_divider_desc">Displays a page between chapters telling you which chapter you are on, and what is the next one</string>
+    <string name="languages">Languages</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

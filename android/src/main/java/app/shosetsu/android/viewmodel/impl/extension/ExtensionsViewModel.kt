@@ -19,13 +19,23 @@ package app.shosetsu.android.viewmodel.impl.extension
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.*
 import app.shosetsu.android.domain.usecases.load.LoadExtensionsUIUseCase
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
-import app.shosetsu.common.dto.HResult
+import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
+import app.shosetsu.common.consts.settings.SettingKey.BrowseFilteredLanguages
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.dto.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.transformLatest
 
 /**
  * shosetsu
@@ -40,8 +50,9 @@ class ExtensionsViewModel(
 	private val uninstallExtensionUI: UninstallExtensionUIUseCase,
 	private val cancelExtensionInstall: CancelExtensionInstallUseCase,
 	private var isOnlineUseCase: IsOnlineUseCase,
-	private val reportException: ReportExceptionUseCase
-) : ABrowseViewModel() {
+	private val reportException: ReportExceptionUseCase,
+	override val settingsRepo: ISettingsRepository
+) : ABrowseViewModel(), ExposedSettingsRepoViewModel {
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
 		reportException(error)
@@ -70,8 +81,76 @@ class ExtensionsViewModel(
 	}
 
 	@ExperimentalCoroutinesApi
+	private val extensionFlow by lazy {
+		getExtensionsUI()
+	}
+
+	@ExperimentalCoroutinesApi
+	val languageListFlow by lazy {
+		extensionFlow.map { result ->
+			result.transformToSuccess { list ->
+				list.map { it.lang }.distinct()
+			}
+		}
+	}
+
+	@ExperimentalCoroutinesApi
+	override val filteredLanguagesLive: LiveData<HResult<FilteredLanguages>> by lazy {
+		languageListFlow.combine(settingsRepo.getStringSetFlow(BrowseFilteredLanguages)) { a, b ->
+			val list = a.unwrap() ?: listOf()
+			val map = HashMap<String, Boolean>().apply {
+				list.forEach {
+					this[it] = b.contains(it)
+				}
+			}
+			successResult(FilteredLanguages(list, map))
+		}.asIOLiveData()
+	}
+
+	override fun setLanguageFiltered(language: String, state: Boolean) {
+		logI("Language $language updated to state $state")
+		launchIO {
+			settingsRepo.getStringSet(BrowseFilteredLanguages).handle(
+				onError = {
+					logE("Failed to retrieve $BrowseFilteredLanguages", it.exception)
+				}
+			) { set ->
+				val mutableSet = set.toMutableSet()
+
+				if (!state) {
+					mutableSet.removeAll { it == language }
+				} else {
+					mutableSet.add(language)
+				}
+
+				settingsRepo.setStringSet(BrowseFilteredLanguages, mutableSet).handle(
+					onError = {
+						logE("Failed to update $BrowseFilteredLanguages", it.exception)
+					}
+				) {
+					logV("Done")
+				}
+			}
+		}
+	}
+
+	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<List<ExtensionUI>>> by lazy {
-		getExtensionsUI().asIOLiveData()
+		extensionFlow.transformLatest { result ->
+			emitAll(settingsRepo.getStringSetFlow(BrowseFilteredLanguages)
+				.transformLatest { languagesToFilter ->
+					emit(result.transformToSuccess { list ->
+						list
+							.asSequence()
+							.filterNot { languagesToFilter.contains(it.lang) }
+							.sortedBy { it.name }
+							.sortedBy { it.lang }
+							.sortedBy { !it.installed }
+							.sortedBy { it.updateState() != ExtensionUI.State.UPDATE }
+							.toList()
+					})
+				})
+		}.asIOLiveData()
 	}
 
 	override fun isOnline(): Boolean = isOnlineUseCase()

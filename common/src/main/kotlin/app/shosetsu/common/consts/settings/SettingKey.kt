@@ -39,6 +39,11 @@ typealias StringSetKey = SettingKey<Set<String>>
 sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 	/**
+	 * Languages to filter out of browse view
+	 */
+	object BrowseFilteredLanguages : StringSetKey("browse_filtered_languages", setOf())
+
+	/**
 	 * Selected reader theme
 	 */
 	object ReaderTheme : IntKey("readerTheme", -1)

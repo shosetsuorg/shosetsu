@@ -20,24 +20,33 @@ package app.shosetsu.android.ui.browse
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.net.Uri
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
+import androidx.lifecycle.ViewTreeLifecycleOwner
+import androidx.savedstate.ViewTreeSavedStateRegistryOwner
+import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.CatalogController
 import app.shosetsu.android.ui.extensionsConfigure.ConfigureExtension
-import app.shosetsu.android.view.controller.FastAdapterRefreshableRecyclerController
+import app.shosetsu.android.view.controller.FastAdapterRecyclerController
+import app.shosetsu.android.view.controller.base.ExtendedFABController
+import app.shosetsu.android.view.controller.base.syncFABWithRecyclerView
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.common.consts.REPOSITORY_HELP_URL
 import app.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.databinding.ComposeViewBinding
+import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerBrowseBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ExtensionCardBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.composethemeadapter.MdcTheme
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.binding.listeners.addLongClickListener
 
@@ -47,7 +56,8 @@ import com.mikepenz.fastadapter.binding.listeners.addLongClickListener
  *
  * @author github.com/doomsdayrs
  */
-class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>() {
+class BrowseController : FastAdapterRecyclerController<ControllerBrowseBinding, ExtensionUI>(),
+	ExtendedFABController {
 	override val viewTitleRes: Int = R.string.browse
 
 	init {
@@ -56,6 +66,8 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 
 	/***/
 	val viewModel: ABrowseViewModel by viewModel()
+
+	private var fab: ExtendedFloatingActionButton? = null
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_browse, menu)
@@ -77,6 +89,13 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 			} else {
 				displayOfflineSnackBar(R.string.controller_browse_snackbar_offline_no_install_extension)
 			}
+		}
+	}
+
+	override fun setupRecyclerView() {
+		super.setupRecyclerView()
+		fab?.let {
+			syncFABWithRecyclerView(recyclerView, it)
 		}
 	}
 
@@ -122,9 +141,12 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 		}
 	}
 
+	override fun bindView(inflater: LayoutInflater): ControllerBrowseBinding =
+		ControllerBrowseBinding.inflate(inflater).also { recyclerView = it.recyclerView }
 
 	override fun showEmpty() {
-		super.showEmpty()
+		if (itemAdapter.adapterItemCount > 0) return
+		binding.recyclerView.isVisible = false
 		binding.emptyDataView.show(
 			R.string.empty_browse_message,
 			EmptyDataView.Action(R.string.empty_browse_refresh_action) {
@@ -132,25 +154,22 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 			})
 	}
 
+	override fun hideEmpty() {
+		if (!binding.recyclerView.isVisible) binding.recyclerView.isVisible = true
+		binding.emptyDataView.hide()
+	}
+
 	override fun handleErrorResult(e: HResult.Error) {
 		viewModel.reportError(e)
 	}
 
 	override fun onViewCreated(view: View) {
-		super.onViewCreated(view)
+		binding.swipeRefreshLayout.setOnRefreshListener {
+			onRefresh()
+			binding.swipeRefreshLayout.isRefreshing = false
+		}
 		showEmpty()
 		viewModel.liveData.observe(this) { handleRecyclerUpdate(it) }
-	}
-
-	override fun updateUI(newList: List<ExtensionUI>) {
-		launchIO {
-			val list = newList
-				.sortedBy { it.name }
-				.sortedBy { it.lang }
-				.sortedBy { !it.installed }
-				.sortedBy { it.updateState() != ExtensionUI.State.UPDATE }
-			launchUI { super.updateUI(list) }
-		}
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
@@ -170,9 +189,48 @@ class BrowseController : FastAdapterRefreshableRecyclerController<ExtensionUI>()
 		startActivity(Intent(ACTION_VIEW, Uri.parse(REPOSITORY_HELP_URL)))
 	}
 
-	override fun onRefresh() {
+	fun onRefresh() {
 		if (viewModel.isOnline())
 			viewModel.refreshRepository()
 		else displayOfflineSnackBar(R.string.controller_browse_snackbar_offline_no_update_extension)
+	}
+
+	override fun onDestroyView(view: View) {
+		binding.swipeRefreshLayout.setOnRefreshListener(null)
+	}
+
+	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
+		this.fab = fab
+		fab.setOnClickListener {
+			//bottomMenuRetriever.invoke()?.show()
+			BottomSheetDialog(this.view!!.context).apply {
+				val binding = ComposeViewBinding.inflate(
+					this@BrowseController.activity!!.layoutInflater,
+					null,
+					false
+				)
+
+				this.window?.decorView?.let {
+					ViewTreeLifecycleOwner.set(it, this@BrowseController)
+					ViewTreeSavedStateRegistryOwner.set(it, activity as MainActivity)
+				}
+
+				binding.root.apply {
+					setViewCompositionStrategy(
+						ViewCompositionStrategy.DisposeOnLifecycleDestroyed(this@BrowseController)
+					)
+					setContent {
+						MdcTheme(view!!.context) {
+							BrowseControllerFilterMenu(viewModel)
+						}
+					}
+				}
+
+				setContentView(binding.root)
+
+			}.show()
+		}
+		fab.setText(R.string.filter)
+		fab.setIconResource(R.drawable.filter)
 	}
 }

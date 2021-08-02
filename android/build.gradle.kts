@@ -237,7 +237,7 @@ dependencies {
 	//compileOnly("com.google.auto.service:auto-service-annotations:1.0")
 
 	// Conductor
-	val conductorVersion = "3.0.1"
+	val conductorVersion = "3.1.1"
 	fun conductor(module: String, version: String = conductorVersion) =
 		"com.bluelinelabs:$module:$version"
 
@@ -311,4 +311,36 @@ dependencies {
 
 	// Banner
 	//implementation("com.github.shosetsuorg:MaterialBanner:2.0.7")
+
+
+	// Compose
+	implementation("androidx.compose.ui:ui:1.0.0")
+
+	implementation("androidx.compose.compiler:compiler:1.0.0")
+
+	//- Tooling support (Previews, etc.)
+	implementation("androidx.compose.ui:ui-tooling:1.0.0")
+	//- Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
+	implementation("androidx.compose.foundation:foundation:1.0.0")
+
+	// - Material
+	implementation("androidx.compose.material:material:1.0.0")
+	implementation("androidx.compose.material:material-ripple:1.0.0")
+
+	//- Material design icons
+	implementation("androidx.compose.material:material-icons-core:1.0.0")
+	implementation("androidx.compose.material:material-icons-extended:1.0.0")
+
+	//- Integration with observables
+	implementation("androidx.compose.runtime:runtime-livedata:1.0.0")
+
+	//- UI Tests
+	androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.0")
+
+	// MDC Adapter
+	implementation("com.google.android.material:compose-theme-adapter:1.0.0")
+	implementation("com.google.accompanist:accompanist-appcompat-theme:0.15.0")
+	implementation("androidx.activity:activity-ktx:1.3.0")
+	implementation("androidx.activity:activity-compose:1.3.0")
+
 }

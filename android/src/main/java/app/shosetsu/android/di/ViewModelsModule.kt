@@ -131,6 +131,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			instance(),
 			instance(),
 			instance(),
+			instance()
 		)
 	}
 	bind<AExtensionConfigureViewModel>() with provider {

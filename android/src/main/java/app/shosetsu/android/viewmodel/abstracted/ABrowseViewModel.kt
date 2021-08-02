@@ -1,10 +1,12 @@
 package app.shosetsu.android.viewmodel.abstracted
 
+import androidx.lifecycle.LiveData
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
+import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -36,6 +38,19 @@ abstract class ABrowseViewModel :
 	IsOnlineCheckViewModel,
 	ErrorReportingViewModel {
 
+	/**
+	 * Languages that are present, this is used for filtering
+	 *
+	 * First value is a list of possible strings
+	 * Second value is if it is filtered or not
+	 */
+	abstract val filteredLanguagesLive: LiveData<HResult<FilteredLanguages>>
+
+	data class FilteredLanguages(
+		val languages: List<String>,
+		val states: HashMap<String, Boolean>
+	)
+
 	/** Refreshes the repositories and data values */
 	abstract fun refreshRepository()
 
@@ -47,4 +62,9 @@ abstract class ABrowseViewModel :
 
 	/** Cancel an extension install */
 	abstract fun cancelInstall(extensionUI: ExtensionUI)
+
+	/**
+	 * Set if a language is filtered or not
+	 */
+	abstract fun setLanguageFiltered(language: String, state: Boolean)
 }
