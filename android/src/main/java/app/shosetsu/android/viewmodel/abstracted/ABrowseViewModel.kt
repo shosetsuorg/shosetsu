@@ -46,6 +46,8 @@ abstract class ABrowseViewModel :
 	 */
 	abstract val filteredLanguagesLive: LiveData<HResult<FilteredLanguages>>
 
+	abstract val onlyInstalledLive: LiveData<Boolean>
+
 	data class FilteredLanguages(
 		val languages: List<String>,
 		val states: HashMap<String, Boolean>
@@ -67,4 +69,9 @@ abstract class ABrowseViewModel :
 	 * Set if a language is filtered or not
 	 */
 	abstract fun setLanguageFiltered(language: String, state: Boolean)
+
+	/**
+	 * Set if to only show installed or not
+	 */
+	abstract fun showOnlyInstalled(state: Boolean)
 }

@@ -28,6 +28,7 @@ import app.shosetsu.android.domain.usecases.load.LoadExtensionsUIUseCase
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
+import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.consts.settings.SettingKey.BrowseFilteredLanguages
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.*
@@ -107,6 +108,15 @@ class ExtensionsViewModel(
 		}.asIOLiveData()
 	}
 
+	private val onlyInstalledFlow by lazy {
+		settingsRepo.getBooleanFlow(SettingKey.BrowseOnlyInstalled)
+	}
+
+
+	override val onlyInstalledLive: LiveData<Boolean> by lazy {
+		onlyInstalledFlow.asIOLiveData()
+	}
+
 	override fun setLanguageFiltered(language: String, state: Boolean) {
 		logI("Language $language updated to state $state")
 		launchIO {
@@ -134,22 +144,37 @@ class ExtensionsViewModel(
 		}
 	}
 
+	override fun showOnlyInstalled(state: Boolean) {
+		logI("Show only installed new state: $state")
+		launchIO {
+			settingsRepo.setBoolean(SettingKey.BrowseOnlyInstalled, state).handle(
+				onError = {
+					logE("Failed to update ${SettingKey.BrowseOnlyInstalled}", it.exception)
+				}
+			) {
+				logV("Done")
+			}
+		}
+	}
+
 	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<List<ExtensionUI>>> by lazy {
 		extensionFlow.transformLatest { result ->
-			emitAll(settingsRepo.getStringSetFlow(BrowseFilteredLanguages)
-				.transformLatest { languagesToFilter ->
-					emit(result.transformToSuccess { list ->
-						list
-							.asSequence()
-							.filterNot { languagesToFilter.contains(it.lang) }
-							.sortedBy { it.name }
-							.sortedBy { it.lang }
-							.sortedBy { !it.installed }
-							.sortedBy { it.updateState() != ExtensionUI.State.UPDATE }
-							.toList()
+			emitAll(
+				settingsRepo.getStringSetFlow(BrowseFilteredLanguages)
+					.combine(settingsRepo.getBooleanFlow(SettingKey.BrowseOnlyInstalled)) { languagesToFilter, onlyInstalled ->
+						result.transformToSuccess { list ->
+							list
+								.asSequence()
+								.filter { if (onlyInstalled) it.installed else true }
+								.filterNot { languagesToFilter.contains(it.lang) }
+								.sortedBy { it.name }
+								.sortedBy { it.lang }
+								.sortedBy { !it.installed }
+								.sortedBy { it.updateState() != ExtensionUI.State.UPDATE }
+								.toList()
+						}
 					})
-				})
 		}.asIOLiveData()
 	}
 

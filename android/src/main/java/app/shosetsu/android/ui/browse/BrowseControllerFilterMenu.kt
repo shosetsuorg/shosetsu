@@ -49,6 +49,8 @@ fun BrowseControllerFilterMenu(viewModel: ABrowseViewModel) {
 @Composable
 fun BrowseControllerLanguagesFilter(viewModel: ABrowseViewModel) {
 	val languageList by viewModel.filteredLanguagesLive.observeAsState(initial = loading)
+	val showOnlyInstalled by viewModel.onlyInstalledLive.observeAsState(initial = false)
+
 	var hidden by remember { mutableStateOf(false) }
 
 	Column(modifier = Modifier.fillMaxSize()) {
@@ -84,13 +86,18 @@ fun BrowseControllerLanguagesFilter(viewModel: ABrowseViewModel) {
 					}
 				)
 			}
+
+
+		BrowseControllerInstalledFilter(
+			state = showOnlyInstalled,
+			updateState = { viewModel.showOnlyInstalled(it) })
+
 	}
 }
 
-
 @Preview
 @Composable
-fun BrowseControllerLanaguagesPreview() {
+fun BrowseControllerLanguagesPreview() {
 	MdcTheme {
 		BrowseControllerLanguagesContent(
 			languages = listOf("en", "ch", "ru", "fr"),
@@ -112,6 +119,8 @@ fun BrowseControllerLanguagesContent(
 		items(languages) { language ->
 			BrowseControllerLanguageItem(language, state[language] ?: false, onLanguageChecked)
 		}
+
+		item { Divider() }
 	}
 }
 
@@ -121,7 +130,6 @@ fun BrowseControllerLanguageItem(
 	state: Boolean,
 	onLanguageChecked: (String, Boolean) -> Unit
 ) {
-	println("Language $language now is $state")
 	Row(
 		horizontalArrangement = Arrangement.SpaceBetween,
 		modifier = Modifier
@@ -142,4 +150,29 @@ fun BrowseControllerLanguageItem(
 		)
 	}
 
+}
+
+
+@Composable
+fun BrowseControllerInstalledFilter(state: Boolean, updateState: (Boolean) -> Unit) {
+	Row(
+		horizontalArrangement = Arrangement.SpaceBetween,
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(start = 16.dp, end = 16.dp)
+	) {
+		Text(
+			text = stringResource(R.string.controller_browse_filter_only_installed),
+			modifier = Modifier.alignByBaseline()
+		)
+		Checkbox(
+			checked = state,
+			onCheckedChange = {
+				updateState(it)
+			},
+			modifier = Modifier
+				.alignByBaseline()
+				.padding(bottom = 8.dp)
+		)
+	}
 }

@@ -44,6 +44,11 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object BrowseFilteredLanguages : StringSetKey("browse_filtered_languages", setOf())
 
 	/**
+	 * Show only installed extensions
+	 */
+	object BrowseOnlyInstalled : BooleanKey("browse_only_installed", false)
+
+	/**
 	 * Selected reader theme
 	 */
 	object ReaderTheme : IntKey("readerTheme", -1)
