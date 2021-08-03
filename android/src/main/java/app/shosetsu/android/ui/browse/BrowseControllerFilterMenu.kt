@@ -53,7 +53,7 @@ fun BrowseControllerLanguagesFilter(viewModel: ABrowseViewModel) {
 
 	var hidden by remember { mutableStateOf(false) }
 
-	Column(modifier = Modifier.fillMaxSize()) {
+	Column(modifier = Modifier.fillMaxWidth()) {
 		Row(
 			modifier = Modifier.fillMaxWidth(),
 			horizontalArrangement = Arrangement.SpaceBetween
