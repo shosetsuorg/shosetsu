@@ -15,12 +15,13 @@ import app.shosetsu.android.common.consts.WorkerTags.BACKUP_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.backupJSON
 import app.shosetsu.android.domain.model.local.backup.*
+import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.BackupEntity
 import app.shosetsu.common.domain.repositories.base.*
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.unwrap
+import app.shosetsu.common.dto.*
 import com.github.doomsdayrs.apps.shosetsu.R
+import kotlinx.coroutines.delay
 import kotlinx.serialization.encodeToString
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -117,6 +118,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 		// Load novels
 		logV(LogConstants.SERVICE_EXECUTE)
 		notify("Starting...")
+		backupRepository.updateProgress(loading)
 		val backupSettings = backupSettings()
 
 		novelRepository.loadBookmarkedNovelEntities().handle { novels ->
@@ -205,9 +207,12 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 
 			// Call GC to clean up the bulky resources
 			System.gc()
+			delay(500)
+			backupRepository.updateProgress(successResult(Unit))
 			return Result.success()
 		}
 
+		backupRepository.updateProgress(errorResult(ErrorKeys.ERROR_GENERAL, "Failure"))
 		return Result.failure()
 	}
 

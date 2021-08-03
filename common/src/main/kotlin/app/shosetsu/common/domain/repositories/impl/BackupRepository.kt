@@ -4,6 +4,9 @@ import app.shosetsu.common.datasource.file.base.IFileBackupDataSource
 import app.shosetsu.common.domain.model.local.BackupEntity
 import app.shosetsu.common.domain.repositories.base.IBackupRepository
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.empty
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /*
  * This file is part of Shosetsu.
@@ -28,6 +31,15 @@ import app.shosetsu.common.dto.HResult
 class BackupRepository(
 	private val iFileBackupDataSource: IFileBackupDataSource
 ) : IBackupRepository {
+	private val _backupProgress: MutableStateFlow<HResult<Unit>> by lazy { MutableStateFlow(empty) }
+
+	override val backupProgress: Flow<HResult<Unit>>
+		get() = _backupProgress
+
+	override fun updateProgress(result: HResult<Unit>) {
+		_backupProgress.tryEmit(result)
+	}
+
 	override suspend fun loadBackups(): HResult<List<String>> =
 		iFileBackupDataSource.loadBackups()
 

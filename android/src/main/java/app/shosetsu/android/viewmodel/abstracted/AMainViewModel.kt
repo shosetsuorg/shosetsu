@@ -58,4 +58,6 @@ abstract class AMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel,
 	 * If stable-fdr, will open up f-droid
 	 */
 	abstract fun handleAppUpdate()
+
+	abstract val backupProgressState: LiveData<HResult<Unit>>
 }

@@ -275,4 +275,7 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 	}
 
 	bind<CancelExtensionInstallUseCase>() with provider { CancelExtensionInstallUseCase(instance()) }
+
+	bind<LoadBackupProgressFlowUseCase>() with provider { LoadBackupProgressFlowUseCase(instance()) }
+
 }

@@ -8,6 +8,7 @@ import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.ShareUseCase
 import app.shosetsu.android.domain.usecases.load.LoadAppUpdateFlowLiveUseCase
 import app.shosetsu.android.domain.usecases.load.LoadAppUpdateUseCase
+import app.shosetsu.android.domain.usecases.load.LoadBackupProgressFlowUseCase
 import app.shosetsu.android.domain.usecases.load.LoadLiveAppThemeUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadNavigationStyleUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadRequireDoubleBackUseCase
@@ -54,7 +55,8 @@ class MainViewModel(
 	private var loadLiveAppThemeUseCase: LoadLiveAppThemeUseCase,
 	private val startInstallWorker: StartAppUpdateInstallWorkerUseCase,
 	private val canAppSelfUpdateUseCase: CanAppSelfUpdateUseCase,
-	private val loadAppUpdateUseCase: LoadAppUpdateUseCase
+	private val loadAppUpdateUseCase: LoadAppUpdateUseCase,
+	private val loadBackupProgress: LoadBackupProgressFlowUseCase
 ) : AMainViewModel() {
 	private var _navigationStyle = 0
 	private var _requireDoubleBackToExit = SettingKey.RequireDoubleBackToExit.default
@@ -117,5 +119,9 @@ class MainViewModel(
 				}
 			}
 		}
+	}
+
+	override val backupProgressState: LiveData<HResult<Unit>> by lazy {
+		loadBackupProgress().asIOLiveData()
 	}
 }

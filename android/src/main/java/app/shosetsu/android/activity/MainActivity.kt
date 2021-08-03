@@ -386,6 +386,22 @@ class MainActivity : AppCompatActivity(), DIAware,
 				}
 			}
 		}
+		viewModel.backupProgressState.observe(this) {
+			it.handle(
+				onLoading = {
+					binding.backupWarning.isVisible = true
+				},
+				onEmpty = {
+					binding.backupWarning.isVisible = false
+				},
+				onError = {
+					logE("Backup failed", it.exception)
+					binding.backupWarning.isVisible = false
+				}
+			) {
+				binding.backupWarning.isVisible = false
+			}
+		}
 	}
 
 	@Deprecated(

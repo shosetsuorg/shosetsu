@@ -49,7 +49,8 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			startInstallWorker = instance(),
 			canAppSelfUpdateUseCase = instance(),
 			loadAppUpdateUseCase = instance(),
-			loadRequireDoubleBackUseCase = instance()
+			loadRequireDoubleBackUseCase = instance(),
+			loadBackupProgress = instance()
 		)
 	}
 

@@ -2,6 +2,7 @@ package app.shosetsu.common.domain.repositories.base
 
 import app.shosetsu.common.domain.model.local.BackupEntity
 import app.shosetsu.common.dto.HResult
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of Shosetsu.
@@ -26,6 +27,16 @@ import app.shosetsu.common.dto.HResult
  * Planned backup repository, handles saving and loading backups
  */
 interface IBackupRepository {
+
+	val backupProgress: Flow<HResult<Unit>>
+
+
+	/**
+	 * Update the progress of backup
+	 *
+	 * Will cause emission of [backupProgress]
+	 */
+	fun updateProgress(result: HResult<Unit>)
 
 	/**
 	 * Reads the backup directory

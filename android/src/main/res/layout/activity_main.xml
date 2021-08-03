@@ -32,6 +32,29 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone" />
 
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/backupWarning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?colorPrimary"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/activity_main_backup_in_progress"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/activity_main_backup_in_progress_warning"
+                    android:textAlignment="center" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
         </app.shosetsu.android.view.widget.ElevatedAppBarLayout>
 
         <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
