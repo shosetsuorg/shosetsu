@@ -44,10 +44,6 @@ class BackupSettings : SettingsSubController() {
 
 	override val adjustments: List<SettingsItemData>.() -> Unit = {
 		find<ButtonSettingData>(3)?.onButtonClicked {
-			// Open ui informing user to wait for completion of the backup
-			AlertDialog.Builder(recyclerView.context!!).apply {
-				setMessage(R.string.message_backup_warning)
-			}.create().show()
 			// Stops novel updates while backup is taking place
 			// Starts backing up data
 			viewModel.startBackup()
