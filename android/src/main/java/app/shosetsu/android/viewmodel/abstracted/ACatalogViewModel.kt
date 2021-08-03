@@ -3,11 +3,11 @@ package app.shosetsu.android.viewmodel.abstracted
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.utils.ColumnCalculator
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
-import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.NovelCardType
+import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
 
 /*
@@ -45,7 +45,7 @@ abstract class ACatalogViewModel :
 	/**
 	 * The list of items that will be presented as the filter menu
 	 */
-	abstract val filterItemsLive: LiveData<HResult<List<SettingsItemData>>>
+	abstract val filterItemsLive: LiveData<HResult<List<Filter<*>>>>
 
 	/**
 	 * enable or disable searching
@@ -114,4 +114,17 @@ abstract class ACatalogViewModel :
 	 * This will reset the view model completely so it can be reused later
 	 */
 	abstract fun destroy()
+
+
+	abstract fun getFilterStringState(id: Filter<String>): LiveData<String>
+	abstract fun setFilterStringState(id: Filter<String>, value: String)
+
+	abstract fun getFilterBooleanState(id: Filter<Boolean>): LiveData<Boolean>
+	abstract fun setFilterBooleanState(id: Filter<Boolean>, value: Boolean)
+
+
+	abstract fun getFilterIntState(id: Filter<Int>): LiveData<Int>
+	abstract fun setFilterIntState(id: Filter<Int>, value: Int)
+
+
 }

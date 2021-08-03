@@ -4,12 +4,16 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.view.*
 import android.widget.SearchView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
+import androidx.savedstate.ViewTreeSavedStateRegistryOwner
+import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.ext.*
@@ -25,8 +29,10 @@ import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.common.enums.NovelCardType.COMPRESSED
 import app.shosetsu.common.enums.NovelCardType.NORMAL
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.github.doomsdayrs.apps.shosetsu.databinding.ComposeViewBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerCatalogueBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.scroll.EndlessRecyclerOnScrollListener
@@ -305,12 +311,33 @@ class CatalogController(
 	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
 		fab.setIconResource(R.drawable.filter)
 		fab.setOnClickListener {
-			BottomSheetDialog(binding.root.context).apply {
-				setContentView(bottomMenuView)
+			//bottomMenuRetriever.invoke()?.show()
+			BottomSheetDialog(this.view!!.context).apply {
+				val binding = ComposeViewBinding.inflate(
+					this@CatalogController.activity!!.layoutInflater,
+					null,
+					false
+				)
+
+				this.window?.decorView?.let {
+					ViewTreeLifecycleOwner.set(it, this@CatalogController)
+					ViewTreeSavedStateRegistryOwner.set(it, activity as MainActivity)
+				}
+
+				binding.root.apply {
+					setViewCompositionStrategy(
+						ViewCompositionStrategy.DisposeOnLifecycleDestroyed(this@CatalogController)
+					)
+					setContent {
+						MdcTheme(view!!.context) {
+							CatalogFilterMenu(viewModel)
+						}
+					}
+				}
+
+				setContentView(binding.root)
+
 			}.show()
 		}
 	}
-
-	private val bottomMenuView: View
-		get() = CatalogFilterMenuBuilder(this).build()
 }
