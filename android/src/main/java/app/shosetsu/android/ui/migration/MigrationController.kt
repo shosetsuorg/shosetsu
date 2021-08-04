@@ -3,21 +3,32 @@ package app.shosetsu.android.ui.migration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.*
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.android.common.ext.context
-import app.shosetsu.android.common.ext.picasso
-import app.shosetsu.android.view.controller.ViewedController
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.lib.IExtension
-import app.shosetsu.lib.Novel
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
+import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.view.compose.PicassoImage
+import app.shosetsu.android.view.controller.ShosetsuController
+import app.shosetsu.android.view.uimodels.model.NovelUI
+import app.shosetsu.android.viewmodel.abstracted.AMigrationViewModel
+import app.shosetsu.common.dto.handle
+import app.shosetsu.common.dto.loading
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.databinding.MigrationViewBinding
-import com.github.doomsdayrs.apps.shosetsu.databinding.MigrationViewBinding.inflate
+import com.google.android.material.composethemeadapter.MdcTheme
 
 /*
  * This file is part of Shosetsu.
@@ -45,122 +56,80 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.MigrationViewBinding.infl
  * @author github.com/doomsdayrs
  * yes, a THIRD ONE
  */
-class MigrationController(bundle: Bundle) : ViewedController<MigrationViewBinding>(bundle) {
+class MigrationController(bundle: Bundle) : ShosetsuController(bundle) {
 	companion object {
 		const val TARGETS_BUNDLE_KEY: String = "targets"
 	}
 
-	override fun bindView(inflater: LayoutInflater): MigrationViewBinding =
-		inflate(inflater)
-
-	class Transferee(
-		val original: Int,
-		var targetExtensionID: Int = -1,
-		var listings: Array<Novel.Listing> = arrayOf(),
-		var selectedURL: String = "",
-	)
-
-	private var transferees: Array<Transferee>
-
-	init {
-		val arrayList = ArrayList<Transferee>()
-		bundle.getIntArray(TARGETS_BUNDLE_KEY)?.forEach {
-			arrayList.add(Transferee(original = it))
-		}
-		transferees = arrayList.toTypedArray()
-	}
+	private val viewModel: AMigrationViewModel by viewModel()
 
 	override fun onViewCreated(view: View) {
-		binding.catalogueSelection.layoutManager = LinearLayoutManager(context)
-		binding.novelsToTransfer.adapter = TransfereeAdapter(this)
-		binding.novelsToTransfer.addOnItemChangedListener { _, item ->
-			setupViewWithTransferee(item)
-		}
-		setupViewWithTransferee(0)
+		viewModel.setNovels(args.getIntArray(TARGETS_BUNDLE_KEY)!!)
 	}
 
-	/**
-	 * @param position [Int] position
-	 */
-	fun setupViewWithTransferee(position: Int) {
-		val target = transferees[position]
-		if (target.targetExtensionID == -1) {
-			binding.catalogueSelectionView.visibility = VISIBLE
-			binding.targetSearching.visibility = INVISIBLE
-			binding.catalogueSelection.adapter = CatalogueSelectionAdapter(this, position)
-		} else {
-			binding.catalogueSelectionView.visibility = GONE
-			binding.targetSearching.visibility = VISIBLE
-			// TODO
-		}
-	}
-
-	class TransfereeAdapter(private val migrationController: MigrationController) :
-		RecyclerView.Adapter<TransfereeAdapter.TransfereeViewHolder>() {
-		class TransfereeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-			val imageView: ImageView = itemView.findViewById(R.id.imageView)
-			val title: AppCompatTextView = itemView.findViewById(R.id.title)
-		}
-
-		override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransfereeViewHolder {
-			return TransfereeViewHolder(
-				LayoutInflater.from(parent.context).inflate(
-					R.layout.recycler_novel_card,
-					parent,
-					false
-				)
-			)
-		}
-
-		override fun getItemCount(): Int {
-			return migrationController.transferees.size
-		}
-
-		override fun onBindViewHolder(holder: TransfereeViewHolder, position: Int) {
-			val tran = migrationController.transferees[position]
-			//holder.title.text = tran.novelCard.title
-			//if (tran.novelCard.imageURL.isNotEmpty())
-			//	Picasso.get().load("TODO").into(holder.imageView)
-		}
-	}
-
-	class CatalogueSelectionAdapter(
-		private val migrationController: MigrationController,
-		private val transfereePosition: Int
-	) : RecyclerView.Adapter<CatalogueSelectionAdapter.CatalogueHolder>() {
-		class CatalogueHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-			val imageView: ImageView = itemView.findViewById(R.id.imageView)
-			val title: AppCompatTextView = itemView.findViewById(R.id.title)
-			var id: Int = -1
-		}
-
-		override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CatalogueHolder {
-			return CatalogueHolder(
-				LayoutInflater.from(parent.context)
-					.inflate(R.layout.catalogue_item_card, parent, false)
-			)
-		}
-
-		override fun getItemCount(): Int {
-			return -1
-		}
-
-		override fun onBindViewHolder(holder: CatalogueHolder, position: Int) {
-			val form: IExtension? = null
-			holder.title.text = form?.name
-			if (form?.imageURL?.isNotEmpty()!!)
-				picasso(form.imageURL, holder.imageView)
-
-			holder.id = form.formatterID
-			holder.itemView.setOnClickListener {
-				migrationController.transferees[transfereePosition].targetExtensionID = holder.id
-				migrationController.setupViewWithTransferee(transfereePosition)
+	override fun onCreateView(
+		inflater: LayoutInflater,
+		container: ViewGroup,
+		savedViewState: Bundle?
+	): View = ComposeView(container.context).apply {
+		setContent {
+			MdcTheme {
+				MigrationContent(viewModel)
 			}
 		}
 	}
+}
 
-	override fun handleErrorResult(e: HResult.Error) {
-		TODO("Not yet implemented")
+
+@Composable
+fun MigrationContent(viewModel: AMigrationViewModel) {
+	val list by viewModel.novels.observeAsState(loading)
+
+	Column(modifier = Modifier.fillMaxSize()) {
+		// Novels that the user selected to transfer
+		Box(modifier = Modifier.fillMaxWidth()) {
+			list.handle(
+				onLoading = { MigrationNovelsLoadingContent() }
+			) {
+
+			}
+		}
+
+		// Holds an arrow indicating it will be transferred to
+		Box(modifier = Modifier.fillMaxWidth()) {
+			Icon(
+				painter = painterResource(id = R.drawable.expand_more),
+				contentDescription = "The above will transfer to the below"
+			)
+		}
+
+		// Select the extension
+		Box(modifier = Modifier.fillMaxWidth()) {
+
+		}
+
+		// Select novel from its results
+		Box(modifier = Modifier.fillMaxWidth()) {
+
+		}
 	}
+}
 
+@Composable
+fun MigrationNovelsLoadingContent() {
+	LinearProgressIndicator()
+}
+
+@Composable
+fun MigrationNovelsContent(list: List<NovelUI>) {
+	LazyRow {
+		items(items = list, key = { it.id }) { novelUI ->
+			Card {
+				Column {
+					PicassoImage(model = novelUI.imageURL)
+					Text(text = novelUI.imageURL)
+				}
+			}
+		}
+	}
 }

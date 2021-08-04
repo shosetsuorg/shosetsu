@@ -279,7 +279,7 @@ class LibraryController
 				router.pushController(
 					MigrationController(
 						bundleOf(
-							MigrationController.TARGETS_BUNDLE_KEY to arrayListOf<Int>()
+							MigrationController.TARGETS_BUNDLE_KEY to fastAdapter.getSelectExtension().selectedItems.map { it.id }
 						)
 					).withFadeTransaction()
 				)
