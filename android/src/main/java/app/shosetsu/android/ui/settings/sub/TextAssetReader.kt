@@ -3,15 +3,29 @@ package app.shosetsu.android.ui.settings.sub
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import app.shosetsu.android.common.enums.TextAsset
 import app.shosetsu.android.common.ext.getString
 import app.shosetsu.android.common.ext.viewModel
-import app.shosetsu.android.view.controller.ViewedController
+import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.ATextAssetReaderViewModel
 import app.shosetsu.common.dto.HResult
-import com.github.doomsdayrs.apps.shosetsu.databinding.LargeReaderBinding
-import com.github.doomsdayrs.apps.shosetsu.databinding.LargeReaderBinding.inflate
+import app.shosetsu.common.dto.handle
+import app.shosetsu.common.dto.loading
+import com.google.android.material.composethemeadapter.MdcTheme
 
 /*
  * This file is part of Shosetsu.
@@ -35,7 +49,7 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.LargeReaderBinding.inflat
  * Shosetsu
  * 9 / June / 2019
  */
-class TextAssetReader(bundleI: Bundle) : ViewedController<LargeReaderBinding>(bundleI) {
+class TextAssetReader(bundleI: Bundle) : ShosetsuController(bundleI) {
 
 	private val viewModel: ATextAssetReaderViewModel by viewModel()
 
@@ -44,6 +58,18 @@ class TextAssetReader(bundleI: Bundle) : ViewedController<LargeReaderBinding>(bu
 	 */
 	constructor(target: TextAsset) : this(target.bundle)
 
+	override fun onCreateView(
+		inflater: LayoutInflater,
+		container: ViewGroup,
+		savedViewState: Bundle?
+	): View = ComposeView(container.context).apply {
+		setContent {
+			val content by viewModel.liveData.observeAsState(initial = loading)
+			MdcTheme {
+				TextAssetReaderContent(content)
+			}
+		}
+	}
 
 	@ExperimentalStdlibApi
 	override fun onViewCreated(view: View) {
@@ -52,19 +78,26 @@ class TextAssetReader(bundleI: Bundle) : ViewedController<LargeReaderBinding>(bu
 		viewModel.targetLiveData.handleObserve {
 			setViewTitle(getString(it.titleRes))
 		}
-
-		viewModel.liveData.handleObserve {
-			binding.content.text = it
-		}
 	}
-
-	override fun bindView(inflater: LayoutInflater): LargeReaderBinding = inflate(inflater)
-
-	override fun handleErrorResult(e: HResult.Error) {}
 
 	companion object {
 		const val BUNDLE_KEY: String = "target"
 		private val TextAsset.bundle: Bundle
 			get() = bundleOf(BUNDLE_KEY to ordinal)
+	}
+}
+
+@Composable
+fun TextAssetReaderContent(text: HResult<String>) {
+	text.handle {
+		Box(
+			modifier = Modifier
+				.verticalScroll(
+					state = rememberScrollState(),
+				)
+				.fillMaxSize()
+		) {
+			Text(text = it, modifier = Modifier.padding(16.dp))
+		}
 	}
 }
