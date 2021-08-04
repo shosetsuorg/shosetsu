@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import app.shosetsu.android.common.ext.viewModel
-import app.shosetsu.android.view.compose.PicassoImage
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.AMigrationViewModel
@@ -126,7 +125,6 @@ fun MigrationNovelsContent(list: List<NovelUI>) {
 		items(items = list, key = { it.id }) { novelUI ->
 			Card {
 				Column {
-					PicassoImage(model = novelUI.imageURL)
 					Text(text = novelUI.imageURL)
 				}
 			}
