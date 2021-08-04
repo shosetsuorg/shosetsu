@@ -3,7 +3,7 @@ package app.shosetsu.android.view.uimodels.model
 import android.view.View
 import android.widget.ImageView
 import app.shosetsu.android.common.ext.getString
-import app.shosetsu.android.common.ext.picasso
+import app.shosetsu.android.common.ext.shosetsuLoad
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import app.shosetsu.android.view.uimodels.model.NovelUI.ViewHolder
@@ -135,7 +135,7 @@ data class NovelUI(
 			listOf(novelImage, novelImageBackground).forEach { iV: ImageView? ->
 				if (item.imageURL.isNotEmpty()) {
 					iV?.let {
-						picasso(item.imageURL, it)
+						it.shosetsuLoad(item.imageURL)
 					}
 				} else {
 					iV?.setImageResource(R.drawable.broken_image)

@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.EXTRA_NOTIFICATION_ID
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.work.*
 import androidx.work.ExistingWorkPolicy.REPLACE
 import androidx.work.NetworkType.CONNECTED
@@ -34,8 +35,9 @@ import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.transformToSuccess
 import app.shosetsu.lib.Novel
+import coil.imageLoader
+import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.delay
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -222,6 +224,12 @@ class NovelUpdateWorker(
 			for (novel in updateNovels) {
 				launchIO { // Run each novel notification on it's own seperate thread
 					val chapterSize: Int = updatedChapters.filter { it.novelID == novel.id }.size
+					val bitmap: Bitmap? =
+						applicationContext.imageLoader.execute(
+							ImageRequest.Builder(applicationContext).data(novel.imageURL)
+								.build()
+						).drawable?.toBitmap()
+
 					notify(
 						applicationContext.resources.getQuantityString(
 							R.plurals.worker_novel_update_updated_novel_count,
@@ -236,11 +244,7 @@ class NovelUpdateWorker(
 								novel.title
 							)
 						)
-						val bitmap: Bitmap? = try {
-							Picasso.get().load(novel.imageURL).get()
-						} catch (e: Exception) {
-							null
-						}
+
 
 						setLargeIcon(bitmap)
 

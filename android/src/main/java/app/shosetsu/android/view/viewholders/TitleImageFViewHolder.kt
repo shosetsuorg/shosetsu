@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.CallSuper
 import androidx.appcompat.widget.AppCompatTextView
-import app.shosetsu.android.common.ext.picasso
+import app.shosetsu.android.common.ext.shosetsuLoad
 import app.shosetsu.android.view.uimodels.base.GetImageURL
 import app.shosetsu.android.view.uimodels.base.GetTitle
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -44,7 +44,7 @@ open class TitleImageFViewHolder<ITEM>(itemView: View) : FastAdapter.ViewHolder<
 	override fun bindView(item: ITEM, payloads: List<Any>) {
 		title.text = item.getDataTitle()
 		val imageURL = item.getDataImageURL()
-		if (imageURL.isNotEmpty()) picasso(imageURL, imageView)
+		if (imageURL.isNotEmpty()) imageView.shosetsuLoad(imageURL)
 		else {
 			imageView.setImageResource(R.drawable.broken_image)
 			if (oldType == null) oldType = imageView.scaleType

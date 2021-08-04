@@ -3,7 +3,7 @@ package app.shosetsu.android.view.uimodels.model
 import android.text.format.DateFormat.format
 import android.view.View
 import androidx.core.view.isVisible
-import app.shosetsu.android.common.ext.picasso
+import app.shosetsu.android.common.ext.shosetsuLoad
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -57,7 +57,7 @@ data class UpdateUI(
 
 		override fun RecyclerUpdateUiBinding.bindView(item: UpdateUI, payloads: List<Any>) {
 			if (item.novelImageURL.isNotEmpty()) {
-				picasso(item.novelImageURL, imageView)
+				imageView.shosetsuLoad(item.novelImageURL)
 			} else {
 				novelTitle.isVisible = true
 				novelTitle.text = item.novelName

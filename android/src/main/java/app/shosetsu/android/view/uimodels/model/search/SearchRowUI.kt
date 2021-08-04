@@ -4,7 +4,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
-import app.shosetsu.android.common.ext.picasso
+import app.shosetsu.android.common.ext.shosetsuLoad
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -52,7 +52,7 @@ data class SearchRowUI(
 			recyclerView.layoutManager =
 				LinearLayoutManager(recyclerView.context, HORIZONTAL, false)
 			recyclerView.setHasFixedSize(false)
-			if (item.imageURL.isNotEmpty()) picasso(item.imageURL, imageView)
+			if (item.imageURL.isNotEmpty()) imageView.shosetsuLoad(item.imageURL)
 		}
 
 		override fun RecyclerSearchRowBinding.unbindView(item: SearchRowUI) {

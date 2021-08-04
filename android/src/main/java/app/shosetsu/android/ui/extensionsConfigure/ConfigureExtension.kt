@@ -91,7 +91,7 @@ class ConfigureExtension(bundle: Bundle) :
 			}
 		) { extensionUI ->
 			if (!extensionUI.imageURL.isNullOrEmpty())
-				picasso(extensionUI.imageURL!!, binding.imageView)
+				binding.imageView.shosetsuLoad(extensionUI.imageURL!!)
 
 			binding.fileName.text = extensionUI.fileName
 			binding.identification.text = extensionUI.id.toString()

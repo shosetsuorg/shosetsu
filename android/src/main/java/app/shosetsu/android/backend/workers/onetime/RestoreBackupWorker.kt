@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.util.Base64
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.work.*
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
@@ -25,8 +26,9 @@ import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.unwrap
 import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.lib.Version
+import coil.imageLoader
+import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.squareup.picasso.Picasso
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -188,7 +190,9 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 						// If none match the extension ID and URL, time to load it up
 						val loadImageJob = launchIO {
 							try {
-								bitmap = Picasso.get().load(imageURL).get()
+								bitmap = applicationContext.imageLoader.execute(
+									ImageRequest.Builder(applicationContext).data(imageURL).build()
+								).drawable?.toBitmap()
 							} catch (e: IOException) {
 								logE("Failed to download novel image", e)
 							}

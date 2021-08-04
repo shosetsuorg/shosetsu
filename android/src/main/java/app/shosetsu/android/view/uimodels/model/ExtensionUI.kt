@@ -2,7 +2,7 @@ package app.shosetsu.android.view.uimodels.model
 
 import android.view.View
 import androidx.core.view.isVisible
-import app.shosetsu.android.common.ext.picasso
+import app.shosetsu.android.common.ext.shosetsuLoad
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import app.shosetsu.common.domain.model.local.ExtensionEntity
@@ -129,7 +129,7 @@ data class ExtensionUI(
 			title.text = item.name
 			language.text = item.lang
 
-			if (!item.imageURL.isNullOrEmpty()) picasso(item.imageURL!!, imageView)
+			if (!item.imageURL.isNullOrEmpty()) imageView.shosetsuLoad(item.imageURL!!)
 		}
 
 		override fun ExtensionCardBinding.unbindView(item: ExtensionUI) {

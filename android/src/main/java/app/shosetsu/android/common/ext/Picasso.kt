@@ -1,8 +1,8 @@
 package app.shosetsu.android.common.ext
 
 import android.widget.ImageView
+import coil.load
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.squareup.picasso.Picasso
 
 /*
  * This file is part of Shosetsu.
@@ -26,9 +26,9 @@ import com.squareup.picasso.Picasso
  * 13 / 09 / 2020
  */
 
-
-fun picasso(source: String, into: ImageView) = Picasso.get()
-	.load(source)
-	.placeholder(R.drawable.animated_refresh)
-	.error(R.drawable.broken_image)
-	.into(into)
+fun ImageView.shosetsuLoad(source: String) {
+	load(source) {
+		placeholder(R.drawable.animated_refresh)
+		error(R.drawable.broken_image)
+	}
+}

@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.work.*
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
@@ -17,8 +18,9 @@ import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.ifSo
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.enums.DownloadStatus
+import coil.imageLoader
+import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.squareup.picasso.Picasso
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -72,9 +74,11 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 			// Load image, this tbh may take longer then the actual extension
 
 			val bitmap: Bitmap? =
-				if (notify)
-					Picasso.get().load(extension.imageURL).get()
-				else null
+				if (notify) {
+					applicationContext.imageLoader.execute(
+						ImageRequest.Builder(applicationContext).data(extension.imageURL).build()
+					).drawable?.toBitmap()
+				} else null
 
 			if (notify)
 				notify(

@@ -189,7 +189,7 @@ dependencies {
 
 
 	// Image loading
-	implementation("com.squareup.picasso:picasso:2.71828")
+	implementation("io.coil-kt:coil-compose:1.3.1")
 
 	//TODO GITHUB sign in to save backup data to cloud
 	//implementation "com.github.kohsuke:github-api:github-api-1.95"
