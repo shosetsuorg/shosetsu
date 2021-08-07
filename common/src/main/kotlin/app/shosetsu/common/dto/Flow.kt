@@ -1,9 +1,7 @@
 package app.shosetsu.common.dto
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.*
 
 /*
  * This file is part of Shosetsu.
@@ -24,9 +22,13 @@ import kotlinx.coroutines.flow.mapLatest
 
 
 /**
- * Represents a flow of [HResult] of the specified type
+ * Represents a [Flow] of [HResult]
  */
 typealias HFlow<T> = Flow<HResult<T>>
+
+/**
+ * Represent a [Flow] of a [List] of [HResult]
+ */
 typealias HListFlow<T> = Flow<HList<T>>
 
 /**
@@ -64,6 +66,28 @@ inline fun <reified I, O> HFlow<I>.mapResult(
 	)
 }
 
+
+/**
+ * Combine a [List] of [HResult] [Flow] into an [HListFlow]
+ *
+ * @see [combine]
+ */
+@ExperimentalCoroutinesApi
+inline fun <reified T> Flow<List<HResult<T>>>.combineResultList(): HListFlow<T> =
+	transformLatest { list ->
+		emit(list.combine())
+	}
+
+/**
+ * Combine a [List] of [HFlow] into an [HListFlow] using [combineResultList]
+ *
+ * @see [combineResultList]
+ */
+@ExperimentalCoroutinesApi
+inline fun <reified T> List<HFlow<T>>.combineResults(): HListFlow<T> =
+	combine(this) {
+		it.toList()
+	}.combineResultList()
 
 /** Converts each [Convertible] emitted by the [Flow] from its [O] form to its [I] form */
 @ExperimentalCoroutinesApi

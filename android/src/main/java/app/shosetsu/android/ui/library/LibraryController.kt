@@ -280,6 +280,7 @@ class LibraryController
 					MigrationController(
 						bundleOf(
 							MigrationController.TARGETS_BUNDLE_KEY to fastAdapter.getSelectExtension().selectedItems.map { it.id }
+								.toIntArray()
 						)
 					).withFadeTransaction()
 				)

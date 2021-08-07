@@ -256,4 +256,8 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 		TextAssetReaderViewModel(instance())
 	}
 
+	bind<AMigrationViewModel>() with provider {
+		MigrationViewModel(instance())
+	}
+
 }

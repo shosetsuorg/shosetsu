@@ -1,6 +1,8 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
+import app.shosetsu.android.view.uimodels.model.ExtensionUI
+import app.shosetsu.android.view.uimodels.model.MigrationNovelUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.common.domain.model.local.StrippedBookmarkedNovelEntity
@@ -32,9 +34,14 @@ import app.shosetsu.common.dto.HResult
 abstract class AMigrationViewModel : ShosetsuViewModel() {
 
 	/**
+	 * The extensions to select from
+	 */
+	abstract val extensions: LiveData<HResult<ExtensionUI>>
+
+	/**
 	 * Novels that will be transfered
 	 */
-	abstract val novels: LiveData<HResult<List<NovelUI>>>
+	abstract val novels: LiveData<HResult<List<MigrationNovelUI>>>
 
 	/**
 	 * Which novel is currently being worked on

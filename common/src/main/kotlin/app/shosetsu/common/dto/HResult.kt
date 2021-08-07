@@ -282,3 +282,29 @@ inline fun <reified I, O> HResult<I>.transform(
  */
 inline fun <reified T> HResult<T>.catch(notASuccess: () -> HResult<T>): HResult<T> =
 	takeIf { it is HResult.Success } ?: notASuccess()
+
+
+/**
+ * Combine a [List] of [HResult] into an [HList]
+ */
+inline fun <reified T> List<HResult<T>>.combine(): HList<T> {
+	val innerList = arrayListOf<T>()
+
+	forEach { result ->
+		result.handle(
+			onLoading = {
+				return loading
+			},
+			onEmpty = {
+				return empty
+			},
+			onError = {
+				return it
+			}
+		) {
+			innerList.add(it)
+		}
+	}
+
+	return successResult(innerList)
+}
