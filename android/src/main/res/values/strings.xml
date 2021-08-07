@@ -497,6 +497,8 @@
     <string name="controller_browse_filter_only_installed">Show only installed</string>
     <string name="activity_main_backup_in_progress">Backup in progress</string>
     <string name="activity_main_backup_in_progress_warning">Please avoid changing data</string>
+    <string name="settings_update_repo_disable_on_fail_title">Disable on fail</string>
+    <string name="settings_update_repo_disable_on_fail_desc">Disable a repository if it fails to update, mostly for testing.</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

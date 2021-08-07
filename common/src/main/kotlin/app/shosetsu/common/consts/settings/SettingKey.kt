@@ -179,6 +179,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object RepoUpdateOnLowBattery : BooleanKey("repoUpdateLowBattery", false)
 	object RepoUpdateOnMeteredConnection : BooleanKey("repoUpdateMetered", true)
 	object RepoUpdateOnlyWhenIdle : BooleanKey("repoUpdateIdle", false)
+	object RepoUpdateDisableOnFail : BooleanKey("update_repository_disable_on_fail", false)
 
 
 	// App Update Options

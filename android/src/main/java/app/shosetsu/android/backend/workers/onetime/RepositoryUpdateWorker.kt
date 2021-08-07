@@ -63,6 +63,11 @@ class RepositoryUpdateWorker(
 	private val extRepoRepo: IExtensionRepoRepository by instance()
 	private val extensionLibrariesRepo: IExtensionLibrariesRepository by instance()
 
+	private val iSettingsRepository by instance<ISettingsRepository>()
+
+	private suspend fun disableOnFail(): Boolean =
+		iSettingsRepository.getBooleanOrDefault(SettingKey.RepoUpdateDisableOnFail)
+
 	/**
 	 * Updates the libraries in the program
 	 *
@@ -235,7 +240,10 @@ class RepositoryUpdateWorker(
 							"${repo.name} failed to load ${it.code} : ${it.message}",
 							it.exception
 						)
-						extRepoRepo.update(repo.copy(isEnabled = false))
+						if (disableOnFail()) {
+							logI("Disabling repository: $repo")
+							extRepoRepo.update(repo.copy(isEnabled = false))
+						}
 					},
 					onEmpty = {
 						logE("Received no data for $repo")
