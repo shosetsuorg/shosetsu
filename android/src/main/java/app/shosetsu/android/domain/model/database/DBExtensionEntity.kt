@@ -70,7 +70,11 @@ data class DBExtensionEntity(
 	/** If extension is installed*/
 	var installed: Boolean = false,
 
-	/** Version currently installed */
+	/**
+	 * Version currently installed
+	 *
+	 * Not null if [installed] = true
+	 */
 	var installedVersion: Version? = null,
 
 	/** Version in repository*/
