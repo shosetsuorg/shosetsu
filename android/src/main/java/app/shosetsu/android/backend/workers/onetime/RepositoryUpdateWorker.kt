@@ -92,27 +92,28 @@ class RepositoryUpdateWorker(
 
 			// Loops through the libraries from the remote repository
 			val repoExtLibListSize = repoExtLibList.size
-			repoExtLibList.forEachIndexed { index, (repoExtLibName, repoExtLibVersion) ->
-				notify("Checking $repoExtLibName from ${repository.name}") {
+
+			repoExtLibList.forEachIndexed { index, (repoLibName, repoLibVersion) ->
+				notify("Checking $repoLibName from ${repository.name}") {
 					setSilent(true)
 					setProgress(repoExtLibListSize, index + 1, false)
 				}
-				/**
-				 * -1 if the lib is not installed
-				 */
-				val position = extLibs.containsName(repoExtLibName)
-				logV("$repoExtLibName:$position")
+
+				val isInstalled = extLibs.any { it.scriptName == repoLibName }
+
+				logV("$repoLibName:$isInstalled")
+
 				var install = false
 				var extensionLibraryEntity: ExtLibEntity? = null
 				var version = Version(0, 0, 0)
 
-				if (position != -1) {
+				if (isInstalled) {
 					//  Checks if an update need
-					version = repoExtLibVersion
-					extensionLibraryEntity = extLibs[position]
+					version = repoLibVersion
+					extensionLibraryEntity = extLibs.find { it.scriptName == repoLibName }!!
 
 					// If the version compared to the repo version is different, reinstall
-					if (version != extensionLibraryEntity.version)
+					if (version < extensionLibraryEntity.version)
 						install = true
 				} else {
 					install = true
@@ -122,21 +123,21 @@ class RepositoryUpdateWorker(
 				if (install)
 					libsNotPresent.add(
 						extensionLibraryEntity ?: ExtLibEntity(
-							scriptName = repoExtLibName,
+							scriptName = repoLibName,
 							version = version,
 							repoID = repository.id!!
 						)
 					)
 			}
 			notify("Finished checking extensions from ${repository.name}") {
-				setNotificationSilent()
+				setSilent(true)
 				removeProgress()
 			}
 
 			// For each library not present, installs
 			libsNotPresent.forEach {
 				notify("Installing ${it.scriptName} from ${repository.name}") {
-					setNotificationSilent()
+					setSilent(true)
 					setProgress(1, 0, true)
 				}
 				extensionLibrariesRepo.installExtLibrary(repository.url, it)
@@ -250,6 +251,7 @@ class RepositoryUpdateWorker(
 					}
 				) { repoIndex ->
 					updateLibraries(repoIndex.libraries, repo)
+
 					val result = updateExtensions(repoIndex.extensions, repo)
 					presentExtensions.addAll(result)
 					presentExtensions = ArrayList(presentExtensions.distinct())
