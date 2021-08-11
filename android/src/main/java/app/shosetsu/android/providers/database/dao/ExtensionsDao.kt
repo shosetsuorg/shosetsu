@@ -106,7 +106,7 @@ interface ExtensionsDao : BaseDao<DBExtensionEntity> {
 				}
 			)
 
-			if (isInstalled && oldVersion.compareTo(newEntity.repositoryVersion) == -1)
+			if (isInstalled && oldVersion < newEntity.repositoryVersion)
 				1
 			else
 				0
