@@ -126,6 +126,7 @@ class StringReader(
 
 	override fun setData(data: ByteArray) {
 		unformattedText = data.decodeToString()
+		unformattedText = "#### " + chapter.title + " ####\n" + unformattedText
 		bind()
 	}
 
