@@ -140,22 +140,6 @@ interface IExtensionsRepository {
 	suspend fun uninstallExtension(extensionEntity: ExtensionEntity): HResult<*>
 
 	/**
-	 * Inserts or Updates an [extensionEntity]
-	 *
-	 * Safe call to not cause duplicate entities
-	 *
-	 * @return
-	 * [HResult.Success] Inserted or Updated
-	 *
-	 * [HResult.Error] Something went wrong
-	 *
-	 * [HResult.Empty] never
-	 *
-	 * [HResult.Loading] never
-	 */
-	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<Int>
-
-	/**
 	 * Updates an [extensionEntity]
 	 *
 	 * @return
@@ -225,4 +209,6 @@ interface IExtensionsRepository {
 	 * [HResult.Loading] never
 	 */
 	suspend fun removeExtension(extensionEntity: ExtensionEntity): HResult<*>
+
+	suspend fun insert(extensionEntity: ExtensionEntity): HResult<*>
 }

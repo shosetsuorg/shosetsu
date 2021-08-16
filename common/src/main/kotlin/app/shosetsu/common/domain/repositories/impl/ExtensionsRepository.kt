@@ -214,9 +214,6 @@ class ExtensionsRepository(
 			}
 		}
 
-	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<Int> =
-		dbSource.insertOrUpdate(extensionEntity)
-
 	override suspend fun updateExtensionEntity(extensionEntity: ExtensionEntity): HResult<*> =
 		dbSource.updateExtension(extensionEntity)
 
@@ -244,4 +241,7 @@ class ExtensionsRepository(
 				dbSource.deleteExtension(extensionEntity)
 			}
 		}
+
+	override suspend fun insert(extensionEntity: ExtensionEntity): HResult<*> =
+		dbSource.insert(extensionEntity)
 }

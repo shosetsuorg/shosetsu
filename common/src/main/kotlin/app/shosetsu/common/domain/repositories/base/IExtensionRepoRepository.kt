@@ -82,7 +82,6 @@ interface IExtensionRepoRepository {
 	 */
 	fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>>
 
-
 	suspend fun addRepository(entity: RepositoryEntity): HResult<*>
 
 	suspend fun remove(entity: RepositoryEntity): HResult<*>
@@ -90,4 +89,6 @@ interface IExtensionRepoRepository {
 	suspend fun update(entity: RepositoryEntity): HResult<*>
 
 	suspend fun insert(entity: RepositoryEntity): HResult<*>
+
+	suspend fun getRepo(id: Int): HResult<RepositoryEntity>
 }

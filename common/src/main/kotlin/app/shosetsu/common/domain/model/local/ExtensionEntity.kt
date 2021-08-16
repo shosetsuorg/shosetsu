@@ -39,6 +39,8 @@ data class ExtensionEntity(
 	/** Name of the extension, can be changed */
 	var name: String = "",
 
+	// TODO repoFileName to allow for filename changes easily
+
 	/** FileName of the extension */
 	val fileName: String = "",
 

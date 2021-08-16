@@ -170,6 +170,100 @@ class RepositoryUpdateWorker(
 	}
 
 	/**
+	 * Handle updating an extension
+	 */
+	private suspend fun updateExtension(repo: RepositoryEntity, repoExt: RepoExtension) {
+		extRepo.getExtensionEntity(repoExt.id).handle(
+			onEmpty = {
+				extRepo.insert(
+					ExtensionEntity(
+						id = repoExt.id,
+						repoID = repo.id!!,
+						name = repoExt.name,
+						fileName = repoExt.fileName,
+						imageURL = repoExt.imageURL,
+						lang = repoExt.lang,
+						repositoryVersion = repoExt.version,
+						chapterType = Novel.ChapterType.STRING,
+						md5 = repoExt.md5,
+						type = repoExt.type
+					)
+				).handle {
+					notify("${repoExt.version} update available", repoExt.id + 3000) {
+						setContentTitle(repoExt.name)
+						removeProgress()
+						setNotOngoing()
+					}
+				}
+			}
+		) { extensionEntity ->
+			if (extensionEntity.repoID != repo.id) {
+				// the id is different, if the version is greater then override
+				if (extensionEntity.repositoryVersion < repoExt.version) {
+					extRepo.updateExtensionEntity(
+						extensionEntity.copy(
+							repoID = repo.id!!,
+							fileName = repoExt.fileName,
+							repositoryVersion = repoExt.version,
+							md5 = repoExt.md5,
+							type = repoExt.type,
+						)
+					).handle {
+						notify("${repoExt.version} update available", repoExt.id + 3000) {
+							setContentTitle(repoExt.name)
+							removeProgress()
+							setNotOngoing()
+						}
+					}
+				} else {
+					// the version is not less then the other
+					// check if the repository is disabled or not
+					extRepoRepo.getRepo(repo.id!!).handle {
+						if (!it.isEnabled) {
+							// the repository is disabled, we can downgrade
+							extRepo.updateExtensionEntity(
+								extensionEntity.copy(
+									repoID = repo.id!!,
+									fileName = repoExt.fileName,
+									repositoryVersion = repoExt.version,
+									md5 = repoExt.md5,
+									type = repoExt.type,
+								)
+							).handle {
+								notify("${repoExt.version} rollback", repoExt.id + 3000) {
+									setContentTitle(repoExt.name)
+									removeProgress()
+									setNotOngoing()
+								}
+							}
+						}
+						// else repository is enabled and is the highest version, ignore
+					}
+				}
+			} else {
+				// the repo id is the same, check if there is an update
+				if (extensionEntity.repositoryVersion < repoExt.version) {
+					extRepo.updateExtensionEntity(
+						extensionEntity.copy(
+							repoID = repo.id!!,
+							fileName = repoExt.fileName,
+							repositoryVersion = repoExt.version,
+							md5 = repoExt.md5,
+							type = repoExt.type,
+						)
+					).handle {
+						notify("${repoExt.version} update available", repoExt.id + 3000) {
+							setContentTitle(repoExt.name)
+							removeProgress()
+							setNotOngoing()
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
 	 * Updates database with [repoList]
 	 *
 	 * @return list of extension ids that are present in this repository
@@ -179,31 +273,10 @@ class RepositoryUpdateWorker(
 		repo: RepositoryEntity
 	): List<Int> {
 		val presentExtensions = ArrayList<Int>() // Extensions from repo
-		repoList.forEach { (id, name, fileName, imageURL, lang, version, _, md5, type) ->
-			extRepo.insertOrUpdate(
-				ExtensionEntity(
-					id = id,
-					repoID = repo.id!!,
-					name = name,
-					fileName = fileName,
-					imageURL = imageURL,
-					lang = lang,
-					repositoryVersion = version,
-					chapterType = Novel.ChapterType.STRING,
-					md5 = md5,
-					type = type
-				)
-			).handle {
-				// If an update is ava, notify the user on a separate channel
-				if (it > 0) {
-					notify("$version update available", id + 3000) {
-						setContentTitle(name)
-						removeProgress()
-						setNotOngoing()
-					}
-				}
-			}
-			presentExtensions.add(id)
+
+		repoList.forEach { repoExtension ->
+			updateExtension(repo, repoExtension)
+			presentExtensions.add(repoExtension.id)
 		}
 
 		// Loop through extensions from the repository, remove obsolete or warn about obsolete

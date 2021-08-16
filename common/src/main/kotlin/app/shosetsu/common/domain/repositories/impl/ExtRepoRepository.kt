@@ -61,4 +61,7 @@ class ExtRepoRepository(
 
 	override suspend fun insert(entity: RepositoryEntity): HResult<*> =
 		databaseSource.insert(entity)
+
+	override suspend fun getRepo(id: Int): HResult<RepositoryEntity> =
+		databaseSource.loadRepository(id)
 }

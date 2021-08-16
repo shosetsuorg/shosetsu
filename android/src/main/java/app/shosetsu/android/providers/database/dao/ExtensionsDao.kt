@@ -4,11 +4,9 @@ import android.database.sqlite.SQLiteException
 import androidx.room.Dao
 import androidx.room.Ignore
 import androidx.room.Query
-import androidx.room.Transaction
 import app.shosetsu.android.domain.model.database.DBExtensionEntity
 import app.shosetsu.android.domain.model.database.DBStrippedExtensionEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
-import app.shosetsu.lib.Version
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -69,49 +67,4 @@ interface ExtensionsDao : BaseDao<DBExtensionEntity> {
 
 	@Query("SELECT * FROM extensions WHERE repoID = :repoID")
 	fun getExtensions(repoID: Int): List<DBExtensionEntity>
-
-	/**
-	 * @return
-	 * 1 if extension updated (update ava),
-	 * 0 if inserted,
-	 */
-	@Throws(SQLiteException::class)
-	@Transaction
-	suspend fun insertOrUpdate(newEntity: DBExtensionEntity): Int =
-		if (doesExtensionExist(newEntity.id)) {
-			var isInstalled: Boolean
-			var oldVersion = Version(0, 0, 0)
-			update(
-				getExtension(newEntity.id)!!.also {
-					isInstalled = it.installed
-					if (isInstalled)
-						oldVersion = it.installedVersion!!
-				}.copy(
-					repoID = newEntity.repoID,
-					name = newEntity.name,
-					fileName = newEntity.fileName,
-					imageURL = newEntity.imageURL,
-					lang = newEntity.lang,
-					// Ignore enabled, installed, installedVersion as those are independent
-					repositoryVersion = newEntity.repositoryVersion,
-					md5 = newEntity.md5,
-					type = newEntity.type
-				).let {
-					if (!it.installed) // Only do this if the extension is not installed
-						it.copy(
-							chapterType = newEntity.chapterType
-						)
-					else
-						it
-				}
-			)
-
-			if (isInstalled && oldVersion < newEntity.repositoryVersion)
-				1
-			else
-				0
-		} else {
-			insertReplace(newEntity)
-			0
-		}
 }

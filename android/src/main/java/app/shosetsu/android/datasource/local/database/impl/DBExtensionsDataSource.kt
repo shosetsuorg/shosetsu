@@ -88,12 +88,6 @@ class DBExtensionsDataSource(
 		e.toHError()
 	}
 
-	override suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<Int> = try {
-		successResult(extensionsDao.insertOrUpdate(extensionEntity.toDB()))
-	} catch (e: Exception) {
-		e.toHError()
-	}
-
 	override suspend fun getExtensions(repoID: Int): HResult<List<ExtensionEntity>> = try {
 		successResult(extensionsDao.getExtensions(repoID).convertList())
 	} catch (e: Exception) {
@@ -102,6 +96,12 @@ class DBExtensionsDataSource(
 
 	override suspend fun loadExtensions(): HResult<List<ExtensionEntity>> = try {
 		successResult(extensionsDao.loadExtensions().convertList())
+	} catch (e: Exception) {
+		e.toHError()
+	}
+
+	override suspend fun insert(extensionEntity: ExtensionEntity): HResult<*> = try {
+		successResult(extensionsDao.insertAbort(extensionEntity.toDB()))
 	} catch (e: Exception) {
 		e.toHError()
 	}

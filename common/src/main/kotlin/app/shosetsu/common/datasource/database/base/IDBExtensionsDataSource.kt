@@ -45,14 +45,12 @@ interface IDBExtensionsDataSource {
 	/** Load an [ExtensionEntity] via its [formatterID]*/
 	suspend fun loadExtension(formatterID: Int): HResult<ExtensionEntity>
 
-
 	/** Load an [ExtensionEntity] via its [formatterID]*/
 	fun loadExtensionLive(formatterID: Int): Flow<HResult<ExtensionEntity>>
-
-	/** Inserts an [extensionEntity] otherwise updates it */
-	suspend fun insertOrUpdate(extensionEntity: ExtensionEntity): HResult<Int>
 
 	suspend fun getExtensions(repoID: Int): HResult<List<ExtensionEntity>>
 
 	suspend fun loadExtensions(): HResult<List<ExtensionEntity>>
+
+	suspend fun insert(extensionEntity: ExtensionEntity): HResult<*>
 }
