@@ -39,7 +39,7 @@ class ExtensionEntitiesRepository(
 	private val fileSource: IFileExtensionDataSource,
 	private val settingsSource: IFileSettingsDataSource
 ) : IExtensionEntitiesRepository {
-	override suspend fun getIExtension(extensionEntity: ExtensionEntity): HResult<IExtension> =
+	override suspend fun get(extensionEntity: ExtensionEntity): HResult<IExtension> =
 		memorySource.loadExtensionFromMemory(extensionEntity.id).catch {
 			fileSource.loadExtension(extensionEntity).transform {
 				if (!it.exMetaData.libVersion.isCompatible())

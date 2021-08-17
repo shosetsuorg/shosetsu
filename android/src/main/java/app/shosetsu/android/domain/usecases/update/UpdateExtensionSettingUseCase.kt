@@ -36,7 +36,7 @@ class UpdateExtensionSettingUseCase(
 ) {
 	private suspend fun update(extensionId: Int, settingId: Int, value: Any?) =
 		extRepo.getExtension(extensionId).transform { entity ->
-			extEntitiesRepo.getIExtension(entity).transform {
+			extEntitiesRepo.get(entity).transform {
 				successResult(it.updateSetting(settingId, value))
 			}
 		}

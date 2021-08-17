@@ -43,7 +43,7 @@ interface IExtensionEntitiesRepository {
 	 *
 	 * [HResult.Loading] will never be thrown
 	 */
-	suspend fun getIExtension(extensionEntity: ExtensionEntity): HResult<IExtension>
+	suspend fun get(extensionEntity: ExtensionEntity): HResult<IExtension>
 
 	suspend fun uninstall(extensionEntity: ExtensionEntity): HResult<*>
 

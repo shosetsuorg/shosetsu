@@ -184,7 +184,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 						notify(getString(R.string.installing) + " ${extensionEntity.id} | ${extensionEntity.name}")
 						installExtension(extensionEntity)
 					}
-					val iExt = extensionEntitiesRepo.getIExtension(extensionEntity).unwrap()!!
+					val iExt = extensionEntitiesRepo.get(extensionEntity).unwrap()!!
 
 					// Use a single memory location for the bitmap
 					var bitmap: Bitmap? = null
