@@ -190,13 +190,7 @@ class RepositoryUpdateWorker(
 						md5 = repoExt.md5,
 						type = repoExt.type
 					)
-				).handle {
-					notify("${repoExt.version} update available", repoExt.id + 3000) {
-						setContentTitle(repoExt.name)
-						removeProgress()
-						setNotOngoing()
-					}
-				}
+				)
 			}
 		) { extensionEntity ->
 			if (extensionEntity.repoID != repo.id) {
@@ -211,11 +205,12 @@ class RepositoryUpdateWorker(
 							type = repoExt.type,
 						)
 					).handle {
-						notify("${repoExt.version} update available", repoExt.id + 3000) {
-							setContentTitle(repoExt.name)
-							removeProgress()
-							setNotOngoing()
-						}
+						if (extensionEntity.installed)
+							notify("${repoExt.version} update available", repoExt.id + 3000) {
+								setContentTitle(repoExt.name)
+								removeProgress()
+								setNotOngoing()
+							}
 					}
 				} else {
 					// the version is not less then the other
@@ -232,11 +227,12 @@ class RepositoryUpdateWorker(
 									type = repoExt.type,
 								)
 							).handle {
-								notify("${repoExt.version} rollback", repoExt.id + 3000) {
-									setContentTitle(repoExt.name)
-									removeProgress()
-									setNotOngoing()
-								}
+								if (extensionEntity.installed)
+									notify("${repoExt.version} rollback", repoExt.id + 3000) {
+										setContentTitle(repoExt.name)
+										removeProgress()
+										setNotOngoing()
+									}
 							}
 						}
 						// else repository is enabled and is the highest version, ignore
@@ -254,11 +250,12 @@ class RepositoryUpdateWorker(
 							type = repoExt.type,
 						)
 					).handle {
-						notify("${repoExt.version} update available", repoExt.id + 3000) {
-							setContentTitle(repoExt.name)
-							removeProgress()
-							setNotOngoing()
-						}
+						if (extensionEntity.installed)
+							notify("${repoExt.version} update available", repoExt.id + 3000) {
+								setContentTitle(repoExt.name)
+								removeProgress()
+								setNotOngoing()
+							}
 					}
 				}
 			}
