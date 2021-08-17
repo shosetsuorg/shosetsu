@@ -31,7 +31,7 @@ class DeleteChapterPassageUseCase(
 	private val iExtensionsRepository: IExtensionsRepository
 ) {
 	suspend operator fun invoke(chapterUI: ChapterUI) {
-		iExtensionsRepository.getExtensionEntity(chapterUI.extensionID).handle {
+		iExtensionsRepository.getExtension(chapterUI.extensionID).handle {
 			iChaptersRepository.deleteChapterPassage(chapterUI.convertTo(), it.chapterType)
 		}
 	}

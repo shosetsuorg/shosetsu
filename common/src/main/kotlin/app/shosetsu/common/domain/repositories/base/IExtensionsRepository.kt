@@ -45,7 +45,7 @@ interface IExtensionsRepository {
 	 *
 	 * [HResult.Empty] Should never occur?
 	 */
-	fun loadExtensionEntitiesFLow(): Flow<HResult<List<ExtensionEntity>>>
+	fun loadExtensionsFLow(): Flow<HResult<List<ExtensionEntity>>>
 
 	/**
 	 * [Flow] of the [ExtensionEntity] with an [ExtensionEntity.id] matching [id]
@@ -59,7 +59,7 @@ interface IExtensionsRepository {
 	 *
 	 * [HResult.Empty] If no [ExtensionEntity] matches [id]
 	 */
-	fun getExtensionEntityFlow(id: Int): Flow<HResult<ExtensionEntity>>
+	fun getExtensionFlow(id: Int): Flow<HResult<ExtensionEntity>>
 
 	/**
 	 * Gets the [ExtensionEntity] that has an [ExtensionEntity.id] matching [id]
@@ -73,7 +73,7 @@ interface IExtensionsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun getExtensionEntity(id: Int): HResult<ExtensionEntity>
+	suspend fun getExtension(id: Int): HResult<ExtensionEntity>
 
 	/**
 	 * Loads all [ExtensionEntity] with an [ExtensionEntity.repoID] matching [repoID]
@@ -87,12 +87,12 @@ interface IExtensionsRepository {
 	 *
 	 * [HResult.Loading]
 	 */
-	suspend fun getExtensionEntities(repoID: Int): HResult<List<ExtensionEntity>>
+	suspend fun getExtensions(repoID: Int): HResult<List<ExtensionEntity>>
 
 	/**
 	 * Loads all [ExtensionEntity] present
 	 */
-	suspend fun loadExtensionEntities(): HResult<List<ExtensionEntity>>
+	suspend fun loadExtensions(): HResult<List<ExtensionEntity>>
 
 	/**
 	 * Flags returned after installing an extension
@@ -107,11 +107,7 @@ interface IExtensionsRepository {
 	)
 
 	/**
-	 * Uninstalls an [extensionEntity]
-	 *
-	 * This removes the [extensionEntity] from memory & filesystem
-	 *
-	 * Updates the source that the [extensionEntity] is not installed
+	 * Updates the db that the [extensionEntity] is not installed
 	 *
 	 * @return
 	 * [HResult.Success] Updated
@@ -122,7 +118,7 @@ interface IExtensionsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun uninstallExtension(extensionEntity: ExtensionEntity): HResult<*>
+	suspend fun uninstall(extensionEntity: ExtensionEntity): HResult<*>
 
 	/**
 	 * Updates an [extensionEntity]
@@ -136,7 +132,7 @@ interface IExtensionsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun updateExtensionEntity(extensionEntity: ExtensionEntity): HResult<*>
+	suspend fun update(extensionEntity: ExtensionEntity): HResult<*>
 
 	/**
 	 * Gets enabled [ExtensionEntity] but as [StrippedExtensionEntity]
@@ -153,7 +149,7 @@ interface IExtensionsRepository {
 	 *
 	 * [HResult.Loading] Initial value
 	 */
-	fun loadStrippedExtensionEntityFlow(): Flow<HResult<List<StrippedExtensionEntity>>>
+	fun loadStrippedExtensionFlow(): Flow<HResult<List<StrippedExtensionEntity>>>
 
 
 	/**
@@ -168,7 +164,7 @@ interface IExtensionsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun removeExtension(extensionEntity: ExtensionEntity): HResult<*>
+	suspend fun delete(extensionEntity: ExtensionEntity): HResult<*>
 
 	suspend fun insert(extensionEntity: ExtensionEntity): HResult<*>
 

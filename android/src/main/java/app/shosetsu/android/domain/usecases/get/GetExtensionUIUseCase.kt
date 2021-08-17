@@ -36,7 +36,7 @@ class GetExtensionUIUseCase(
 		emit(loading())
 		if (id != -1)
 			emitAll(
-				iExtensionsRepository.getExtensionEntityFlow(id).mapResult {
+				iExtensionsRepository.getExtensionFlow(id).mapResult {
 					successResult(ExtensionConversionFactory(it))
 				}.mapResultTo()
 			)

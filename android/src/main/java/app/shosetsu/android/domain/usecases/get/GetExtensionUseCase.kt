@@ -46,7 +46,7 @@ class GetExtensionUseCase(
 		if (extensionId == -1)
 			return empty
 
-		return extRepo.getExtensionEntity(extensionId).transform {
+		return extRepo.getExtension(extensionId).transform {
 			extEntitiesRepo.getIExtension(it)
 		}
 	}

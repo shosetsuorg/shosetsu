@@ -33,7 +33,7 @@ class UninstallExtensionUIUseCase(
 ) {
 	suspend operator fun invoke(extensionEntity: ExtensionUI): HResult<*> {
 		return extensionEntitiesRepository.uninstall(extensionEntity.convertTo()) ifSo {
-			extensionRepository.uninstallExtension(extensionEntity.convertTo())
+			extensionRepository.uninstall(extensionEntity.convertTo())
 		}
 	}
 

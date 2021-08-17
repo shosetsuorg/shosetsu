@@ -72,7 +72,7 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 		logD("Starting ExtensionInstallWorker for $extensionId")
 
 		// Notify progress
-		extensionRepository.getExtensionEntity(extensionId).handle { extension ->
+		extensionRepository.getExtension(extensionId).handle { extension ->
 			// Load image, this tbh may take longer then the actual extension
 
 			val bitmap: Bitmap? =

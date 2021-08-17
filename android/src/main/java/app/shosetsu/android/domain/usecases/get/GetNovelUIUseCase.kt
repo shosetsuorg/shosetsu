@@ -45,7 +45,7 @@ class GetNovelUIUseCase(
 					successResult(NovelConversionFactory(novelEntity))
 				}
 			}.mapLatestResultTo().mapLatestResult { novelUI ->
-				extensionRepository.getExtensionEntity(novelUI.extID).transform { ext ->
+				extensionRepository.getExtension(novelUI.extID).transform { ext ->
 					successResult(novelUI.apply {
 						extName = ext.name
 					})

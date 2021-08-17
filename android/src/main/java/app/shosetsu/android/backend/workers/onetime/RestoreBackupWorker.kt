@@ -178,7 +178,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 			val repoNovels: List<NovelEntity> = novelsRepo.loadNovels().unwrap()!!
 
 			backup.extensions.forEach { (extensionID, backupNovels) ->
-				extensionsRepo.getExtensionEntity(extensionID).handle { extensionEntity ->
+				extensionsRepo.getExtension(extensionID).handle { extensionEntity ->
 					// Install the extension
 					if (!extensionEntity.installed) {
 						notify(getString(R.string.installing) + " ${extensionEntity.id} | ${extensionEntity.name}")

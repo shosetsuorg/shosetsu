@@ -36,7 +36,7 @@ class RemoveExtensionEntityUseCase(
 ) {
 	suspend operator fun invoke(entity: ExtensionEntity) {
 		extensionEntitiesRepository.uninstall(entity) ifSo {
-			extensionRepository.removeExtension(entity)
+			extensionRepository.delete(entity)
 		}
 	}
 }

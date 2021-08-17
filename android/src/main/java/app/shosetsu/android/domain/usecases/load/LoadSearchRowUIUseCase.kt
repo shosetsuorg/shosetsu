@@ -11,7 +11,7 @@ class LoadSearchRowUIUseCase(
 	private val iExtensionsRepository: IExtensionsRepository
 ) {
 	operator fun invoke(): Flow<HResult<List<SearchRowUI>>> =
-		iExtensionsRepository.loadStrippedExtensionEntityFlow()
+		iExtensionsRepository.loadStrippedExtensionFlow()
 			.mapLatestResult {
 				successResult(ArrayList(
 					it.map { (id, title, imageURL) ->

@@ -37,22 +37,22 @@ class ExtensionsRepository(
 	private val remoteSource: IRemoteExtensionDataSource,
 ) : IExtensionsRepository {
 
-	override fun loadExtensionEntitiesFLow(): Flow<HResult<List<ExtensionEntity>>> =
+	override fun loadExtensionsFLow(): Flow<HResult<List<ExtensionEntity>>> =
 		dbSource.loadExtensionsFlow()
 
-	override fun getExtensionEntityFlow(id: Int): Flow<HResult<ExtensionEntity>> =
+	override fun getExtensionFlow(id: Int): Flow<HResult<ExtensionEntity>> =
 		dbSource.loadExtensionLive(id)
 
-	override suspend fun getExtensionEntity(id: Int): HResult<ExtensionEntity> =
+	override suspend fun getExtension(id: Int): HResult<ExtensionEntity> =
 		dbSource.loadExtension(id)
 
-	override suspend fun getExtensionEntities(repoID: Int): HResult<List<ExtensionEntity>> =
+	override suspend fun getExtensions(repoID: Int): HResult<List<ExtensionEntity>> =
 		dbSource.getExtensions(repoID)
 
-	override suspend fun loadExtensionEntities(): HResult<List<ExtensionEntity>> =
+	override suspend fun loadExtensions(): HResult<List<ExtensionEntity>> =
 		dbSource.loadExtensions()
 
-	override suspend fun uninstallExtension(extensionEntity: ExtensionEntity): HResult<*> =
+	override suspend fun uninstall(extensionEntity: ExtensionEntity): HResult<*> =
 		dbSource.updateExtension(
 			extensionEntity.copy(
 				enabled = false,
@@ -61,13 +61,13 @@ class ExtensionsRepository(
 			)
 		)
 
-	override suspend fun updateExtensionEntity(extensionEntity: ExtensionEntity): HResult<*> =
+	override suspend fun update(extensionEntity: ExtensionEntity): HResult<*> =
 		dbSource.updateExtension(extensionEntity)
 
-	override fun loadStrippedExtensionEntityFlow(): Flow<HResult<List<StrippedExtensionEntity>>> =
+	override fun loadStrippedExtensionFlow(): Flow<HResult<List<StrippedExtensionEntity>>> =
 		dbSource.loadPoweredExtensionsCards()
 
-	override suspend fun removeExtension(extensionEntity: ExtensionEntity): HResult<*> =
+	override suspend fun delete(extensionEntity: ExtensionEntity): HResult<*> =
 		dbSource.deleteExtension(extensionEntity)
 
 	override suspend fun insert(extensionEntity: ExtensionEntity): HResult<*> =

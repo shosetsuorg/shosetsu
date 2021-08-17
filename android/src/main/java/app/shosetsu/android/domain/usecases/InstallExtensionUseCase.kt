@@ -75,7 +75,7 @@ class InstallExtensionUseCase(
 							}
 
 							extensionEntity.chapterType = iExt.chapterType
-							extensionRepository.updateExtensionEntity(extensionEntity)
+							extensionRepository.update(extensionEntity)
 
 							successResult(
 								IExtensionsRepository.InstallExtensionFlags(

@@ -29,5 +29,5 @@ class UpdateExtensionEntityUseCase(
 	private val extensionRepository: IExtensionsRepository,
 ) {
 	suspend operator fun invoke(extensionUI: ExtensionEntity): HResult<*> =
-		extensionRepository.updateExtensionEntity(extensionUI)
+		extensionRepository.update(extensionUI)
 }

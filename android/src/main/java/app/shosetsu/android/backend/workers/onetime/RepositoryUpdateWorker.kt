@@ -159,7 +159,7 @@ class RepositoryUpdateWorker(
 	) {
 		list.filterNot { presentExtensions.contains(it.id) }.forEach {
 			if (it.installed)
-				extRepo.updateExtensionEntity(
+				extRepo.update(
 					it.copy(
 						repositoryVersion = Version(-9, -9, -9)
 					)
@@ -175,7 +175,7 @@ class RepositoryUpdateWorker(
 	 * Handle updating an extension
 	 */
 	private suspend fun updateExtension(repo: RepositoryEntity, repoExt: RepoExtension) {
-		extRepo.getExtensionEntity(repoExt.id).handle(
+		extRepo.getExtension(repoExt.id).handle(
 			onEmpty = {
 				extRepo.insert(
 					ExtensionEntity(
@@ -202,7 +202,7 @@ class RepositoryUpdateWorker(
 			if (extensionEntity.repoID != repo.id) {
 				// the id is different, if the version is greater then override
 				if (extensionEntity.repositoryVersion < repoExt.version) {
-					extRepo.updateExtensionEntity(
+					extRepo.update(
 						extensionEntity.copy(
 							repoID = repo.id!!,
 							fileName = repoExt.fileName,
@@ -223,7 +223,7 @@ class RepositoryUpdateWorker(
 					extRepoRepo.getRepo(repo.id!!).handle {
 						if (!it.isEnabled) {
 							// the repository is disabled, we can downgrade
-							extRepo.updateExtensionEntity(
+							extRepo.update(
 								extensionEntity.copy(
 									repoID = repo.id!!,
 									fileName = repoExt.fileName,
@@ -245,7 +245,7 @@ class RepositoryUpdateWorker(
 			} else {
 				// the repo id is the same, check if there is an update
 				if (extensionEntity.repositoryVersion < repoExt.version) {
-					extRepo.updateExtensionEntity(
+					extRepo.update(
 						extensionEntity.copy(
 							repoID = repo.id!!,
 							fileName = repoExt.fileName,
@@ -282,7 +282,7 @@ class RepositoryUpdateWorker(
 		}
 
 		// Loop through extensions from the repository, remove obsolete or warn about obsolete
-		extRepo.getExtensionEntities(repo.id!!).handle { r ->
+		extRepo.getExtensions(repo.id!!).handle { r ->
 			handlePresentExtensions(r, presentExtensions)
 		}
 
@@ -333,7 +333,7 @@ class RepositoryUpdateWorker(
 				}
 			}
 
-			extRepo.loadExtensionEntities().handle { entityList ->
+			extRepo.loadExtensions().handle { entityList ->
 				handlePresentExtensions(entityList, presentExtensions)
 			}
 		}

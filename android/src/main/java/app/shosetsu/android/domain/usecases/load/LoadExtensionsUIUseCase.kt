@@ -37,7 +37,7 @@ class LoadExtensionsUIUseCase(
 	@ExperimentalCoroutinesApi
 	operator fun invoke(): Flow<HResult<List<ExtensionUI>>> = flow {
 		loading()
-		val flow = extensionsRepository.loadExtensionEntitiesFLow()
+		val flow = extensionsRepository.loadExtensionsFLow()
 			.mapLatestToResultFlowWithFactory() // First convert to UI factories
 			.mapLatestResultListTo() // Convert to UI entities
 			.transformLatest { result -> // Merge with downloadStatus
