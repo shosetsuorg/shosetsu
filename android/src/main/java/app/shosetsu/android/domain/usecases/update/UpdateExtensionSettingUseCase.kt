@@ -1,8 +1,10 @@
 package app.shosetsu.android.domain.usecases.update
 
+import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.dto.handle
+import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.transform
 
 /*
  * This file is part of Shosetsu.
@@ -29,31 +31,34 @@ import app.shosetsu.common.dto.handle
  */
 class UpdateExtensionSettingUseCase(
 	private val extRepo: IExtensionsRepository,
+	private val extEntitiesRepo: IExtensionEntitiesRepository,
 	private val extSettingsRepo: IExtensionSettingsRepository
 ) {
-	private suspend fun update(extensionId: Int, settingId: Int, value: Any?) {
-		extRepo.getIExtension(extensionId).handle {
-			it.updateSetting(settingId, value)
+	private suspend fun update(extensionId: Int, settingId: Int, value: Any?) =
+		extRepo.getExtensionEntity(extensionId).transform { entity ->
+			extEntitiesRepo.getIExtension(entity).transform {
+				successResult(it.updateSetting(settingId, value))
+			}
 		}
-	}
 
-	suspend operator fun invoke(extensionId: Int, settingId: Int, value: Int) {
-		update(extensionId, settingId, value)
-		extSettingsRepo.setInt(extensionId, settingId, value)
-	}
+	suspend operator fun invoke(extensionId: Int, settingId: Int, value: Int) =
+		update(extensionId, settingId, value).transform {
+			extSettingsRepo.setInt(extensionId, settingId, value)
+		}
 
-	suspend operator fun invoke(extensionId: Int, settingId: Int, value: String) {
-		update(extensionId, settingId, value)
-		extSettingsRepo.setString(extensionId, settingId, value)
-	}
+	suspend operator fun invoke(extensionId: Int, settingId: Int, value: String) =
+		update(extensionId, settingId, value).transform {
+			extSettingsRepo.setString(extensionId, settingId, value)
+		}
 
-	suspend operator fun invoke(extensionId: Int, settingId: Int, value: Boolean) {
-		update(extensionId, settingId, value)
-		extSettingsRepo.setBoolean(extensionId, settingId, value)
-	}
 
-	suspend operator fun invoke(extensionId: Int, settingId: Int, value: Float) {
-		update(extensionId, settingId, value)
-		extSettingsRepo.setFloat(extensionId, settingId, value)
-	}
+	suspend operator fun invoke(extensionId: Int, settingId: Int, value: Boolean) =
+		update(extensionId, settingId, value).transform {
+			extSettingsRepo.setBoolean(extensionId, settingId, value)
+		}
+
+	suspend operator fun invoke(extensionId: Int, settingId: Int, value: Float) =
+		update(extensionId, settingId, value).transform {
+			extSettingsRepo.setFloat(extensionId, settingId, value)
+		}
 }

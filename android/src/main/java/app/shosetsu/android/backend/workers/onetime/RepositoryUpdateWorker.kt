@@ -12,6 +12,7 @@ import app.shosetsu.android.common.consts.Notifications.CHANNEL_REPOSITORY_UPDAT
 import app.shosetsu.android.common.consts.Notifications.ID_REPOSITORY_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags.REPOSITORY_UPDATE_TAG
 import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.domain.usecases.RemoveExtensionEntityUseCase
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.ExtLibEntity
 import app.shosetsu.common.domain.model.local.ExtensionEntity
@@ -60,6 +61,7 @@ class RepositoryUpdateWorker(
 ) : CoroutineWorker(appContext, params), DIAware, NotificationCapable {
 
 	private val extRepo: IExtensionsRepository by instance()
+	private val removeExtension: RemoveExtensionEntityUseCase by instance()
 	private val extRepoRepo: IExtensionRepoRepository by instance()
 	private val extensionLibrariesRepo: IExtensionLibrariesRepository by instance()
 
@@ -164,7 +166,7 @@ class RepositoryUpdateWorker(
 				)
 			else {
 				logI("Removing Extension: $it")
-				extRepo.removeExtension(it)
+				removeExtension(it)
 			}
 		}
 	}

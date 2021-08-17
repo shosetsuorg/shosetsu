@@ -53,7 +53,12 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 	bind<SearchBookMarkedNovelsUseCase>() with provider { SearchBookMarkedNovelsUseCase(instance()) }
 
 
-	bind<LoadExtensionsUIUseCase>() with provider { LoadExtensionsUIUseCase(instance(),instance()) }
+	bind<LoadExtensionsUIUseCase>() with provider {
+		LoadExtensionsUIUseCase(
+			instance(),
+			instance()
+		)
+	}
 
 	bind<LoadUpdatesUseCase>() with provider { LoadUpdatesUseCase(instance()) }
 
@@ -72,7 +77,7 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 
 	bind<UpdateNovelUseCase>() with provider { UpdateNovelUseCase(instance()) }
 
-	bind<GetExtensionUseCase>() with provider { GetExtensionUseCase(instance()) }
+	bind<GetExtensionUseCase>() with provider { GetExtensionUseCase(instance(), instance()) }
 
 	bind<NovelBackgroundAddUseCase>() with provider {
 		NovelBackgroundAddUseCase(instance(), instance(), instance())
@@ -134,7 +139,12 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 
 	bind<UpdateBookmarkedNovelUseCase>() with provider { UpdateBookmarkedNovelUseCase(instance()) }
 
-	bind<UninstallExtensionUIUseCase>() with provider { UninstallExtensionUIUseCase(instance()) }
+	bind<UninstallExtensionUIUseCase>() with provider {
+		UninstallExtensionUIUseCase(
+			instance(),
+			instance()
+		)
+	}
 
 	bind<StringToastUseCase>() with provider { StringToastUseCase(instance()) }
 
@@ -267,7 +277,7 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 	}
 
 	bind<UpdateExtensionSettingUseCase>() with provider {
-		UpdateExtensionSettingUseCase(instance(), instance())
+		UpdateExtensionSettingUseCase(instance(), instance(), instance())
 	}
 
 	bind<ForceInsertRepositoryUseCase>() with provider {

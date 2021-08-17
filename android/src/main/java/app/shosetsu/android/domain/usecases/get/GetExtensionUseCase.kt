@@ -1,8 +1,10 @@
 package app.shosetsu.android.domain.usecases.get
 
+import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.empty
+import app.shosetsu.common.dto.transform
 import app.shosetsu.lib.IExtension
 
 /*
@@ -37,12 +39,15 @@ import app.shosetsu.lib.IExtension
  *
  */
 class GetExtensionUseCase(
-	private val extRepo: IExtensionsRepository
+	private val extRepo: IExtensionsRepository,
+	private val extEntitiesRepo: IExtensionEntitiesRepository
 ) {
 	suspend operator fun invoke(extensionId: Int): HResult<IExtension> {
 		if (extensionId == -1)
 			return empty
 
-		return extRepo.getIExtension(extensionId)
+		return extRepo.getExtensionEntity(extensionId).transform {
+			extEntitiesRepo.getIExtension(it)
+		}
 	}
 }

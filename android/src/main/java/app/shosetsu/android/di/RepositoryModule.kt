@@ -41,7 +41,7 @@ val repositoryModule: DI.Module = DI.Module("repository_module") {
 	bind<IDownloadsRepository>() with singleton { DownloadsRepository(instance()) }
 
 	bind<IExtensionsRepository>() with singleton {
-		ExtensionsRepository(instance(), instance(), instance(), instance(), instance(), instance())
+		ExtensionsRepository(instance(), instance())
 	}
 
 	bind<IExtensionLibrariesRepository>() with singleton {

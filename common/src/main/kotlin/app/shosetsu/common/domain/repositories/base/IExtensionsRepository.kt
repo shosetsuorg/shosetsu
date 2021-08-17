@@ -1,6 +1,7 @@
 package app.shosetsu.common.domain.repositories.base
 
 import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.model.local.StrippedExtensionEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.IExtension
@@ -31,6 +32,7 @@ import kotlinx.coroutines.flow.Flow
  * Repository for [IExtension]
  */
 interface IExtensionsRepository {
+
 	/**
 	 * [Flow] of all [ExtensionEntity] that the app knows of
 	 *
@@ -93,23 +95,6 @@ interface IExtensionsRepository {
 	suspend fun loadExtensionEntities(): HResult<List<ExtensionEntity>>
 
 	/**
-	 * Installs an [extensionEntity]
-	 *
-	 * Adds the [IExtension] to the filesystem & memory
-	 *
-	 * @see InstallExtensionFlags
-	 * @return
-	 * [HResult.Success] If the extension is found
-	 *
-	 * [HResult.Error] If something went wrong retrieving the result
-	 *
-	 * [HResult.Empty] If nothing was found
-	 *
-	 * [HResult.Loading] never
-	 */
-	suspend fun installExtension(extensionEntity: ExtensionEntity): HResult<InstallExtensionFlags>
-
-	/**
 	 * Flags returned after installing an extension
 	 *
 	 * @param deleteChapters True if old chapters should be deleted
@@ -154,29 +139,6 @@ interface IExtensionsRepository {
 	suspend fun updateExtensionEntity(extensionEntity: ExtensionEntity): HResult<*>
 
 	/**
-	 * Gets an [IExtension] via it's [extensionEntity]
-	 *
-	 * @return
-	 * [HResult.Empty]  if no extension was found
-	 *
-	 * [HResult.Error]  if an issue occluded when creating the extension
-	 * or any other portion of the loading code
-	 *
-	 * [HResult.Success] if the extension was properly loaded
-	 *
-	 * [HResult.Loading] will never be thrown
-	 */
-	suspend fun getIExtension(extensionEntity: ExtensionEntity): HResult<IExtension>
-
-	/**
-	 * Gets an [IExtension] via its [extensionID]
-	 *
-	 * @see [getIExtension]
-	 * @return see [getIExtension]
-	 */
-	suspend fun getIExtension(extensionID: Int): HResult<IExtension>
-
-	/**
 	 * Gets enabled [ExtensionEntity] but as [StrippedExtensionEntity]
 	 *
 	 * This method is more IO efficient, as it should not be loading extra data it does not need
@@ -195,9 +157,7 @@ interface IExtensionsRepository {
 
 
 	/**
-	 * Removes an [ExtensionEntity] entirely, completely removing it from shosetsu code
-	 *
-	 * This will also remove it from memory, and the file system. Releasing the resources
+	 * This removes the extension from db
 	 *
 	 * @return
 	 * [HResult.Success] [extensionEntity] removed
@@ -211,4 +171,9 @@ interface IExtensionsRepository {
 	suspend fun removeExtension(extensionEntity: ExtensionEntity): HResult<*>
 
 	suspend fun insert(extensionEntity: ExtensionEntity): HResult<*>
+
+	suspend fun downloadExtension(
+		repositoryEntity: RepositoryEntity,
+		extension: ExtensionEntity
+	): HResult<ByteArray>
 }

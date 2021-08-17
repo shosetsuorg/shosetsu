@@ -1,9 +1,8 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.android.view.uimodels.model.ExtensionUI
+import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.ifSo
 
 /*
@@ -24,17 +23,20 @@ import app.shosetsu.common.dto.ifSo
  */
 
 /**
- * shosetsu
- * 14 / 08 / 2020
+ * Shosetsu
+ *
+ * @since 16 / 08 / 2021
+ * @author Doomsdayrs
+ *
+ * Completely remove an extension from Shosetsu
  */
-class UninstallExtensionUIUseCase(
+class RemoveExtensionEntityUseCase(
 	private val extensionRepository: IExtensionsRepository,
 	private val extensionEntitiesRepository: IExtensionEntitiesRepository
 ) {
-	suspend operator fun invoke(extensionEntity: ExtensionUI): HResult<*> {
-		return extensionEntitiesRepository.uninstall(extensionEntity.convertTo()) ifSo {
-			extensionRepository.uninstallExtension(extensionEntity.convertTo())
+	suspend operator fun invoke(entity: ExtensionEntity) {
+		extensionEntitiesRepository.uninstall(entity) ifSo {
+			extensionRepository.removeExtension(entity)
 		}
 	}
-
 }

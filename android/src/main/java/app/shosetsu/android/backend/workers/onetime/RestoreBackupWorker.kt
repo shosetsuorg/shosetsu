@@ -17,6 +17,7 @@ import app.shosetsu.android.common.consts.WorkerTags.RESTORE_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.backupJSON
 import app.shosetsu.android.domain.model.local.backup.FleshedBackupEntity
+import app.shosetsu.android.domain.usecases.InstallExtensionUseCase
 import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.NovelSettingEntity
@@ -69,6 +70,8 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 	private val extensionsRepoRepo by instance<IExtensionRepoRepository>()
 	private val initializeExtensionsUseCase by instance<StartRepositoryUpdateManagerUseCase>()
 	private val extensionsRepo by instance<IExtensionsRepository>()
+	private val extensionEntitiesRepo by instance<IExtensionEntitiesRepository>()
+	private val installExtension: InstallExtensionUseCase by instance()
 	private val novelsRepo by instance<INovelsRepository>()
 	private val novelsSettingsRepo by instance<INovelSettingsRepository>()
 	private val chaptersRepo by instance<IChaptersRepository>()
@@ -179,9 +182,9 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 					// Install the extension
 					if (!extensionEntity.installed) {
 						notify(getString(R.string.installing) + " ${extensionEntity.id} | ${extensionEntity.name}")
-						extensionsRepo.installExtension(extensionEntity)
+						installExtension(extensionEntity)
 					}
-					val iExt = extensionsRepo.getIExtension(extensionEntity).unwrap()!!
+					val iExt = extensionEntitiesRepo.getIExtension(extensionEntity).unwrap()!!
 
 					// Use a single memory location for the bitmap
 					var bitmap: Bitmap? = null

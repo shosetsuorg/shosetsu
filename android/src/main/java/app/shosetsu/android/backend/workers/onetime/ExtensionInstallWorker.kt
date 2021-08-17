@@ -12,6 +12,7 @@ import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.WorkerTags.EXTENSION_INSTALL_WORK_ID
 import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.domain.usecases.InstallExtensionUseCase
 import app.shosetsu.common.consts.settings.SettingKey.NotifyExtensionDownload
 import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.dto.handle
@@ -56,6 +57,7 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 	override val di: DI by closestDI(appContext)
 	private val extensionDownloadRepository: IExtensionDownloadRepository by instance()
 	private val extensionRepository: IExtensionsRepository by instance()
+	private val installExtension: InstallExtensionUseCase by instance()
 	private val settingsRepository: ISettingsRepository by instance()
 	private val chaptersRepository: IChaptersRepository by instance()
 
@@ -94,7 +96,7 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 				extensionId,
 				DownloadStatus.DOWNLOADING
 			).handle {
-				extensionRepository.installExtension(extension).handle(
+				installExtension(extension).handle(
 					onError = {
 						extensionDownloadRepository.updateStatus(
 							extensionId,
