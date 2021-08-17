@@ -189,13 +189,20 @@ class RepositoryUpdateWorker(
 						chapterType = Novel.ChapterType.STRING,
 						md5 = repoExt.md5,
 						type = repoExt.type
-					)
+					).also {
+						logI("Inserting new extension, $it")
+					}
 				)
 			}
 		) { extensionEntity ->
+			logI("====== Comparing ${extensionEntity.name} to new data")
+			logD("${extensionEntity.repoID} =?= ${repo.id}")
+			logD("${extensionEntity.repositoryVersion} =?= ${repoExt.version}")
 			if (extensionEntity.repoID != repo.id) {
+				logI("Repos are different")
 				// the id is different, if the version is greater then override
 				if (extensionEntity.repositoryVersion < repoExt.version) {
+					logI("New repository has greater version, updating")
 					extRepo.update(
 						extensionEntity.copy(
 							repoID = repo.id!!,
@@ -213,10 +220,12 @@ class RepositoryUpdateWorker(
 							}
 					}
 				} else {
+					logI("Version is less, checking for rollback")
 					// the version is not less then the other
 					// check if the repository is disabled or not
 					extRepoRepo.getRepo(repo.id!!).handle {
 						if (!it.isEnabled) {
+							logI("Old repository is disabled, updating for rollback")
 							// the repository is disabled, we can downgrade
 							extRepo.update(
 								extensionEntity.copy(
@@ -234,13 +243,17 @@ class RepositoryUpdateWorker(
 										setNotOngoing()
 									}
 							}
+						} else {
+							// repository is enabled and is the highest version, ignore
+							logI("Rollback not possible")
 						}
-						// else repository is enabled and is the highest version, ignore
 					}
 				}
 			} else {
+				logI("repo matches")
 				// the repo id is the same, check if there is an update
 				if (extensionEntity.repositoryVersion < repoExt.version) {
+					logI("The repository has a newer version")
 					extRepo.update(
 						extensionEntity.copy(
 							repoID = repo.id!!,
@@ -257,6 +270,8 @@ class RepositoryUpdateWorker(
 								setNotOngoing()
 							}
 					}
+				} else {
+					logI("No update available")
 				}
 			}
 		}
