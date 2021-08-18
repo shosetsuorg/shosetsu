@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.controller.ShosetsuController
+import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.view.uimodels.model.MigrationNovelUI
 import app.shosetsu.android.viewmodel.abstracted.AMigrationViewModel
 import app.shosetsu.common.dto.empty
@@ -101,7 +102,7 @@ fun MigrationContent(viewModel: AMigrationViewModel) {
 				onLoading = { MigrationNovelsLoadingContent() }
 			) { list ->
 				MigrationNovelsContent(list = list) {
-					viewModel.setWorkingOn(list.indexOf(it))
+					viewModel.setWorkingOn(it.id)
 				}
 			}
 		}
@@ -113,15 +114,71 @@ fun MigrationContent(viewModel: AMigrationViewModel) {
 		)
 
 		// Select the extension
-		Box(modifier = Modifier.fillMaxWidth()) {
-			Text(text = "This is under construction, Try again in another release :D")
+		Box(
+			modifier = Modifier
+				.fillMaxWidth()
+				.fillMaxHeight(.25f)
+		) {
+			extensionsToSelect.handle(
+				onEmpty = { MigrationExtensionsLoadingContent() }
+			) { list ->
+				MigrationExtensionsContent(list = list, onClick = {
+					viewModel.setSelectedExtension(it)
+				})
+			}
 		}
 
 		// Select novel from its results
 		Box(modifier = Modifier.fillMaxWidth()) {
-
+			Text(text = "This is under construction, Try again in another release :D")
 		}
 	}
+}
+
+@Composable
+fun MigrationExtensionsLoadingContent() {
+	LinearProgressIndicator()
+}
+
+@ExperimentalMaterialApi
+@Composable
+fun MigrationExtensionsContent(list: List<ExtensionUI>, onClick: (ExtensionUI) -> Unit) {
+	LazyRow {
+		items(items = list, key = { it.id }) { extensionUI ->
+			MigrationExtensionItemContent(extensionUI, onClick = onClick)
+		}
+	}
+}
+
+@ExperimentalMaterialApi
+@Composable
+fun MigrationExtensionItemContent(item: ExtensionUI, onClick: (ExtensionUI) -> Unit) {
+	Card(
+		modifier = Modifier.padding(8.dp),
+		border =
+		if (item.isSelected) {
+			BorderStroke(2.dp, colorResource(id = R.color.colorPrimary))
+		} else {
+			null
+		},
+		onClick = { onClick(item) },
+		content = {
+			Row(
+				verticalAlignment = Alignment.CenterVertically
+			) {
+				Image(
+					painter = if (!item.imageURL.isNullOrEmpty()) {
+						rememberImagePainter(item.imageURL)
+					} else {
+						painterResource(R.drawable.broken_image)
+					},
+					contentDescription = null,
+					modifier = Modifier.aspectRatio(.75f)
+				)
+				Text(text = item.name)
+			}
+		}
+	)
 }
 
 @Composable

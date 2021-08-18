@@ -36,7 +36,7 @@ abstract class AMigrationViewModel : ShosetsuViewModel() {
 	/**
 	 * The extensions to select from
 	 */
-	abstract val extensions: LiveData<HResult<ExtensionUI>>
+	abstract val extensions: LiveData<HResult<List<ExtensionUI>>>
 
 	/**
 	 * Novels that will be transfered
@@ -51,7 +51,7 @@ abstract class AMigrationViewModel : ShosetsuViewModel() {
 	/**
 	 * Set which novel is being worked on
 	 */
-	abstract fun setWorkingOn(index: Int)
+	abstract fun setWorkingOn(novelId: Int)
 
 	/**
 	 * Provides the results found for a novel
@@ -62,4 +62,9 @@ abstract class AMigrationViewModel : ShosetsuViewModel() {
 	 * Set the novels to work with
 	 */
 	abstract fun setNovels(array: IntArray)
+
+	/**
+	 * Set which extension to use with the currently selected novel
+	 */
+	abstract fun setSelectedExtension(extensionUI: ExtensionUI)
 }

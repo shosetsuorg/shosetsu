@@ -257,7 +257,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 	}
 
 	bind<AMigrationViewModel>() with provider {
-		MigrationViewModel(instance())
+		MigrationViewModel(instance(), instance())
 	}
 
 }
