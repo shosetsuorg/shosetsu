@@ -1,7 +1,7 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
-import app.shosetsu.android.view.uimodels.model.ExtensionUI
+import app.shosetsu.android.view.uimodels.model.MigrationExtensionUI
 import app.shosetsu.android.view.uimodels.model.MigrationNovelUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
@@ -34,9 +34,14 @@ import app.shosetsu.common.dto.HResult
 abstract class AMigrationViewModel : ShosetsuViewModel() {
 
 	/**
+	 * The query that is being used for the current novel to be searched for
+	 */
+	abstract val currentQuery: LiveData<HResult<String>>
+
+	/**
 	 * The extensions to select from
 	 */
-	abstract val extensions: LiveData<HResult<List<ExtensionUI>>>
+	abstract val extensions: LiveData<HResult<List<MigrationExtensionUI>>>
 
 	/**
 	 * Novels that will be transfered
@@ -66,5 +71,10 @@ abstract class AMigrationViewModel : ShosetsuViewModel() {
 	/**
 	 * Set which extension to use with the currently selected novel
 	 */
-	abstract fun setSelectedExtension(extensionUI: ExtensionUI)
+	abstract fun setSelectedExtension(extensionUI: MigrationExtensionUI)
+
+	/**
+	 * Set query of the current novel
+	 */
+	abstract fun setQuery(newQuery: String)
 }

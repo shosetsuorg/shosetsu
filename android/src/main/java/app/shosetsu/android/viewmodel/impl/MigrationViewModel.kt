@@ -1,11 +1,12 @@
 package app.shosetsu.android.viewmodel.impl
 
 import androidx.lifecycle.LiveData
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.usecases.get.GetNovelUIUseCase
 import app.shosetsu.android.domain.usecases.load.LoadExtensionsUIUseCase
-import app.shosetsu.android.view.uimodels.model.ExtensionUI
+import app.shosetsu.android.view.uimodels.model.MigrationExtensionUI
 import app.shosetsu.android.view.uimodels.model.MigrationNovelUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.AMigrationViewModel
@@ -41,54 +42,104 @@ class MigrationViewModel(
 	private val getNovelUI: GetNovelUIUseCase,
 	private val loadExtensionsFlow: LoadExtensionsUIUseCase
 ) : AMigrationViewModel() {
-	private val novelIds: MutableStateFlow<IntArray> = MutableStateFlow<IntArray>(intArrayOf())
+	private val novelIds: MutableStateFlow<IntArray> = MutableStateFlow(intArrayOf())
 
 	/**
 	 * Map of novel id to which extension is selected
 	 */
 	private val selectedExtensionMap = hashMapOf<Int, MutableStateFlow<Int>>()
 
+	/**
+	 * Map of novel id to query
+	 */
+	private val queryMap = hashMapOf<Int, MutableStateFlow<String>>()
+
 	@ExperimentalCoroutinesApi
-	override val extensions: LiveData<HResult<List<ExtensionUI>>> by lazy {
+	override val currentQuery: LiveData<HResult<String>> by lazy {
 		flow {
-			emitAll(loadExtensionsFlow().transform { extensionsResult ->
-				extensionsResult.handle(
-					onEmpty = {
-						emit(empty)
-					},
-					onError = {
-						emit(it)
-					},
-					onLoading = {
-						emit(loading)
-					}
-				) { mExtensions ->
+			emit(loading)
+			emitAll(
+				whichFlow.transformLatest { currentNovelId ->
 					emitAll(
-						whichFlow.transformLatest { selectedId ->
-							emitAll(
-								selectedExtensionMap.getOrPut(selectedId) {
-									MutableStateFlow(mExtensions.firstOrNull()?.id ?: -1)
+						novelFlow.transformLatest { novelResult ->
+							novelResult.handle(
+								onEmpty = {
+									emit(empty)
+								},
+								onLoading = {
+									emit(loading)
+								},
+								onError = {
+									emit(it)
 								}
-									.transformLatest<Int, HResult<List<ExtensionUI>>> { selectedExtension ->
-										emit(
-											successResult(mExtensions.map { extension ->
-												extension.apply {
-													extension.isSelected =
-														selectedExtension == extension.id
-												}
-											})
+							) { novelList ->
+								emitAll(
+									queryMap.getOrPut(currentNovelId) {
+										MutableStateFlow(
+											novelList.find { it.id == currentNovelId }?.title ?: ""
 										)
-									}
-							)
+									}.map { successResult(it) }
+								)
+							}
 						}
 					)
 				}
-			})
+			)
+		}.asIOLiveData()
+	}
+
+
+	@ExperimentalCoroutinesApi
+	override val extensions: LiveData<HResult<List<MigrationExtensionUI>>> by lazy {
+		flow {
+			emit(loading)
+			emitAll(
+				loadExtensionsFlow().map { hResult ->
+					hResult.transformToSuccess { list ->
+						list.filter { it.installed }.map {
+							MigrationExtensionUI(
+								it.id,
+								it.name,
+								it.imageURL ?: ""
+							)
+						}
+					}
+				}.transform { extensionsResult ->
+					extensionsResult.handle(
+						onEmpty = {
+							emit(empty)
+						},
+						onError = {
+							emit(it)
+						},
+						onLoading = {
+							emit(loading)
+						}
+					) { mExtensions ->
+						emitAll(
+							whichFlow.transformLatest { selectedId ->
+								emitAll(
+									selectedExtensionMap.getOrPut(selectedId) {
+										MutableStateFlow(mExtensions.firstOrNull()?.id ?: -1)
+									}
+										.mapLatest { selectedExtension ->
+											successResult(mExtensions.map { extension ->
+												extension.copy(
+													isSelected = selectedExtension == extension.id
+												)
+											})
+										}
+								)
+							}
+						)
+					}
+				}
+			)
 		}.asIOLiveData()
 	}
 
 	@ExperimentalCoroutinesApi
-	override val novels: LiveData<HResult<List<MigrationNovelUI>>> by lazy {
+	private val novelFlow by lazy {
 		novelIds.transformLatest { ids ->
 			emitAll(
 				ids.map {
@@ -111,8 +162,11 @@ class MigrationViewModel(
 			}
 			logV("New list: $result")
 			result
-		}.asIOLiveData()
+		}
 	}
+
+	@ExperimentalCoroutinesApi
+	override val novels: LiveData<HResult<List<MigrationNovelUI>>> by lazy { novelFlow.asIOLiveData() }
 
 	/**
 	 * Which novel is being worked on rn
@@ -140,11 +194,27 @@ class MigrationViewModel(
 		novelIds.value = array
 	}
 
-	override fun setSelectedExtension(extensionUI: ExtensionUI) {
-		if (selectedExtensionMap.containsKey(whichFlow.value)) {
-			selectedExtensionMap[whichFlow.value]?.tryEmit(extensionUI.id)
+	override fun setSelectedExtension(extensionUI: MigrationExtensionUI) {
+		val novelId = whichFlow.value
+		logI("$novelId now working with extension ${extensionUI.name}(${extensionUI.id})")
+		if (selectedExtensionMap.containsKey(novelId)) {
+			logI("Emitting")
+			selectedExtensionMap[novelId]?.tryEmit(extensionUI.id)
 		} else {
-			selectedExtensionMap[whichFlow.value] = MutableStateFlow(extensionUI.id)
+			logE("Did not exist, creating new flow")
+			selectedExtensionMap[novelId] = MutableStateFlow(extensionUI.id)
+		}
+	}
+
+	override fun setQuery(newQuery: String) {
+		val novelId = whichFlow.value
+		logI("$novelId now working with query $newQuery")
+		if (queryMap.containsKey(novelId)) {
+			logI("Emitting")
+			queryMap[novelId]?.tryEmit(newQuery)
+		} else {
+			logE("Did not exist, creating new flow")
+			queryMap[novelId] = MutableStateFlow(newQuery)
 		}
 	}
 }
