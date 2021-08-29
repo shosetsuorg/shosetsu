@@ -1,22 +1,20 @@
 {
-  "latestVersion": "1537",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1537/shosetsu-r1537.apk",
+  "latestVersion": "1563",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1563/shosetsu-r1563.apk",
   "releaseNotes": [
-    "- Implement error result handing in Library view",
-    "- Cleaned up extension-library repository code",
-    "- Add cancel option to novel updater / chapter downloader notifications",
-    "- Fix web view activity crashing with null URL",
-    "- Add nullable returns to DAO functions",
-    "- Improved aesthetic to global search",
-    "- Chapters are now deleted when the extensions type changes",
-    "- Add option to remove dividers between chapters",
-    "- Fix repo updater from overriding chapterType",
-    "- Lower scroll percentage threshold to mark a chapter as read",
-    "- Long press the loading icon to cancel an extension install",
-    "- New database constraints to hopefully solve issues with duplicate chapter urls",
-    "- Remove slidingUpBottomMenu in favor of BottomSheetDialog",
-    "- Remove / Obsolete extensions when a repository is disabled",
-    "- Cleaner view to how extensions look when obsolete",
-    "- Add language & installed filters to Browse view using jetpack compose"
+    "- Fix browse filter menu filling up full size",
+    "- Convert catalogue filters to compose",
+    "- Add header to MainActivity when backup is in progress",
+    "- Remove dialog popup from BackupSettings",
+    "- Split ViewedController to ShosetsuController",
+    "- TextAssetReader uses compose UI now",
+    "- Add foundations for migration support",
+    "- Migrate from Picasso to Coil (WIPE CACHE)",
+    "- Add option to disable repository if update fails, default=off",
+    "- Add chapter title before text in StringReader",
+    "- Extension libraries only update if version is greater",
+    "- Extensions have new update technique",
+    "- Fix Repo update notification if clauses",
+    "- Update gradle to 7.0.1"
   ]
 }
