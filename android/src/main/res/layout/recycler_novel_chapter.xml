@@ -14,27 +14,56 @@
         android:layout_height="match_parent"
         android:padding="16dp">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/title"
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/titleBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginBottom="8dp"
-            android:ellipsize="end"
-            android:lines="1"
-            android:scrollHorizontally="true"
-            android:textAlignment="viewStart"
-            android:textIsSelectable="false"
-            android:textStyle="bold"
-            tools:text="Chapter 1" />
+            android:layout_marginBottom="8dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="1"
+                android:scrollHorizontally="true"
+                android:textAlignment="viewStart"
+                android:textIsSelectable="false"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Chapter 1" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/titleBookmarked"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="1"
+                android:scrollHorizontally="true"
+                android:textAlignment="viewStart"
+                android:textColor="@color/colorPrimary"
+                android:textIsSelectable="false"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Chapter 1" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/read_tag"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/title"
+            android:layout_below="@id/titleBox"
             android:layout_alignParentStart="true"
             android:text="@string/position"
             android:textSize="12sp"
@@ -45,7 +74,7 @@
             android:id="@+id/read_progress_value"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/title"
+            android:layout_below="@id/titleBox"
             android:layout_marginStart="4dp"
             android:layout_toEndOf="@id/read_tag"
             android:textSize="12sp"
@@ -57,7 +86,7 @@
             android:id="@+id/download_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/title"
+            android:layout_below="@id/titleBox"
             android:layout_alignParentEnd="true"
             android:text="@string/downloaded"
             android:textSize="12sp"

@@ -1,8 +1,6 @@
 package app.shosetsu.android.view.uimodels.model
 
-import android.content.res.ColorStateList
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
@@ -78,10 +76,6 @@ data class ChapterUI(
 		BindViewHolder<ChapterUI, RecyclerNovelChapterBinding>(itemView) {
 		override val binding = RecyclerNovelChapterBinding.bind(view)
 
-
-		private var oldColors: ColorStateList? = null
-
-
 		private fun setAlpha(float: Float = 1f) {
 			binding.title.alpha = float
 			binding.readProgressValue.alpha = float
@@ -96,15 +90,12 @@ data class ChapterUI(
 			if (item.isSelected) cardView.isSelected
 
 
-			title.text = item.title
-			oldColors = title.textColors
 			if (item.bookmarked) {
-				title.setTextColor(
-					ContextCompat.getColor(
-						itemView.context,
-						R.color.bookmarked
-					)
-				)
+				title.text = item.title
+				title.isVisible = true
+			} else {
+				titleBookmarked.text = item.title
+				titleBookmarked.isVisible = true
 			}
 
 			downloadTag.isVisible = item.isSaved
@@ -132,9 +123,14 @@ data class ChapterUI(
 
 		override fun RecyclerNovelChapterBinding.unbindView(item: ChapterUI) {
 			title.text = null
-			oldColors.let { title.setTextColor(it) }
+			title.isVisible = false
+
+			titleBookmarked.text = null
+			titleBookmarked.isVisible = false
+
 			readProgressValue.isVisible = false
 			readProgressValue.text = null
+
 			readTag.isVisible = false
 			downloadTag.isVisible = false
 		}
