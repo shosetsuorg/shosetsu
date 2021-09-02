@@ -83,6 +83,17 @@
             tools:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/release_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/titleBox"
+            android:layout_marginEnd="8dp"
+            android:layout_toStartOf="@+id/download_tag"
+            android:textSize="12sp"
+            android:visibility="invisible"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/download_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

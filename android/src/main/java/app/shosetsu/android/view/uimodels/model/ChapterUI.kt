@@ -100,6 +100,8 @@ data class ChapterUI(
 
 			downloadTag.isVisible = item.isSaved
 
+			releaseTag.text = item.releaseDate
+
 			when (item.readingStatus) {
 				ReadingStatus.READING -> {
 					setAlpha()
@@ -132,6 +134,9 @@ data class ChapterUI(
 			readProgressValue.text = null
 
 			readTag.isVisible = false
+
+			releaseTag.text = null
+
 			downloadTag.isVisible = false
 		}
 	}
