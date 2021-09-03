@@ -90,7 +90,7 @@ data class ChapterUI(
 			if (item.isSelected) cardView.isSelected
 
 
-			if (item.bookmarked) {
+			if (!item.bookmarked) {
 				title.text = item.title
 				title.isVisible = true
 			} else {
