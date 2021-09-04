@@ -239,7 +239,24 @@ class DownloadWorker(
 			}
 
 			// Adds the job as working
-			activeExtensions.add(extID)
+			try {
+				activeExtensions.add(extID)
+			} catch (ignored: ArrayIndexOutOfBoundsException) {
+				logE("Adding extID to active extensions failed, attempting again in 100ms")
+				delay(100)
+				try {
+					activeExtensions.add(extID)
+				} catch (ignored: ArrayIndexOutOfBoundsException) {
+					logE("Failed to add job again, aborting")
+					downloadsRepo.update(
+						downloadEntity.copy(
+							status = DownloadStatus.ERROR
+						)
+					)
+					return@launchIO
+				}
+				logD("Added extID to active jobs successfully")
+			}
 			activeJobs++
 
 			logV("Downloading $downloadEntity")
