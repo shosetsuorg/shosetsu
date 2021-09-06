@@ -144,6 +144,7 @@ class HTMLReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 			this["font-size"] = "${viewModel.defaultTextSize}pt"
 			this["scroll-behavior"] = "smooth"
 			this["text-indent"] = "${viewModel.defaultIndentSize}em"
+			this["overflow-wrap"] = "break-word"
 		}
 
 		setShosetsuStyle("p") {
