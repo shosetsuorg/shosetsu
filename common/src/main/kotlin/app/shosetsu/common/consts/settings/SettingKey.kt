@@ -149,8 +149,8 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	 */
 	object DeleteReadChapter : IntKey("deleteReadChapter", -1)
 
-	object DownloadOnLowStorage : BooleanKey("downloadNotLowStorage", false)
-	object DownloadOnLowBattery : BooleanKey("downloadNotLowBattery", false)
+	object DownloadOnLowStorage : BooleanKey("downloadNotLowStorage", true)
+	object DownloadOnLowBattery : BooleanKey("downloadNotLowBattery", true)
 	object DownloadOnMeteredConnection : BooleanKey("downloadNotMetered", true)
 
 	object DownloadOnlyWhenIdle : BooleanKey("downloadIdle", false)
@@ -166,8 +166,8 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object UpdateOnStartup : BooleanKey("updateOnStartup", true)
 	object UpdateCycle : IntKey("updateCycle", 1)
 
-	object UpdateOnLowStorage : BooleanKey("updateLowStorage", false)
-	object UpdateOnLowBattery : BooleanKey("updateLowBattery", false)
+	object UpdateOnLowStorage : BooleanKey("updateLowStorage", true)
+	object UpdateOnLowBattery : BooleanKey("updateLowBattery", true)
 	object UpdateOnMeteredConnection : BooleanKey("updateMetered", true)
 	object UpdateOnlyWhenIdle : BooleanKey("updateIdle", false)
 
@@ -175,8 +175,8 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object NovelUpdateShowProgress : BooleanKey("novelUpdateShowProgress", true)
 	object NovelUpdateClassicFinish : BooleanKey("novelUpdateClassicFinish", false)
 
-	object RepoUpdateOnLowStorage : BooleanKey("repoUpdateLowStorage", false)
-	object RepoUpdateOnLowBattery : BooleanKey("repoUpdateLowBattery", false)
+	object RepoUpdateOnLowStorage : BooleanKey("repoUpdateLowStorage", true)
+	object RepoUpdateOnLowBattery : BooleanKey("repoUpdateLowBattery", true)
 	object RepoUpdateOnMeteredConnection : BooleanKey("repoUpdateMetered", true)
 	object RepoUpdateOnlyWhenIdle : BooleanKey("repoUpdateIdle", false)
 	object RepoUpdateDisableOnFail : BooleanKey("update_repository_disable_on_fail", false)
@@ -201,8 +201,8 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object BackupSettings : BooleanKey("backupSettings", false)
 	object BackupCycle : IntKey("backupCycle", 3)
 
-	object BackupOnLowStorage : BooleanKey("backupLowStorage", false)
-	object BackupOnLowBattery : BooleanKey("backupLowBattery", false)
+	object BackupOnLowStorage : BooleanKey("backupLowStorage", true)
+	object BackupOnLowBattery : BooleanKey("backupLowBattery", true)
 	object BackupOnlyWhenIdle : BooleanKey("backupIdle", false)
 
 	// Download Options
