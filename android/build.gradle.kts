@@ -37,11 +37,11 @@ if (acraPropertiesFile.exists())
 	acraProperties.load(FileInputStream(acraPropertiesFile))
 
 android {
-	compileSdk = 30
+	compileSdk = 31
 	defaultConfig {
 		applicationId = "com.github.doomsdayrs.apps.shosetsu"
 		minSdk = 22
-		targetSdk = 30
+		targetSdk = 31
 		versionCode = 26
 		versionName = "2.0.0"
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -65,7 +65,6 @@ android {
 	}
 
 	composeOptions {
-		kotlinCompilerVersion = "1.5.10"
 		kotlinCompilerExtensionVersion = "1.0.0"
 	}
 
@@ -85,7 +84,7 @@ android {
 			isDebuggable = true
 		}
 	}
-	flavorDimensions("default")
+	flavorDimensions.add("default")
 	productFlavors {
 		create("playstore") {
 			// play store will be in this
@@ -149,9 +148,9 @@ dependencies {
 	implementation("com.google.android.material:material:1.4.0")
 
 	// Androidx
-	implementation("androidx.constraintlayout:constraintlayout:2.0.4")
-	implementation("androidx.work:work-runtime:2.7.0-alpha05")
-	implementation("androidx.work:work-runtime-ktx:2.7.0-alpha05")
+	implementation("androidx.constraintlayout:constraintlayout:2.1.0")
+	implementation("androidx.work:work-runtime:2.7.0-beta01")
+	implementation("androidx.work:work-runtime-ktx:2.7.0-beta01")
 	implementation("androidx.gridlayout:gridlayout:1.0.0")
 	implementation("androidx.preference:preference-ktx:1.1.1")
 	implementation("androidx.recyclerview:recyclerview:1.2.1")
@@ -295,10 +294,10 @@ dependencies {
 
 	// KTX
 
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.5.0")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.5.1")
 
 	// KTX - Serialization
-	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
 
 	// Roomigrant
 	val enableRoomigrant = false
@@ -314,33 +313,34 @@ dependencies {
 
 
 	// Compose
-	implementation("androidx.compose.ui:ui:1.0.0")
+	implementation("androidx.compose.ui:ui:1.0.2")
 
-	implementation("androidx.compose.compiler:compiler:1.0.0")
+	implementation("androidx.compose.compiler:compiler:1.0.2")
 
 	//- Tooling support (Previews, etc.)
-	implementation("androidx.compose.ui:ui-tooling:1.0.0")
+	implementation("androidx.compose.ui:ui-tooling:1.0.2")
 	//- Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-	implementation("androidx.compose.foundation:foundation:1.0.0")
+	implementation("androidx.compose.foundation:foundation:1.0.2")
 
 	// - Material
-	implementation("androidx.compose.material:material:1.0.0")
-	implementation("androidx.compose.material:material-ripple:1.0.0")
+	implementation("androidx.compose.material:material:1.0.2")
+	implementation("androidx.compose.material:material-ripple:1.0.2")
 
 	//- Material design icons
-	implementation("androidx.compose.material:material-icons-core:1.0.0")
-	implementation("androidx.compose.material:material-icons-extended:1.0.0")
+	implementation("androidx.compose.material:material-icons-core:1.0.2")
+	implementation("androidx.compose.material:material-icons-extended:1.0.2")
 
 	//- Integration with observables
-	implementation("androidx.compose.runtime:runtime-livedata:1.0.0")
+	implementation("androidx.compose.runtime:runtime-livedata:1.0.2")
 
 	//- UI Tests
-	androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.0")
+	androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.2")
 
 	// MDC Adapter
-	implementation("com.google.android.material:compose-theme-adapter:1.0.0")
+	implementation("com.google.android.material:compose-theme-adapter:1.0.2")
 	implementation("com.google.accompanist:accompanist-appcompat-theme:0.15.0")
-	implementation("androidx.activity:activity-ktx:1.3.0")
-	implementation("androidx.activity:activity-compose:1.3.0")
+	implementation("androidx.activity:activity:1.3.1")
+	implementation("androidx.activity:activity-ktx:1.3.1")
+	implementation("androidx.activity:activity-compose:1.3.1")
 
 }
