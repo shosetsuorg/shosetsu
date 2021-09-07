@@ -83,10 +83,10 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 	override val defaultNotificationID: Int = Notifications.ID_BACKUP
 
 	private suspend fun backupChapters() =
-		iSettingsRepository.getBooleanOrDefault(BackupChapters)
+		iSettingsRepository.getBooleanOrDefault(ShouldBackupChapters)
 
 	private suspend fun backupSettings() =
-		iSettingsRepository.getBooleanOrDefault(BackupSettings)
+		iSettingsRepository.getBooleanOrDefault(ShouldBackupSettings)
 
 
 	@Throws(IOException::class)

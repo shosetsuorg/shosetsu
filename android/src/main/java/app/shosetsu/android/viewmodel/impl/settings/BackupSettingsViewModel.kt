@@ -64,12 +64,12 @@ class BackupSettingsViewModel(
 		switchSettingData(0) {
 			title { R.string.backup_chapters_option }
 			description { R.string.backup_chapters_option_description }
-			checkSettingValue(SettingKey.BackupChapters)
+			checkSettingValue(SettingKey.ShouldBackupChapters)
 		},
 		switchSettingData(1) {
 			title { R.string.backup_settings_option }
 			description { R.string.backup_settings_option_desc }
-			checkSettingValue(SettingKey.BackupSettings)
+			checkSettingValue(SettingKey.ShouldBackupSettings)
 		},
 		buttonSettingData(3) {
 			title { R.string.backup_now }
