@@ -1,9 +1,14 @@
 package app.shosetsu.android.ui.settings.sub.backup
 
-import android.app.Activity
-import android.content.Intent
+import android.content.Context
 import android.webkit.MimeTypeMap
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.ActivityResultRegistry
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import app.shosetsu.android.common.ext.context
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.toast
@@ -94,36 +99,42 @@ class BackupSettings : SettingsSubController() {
 	 */
 
 
+	inner class Observer(private val registry: ActivityResultRegistry) :
+		DefaultLifecycleObserver {
+		lateinit var launcher: ActivityResultLauncher<Array<String>>
+
+		override fun onCreate(owner: LifecycleOwner) {
+			launcher = registry.register(
+				"backup_settings_rq#",
+				owner,
+				ActivityResultContracts.OpenDocument()
+			) { uri ->
+				if (MimeTypeMap.getFileExtensionFromUrl(uri.toString()) != BACKUP_FILE_EXTENSION) {
+					logV("invalid type")
+					context?.toast("Invalid file")
+					return@register
+				}
+
+				context?.toast("Restoring now...")
+				viewModel.restore(uri)
+			}
+		}
+	}
+
+	val observer by lazy { Observer((activity as AppCompatActivity).activityResultRegistry) }
+
+	override fun onContextAvailable(context: Context) {
+		lifecycle.addObserver(observer)
+	}
+
 	private fun performFileSelection() {
 		context?.toast(
 			"Please make sure this is on the main storage, " +
 					"SD card storage is not functional yet"
 		)
-		activity?.startActivityForResult(Intent(Intent.ACTION_GET_CONTENT).apply {
-			type = "*/*"
-		}, REQUEST_CODE_RESTORE_SELECTION)
+		observer.launcher.launch(arrayOf("application/octet-stream"))
 	}
 
-	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-		logV("Received code: $requestCode")
-		when (requestCode) {
-			REQUEST_CODE_RESTORE_SELECTION -> {
-				if (resultCode == Activity.RESULT_OK) {
-					data?.data?.let {
-						if (MimeTypeMap.getFileExtensionFromUrl(it.toString()) != BACKUP_FILE_EXTENSION) {
-							logV("invalid type")
-							context?.toast("Invalid file")
-							return
-						}
-
-						context?.toast("Restoring now...")
-						viewModel.restore(it.path!!, true)
-					}
-				} else logV("Result code failed")
-			}
-		}
-		super.onActivityResult(requestCode, resultCode, data)
-	}
 
 	companion object {
 		private const val REQUEST_CODE_RESTORE_SELECTION = 2116

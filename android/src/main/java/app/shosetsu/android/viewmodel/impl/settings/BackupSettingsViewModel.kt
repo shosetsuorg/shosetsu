@@ -1,5 +1,6 @@
 package app.shosetsu.android.viewmodel.impl.settings
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker
 import app.shosetsu.android.common.ext.logV
@@ -55,9 +56,14 @@ class BackupSettingsViewModel(
 		emit(loadInternalBackupNamesUseCase())
 	}.asIOLiveData()
 
-	override fun restore(path: String, external: Boolean) {
-		logV("Restoring (external?: $external): $path ")
-		startRestoreWorkerUseCase(path, external)
+	override fun restore(path: String) {
+		logV("Restoring: $path ")
+		startRestoreWorkerUseCase(path)
+	}
+
+	override fun restore(uri: Uri) {
+		logV("Restoring: $uri")
+		startRestoreWorkerUseCase(uri)
 	}
 
 	override suspend fun settings(): List<SettingsItemData> = listOf(

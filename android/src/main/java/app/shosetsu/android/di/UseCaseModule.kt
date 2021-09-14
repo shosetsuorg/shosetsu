@@ -235,7 +235,7 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 	}
 
 	bind<StartRestoreWorkerUseCase>() with provider {
-		StartRestoreWorkerUseCase(instance())
+		StartRestoreWorkerUseCase(instance(), instance())
 	}
 
 	bind<AddRepositoryUseCase>() with provider {

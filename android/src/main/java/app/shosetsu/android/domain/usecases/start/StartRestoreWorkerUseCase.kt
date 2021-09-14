@@ -1,9 +1,11 @@
 package app.shosetsu.android.domain.usecases.start
 
+import android.net.Uri
 import androidx.work.Data
 import app.shosetsu.android.backend.workers.onetime.RestoreBackupWorker
 import app.shosetsu.android.backend.workers.onetime.RestoreBackupWorker.Companion.BACKUP_DATA_KEY
 import app.shosetsu.android.backend.workers.onetime.RestoreBackupWorker.Companion.BACKUP_DIR_KEY
+import app.shosetsu.android.domain.repository.base.IBackupUriRepository
 
 /*
  * This file is part of Shosetsu.
@@ -26,15 +28,27 @@ import app.shosetsu.android.backend.workers.onetime.RestoreBackupWorker.Companio
  * 02 / 02 / 2021
  */
 class StartRestoreWorkerUseCase(
-	private val manager: RestoreBackupWorker.Manager
+	private val manager: RestoreBackupWorker.Manager,
+	private val backupRepository: IBackupUriRepository
 ) {
-	operator fun invoke(path: String, external: Boolean) {
+	operator fun invoke(path: String) {
 		if (!manager.isRunning())
 			manager.start(
 				Data.Builder().apply {
 					putString(BACKUP_DATA_KEY, path)
-					putBoolean(BACKUP_DIR_KEY, external)
+					putBoolean(BACKUP_DIR_KEY, false)
 				}.build()
 			)
+	}
+
+	operator fun invoke(path: Uri) {
+		if (!manager.isRunning()) {
+			backupRepository.give(path)
+			manager.start(
+				Data.Builder().apply {
+					putBoolean(BACKUP_DIR_KEY, true)
+				}.build()
+			)
+		}
 	}
 }

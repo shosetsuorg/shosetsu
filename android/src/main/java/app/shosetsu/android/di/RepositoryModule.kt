@@ -1,6 +1,8 @@
 package app.shosetsu.android.di
 
+import app.shosetsu.android.domain.repository.base.IBackupUriRepository
 import app.shosetsu.android.domain.repository.impl.AppUpdatesRepository
+import app.shosetsu.android.domain.repository.impl.BackupUriRepository
 import app.shosetsu.android.domain.repository.impl.ExtensionLibrariesRepository
 import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.domain.repositories.impl.*
@@ -81,6 +83,10 @@ val repositoryModule: DI.Module = DI.Module("repository_module") {
 			instance(),
 			instance()
 		)
+	}
+
+	bind<IBackupUriRepository>() with singleton {
+		BackupUriRepository()
 	}
 
 }

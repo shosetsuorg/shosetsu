@@ -2,6 +2,7 @@ package app.shosetsu.android.backend.workers.onetime
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.net.Uri
 import android.util.Base64
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -17,14 +18,15 @@ import app.shosetsu.android.common.consts.WorkerTags.RESTORE_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.backupJSON
 import app.shosetsu.android.domain.model.local.backup.FleshedBackupEntity
+import app.shosetsu.android.domain.repository.base.IBackupUriRepository
 import app.shosetsu.android.domain.usecases.InstallExtensionUseCase
 import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
+import app.shosetsu.common.domain.model.local.BackupEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.NovelSettingEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.*
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.unwrap
+import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.lib.Version
 import coil.imageLoader
@@ -37,7 +39,7 @@ import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
-import java.io.IOException
+import java.io.*
 import java.util.zip.GZIPInputStream
 
 /*
@@ -75,7 +77,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 	private val novelsRepo by instance<INovelsRepository>()
 	private val novelsSettingsRepo by instance<INovelSettingsRepository>()
 	private val chaptersRepo by instance<IChaptersRepository>()
-
+	private val backupUriRepo by instance<IBackupUriRepository>()
 	override val baseNotificationBuilder: NotificationCompat.Builder
 		get() = notificationBuilder(applicationContext, Notifications.CHANNEL_BACKUP)
 			.setSubText(getString(R.string.restore_notification_subtitle))
@@ -91,14 +93,33 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 	private fun unGZip(content: ByteArray): String =
 		GZIPInputStream(content.inputStream()).bufferedReader().use { it.readText() }
 
+	/**
+	 * Loads a backup via the [Uri] provided by Androids file selection
+	 */
+	private fun loadBackupFromUri(uri: Uri): HResult<BackupEntity> {
+		val contentResolver = applicationContext.contentResolver ?: return errorResult(
+			NullPointerException("Null contentResolver")
+		)
+		val inputStream = contentResolver.openInputStream(uri)
+		val bis = BufferedInputStream(inputStream)
+		return successResult(BackupEntity(bis.readBytes()))
+	}
+
 	@Throws(IOException::class)
 	override suspend fun doWork(): Result {
 		logI("Starting restore")
-		val backupName = inputData.getString(BACKUP_DATA_KEY) ?: return Result.failure()
+		val backupName = inputData.getString(BACKUP_DATA_KEY)
 		val isExternal = inputData.getBoolean(BACKUP_DIR_KEY, false)
 
+		if (!isExternal && backupName == null) {
+			logE("null backupName, Internal Restore requires backupName")
+			return Result.failure()
+		}
+
 		notify(R.string.restore_notification_content_starting)
-		backupRepo.loadBackup(backupName, isExternal).handle(
+		(if (isExternal)
+			backupUriRepo.take().transform { loadBackupFromUri(it) }
+		else backupRepo.loadBackup(backupName!!)).handle(
 			onEmpty = {
 				logE("Received empty, impossible")
 				notify(R.string.restore_notification_content_unexpected_empty) {
@@ -260,34 +281,39 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 							chaptersRepo.getChapters(targetNovelID).unwrap() ?: listOf()
 
 						// Go through the chapters updating them
-						bChapters.forEach { (chapterURL, chapterName, bookmarked, rS, rP) ->
-							repoChapters.find { it.url == chapterURL }?.let { chapterEntity ->
-								notify(getString(R.string.updating) + ": ${chapterEntity.title}") {
-									setContentTitle(name)
-									setLargeIcon(bitmap)
-								}
-
-								chaptersRepo.updateChapter(
-									chapterEntity.copy(
-										title = chapterName,
-										bookmarked = bookmarked,
-									).let {
-										when (it.readingStatus) {
-											ReadingStatus.READING -> it
-											ReadingStatus.READ -> it
-											else -> it.copy(
-												readingStatus = rS,
-												readingPosition = rP
-											)
-										}
+						for (index in bChapters.indices) {
+							bChapters[index].let { (chapterURL, chapterName, bookmarked, rS, rP) ->
+								repoChapters.find { it.url == chapterURL }?.let { chapterEntity ->
+									notify(getString(R.string.updating) + ": ${chapterEntity.title}") {
+										setContentTitle(name)
+										setLargeIcon(bitmap)
+										setProgress(bChapters.size, index, false)
+										setSilent(true)
 									}
-								)
+
+									chaptersRepo.updateChapter(
+										chapterEntity.copy(
+											title = chapterName,
+											bookmarked = bookmarked,
+										).let {
+											when (it.readingStatus) {
+												ReadingStatus.READING -> it
+												ReadingStatus.READ -> it
+												else -> it.copy(
+													readingStatus = rS,
+													readingPosition = rP
+												)
+											}
+										}
+									)
+								}
 							}
 						}
 
 						notify(R.string.restore_notification_content_settings_restore) {
 							setContentTitle(name)
 							setLargeIcon(bitmap)
+							removeProgress()
 						}
 						novelsSettingsRepo.get(targetNovelID).handle(
 							onEmpty = {
@@ -339,6 +365,9 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 	 */
 	class Manager(context: Context) : CoroutineWorkerManager(context) {
 
+		override val count: Int
+			get() = workerManager.getWorkInfosForUniqueWork(RESTORE_WORK_ID).get().size
+
 		/**
 		 * Returns the status of the service.
 		 *
@@ -357,9 +386,6 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 
 		override fun getWorkerState(index: Int): WorkInfo.State =
 			workerManager.getWorkInfosForUniqueWork(RESTORE_WORK_ID).get()[index].state
-
-		override val count: Int
-			get() = workerManager.getWorkInfosForUniqueWork(RESTORE_WORK_ID).get().size
 
 		/**
 		 * Starts the service. It will be started only if there isn't another instance already

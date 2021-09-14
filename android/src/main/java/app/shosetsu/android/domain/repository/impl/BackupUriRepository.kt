@@ -1,9 +1,10 @@
-package app.shosetsu.android.viewmodel.abstracted.settings
+package app.shosetsu.android.domain.repository.impl
 
 import android.net.Uri
-import androidx.lifecycle.LiveData
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.android.domain.repository.base.IBackupUriRepository
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.emptyResult
+import app.shosetsu.common.dto.successResult
 
 /*
  * This file is part of shosetsu.
@@ -23,28 +24,21 @@ import app.shosetsu.common.dto.HResult
  */
 
 /**
- * shosetsu
- * 31 / 08 / 2020
+ * Shosetsu
+ *
+ * @since 13 / 09 / 2021
+ * @author Doomsdayrs
  */
-abstract class ABackupSettingsViewModel(iSettingsRepository: ISettingsRepository) :
-	ASubSettingsViewModel(iSettingsRepository) {
+class BackupUriRepository : IBackupUriRepository {
+	private var uri: Uri? = null
 
-	/** Order the app to create a new backup now */
-	abstract fun startBackup()
-	abstract fun loadInternalOptions(): LiveData<HResult<List<String>>>
+	override fun give(path: Uri): HResult<*> {
+		uri = path
+		return successResult()
+	}
 
-	/**
-	 * Load backup via a path
-	 *
-	 * For internal backups
-	 */
-	abstract fun restore(name: String)
-
-	/**
-	 * Load backup via the uri
-	 *
-	 * For external backups
-	 */
-	abstract fun restore(uri: Uri)
-
+	override fun take(): HResult<Uri> =
+		if (uri != null)
+			successResult(uri!!).also { uri = null }
+		else emptyResult()
 }

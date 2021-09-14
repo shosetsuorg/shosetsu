@@ -1,8 +1,6 @@
-package app.shosetsu.android.viewmodel.abstracted.settings
+package app.shosetsu.android.domain.repository.base
 
 import android.net.Uri
-import androidx.lifecycle.LiveData
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.HResult
 
 /*
@@ -23,28 +21,24 @@ import app.shosetsu.common.dto.HResult
  */
 
 /**
- * shosetsu
- * 31 / 08 / 2020
+ * Shosetsu
+ *
+ * @since 13 / 09 / 2021
+ * @author Doomsdayrs
+ *
+ * Holds the [Uri] provided by android for an external backup
  */
-abstract class ABackupSettingsViewModel(iSettingsRepository: ISettingsRepository) :
-	ASubSettingsViewModel(iSettingsRepository) {
-
-	/** Order the app to create a new backup now */
-	abstract fun startBackup()
-	abstract fun loadInternalOptions(): LiveData<HResult<List<String>>>
+interface IBackupUriRepository {
+	/**
+	 * Give the repository a [Uri] to hold
+	 *
+	 * Overwrites any previously given uri
+	 */
+	fun give(path: Uri): HResult<*>
 
 	/**
-	 * Load backup via a path
-	 *
-	 * For internal backups
+	 * Take the [Uri] from the repository
 	 */
-	abstract fun restore(name: String)
-
-	/**
-	 * Load backup via the uri
-	 *
-	 * For external backups
-	 */
-	abstract fun restore(uri: Uri)
+	fun take(): HResult<Uri>
 
 }

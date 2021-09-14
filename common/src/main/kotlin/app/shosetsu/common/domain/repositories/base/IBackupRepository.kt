@@ -57,7 +57,7 @@ interface IBackupRepository {
 	 * [HResult.Error] An exception occurred when loading
 	 * [HResult.Loading] never
 	 */
-	suspend fun loadBackup(path: String, isExternal: Boolean): HResult<BackupEntity>
+	suspend fun loadBackup(path: String, isExternal: Boolean = false): HResult<BackupEntity>
 
 
 	suspend fun saveBackup(backupEntity: BackupEntity): HResult<*>

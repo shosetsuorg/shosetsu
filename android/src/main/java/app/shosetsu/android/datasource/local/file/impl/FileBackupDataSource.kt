@@ -1,6 +1,7 @@
 package app.shosetsu.android.datasource.local.file.impl
 
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.common.datasource.file.base.IFileBackupDataSource
 import app.shosetsu.common.domain.model.local.BackupEntity
 import app.shosetsu.common.dto.HResult
@@ -42,6 +43,7 @@ class FileBackupDataSource(
 		backupName: String,
 		isExternal: Boolean
 	): HResult<BackupEntity> {
+		logI("Reading backup: $backupName")
 		val result = if (!isExternal)
 			iFileSystemProvider.readFile(APP, "$BACKUP_DIRECTORY/${backupName}")
 		else iFileSystemProvider.readFile(backupName)
