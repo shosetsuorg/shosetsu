@@ -82,6 +82,9 @@ import java.util.*
  */
 class MainActivity : AppCompatActivity(), DIAware,
 	ControllerChangeHandler.ControllerChangeListener {
+
+	override val di: DI by closestDI()
+
 	private lateinit var binding: ActivityMainBinding
 
 	private var registered = false
@@ -91,7 +94,6 @@ class MainActivity : AppCompatActivity(), DIAware,
 
 	private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
 
-	override val di: DI by closestDI()
 	private val viewModel: AMainViewModel by viewModel()
 
 	private val broadcastReceiver by lazy {
@@ -110,11 +112,6 @@ class MainActivity : AppCompatActivity(), DIAware,
 		super.onDestroy()
 	}
 
-	/**
-	 * Main activity
-	 *
-	 * @param savedInstanceState savedData from destruction
-	 */
 	override fun onCreate(savedInstanceState: Bundle?) {
 		viewModel.navigationStyle
 
@@ -179,6 +176,15 @@ class MainActivity : AppCompatActivity(), DIAware,
 		setupProcesses()
 	}
 
+	override fun onPostCreate(savedInstanceState: Bundle?) {
+		super.onPostCreate(savedInstanceState)
+
+		actionBarDrawerToggle.syncState()
+	}
+
+	/**
+	 * If true, the app is preventing the user from leaving the app accidentally
+	 */
 	private var inProtectingBack = false
 
 	private fun protectedBackWait() {
@@ -186,7 +192,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 			inProtectingBack = true
 			val snackBar =
 				makeSnackBar(R.string.double_back_message, Snackbar.LENGTH_INDEFINITE).apply {
-					setOnDismissed { snackbar, event ->
+					setOnDismissed { _, _ ->
 						inProtectingBack = false
 					}
 				}
@@ -242,6 +248,9 @@ class MainActivity : AppCompatActivity(), DIAware,
 		}
 	}
 
+	/**
+	 * Setup the navigation drawer
+	 */
 	private fun setupNavigationDrawer() {
 		logV("Setting up legacy navigation")
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -260,21 +269,19 @@ class MainActivity : AppCompatActivity(), DIAware,
 		// Navigation view
 		//nav_view.setNavigationItemSelectedListener(NavigationSwapListener(this))
 		binding.navView.setNavigationItemSelectedListener {
+			logI("Navigation item selected: $it")
 			val id = it.itemId
 			val currentRoot = router.backstack.firstOrNull()
 			if (currentRoot?.tag()?.toIntOrNull() != id) handleNavigationSelected(id)
-			else onBackPressed()
 			binding.drawerLayout.closeDrawer(GravityCompat.START)
 			return@setNavigationItemSelectedListener true
 		}
 	}
 
-	override fun onPostCreate(savedInstanceState: Bundle?) {
-		super.onPostCreate(savedInstanceState)
 
-		actionBarDrawerToggle.syncState()
-	}
-
+	/**
+	 * Setup the bottom navigation
+	 */
 	private fun setupBottomNavigationDrawer() {
 		logV("Setting up modern navigation")
 		binding.drawerLayout.setDrawerLockMode(
@@ -282,22 +289,20 @@ class MainActivity : AppCompatActivity(), DIAware,
 			binding.navView
 		)
 
-		binding.bottomNavigationView.setOnNavigationItemSelectedListener {
+		binding.bottomNavigationView.setOnItemSelectedListener {
 			val id = it.itemId
 			val currentRoot = router.backstack.firstOrNull()
 			if (currentRoot?.tag()?.toIntOrNull() != id) handleNavigationSelected(id)
-			return@setOnNavigationItemSelectedListener true
+			return@setOnItemSelectedListener true
 		}
 	}
 
 	private fun handleNavigationSelected(id: Int) {
 		when (id) {
-			// Bottom nav
 			R.id.nav_library -> setRoot(LibraryController(), R.id.nav_library)
+			R.id.nav_updates -> setRoot(UpdatesController(), R.id.nav_updates)
 			R.id.nav_browse -> setRoot(BrowseController(), R.id.nav_browse)
 			R.id.nav_more -> setRoot(MoreController(), R.id.nav_more)
-			// Shared
-			R.id.nav_updates -> setRoot(UpdatesController(), R.id.nav_updates)
 		}
 	}
 
@@ -408,14 +413,6 @@ class MainActivity : AppCompatActivity(), DIAware,
 		}
 	}
 
-	@Deprecated(
-		"",
-		ReplaceWith("router.shosetsuPush(target)", "app.shosetsu.android.common.ext.shosetsuPush")
-	)
-	private fun transitionView(target: Controller) {
-		router.pushController(target.withFadeTransaction())
-	}
-
 	private val holdingAtBottom = hashMapOf<View, AppBarLayout.OnOffsetChangedListener>()
 
 	fun holdAtBottom(view: View) {
@@ -436,36 +433,42 @@ class MainActivity : AppCompatActivity(), DIAware,
 	internal fun syncActivityViewWithController(to: Controller?, from: Controller? = null) {
 		val showHamburger = router.backstackSize == 1 // Show hamburg means this is home
 
-		logD("Show hamburger?: $showHamburger")
+		logI("Show hamburger?: $showHamburger")
 
 		if (showHamburger) {
 			// Shows navigation
-			if (viewModel.navigationStyle == DRAWER_NAV) {
-				logI("Sync activity view with controller for legacy")
-				supportActionBar?.setDisplayHomeAsUpEnabled(true)
-				actionBarDrawerToggle.isDrawerIndicatorEnabled = true
-				binding.drawerLayout.setDrawerLockMode(
-					DrawerLayout.LOCK_MODE_UNLOCKED,
-					binding.navView
-				)
-			} else {
-				supportActionBar?.setDisplayHomeAsUpEnabled(false)
-				binding.bottomNavigationView.visibility = VISIBLE
+			when (viewModel.navigationStyle) {
+				DRAWER_NAV -> {
+					logI("Sync activity view with controller for legacy")
+					supportActionBar?.setDisplayHomeAsUpEnabled(true)
+					actionBarDrawerToggle.isDrawerIndicatorEnabled = true
+					binding.drawerLayout.setDrawerLockMode(
+						DrawerLayout.LOCK_MODE_UNLOCKED,
+						binding.navView
+					)
+				}
+				BOTTOM_NAV -> {
+					supportActionBar?.setDisplayHomeAsUpEnabled(false)
+					binding.bottomNavigationView.visibility = VISIBLE
+				}
 			}
 		} else {
 
 			// Hides navigation
-			if (viewModel.navigationStyle == DRAWER_NAV) {
-				logI("Sync activity view with controller for legacy")
-				supportActionBar?.setDisplayHomeAsUpEnabled(false)
-				actionBarDrawerToggle.isDrawerIndicatorEnabled = false
-				binding.drawerLayout.setDrawerLockMode(
-					DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
-					binding.navView
-				)
-			} else {
-				supportActionBar?.setDisplayHomeAsUpEnabled(true)
-				binding.bottomNavigationView.visibility = GONE
+			when (viewModel.navigationStyle) {
+				DRAWER_NAV -> {
+					logI("Sync activity view with controller for legacy")
+					supportActionBar?.setDisplayHomeAsUpEnabled(false)
+					actionBarDrawerToggle.isDrawerIndicatorEnabled = false
+					binding.drawerLayout.setDrawerLockMode(
+						DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
+						binding.navView
+					)
+				}
+				BOTTOM_NAV -> {
+					supportActionBar?.setDisplayHomeAsUpEnabled(true)
+					binding.bottomNavigationView.visibility = GONE
+				}
 			}
 		}
 
