@@ -3,6 +3,8 @@ package app.shosetsu.common.datasource.memory.impl
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.emptyResult
 import app.shosetsu.common.dto.successResult
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 
 /*
  * This file is part of Shosetsu.
@@ -50,10 +52,24 @@ abstract class AbstractMemoryDataSource<K, V : Any> {
 	 *
 	 * Data is considered stale if it's creation point is > [expireTime]
 	 */
+	@Throws(NoSuchElementException::class)
 	@Suppress("MemberVisibilityCanBePrivate")
 	fun recycle() {
 		// Reverses keys to go from back to front
-		val keys = _hashMap.keys.reversed()
+		val keys = try {
+			_hashMap.keys.reversed()
+		} catch (e: NoSuchElementException) {
+			println("AbstractMemoryDataSource: recycle: Failed to reverse keys, delaying 1ms")
+			runBlocking {
+				delay(1)
+			}
+			try {
+				_hashMap.keys.reversed()
+			} catch (e: NoSuchElementException) {
+				println("AbstractMemoryDataSource: recycle: Failed to reverse keys a second time")
+				throw e
+			}
+		}
 
 		// Saving value before hand saves 1ms~ per iteration
 		val compareTime = System.currentTimeMillis()
