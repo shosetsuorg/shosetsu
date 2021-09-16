@@ -220,6 +220,7 @@ class NovelUpdateWorker(
 				}
 		}
 
+		// If not the classic finale, create a notification for each novel about its updated chaps
 		if (!classicFinale())
 			for (novel in updateNovels) {
 				launchIO { // Run each novel notification on it's own seperate thread
