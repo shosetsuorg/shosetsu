@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 	// The main router of the application
 	private lateinit var router: Router
 
-	private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
+	private var actionBarDrawerToggle: ActionBarDrawerToggle? = null
 
 	private val viewModel: AMainViewModel by viewModel()
 
@@ -179,7 +179,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 	override fun onPostCreate(savedInstanceState: Bundle?) {
 		super.onPostCreate(savedInstanceState)
 
-		actionBarDrawerToggle.syncState()
+		actionBarDrawerToggle?.syncState()
 	}
 
 	/**
@@ -237,14 +237,17 @@ class MainActivity : AppCompatActivity(), DIAware,
 			} else onBackPressed()
 		}
 
-		if (viewModel.navigationStyle == BOTTOM_NAV) {
-			binding.bottomNavigationView.visibility = VISIBLE
-			binding.navView.visibility = GONE
-			setupBottomNavigationDrawer()
-		} else {
-			binding.navView.visibility = VISIBLE
-			binding.bottomNavigationView.visibility = GONE
-			setupNavigationDrawer()
+		when (viewModel.navigationStyle) {
+			BOTTOM_NAV -> {
+				binding.bottomNavigationView.visibility = VISIBLE
+				binding.navView.visibility = GONE
+				setupBottomNavigationDrawer()
+			}
+			DRAWER_NAV -> {
+				binding.navView.visibility = VISIBLE
+				binding.bottomNavigationView.visibility = GONE
+				setupNavigationDrawer()
+			}
 		}
 	}
 
@@ -263,7 +266,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 			R.string.navigation_drawer_close
 		)
 
-		binding.drawerLayout.addDrawerListener(actionBarDrawerToggle)
+		binding.drawerLayout.addDrawerListener(actionBarDrawerToggle!!)
 
 
 		// Navigation view
@@ -441,7 +444,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 				DRAWER_NAV -> {
 					logI("Sync activity view with controller for legacy")
 					supportActionBar?.setDisplayHomeAsUpEnabled(true)
-					actionBarDrawerToggle.isDrawerIndicatorEnabled = true
+					actionBarDrawerToggle?.isDrawerIndicatorEnabled = true
 					binding.drawerLayout.setDrawerLockMode(
 						DrawerLayout.LOCK_MODE_UNLOCKED,
 						binding.navView
@@ -459,7 +462,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 				DRAWER_NAV -> {
 					logI("Sync activity view with controller for legacy")
 					supportActionBar?.setDisplayHomeAsUpEnabled(false)
-					actionBarDrawerToggle.isDrawerIndicatorEnabled = false
+					actionBarDrawerToggle?.isDrawerIndicatorEnabled = false
 					binding.drawerLayout.setDrawerLockMode(
 						DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
 						binding.navView
