@@ -1,7 +1,6 @@
 package app.shosetsu.android.activity
 
 import android.annotation.SuppressLint
-import android.app.DownloadManager
 import android.app.DownloadManager.*
 import android.app.SearchManager
 import android.content.BroadcastReceiver
@@ -14,12 +13,12 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.annotation.StringRes
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.getSystemService
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
@@ -27,6 +26,8 @@ import androidx.core.view.marginTop
 import androidx.drawerlayout.widget.DrawerLayout
 import app.shosetsu.android.common.consts.*
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
+import app.shosetsu.android.common.enums.NavigationStyle.BOTTOM_NAV
+import app.shosetsu.android.common.enums.NavigationStyle.DRAWER_NAV
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.collapse
 import app.shosetsu.android.common.utils.expand
@@ -90,7 +91,6 @@ class MainActivity : AppCompatActivity(), DIAware,
 
 	private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
 
-	private val downloadManager by lazy { getSystemService<DownloadManager>()!! }
 	override val di: DI by closestDI()
 	private val viewModel: AMainViewModel by viewModel()
 
@@ -117,6 +117,23 @@ class MainActivity : AppCompatActivity(), DIAware,
 	 */
 	override fun onCreate(savedInstanceState: Bundle?) {
 		viewModel.navigationStyle
+
+		onBackPressedDispatcher.addCallback(this) {
+			val backStackSize = router.backstackSize
+			logD("Back stack size: $backStackSize")
+			when {
+				binding.drawerLayout.isDrawerOpen(GravityCompat.START) ->
+					binding.drawerLayout.closeDrawer(GravityCompat.START)
+
+				backStackSize == 1 && router.getControllerWithTag("${R.id.nav_library}") == null ->
+					setSelectedDrawerItem(R.id.nav_library)
+
+				shouldProtectBack() -> protectedBackWait()
+
+				backStackSize == 1 || !router.handleBack() -> super.onBackPressed()
+			}
+		}
+
 		viewModel.appThemeLiveData.observe(this) {
 			logI("Setting theme to $it")
 			when (it) {
@@ -185,34 +202,18 @@ class MainActivity : AppCompatActivity(), DIAware,
 				viewModel.requireDoubleBackToExit &&
 				!inProtectingBack
 
-	/**
-	 * When the back button while drawer is open, close it.
-	 */
-	override fun onBackPressed() {
-		val backStackSize = router.backstackSize
-		logD("Back stack size: $backStackSize")
-		when {
-			binding.drawerLayout.isDrawerOpen(GravityCompat.START) ->
-				binding.drawerLayout.closeDrawer(GravityCompat.START)
-
-			backStackSize == 1 && router.getControllerWithTag("${R.id.nav_library}") == null ->
-				setSelectedDrawerItem(R.id.nav_library)
-
-			shouldProtectBack() -> protectedBackWait()
-
-			backStackSize == 1 || !router.handleBack() -> super.onBackPressed()
-		}
-	}
-
 	// From tachiyomi
 	private fun setSelectedDrawerItem(id: Int) {
 		if (!isFinishing) {
-			if (viewModel.navigationStyle == 0) {
-				binding.bottomNavigationView.selectedItemId = id
-				binding.bottomNavigationView.menu.performIdentifierAction(id, 0)
-			} else {
-				binding.navView.setCheckedItem(id)
-				binding.navView.menu.performIdentifierAction(id, 0)
+			when (viewModel.navigationStyle) {
+				BOTTOM_NAV -> {
+					binding.bottomNavigationView.selectedItemId = id
+					binding.bottomNavigationView.menu.performIdentifierAction(id, 0)
+				}
+				DRAWER_NAV -> {
+					binding.navView.setCheckedItem(id)
+					binding.navView.menu.performIdentifierAction(id, 0)
+				}
 			}
 		}
 	}
@@ -222,14 +223,15 @@ class MainActivity : AppCompatActivity(), DIAware,
 		setSupportActionBar(binding.toolbar)
 
 		binding.toolbar.setNavigationOnClickListener {
+			logV("Navigation item clicked")
 			if (router.backstackSize == 1) {
-				if (viewModel.navigationStyle == 1) {
+				if (viewModel.navigationStyle == DRAWER_NAV) {
 					binding.drawerLayout.openDrawer(GravityCompat.START)
-				}
+				} else onBackPressed()
 			} else onBackPressed()
 		}
 
-		if (viewModel.navigationStyle == 0) {
+		if (viewModel.navigationStyle == BOTTOM_NAV) {
 			binding.bottomNavigationView.visibility = VISIBLE
 			binding.navView.visibility = GONE
 			setupBottomNavigationDrawer()
@@ -248,16 +250,11 @@ class MainActivity : AppCompatActivity(), DIAware,
 			this,
 			binding.drawerLayout,
 			binding.toolbar,
-			R.string.todo,
-			R.string.todo
+			R.string.navigation_drawer_open,
+			R.string.navigation_drawer_close
 		)
 
-		val toggle = ActionBarDrawerToggle(
-			this, binding.drawerLayout, binding.toolbar,
-			R.string.navigation_drawer_open, R.string.navigation_drawer_close
-		)
-		binding.drawerLayout.addDrawerListener(toggle)
-		toggle.syncState()
+		binding.drawerLayout.addDrawerListener(actionBarDrawerToggle)
 
 
 		// Navigation view
@@ -266,9 +263,16 @@ class MainActivity : AppCompatActivity(), DIAware,
 			val id = it.itemId
 			val currentRoot = router.backstack.firstOrNull()
 			if (currentRoot?.tag()?.toIntOrNull() != id) handleNavigationSelected(id)
+			else onBackPressed()
 			binding.drawerLayout.closeDrawer(GravityCompat.START)
 			return@setNavigationItemSelectedListener true
 		}
+	}
+
+	override fun onPostCreate(savedInstanceState: Bundle?) {
+		super.onPostCreate(savedInstanceState)
+
+		actionBarDrawerToggle.syncState()
 	}
 
 	private fun setupBottomNavigationDrawer() {
@@ -436,7 +440,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 
 		if (showHamburger) {
 			// Shows navigation
-			if (viewModel.navigationStyle == 1) {
+			if (viewModel.navigationStyle == DRAWER_NAV) {
 				logI("Sync activity view with controller for legacy")
 				supportActionBar?.setDisplayHomeAsUpEnabled(true)
 				actionBarDrawerToggle.isDrawerIndicatorEnabled = true
@@ -451,7 +455,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 		} else {
 
 			// Hides navigation
-			if (viewModel.navigationStyle == 1) {
+			if (viewModel.navigationStyle == DRAWER_NAV) {
 				logI("Sync activity view with controller for legacy")
 				supportActionBar?.setDisplayHomeAsUpEnabled(false)
 				actionBarDrawerToggle.isDrawerIndicatorEnabled = false

@@ -1,6 +1,7 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
+import app.shosetsu.android.common.enums.NavigationStyle
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
@@ -42,7 +43,7 @@ abstract class AMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel,
 	 * If 0, Bottom
 	 * If 1, Drawer
 	 */
-	abstract val navigationStyle: Int
+	abstract val navigationStyle: NavigationStyle
 
 	abstract val appThemeLiveData: LiveData<AppThemes>
 

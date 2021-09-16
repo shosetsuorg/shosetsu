@@ -1,6 +1,7 @@
 package app.shosetsu.android.viewmodel.impl
 
 import androidx.lifecycle.LiveData
+import app.shosetsu.android.common.enums.NavigationStyle
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.CanAppSelfUpdateUseCase
@@ -58,7 +59,7 @@ class MainViewModel(
 	private val loadAppUpdateUseCase: LoadAppUpdateUseCase,
 	private val loadBackupProgress: LoadBackupProgressFlowUseCase
 ) : AMainViewModel() {
-	private var _navigationStyle = 0
+	private var _navigationStyle = NavigationStyle.BOTTOM_NAV
 	private var _requireDoubleBackToExit = SettingKey.RequireDoubleBackToExit.default
 
 	override val requireDoubleBackToExit: Boolean
@@ -67,7 +68,7 @@ class MainViewModel(
 	init {
 		launchIO {
 			loadNavigationStyleUseCase().collect {
-				_navigationStyle = it
+				_navigationStyle = NavigationStyle.values()[it]
 			}
 		}
 		launchIO {
@@ -94,7 +95,7 @@ class MainViewModel(
 	override fun startUpdateCheck(): LiveData<HResult<AppUpdateEntity>> =
 		loadAppUpdateFlowLiveUseCase().asIOLiveData()
 
-	override val navigationStyle: Int
+	override val navigationStyle: NavigationStyle
 		get() = _navigationStyle
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
