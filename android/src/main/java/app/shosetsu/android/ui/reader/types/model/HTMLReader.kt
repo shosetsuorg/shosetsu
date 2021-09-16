@@ -141,7 +141,7 @@ class HTMLReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 		setShosetsuStyle("body") {
 			this["background-color"] = viewModel.defaultBackground.cssColor()
 			this["color"] = viewModel.defaultForeground.cssColor()
-			this["font-size"] = "${viewModel.defaultTextSize}pt"
+			this["font-size"] = "${viewModel.defaultTextSize / HTML_SIZE_DIVISION}pt"
 			this["scroll-behavior"] = "smooth"
 			this["text-indent"] = "${viewModel.defaultIndentSize}em"
 			this["overflow-wrap"] = "break-word"
@@ -278,6 +278,8 @@ class HTMLReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	}
 
 	companion object {
+
+		private const val HTML_SIZE_DIVISION = 1.25
 		private val getMaxJson = """
 					    var innerh = window.innerHeight || ebody.clientHeight, yWithScroll = 0;
 					    yWithScroll = document.body.scrollHeight;
