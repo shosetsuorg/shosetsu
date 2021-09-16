@@ -4,6 +4,9 @@ import android.app.Application
 import android.content.res.Resources
 import android.widget.ArrayAdapter
 import androidx.lifecycle.LiveData
+import app.shosetsu.android.backend.workers.perodic.AppUpdateCheckCycleWorker
+import app.shosetsu.android.backend.workers.perodic.BackupCycleWorker
+import app.shosetsu.android.backend.workers.perodic.NovelUpdateCycleWorker
 import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.PurgeNovelCacheUseCase
@@ -42,7 +45,10 @@ class AdvancedSettingsViewModel(
 	iSettingsRepository: ISettingsRepository,
 	private val context: Application,
 	private val reportExceptionUseCase: ReportExceptionUseCase,
-	private val purgeNovelCacheUseCase: PurgeNovelCacheUseCase
+	private val purgeNovelCacheUseCase: PurgeNovelCacheUseCase,
+	private val backupCycleManager: BackupCycleWorker.Manager,
+	private val appUpdateCycleManager: AppUpdateCheckCycleWorker.Manager,
+	private val novelUpdateCycleManager: NovelUpdateCycleWorker.Manager
 ) : AAdvancedSettingsViewModel(iSettingsRepository) {
 	override fun purgeUselessData(): LiveData<HResult<*>> =
 		flow {
@@ -66,17 +72,27 @@ class AdvancedSettingsViewModel(
 		},
 		buttonSettingData(2) {
 			titleRes = R.string.remove_novel_cache
-			text { R.string.settings_advanced_purge_button }
+			textRes = R.string.settings_advanced_purge_button
 		},
 		switchSettingData(3) {
 			titleRes = R.string.settings_advanced_verify_checksum_title
-			description { R.string.settings_advanced_verify_checksum_desc }
+			descRes = R.string.settings_advanced_verify_checksum_desc
 			checkSettingValue(VerifyCheckSum)
 		},
 		switchSettingData(4) {
 			titleRes = R.string.settings_advanced_require_double_back_title
-			description { R.string.settings_advanced_require_double_back_desc }
+			descRes = R.string.settings_advanced_require_double_back_desc
 			checkSettingValue(RequireDoubleBackToExit)
+		},
+		buttonSettingData(5) {
+			titleRes = R.string.settings_advanced_kill_cycle_workers_title
+			descRes = R.string.settings_advanced_kill_cycle_workers_desc
+			textRes = R.string.settings_advanced_kill_cycle_workers_title
+			onButtonClicked {
+				backupCycleManager.stop()
+				appUpdateCycleManager.stop()
+				novelUpdateCycleManager.stop()
+			}
 		}
 	)
 

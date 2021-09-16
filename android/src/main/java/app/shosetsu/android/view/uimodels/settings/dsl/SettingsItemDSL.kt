@@ -63,6 +63,8 @@ fun SettingsItemData.boldTitle() {
 }
 
 
+@Suppress("DeprecatedCallableAddReplaceWith")
+@Deprecated("Use descText or descRes instead")
 @SettingsItemDSL
 inline fun SettingsItemData.description(value: SettingsItemData.() -> Any): Unit =
 	value().let {

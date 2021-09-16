@@ -503,6 +503,8 @@
     <string name="export_backup_notification_subtext">Export Backup</string>
     <string name="export_backup_notification_content_starting">Export Starting</string>
     <string name="logo_desc">This is the icon of Shosetsu</string>
+    <string name="settings_advanced_kill_cycle_workers_title">Kill Cycle Workers</string>
+    <string name="settings_advanced_kill_cycle_workers_desc">Kill all cyclic workers to reset them.</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

@@ -25,6 +25,9 @@ import app.shosetsu.android.view.uimodels.settings.base.TextRequiringSettingData
  * 25 / 06 / 2020
  */
 
+
+@Suppress("DeprecatedCallableAddReplaceWith")
+@Deprecated("Use textText or textRes instead")
 @SettingsItemDSL
 inline fun TextRequiringSettingData.text(value: TextRequiringSettingData.() -> Any): Unit =
 	value().let {
