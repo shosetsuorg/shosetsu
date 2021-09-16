@@ -215,7 +215,8 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			manager = instance(),
 			startBackupWorkerUseCase = instance(),
 			loadInternalBackupNamesUseCase = instance(),
-			startRestoreWorkerUseCase = instance()
+			instance(),
+			instance()
 		)
 	}
 	bind<ADownloadSettingsViewModel>() with provider {

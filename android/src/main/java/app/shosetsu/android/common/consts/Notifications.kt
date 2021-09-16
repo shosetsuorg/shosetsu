@@ -37,6 +37,7 @@ object Notifications {
 	const val CHANNEL_BACKUP: String = "shosetsu_backup"
 	const val ID_BACKUP: Int = 1959
 	const val ID_RESTORE: Int = 1940
+	const val ID_EXPORT: Int = 1941
 
 	const val CHANNEL_UPDATE: String = "shosetsu_updater"
 	const val ID_CHAPTER_UPDATE: Int = 1917

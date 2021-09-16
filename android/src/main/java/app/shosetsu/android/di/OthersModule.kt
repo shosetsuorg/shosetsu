@@ -43,6 +43,7 @@ internal val othersModule = DI.Module("others") {
 	bind<RestoreBackupWorker.Manager>() with singleton { RestoreBackupWorker.Manager(instance()) }
 	bind<RepositoryUpdateWorker.Manager>() with singleton { RepositoryUpdateWorker.Manager(instance()) }
 	bind<ExtensionInstallWorker.Manager>() with singleton { ExtensionInstallWorker.Manager(instance()) }
+	bind<ExportBackupWorker.Manager>() with singleton { ExportBackupWorker.Manager(instance()) }
 
 
 	// - perodic

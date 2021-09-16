@@ -499,6 +499,9 @@
     <string name="activity_main_backup_in_progress_warning">Please avoid changing data</string>
     <string name="settings_update_repo_disable_on_fail_title">Disable on fail</string>
     <string name="settings_update_repo_disable_on_fail_desc">Disable a repository if it fails to update, mostly for testing.</string>
+    <string name="settings_backup_export">Export backup</string>
+    <string name="export_backup_notification_subtext">Export Backup</string>
+    <string name="export_backup_notification_content_starting">Export Starting</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

@@ -1,6 +1,7 @@
 package app.shosetsu.android.ui.settings.sub.backup
 
 import android.content.Context
+import android.net.Uri
 import android.webkit.MimeTypeMap
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
@@ -9,16 +10,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import app.shosetsu.android.common.ext.context
-import app.shosetsu.android.common.ext.logV
-import app.shosetsu.android.common.ext.toast
-import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.settings.SettingsSubController
 import app.shosetsu.android.view.uimodels.settings.ButtonSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.onButtonClicked
 import app.shosetsu.android.viewmodel.abstracted.settings.ABackupSettingsViewModel
 import app.shosetsu.common.consts.BACKUP_FILE_EXTENSION
+import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -47,6 +46,27 @@ class BackupSettings : SettingsSubController() {
 
 	override val viewModel: ABackupSettingsViewModel by viewModel()
 
+
+	private fun openBackupSelection(onBackupSelected: (String) -> Unit) {
+		viewModel.loadInternalOptions().handleObserve { list ->
+			AlertDialog.Builder(recyclerView.context!!).apply {
+				setTitle(R.string.settings_backup_alert_internal_title)
+				setItems(list.map {
+					it
+						.removePrefix("shosetsu-backup-")
+						.removeSuffix(".$BACKUP_FILE_EXTENSION")
+					// TODO Map dates with proper localization
+				}.toTypedArray()) { d, w ->
+					onBackupSelected(list[w])
+					d.dismiss()
+				}
+				setNegativeButton(android.R.string.cancel) { d, i ->
+					d.cancel()
+				}
+			}.show()
+		}
+	}
+
 	override val adjustments: List<SettingsItemData>.() -> Unit = {
 		find<ButtonSettingData>(3)?.onButtonClicked {
 			// Stops novel updates while backup is taking place
@@ -65,28 +85,20 @@ class BackupSettings : SettingsSubController() {
 						}
 						1 -> {
 							// Open internal list
-							viewModel.loadInternalOptions().handleObserve { list ->
-								d.dismiss()
-								AlertDialog.Builder(recyclerView.context!!).apply {
-									setTitle(R.string.settings_backup_alert_internal_title)
-									setItems(list.map {
-										it
-											.removePrefix("shosetsu-backup-")
-											.removeSuffix(".$BACKUP_FILE_EXTENSION")
-										// TODO Map dates with proper localization
-									}.toTypedArray()) { d, w ->
-										viewModel.restore(list[w])
-										d.dismiss()
-									}
-									setNegativeButton(android.R.string.cancel) { d, i ->
-										d.cancel()
-									}
-								}.show()
+							openBackupSelection {
+								viewModel.restore(it)
 							}
 						}
 					}
 				}
 			}.show()
+		}
+		find<ButtonSettingData>(5)?.onButtonClicked {
+			// Open internal list
+			openBackupSelection { backupToExport ->
+				viewModel.holdBackupToExport(backupToExport)
+				performExportSelection()
+			}
 		}
 	}
 
@@ -101,14 +113,20 @@ class BackupSettings : SettingsSubController() {
 
 	inner class Observer(private val registry: ActivityResultRegistry) :
 		DefaultLifecycleObserver {
-		lateinit var launcher: ActivityResultLauncher<Array<String>>
+		lateinit var selectBackupToRestoreLauncher: ActivityResultLauncher<Array<String>>
+		lateinit var selectLocationToExportLauncher: ActivityResultLauncher<String>
 
 		override fun onCreate(owner: LifecycleOwner) {
-			launcher = registry.register(
-				"backup_settings_rq#",
+			selectBackupToRestoreLauncher = registry.register(
+				"backup_settings_load_backup_rq#",
 				owner,
 				ActivityResultContracts.OpenDocument()
-			) { uri ->
+			) { uri: Uri? ->
+				if (uri == null) {
+					logE("Cancelled")
+					return@register
+				}
+
 				if (MimeTypeMap.getFileExtensionFromUrl(uri.toString()) != BACKUP_FILE_EXTENSION) {
 					logV("invalid type")
 					context?.toast("Invalid file")
@@ -117,6 +135,21 @@ class BackupSettings : SettingsSubController() {
 
 				context?.toast("Restoring now...")
 				viewModel.restore(uri)
+			}
+
+			selectLocationToExportLauncher = registry.register(
+				"backup_settings_point_export_rq#",
+				owner,
+				ActivityResultContracts.CreateDocument()
+			) { uri: Uri? ->
+				if (uri == null) {
+					logE("Cancelled")
+					viewModel.clearExport()
+					return@register
+				}
+
+				context?.toast("Exporting now")
+				viewModel.exportBackup(uri)
 			}
 		}
 	}
@@ -127,16 +160,17 @@ class BackupSettings : SettingsSubController() {
 		lifecycle.addObserver(observer)
 	}
 
+	private fun performExportSelection() {
+		viewModel.getBackupToExport().handle {
+			observer.selectLocationToExportLauncher.launch(
+				"shosetsu-backup-$it.$BACKUP_FILE_EXTENSION"
+			)
+		}
+	}
+
 	private fun performFileSelection() {
-		context?.toast(
-			"Please make sure this is on the main storage, " +
-					"SD card storage is not functional yet"
-		)
-		observer.launcher.launch(arrayOf("application/octet-stream"))
+		observer.selectBackupToRestoreLauncher.launch(arrayOf("application/octet-stream"))
 	}
 
-
-	companion object {
-		private const val REQUEST_CODE_RESTORE_SELECTION = 2116
-	}
+	private fun setLocationToSave() {}
 }

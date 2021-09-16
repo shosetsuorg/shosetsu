@@ -293,6 +293,7 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 			instance()
 		)
 	}
+
 	bind<InstallExtensionUseCase>() with provider {
 		InstallExtensionUseCase(
 			instance(),
@@ -301,4 +302,10 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 		)
 	}
 
+	bind<StartExportBackupWorkerUseCase>() with provider {
+		StartExportBackupWorkerUseCase(
+			instance(),
+			instance()
+		)
+	}
 }

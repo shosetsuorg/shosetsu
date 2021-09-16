@@ -30,7 +30,7 @@ inline fun TextRequiringSettingData.text(value: TextRequiringSettingData.() -> A
 	value().let {
 		when (it) {
 			is String -> textText = it
-			is Int -> textID = it
+			is Int -> textRes = it
 			else -> throw IllegalArgumentException("Input must be either an int or string")
 		}
 	}

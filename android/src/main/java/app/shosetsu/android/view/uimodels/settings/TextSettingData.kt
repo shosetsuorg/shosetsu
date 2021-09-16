@@ -30,8 +30,8 @@ class TextSettingData(id: Int) : TextRequiringSettingData(id) {
 	override fun bindBinding(holder: SettingsItemBinding, payloads: List<Any>) {
 		super.bindBinding(holder, payloads)
 		with(holder) {
-			if (textID != -1)
-				textView.setText(textID)
+			if (textRes != -1)
+				textView.setText(textRes)
 			else
 				textView.text = textText
 			textView.isVisible = true

@@ -7,6 +7,7 @@ import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.load.LoadInternalBackupNamesUseCase
 import app.shosetsu.android.domain.usecases.start.StartBackupWorkerUseCase
+import app.shosetsu.android.domain.usecases.start.StartExportBackupWorkerUseCase
 import app.shosetsu.android.domain.usecases.start.StartRestoreWorkerUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
@@ -14,6 +15,8 @@ import app.shosetsu.android.viewmodel.abstracted.settings.ABackupSettingsViewMod
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.emptyResult
+import app.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.flow.flow
 
@@ -44,7 +47,8 @@ class BackupSettingsViewModel(
 	private val manager: NovelUpdateWorker.Manager,
 	private val startBackupWorkerUseCase: StartBackupWorkerUseCase,
 	private val loadInternalBackupNamesUseCase: LoadInternalBackupNamesUseCase,
-	private val startRestoreWorkerUseCase: StartRestoreWorkerUseCase
+	private val startRestoreWorker: StartRestoreWorkerUseCase,
+	private val startExportWorker: StartExportBackupWorkerUseCase
 ) : ABackupSettingsViewModel(iSettingsRepository) {
 
 	override fun startBackup() {
@@ -58,12 +62,31 @@ class BackupSettingsViewModel(
 
 	override fun restore(path: String) {
 		logV("Restoring: $path ")
-		startRestoreWorkerUseCase(path)
+		startRestoreWorker(path)
 	}
 
 	override fun restore(uri: Uri) {
 		logV("Restoring: $uri")
-		startRestoreWorkerUseCase(uri)
+		startRestoreWorker(uri)
+	}
+
+	private var backupToExport: String? = null
+
+	override fun holdBackupToExport(backupToExport: String) {
+		this.backupToExport = backupToExport
+	}
+
+	override fun getBackupToExport(): HResult<String> =
+		if (backupToExport != null) successResult(backupToExport!!) else emptyResult()
+
+	override fun clearExport() {
+		backupToExport = null
+	}
+
+	override fun exportBackup(uri: Uri) {
+		if (backupToExport == null) return
+
+		startExportWorker(backupToExport!!, uri)
 	}
 
 	override suspend fun settings(): List<SettingsItemData> = listOf(
@@ -84,6 +107,10 @@ class BackupSettingsViewModel(
 		buttonSettingData(4) {
 			title { R.string.restore_now }
 			text { R.string.restore_now }
+		},
+		buttonSettingData(5) {
+			titleRes = R.string.settings_backup_export
+			textRes = R.string.settings_backup_export
 		}
 	)
 

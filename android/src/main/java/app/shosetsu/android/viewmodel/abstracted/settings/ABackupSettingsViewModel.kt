@@ -38,7 +38,7 @@ abstract class ABackupSettingsViewModel(iSettingsRepository: ISettingsRepository
 	 *
 	 * For internal backups
 	 */
-	abstract fun restore(name: String)
+	abstract fun restore(path: String)
 
 	/**
 	 * Load backup via the uri
@@ -47,4 +47,20 @@ abstract class ABackupSettingsViewModel(iSettingsRepository: ISettingsRepository
 	 */
 	abstract fun restore(uri: Uri)
 
+	/**
+	 * The view model will hold the backup to export
+	 */
+	abstract fun holdBackupToExport(backupToExport: String)
+
+	/**
+	 * @return the backup file to export
+	 */
+	abstract fun getBackupToExport(): HResult<String>
+
+	/**
+	 * Cancel export process
+	 */
+	abstract fun clearExport()
+
+	abstract fun exportBackup(it: Uri)
 }

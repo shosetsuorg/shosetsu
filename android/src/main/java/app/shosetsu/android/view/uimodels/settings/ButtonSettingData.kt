@@ -32,8 +32,8 @@ open class ButtonSettingData(id: Int) : TextRequiringSettingData(id) {
 	override fun bindBinding(holder: SettingsItemBinding, payloads: List<Any>) {
 		super.bindBinding(holder, payloads)
 		with(holder) {
-			if (textID != -1)
-				button.setText(textID)
+			if (textRes != -1)
+				button.setText(textRes)
 			else
 				button.text = textText
 			button.isVisible = true

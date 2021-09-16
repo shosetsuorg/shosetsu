@@ -1,6 +1,7 @@
 package app.shosetsu.android.view.uimodels.settings.base
 
 import android.view.View
+import androidx.annotation.StringRes
 
 /*
  * This file is part of shosetsu.
@@ -24,7 +25,9 @@ import android.view.View
  * 25 / 06 / 2020
  */
 abstract class TextRequiringSettingData(id: Int) : RightSettingsItemData(id) {
-	var textID: Int = -1
+	@StringRes
+	var textRes: Int = -1
+
 	var textText: String = ""
 	var textViewOnClickListener: (View) -> Unit = {}
 }
