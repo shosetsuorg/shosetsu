@@ -53,7 +53,32 @@ class NovelUpdateCycleWorker(
 ) : CoroutineWorker(appContext, params) {
 	override suspend fun doWork(): Result {
 		logI(LogConstants.SERVICE_EXECUTE)
-		NovelUpdateWorker.Manager(applicationContext).apply { if (!isRunning()) start() }
+		val manager = NovelUpdateWorker.Manager(applicationContext)
+
+		when (manager.getWorkerState()) {
+			WorkInfo.State.ENQUEUED -> {
+				logI("NovelUpdater is waiting to update, ignoring")
+			}
+			WorkInfo.State.RUNNING -> {
+				logI("NovelUpdater is running, ignoring")
+			}
+			WorkInfo.State.SUCCEEDED -> {
+				logI("NovelUpdater has completed, starting again")
+				manager.start()
+			}
+			WorkInfo.State.FAILED -> {
+				logI("Previous NovelUpdater has failed, starting again")
+				manager.start()
+			}
+			WorkInfo.State.BLOCKED -> {
+				logI("Previous NovelUpdater is blocked, ignoring")
+			}
+			WorkInfo.State.CANCELLED -> {
+				logI("Previous NovelUpdater was cancelled, starting again")
+				manager.start()
+			}
+		}
+
 		return Result.success()
 	}
 

@@ -44,10 +44,32 @@ class BackupCycleWorker(
 
 	override suspend fun doWork(): Result {
 		logI(LogConstants.SERVICE_EXECUTE)
-		BackupWorker.Manager(applicationContext).apply { if (!isRunning()) start() }
+		val manager = BackupWorker.Manager(applicationContext)
+		when (manager.getWorkerState()) {
+			WorkInfo.State.ENQUEUED -> {
+				logI("BackupWorker is waiting to backup, ignoring")
+			}
+			WorkInfo.State.RUNNING -> {
+				logI("BackupWorker is running, ignoring")
+			}
+			WorkInfo.State.SUCCEEDED -> {
+				logI("BackupWorker has completed, starting again")
+				manager.start()
+			}
+			WorkInfo.State.FAILED -> {
+				logI("Previous BackupWorker has failed, starting again")
+				manager.start()
+			}
+			WorkInfo.State.BLOCKED -> {
+				logI("Previous BackupWorker is blocked, ignoring")
+			}
+			WorkInfo.State.CANCELLED -> {
+				logI("Previous BackupWorker was cancelled, starting again")
+				manager.start()
+			}
+		}
 		return Result.success()
 	}
-
 
 	/**
 	 * Manager of [BackupCycleWorker]

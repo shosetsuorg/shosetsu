@@ -46,7 +46,30 @@ class AppUpdateCheckCycleWorker(
 
 	override suspend fun doWork(): Result {
 		logI(LogConstants.SERVICE_EXECUTE)
-		AppUpdateCheckWorker.Manager(applicationContext).apply { if (!isRunning()) start() }
+		val manager = AppUpdateCheckWorker.Manager(applicationContext)
+		when (manager.getWorkerState()) {
+			WorkInfo.State.ENQUEUED -> {
+				logI("AppUpdaterCheck is waiting to check, ignoring")
+			}
+			WorkInfo.State.RUNNING -> {
+				logI("AppUpdaterCheck is running, ignoring")
+			}
+			WorkInfo.State.SUCCEEDED -> {
+				logI("AppUpdaterCheck has completed, starting again")
+				manager.start()
+			}
+			WorkInfo.State.FAILED -> {
+				logI("Previous AppUpdaterCheck has failed, starting again")
+				manager.start()
+			}
+			WorkInfo.State.BLOCKED -> {
+				logI("Previous AppUpdaterCheck is blocked, ignoring")
+			}
+			WorkInfo.State.CANCELLED -> {
+				logI("Previous AppUpdaterCheck was cancelled, starting again")
+				manager.start()
+			}
+		}
 		return Result.success()
 	}
 
