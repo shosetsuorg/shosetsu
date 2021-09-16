@@ -32,4 +32,7 @@ abstract class AAdvancedSettingsViewModel(iSettingsRepository: ISettingsReposito
 	 * Executes a purge async, provides a [LiveData] for result
 	 */
 	abstract fun purgeUselessData(): LiveData<HResult<*>>
+
+	abstract fun killCycleWorkers(): HResult<*>
+	abstract fun startCycleWorkers(): HResult<*>
 }

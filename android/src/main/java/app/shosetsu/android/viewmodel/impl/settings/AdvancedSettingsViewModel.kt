@@ -11,12 +11,16 @@ import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.PurgeNovelCacheUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.*
+import app.shosetsu.android.view.uimodels.settings.dsl.buttonSettingData
+import app.shosetsu.android.view.uimodels.settings.dsl.spinnerSettingData
+import app.shosetsu.android.view.uimodels.settings.dsl.spinnerValue
+import app.shosetsu.android.view.uimodels.settings.dsl.switchSettingData
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.domain.repositories.base.getIntOrDefault
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.flow.flow
 
@@ -88,13 +92,22 @@ class AdvancedSettingsViewModel(
 			titleRes = R.string.settings_advanced_kill_cycle_workers_title
 			descRes = R.string.settings_advanced_kill_cycle_workers_desc
 			textRes = R.string.settings_advanced_kill_cycle_workers_title
-			onButtonClicked {
-				backupCycleManager.stop()
-				appUpdateCycleManager.stop()
-				novelUpdateCycleManager.stop()
-			}
 		}
 	)
+
+	override fun killCycleWorkers(): HResult<*> {
+		backupCycleManager.stop()
+		appUpdateCycleManager.stop()
+		novelUpdateCycleManager.stop()
+		return successResult()
+	}
+
+	override fun startCycleWorkers(): HResult<*> {
+		backupCycleManager.start()
+		appUpdateCycleManager.start()
+		novelUpdateCycleManager.start()
+		return successResult()
+	}
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) =
 		reportExceptionUseCase(error, isSilent)

@@ -205,7 +205,10 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			iSettingsRepository = instance(),
 			context = instance(),
 			reportExceptionUseCase = instance(),
-			purgeNovelCacheUseCase = instance()
+			purgeNovelCacheUseCase = instance(),
+			instance(),
+			instance(),
+			instance()
 		)
 	}
 	bind<ABackupSettingsViewModel>() with provider {
