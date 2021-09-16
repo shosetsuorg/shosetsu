@@ -164,7 +164,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object IsDownloadOnUpdate : BooleanKey("isDownloadOnUpdate", false)
 	object OnlyUpdateOngoing : BooleanKey("onlyUpdateOngoing", false)
 	object UpdateOnStartup : BooleanKey("updateOnStartup", true)
-	object UpdateCycle : IntKey("updateCycle", 1)
+	object UpdateCycle : IntKey("updateCycle", 12)
 
 	object UpdateOnLowStorage : BooleanKey("updateLowStorage", true)
 	object UpdateOnLowBattery : BooleanKey("updateLowBattery", true)
@@ -187,7 +187,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object AppUpdateOnMeteredConnection : BooleanKey("appUpdateMetered", true)
 
 	object AppUpdateOnlyWhenIdle : BooleanKey("appUpdateIdle", false)
-	object AppUpdateCycle : IntKey("appUpdateCycle", 1)
+	object AppUpdateCycle : IntKey("appUpdateCycle", 12)
 
 
 	// View options
@@ -199,7 +199,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	// Backup Options
 	object ShouldBackupChapters : BooleanKey("backupChapters", true)
 	object ShouldBackupSettings : BooleanKey("backupSettings", false)
-	object BackupCycle : IntKey("backupCycle", 3)
+	object BackupCycle : IntKey("backupCycle", 12)
 
 	object BackupOnLowStorage : BooleanKey("backupLowStorage", true)
 	object BackupOnLowBattery : BooleanKey("backupLowBattery", true)
