@@ -360,13 +360,17 @@ class CatalogViewModel(
 		loadNovelUIColumnsPUseCase().asIOLiveData()
 	}
 
-	private inline fun <K, reified O, T> HashMap<K, T>.specialGetOrPut(
-		key: K,
-		defaultValue: () -> O
+	/**
+	 * @param [V] Value type of the hash map
+	 * @param [O] Expected value type
+	 */
+	private inline fun <reified O, V> HashMap<Int, V>.specialGetOrPut(
+		key: Int,
+		getDefaultValue: () -> O
 	): O {
 		// Do not use computeIfAbsent on JVM8 as it would change locking behavior
-		return this[key].takeIf { it is O }?.let { it as O }
-			?: defaultValue().also { put(key, it as T) }
+		return this[key].takeIf { value -> value is O }?.let { value -> value as O }
+			?: getDefaultValue().also { defaultValue -> put(key, defaultValue as V) }
 	}
 }
 
