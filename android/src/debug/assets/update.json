@@ -1,20 +1,19 @@
 {
-  "latestVersion": "1563",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1563/shosetsu-r1563.apk",
+  "latestVersion": "1587",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1587/shosetsu-r1587.apk",
   "releaseNotes": [
-    "- Fix browse filter menu filling up full size",
-    "- Convert catalogue filters to compose",
-    "- Add header to MainActivity when backup is in progress",
-    "- Remove dialog popup from BackupSettings",
-    "- Split ViewedController to ShosetsuController",
-    "- TextAssetReader uses compose UI now",
-    "- Add foundations for migration support",
-    "- Migrate from Picasso to Coil (WIPE CACHE)",
-    "- Add option to disable repository if update fails, default=off",
-    "- Add chapter title before text in StringReader",
-    "- Extension libraries only update if version is greater",
-    "- Extensions have new update technique",
-    "- Fix Repo update notification if clauses",
-    "- Update gradle to 7.0.1"
+    "- Fix bookmarked novels coloring",
+    "- Add release date to chapters",
+    "- Fix crashes in DownloadWorker from ArrayIndexOutOfBoundsException",
+    "- Default workers to allow updating on metered networks & low battery/storage",
+    "- Default HTML Reader to `break-word`",
+    "- Implement backup export",
+    "- Implement external restore",
+    "- Fix crashes due to NoSuchElement in caching",
+    "- Divide text size by 1.25 to sync String & HTML reader",
+    "- Default cycle workers to 12 hour intervals",
+    "- Add stop cycle workers button",
+    "- Set view pager background",
+    "- Update dependencies"
   ]
 }
