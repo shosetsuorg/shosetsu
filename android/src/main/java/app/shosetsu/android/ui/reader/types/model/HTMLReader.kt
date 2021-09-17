@@ -7,6 +7,7 @@ import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.core.app.ActivityCompat
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
@@ -107,7 +108,7 @@ class HTMLReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 		@SuppressLint("SetJavaScriptEnabled") // kotlin-lib should implement xml scrubbing
 		webView.settings.javaScriptEnabled = true
 		webView.addJavascriptInterface(shosetsuScript, "shosetsuScript")
-
+		webView.setBackgroundColor(ActivityCompat.getColor(webView.context, android.R.color.black))
 		webView.webViewClient = object : WebViewClient() {
 			override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
 				isPageLoaded = false
