@@ -42,7 +42,7 @@ class BootReceiver : BroadcastReceiver() {
 		private val manager: NovelUpdateCycleWorker.Manager by instance()
 		operator fun invoke() {
 			launchIO {
-				val b = iSettingsRepository.getBoolean(SettingKey.UpdateOnStartup)
+				val b = iSettingsRepository.getBoolean(SettingKey.UpdateNovelsOnStartup)
 				if (b is HResult.Success && b.data && !manager.isRunning()) {
 					Log.i(logID(), "Starting update worker on boot")
 					manager.start()

@@ -90,19 +90,19 @@ class NovelUpdateCycleWorker(
 
 
 		private suspend fun updateCycle(): Long =
-			iSettingsRepository.getIntOrDefault(UpdateCycle).toLong()
+			iSettingsRepository.getIntOrDefault(NovelUpdateCycle).toLong()
 
 		private suspend fun updateOnMetered(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(UpdateOnMeteredConnection)
+			iSettingsRepository.getBooleanOrDefault(NovelUpdateOnMeteredConnection)
 
 		private suspend fun updateOnLowStorage(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(UpdateOnLowStorage)
+			iSettingsRepository.getBooleanOrDefault(NovelUpdateOnLowStorage)
 
 		private suspend fun updateOnLowBattery(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(UpdateOnLowBattery)
+			iSettingsRepository.getBooleanOrDefault(NovelUpdateOnLowBattery)
 
 		private suspend fun updateOnlyIdle(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(UpdateOnlyWhenIdle)
+			iSettingsRepository.getBooleanOrDefault(NovelUpdateOnlyWhenIdle)
 
 		/**
 		 * Returns the status of the service.

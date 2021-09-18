@@ -113,7 +113,7 @@ class DownloadSettingsViewModel(
 		},
 		switchSettingData(3) {
 			title { R.string.download_chapter_updates }
-			checkSettingValue(IsDownloadOnUpdate)
+			checkSettingValue(DownloadNewNovelChapters)
 		},
 		switchSettingData(2) {
 			title { "Allow downloading on metered connection" }

@@ -5,10 +5,10 @@ import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker
 import app.shosetsu.android.backend.workers.onetime.RepositoryUpdateWorker
 import app.shosetsu.android.backend.workers.perodic.NovelUpdateCycleWorker
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AUpdateSettingsViewModel
-import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.domain.repositories.base.getIntOrDefault
@@ -41,7 +41,7 @@ class UpdateSettingsViewModel(
 	iSettingsRepository: ISettingsRepository,
 	private val novelUpdateCycleManager: NovelUpdateCycleWorker.Manager,
 	private val novelUpdateManager: NovelUpdateWorker.Manager,
-	private val repoUpdateManager: RepositoryUpdateWorker.Manager
+	private val repoUpdateManager: RepositoryUpdateWorker.Manager,
 ) : AUpdateSettingsViewModel(iSettingsRepository) {
 
 	override suspend fun settings(): List<SettingsItemData> = listOf(
@@ -52,9 +52,10 @@ class UpdateSettingsViewModel(
 
 		// Update frequency
 		seekBarSettingData(1) {
-			title { "Update frequency" }
+			titleRes = R.string.settings_update_novel_frequency_title
+			descRes = R.string.settings_update_novel_frequency_desc
 			range { 0F to 6F }
-			progressValue = when (settingsRepo.getIntOrDefault(UpdateCycle)) {
+			progressValue = when (settingsRepo.getIntOrDefault(NovelUpdateCycle)) {
 				1 -> 0F
 				2 -> 1F
 				4 -> 2F
@@ -77,7 +78,7 @@ class UpdateSettingsViewModel(
 				if (fromUser) {
 					launchIO {
 						settingsRepo.setInt(
-							UpdateCycle, when (progress) {
+							NovelUpdateCycle, when (progress) {
 								0 -> 1
 								1 -> 2
 								2 -> 4
@@ -104,63 +105,81 @@ class UpdateSettingsViewModel(
 
 		// Download on update
 		switchSettingData(2) {
-			title { "Download on update" }
-			checkSettingValue(IsDownloadOnUpdate)
+			titleRes = R.string.settings_update_novel_on_update_title
+			descRes = R.string.settings_update_novel_on_update_desc
+
+			checkSettingValue(DownloadNewNovelChapters)
 		},
 		// Update only ongoing
 		switchSettingData(3) {
-			title { "Only update ongoing" }
-			checkSettingValue(SettingKey.OnlyUpdateOngoing)
+			titleRes = R.string.settings_update_novel_only_ongoing_title
+			descRes = R.string.settings_update_novel_only_ongoing_desc
+
+			checkSettingValue(OnlyUpdateOngoingNovels)
 		},
 		switchSettingData(4) {
-			title { "Allow updating on metered connection" }
-			checkSettingValue(SettingKey.UpdateOnMeteredConnection)
+			titleRes = R.string.settings_update_novel_on_metered_title
+			descRes = R.string.settings_update_novel_on_metered_desc
+
+			checkSettingValue(NovelUpdateOnMeteredConnection)
 		},
 		switchSettingData(5) {
-			title { "Update on low battery" }
-			checkSettingValue(SettingKey.UpdateOnLowBattery)
+			titleRes = R.string.settings_update_novel_on_low_bat_title
+			descRes = R.string.settings_update_novel_on_low_bat_desc
+
+			checkSettingValue(NovelUpdateOnLowBattery)
 		},
 		switchSettingData(6) {
-			title { "Update on low storage" }
-			checkSettingValue(SettingKey.UpdateOnLowStorage)
+			titleRes = R.string.settings_update_novel_on_low_sto_title
+			descRes = R.string.settings_update_novel_on_low_sto_desc
+
+			checkSettingValue(NovelUpdateOnLowStorage)
 		},
 		switchSettingData(7) {
-			title { "Update only when idle" }
+			titleRes = R.string.settings_update_novel_only_idle_title
+			descRes = R.string.settings_update_novel_only_idle_desc
+
 			requiredVersion { android.os.Build.VERSION_CODES.M }
-			checkSettingValue(SettingKey.UpdateOnlyWhenIdle)
+			checkSettingValue(NovelUpdateOnlyWhenIdle)
 		},
 		switchSettingData(8) {
-			title { "Notification Style" }
-			checkSettingValue(SettingKey.UpdateNotificationStyle)
+			titleRes = R.string.settings_update_novel_notification_style_title
+			descRes = R.string.settings_update_novel_notification_style_desc
+
+			checkSettingValue(UpdateNotificationStyle)
 		},
 		switchSettingData(14) {
-			title { "Show novel update progress" }
-			checkSettingValue(SettingKey.NovelUpdateShowProgress)
+			titleRes = R.string.settings_update_novel_show_progress_title
+			descRes = R.string.settings_update_novel_show_progress_desc
+
+			checkSettingValue(NovelUpdateShowProgress)
 		},
 		switchSettingData(15) {
-			title { "Classic novel update completion" }
-			description { "Instead of showing you which how many chapters are in each novel, simply says \"Completed Update\"" }
-			checkSettingValue(SettingKey.NovelUpdateClassicFinish)
+			titleRes = R.string.settings_update_novel_classic_notification_title
+			descRes = R.string.settings_update_novel_classic_notification_desc
+
+			checkSettingValue(NovelUpdateClassicFinish)
 		},
 		headerSettingItemData(9) {
 			titleRes = R.string.settings_update_header_repositories
 		},
 		switchSettingData(10) {
-			title { "Allow updating on metered connection" }
+			titleRes = R.string.settings_update_repo_on_metered_title
+			descRes = R.string.settings_update_repo_on_metered_desc
+
 			checkSettingValue(RepoUpdateOnMeteredConnection)
 		},
 		switchSettingData(11) {
-			title { "Update on low battery" }
+			titleRes = R.string.settings_update_repo_on_low_bat_title
+			descRes = R.string.settings_update_repo_on_low_bat_desc
+
 			checkSettingValue(RepoUpdateOnLowBattery)
 		},
 		switchSettingData(12) {
-			title { "Update on low storage" }
+			titleRes = R.string.settings_update_repo_on_low_sto_title
+			descRes = R.string.settings_update_repo_on_low_sto_desc
+
 			checkSettingValue(RepoUpdateOnLowStorage)
-		},
-		switchSettingData(13) {
-			title { "Update only when idle" }
-			requiredVersion { android.os.Build.VERSION_CODES.M }
-			checkSettingValue(RepoUpdateOnlyWhenIdle)
 		},
 		switchSettingData(16) {
 			titleRes = R.string.settings_update_repo_disable_on_fail_title
@@ -173,11 +192,9 @@ class UpdateSettingsViewModel(
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
 	}
 
-	override var novelUpdateSettingsChanged = false
 
-	override var repoUpdateSettingsChanged = false
-
-	override fun restartNovelUpdater() {
+	fun restartNovelUpdater() {
+		logI("Restarting novel updaters")
 		// If the update manager was enqueued, kill it.
 		if (novelUpdateManager.count != 0 && novelUpdateManager.getWorkerState() == WorkInfo.State.ENQUEUED)
 			novelUpdateManager.stop()
@@ -186,7 +203,9 @@ class UpdateSettingsViewModel(
 		novelUpdateCycleManager.start()
 	}
 
-	override fun restartRepoUpdater() {
+	fun restartRepoUpdater() {
+		logI("Restarting repo updater")
+
 		repoUpdateManager.stop()
 		repoUpdateManager.start()
 	}
@@ -194,41 +213,31 @@ class UpdateSettingsViewModel(
 	init {
 		launchIO {
 			var firstRun = true
-			settingsRepo.getBooleanFlow(RepoUpdateOnMeteredConnection)
-				.combine(settingsRepo.getBooleanFlow(RepoUpdateOnLowBattery)) { _, _ -> }
-				.combine(settingsRepo.getBooleanFlow(RepoUpdateOnLowStorage)) { _, _ -> }
-				.combine(settingsRepo.getBooleanFlow(UpdateOnlyWhenIdle)) { _, _ -> }
+			settingsRepo.getIntFlow(NovelUpdateCycle)
+				.combine(settingsRepo.getBooleanFlow(NovelUpdateOnLowStorage)) { _, _ -> }
+				.combine(settingsRepo.getBooleanFlow(NovelUpdateOnLowBattery)) { _, _ -> }
+				.combine(settingsRepo.getBooleanFlow(NovelUpdateOnMeteredConnection)) { _, _ -> }
+				.combine(settingsRepo.getBooleanFlow(NovelUpdateOnlyWhenIdle)) { _, _ -> }
 				.collect {
 					if (firstRun) {
 						firstRun = false
 						return@collect
 					}
-					if (
-						(novelUpdateCycleManager.count != 0 && novelUpdateCycleManager.getWorkerState() == WorkInfo.State.ENQUEUED) ||
-						(novelUpdateManager.count != 0 && novelUpdateManager.getWorkerState() == WorkInfo.State.ENQUEUED)
-					) {
-						repoUpdateSettingsChanged = true
-					}
+					restartNovelUpdater()
 				}
 		}
 
 		launchIO {
 			var firstRun = true
-			settingsRepo.getIntFlow(UpdateCycle)
-				.combine(settingsRepo.getBooleanFlow(OnlyUpdateOngoing)) { _, _ -> }
-				.combine(settingsRepo.getBooleanFlow(UpdateOnMeteredConnection)) { _, _ -> }
-				.combine(settingsRepo.getBooleanFlow(UpdateOnLowStorage)) { _, _ -> }
-				.combine(settingsRepo.getBooleanFlow(RepoUpdateOnlyWhenIdle)) { _, _ -> }
+			settingsRepo.getBooleanFlow(RepoUpdateOnLowStorage)
+				.combine(settingsRepo.getBooleanFlow(RepoUpdateOnLowBattery)) { _, _ -> }
+				.combine(settingsRepo.getBooleanFlow(RepoUpdateOnMeteredConnection)) { _, _ -> }
 				.collect {
 					if (firstRun) {
 						firstRun = false
 						return@collect
 					}
-					if (
-						(repoUpdateManager.count != 0 && repoUpdateManager.getWorkerState() == WorkInfo.State.ENQUEUED)
-					) {
-						novelUpdateSettingsChanged = true
-					}
+					restartRepoUpdater()
 				}
 		}
 	}

@@ -113,10 +113,10 @@ class NovelUpdateWorker(
 	private val iSettingsRepository: ISettingsRepository by instance()
 
 	private suspend fun onlyUpdateOngoing(): Boolean =
-		iSettingsRepository.getBooleanOrDefault(OnlyUpdateOngoing)
+		iSettingsRepository.getBooleanOrDefault(OnlyUpdateOngoingNovels)
 
 	private suspend fun downloadOnUpdate(): Boolean =
-		iSettingsRepository.getBooleanOrDefault(IsDownloadOnUpdate)
+		iSettingsRepository.getBooleanOrDefault(DownloadNewNovelChapters)
 
 	private suspend fun notificationStyle(): Boolean =
 		iSettingsRepository.getBooleanOrDefault(UpdateNotificationStyle)
@@ -270,16 +270,16 @@ class NovelUpdateWorker(
 		private val iSettingsRepository by instance<ISettingsRepository>()
 
 		private suspend fun updateOnMetered(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(UpdateOnMeteredConnection)
+			iSettingsRepository.getBooleanOrDefault(NovelUpdateOnMeteredConnection)
 
 		private suspend fun updateOnLowStorage(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(UpdateOnLowStorage)
+			iSettingsRepository.getBooleanOrDefault(NovelUpdateOnLowStorage)
 
 		private suspend fun updateOnLowBattery(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(UpdateOnLowBattery)
+			iSettingsRepository.getBooleanOrDefault(NovelUpdateOnLowBattery)
 
 		private suspend fun updateOnlyIdle(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(UpdateOnlyWhenIdle)
+			iSettingsRepository.getBooleanOrDefault(NovelUpdateOnlyWhenIdle)
 
 		/**
 		 * Returns the status of the service.

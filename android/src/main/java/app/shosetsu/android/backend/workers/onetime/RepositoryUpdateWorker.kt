@@ -1,7 +1,6 @@
 package app.shosetsu.android.backend.workers.onetime
 
 import android.content.Context
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
@@ -385,9 +384,6 @@ class RepositoryUpdateWorker(
 		private suspend fun updateOnLowBattery(): Boolean =
 			iSettingsRepository.getBooleanOrDefault(SettingKey.RepoUpdateOnLowBattery)
 
-		private suspend fun updateOnlyIdle(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(SettingKey.RepoUpdateOnlyWhenIdle)
-
 		/**
 		 * Returns the status of the service.
 		 *
@@ -425,8 +421,6 @@ class RepositoryUpdateWorker(
 								)
 								setRequiresStorageNotLow(!updateOnLowStorage())
 								setRequiresBatteryNotLow(!updateOnLowBattery())
-								if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-									setRequiresDeviceIdle(updateOnlyIdle())
 							}.build()
 						).build()
 				)

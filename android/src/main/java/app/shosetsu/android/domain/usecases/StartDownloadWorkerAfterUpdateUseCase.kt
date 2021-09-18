@@ -30,7 +30,7 @@ import app.shosetsu.common.dto.transform
  *
  * Start the download worker after an update
  *
- * Will not download the chapters if [SettingKey.IsDownloadOnUpdate]=false
+ * Will not download the chapters if [SettingKey.DownloadNewNovelChapters]=false
  *
  */
 class StartDownloadWorkerAfterUpdateUseCase(
@@ -43,7 +43,7 @@ class StartDownloadWorkerAfterUpdateUseCase(
 	 * @return true if updating, false otherwise
 	 */
 	suspend operator fun invoke(chapters: List<ChapterEntity>): HResult<Boolean> =
-		sR.getBoolean(SettingKey.IsDownloadOnUpdate).transform { isDownloadOnUpdate ->
+		sR.getBoolean(SettingKey.DownloadNewNovelChapters).transform { isDownloadOnUpdate ->
 			if (isDownloadOnUpdate) {
 				chapters.forEach { download(it) }
 				startDownloadWorker()

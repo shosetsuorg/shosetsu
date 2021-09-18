@@ -161,15 +161,15 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object BookmarkOnDownload : BooleanKey("bookmarkOnDownload", false)
 
 	// Update options
-	object IsDownloadOnUpdate : BooleanKey("isDownloadOnUpdate", false)
-	object OnlyUpdateOngoing : BooleanKey("onlyUpdateOngoing", false)
-	object UpdateOnStartup : BooleanKey("updateOnStartup", true)
-	object UpdateCycle : IntKey("updateCycle", 12)
+	object DownloadNewNovelChapters : BooleanKey("isDownloadOnUpdate", false)
+	object OnlyUpdateOngoingNovels : BooleanKey("onlyUpdateOngoing", false)
+	object UpdateNovelsOnStartup : BooleanKey("updateOnStartup", true)
 
-	object UpdateOnLowStorage : BooleanKey("updateLowStorage", true)
-	object UpdateOnLowBattery : BooleanKey("updateLowBattery", true)
-	object UpdateOnMeteredConnection : BooleanKey("updateMetered", true)
-	object UpdateOnlyWhenIdle : BooleanKey("updateIdle", false)
+	object NovelUpdateCycle : IntKey("updateCycle", 12)
+	object NovelUpdateOnLowStorage : BooleanKey("updateLowStorage", true)
+	object NovelUpdateOnLowBattery : BooleanKey("updateLowBattery", true)
+	object NovelUpdateOnMeteredConnection : BooleanKey("updateMetered", true)
+	object NovelUpdateOnlyWhenIdle : BooleanKey("updateIdle", false)
 
 	object UpdateNotificationStyle : BooleanKey("updateNotificationStyle", false)
 	object NovelUpdateShowProgress : BooleanKey("novelUpdateShowProgress", true)
@@ -178,7 +178,6 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object RepoUpdateOnLowStorage : BooleanKey("repoUpdateLowStorage", true)
 	object RepoUpdateOnLowBattery : BooleanKey("repoUpdateLowBattery", true)
 	object RepoUpdateOnMeteredConnection : BooleanKey("repoUpdateMetered", true)
-	object RepoUpdateOnlyWhenIdle : BooleanKey("repoUpdateIdle", false)
 	object RepoUpdateDisableOnFail : BooleanKey("update_repository_disable_on_fail", false)
 
 
