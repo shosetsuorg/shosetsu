@@ -157,7 +157,7 @@ dependencies {
 	implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
 	implementation("androidx.appcompat:appcompat:1.3.1")
 	implementation("androidx.multidex:multidex:2.0.1")
-	implementation("androidx.biometric:biometric:1.1.0")
+	//implementation("androidx.biometric:biometric:1.1.0") TODO biometric unlocking
 	implementation("androidx.annotation:annotation:1.2.0")
 	implementation("androidx.appcompat:appcompat:1.3.1")
 	implementation("androidx.cardview:cardview:1.0.0")
@@ -217,10 +217,10 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0")
 
 	// Showcase
-	implementation("com.github.deano2390:MaterialShowcaseView:1.3.4")
+	//implementation("com.github.deano2390:MaterialShowcaseView:1.3.4")
 
 	// A cuter view
-	implementation("com.github.shosetsuorg:DiscreteScrollView:1.5.1")
+	//implementation("com.github.shosetsuorg:DiscreteScrollView:1.5.1")
 
 	// Error logging
 	val acraVersion = "5.8.3"
@@ -252,7 +252,7 @@ dependencies {
 	implementation("com.heinrichreimersoftware:material-intro:2.0.0")
 
 	// Color Picker
-	implementation("com.github.skydoves:colorpickerview:2.2.3")
+	//implementation("com.github.skydoves:colorpickerview:2.2.3")
 
 	// Seek bar
 //	implementation(project(mapOf("path" to ":bubbleseekbar")))
@@ -268,14 +268,14 @@ dependencies {
 		"com.mikepenz:$module:$version"
 
 	implementation(fastadapter("fastadapter"))
-	implementation(fastadapter("fastadapter-extensions-expandable"))
+	//implementation(fastadapter("fastadapter-extensions-expandable"))
 	implementation(fastadapter("fastadapter-extensions-binding"))
 	implementation(fastadapter("fastadapter-extensions-diff"))
-	implementation(fastadapter("fastadapter-extensions-drag"))
-	implementation(fastadapter("fastadapter-extensions-paged"))
+	//implementation(fastadapter("fastadapter-extensions-drag"))
+	//implementation(fastadapter("fastadapter-extensions-paged"))
 	implementation(fastadapter("fastadapter-extensions-scroll"))
-	implementation(fastadapter("fastadapter-extensions-swipe"))
-	implementation(fastadapter("fastadapter-extensions-ui"))
+	//implementation(fastadapter("fastadapter-extensions-swipe"))
+	//implementation(fastadapter("fastadapter-extensions-ui"))
 	implementation(fastadapter("fastadapter-extensions-utils"))
 
 	// Guava cache
@@ -324,21 +324,22 @@ dependencies {
 
 	// - Material
 	implementation("androidx.compose.material:material:1.0.2")
-	implementation("androidx.compose.material:material-ripple:1.0.2")
+	//implementation("androidx.compose.material:material-ripple:1.0.2")
 
 	//- Material design icons
-	implementation("androidx.compose.material:material-icons-core:1.0.2")
-	implementation("androidx.compose.material:material-icons-extended:1.0.2")
+	//implementation("androidx.compose.material:material-icons-core:1.0.2")
+	//implementation("androidx.compose.material:material-icons-extended:1.0.2")
 
 	//- Integration with observables
 	implementation("androidx.compose.runtime:runtime-livedata:1.0.2")
 
 	//- UI Tests
-	androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.2")
+	//androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.2")
 
 	// MDC Adapter
 	implementation("com.google.android.material:compose-theme-adapter:1.0.2")
 	implementation("com.google.accompanist:accompanist-appcompat-theme:0.15.0")
+
 	implementation("androidx.activity:activity:1.3.1")
 	implementation("androidx.activity:activity-ktx:1.3.1")
 	implementation("androidx.activity:activity-compose:1.3.1")

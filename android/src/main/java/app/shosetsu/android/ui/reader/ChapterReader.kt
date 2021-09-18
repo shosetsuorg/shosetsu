@@ -39,7 +39,6 @@ import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.calculateDiff
 import com.mikepenz.fastadapter.listeners.OnCreateViewHolderListenerImpl
-import com.skydoves.colorpickerview.ColorPickerDialog
 import kotlinx.coroutines.delay
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -306,11 +305,13 @@ class ChapterReader
 
 		themeSelectButton.apply {
 			setOnClickListener {
+				/*
 				ColorPickerDialog.Builder(context)
 					.setPositiveButton("") { _, _ ->
 						logD("Clicked")
 					}
 					.show()
+				*/
 			}
 		}
 

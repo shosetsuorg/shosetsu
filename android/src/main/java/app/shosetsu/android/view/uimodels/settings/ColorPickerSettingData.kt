@@ -3,10 +3,7 @@ package app.shosetsu.android.view.uimodels.settings
 import android.graphics.Color
 import androidx.core.view.isVisible
 import app.shosetsu.android.view.uimodels.settings.base.BottomSettingsItemData
-import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
-import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
-import com.skydoves.colorpickerview.ColorPickerDialog.Builder as CPDB
 
 /*
  * This file is part of shosetsu.
@@ -40,6 +37,7 @@ class ColorPickerSettingData(id: Int) : BottomSettingsItemData(id) {
 			colorBox.isVisible = true
 			colorBox.setBackgroundColor(itemColor)
 			colorBox.setOnClickListener {
+				/*
 				CPDB(itemView.context)
 					.setTitle("ColorPicker Dialog")
 					.setPreferenceName(colorPreferenceName)
@@ -52,6 +50,7 @@ class ColorPickerSettingData(id: Int) : BottomSettingsItemData(id) {
 					)
 					.setNegativeButton(itemView.context.getString(android.R.string.cancel))
 					{ dialogInterface, _ -> dialogInterface.dismiss() }.show()
+				*/
 			}
 		}
 	}
