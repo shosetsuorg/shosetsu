@@ -39,10 +39,7 @@ import app.shosetsu.common.enums.InclusionState.INCLUDE
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.common.enums.NovelSortType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.*
 import java.util.Locale.getDefault as LGD
 
 /**
@@ -58,8 +55,8 @@ class LibraryViewModel(
 	private var startUpdateWorkerUseCase: StartUpdateWorkerUseCase,
 	private val reportExceptionUseCase: ReportExceptionUseCase,
 	private val loadNovelUITypeUseCase: LoadNovelUITypeUseCase,
-	private val loadNovelUIColumnsHUseCase: LoadNovelUIColumnsHUseCase,
-	private val loadNovelUIColumnsPUseCase: LoadNovelUIColumnsPUseCase,
+	private val loadNovelUIColumnsH: LoadNovelUIColumnsHUseCase,
+	private val loadNovelUIColumnsP: LoadNovelUIColumnsPUseCase,
 	private val setNovelUITypeUseCase: SetNovelUITypeUseCase
 ) : ALibraryViewModel() {
 
@@ -67,6 +64,20 @@ class LibraryViewModel(
 	private var columnP: Int = ChapterColumnsInPortait.default
 
 	private var columnH: Int = ChapterColumnsInLandscape.default
+
+	init {
+		launchIO {
+			loadNovelUIColumnsH().collect {
+				columnH = it
+			}
+		}
+
+		launchIO {
+			loadNovelUIColumnsP().collect {
+				columnP = it
+			}
+		}
+	}
 
 	private val librarySourceFlow: Flow<HResult<List<ABookmarkedNovelUI>>> by lazy { libraryAsCardsUseCase() }
 
@@ -146,14 +157,11 @@ class LibraryViewModel(
 			.asIOLiveData()
 	}
 
-	override val columnsInH: LiveData<Int> by lazy {
-		loadNovelUIColumnsHUseCase().asIOLiveData()
-	}
+	override val columnsInH
+		get() = columnH
 
-	override val columnsInP: LiveData<Int> by lazy {
-		loadNovelUIColumnsPUseCase().asIOLiveData()
-	}
-
+	override val columnsInP
+		get() = columnP
 
 	/**
 	 * Removes the list for filtering from the [ABookmarkedNovelUI] with the flow
@@ -191,19 +199,23 @@ class LibraryViewModel(
 						result = when (inclusionState) {
 							INCLUDE ->
 								result.filter { novelUI ->
-									against(novelUI).any { g -> g.replaceFirstChar {
-										if (it.isLowerCase()) it.titlecase(
-											LGD()
-										) else it.toString()
-									} == s }
+									against(novelUI).any { g ->
+										g.replaceFirstChar {
+											if (it.isLowerCase()) it.titlecase(
+												LGD()
+											) else it.toString()
+										} == s
+									}
 								}
 							EXCLUDE ->
 								result.filterNot { novelUI ->
-									against(novelUI).any { g -> g.replaceFirstChar {
-										if (it.isLowerCase()) it.titlecase(
-											LGD()
-										) else it.toString()
-									} == s }
+									against(novelUI).any { g ->
+										g.replaceFirstChar {
+											if (it.isLowerCase()) it.titlecase(
+												LGD()
+											) else it.toString()
+										} == s
+									}
 								}
 						}
 					}

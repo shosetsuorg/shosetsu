@@ -15,6 +15,7 @@ import app.shosetsu.android.view.uimodels.model.catlog.CompactCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
+import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.lib.Filter
@@ -352,13 +353,29 @@ class CatalogViewModel(
 		novelCardTypeFlow.asIOLiveData()
 	}
 
-	override val columnsInH: LiveData<Int> by lazy {
-		loadNovelUIColumnsHUseCase().asIOLiveData()
+	private var columnP: Int = SettingKey.ChapterColumnsInPortait.default
+
+	private var columnH: Int = SettingKey.ChapterColumnsInLandscape.default
+
+	init {
+		launchIO {
+			loadNovelUIColumnsHUseCase().collect {
+				columnH = it
+			}
+		}
+
+		launchIO {
+			loadNovelUIColumnsPUseCase().collect {
+				columnP = it
+			}
+		}
 	}
 
-	override val columnsInP: LiveData<Int> by lazy {
-		loadNovelUIColumnsPUseCase().asIOLiveData()
-	}
+	override val columnsInH
+		get() = columnH
+
+	override val columnsInP
+		get() = columnP
 
 	/**
 	 * @param [V] Value type of the hash map

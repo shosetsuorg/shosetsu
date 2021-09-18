@@ -155,11 +155,12 @@ object : ACatalogViewModel() {
 		TODO("Not yet implemented")
 	}
 
-	override val columnsInP: LiveData<Int>
-		get() = TODO("Not yet implemented")
-	override val columnsInH: LiveData<Int>
+
+	override val columnsInH: Int
 		get() = TODO("Not yet implemented")
 
+	override val columnsInP: Int
+		get() = TODO("Not yet implemented")
 }
 
 

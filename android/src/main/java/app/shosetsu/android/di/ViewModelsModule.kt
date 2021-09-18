@@ -63,9 +63,9 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			startUpdateWorkerUseCase = instance(),
 			reportExceptionUseCase = instance(),
 			loadNovelUITypeUseCase = instance(),
-			loadNovelUIColumnsHUseCase = instance(),
-			loadNovelUIColumnsPUseCase = instance(),
-			setNovelUITypeUseCase = instance()
+			setNovelUITypeUseCase = instance(),
+			loadNovelUIColumnsH = instance(),
+			loadNovelUIColumnsP = instance()
 		)
 	}
 
