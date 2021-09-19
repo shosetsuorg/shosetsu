@@ -370,6 +370,10 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 				}
 			}
 		}
+
+		System.gc() // Politely ask for a garbage collection
+		delay(1000) // Wait for gc to occur (maybe), also helps with the next notification
+
 		notify(R.string.restore_notification_content_completed) {
 			setNotOngoing()
 		}
