@@ -35,7 +35,7 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerSearchRowBinding
 data class SearchRowUI(
 	val extensionID: Int,
 	val name: String,
-	val imageURL: String
+	val imageURL: String?
 ) : BaseRecyclerItem<SearchRowUI.ViewHolder>() {
 	override val layoutRes: Int = R.layout.recycler_search_row
 	override val type: Int = R.layout.recycler_search_row
@@ -52,7 +52,7 @@ data class SearchRowUI(
 			recyclerView.layoutManager =
 				LinearLayoutManager(recyclerView.context, HORIZONTAL, false)
 			recyclerView.setHasFixedSize(false)
-			if (item.imageURL.isNotEmpty()) imageView.shosetsuLoad(item.imageURL)
+			if (!item.imageURL.isNullOrEmpty()) imageView.shosetsuLoad(item.imageURL)
 		}
 
 		override fun RecyclerSearchRowBinding.unbindView(item: SearchRowUI) {

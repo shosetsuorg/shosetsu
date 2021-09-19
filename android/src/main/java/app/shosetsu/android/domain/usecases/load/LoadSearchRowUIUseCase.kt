@@ -1,27 +1,41 @@
 package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
+import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.mapLatestResult
-import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transformLatest
 
 class LoadSearchRowUIUseCase(
-	private val iExtensionsRepository: IExtensionsRepository
+	private val iExtensionsRepository: IExtensionsRepository,
+	private val extEntitiesRepo: IExtensionEntitiesRepository
 ) {
 	operator fun invoke(): Flow<HResult<List<SearchRowUI>>> =
-		iExtensionsRepository.loadStrippedExtensionFlow()
-			.mapLatestResult {
-				successResult(ArrayList(
-					it.map { (id, title, imageURL) ->
-						SearchRowUI(id, title, imageURL)
+		iExtensionsRepository.loadExtensionsFLow()
+			.transformLatest { result ->
+				emit(
+					result.transform { list ->
+						val arrayList = arrayListOf<ExtensionEntity>()
+						list.forEach { extension ->
+							extEntitiesRepo.get(extension).handle { entity ->
+								if (entity.hasSearch) {
+									arrayList.add(extension)
+								}
+							}
+						}
+						successResult(arrayList.map {
+							SearchRowUI(it.id, it.name, it.imageURL)
+						})
 					}
-				))
+				)
 			}
 			.mapLatestResult {
-				successResult((it).apply {
-					add(0, SearchRowUI(-1, "My Library", ""))
-				}.toList())
+				successResult(
+					ArrayList(it).apply {
+						add(0, SearchRowUI(-1, "My Library", ""))
+					}
+				)
 			}
 }

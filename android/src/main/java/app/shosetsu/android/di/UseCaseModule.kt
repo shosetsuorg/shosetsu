@@ -172,7 +172,12 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 		GetCatalogueQueryDataUseCase(instance(), instance(), instance(), instance())
 	}
 	bind<ConvertNCToCNUIUseCase>() with provider { ConvertNCToCNUIUseCase() }
-	bind<LoadSearchRowUIUseCase>() with provider { LoadSearchRowUIUseCase((instance())) }
+	bind<LoadSearchRowUIUseCase>() with provider {
+		LoadSearchRowUIUseCase(
+			instance(),
+			instance()
+		)
+	}
 	bind<GetExtensionSettingsUseCase>() with provider {
 		GetExtensionSettingsUseCase(
 			instance(),
