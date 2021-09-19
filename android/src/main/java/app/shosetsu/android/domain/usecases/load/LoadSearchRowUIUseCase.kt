@@ -37,5 +37,7 @@ class LoadSearchRowUIUseCase(
 						add(0, SearchRowUI(-1, "My Library", ""))
 					}
 				)
+			}.mapLatestResult { list ->
+				successResult(list.sortedBy { it.name })
 			}
 }
