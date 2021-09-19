@@ -32,6 +32,7 @@ import app.shosetsu.lib.Version
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
+import kotlinx.coroutines.delay
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -228,7 +229,23 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 								setContentTitle(name)
 								setLargeIcon(bitmap)
 							}
-							val siteNovel = iExt.parseNovel(bNovelURL, true)
+
+							val siteNovel = try {
+								iExt.parseNovel(bNovelURL, true)
+							} catch (e: Exception) {
+								logE("Failed to parse novel while loading backup", e)
+								toast("Failed to parse `$name` in $iExt")
+								notify(
+									R.string.restore_notification_content_novel_fail_parse,
+									2000 + bNovelURL.hashCode()
+								) {
+									setContentTitle(name)
+									setLargeIcon(bitmap)
+									setNotOngoing()
+								}
+								return@novelLoop
+							}
+
 							notify(R.string.restore_notification_content_novel_save) {
 								setContentTitle(name)
 								setLargeIcon(bitmap)

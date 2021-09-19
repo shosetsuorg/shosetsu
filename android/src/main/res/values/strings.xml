@@ -534,6 +534,7 @@
     <string name="settings_update_repo_on_metered_desc">If toggled on, Allows Repositories to update while the device is on a metered connection</string>
     <string name="settings_update_repo_on_low_bat_desc">If toggled on, Allows Repositories to update while the device has a low battery level</string>
     <string name="settings_update_repo_on_low_sto_desc">If toggled on, allows Repositories to update while the device is running out of storage space</string>
+    <string name="restore_notification_content_novel_fail_parse">Failed to parse novel</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

@@ -36,10 +36,19 @@ fun ListenableWorker.toast(
 	}
 }
 
+fun ListenableWorker.toast(
+	message: String,
+	length: Int = Toast.LENGTH_SHORT,
+) {
+	launchUI {
+		applicationContext.toast(message, length)
+	}
+}
+
 /** @see [toast] */
 fun ListenableWorker.toast(
-	length: Int = Toast.LENGTH_SHORT,
 	@StringRes message: Int,
+	length: Int = Toast.LENGTH_SHORT,
 ) {
 	launchUI {
 		applicationContext.toast(message, length)
