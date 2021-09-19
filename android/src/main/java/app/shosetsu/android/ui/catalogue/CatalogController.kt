@@ -240,9 +240,11 @@ class CatalogController(
 
 		menu.findItem(R.id.search_item)?.let { searchItem ->
 			if (viewModel.hasSearchLive.value != true) {
-				searchItem.isVisible = false
+				logV("Hiding search icon")
+				menu.removeItem(R.id.search_item)
 				return@let
 			}
+			logV("Showing search icon")
 			(searchItem.actionView as SearchView).apply {
 				setOnQueryTextListener(CatalogueSearchQuery(this@CatalogController))
 				setOnCloseListener {
