@@ -38,7 +38,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Chapter 1" />
+                tools:text="Chapter 1"
+                tools:visibility="gone" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/titleBookmarked"
@@ -55,43 +56,44 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Chapter 1" />
+                tools:text="Chapter 1"
+                tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/read_tag"
-            android:layout_width="50dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/titleBox"
-            android:layout_alignParentStart="true"
+            android:layout_toEndOf="@id/release_tag"
             android:text="@string/position"
             android:textSize="12sp"
-            android:visibility="invisible"
+            android:visibility="gone"
             tools:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/read_progress_value"
-            android:layout_width="50dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/titleBox"
             android:layout_marginStart="4dp"
             android:layout_toEndOf="@id/read_tag"
             android:textSize="12sp"
-            android:visibility="invisible"
-            tools:text="1000"
+            android:visibility="gone"
+            tools:text="11.9%"
             tools:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/release_tag"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/titleBox"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
             android:layout_marginEnd="8dp"
-            android:layout_toStartOf="@+id/download_tag"
             android:textSize="12sp"
-            android:visibility="invisible"
-            tools:visibility="visible" />
+            tools:text="01/01/01" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/download_tag"
@@ -99,9 +101,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/titleBox"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
             android:text="@string/downloaded"
             android:textSize="12sp"
-            android:visibility="invisible"
+            android:visibility="gone"
             tools:visibility="visible" />
 
     </RelativeLayout>

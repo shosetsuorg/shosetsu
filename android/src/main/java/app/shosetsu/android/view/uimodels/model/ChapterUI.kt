@@ -3,6 +3,7 @@ package app.shosetsu.android.view.uimodels.model
 import android.view.View
 import androidx.core.view.isVisible
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import app.shosetsu.common.domain.model.local.ChapterEntity
@@ -35,17 +36,17 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerNovelChapterBindi
  * @author github.com/doomsdayrs
  */
 data class ChapterUI(
-	val id: Int,
-	val novelID: Int,
-	val link: String,
-	val extensionID: Int,
-	var title: String,
-	var releaseDate: String,
-	var order: Double,
-	var readingPosition: Double,
-	var readingStatus: ReadingStatus,
-	var bookmarked: Boolean,
-	var isSaved: Boolean,
+		val id: Int,
+		val novelID: Int,
+		val link: String,
+		val extensionID: Int,
+		var title: String,
+		var releaseDate: String,
+		var order: Double,
+		var readingPosition: Double,
+		var readingStatus: ReadingStatus,
+		var bookmarked: Boolean,
+		var isSaved: Boolean,
 ) : BaseRecyclerItem<ChapterUI.ViewHolder>(), Convertible<ChapterEntity> {
 	override val layoutRes: Int = R.layout.recycler_novel_chapter
 
@@ -56,24 +57,24 @@ data class ChapterUI(
 		set(@Suppress("UNUSED_PARAMETER") value) {}
 
 	override fun convertTo(): ChapterEntity =
-		ChapterEntity(
-			id,
-			link,
-			novelID,
-			extensionID,
-			title,
-			releaseDate,
-			order,
-			readingPosition,
-			readingStatus,
-			bookmarked,
-			isSaved
-		)
+			ChapterEntity(
+					id,
+					link,
+					novelID,
+					extensionID,
+					title,
+					releaseDate,
+					order,
+					readingPosition,
+					readingStatus,
+					bookmarked,
+					isSaved
+			)
 
 	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 
 	class ViewHolder(itemView: View) :
-		BindViewHolder<ChapterUI, RecyclerNovelChapterBinding>(itemView) {
+			BindViewHolder<ChapterUI, RecyclerNovelChapterBinding>(itemView) {
 		override val binding = RecyclerNovelChapterBinding.bind(view)
 
 		private fun setAlpha(float: Float = 1f) {
@@ -104,14 +105,13 @@ data class ChapterUI(
 
 			when (item.readingStatus) {
 				ReadingStatus.READING -> {
-					setAlpha()
-					if (item.readingPosition > 0) {
-						readTag.isVisible = true
-						readProgressValue.isVisible = true
-						readProgressValue.text = ("%2.1f%%".format(item.readingPosition))
-					}
+					logV("Item is reading $item")
+					readTag.isVisible = true
+					readProgressValue.isVisible = true
+					readProgressValue.text = ("%2.1f%%".format(item.readingPosition))
 				}
-				ReadingStatus.UNREAD -> setAlpha()
+				ReadingStatus.UNREAD -> {
+				}
 				ReadingStatus.READ -> {
 					setAlpha(0.5F) // Opacity to move attention away
 					readTag.isVisible = false
@@ -138,6 +138,8 @@ data class ChapterUI(
 			releaseTag.text = null
 
 			downloadTag.isVisible = false
+
+			setAlpha()
 		}
 	}
 }
