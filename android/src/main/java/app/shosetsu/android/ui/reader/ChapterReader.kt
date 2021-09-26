@@ -161,6 +161,10 @@ class ChapterReader
 
 		toolbar.alpha = READER_BAR_ALPHA
 		chapterReaderBottom.alpha = READER_BAR_ALPHA
+
+		binding.toggleVisibility.setOnClickListener {
+			focusListener()
+		}
 	}
 
 	/** On Destroy */
@@ -354,6 +358,10 @@ class ChapterReader
 				FastAdapterDiffUtil[itemAdapter] = calculateDiff(itemAdapter, newList)
 			}
 		}
+
+		binding.chapterReaderBottom.drawerToggleVisibility.setOnClickListener {
+			focusListener()
+		}
 	}
 
 	private fun setupViewPager() {
@@ -413,19 +421,17 @@ class ChapterReader
 	}
 
 	private fun focusListener() {
+		binding.toggleVisibility.isVisible = !binding.toggleVisibility.isVisible
 
 		toolbar.isVisible = if (toolbar.isVisible) {
-			toast("hidden")
 			logV("hidden")
 			chapterReaderBottom.isVisible = false
 			false
 		} else {
-			toast("shown")
 			logV("shown")
 			chapterReaderBottom.isVisible = true
 			true
 		}
-
 
 		bottomSheetBehavior.state = when (bottomSheetBehavior.state) {
 			STATE_HIDDEN -> STATE_COLLAPSED

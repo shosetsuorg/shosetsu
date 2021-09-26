@@ -11,10 +11,10 @@
         android:layout_height="match_parent">
 
         <androidx.viewpager2.widget.ViewPager2
-            android:background="@android:color/black"
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@android:color/black"
             android:layoutDirection="locale"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
@@ -40,11 +40,26 @@
         android:id="@+id/progress_percentage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="bottom|end"
         android:textIsSelectable="false"
-        tools:text="20%" />
+        android:layout_gravity="bottom"
+        app:layout_anchorGravity="end"
+        tools:text="20%"
+        tools:visibility="visible" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/toggle_visibility"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="bottom|end"
+        android:alpha="0.5"
+        android:elevation="1dp"
+        android:backgroundTint="@android:color/black"
+        android:src="@drawable/ic_baseline_visibility_24"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <include
+        tools:visibility="gone"
         android:id="@+id/chapter_reader_bottom"
         layout="@layout/chapter_reader_bottom" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

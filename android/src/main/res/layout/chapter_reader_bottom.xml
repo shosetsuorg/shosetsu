@@ -30,13 +30,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Space
-            android:id="@+id/space"
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/drawer_toggle_visibility"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_baseline_visibility_off_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -51,7 +53,7 @@
             android:background="@android:color/transparent"
             android:gravity="center"
             app:layout_constraintEnd_toStartOf="@+id/drawer_toggle"
-            app:layout_constraintStart_toEndOf="@+id/space"
+            app:layout_constraintStart_toEndOf="@+id/drawer_toggle_visibility"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageButton
