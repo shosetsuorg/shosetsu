@@ -2,6 +2,7 @@ package app.shosetsu.android.ui.reader.types.model
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
+import android.net.Uri
 import android.util.Base64
 import android.view.View
 import android.webkit.JavascriptInterface
@@ -207,6 +208,7 @@ class HTMLReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 		if (chapter.chapterType == Novel.ChapterType.STRING && chapter.convertStringToHtml)
 			content = asHtml(content, chapter.title)
 
+		content = Uri.encode(content)
 		webView.loadData(content, "text/html", "UTF-8")
 	}
 
