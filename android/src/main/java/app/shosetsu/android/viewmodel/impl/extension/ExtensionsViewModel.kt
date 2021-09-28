@@ -96,14 +96,15 @@ class ExtensionsViewModel(
 
 	@ExperimentalCoroutinesApi
 	override val filteredLanguagesLive: LiveData<HResult<FilteredLanguages>> by lazy {
-		languageListFlow.combine(settingsRepo.getStringSetFlow(BrowseFilteredLanguages)) { a, b ->
-			val list = a.unwrap() ?: listOf()
+		languageListFlow.combine(settingsRepo.getStringSetFlow(BrowseFilteredLanguages)) { languageResult, filteredLanguages ->
+			val languageList = languageResult.unwrap() ?: listOf()
+
 			val map = HashMap<String, Boolean>().apply {
-				list.forEach {
-					this[it] = b.contains(it)
+				languageList.forEach { language ->
+					this[language] = !filteredLanguages.contains(language)
 				}
 			}
-			successResult(FilteredLanguages(list, map))
+			successResult(FilteredLanguages(languageList, map))
 		}.asIOLiveData()
 	}
 
@@ -126,7 +127,7 @@ class ExtensionsViewModel(
 			) { set ->
 				val mutableSet = set.toMutableSet()
 
-				if (!state) {
+				if (state) {
 					mutableSet.removeAll { it == language }
 				} else {
 					mutableSet.add(language)
