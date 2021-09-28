@@ -6,14 +6,18 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
+import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel.FilteredLanguages
+import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.loading
+import app.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.composethemeadapter.MdcTheme
 
@@ -41,33 +45,92 @@ import com.google.android.material.composethemeadapter.MdcTheme
  * @author Doomsdayrs
  */
 
+
 @Composable
 fun BrowseControllerFilterMenu(viewModel: ABrowseViewModel) {
-	BrowseControllerLanguagesFilter(viewModel)
+	val showOnlyInstalled by viewModel.onlyInstalledLive.observeAsState(initial = false)
+	val languageList: HResult<FilteredLanguages> by viewModel.filteredLanguagesLive.observeAsState(
+		initial = loading
+	)
+	var hideLanguageFilter by remember { mutableStateOf(false) }
+
+	val searchTerm by viewModel.searchTermLive.observeAsState("")
+
+	Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+		BrowseControllerNameFilter(searchTerm) {
+			viewModel.setSearch(it)
+		}
+
+		BrowseControllerLanguagesFilter(languageList, hideLanguageFilter,
+			setLanguageFilterState = { l, s ->
+				viewModel.setLanguageFiltered(l, s)
+			},
+			setHidden = {
+				hideLanguageFilter = it
+			}
+		)
+
+		Divider(modifier = Modifier.padding(bottom = 8.dp))
+
+		BrowseControllerInstalledFilter(
+			state = showOnlyInstalled,
+			updateState = { viewModel.showOnlyInstalled(it) })
+	}
+}
+
+@Preview
+@Composable
+fun PreviewBrowseControllerNameFilter() {
+	BrowseControllerNameFilter("") {}
 }
 
 @Composable
-fun BrowseControllerLanguagesFilter(viewModel: ABrowseViewModel) {
-	val languageList by viewModel.filteredLanguagesLive.observeAsState(initial = loading)
-	val showOnlyInstalled by viewModel.onlyInstalledLive.observeAsState(initial = false)
+fun BrowseControllerNameFilter(searchTerm: String, setSearchTerm: (newTerm: String) -> Unit) {
+	TextField(
+		value = searchTerm,
+		onValueChange = setSearchTerm,
+		modifier = Modifier.padding(bottom = 8.dp)
+			.fillMaxWidth(),
+		label = {
+			Text(stringResource(R.string.controller_browse_filter_name_label))
+		}
+	)
+}
 
-	var hidden by remember { mutableStateOf(false) }
+@Preview
+@Composable
+fun PreviewBrowseControllerLanguagesFilter() {
+	BrowseControllerLanguagesFilter(
+		successResult(FilteredLanguages(listOf("en"), mapOf("en" to true))),
+		false,
+		{ _, _ -> },
+		{}
+	)
+}
 
-	Column(modifier = Modifier.fillMaxWidth()) {
+@Composable
+fun BrowseControllerLanguagesFilter(
+	languageList: HResult<FilteredLanguages>,
+	hidden: Boolean,
+	setLanguageFilterState: (language: String, newState: Boolean) -> Unit,
+	setHidden: (newValue: Boolean) -> Unit
+) {
+	Column(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
 		Row(
 			modifier = Modifier.fillMaxWidth(),
-			horizontalArrangement = Arrangement.SpaceBetween
+			horizontalArrangement = Arrangement.SpaceBetween,
+			verticalAlignment = Alignment.CenterVertically
 		) {
 			Text(
 				text = stringResource(R.string.languages),
-				Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
+				Modifier.padding(bottom = 8.dp)
 			)
 
 			IconToggleButton(
 				onCheckedChange = {
-					hidden = it
+					setHidden(it)
 				},
-				checked = hidden
+				checked = hidden,
 			) {
 				if (hidden)
 					Icon(painterResource(R.drawable.expand_more), "")
@@ -75,29 +138,26 @@ fun BrowseControllerLanguagesFilter(viewModel: ABrowseViewModel) {
 					Icon(painterResource(R.drawable.expand_less), "")
 			}
 		}
-		Divider()
-		if (!hidden)
+
+		if (!hidden) {
 			languageList.handle { (languages, state) ->
+				Divider(modifier = Modifier.padding(bottom = 8.dp, end = 8.dp))
+
 				BrowseControllerLanguagesContent(
 					languages = languages,
 					state = state,
 					onLanguageChecked = { language, newState ->
-						viewModel.setLanguageFiltered(language, newState)
+						setLanguageFilterState(language, newState)
 					}
 				)
 			}
-
-
-		BrowseControllerInstalledFilter(
-			state = showOnlyInstalled,
-			updateState = { viewModel.showOnlyInstalled(it) })
-
+		}
 	}
 }
 
 @Preview
 @Composable
-fun BrowseControllerLanguagesPreview() {
+fun PreviewBrowseControllerLanguages() {
 	MdcTheme {
 		BrowseControllerLanguagesContent(
 			languages = listOf("en", "ch", "ru", "fr"),
@@ -114,15 +174,21 @@ fun BrowseControllerLanguagesContent(
 ) {
 	LazyColumn(
 		modifier = Modifier.fillMaxWidth(),
-		contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 8.dp)
+		contentPadding = PaddingValues(start = 8.dp, top = 8.dp, end = 12.dp)
 	) {
 		items(languages) { language ->
 			BrowseControllerLanguageItem(language, state[language] ?: false, onLanguageChecked)
 		}
-
-		item { Divider() }
 	}
 }
+
+
+@Preview
+@Composable
+fun PreviewBrowseControllerLanguageItem() {
+	BrowseControllerLanguageItem("en", false) { _, _ -> }
+}
+
 
 @Composable
 fun BrowseControllerLanguageItem(
@@ -152,6 +218,11 @@ fun BrowseControllerLanguageItem(
 
 }
 
+@Preview
+@Composable
+fun PreviewBrowseControllerInstalledFilter() {
+	BrowseControllerInstalledFilter(false) {}
+}
 
 @Composable
 fun BrowseControllerInstalledFilter(state: Boolean, updateState: (Boolean) -> Unit) {
@@ -159,7 +230,6 @@ fun BrowseControllerInstalledFilter(state: Boolean, updateState: (Boolean) -> Un
 		horizontalArrangement = Arrangement.SpaceBetween,
 		modifier = Modifier
 			.fillMaxWidth()
-			.padding(start = 16.dp, end = 16.dp)
 	) {
 		Text(
 			text = stringResource(R.string.controller_browse_filter_only_installed),
@@ -172,7 +242,7 @@ fun BrowseControllerInstalledFilter(state: Boolean, updateState: (Boolean) -> Un
 			},
 			modifier = Modifier
 				.alignByBaseline()
-				.padding(bottom = 8.dp)
+				.padding(bottom = 8.dp, end = 12.dp)
 		)
 	}
 }

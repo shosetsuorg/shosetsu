@@ -29,7 +29,9 @@ import com.bluelinelabs.conductor.Controller
  *
  * @author github.com/doomsdayrs
  */
-class BrowseSearchQuery(private val pushController: (Controller) -> Unit) :
+class BrowseSearchQuery(
+	private val pushController: (Controller) -> Unit
+) :
 	SearchView.OnQueryTextListener {
 	override fun onQueryTextSubmit(s: String): Boolean = true.also {
 		pushController(SearchController(bundleOf(BUNDLE_QUERY to s)))

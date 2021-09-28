@@ -105,6 +105,7 @@ class BrowseController : FastAdapterRecyclerController<ControllerBrowseBinding, 
 			if (viewModel.isOnline()) {
 				// If the extension is installed, push to it, otherwise prompt the user to install
 				if (item.installed) {
+					viewModel.resetSearch()
 					router.shosetsuPush(
 						CatalogController(
 							bundleOf(
@@ -129,6 +130,7 @@ class BrowseController : FastAdapterRecyclerController<ControllerBrowseBinding, 
 		hookClickEvent(
 			bind = { it: ExtensionUI.ViewHolder -> it.binding.settings }
 		) { _, _, _, item ->
+			viewModel.resetSearch()
 			router.shosetsuPush(ConfigureExtension(bundleOf(BUNDLE_EXTENSION to item.id)))
 		}
 

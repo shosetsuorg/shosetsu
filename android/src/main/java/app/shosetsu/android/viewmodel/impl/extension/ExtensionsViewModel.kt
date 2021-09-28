@@ -33,10 +33,7 @@ import app.shosetsu.common.consts.settings.SettingKey.BrowseFilteredLanguages
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.transformLatest
+import kotlinx.coroutines.flow.*
 
 /**
  * shosetsu
@@ -94,6 +91,8 @@ class ExtensionsViewModel(
 			}
 		}
 	}
+
+	private val searchTermFlow: MutableStateFlow<String> by lazy { MutableStateFlow("") }
 
 	@ExperimentalCoroutinesApi
 	override val filteredLanguagesLive: LiveData<HResult<FilteredLanguages>> by lazy {
@@ -157,15 +156,36 @@ class ExtensionsViewModel(
 		}
 	}
 
+	override fun setSearch(name: String) {
+		searchTermFlow.tryEmit(name)
+	}
+
+	override fun resetSearch() {
+		searchTermFlow.tryEmit("")
+	}
+
+	override val searchTermLive: LiveData<String> by lazy {
+		searchTermFlow.asIOLiveData()
+	}
+
 	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<List<ExtensionUI>>> by lazy {
 		extensionFlow.transformLatest { result ->
 			emitAll(
 				settingsRepo.getStringSetFlow(BrowseFilteredLanguages)
-					.combine(settingsRepo.getBooleanFlow(SettingKey.BrowseOnlyInstalled)) { languagesToFilter, onlyInstalled ->
+					.combine(
+						settingsRepo.getBooleanFlow(SettingKey.BrowseOnlyInstalled)
+							.combine(searchTermFlow) { onlyInstalled, searchTerm ->
+								onlyInstalled to searchTerm
+							}) { languagesToFilter, (onlyInstalled, searchTerm) ->
 						result.transformToSuccess { list ->
 							list
 								.asSequence()
+								.let { sequence ->
+									if (searchTerm.isNotBlank())
+										sequence.filter { it.name.contains(searchTerm) }
+									else sequence
+								}
 								.filter { if (onlyInstalled) it.installed else true }
 								.filterNot { languagesToFilter.contains(it.lang) }
 								.sortedBy { it.name }

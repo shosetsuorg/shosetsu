@@ -38,6 +38,7 @@ abstract class ABrowseViewModel :
 	IsOnlineCheckViewModel,
 	ErrorReportingViewModel {
 
+
 	/**
 	 * Languages that are present, this is used for filtering
 	 *
@@ -50,7 +51,7 @@ abstract class ABrowseViewModel :
 
 	data class FilteredLanguages(
 		val languages: List<String>,
-		val states: HashMap<String, Boolean>
+		val states: Map<String, Boolean>
 	)
 
 	/** Refreshes the repositories and data values */
@@ -74,4 +75,17 @@ abstract class ABrowseViewModel :
 	 * Set if to only show installed or not
 	 */
 	abstract fun showOnlyInstalled(state: Boolean)
+
+	abstract val searchTermLive: LiveData<String>
+
+	/**
+	 * Filter the extension list to only display extensions matching [name]
+	 */
+	abstract fun setSearch(name: String)
+
+
+	/**
+	 * Reset the term set by [setSearch]
+	 */
+	abstract fun resetSearch()
 }
