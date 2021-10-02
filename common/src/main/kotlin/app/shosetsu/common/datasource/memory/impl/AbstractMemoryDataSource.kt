@@ -105,7 +105,22 @@ abstract class AbstractMemoryDataSource<K, V : Any> {
 	}
 
 	fun contains(key: K): Boolean {
-		val keys = _hashMap.keys.reversed()
+		if (_hashMap.size <= 0) return false
+
+		val keys = try {
+			_hashMap.keys.reversed()
+		} catch (e: IllegalArgumentException) {
+			// Try this again in 10ms, maybe it will work then
+			runBlocking {
+				delay(10)
+			}
+			try {
+				_hashMap.keys.reversed()
+			} catch (e: IllegalArgumentException) {
+				// Forget about it, Ask for new data
+				return false
+			}
+		}
 		for (i in keys) {
 			if (i == key)
 				return true
