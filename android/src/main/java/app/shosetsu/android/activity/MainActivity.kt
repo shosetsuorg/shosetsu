@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 
 				shouldProtectBack() -> protectedBackWait()
 
-				backStackSize == 1 || !router.handleBack() -> super.onBackPressed()
+				backStackSize == 1 || !router.handleBack() -> this@MainActivity.finish()
 			}
 		}
 
