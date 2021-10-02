@@ -1,6 +1,7 @@
 package app.shosetsu.android.view.uimodels.settings
 
 import android.text.Editable
+import android.text.TextWatcher
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import app.shosetsu.android.view.uimodels.settings.base.BottomSettingsItemData
@@ -33,6 +34,8 @@ class TextInputSettingData(id: Int) : BottomSettingsItemData(id) {
 	/** @see doAfterTextChanged */
 	var onTextChanged: (Editable) -> Unit = { _: Editable -> }
 
+	private var watcher: TextWatcher? = null
+
 	override fun bindBinding(holder: SettingsItemBinding, payloads: List<Any>) {
 		super.bindBinding(holder, payloads)
 		holder.settingsItemDesc.isVisible = false
@@ -40,7 +43,10 @@ class TextInputSettingData(id: Int) : BottomSettingsItemData(id) {
 			isVisible = true
 			if (descRes != -1) setHint(descRes) else if (descText.isNotEmpty()) hint = descText
 			setText(initialText)
-			doAfterTextChanged { it?.let(onTextChanged) }
+
+			watcher = doAfterTextChanged {
+				it?.let(onTextChanged)
+			}
 		}
 	}
 
@@ -50,7 +56,7 @@ class TextInputSettingData(id: Int) : BottomSettingsItemData(id) {
 		holder.textInputEditText.apply {
 			isVisible = false
 			hint = null
-			doAfterTextChanged { }
+			removeTextChangedListener(watcher)
 			text = null
 		}
 	}
