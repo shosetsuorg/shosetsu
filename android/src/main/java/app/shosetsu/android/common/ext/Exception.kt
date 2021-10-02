@@ -62,7 +62,7 @@ fun Exception.toHError(): HResult.Error = when (this) {
 	}
 	is LuaError -> {
 		if (cause != null)
-			(cause as Exception).toHError()
+			(cause as? Exception)?.toHError() ?: throw cause!!
 		else errorResult(ERROR_LUA_GENERAL, message ?: "Unknown Lua Error", this)
 	}
 	is NullPointerException -> errorResult(this)
