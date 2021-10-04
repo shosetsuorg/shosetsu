@@ -36,6 +36,7 @@ import kotlinx.coroutines.delay
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import org.acra.ACRA
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -137,6 +138,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 			},
 			onError = { (code, message, exception) ->
 				logE("$code $message", exception)
+				ACRA.errorReporter.handleException(exception)
 				notify("$code $message $exception") {
 					setNotOngoing()
 				}
@@ -220,6 +222,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 								).drawable?.toBitmap()
 							} catch (e: IOException) {
 								logE("Failed to download novel image", e)
+								ACRA.errorReporter.handleException(e)
 							}
 						}
 
@@ -235,6 +238,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 							} catch (e: Exception) {
 								logE("Failed to parse novel while loading backup", e)
 								toast("Failed to parse `$name` in $iExt")
+								ACRA.errorReporter.handleException(e)
 								notify(
 									R.string.restore_notification_content_novel_fail_parse,
 									2000 + bNovelURL.hashCode()
@@ -272,6 +276,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 							).handle(
 								onError = {
 									logE("Failed to handle chapters", it.exception)
+									ACRA.errorReporter.handleException(it.exception)
 								}
 							) {
 								logI("Inserted new chapters")
@@ -348,6 +353,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 							},
 							onError = {
 								logE("Failed to load novel settings")
+								ACRA.errorReporter.handleException(it.exception)
 							}
 						) {
 							logI("Updating novel settings")
