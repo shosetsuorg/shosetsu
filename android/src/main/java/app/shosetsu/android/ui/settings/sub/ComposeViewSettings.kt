@@ -55,6 +55,8 @@ import kotlinx.coroutines.flow.map
 class ComposeViewSettings : ShosetsuController() {
 	private val viewModel: AViewSettingsViewModel by viewModel()
 
+	override val viewTitleRes: Int = R.string.settings_view
+
 	override fun onViewCreated(view: View) {}
 
 	override fun onCreateView(
@@ -62,6 +64,7 @@ class ComposeViewSettings : ShosetsuController() {
 		container: ViewGroup,
 		savedViewState: Bundle?
 	): View = ComposeView(container.context).apply {
+		setViewTitle()
 		setContent {
 			MdcTheme {
 				ViewSettingsContent(
