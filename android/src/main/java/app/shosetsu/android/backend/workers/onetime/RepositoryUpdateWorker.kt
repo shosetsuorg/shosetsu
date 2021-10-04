@@ -87,7 +87,7 @@ class RepositoryUpdateWorker(
 				}
 				it
 			}
-		) { extLibs ->
+		) { databaseLibs ->
 			/** Libraries not installed or needs update */
 			val libsNotPresent = ArrayList<ExtLibEntity>()
 
@@ -100,9 +100,7 @@ class RepositoryUpdateWorker(
 					setProgress(repoExtLibListSize, index + 1, false)
 				}
 
-				val isInstalled = extLibs.any { it.scriptName == repoLibName }
-
-				logV("$repoLibName:$isInstalled")
+				val isInstalled = databaseLibs.any { it.scriptName == repoLibName }
 
 				var install = false
 				var extensionLibraryEntity: ExtLibEntity? = null
@@ -111,11 +109,20 @@ class RepositoryUpdateWorker(
 				if (isInstalled) {
 					//  Checks if an update need
 					version = repoLibVersion
-					extensionLibraryEntity = extLibs.find { it.scriptName == repoLibName }!!
+					extensionLibraryEntity = databaseLibs.find { it.scriptName == repoLibName }!!
 
 					// If the version compared to the repo version is different, reinstall
-					if (version < extensionLibraryEntity.version)
+					if (version > extensionLibraryEntity.version) {
+						logI("$repoLibName has update $version available, updating")
 						install = true
+					} else {
+						extRepoRepo.getRepo(repository.id!!).handle { repo ->
+							if (!repo.isEnabled) {
+								logI("${repo.name} is disabled, downgrading $repoLibName")
+								install = true
+							}
+						}
+					}
 				} else {
 					install = true
 				}
