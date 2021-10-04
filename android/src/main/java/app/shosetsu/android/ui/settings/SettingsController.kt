@@ -59,7 +59,7 @@ class SettingsController : GenericFastAdapterRecyclerController<SettingsCategory
 		setOnClickListener { _, _, item, _ ->
 			router.shosetsuPush(
 				when (item.category) {
-					VIEW -> ViewSettings()
+					VIEW -> ComposeViewSettings()
 					ADVANCED -> AdvancedSettings()
 					DOWNLOAD -> DownloadSettings()
 					BACKUP -> BackupSettings()
