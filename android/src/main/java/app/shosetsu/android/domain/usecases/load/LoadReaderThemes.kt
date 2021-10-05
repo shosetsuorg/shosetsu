@@ -71,7 +71,7 @@ class LoadReaderThemes(
 					ColorChoiceData(
 						-4,
 						context.getString(R.string.amoled),
-						-0x777778,
+						-0x1,
 						-0x1000000
 					)
 				).also {
