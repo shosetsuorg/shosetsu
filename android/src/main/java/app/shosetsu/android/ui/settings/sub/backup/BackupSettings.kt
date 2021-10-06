@@ -161,10 +161,8 @@ class BackupSettings : SettingsSubController() {
 	}
 
 	private fun performExportSelection() {
-		viewModel.getBackupToExport().handle {
-			observer.selectLocationToExportLauncher.launch(
-				"shosetsu-backup-$it.$BACKUP_FILE_EXTENSION"
-			)
+		viewModel.getBackupToExport().handle { backupFileName ->
+			observer.selectLocationToExportLauncher.launch(backupFileName)
 		}
 	}
 
