@@ -6,7 +6,7 @@ import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.ui.about.AboutController
 import app.shosetsu.android.ui.downloads.DownloadsController
 import app.shosetsu.android.ui.repository.RepositoryController
-import app.shosetsu.android.ui.settings.SettingsController
+import app.shosetsu.android.ui.settings.ComposeSettingsController
 import app.shosetsu.android.view.controller.ViewedController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
 import app.shosetsu.common.dto.HResult
@@ -46,7 +46,7 @@ class MoreController
 			router.shosetsuPush(RepositoryController())
 		}
 		binding.settings.setOnClickListener {
-			router.shosetsuPush(SettingsController())
+			router.shosetsuPush(ComposeSettingsController())
 		}
 		binding.info.setOnClickListener {
 			router.shosetsuPush(AboutController())
