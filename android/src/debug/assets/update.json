@@ -1,18 +1,17 @@
 {
-  "latestVersion": "1602",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1602/shosetsu-r1602.apk",
+  "latestVersion": "1618",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1618/shosetsu-r1618.apk",
   "releaseNotes": [
-    "- Add black color to HTMLReader webview background",
-    "- Fix column count setting not effecting UI",
-    "- Restart cycle workers when their parameters are changed (fixes timers)",
-    "- Only show extensions that have search functionality in global search",
-    "- Sort search view by extension name",
-    "- Fix crashes with backup restore when parsing novels",
-    "- Add delay before notifying restore completion",
-    "- Display release date of chapters",
-    "- Add more apparent buttons for reader focusing",
-    "- Encode HTML via URI to fix pound sign issues",
-    "- Add extension name filtering to browse view's filter",
-    "- #### IMPORTANT ###: Swaped way language filters work. If you cannot see extensions please check filters"
+    "- Handle crashes in memory",
+    "- Throw if exception is an error",
+    "- Fix text input clearing content",
+    "- Fix back button causing crash",
+    "- Convert ViewSettings to Compose",
+    "- Fix extension library update regression",
+    "- RestoreBackupWorker now has ACRA reporting for errors",
+    "- Set AMOLED default foreground to white (for new users)",
+    "- Fix duplicate prepend/append filename for backups",
+    "- Convert SettingsController to Compose",
+    "- Convert MoreController to Compose"
   ]
 }
