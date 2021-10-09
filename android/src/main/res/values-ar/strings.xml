@@ -107,7 +107,7 @@
     <string name="restore_now">استعد الآن</string>
     <!-- Backup and restore -->
     <string name="reading_file">يقرأ</string>
-    <string name="tap_to_scroll">أنقر للتمرير</string>
+    <string name="settings_reader_tap_to_scroll_title">أنقر للتمرير</string>
     <string name="inverted_swipe">اعكس جهة السحب للفصل التالي</string>
     <string name="press_to_continue_to_next_chapter">اضغط للتنتقل الى الفصل التالي!</string>
     <string name="open_in_webview">افتحها في عرض الويب</string>
@@ -265,7 +265,7 @@
     <string name="negative_one">-1</string>
     <string name="repositories">مستودعات</string>
     <string name="chapter_select_between_error_empty_adapter">قائمة المكيّفات فارغة, أتريد المحاول مجددا؟</string>
-    <string name="volume_scroll">تمرير المجلد</string>
+    <string name="settings_reader_volume_scroll_title">تمرير المجلد</string>
     <string name="all">الكل</string>
     <string name="about">حول</string>
     <string name="check_for_app_update">تحقق من وجود تحديث للتطبيق</string>

@@ -178,7 +178,7 @@ suspend fun ExposedSettingsRepoViewModel.continuousScrollOption(id: Int) =
 
 suspend fun ExposedSettingsRepoViewModel.tapToScrollOption(id: Int) =
 	switchSettingData(id) {
-		titleRes = R.string.tap_to_scroll
+		titleRes = R.string.settings_reader_tap_to_scroll_title
 		checkSettingValue(ReaderIsTapToScroll)
 	}
 
@@ -191,7 +191,7 @@ suspend fun ExposedSettingsRepoViewModel.readerKeepScreenOnOption(id: Int) =
 
 suspend fun ExposedSettingsRepoViewModel.volumeScrollingOption(id: Int) =
 	switchSettingData(id) {
-		titleRes = R.string.volume_scroll
+		titleRes = R.string.settings_reader_volume_scroll_title
 		checkSettingValue(ReaderVolumeScroll)
 	}
 

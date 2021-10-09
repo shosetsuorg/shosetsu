@@ -140,7 +140,7 @@
 
     <!-- Backup and restore -->
     <string name="reading_file">Reading</string>
-    <string name="tap_to_scroll">Tap to scroll</string>
+    <string name="settings_reader_tap_to_scroll_title">Tap to scroll</string>
     <string name="inverted_swipe">Inverted Chapter Swipe</string>
     <string name="press_to_continue_to_next_chapter">Press to continue to next chapter!</string>
     <string name="open_in_webview">Open in WebView</string>
@@ -332,7 +332,7 @@
     <string name="negative_one">-1</string>
     <string name="repositories">Repositories</string>
     <string name="chapter_select_between_error_empty_adapter">AdapterList returned empty, Try again?</string>
-    <string name="volume_scroll">Volume Scroll</string>
+    <string name="settings_reader_volume_scroll_title">Volume Scroll</string>
     <string name="all">All</string>
     <string name="about">About</string>
     <string name="check_for_app_update">Check for app update</string>
@@ -538,6 +538,13 @@
     <string name="controller_browse_filter_name_label">Extension Name</string>
     <string name="settings_view_legacy_nav_title">Use legacy navigation</string>
     <string name="settings_view_legacy_nav_desc">Use legacy drawer navigation</string>
+    <string name="settings_reader_text_alignment_title">Text Alignment</string>
+    <string name="settings_reader_text_alignment_desc">How text is aligned in the reader</string>
+    <string name="settings_reader_tap_to_scroll_desc">Tap top and bottom parts of the screen to scroll</string>
+    <string name="settings_reader_volume_scroll_desc">Use volume buttons to scroll</string>
+    <string name="settings_reader_marking_mode_desc">How chapters are marked as read</string>
+    <string name="settings_reader_resume_behavior_title">Resume first unread</string>
+    <string name="settings_reader_resume_behavior_desc">When clicking the resume button in the novel info view, will ignore reading status to open unread first</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>
