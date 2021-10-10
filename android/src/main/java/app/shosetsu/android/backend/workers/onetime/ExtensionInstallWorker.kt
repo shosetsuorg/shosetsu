@@ -212,6 +212,8 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 							)
 						)
 
+						cleanupImageLoader()
+
 						return Result.failure()
 					},
 					onLoading = {
@@ -226,6 +228,8 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 								extension.name
 							)
 						)
+
+						cleanupImageLoader()
 
 						return Result.failure()
 					},
@@ -243,6 +247,8 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 						logE("Failed to install ${extension.name}", it.exception)
 
 						ACRA.errorReporter.handleException(it.exception)
+
+						cleanupImageLoader()
 
 						return Result.failure()
 					}
