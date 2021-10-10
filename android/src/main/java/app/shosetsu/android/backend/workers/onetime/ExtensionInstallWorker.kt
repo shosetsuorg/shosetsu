@@ -23,6 +23,7 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.cancel
+import org.acra.ACRA
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -62,6 +63,10 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 	private val settingsRepository: ISettingsRepository by instance()
 	private val chaptersRepository: IChaptersRepository by instance()
 
+	private val extensionDownloaderString by lazy {
+		getString(R.string.notification_content_title_extension_download)
+	}
+
 	override suspend fun doWork(): Result {
 		val extensionId = this.inputData.getInt(KEY_EXTENSION_ID, -1)
 		if (extensionId == -1) {
@@ -70,10 +75,93 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 		}
 		val notify: Boolean = settingsRepository.getBooleanOrDefault(NotifyExtensionDownload)
 
+		/** Cancel default notification if present */
+		fun cancelDefault() {
+			if (notify)
+				notificationManager.cancel(defaultNotificationID)
+		}
+
+		/**
+		 * Cancels default and notifies the user
+		 */
+		fun notifyError(contentText: String, contentTitle: String) {
+			cancelDefault()
+
+			notify(
+				contentText,
+				extensionId * -1
+			) {
+				setContentTitle(contentTitle)
+				setContentInfo(extensionDownloaderString)
+				setNotOngoing()
+			}
+		}
+
+		/** Mark extension download status as having an error*/
+		suspend fun markExtensionDownloadAsError() {
+			extensionDownloadRepository.updateStatus(
+				extensionId,
+				DownloadStatus.ERROR
+			)
+		}
+
 		logD("Starting ExtensionInstallWorker for $extensionId")
 
 		// Notify progress
-		extensionRepository.getExtension(extensionId).handle { extension ->
+		extensionRepository.getExtension(extensionId).handle(
+			onEmpty = {
+				markExtensionDownloadAsError()
+
+				logE("Received empty result when loading extension from db:($extensionId)")
+
+				notifyError(
+					"Received empty on load from db",
+					applicationContext.getString(
+						R.string.notification_content_text_extension_load_error,
+						extensionId
+					)
+				)
+
+				return Result.failure()
+			},
+			onLoading = {
+				markExtensionDownloadAsError()
+
+				logE("Received loading result when loading extension from db($extensionId)")
+
+				notifyError(
+					"Received loading on load from db",
+					applicationContext.getString(
+						R.string.notification_content_text_extension_load_error,
+						extensionId
+					)
+				)
+
+				return Result.failure()
+			},
+			onError = {
+				markExtensionDownloadAsError()
+
+				logE(
+					"Received error result when loading extension from db($extensionId)\n" +
+							"Code:${it.code}",
+					it.exception
+				)
+
+				notifyError(
+					it.message,
+					applicationContext.getString(
+						R.string.notification_content_text_extension_load_error,
+						extensionId
+					)
+				)
+
+				ACRA.errorReporter.handleException(it.exception)
+
+				return Result.failure()
+			}
+		) { extension ->
+
 			// Load image, this tbh may take longer then the actual extension
 			var imageBitmap: Bitmap? = null
 
@@ -103,48 +191,67 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 					),
 				) {
 					setProgress(0, 0, true)
-					setLargeIcon(bitmap)
+					setLargeIcon(imageBitmap)
 				}
+
 			extensionDownloadRepository.updateStatus(
 				extensionId,
 				DownloadStatus.DOWNLOADING
 			).handle {
 				installExtension(extension).handle(
-					onError = {
-						extensionDownloadRepository.updateStatus(
-							extensionId,
-							DownloadStatus.ERROR
-						)
-						if (notify)
-							notificationManager.cancel(defaultNotificationID)
+					onEmpty = {
+						markExtensionDownloadAsError()
 
-						notify(
+						logE("Received empty result when loading extension from db:($extensionId)")
+
+						notifyError(
+							"Received empty when installing extension",
+							applicationContext.getString(
+								R.string.notification_content_text_extension_installed_failed,
+								extension.name
+							)
+						)
+
+						return Result.failure()
+					},
+					onLoading = {
+						markExtensionDownloadAsError()
+
+						logE("Received loading result when loading extension from db($extensionId)")
+
+						notifyError(
+							"Received loading when installing extension",
+							applicationContext.getString(
+								R.string.notification_content_text_extension_installed_failed,
+								extension.name
+							)
+						)
+
+						return Result.failure()
+					},
+					onError = {
+						markExtensionDownloadAsError()
+
+						notifyError(
 							it.message,
-							extensionId * -1
-						) {
-							setContentTitle(
-								applicationContext.getString(
-									R.string.notification_content_text_extension_installed_failed,
-									extension.name
-								)
+							applicationContext.getString(
+								R.string.notification_content_text_extension_installed_failed,
+								extension.name
 							)
-							setContentInfo(
-								getString(
-									R.string.notification_content_title_extension_download
-								)
-							)
-							setNotOngoing()
-						}
+						)
 
 						logE("Failed to install ${extension.name}", it.exception)
+
+						ACRA.errorReporter.handleException(it.exception)
+
+						return Result.failure()
 					}
 				) { flags ->
 					extensionDownloadRepository.updateStatus(
 						extensionId,
 						DownloadStatus.COMPLETE
 					).ifSo {
-						if (notify)
-							notificationManager.cancel(defaultNotificationID)
+						cancelDefault()
 
 						extensionDownloadRepository.remove(extensionId).ifSo {
 							if (notify)
@@ -157,12 +264,8 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 												extension.name
 											)
 										)
-										setContentInfo(
-											getString(
-												R.string.notification_content_title_extension_download
-											)
-										)
-										setLargeIcon(bitmap)
+										setContentInfo(extensionDownloaderString)
+										setLargeIcon(imageBitmap)
 										removeProgress()
 										setNotOngoing()
 									}.build()
@@ -174,6 +277,8 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 						chaptersRepository.getChaptersByExtension(extensionId).handle(
 							onError = {
 								logE("Failed to get chapters by extension", it.exception)
+
+								ACRA.errorReporter.handleException(it.exception)
 							}
 						) { list ->
 							list.forEach {
@@ -199,7 +304,7 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 	override val baseNotificationBuilder: NotificationCompat.Builder
 		get() = notificationBuilder(applicationContext, Notifications.CHANNEL_DOWNLOAD)
 			.setSmallIcon(R.drawable.download)
-			.setContentTitle(getString(R.string.notification_content_title_extension_download))
+			.setContentTitle(extensionDownloaderString)
 			.setPriority(NotificationCompat.PRIORITY_HIGH)
 			.setOngoing(true)
 
