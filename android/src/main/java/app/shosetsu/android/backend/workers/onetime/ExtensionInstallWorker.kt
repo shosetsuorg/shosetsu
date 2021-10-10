@@ -22,6 +22,7 @@ import app.shosetsu.common.enums.DownloadStatus
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
+import kotlinx.coroutines.cancel
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -74,13 +75,25 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 		// Notify progress
 		extensionRepository.getExtension(extensionId).handle { extension ->
 			// Load image, this tbh may take longer then the actual extension
+			var imageBitmap: Bitmap? = null
 
-			val bitmap: Bitmap? =
-				if (notify) {
+			val imageLoadJob = launchIO {
+				imageBitmap = if (notify) {
 					applicationContext.imageLoader.execute(
 						ImageRequest.Builder(applicationContext).data(extension.imageURL).build()
 					).drawable?.toBitmap()
 				} else null
+			}
+
+			/**
+			 * Cancel image loading job and clear out bitmap
+			 */
+			fun cleanupImageLoader() {
+				imageLoadJob.cancel("Extension already installed")
+
+				imageBitmap?.recycle()
+				imageBitmap = null
+			}
 
 			if (notify)
 				notify(
@@ -170,6 +183,8 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 					}
 				}
 			}
+
+			cleanupImageLoader()
 		}
 		logD("Completed install")
 		return Result.success()
