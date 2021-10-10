@@ -213,6 +213,11 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 					// Use a single memory location for the bitmap
 					var bitmap: Bitmap? = null
 
+					fun clearBitmap() {
+						bitmap?.recycle()
+						bitmap = null
+					}
+
 					backupNovels.forEach novelLoop@{ (bNovelURL, name, imageURL, bChapters, bSettings) ->
 						// If none match the extension ID and URL, time to load it up
 						val loadImageJob = launchIO {
@@ -247,6 +252,8 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 									setLargeIcon(bitmap)
 									setNotOngoing()
 								}
+
+								clearBitmap()
 								return@novelLoop
 							}
 
@@ -285,12 +292,16 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 							// Get the novelID from the present novels, or just end this update
 							repoNovels.find { it.extensionID == extensionEntity.id && it.url == bNovelURL }?.id?.let { it ->
 								targetNovelID = it
-							} ?: return@novelLoop
+							} ?: run {
+								clearBitmap()
+								return@novelLoop
+							}
 						}
 
 						// if the ID is still -1, return
 						if (targetNovelID == -1) {
 							logE("Could not find novel, even after injecting, aborting")
+							clearBitmap()
 							return@novelLoop
 						}
 
@@ -371,7 +382,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 
 						loadImageJob.join() // Finish the image loading job
 
-						bitmap = null // Remove data from bitmap
+						clearBitmap()// Remove data from bitmap
 					}
 				}
 			}
