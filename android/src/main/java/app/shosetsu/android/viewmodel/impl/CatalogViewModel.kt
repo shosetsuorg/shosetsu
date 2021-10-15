@@ -273,6 +273,8 @@ class CatalogViewModel(
 
 	override fun resetView() {
 		itemsFlow.tryEmit(successResult(arrayListOf()))
+		queryState = ""
+		filterDataState.clear()
 		applyFilter()
 	}
 
@@ -292,6 +294,7 @@ class CatalogViewModel(
 		extensionIDFlow.value = -1
 		itemsFlow.tryEmit(successResult(arrayListOf()))
 		itemsFlow.tryEmit(loading)
+		filterDataState.clear()
 		stateManager = StateManager()
 	}
 
