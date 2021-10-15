@@ -1,17 +1,18 @@
 package app.shosetsu.android.viewmodel.impl
 
 import androidx.lifecycle.LiveData
+import app.shosetsu.android.common.ext.trimDate
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.load.LoadUpdatesUseCase
 import app.shosetsu.android.domain.usecases.start.StartUpdateWorkerUseCase
 import app.shosetsu.android.view.uimodels.model.UpdateUI
 import app.shosetsu.android.viewmodel.abstracted.AUpdatesViewModel
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.mapLatestResult
-import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.ReadingStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.mapLatest
+import org.joda.time.DateTime
 
 /*
  * This file is part of shosetsu.
@@ -43,13 +44,22 @@ class UpdatesViewModel(
 	private val startUpdateWorkerUseCase: StartUpdateWorkerUseCase,
 	private val isOnlineUseCase: IsOnlineUseCase
 ) : AUpdatesViewModel() {
-	@ExperimentalCoroutinesApi
-	override val liveData: LiveData<HResult<List<UpdateUI>>> by lazy {
+	private val updatesFlow by lazy {
 		getUpdatesUseCase()
 			.mapLatestResult { list ->
 				successResult(list.sortedByDescending { it.time })
 			}
-			.asIOLiveData()
+			.mapLatest { hResult ->
+				hResult.transform {
+					if (it.isEmpty()) emptyResult()
+					else successResult(it)
+				}
+			}
+	}
+
+	@ExperimentalCoroutinesApi
+	override val liveData: LiveData<HResult<List<UpdateUI>>> by lazy {
+		updatesFlow.asIOLiveData()
 	}
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
@@ -59,6 +69,16 @@ class UpdatesViewModel(
 	override fun startUpdateManager() = startUpdateWorkerUseCase()
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
+
+	override val items: LiveData<HResult<Map<DateTime, List<UpdateUI>>>> by lazy {
+		updatesFlow.mapLatest { result ->
+			result.transformToSuccess { list ->
+				list.groupBy {
+					DateTime(it.time).trimDate()
+				}
+			}
+		}.asIOLiveData()
+	}
 
 	override suspend fun updateChapter(updateUI: UpdateUI, readingStatus: ReadingStatus) {
 	}

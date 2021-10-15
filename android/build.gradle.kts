@@ -148,9 +148,9 @@ dependencies {
 	implementation("com.google.android.material:material:1.4.0")
 
 	// Androidx
-	implementation("androidx.constraintlayout:constraintlayout:2.1.0")
-	implementation("androidx.work:work-runtime:2.7.0-beta01")
-	implementation("androidx.work:work-runtime-ktx:2.7.0-beta01")
+	implementation("androidx.constraintlayout:constraintlayout:2.1.1")
+	implementation("androidx.work:work-runtime:2.7.0-rc01")
+	implementation("androidx.work:work-runtime-ktx:2.7.0-rc01")
 	implementation("androidx.gridlayout:gridlayout:1.0.0")
 	implementation("androidx.preference:preference-ktx:1.1.1")
 	implementation("androidx.recyclerview:recyclerview:1.2.1")
@@ -313,17 +313,17 @@ dependencies {
 
 
 	// Compose
-	implementation("androidx.compose.ui:ui:1.0.2")
+	implementation("androidx.compose.ui:ui:1.0.3")
 
-	implementation("androidx.compose.compiler:compiler:1.0.2")
+	implementation("androidx.compose.compiler:compiler:1.0.3")
 
 	//- Tooling support (Previews, etc.)
-	implementation("androidx.compose.ui:ui-tooling:1.0.2")
+	implementation("androidx.compose.ui:ui-tooling:1.0.3")
 	//- Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-	implementation("androidx.compose.foundation:foundation:1.0.2")
+	implementation("androidx.compose.foundation:foundation:1.0.3")
 
 	// - Material
-	implementation("androidx.compose.material:material:1.0.2")
+	implementation("androidx.compose.material:material:1.0.3")
 	//implementation("androidx.compose.material:material-ripple:1.0.2")
 
 	//- Material design icons
@@ -331,14 +331,15 @@ dependencies {
 	//implementation("androidx.compose.material:material-icons-extended:1.0.2")
 
 	//- Integration with observables
-	implementation("androidx.compose.runtime:runtime-livedata:1.0.2")
+	implementation("androidx.compose.runtime:runtime-livedata:1.0.3")
 
 	//- UI Tests
 	//androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.2")
 
 	// MDC Adapter
-	implementation("com.google.android.material:compose-theme-adapter:1.0.2")
+	implementation("com.google.android.material:compose-theme-adapter:1.0.3")
 	implementation("com.google.accompanist:accompanist-appcompat-theme:0.15.0")
+	implementation("com.google.accompanist:accompanist-swiperefresh:0.19.0")
 
 	implementation("androidx.activity:activity:1.3.1")
 	implementation("androidx.activity:activity-ktx:1.3.1")

@@ -412,7 +412,7 @@
     <!-- Empty View Messages -->
     <string name="empty_browse_message">There are no extensions, Refresh this page or check your repositories</string>
     <string name="empty_library_message">You don\'t have any novels, Go to "Browse" and add some</string>
-    <string name="empty_updates_message">No updates, Lets check for some (Refresh or press below)</string>
+    <string name="empty_updates_message">No updates, Lets check for some\n(Refresh or press below)</string>
     <string name="empty_downloads_message">No downloads pending, Go download some chapters</string>
     <string name="empty_repositories_message">You have no repositories, This app is useless without them</string>
 
