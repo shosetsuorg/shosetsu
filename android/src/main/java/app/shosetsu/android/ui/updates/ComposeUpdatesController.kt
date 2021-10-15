@@ -26,10 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.shosetsu.android.common.ext.displayOfflineSnackBar
-import app.shosetsu.android.common.ext.openChapter
-import app.shosetsu.android.common.ext.trimDate
-import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.compose.EmptyDataContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
@@ -44,6 +41,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.composethemeadapter.MdcTheme
+import org.acra.ACRA
 import org.joda.time.DateTime
 import java.util.*
 
@@ -88,6 +86,7 @@ class ComposeUpdatesController : CollapsedToolBarController, ShosetsuController(
 		setContent {
 			MdcTheme {
 				UpdatesContent(
+					this@ComposeUpdatesController,
 					viewModel,
 					onRefresh = this@ComposeUpdatesController::onRefresh
 				) { (chapterID, novelID) ->
@@ -108,6 +107,7 @@ class ComposeUpdatesController : CollapsedToolBarController, ShosetsuController(
 @ExperimentalFoundationApi
 @Composable
 fun UpdatesContent(
+	parent: ComposeUpdatesController,
 	viewModel: AUpdatesViewModel,
 	onRefresh: () -> Unit,
 	openChapter: (UpdateUI) -> Unit
@@ -133,7 +133,9 @@ fun UpdatesContent(
 				}
 			},
 			onError = {
+				parent.logE("Error on handling result in updates", it.exception)
 
+				ACRA.errorReporter.handleException(it.exception)
 			},
 			onLoading = {
 				isRefreshing.isRefreshing = true
