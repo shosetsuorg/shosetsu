@@ -75,7 +75,7 @@ class DownloadWorker(
 					action = ACTION_CANCEL_CHAPTER_DOWNLOAD
 					putExtra(EXTRA_NOTIFICATION_ID, defaultNotificationID)
 				},
-				0
+				if (SDK_INT >= VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
 			)
 		)
 	}

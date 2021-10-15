@@ -90,9 +90,8 @@ class NovelUpdateWorker(
 				Intent(applicationContext, NotificationBroadcastReceiver::class.java).apply {
 					action = ACTION_CANCEL_NOVEL_UPDATE
 					putExtra(EXTRA_NOTIFICATION_ID, defaultNotificationID)
-
 				},
-				0
+				if (SDK_INT >= VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
 			)
 		)
 	}
