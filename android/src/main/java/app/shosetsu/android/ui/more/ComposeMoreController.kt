@@ -123,11 +123,16 @@ fun MoreContent(pushController: (Controller) -> Unit) {
 	Column(
 		modifier = Modifier.fillMaxWidth().scrollable(rememberScrollState(), Orientation.Vertical)
 	) {
-		Image(
-			painterResource(R.drawable.shou_icon_thick),
-			stringResource(R.string.app_name),
-			modifier = Modifier.fillMaxWidth()
-		)
+		Card(
+			elevation = 0.dp,
+			shape = RectangleShape
+		) {
+			Image(
+				painterResource(R.drawable.shou_icon_thick),
+				stringResource(R.string.app_name),
+				modifier = Modifier.fillMaxWidth()
+			)
+		}
 		Divider()
 		Column {
 			MoreItemContent(R.string.downloads, R.drawable.download) {
