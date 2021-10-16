@@ -143,7 +143,9 @@ fun UpdatesContent(
 		) { groupedItems ->
 			isRefreshing.isRefreshing = false
 
-			LazyColumn {
+			LazyColumn(
+				contentPadding = PaddingValues(bottom = 112.dp)
+			) {
 				groupedItems.forEach { (header, updateItems) ->
 					stickyHeader {
 						UpdateHeaderItemContent(header)
