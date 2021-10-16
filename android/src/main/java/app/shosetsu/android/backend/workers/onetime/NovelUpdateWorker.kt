@@ -144,7 +144,7 @@ class NovelUpdateWorker(
 
 		iNovelsRepository.loadBookmarkedNovelEntities().transformToSuccess { list ->
 			if (onlyUpdateOngoing())
-				list.filter { it.status == Novel.Status.PUBLISHING }
+				list.filter { it.status != Novel.Status.COMPLETED }
 			else list
 		}.handle(
 			onError = { return Result.failure() },
