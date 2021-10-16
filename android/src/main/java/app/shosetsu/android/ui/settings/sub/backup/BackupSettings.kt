@@ -2,7 +2,6 @@ package app.shosetsu.android.ui.settings.sub.backup
 
 import android.content.Context
 import android.net.Uri
-import android.webkit.MimeTypeMap
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContracts
@@ -127,11 +126,7 @@ class BackupSettings : SettingsSubController() {
 					return@register
 				}
 
-				if (MimeTypeMap.getFileExtensionFromUrl(uri.toString()) != BACKUP_FILE_EXTENSION) {
-					logV("invalid type")
-					context?.toast("Invalid file")
-					return@register
-				}
+				// TODO Possibly add popup verification to make sure that an invalid file ext is oki
 
 				context?.toast("Restoring now...")
 				viewModel.restore(uri)
