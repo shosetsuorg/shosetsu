@@ -104,13 +104,7 @@ class DownloadSettingsViewModel(
 				}
 			}
 		},
-		textSettingData(1) {
-			title { R.string.download_directory }
-			settingsRepo.getString(CustomExportDirectory).handle {
-				text { it }
-			}
-			//onClicked { performFileSearch() }
-		},
+		// TODO Figure out how to change download directory
 		switchSettingData(3) {
 			title { R.string.download_chapter_updates }
 			checkSettingValue(DownloadNewNovelChapters)
