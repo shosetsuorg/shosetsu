@@ -34,7 +34,7 @@ Join us on our Discord server:
 
 ### Your own catalog!
 <p align="center">
-    <img src="./screenshots/shosetsu-library.png" width="30%"></img>
+    <img src="./screenshots/shosetsu-library.png" width="50%"></img>
 </p>
 
 ### Novels!
