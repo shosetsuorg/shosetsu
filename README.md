@@ -32,22 +32,34 @@ Join us on our Discord server:
 
 ## Screenshots:
 
-Your own catalog!
-<img src="./screenshots/shosetsu-library.png" width="30%"></img>
+### Your own catalog!
+<p align="center">
+    <img src="./screenshots/shosetsu-library.png" width="30%"></img>
+</p>
 
-Novels!
-<img src="./screenshots/shosetsu-novel-info.png" width="30%"></img>
-<img src="./screenshots/shosetsu-reader-html-plain.png" width="30%"></img>
+### Novels!
+<p align="center">
+    <img src="./screenshots/shosetsu-novel-info.png" width="30%"></img>
+    <img src="./screenshots/shosetsu-reader-html-plain.png" width="30%"></img>
+</p>
 
-Customization!
-<img src="./screenshots/shosetsu-reader-html-custom.png" width="30%"></img>
+### Customization!
+<p align="center">
+    <img src="./screenshots/shosetsu-reader-html-custom.png" width="30%"></img>
+</p>
 
-Sources for all!
-<img src="./screenshots/shosetsu-browse.png" width="30%"></img>
-<img src="./screenshots/shosetsu-browse-royalroad.png" width="30%"></img>
+### Sources for all!
+<p align="center">
+    <img src="./screenshots/shosetsu-browse.png" width="30%"></img>
+    <img src="./screenshots/shosetsu-browse-royalroad.png" width="30%"></img>
+</p>
 
-Downloading!
-<img src="./screenshots/shosetsu-download.png" width="30%"></img>
+### Downloading!
+<p align="center">
+    <img src="./screenshots/shosetsu-download.png" width="30%"></img>
+</p>
 
 Keep track!
-<img src="./screenshots/shosetsu-updates.png" width="30%"></img>
+<p align="center">
+    <img src="./screenshots/shosetsu-updates.png" width="30%"></img>
+</p>
