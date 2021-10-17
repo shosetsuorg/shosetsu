@@ -47,6 +47,7 @@ Join us on our Discord server:
 <p align="center">
     <img src="./screenshots/shosetsu-reader-html-custom.png" width="30%"></img>
 </p>
+Thank you Sweet0Potato#9784 for the CSS
 
 ### Sources for all!
 <p align="center">
