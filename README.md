@@ -59,7 +59,7 @@ Join us on our Discord server:
     <img src="./screenshots/shosetsu-download.png" width="30%"></img>
 </p>
 
-Keep track!
+### Keep track!
 <p align="center">
     <img src="./screenshots/shosetsu-updates.png" width="30%"></img>
 </p>
