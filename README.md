@@ -3,12 +3,13 @@
 
 # ![logo](https://github.com/shosetsuorg/android-app/blob/development/android/src/main/res/mipmap-hdpi/ic_launcher.png) Shosetsu
 
-A free and open source android application for reading novels.  
-Use at your own discretion as this app is currently in beta and may have bugs. 
-We appreciate any help in improving the app, so let us know by either [opening an issue](../../issues/new) or via Discord.
-  
- Download Development! | There is no mainline ;-;
+The Free & Open Source Android Application for reading (Light) Novels!
+
+We appreciate any help in improving the app, so let us know by [opening an issue](../../issues/new).
+
+Download Development! | There is no mainline ;-;
 ---------------------- | ---------------------
+
 <a href="https://github.com/shosetsuorg/shosetsu-preview/releases/latest"><img src="https://github.com/shosetsuorg/android-app/blob/development/android/src/debug/res/mipmap-xxxhdpi/ic_launcher.png" alt="Get it directly!" height="80"></a>
 
 Join us on our Discord server:
@@ -18,18 +19,35 @@ Join us on our Discord server:
 </a>
 
 ## Capabilities:
+
 - [x] Many sources to read from!
 - [x] Add the ones you like to your library!
 - [x] Single button press to get all the latest chapters!
 - [x] Settings that make you wonder what happened!
-- [x] A reader that lets you read! With variable tabbing, spacing, and sizing!
-- [x] Download your favorite chapters to read then, or later!
-- [ ] Tracking
-- [ ] Actually efficient coding
+- [x] Completely customizable reader! [1]
+- [x] Awesome UI!
+- [x] Fast fast fast!
+
+[1] Using HTML reader
 
 ## Screenshots:
-<img src="./screenshots/0.jpg" width="30%"></img>
-<img src="./screenshots/1.jpg" width="30%"></img>
-<img src="./screenshots/2.jpg" width="30%"></img>
-<img src="./screenshots/3.jpg" width="30%"></img>
-<img src="./screenshots/4.jpg" width="30%"></img>
+
+Your own catalog!
+<img src="./screenshots/shosetsu-library.png" width="30%"></img>
+
+Novels!
+<img src="./screenshots/shosetsu-novel-info.png" width="30%"></img>
+<img src="./screenshots/shosetsu-reader-html-plain.png" width="30%"></img>
+
+Customization!
+<img src="./screenshots/shosetsu-reader-html-custom.png" width="30%"></img>
+
+Sources for all!
+<img src="./screenshots/shosetsu-browse.png" width="30%"></img>
+<img src="./screenshots/shosetsu-browse-royalroad.png" width="30%"></img>
+
+Downloading!
+<img src="./screenshots/shosetsu-download" width="30%"></img>
+
+Keep track!
+<img src="./screenshots/shosetsu-updates.png" width="30%"></img>
