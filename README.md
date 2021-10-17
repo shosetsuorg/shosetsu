@@ -47,7 +47,7 @@ Sources for all!
 <img src="./screenshots/shosetsu-browse-royalroad.png" width="30%"></img>
 
 Downloading!
-<img src="./screenshots/shosetsu-download" width="30%"></img>
+<img src="./screenshots/shosetsu-download.png" width="30%"></img>
 
 Keep track!
 <img src="./screenshots/shosetsu-updates.png" width="30%"></img>
