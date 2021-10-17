@@ -1,17 +1,15 @@
 {
-  "latestVersion": "1618",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1618/shosetsu-r1618.apk",
+  "latestVersion": "1639",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1639/shosetsu-r1639.apk",
   "releaseNotes": [
-    "- Handle crashes in memory",
-    "- Throw if exception is an error",
-    "- Fix text input clearing content",
-    "- Fix back button causing crash",
-    "- Convert ViewSettings to Compose",
-    "- Fix extension library update regression",
-    "- RestoreBackupWorker now has ACRA reporting for errors",
-    "- Set AMOLED default foreground to white (for new users)",
-    "- Fix duplicate prepend/append filename for backups",
-    "- Convert SettingsController to Compose",
-    "- Convert MoreController to Compose"
+    "- ExtensionInstallWorker loads image loader async & cleans up after for memory efficiency",
+    "- Add more error reporting to ExtensionInstallWorker",
+    "- Clean up images in RestoreBackupWorker for memory efficiency",
+    "- Add android 12 support",
+    "- Migrate Updates view to compose",
+    "- Inline Shosetsu logo in More view",
+    "- Remove file extension verification for backups",
+    "- Remove unused 'download directory' setting",
+    "- Fix update only ongoing novels not working properly"
   ]
 }
