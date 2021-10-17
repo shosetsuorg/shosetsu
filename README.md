@@ -39,28 +39,28 @@ Join us on our Discord server:
 
 ### Novels!
 <p align="center">
-    <img src="./screenshots/shosetsu-novel-info.png" width="30%"></img>
-    <img src="./screenshots/shosetsu-reader-html-plain.png" width="30%"></img>
+    <img src="./screenshots/shosetsu-novel-info.png" width="50%"></img>
+    <img src="./screenshots/shosetsu-reader-html-plain.png" width="50%"></img>
 </p>
 
 ### Customization!
 <p align="center">
-    <img src="./screenshots/shosetsu-reader-html-custom.png" width="30%"></img>
+    <img src="./screenshots/shosetsu-reader-html-custom.png" width="50%"></img>
 </p>
 Thank you Sweet0Potato#9784 for the CSS
 
 ### Sources for all!
 <p align="center">
-    <img src="./screenshots/shosetsu-browse.png" width="30%"></img>
-    <img src="./screenshots/shosetsu-browse-royalroad.png" width="30%"></img>
+    <img src="./screenshots/shosetsu-browse.png" width="50%"></img>
+    <img src="./screenshots/shosetsu-browse-royalroad.png" width="50%"></img>
 </p>
 
 ### Downloading!
 <p align="center">
-    <img src="./screenshots/shosetsu-download.png" width="30%"></img>
+    <img src="./screenshots/shosetsu-download.png" width="50%"></img>
 </p>
 
 ### Keep track!
 <p align="center">
-    <img src="./screenshots/shosetsu-updates.png" width="30%"></img>
+    <img src="./screenshots/shosetsu-updates.png" width="50%"></img>
 </p>
