@@ -105,7 +105,7 @@ class AppUpdateCheckWorker(
 							applicationContext,
 							0,
 							openAppForUpdateIntent,
-							0
+							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
 						)
 					)
 				}
