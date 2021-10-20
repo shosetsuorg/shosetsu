@@ -7,7 +7,7 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <!-- Some ROMs make black navbars white (e.g. OxygenOS) -->
-        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/black_trans</item>
     </style>
 
     <style name="AppTheme.Main" parent="AppTheme">
