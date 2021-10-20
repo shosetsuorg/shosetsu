@@ -2,9 +2,7 @@ package app.shosetsu.android.ui.settings.sub
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.getSystemService
-import androidx.core.view.postDelayed
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.settings.SettingsSubController
@@ -100,6 +98,7 @@ class ReaderSettings : SettingsSubController() {
 				}
 			}
 		}
+		/*
 		find<CustomBottomSettingData>(1)?.customView {
 			it.context.getSystemService<LayoutInflater>()!!.inflate(
 				R.layout.reader_theme_example,
@@ -148,5 +147,7 @@ class ReaderSettings : SettingsSubController() {
 				}
 			}
 		}
+
+		*/
 	}
 }
