@@ -134,9 +134,7 @@ data class NovelUI(
 			// Loads the image
 			listOf(novelImage, novelImageBackground).forEach { iV: ImageView? ->
 				if (item.imageURL.isNotEmpty()) {
-					iV?.let {
-						it.shosetsuLoad(item.imageURL)
-					}
+					iV?.shosetsuLoad(item.imageURL)
 				} else {
 					iV?.setImageResource(R.drawable.broken_image)
 				}

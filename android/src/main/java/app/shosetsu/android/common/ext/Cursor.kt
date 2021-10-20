@@ -20,25 +20,26 @@ import android.database.Cursor
  */
 
 fun Cursor.getShort(key: String): Short =
-	getShort(getColumnIndex(key))
+	getColumnIndex(key).takeIf { it >= 0 }?.let { getShort(it) }!!
+
 
 fun Cursor.getInt(key: String): Int =
-	getInt(getColumnIndex(key))
+	getColumnIndex(key).takeIf { it >= 0 }?.let { getInt(it) }!!
 
 fun Cursor.getLong(key: String): Long =
-	getLong(getColumnIndex(key))
+	getColumnIndex(key).takeIf { it >= 0 }?.let { getLong(it) }!!
 
 fun Cursor.getBlob(key: String): ByteArray =
-	getBlob(getColumnIndex(key))
+	getColumnIndex(key).takeIf { it >= 0 }?.let { getBlob(it) }!!
 
 fun Cursor.getFloat(key: String): Float =
-	getFloat(getColumnIndex(key))
+	getColumnIndex(key).takeIf { it >= 0 }?.let { getFloat(it) }!!
 
 fun Cursor.getDouble(key: String): Double =
-	getDouble(getColumnIndex(key))
+	getColumnIndex(key).takeIf { it >= 0 }?.let { getDouble(it) }!!
 
 fun Cursor.getString(key: String): String =
-	getString(getColumnIndex(key))
+	getColumnIndex(key).takeIf { it >= 0 }?.let { getString(it) }!!
 
 fun Cursor.getStringOrNull(key: String): String? =
-	getString(getColumnIndex(key))
+	getColumnIndex(key).takeIf { it >= 0 }?.let { getString(it) }

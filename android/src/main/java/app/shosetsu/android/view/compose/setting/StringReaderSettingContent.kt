@@ -58,8 +58,7 @@ fun StringSettingContent(
 ) {
 	val value by repo.getStringFlow(key).collectAsState(key.default)
 
-	Column(
-	) {
+	Column {
 		TextField(
 			value = value,
 			onValueChange = {

@@ -169,20 +169,26 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 	 * @return the new [DBChapterEntity]
 	 */
 	@Transaction
-	@Throws(IndexOutOfBoundsException::class, SQLiteException::class)
+	@Throws(
+		IndexOutOfBoundsException::class,
+		SQLiteException::class,
+		IndexOutOfBoundsException::class
+	)
 	private suspend fun insertReturn(
 		novelID: Int,
 		extensionID: Int,
 		novelChapter: Novel.Chapter,
-	): DBChapterEntity? =
-		insertAbort(
+	): DBChapterEntity? {
+		val rowId = insertAbort(
 			novelChapter = novelChapter,
 			novelID = novelID,
 			extensionID = extensionID
-		).let { rowId ->
-			if (rowId < 0) throw IndexOutOfBoundsException("Invalid rowId")
-			getChapter(rowId)
-		}
+		)
+
+		if (rowId < 0) throw IndexOutOfBoundsException("Invalid rowId")
+
+		return getChapter(rowId)
+	}
 
 	/**
 	 * Inserts a new [DBChapterEntity] using [novelChapter] as the data

@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:background="@android:color/black"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="app.shosetsu.android.ui.reader.ChapterReader">
 
 
     <LinearLayout
@@ -16,17 +17,17 @@
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:textColor="@color/grey_B_40"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Last chapter: " />
+            android:text="Last chapter: "
+            android:textColor="@color/grey_B_40" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/previous_chapter"
             android:layout_width="wrap_content"
-            android:textColor="@color/grey_B_40"
             android:layout_height="wrap_content"
             android:textAlignment="center"
+            android:textColor="@color/grey_B_40"
             tools:text="Chapter 1" />
     </LinearLayout>
 
@@ -40,16 +41,16 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
-            android:textColor="@color/grey_B_40"
             android:layout_height="wrap_content"
-            android:text="Next chapter: " />
+            android:text="Next chapter: "
+            android:textColor="@color/grey_B_40" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/next_chapter"
-            android:textColor="@color/grey_B_40"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAlignment="center"
+            android:textColor="@color/grey_B_40"
             tools:text="Chapter 2" />
     </LinearLayout>
 
@@ -58,8 +59,8 @@
         android:id="@+id/no_more_chapters"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/grey_B_40"
         android:text="@string/no_more_chapters"
         android:textAlignment="center"
+        android:textColor="@color/grey_B_40"
         android:visibility="gone" />
 </LinearLayout>

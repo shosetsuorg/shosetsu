@@ -87,6 +87,7 @@ class EPUBReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	}
 
 	override fun bindView(item: ReaderChapterUI, payloads: List<Any>) {
+		super.bindView(item, payloads)
 		TODO("Not yet implemented")
 	}
 

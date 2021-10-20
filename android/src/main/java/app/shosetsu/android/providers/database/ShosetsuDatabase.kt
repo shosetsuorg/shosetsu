@@ -119,11 +119,17 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 											val keyName = "name"
 											put(
 												keyURL,
-												cursor.getString(cursor.getColumnIndex(keyURL))
+												cursor.getColumnIndex(keyURL).takeIf { it >= 0 }
+													?.let {
+														cursor.getString(it)
+													}
 											)
 											put(
 												keyName,
-												cursor.getString(cursor.getColumnIndex(keyName))
+												cursor.getColumnIndex(keyURL).takeIf { it >= 0 }
+													?.let {
+														cursor.getString(it)
+													}
 											)
 											put("isEnabled", true)
 										}

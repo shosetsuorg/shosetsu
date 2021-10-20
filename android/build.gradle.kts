@@ -149,8 +149,8 @@ dependencies {
 
 	// Androidx
 	implementation("androidx.constraintlayout:constraintlayout:2.1.1")
-	implementation("androidx.work:work-runtime:2.7.0-rc01")
-	implementation("androidx.work:work-runtime-ktx:2.7.0-rc01")
+	implementation("androidx.work:work-runtime:2.7.0")
+	implementation("androidx.work:work-runtime-ktx:2.7.0")
 	implementation("androidx.gridlayout:gridlayout:1.0.0")
 	implementation("androidx.preference:preference-ktx:1.1.1")
 	implementation("androidx.recyclerview:recyclerview:1.2.1")
@@ -313,17 +313,17 @@ dependencies {
 
 
 	// Compose
-	implementation("androidx.compose.ui:ui:1.0.3")
+	implementation("androidx.compose.ui:ui:1.0.4")
 
-	implementation("androidx.compose.compiler:compiler:1.0.3")
+	implementation("androidx.compose.compiler:compiler:1.0.4")
 
 	//- Tooling support (Previews, etc.)
-	implementation("androidx.compose.ui:ui-tooling:1.0.3")
+	implementation("androidx.compose.ui:ui-tooling:1.0.4")
 	//- Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-	implementation("androidx.compose.foundation:foundation:1.0.3")
+	implementation("androidx.compose.foundation:foundation:1.0.4")
 
 	// - Material
-	implementation("androidx.compose.material:material:1.0.3")
+	implementation("androidx.compose.material:material:1.0.4")
 	//implementation("androidx.compose.material:material-ripple:1.0.2")
 
 	//- Material design icons
@@ -331,13 +331,13 @@ dependencies {
 	//implementation("androidx.compose.material:material-icons-extended:1.0.2")
 
 	//- Integration with observables
-	implementation("androidx.compose.runtime:runtime-livedata:1.0.3")
+	implementation("androidx.compose.runtime:runtime-livedata:1.0.4")
 
 	//- UI Tests
 	//androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.2")
 
 	// MDC Adapter
-	implementation("com.google.android.material:compose-theme-adapter:1.0.3")
+	implementation("com.google.android.material:compose-theme-adapter:1.0.4")
 	implementation("com.google.accompanist:accompanist-appcompat-theme:0.15.0")
 	implementation("com.google.accompanist:accompanist-swiperefresh:0.19.0")
 
