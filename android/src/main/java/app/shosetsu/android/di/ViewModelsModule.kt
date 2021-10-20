@@ -50,7 +50,8 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			canAppSelfUpdateUseCase = instance(),
 			loadAppUpdateUseCase = instance(),
 			loadRequireDoubleBackUseCase = instance(),
-			loadBackupProgress = instance()
+			loadBackupProgress = instance(),
+			settingsRepository = instance()
 		)
 	}
 
@@ -249,11 +250,6 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			iSettingsRepository = instance(),
 			application = instance(),
 			reportExceptionUseCase = instance()
-		)
-	}
-	bind<ASplashScreenViewModel>() with provider {
-		SplashScreenViewModel(
-			settingsRepository = instance()
 		)
 	}
 	bind<ATextAssetReaderViewModel>() with provider {

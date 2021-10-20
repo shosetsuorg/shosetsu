@@ -61,4 +61,10 @@ abstract class AMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel,
 	abstract fun handleAppUpdate()
 
 	abstract val backupProgressState: LiveData<HResult<Unit>>
+
+	/** If the application should show the show splash screen */
+	abstract suspend fun showIntro(): Boolean
+
+	/** Toggle the state if show intro or not*/
+	abstract fun toggleShowIntro()
 }

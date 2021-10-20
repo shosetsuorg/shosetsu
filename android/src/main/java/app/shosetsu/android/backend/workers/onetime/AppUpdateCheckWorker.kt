@@ -9,6 +9,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
+import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
 import app.shosetsu.android.common.consts.ACTION_OPEN_APP_UPDATE
@@ -19,7 +20,6 @@ import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.load.LoadRemoteAppUpdateUseCase
-import app.shosetsu.android.ui.splash.SplashScreen
 import app.shosetsu.common.consts.settings.SettingKey.AppUpdateOnMeteredConnection
 import app.shosetsu.common.consts.settings.SettingKey.AppUpdateOnlyWhenIdle
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
@@ -60,7 +60,7 @@ class AppUpdateCheckWorker(
 ) : CoroutineWorker(appContext, params), DIAware, NotificationCapable {
 	override val di: DI by closestDI(applicationContext)
 	private val openAppForUpdateIntent: Intent
-		get() = Intent(applicationContext, SplashScreen::class.java).apply {
+		get() = Intent(applicationContext, MainActivity::class.java).apply {
 			action = ACTION_OPEN_APP_UPDATE
 		}
 	override val defaultNotificationID: Int = ID_APP_UPDATE

@@ -20,4 +20,11 @@
         <item name="android:statusBarColor">@color/grey_B_15</item>
         <item name="android:spinnerStyle">@style/AppTheme.Widget.Spinner</item>
     </style>
+
+    <style name="SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@android:color/black</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/shou_icon</item>
+        <item name="postSplashScreenTheme">@style/AppTheme.Main</item>
+        <item name="splashScreenIconSize">200dp</item>
+    </style>
 </resources>

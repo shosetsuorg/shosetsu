@@ -3,6 +3,7 @@ package app.shosetsu.android.viewmodel.impl
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.enums.NavigationStyle
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.CanAppSelfUpdateUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
@@ -18,11 +19,14 @@ import app.shosetsu.android.domain.usecases.start.StartDownloadWorkerUseCase
 import app.shosetsu.android.viewmodel.abstracted.AMainViewModel
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
+import app.shosetsu.common.dto.unwrap
 import app.shosetsu.common.enums.AppThemes
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 
 /*
  * This file is part of shosetsu.
@@ -57,7 +61,8 @@ class MainViewModel(
 	private val startInstallWorker: StartAppUpdateInstallWorkerUseCase,
 	private val canAppSelfUpdateUseCase: CanAppSelfUpdateUseCase,
 	private val loadAppUpdateUseCase: LoadAppUpdateUseCase,
-	private val loadBackupProgress: LoadBackupProgressFlowUseCase
+	private val loadBackupProgress: LoadBackupProgressFlowUseCase,
+	private val settingsRepository: ISettingsRepository
 ) : AMainViewModel() {
 	private var _navigationStyle = NavigationStyle.BOTTOM_NAV
 	private var _requireDoubleBackToExit = SettingKey.RequireDoubleBackToExit.default
@@ -124,5 +129,26 @@ class MainViewModel(
 
 	override val backupProgressState: LiveData<HResult<Unit>> by lazy {
 		loadBackupProgress().asIOLiveData()
+	}
+
+	private var showIntro = SettingKey.FirstTime.default
+
+	init {
+		launchIO {
+			settingsRepository.getBooleanFlow(SettingKey.FirstTime).collectLatest {
+				logV("Collected $it")
+				showIntro = it
+			}
+		}
+	}
+
+	override suspend fun showIntro(): Boolean =
+		settingsRepository.getBoolean(SettingKey.FirstTime).unwrap() ?: SettingKey.FirstTime.default
+
+
+	override fun toggleShowIntro() {
+		launchIO {
+			settingsRepository.setBoolean(SettingKey.FirstTime, !showIntro)
+		}
 	}
 }

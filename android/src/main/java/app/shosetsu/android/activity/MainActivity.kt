@@ -14,12 +14,14 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.activity.addCallback
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.annotation.StringRes
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.core.view.marginTop
@@ -32,6 +34,7 @@ import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.collapse
 import app.shosetsu.android.common.utils.expand
 import app.shosetsu.android.ui.browse.BrowseController
+import app.shosetsu.android.ui.intro.IntroductionActivity
 import app.shosetsu.android.ui.library.LibraryController
 import app.shosetsu.android.ui.more.ComposeMoreController
 import app.shosetsu.android.ui.search.SearchController
@@ -51,6 +54,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.BaseTransientBottomBar.Duration
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -82,6 +86,9 @@ import java.util.*
  */
 class MainActivity : AppCompatActivity(), DIAware,
 	ControllerChangeHandler.ControllerChangeListener {
+	companion object {
+		const val INTRO_CODE: Int = 1944
+	}
 
 	override val di: DI by closestDI()
 
@@ -95,6 +102,13 @@ class MainActivity : AppCompatActivity(), DIAware,
 	private var actionBarDrawerToggle: ActionBarDrawerToggle? = null
 
 	private val viewModel: AMainViewModel by viewModel()
+
+	private val resultLauncher =
+		registerForActivityResult(StartActivityForResult()) {
+			if (it.resultCode == INTRO_CODE) {
+				viewModel.toggleShowIntro()
+			}
+		}
 
 	private val broadcastReceiver by lazy {
 		object : BroadcastReceiver() {
@@ -113,6 +127,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
+		val splashScreen = installSplashScreen()
 		viewModel.navigationStyle
 
 		onBackPressedDispatcher.addCallback(this) {
@@ -168,6 +183,17 @@ class MainActivity : AppCompatActivity(), DIAware,
 			addAction(ACTION_DOWNLOAD_COMPLETE)
 		})
 		registered = true
+
+		runBlocking {
+			// Settings setup
+			if (viewModel.showIntro())
+				resultLauncher.launch(
+					Intent(
+						this@MainActivity,
+						IntroductionActivity::class.java
+					)
+				)
+		}
 		setContentView(ActivityMainBinding.inflate(layoutInflater).also { binding = it }.root)
 
 		setupView()
@@ -175,6 +201,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 		handleIntentAction(intent)
 		setupProcesses()
 	}
+
 
 	override fun onPostCreate(savedInstanceState: Bundle?) {
 		super.onPostCreate(savedInstanceState)
@@ -567,5 +594,4 @@ class MainActivity : AppCompatActivity(), DIAware,
 		handler: ControllerChangeHandler,
 	) {
 	}
-
 }

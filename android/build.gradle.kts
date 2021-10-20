@@ -167,6 +167,7 @@ dependencies {
 	implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
 	implementation("androidx.room:room-ktx:2.3.0")
 	implementation("androidx.collection:collection-ktx:1.1.0")
+	implementation("androidx.core:core-splashscreen:1.0.0-alpha02")
 
 	// - Life Cycle
 	implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")

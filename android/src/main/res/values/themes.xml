@@ -22,4 +22,11 @@
     <style name="ChipStyle" parent="AppTheme.Main" />
 
     <style name="AppTheme.CrashReport" parent="Theme.MaterialComponents.DayNight.Dialog" />
+
+    <style name="SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/shou_icon</item>
+        <item name="splashScreenIconSize">200dp</item>
+        <item name="windowSplashScreenBackground">@color/colorPrimary</item>
+        <item name="postSplashScreenTheme">@style/AppTheme.Main</item>
+    </style>
 </resources>
