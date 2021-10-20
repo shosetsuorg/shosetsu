@@ -1,6 +1,7 @@
 package app.shosetsu.android.activity
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.DownloadManager.*
 import android.app.SearchManager
 import android.content.BroadcastReceiver
@@ -103,9 +104,9 @@ class MainActivity : AppCompatActivity(), DIAware,
 
 	private val viewModel: AMainViewModel by viewModel()
 
-	private val resultLauncher =
+	private val splashResultLauncher =
 		registerForActivityResult(StartActivityForResult()) {
-			if (it.resultCode == INTRO_CODE) {
+			if (it.resultCode == Activity.RESULT_OK) {
 				viewModel.toggleShowIntro()
 			}
 		}
@@ -187,7 +188,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 		runBlocking {
 			// Settings setup
 			if (viewModel.showIntro())
-				resultLauncher.launch(
+				splashResultLauncher.launch(
 					Intent(
 						this@MainActivity,
 						IntroductionActivity::class.java
