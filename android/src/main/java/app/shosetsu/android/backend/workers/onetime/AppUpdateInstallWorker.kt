@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.IconCompat
@@ -149,7 +150,12 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 			setDataAndType(uri, APK_MIME)
 			flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
 		}
-		return PendingIntent.getActivity(context, 0, intent, 0)
+		return PendingIntent.getActivity(
+			context,
+			0,
+			intent,
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
+		)
 	}
 
 	class Manager(context: Context) : CoroutineWorkerManager(context) {
