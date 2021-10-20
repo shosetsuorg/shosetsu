@@ -10,6 +10,8 @@ import androidx.work.Configuration
 import app.shosetsu.android.backend.database.DBHelper
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.ShortCuts
+import app.shosetsu.android.common.ext.fileOut
+import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.di.*
 import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
@@ -29,6 +31,11 @@ import org.acra.ktx.initAcra
 import org.acra.sender.HttpSender.Method
 import org.kodein.di.*
 import org.kodein.di.android.x.androidXModule
+import java.io.File
+import java.io.FileOutputStream
+import java.io.PrintStream
+import java.text.SimpleDateFormat
+import java.util.*
 
 /*
  * This file is part of shosetsu.
@@ -77,7 +84,66 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, DIAware,
 		ShortCuts.createShortcuts(this)
 	}
 
+	private fun setupDualOutput() {
+		val dir = getExternalFilesDir(null)
+
+		// Ensure log file directory exists
+		val loggingDir = File(dir, "logs").also { loggingDir ->
+			// Ensure file "logs" exists and is a directory
+			if (loggingDir.exists()) {
+				if (!loggingDir.isDirectory) {
+					loggingDir.delete()
+					loggingDir.mkdirs()
+				} else {
+					// Launch to let app boot faster
+					launchIO {
+						// Ensure only that only 5 are kept to keep file usage down
+						loggingDir.listFiles { it: File -> it.isFile }
+							?.sortedBy { it.lastModified() }
+							?.takeIf { it.size > 5 }
+							?.let {
+								val length = it.size - 5
+								for (index in 0..length)
+									it[index].delete()
+							}
+					}
+				}
+			} else {
+				loggingDir.mkdirs()
+			}
+		}
+
+
+		val fileDate = SimpleDateFormat("yyyy-MM-dd-hh-mm-ss", Locale.ROOT).format(Date())
+		val logFile = File(loggingDir, "shosetsu-log-$fileDate.txt")
+
+		logFile.createNewFile()
+		val logOS = FileOutputStream(logFile)
+
+		fileOut = PrintStream(logOS)
+
+		System.setOut(
+			PrintStream(
+				MultipleOutputStream(
+					System.out,
+					logOS
+				)
+			)
+		)
+
+		System.setErr(
+			PrintStream(
+				MultipleOutputStream(
+					System.err,
+					logOS
+				)
+			)
+		)
+	}
+
 	override fun onCreate() {
+		setupDualOutput()
+
 		ShosetsuSharedLib.httpClient = okHttpClient
 		ShosetsuSharedLib.logger = { ext, arg ->
 			Log.i(ext, arg)
