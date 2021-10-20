@@ -122,62 +122,71 @@ class DBHelper(context: Context) :
 	private fun convert(db: SQLiteDatabase) {
 
 		val novelIDS: List<NovelIdentification> =
-			db.rawQuery("SELECT * FROM $NOVEL_IDENTIFICATION", null).let {
+			db.rawQuery("SELECT * FROM $NOVEL_IDENTIFICATION", null).let { cursor ->
 				ArrayList<NovelIdentification>().apply {
-					while (it.moveToNext()) add(
+					while (cursor.moveToNext()) add(
 						NovelIdentification(
-							novelID = it.getInt(ID),
-							novelURL = it.getString(URL),
-							extensionID = it.getInt(FORMATTER_ID)
+							novelID = cursor.getInt(ID),
+							novelURL = cursor.getString(URL),
+							extensionID = cursor.getInt(FORMATTER_ID)
 						)
 					)
+				}.also {
+					cursor.close()
 				}
 			}
 
 		val chapterIDS: List<ChapterIdentification> =
-			db.rawQuery("SELECT * FROM $CHAPTER_IDENTIFICATION", null).let {
-				ArrayList<ChapterIdentification>().apply {
-					while (it.moveToNext()) add(
-						ChapterIdentification(
-							chapterID = it.getInt(ID),
-							novelID = it.getInt(PARENT_ID),
-							chapterURL = it.getString(URL)
+			db.rawQuery("SELECT * FROM $CHAPTER_IDENTIFICATION", null)
+				.let { cursor ->
+					ArrayList<ChapterIdentification>().apply {
+						while (cursor.moveToNext()) add(
+							ChapterIdentification(
+								chapterID = cursor.getInt(ID),
+								novelID = cursor.getInt(PARENT_ID),
+								chapterURL = cursor.getString(URL)
+							)
 						)
-					)
+					}.also {
+						cursor.close()
+					}
 				}
-			}
 
 		val novels: List<NovelEntity> =
-			db.rawQuery("SELECT * FROM $NOVELS", null).let {
-				ArrayList<OldNovelEntity>().apply {
-					while (it.moveToNext()) add(
-						OldNovelEntity(
-							novelID = it.getInt(PARENT_ID),
-							bookmarked = it.getInt(BOOKMARKED) == 1,
-							title = it.getString(TITLE).deserializeString() ?: "",
-							imageURL = it.getString(IMAGE_URL),
-							description = it.getString(DESCRIPTION).deserializeString() ?: "",
-							language = it.getString(LANGUAGE).deserializeString() ?: "",
-							maxChapter = it.getInt(MAX_CHAPTER_PAGE),
-							publishingStatus = it.getInt(STATUS).let {
-								NovelStatusConverter().toStatus(it)
-							},
-							authors = it.getString(AUTHORS)
-								.deserializeString<String>()?.convertStringToArray()
-								?: listOf(),
-							genres = it.getString(GENRES)
-								.deserializeString<String>()?.convertStringToArray()
-								?: listOf(),
-							tags = it.getString(TAGS)
-								.deserializeString<String>()?.convertStringToArray()
-								?: listOf(),
-							artists = it.getString(ARTISTS)
-								.deserializeString<String>()?.convertStringToArray()
-								?: listOf()
+			db.rawQuery("SELECT * FROM $NOVELS", null)
+				.let { cursor ->
+					ArrayList<OldNovelEntity>().apply {
+						while (cursor.moveToNext()) add(
+							OldNovelEntity(
+								novelID = cursor.getInt(PARENT_ID),
+								bookmarked = cursor.getInt(BOOKMARKED) == 1,
+								title = cursor.getString(TITLE).deserializeString() ?: "",
+								imageURL = cursor.getString(IMAGE_URL),
+								description = cursor.getString(DESCRIPTION).deserializeString()
+									?: "",
+								language = cursor.getString(LANGUAGE).deserializeString() ?: "",
+								maxChapter = cursor.getInt(MAX_CHAPTER_PAGE),
+								publishingStatus = cursor.getInt(STATUS).let {
+									NovelStatusConverter().toStatus(it)
+								},
+								authors = cursor.getString(AUTHORS)
+									.deserializeString<String>()?.convertStringToArray()
+									?: listOf(),
+								genres = cursor.getString(GENRES)
+									.deserializeString<String>()?.convertStringToArray()
+									?: listOf(),
+								tags = cursor.getString(TAGS)
+									.deserializeString<String>()?.convertStringToArray()
+									?: listOf(),
+								artists = cursor.getString(ARTISTS)
+									.deserializeString<String>()?.convertStringToArray()
+									?: listOf()
+							)
 						)
-					)
+					}.also {
+						cursor.close()
+					}
 				}
-			}
 				.map { (novelID, bookmarked, title, imageURL, description, genres, authors, tags, publishingStatus, artists, language, _) ->
 					val novelIDF = novelIDS.find { it.novelID == novelID }!!
 
@@ -200,22 +209,24 @@ class DBHelper(context: Context) :
 				}
 
 		val chapters: List<ChapterEntity> =
-			db.rawQuery("SELECT * FROM $CHAPTERS", null).let {
+			db.rawQuery("SELECT * FROM $CHAPTERS", null).let { cursor ->
 				ArrayList<OldChapterEntity>().apply {
-					while (it.moveToNext()) add(
+					while (cursor.moveToNext()) add(
 						OldChapterEntity(
-							chapterID = it.getInt(ID),
-							novelID = it.getInt(PARENT_ID),
-							title = it.getString(TITLE).deserializeString() ?: "",
-							date = it.getString(RELEASE_DATE).deserializeString() ?: "",
-							order = it.getDouble(ORDER),
-							yPosition = it.getInt(Y_POSITION),
-							readChapter = it.getInt(READ_CHAPTER).let {
+							chapterID = cursor.getInt(ID),
+							novelID = cursor.getInt(PARENT_ID),
+							title = cursor.getString(TITLE).deserializeString() ?: "",
+							date = cursor.getString(RELEASE_DATE).deserializeString() ?: "",
+							order = cursor.getDouble(ORDER),
+							yPosition = cursor.getInt(Y_POSITION),
+							readChapter = cursor.getInt(READ_CHAPTER).let {
 								ReadingStatus.fromInt(it)
 							},
-							bookmarked = it.getInt(BOOKMARKED) == 1
+							bookmarked = cursor.getInt(BOOKMARKED) == 1
 						)
 					)
+				}.also {
+					cursor.close()
 				}
 			}.map { (chapterID, novelID, title, date, order, yPosition, readChapter, bookmarked) ->
 				val chapterIDF = chapterIDS.find { it.chapterID == chapterID }!!
@@ -307,12 +318,14 @@ class DBHelper(context: Context) :
 	}
 
 	private fun Cursor.getString(column: Columns): String =
-		getString(getColumnIndex(column.toString()))
+		getColumnIndex(column.toString()).takeIf { it >= 0 }?.let { getString(it) }!!
 
 	private fun Cursor.getInt(column: Columns): Int =
-		getInt(getColumnIndex(column.toString()))
+		getColumnIndex(column.toString()).takeIf { it >= 0 }?.let { getInt(it) }!!
+
 
 	private fun Cursor.getDouble(column: Columns): Double =
-		getDouble(getColumnIndex(column.toString()))
+		getColumnIndex(column.toString()).takeIf { it >= 0 }?.let { getDouble(it) }!!
+
 
 }
