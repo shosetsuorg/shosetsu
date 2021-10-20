@@ -1,15 +1,11 @@
 {
-  "latestVersion": "1639",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1639/shosetsu-r1639.apk",
+  "latestVersion": "1656",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1656/shosetsu-r1656.apk",
   "releaseNotes": [
-    "- ExtensionInstallWorker loads image loader async & cleans up after for memory efficiency",
-    "- Add more error reporting to ExtensionInstallWorker",
-    "- Clean up images in RestoreBackupWorker for memory efficiency",
-    "- Add android 12 support",
-    "- Migrate Updates view to compose",
-    "- Inline Shosetsu logo in More view",
-    "- Remove file extension verification for backups",
-    "- Remove unused 'download directory' setting",
-    "- Fix update only ongoing novels not working properly"
+    "- ANDROID 12 USERS, PLEASE DOWNLOAD MANUALLY VIA THIS LINK https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1656/shosetsu-r1656.apk",
+    "- Added file logging",
+    "- Clean up lots of lint errors",
+    "- Migrated to using SplashScreen API",
+    "- Adjust MainActivity navBarColor to transparent black"
   ]
 }
