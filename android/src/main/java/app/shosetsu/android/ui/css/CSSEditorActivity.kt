@@ -50,6 +50,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import app.shosetsu.android.common.ext.handleObserve
+import app.shosetsu.android.common.ext.openInWebView
 import app.shosetsu.android.common.ext.toast
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.viewmodel.abstracted.ACSSEditorViewModel
@@ -76,6 +77,7 @@ class CSSEditorActivity : AppCompatActivity(), DIAware {
 
 	companion object {
 		const val CSS_ID = "css-id"
+		private const val HELP_WEBSITE = "https://www.w3schools.com/css/default.asp"
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -120,6 +122,7 @@ class CSSEditorActivity : AppCompatActivity(), DIAware {
 					onUndo = { viewModel.undo() },
 					onRedo = { viewModel.redo() },
 					onBack = { onBackPressed() },
+					onHelp = { openInWebView(HELP_WEBSITE) },
 					onExport = {
 						// TODO Add exporting
 					},
@@ -171,7 +174,8 @@ fun PreviewCSSEditorContent() {
 			isCSSInvalid = false,
 			cssInvalidReason = "This is not CSS",
 			onPaste = {},
-			onExport = {}
+			onExport = {},
+			onHelp = {}
 		) {}
 	}
 }
@@ -183,6 +187,7 @@ fun CSSEditorContent(
 	isCSSInvalid: Boolean,
 	cssInvalidReason: String? = null,
 	onBack: () -> Unit,
+	onHelp: () -> Unit,
 	onNewText: (String) -> Unit,
 	onUndo: () -> Unit,
 	onRedo: () -> Unit,
@@ -219,7 +224,7 @@ fun CSSEditorContent(
 						}
 
 						IconButton(
-							onClick = onBack
+							onClick = onHelp
 						) {
 							Icon(
 								painterResource(R.drawable.help_outline_24),
