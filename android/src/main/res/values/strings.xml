@@ -547,6 +547,12 @@
     <string name="settings_reader_marking_mode_desc">How chapters are marked as read</string>
     <string name="settings_reader_resume_behavior_title">Resume first unread</string>
     <string name="settings_reader_resume_behavior_desc">When clicking the resume button in the novel info view, will ignore reading status to open unread first</string>
+    <string name="activity_css_export">Export CSS</string>
+    <string name="activity_css_paste">Paste clipboard</string>
+    <string name="activity_css_redo">Redo</string>
+    <string name="activity_css_undo">Undo</string>
+    <string name="activity_css_id_fail">Invalid CSS identification</string>
+    <string name="activity_css_save">Save CSS</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

@@ -87,10 +87,10 @@ class ReaderSettingsViewModel(
 			checkSettingValue(ReaderMarkReadAsReading)
 		},
 		horizontalSwitchOption(9),
-		textInputSettingData(10) {
-			title { R.string.settings_reader_title_html_css }
-			description { R.string.settings_reader_desc_html_css }
-			textSettingValue(ReaderHtmlCss)
+		buttonSettingData(10) {
+			titleRes = R.string.settings_reader_title_html_css
+			descRes = R.string.settings_reader_desc_html_css
+			textRes = R.string.open_in
 		},
 		stringAsHtmlOption(11),
 		continuousScrollOption(12),

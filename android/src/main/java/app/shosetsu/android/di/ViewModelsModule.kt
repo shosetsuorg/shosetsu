@@ -260,4 +260,8 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 		MigrationViewModel(instance(), instance())
 	}
 
+	bind<ACSSEditorViewModel>() with provider {
+		CSSEditorViewModel(instance(), instance())
+	}
+
 }

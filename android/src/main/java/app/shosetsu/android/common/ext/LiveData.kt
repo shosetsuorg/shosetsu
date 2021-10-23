@@ -27,7 +27,7 @@ inline fun <T : HResult<D>, reified D> LiveData<T>.handleObserve(
 	crossinline onLoading: () -> Unit = {},
 	crossinline onEmpty: () -> Unit = {},
 	crossinline onError: (HResult.Error) -> Unit = {},
-	crossinline onSuccess: (D) -> Unit
+	crossinline onSuccess: (D) -> Unit = {}
 ) {
 	observe(owner) {
 		it.handle(

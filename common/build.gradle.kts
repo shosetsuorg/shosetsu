@@ -17,8 +17,8 @@ dependencies {
 	implementation(kotlin("reflect"))
 
 	// Kotlin extensions
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
-	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
 
 	// Core library
 	implementation("com.github.shosetsuorg:kotlin-lib:v1.0.0-rc62")

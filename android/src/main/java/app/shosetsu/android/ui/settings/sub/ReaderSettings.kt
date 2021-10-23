@@ -1,15 +1,19 @@
 package app.shosetsu.android.ui.settings.sub
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.view.LayoutInflater
 import androidx.core.content.getSystemService
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.ui.css.CSSEditorActivity
 import app.shosetsu.android.ui.settings.SettingsSubController
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
+import app.shosetsu.android.view.uimodels.settings.ButtonSettingData
 import app.shosetsu.android.view.uimodels.settings.CustomBottomSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.customView
+import app.shosetsu.android.view.uimodels.settings.dsl.onButtonClicked
 import app.shosetsu.android.viewmodel.abstracted.settings.AReaderSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.dto.transmogrify
@@ -47,6 +51,13 @@ class ReaderSettings : SettingsSubController() {
 	override val viewModel: AReaderSettingsViewModel by viewModel()
 
 	override val adjustments: List<SettingsItemData>.() -> Unit = {
+		find<ButtonSettingData>(10)?.onButtonClicked {
+			startActivity(
+				Intent(activity, CSSEditorActivity::class.java).apply {
+					putExtra(CSSEditorActivity.CSS_ID, -1)
+				}
+			)
+		}
 		find<CustomBottomSettingData>(5)?.customView { root ->
 			root.context.getSystemService<LayoutInflater>()!!.inflate(
 				R.layout.reader_theme_selection,
