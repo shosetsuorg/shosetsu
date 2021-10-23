@@ -77,7 +77,7 @@ class CSSEditorActivity : AppCompatActivity(), DIAware {
 
 	companion object {
 		const val CSS_ID = "css-id"
-		private const val HELP_WEBSITE = "https://www.w3schools.com/css/default.asp"
+		private const val HELP_WEBSITE = "https://developer.mozilla.org/en-US/docs/Learn/CSS"
 	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
