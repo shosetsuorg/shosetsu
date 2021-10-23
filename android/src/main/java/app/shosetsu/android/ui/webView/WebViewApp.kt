@@ -72,6 +72,12 @@ class WebViewApp : AppCompatActivity(), DIAware {
 		return super.onOptionsItemSelected(item)
 	}
 
+	override fun onBackPressed() {
+		if (binding.webview.canGoBack()) {
+			binding.webview.goBack()
+		} else super.onBackPressed()
+	}
+
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 		menuInflater.inflate(R.menu.webview_menu, menu)
