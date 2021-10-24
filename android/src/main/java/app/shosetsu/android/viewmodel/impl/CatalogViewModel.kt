@@ -142,6 +142,12 @@ class CatalogViewModel(
 
 	private var stateManager = StateManager()
 
+	override fun getBaseURL(): LiveData<HResult<String>> =
+		flow {
+			emit(iExtensionFlow.mapResult { successResult(it.baseURL) }
+				.first { it !is HResult.Empty })
+		}.asIOLiveData()
+
 	/**
 	 * Handles the current state of the UI
 	 */

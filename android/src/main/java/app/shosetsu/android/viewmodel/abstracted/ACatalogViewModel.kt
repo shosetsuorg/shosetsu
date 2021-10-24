@@ -127,4 +127,9 @@ abstract class ACatalogViewModel :
 	abstract fun setFilterIntState(id: Filter<Int>, value: Int)
 
 
+	/**
+	 * Get the URL to open web view for the extension
+	 */
+	abstract fun getBaseURL(): LiveData<HResult<String>>
+
 }

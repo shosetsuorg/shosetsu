@@ -269,6 +269,12 @@ class CatalogController(
 				viewModel.setViewType(COMPRESSED)
 				true
 			}
+			R.id.web_view -> {
+				viewModel.getBaseURL().handleObserve {
+					activity?.openInWebView(it)
+				}
+				true
+			}
 			else -> false
 		}
 

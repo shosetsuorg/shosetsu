@@ -155,6 +155,10 @@ object : ACatalogViewModel() {
 		TODO("Not yet implemented")
 	}
 
+	override fun getBaseURL(): LiveData<HResult<String>> {
+		TODO("Not yet implemented")
+	}
+
 
 	override val columnsInH: Int
 		get() = TODO("Not yet implemented")
