@@ -553,6 +553,36 @@
     <string name="activity_css_undo">Undo</string>
     <string name="activity_css_id_fail">Invalid CSS identification</string>
     <string name="activity_css_save">Save CSS</string>
+    <string name="activity_css_example"><![CDATA[
+    <!DOCTYPE html>
+    <html>
+        <head>
+        </head>
+        <body>
+            <h1>Header 1</h1>
+            <h2>Header 2</h2>
+            <h3>Header 3</h3>
+            <h4>Header 4</h4>
+            <h5>Header 5</h5>
+            <h6>Header 6</h6>
+            <blockquote>Block quote</blockquote>
+            <dd>Description</dd>
+            <div>Div</div>
+            <dl>
+                <dt>Description element</dt>
+            </dl>
+            <hr>… Break …</hr>
+            <ol>
+                <li>ordered list item</li>
+            </ol>
+            <ul>
+                <li>unordered list item</li>
+            </ul>
+            <p>Paragraph</p>
+            <pre>Preformatted</pre>
+        </body>
+    </html>
+]]></string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

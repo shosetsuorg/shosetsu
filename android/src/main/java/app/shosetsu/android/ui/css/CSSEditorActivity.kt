@@ -20,7 +20,9 @@ package app.shosetsu.android.ui.css
 import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
 import android.content.ClipboardManager
 import android.os.Bundle
+import android.util.Base64
 import android.view.Window
+import android.webkit.WebView
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.BorderStroke
@@ -45,14 +47,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
-import app.shosetsu.android.common.ext.handleObserve
-import app.shosetsu.android.common.ext.openInWebView
-import app.shosetsu.android.common.ext.toast
-import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.viewmodel.abstracted.ACSSEditorViewModel
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.successResult
@@ -343,14 +343,49 @@ fun CSSEditorContent(
 			)!!
 		}.observeAsState("")
 
-		TextField(
-			cssContent,
-			onNewText,
-			modifier = Modifier
-				.fillMaxSize()
-				.verticalScroll(rememberScrollState()),
-			shape = RectangleShape,
-			isError = !isCSSInvalid
-		)
+		Column {
+			AndroidView(
+				factory = { context ->
+					WebView(context).apply {
+						settings.javaScriptEnabled = true
+						loadData(
+							context.getString(R.string.activity_css_example),
+							"text/html",
+							"UTF-8"
+						)
+
+					}
+				},
+				update = { webView ->
+					logI("Updating style")
+					val base64String =
+						Base64.encodeToString(cssContent.encodeToByteArray(), Base64.DEFAULT)
+					webView.evaluateJavascript(
+						"""
+				style = document.getElementById('example-css');
+				if(!style){
+					style = document.createElement('style');
+					style.id = 'example-css';
+					style.type = 'text/css';
+					document.head.appendChild(style);
+				}
+				style.textContent = atob(`$base64String`);
+			""".trimIndent(),
+						null
+					)
+				},
+				modifier = Modifier.fillMaxWidth().fillMaxHeight(0.25f)
+			)
+			TextField(
+				cssContent,
+				onNewText,
+				modifier = Modifier.fillMaxSize()
+					.verticalScroll(rememberScrollState())
+					.padding(bottom = 92.dp),
+				shape = RectangleShape,
+				isError = !isCSSInvalid
+			)
+		}
+
 	}
 }
