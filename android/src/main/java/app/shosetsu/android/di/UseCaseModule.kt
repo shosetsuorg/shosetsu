@@ -7,14 +7,11 @@ import app.shosetsu.android.domain.usecases.delete.DeleteDownloadUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteRepositoryUseCase
 import app.shosetsu.android.domain.usecases.get.*
 import app.shosetsu.android.domain.usecases.load.*
-import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
-import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadChaptersResumeFirstUnreadUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadNavigationStyleUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadRequireDoubleBackUseCase
 import app.shosetsu.android.domain.usecases.settings.SetNovelUITypeUseCase
 import app.shosetsu.android.domain.usecases.start.*
-import app.shosetsu.android.domain.usecases.toast.StringToastUseCase
 import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
 import app.shosetsu.android.domain.usecases.update.*
 import org.kodein.di.DI
@@ -146,23 +143,12 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 		)
 	}
 
-	bind<StringToastUseCase>() with provider { StringToastUseCase(instance()) }
 
-	bind<OpenInWebviewUseCase>() with provider {
-		OpenInWebviewUseCase(
+	bind<GetURLUseCase>() with provider {
+		GetURLUseCase(
 			instance(),
-			instance(),
-			instance()
 		)
 	}
-	bind<OpenInBrowserUseCase>() with provider {
-		OpenInBrowserUseCase(
-			instance(),
-			instance(),
-			instance()
-		)
-	}
-	bind<ShareUseCase>() with provider { ShareUseCase(instance(), instance(), instance()) }
 	bind<ToastErrorUseCase>() with provider { ToastErrorUseCase(instance()) }
 	bind<IsOnlineUseCase>() with provider { IsOnlineUseCase(instance()) }
 

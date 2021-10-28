@@ -191,15 +191,13 @@ class NovelController(bundle: Bundle) :
 			true
 		}
 		id.webview -> {
-			viewModel.openWebView()
-			true
-		}
-		id.browser -> {
-			viewModel.openBrowser()
+			openWebView()
 			true
 		}
 		id.share -> {
-			viewModel.share()
+			viewModel.getShareInfo().handleObserve {
+				activity?.share(it.novelURL, it.novelTitle)
+			}
 			true
 		}
 		id.option_chapter_jump -> {
@@ -433,7 +431,7 @@ class NovelController(bundle: Bundle) :
 		hookClickEvent(
 			bind = { it: NovelUI.ViewHolder -> it.binding.webView }
 		) { _, _, _, _ ->
-			viewModel.openWebView()
+			openWebView()
 		}
 
 		hookClickEvent(
@@ -449,6 +447,12 @@ class NovelController(bundle: Bundle) :
 		}
 
 		setObserver()
+	}
+
+	private fun openWebView() {
+		viewModel.getNovelURL().handleObserve {
+			activity?.openInWebView(it)
+		}
 	}
 
 	private fun openFilterMenu() {

@@ -49,19 +49,21 @@ abstract class ANovelViewModel
 	abstract fun toggleNovelBookmark()
 
 	/**
-	 * Opens the novel in browser
+	 * Return the novelURL to utilize in some way
 	 */
-	abstract fun openBrowser()
+	abstract fun getNovelURL(): LiveData<HResult<String>>
+
+	data class NovelShareInfo(
+		val novelTitle: String,
+		val novelURL: String
+	)
+
+	abstract fun getShareInfo(): LiveData<HResult<NovelShareInfo>>
 
 	/**
-	 * Opens the novel in web view
+	 * Return the chapterURL to utilize in some way
 	 */
-	abstract fun openWebView()
-
-	/**
-	 * Opens the share menu
-	 */
-	abstract fun share()
+	abstract fun getChapterURL(chapterUI: ChapterUI): LiveData<HResult<String>>
 
 	/** Instruction to download a specific chapter */
 	abstract fun downloadChapter(vararg chapterUI: ChapterUI, startManager: Boolean = false)
@@ -77,16 +79,6 @@ abstract class ANovelViewModel
 	 * Marks all the provided chapters as whatever [readingStatus] is
 	 */
 	abstract fun markAllChaptersAs(vararg chapterUI: ChapterUI, readingStatus: ReadingStatus)
-
-	/**
-	 * Opens the chapter in webview
-	 */
-	abstract fun openWebView(chapterUI: ChapterUI)
-
-	/**
-	 * Opens the chapter in the browser
-	 */
-	abstract fun openBrowser(chapterUI: ChapterUI)
 
 	/**
 	 * Deletes a chapter

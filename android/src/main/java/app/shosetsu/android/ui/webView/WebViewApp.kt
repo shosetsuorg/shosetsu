@@ -13,14 +13,13 @@ import androidx.appcompat.app.AppCompatActivity
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_URL
 import app.shosetsu.android.common.ext.launchUI
-import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
+import app.shosetsu.android.common.ext.openInBrowser
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityWebviewBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityWebviewBinding.inflate
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
-import org.kodein.di.instance
 import java.util.*
 
 /*
@@ -51,7 +50,6 @@ import java.util.*
  */
 class WebViewApp : AppCompatActivity(), DIAware {
 	override val di: DI by closestDI()
-	private val openInBrowserUseCase: OpenInBrowserUseCase by instance()
 
 	private lateinit var binding: ActivityWebviewBinding
 
@@ -65,7 +63,7 @@ class WebViewApp : AppCompatActivity(), DIAware {
 		when (item.itemId) {
 			android.R.id.home -> finish()
 			R.id.open_browser -> app.shosetsu.android.common.ext.launchIO {
-				openInBrowserUseCase(intent.getStringExtra(BUNDLE_URL)!!)
+				openInBrowser(intent.getStringExtra(BUNDLE_URL)!!)
 				finish()
 			}
 		}

@@ -380,7 +380,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 				)
 			}
 			ACTION_OPEN_APP_UPDATE -> {
-				viewModel.handleAppUpdate()
+				handleAppUpdate()
 				actionMain()
 			}
 			ACTION_MAIN -> actionMain()
@@ -397,7 +397,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 	}
 
 	private fun setupProcesses() {
-		viewModel.startUpdateCheck().observe(this) { result ->
+		viewModel.startAppUpdateCheck().observe(this) { result ->
 			result.handle(
 				onError = {
 					applicationContext.toast("$result")
@@ -412,7 +412,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 						)
 					)
 					setPositiveButton(R.string.update) { it, _ ->
-						viewModel.handleAppUpdate()
+						handleAppUpdate()
 						it.dismiss()
 					}
 					setNegativeButton(R.string.update_not_interested) { it, _ ->
@@ -458,6 +458,19 @@ class MainActivity : AppCompatActivity(), DIAware,
 
 	fun removeHoldAtBottom(view: View) {
 		binding.elevatedAppBarLayout.removeOnOffsetChangedListener(holdingAtBottom.remove(view))
+	}
+
+	private fun handleAppUpdate() {
+		viewModel.handleAppUpdate().handleObserve(this) {
+			when (it) {
+				AMainViewModel.AppUpdateAction.SelfUpdate -> {
+					makeSnackBar(R.string.activity_main_app_update_download)
+				}
+				is AMainViewModel.AppUpdateAction.UserUpdate -> {
+					share(it.updateURL, it.updateTitle)
+				}
+			}
+		}
 	}
 
 	@SuppressLint("ObjectAnimatorBinding")

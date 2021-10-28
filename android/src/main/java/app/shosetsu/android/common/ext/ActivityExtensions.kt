@@ -42,6 +42,7 @@ fun Activity.openInBrowser(url: Uri): Unit = startActivity(Intent(Intent.ACTION_
 fun Activity.openInBrowser(url: String): Unit = openInBrowser(Uri.parse(url))
 
 fun Activity.openInWebView(url: String) {
+	logI("Opening in web view: $url")
 	startActivity(intent(this, WebViewApp::class.java) {
 		bundleOf(
 			BundleKeys.BUNDLE_URL to url,
@@ -49,6 +50,21 @@ fun Activity.openInWebView(url: String) {
 		)
 	})
 }
+
+fun Activity.share(url: String, title: String) {
+	logI("Sharing URL ($title):($url)")
+	application.startActivity(
+		Intent.createChooser(Intent().apply {
+			action = Intent.ACTION_SEND
+			putExtra(Intent.EXTRA_TEXT, url)
+			putExtra(Intent.EXTRA_TITLE, title)
+			type = "text/plain"
+		}, null).apply {
+			addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+		}
+	)
+}
+
 
 /**
  * shosetsu

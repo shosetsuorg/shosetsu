@@ -1,8 +1,6 @@
 package app.shosetsu.android.viewmodel.impl
 
-import android.app.Application
 import app.shosetsu.android.backend.workers.onetime.AppUpdateCheckWorker
-import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
 import app.shosetsu.android.viewmodel.abstracted.AAboutViewModel
 
 /*
@@ -27,8 +25,6 @@ import app.shosetsu.android.viewmodel.abstracted.AAboutViewModel
  * 01 / 10 / 2020
  */
 class AboutViewModel(
-	private val openInWebviewUseCase: OpenInWebviewUseCase,
-	private val application: Application,
 	private val manager: AppUpdateCheckWorker.Manager,
 ) : AAboutViewModel() {
 

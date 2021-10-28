@@ -39,12 +39,9 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 	// Main
 	bind<AMainViewModel>() with provider {
 		MainViewModel(
-			startDownloadWorkerUseCase = instance(),
 			loadAppUpdateFlowLiveUseCase = instance(),
 			isOnlineUseCase = instance(),
-			shareUseCase = instance(),
 			loadNavigationStyleUseCase = instance(),
-			reportExceptionUseCase = instance(),
 			loadLiveAppThemeUseCase = instance(),
 			startInstallWorker = instance(),
 			canAppSelfUpdateUseCase = instance(),
@@ -101,8 +98,6 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 
 	bind<AAboutViewModel>() with provider {
 		AboutViewModel(
-			openInWebviewUseCase = instance(),
-			application = instance(),
 			manager = instance()
 		)
 	}
@@ -156,9 +151,6 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			loadNovelUIUseCase = instance(),
 			reportExceptionUseCase = instance(),
 			updateNovelUseCase = instance(),
-			openInBrowserUseCase = instance(),
-			openInWebviewUseCase = instance(),
-			shareUseCase = instance(),
 			loadRemoteNovel = instance(),
 			isOnlineUseCase = instance(),
 			updateChapterUseCase = instance(),
@@ -169,7 +161,8 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			updateNovelSettingUseCase = instance(),
 			loadDeletePreviousChapterUseCase = instance(),
 			startDownloadWorkerUseCase = instance(),
-			startDownloadWorkerAfterUpdateUseCase = instance()
+			startDownloadWorkerAfterUpdateUseCase = instance(),
+			getContentURL = instance()
 		)
 	}
 

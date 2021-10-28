@@ -5,16 +5,10 @@ import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
-import app.shosetsu.android.domain.usecases.ShareUseCase
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerAfterUpdateUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteChapterPassageUseCase
-import app.shosetsu.android.domain.usecases.get.GetChapterUIsUseCase
-import app.shosetsu.android.domain.usecases.get.GetNovelSettingFlowUseCase
-import app.shosetsu.android.domain.usecases.get.GetNovelUIUseCase
-import app.shosetsu.android.domain.usecases.get.GetRemoteNovelUseCase
+import app.shosetsu.android.domain.usecases.get.*
 import app.shosetsu.android.domain.usecases.load.LoadDeletePreviousChapterUseCase
-import app.shosetsu.android.domain.usecases.open.OpenInBrowserUseCase
-import app.shosetsu.android.domain.usecases.open.OpenInWebviewUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadChaptersResumeFirstUnreadUseCase
 import app.shosetsu.android.domain.usecases.start.StartDownloadWorkerUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateChapterUseCase
@@ -59,9 +53,7 @@ class NovelViewModel(
 	private val loadNovelUIUseCase: GetNovelUIUseCase,
 	private val reportExceptionUseCase: ReportExceptionUseCase,
 	private val updateNovelUseCase: UpdateNovelUseCase,
-	private val openInBrowserUseCase: OpenInBrowserUseCase,
-	private val openInWebviewUseCase: OpenInWebviewUseCase,
-	private val shareUseCase: ShareUseCase,
+	private val getContentURL: GetURLUseCase,
 	private val loadRemoteNovel: GetRemoteNovelUseCase,
 	private var isOnlineUseCase: IsOnlineUseCase,
 	private val updateChapterUseCase: UpdateChapterUseCase,
@@ -102,11 +94,15 @@ class NovelViewModel(
 		novelSettingsFlow.asIOLiveData()
 	}
 
-	@ExperimentalCoroutinesApi
-	override val novelLive: LiveData<HResult<NovelUI>> by lazy {
+	private val novelFlow by lazy {
 		novelIDLive.transformLatest {
 			emitAll(loadNovelUIUseCase(it))
-		}.asIOLiveData()
+		}
+	}
+
+	@ExperimentalCoroutinesApi
+	override val novelLive: LiveData<HResult<NovelUI>> by lazy {
+		novelFlow.asIOLiveData()
 	}
 
 	@ExperimentalCoroutinesApi
@@ -266,17 +262,6 @@ class NovelViewModel(
 		}
 	}
 
-	override fun openBrowser(chapterUI: ChapterUI) {
-		launchIO {
-			openInBrowserUseCase(chapterUI)
-		}
-	}
-
-	@ExperimentalCoroutinesApi
-	override fun openBrowser() {
-		launchIO { novelLive.value?.handle { openInBrowserUseCase(it) } }
-	}
-
 	override fun openLastRead(array: List<ChapterUI>): LiveData<HResult<Int>> =
 		flow {
 			emit(loading())
@@ -295,16 +280,24 @@ class NovelViewModel(
 			)
 		}.asIOLiveData()
 
-	override fun openWebView(chapterUI: ChapterUI) {
-		launchIO {
-			openInWebviewUseCase(chapterUI)
-		}
-	}
+	override fun getNovelURL(): LiveData<HResult<String>> =
+		flow {
+			emit(novelFlow.first { it is HResult.Success }.transform { getContentURL(it) })
+		}.asIOLiveData()
 
-	@ExperimentalCoroutinesApi
-	override fun openWebView() {
-		launchIO { novelLive.value?.handle { openInWebviewUseCase(it) } }
-	}
+	override fun getShareInfo(): LiveData<HResult<NovelShareInfo>> =
+		flow {
+			emit(novelFlow.first { it is HResult.Success }.transform {
+				getContentURL(it).transformToSuccess { url ->
+					NovelShareInfo(it.title, url)
+				}
+			})
+		}.asIOLiveData()
+
+	override fun getChapterURL(chapterUI: ChapterUI): LiveData<HResult<String>> =
+		flow {
+			emit(getContentURL(chapterUI))
+		}.asIOLiveData()
 
 	override fun refresh(): LiveData<HResult<*>> =
 		flow {
@@ -326,11 +319,6 @@ class NovelViewModel(
 			}
 		}
 		novelIDLive.tryEmit(novelID)
-	}
-
-	@ExperimentalCoroutinesApi
-	override fun share() {
-		launchIO { novelLive.value?.handle { shareUseCase(it) } }
 	}
 
 	@ExperimentalCoroutinesApi

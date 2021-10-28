@@ -2,7 +2,6 @@ package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.enums.NavigationStyle
-import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
@@ -30,14 +29,8 @@ import app.shosetsu.common.enums.AppThemes
  * shosetsu
  * 20 / 06 / 2020
  */
-abstract class AMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel,
-	ErrorReportingViewModel {
-	abstract fun share(string: String, int: String)
-
-	abstract fun startDownloadWorker()
-
-
-	abstract fun startUpdateCheck(): LiveData<HResult<AppUpdateEntity>>
+abstract class AMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel {
+	abstract fun startAppUpdateCheck(): LiveData<HResult<AppUpdateEntity>>
 
 	/**
 	 * If 0, Bottom
@@ -58,7 +51,24 @@ abstract class AMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel,
 	 * If stable-utd, will open up up-to-down
 	 * If stable-fdr, will open up f-droid
 	 */
-	abstract fun handleAppUpdate()
+	abstract fun handleAppUpdate(): LiveData<HResult<AppUpdateAction>>
+
+	sealed class AppUpdateAction {
+
+		/**
+		 * Shosetsu is downloading the update itself
+		 */
+		object SelfUpdate : AppUpdateAction()
+
+		/**
+		 * The user has to handle the update
+		 */
+		data class UserUpdate(
+			val updateTitle: String,
+			val updateURL: String
+		) : AppUpdateAction()
+
+	}
 
 	abstract val backupProgressState: LiveData<HResult<Unit>>
 

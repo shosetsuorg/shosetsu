@@ -583,6 +583,7 @@
         </body>
     </html>
 ]]></string>
+    <string name="activity_main_app_update_download">Downloading app update</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

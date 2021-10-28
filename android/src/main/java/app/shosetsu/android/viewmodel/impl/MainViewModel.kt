@@ -4,10 +4,8 @@ import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.enums.NavigationStyle
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logV
-import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.CanAppSelfUpdateUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
-import app.shosetsu.android.domain.usecases.ShareUseCase
 import app.shosetsu.android.domain.usecases.load.LoadAppUpdateFlowLiveUseCase
 import app.shosetsu.android.domain.usecases.load.LoadAppUpdateUseCase
 import app.shosetsu.android.domain.usecases.load.LoadBackupProgressFlowUseCase
@@ -15,18 +13,16 @@ import app.shosetsu.android.domain.usecases.load.LoadLiveAppThemeUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadNavigationStyleUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadRequireDoubleBackUseCase
 import app.shosetsu.android.domain.usecases.start.StartAppUpdateInstallWorkerUseCase
-import app.shosetsu.android.domain.usecases.start.StartDownloadWorkerUseCase
 import app.shosetsu.android.viewmodel.abstracted.AMainViewModel
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.unwrap
+import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.AppThemes
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flow
 
 /*
  * This file is part of shosetsu.
@@ -50,13 +46,10 @@ import kotlinx.coroutines.flow.collectLatest
  * 20 / 06 / 2020
  */
 class MainViewModel(
-	private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
 	private val loadAppUpdateFlowLiveUseCase: LoadAppUpdateFlowLiveUseCase,
 	private val isOnlineUseCase: IsOnlineUseCase,
-	private val shareUseCase: ShareUseCase,
 	private val loadNavigationStyleUseCase: LoadNavigationStyleUseCase,
 	private val loadRequireDoubleBackUseCase: LoadRequireDoubleBackUseCase,
-	private val reportExceptionUseCase: ReportExceptionUseCase,
 	private var loadLiveAppThemeUseCase: LoadLiveAppThemeUseCase,
 	private val startInstallWorker: StartAppUpdateInstallWorkerUseCase,
 	private val canAppSelfUpdateUseCase: CanAppSelfUpdateUseCase,
@@ -83,21 +76,7 @@ class MainViewModel(
 		}
 	}
 
-	override fun share(string: String, int: String) {
-		shareUseCase(string, string)
-	}
-
-	override fun startDownloadWorker() {
-		launchIO {
-			startDownloadWorkerUseCase()
-		}
-	}
-
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-		reportExceptionUseCase(error)
-	}
-
-	override fun startUpdateCheck(): LiveData<HResult<AppUpdateEntity>> =
+	override fun startAppUpdateCheck(): LiveData<HResult<AppUpdateEntity>> =
 		loadAppUpdateFlowLiveUseCase().asIOLiveData()
 
 	override val navigationStyle: NavigationStyle
@@ -109,23 +88,24 @@ class MainViewModel(
 	override val appThemeLiveData: LiveData<AppThemes>
 		get() = loadLiveAppThemeUseCase().asIOLiveData()
 
-	override fun handleAppUpdate() {
-		canAppSelfUpdateUseCase().handle(
-			onError = {
-				reportExceptionUseCase(it)
-			}
-		) { canSelfUpdate ->
-			if (canSelfUpdate) {
-				startInstallWorker()
-			} else {
-				launchIO {
-					loadAppUpdateUseCase().handle {
-						shareUseCase(it.url, it.version)
+	override fun handleAppUpdate(): LiveData<HResult<AppUpdateAction>> =
+		flow {
+			emit(
+				canAppSelfUpdateUseCase().transform { canSelfUpdate ->
+					if (canSelfUpdate) {
+						startInstallWorker()
+						successResult(AppUpdateAction.SelfUpdate)
+					} else {
+						loadAppUpdateUseCase().transformToSuccess {
+							AppUpdateAction.UserUpdate(
+								it.version,
+								it.url
+							)
+						}
 					}
 				}
-			}
-		}
-	}
+			)
+		}.asIOLiveData()
 
 	override val backupProgressState: LiveData<HResult<Unit>> by lazy {
 		loadBackupProgress().asIOLiveData()
