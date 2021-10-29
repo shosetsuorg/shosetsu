@@ -37,5 +37,5 @@ fun createOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
 	}.apply {
 		Logger.getLogger(OkHttpClient::class.java.name).level = Level.ALL
 	}
-	.cookieJar(CookieJarSync())
+	.cookieJar(CookieJarSync)
 	.build()

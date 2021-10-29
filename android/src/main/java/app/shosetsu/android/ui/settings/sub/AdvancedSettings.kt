@@ -2,6 +2,7 @@ package app.shosetsu.android.ui.settings.sub
 
 import android.content.res.Resources
 import android.view.View
+import android.webkit.CookieManager
 import android.widget.AdapterView
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.settings.SettingsSubController
@@ -103,7 +104,17 @@ class AdvancedSettings : SettingsSubController() {
 				}?.show()
 			}
 		}
+
+		find<ButtonSettingData>(6)?.onButtonClicked {
+			logI("User wants to clear cookies")
+			logV("Clearing cookies")
+			CookieManager.getInstance().removeAllCookies {
+				logV("Cookies cleared")
+				makeSnackBar(R.string.settings_advanced_clear_cookies_complete)?.show()
+			}
+		}
 	}
+
 
 	@Throws(Resources.NotFoundException::class)
 	override fun onViewCreated(view: View) {

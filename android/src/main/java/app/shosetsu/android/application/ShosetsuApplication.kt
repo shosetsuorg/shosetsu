@@ -10,9 +10,7 @@ import androidx.work.Configuration
 import app.shosetsu.android.backend.database.DBHelper
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.ShortCuts
-import app.shosetsu.android.common.ext.fileOut
-import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.di.*
 import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.android.viewmodel.factory.ViewModelFactory
@@ -144,10 +142,26 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, DIAware,
 	override fun onCreate() {
 		setupDualOutput()
 
+		setupCoreLib()
+
+		// OLD DB TO NEW
+		@Suppress("DEPRECATION")
+		DBHelper(this@ShosetsuApplication).writableDatabase.close()
+
+		startRepositoryUpdateManagerUseCase()
+		super.onCreate()
+	}
+
+	/**
+	 * Setup required methods from the core lib
+	 */
+	private fun setupCoreLib() {
 		ShosetsuSharedLib.httpClient = okHttpClient
+
 		ShosetsuSharedLib.logger = { ext, arg ->
 			Log.i(ext, arg)
 		}
+
 		ShosetsuLuaLib.libLoader = libLoader@{ name ->
 			Log.i("LuaLibLoader", "Loading ($name)")
 			return@libLoader when (val result = extLibRepository.blockingLoadExtLibrary(name)) {
@@ -166,13 +180,6 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, DIAware,
 				}
 			}
 		}
-
-		// OLD DB TO NEW
-		@Suppress("DEPRECATION")
-		DBHelper(this@ShosetsuApplication).writableDatabase.close()
-
-		startRepositoryUpdateManagerUseCase()
-		super.onCreate()
 	}
 
 	private fun setupACRA() {

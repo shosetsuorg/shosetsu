@@ -92,6 +92,11 @@ class AdvancedSettingsViewModel(
 			titleRes = R.string.settings_advanced_kill_cycle_workers_title
 			descRes = R.string.settings_advanced_kill_cycle_workers_desc
 			textRes = R.string.settings_advanced_kill_cycle_workers_title
+		},
+		buttonSettingData(6) {
+			titleRes = R.string.settings_advanced_clear_cookies_title
+			descRes = R.string.settings_advanced_clear_cookies_desc
+			textRes = R.string.settings_advanced_clear_cookies_button
 		}
 	)
 

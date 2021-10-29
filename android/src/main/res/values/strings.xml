@@ -584,6 +584,10 @@
     </html>
 ]]></string>
     <string name="activity_main_app_update_download">Downloading app update</string>
+    <string name="settings_advanced_clear_cookies_title">Clear cookies</string>
+    <string name="settings_advanced_clear_cookies_desc">Clear all cookies that shosetsu has for websites</string>
+    <string name="settings_advanced_clear_cookies_button">Clear</string>
+    <string name="settings_advanced_clear_cookies_complete">Cookies cleared</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

@@ -1,6 +1,8 @@
 package app.shosetsu.android.common.utils
 
 import android.webkit.CookieManager
+import app.shosetsu.android.common.ext.logV
+import app.shosetsu.android.common.utils.CookieJarSync.androidCookieManager
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
@@ -27,24 +29,27 @@ import okhttp3.HttpUrl
  * 01 / 08 / 2019
  * Provides a synchronization point between [androidCookieManager] & [CookieJar]
  */
-class CookieJarSync : CookieJar {
-	private val androidCookieManager = CookieManager.getInstance()
+object CookieJarSync : CookieJar {
+	private val androidCookieManager by lazy { CookieManager.getInstance() }
 
 	override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+		logV("`$url` saving the following cookies: $cookies")
 		val urlString = url.toString()
 		cookies.forEach { androidCookieManager.setCookie(urlString, it.toString()) }
 	}
 
 	override fun loadForRequest(url: HttpUrl): List<Cookie> {
-		val urlString = url.toString()
-		val cookiesString = androidCookieManager.getCookie(urlString)
-		return if (!cookiesString.isNullOrEmpty()) {
-			//We can split on the ';' char as the cookie manager only returns cookies
-			//that match the url and haven't expired, so the cookie attributes aren't included
-			val cookieHeaders = cookiesString.split(";".toRegex()).toTypedArray()
-			val cookies: ArrayList<Cookie> = ArrayList(cookieHeaders.size)
-			cookieHeaders.forEach { Cookie.parse(url, it)?.let { c -> cookies.add(c) } }
-			cookies
-		} else emptyList()
+		logV("`$url` loading cookies...")
+		return when (val cookies = androidCookieManager.getCookie(url.toString())) {
+			null -> {
+				logV("`$url` has no cookies")
+				emptyList()
+			}
+			else -> {
+				val result = cookies.split("; ").mapNotNull { Cookie.parse(url, it) }
+				logV("`$url` has the following cookies: $result")
+				result
+			}
+		}
 	}
 }
