@@ -46,7 +46,6 @@ fun Activity.openInWebView(url: String) {
 	startActivity(intent(this, WebViewApp::class.java) {
 		bundleOf(
 			BundleKeys.BUNDLE_URL to url,
-			BundleKeys.BUNDLE_ACTION to WebViewApp.Actions.VIEW.action
 		)
 	})
 }

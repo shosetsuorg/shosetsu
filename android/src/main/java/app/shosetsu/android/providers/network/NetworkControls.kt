@@ -30,12 +30,14 @@ import java.util.logging.Logger
  */
 
 fun createOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
+	.cookieJar(CookieJarSync)
 	.addInterceptor {
 		val r = it.request()
-		it.logI(r.url.toUrl().toExternalForm())
-		return@addInterceptor it.proceed(r)
+		it.logI(r.toString())
+		val response = it.proceed(r)
+		it.logI(response.toString())
+		return@addInterceptor response
 	}.apply {
 		Logger.getLogger(OkHttpClient::class.java.name).level = Level.ALL
 	}
-	.cookieJar(CookieJarSync)
 	.build()

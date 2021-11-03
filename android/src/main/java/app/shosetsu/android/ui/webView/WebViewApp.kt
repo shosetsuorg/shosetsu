@@ -7,20 +7,25 @@ import android.util.AttributeSet
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_URL
 import app.shosetsu.android.common.ext.launchUI
+import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.openInBrowser
+import app.shosetsu.android.common.utils.CookieJarSync
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityWebviewBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityWebviewBinding.inflate
+import okhttp3.Cookie
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
-import java.util.*
 
 /*
  * This file is part of Shosetsu.
@@ -91,23 +96,23 @@ class WebViewApp : AppCompatActivity(), DIAware {
 			setDisplayHomeAsUpEnabled(true)
 		}
 
-		val action = Actions.actions[intent.getIntExtra("action", 0)]
 		binding.webview.settings.javaScriptEnabled = true
-		when (action) {
-			Actions.VIEW -> binding.webview.webViewClient = WebViewClient()
-			Actions.CLOUD_FLARE -> {
-				// webview.addJavascriptInterface(JSInterface(), "HtmlViewer")
-				binding.webview.webViewClient = object : WebViewClient() {
-					override fun onPageFinished(view: WebView, url: String) {
-						binding.webview.loadUrl(
-							"javascript:window.HtmlViewer.showHTML" +
-									"('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');"
-						)
-						finish()
-					}
+		CookieManager.getInstance().setAcceptThirdPartyCookies(binding.webview, true)
+
+		binding.webview.webViewClient = object : WebViewClient() {
+			override fun onPageFinished(view: WebView, url: String) {
+				logI(url)
+				view.evaluateJavascript("document.cookie") { cookies ->
+					val httpUrl = url.toHttpUrl()
+					CookieJarSync.saveFromResponse(
+						httpUrl,
+						cookies.split("; ").mapNotNull { Cookie.parse(httpUrl, it) }
+					)
+					logV("Cookies: $cookies")
 				}
 			}
 		}
+
 		intent.getStringExtra(BUNDLE_URL)?.let {
 			binding.webview.loadUrl(it)
 		} ?: run {
@@ -115,19 +120,6 @@ class WebViewApp : AppCompatActivity(), DIAware {
 				(parent as? MainActivity)?.makeSnackBar(R.string.activity_webview_null_url)?.show()
 			}
 			onBackPressed()
-		}
-	}
-
-	enum class Actions(val action: Int) {
-		VIEW(0), CLOUD_FLARE(1);
-
-		companion object {
-			val actions: ArrayList<Actions> = ArrayList<Actions>()
-
-			init {
-				actions.add(VIEW)
-				actions.add(CLOUD_FLARE)
-			}
 		}
 	}
 }
