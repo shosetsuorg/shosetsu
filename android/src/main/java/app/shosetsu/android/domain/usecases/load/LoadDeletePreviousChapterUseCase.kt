@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases.load
 
-import app.shosetsu.common.consts.settings.SettingKey
+import app.shosetsu.common.consts.settings.SettingKey.DeleteReadChapter
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 
 /*
@@ -22,11 +22,13 @@ import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 
 /**
  * 30 / 01 / 2021
+ *
+ * @see [DeleteReadChapter]
  */
 class LoadDeletePreviousChapterUseCase(
 	val iSettingsRepository: ISettingsRepository
 ) {
 	suspend operator fun invoke() =
-		iSettingsRepository.getInt(SettingKey.DeleteReadChapter)
+		iSettingsRepository.getInt(DeleteReadChapter)
 
 }

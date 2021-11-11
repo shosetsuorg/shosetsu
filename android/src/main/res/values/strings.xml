@@ -588,6 +588,8 @@
     <string name="settings_advanced_clear_cookies_desc">Clear all cookies that shosetsu has for websites</string>
     <string name="settings_advanced_clear_cookies_button">Clear</string>
     <string name="settings_advanced_clear_cookies_complete">Cookies cleared</string>
+    <string name="settings_download_delete_on_read_title">Delete chapters on read</string>
+    <string name="settings_download_delete_on_read_desc">Which chapter to delete when a chapter is read</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

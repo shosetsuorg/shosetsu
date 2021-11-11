@@ -143,8 +143,11 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 	/**
 	 * Which chapter to delete after reading
+	 *
 	 * If -1, then does nothing
+	 *
 	 * If 0, then deletes the read chapter
+	 *
 	 * If 1+, deletes the chapter of READ CHAPTER - [deletePreviousChapter]
 	 */
 	object DeleteReadChapter : IntKey("deleteReadChapter", -1)
