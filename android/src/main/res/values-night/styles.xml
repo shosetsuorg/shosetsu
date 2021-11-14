@@ -15,5 +15,13 @@
     </style>
 
 
-    <style name="AppTheme.Widget.Spinner" parent="Widget.AppCompat.Spinner"></style>
+    <style name="AppTheme.Widget.Spinner" parent="Widget.AppCompat.Spinner">
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="AppTheme.Widget.SpinnerItem" parent="Widget.AppCompat.TextView.SpinnerItem">
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+    </style>
+
+
 </resources>

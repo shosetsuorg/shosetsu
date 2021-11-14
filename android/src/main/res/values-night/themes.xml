@@ -6,6 +6,7 @@
 
         <item name="android:colorPrimary">@color/colorPrimary</item>
         <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="colorOnBackground">#FFFFFF</item>
 
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:textColorPrimary">#FFFFFF</item>
@@ -18,7 +19,9 @@
         <item name="appBarLayoutStyle">@style/AppTheme.Widget.AppBarLayout</item>
         <item name="buttonStyle">@style/AppTheme.Widget.Button</item>
         <item name="android:statusBarColor">@color/grey_B_15</item>
+
         <item name="android:spinnerStyle">@style/AppTheme.Widget.Spinner</item>
+        <item name="spinnerDropDownItemStyle">@style/AppTheme.Widget.SpinnerItem</item>
     </style>
 
     <style name="SplashScreen" parent="Theme.SplashScreen">
@@ -27,4 +30,5 @@
         <item name="postSplashScreenTheme">@style/AppTheme.Main</item>
         <item name="splashScreenIconSize">200dp</item>
     </style>
+
 </resources>

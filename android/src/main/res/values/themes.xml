@@ -3,8 +3,15 @@
 
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="windowActionModeOverlay">true</item>
+
+
         <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+
+        <item name="colorOnPrimary">#FFFFFF</item>
 
         <!-- Some ROMs make black navbars white (e.g. OxygenOS) -->
         <item name="android:navigationBarColor">@color/black_trans</item>
@@ -19,7 +26,6 @@
         <item name="strokeColor">?colorPrimary</item>
     </style>
 
-    <style name="ChipStyle" parent="AppTheme.Main" />
 
     <style name="AppTheme.CrashReport" parent="Theme.MaterialComponents.DayNight.Dialog" />
 

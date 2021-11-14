@@ -90,8 +90,8 @@ class AdvancedSettings : ShosetsuController() {
 
 
 	private fun themeSelected(position: Int) {
-		activity?.onBackPressed()
 		launchUI {
+			activity?.onBackPressed()
 			makeSnackBar(
 				R.string.controller_settings_advanced_snackbar_ui_change,
 				Snackbar.LENGTH_INDEFINITE
