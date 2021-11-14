@@ -9,9 +9,12 @@ import app.shosetsu.android.common.dto.*
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.model.local.ColorChoiceData
+import app.shosetsu.android.domain.usecases.RecordChapterIsReadUseCase
+import app.shosetsu.android.domain.usecases.RecordChapterIsReadingUseCase
 import app.shosetsu.android.domain.usecases.get.GetChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.get.GetReaderChaptersUseCase
 import app.shosetsu.android.domain.usecases.get.GetReaderSettingUseCase
+import app.shosetsu.android.domain.usecases.get.GetReadingMarkingTypeUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateReaderChapterUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateReaderSettingUseCase
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
@@ -34,7 +37,6 @@ import app.shosetsu.common.enums.ReadingStatus.READING
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import app.shosetsu.common.enums.MarkingType.valueOf as markingValueOf
 
 /*
  * This file is part of shosetsu.
@@ -67,7 +69,11 @@ class ChapterReaderViewModel(
 	private val updateReaderChapterUseCase: UpdateReaderChapterUseCase,
 	private val reportExceptionUseCase: ReportExceptionUseCase,
 	private val getReaderSettingsUseCase: GetReaderSettingUseCase,
-	private val updateReaderSettingUseCase: UpdateReaderSettingUseCase
+	private val updateReaderSettingUseCase: UpdateReaderSettingUseCase,
+	private val getReadingMarkingType: GetReadingMarkingTypeUseCase,
+	private val recordChapterIsReading: RecordChapterIsReadingUseCase,
+	private val recordChapterIsRead: RecordChapterIsReadUseCase
+
 ) : AChapterReaderViewModel() {
 	private val isHorizontalPageSwapping by lazy {
 		settingsRepo.getBooleanFlow(ReaderHorizontalPageSwap)
@@ -296,10 +302,22 @@ class ChapterReaderViewModel(
 	}
 
 	override fun updateChapter(
-		readerChapterUI: ReaderChapterUI,
+		chapter: ReaderChapterUI,
 	) {
 		launchIO {
-			updateReaderChapterUseCase(readerChapterUI)
+			updateReaderChapterUseCase(chapter)
+		}
+	}
+
+	override fun updateChapterAsRead(chapter: ReaderChapterUI) {
+		launchIO {
+			recordChapterIsRead(chapter)
+			updateReaderChapterUseCase(
+				chapter.copy(
+					readingStatus = READ,
+					readingPosition = 0.0
+				)
+			)
 		}
 	}
 
@@ -320,10 +338,15 @@ class ChapterReaderViewModel(
 			 */
 			if (!markReadAsReading && chapterUI.readingStatus == READ) return@launchIO
 
-			settingsRepo.getString(ReadingMarkingType).handle { value ->
-				updateChapter(
+			getReadingMarkingType().handle { value ->
+				updateReaderChapterUseCase(
 					chapterUI.copy(
-						readingStatus = if (markingValueOf(value) == markingType) READING else chapterUI.readingStatus,
+						readingStatus = if (value == markingType) {
+							launchIO {
+								recordChapterIsReading(chapterUI)
+							}
+							READING
+						} else chapterUI.readingStatus,
 						readingPosition = readingPosition
 					)
 				)
@@ -332,12 +355,12 @@ class ChapterReaderViewModel(
 	}
 
 
-	override fun markAsReadingOnView(readerChapterUI: ReaderChapterUI) {
-		markAsReading(readerChapterUI, ONVIEW)
+	override fun markAsReadingOnView(chapter: ReaderChapterUI) {
+		markAsReading(chapter, ONVIEW)
 	}
 
-	override fun markAsReadingOnScroll(readerChapterUI: ReaderChapterUI, readingPosition: Double) {
-		markAsReading(readerChapterUI, ONSCROLL, readingPosition)
+	override fun markAsReadingOnScroll(chapter: ReaderChapterUI, readingPosition: Double) {
+		markAsReading(chapter, ONSCROLL, readingPosition)
 	}
 
 

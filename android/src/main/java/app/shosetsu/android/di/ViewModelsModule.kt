@@ -162,7 +162,8 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			loadDeletePreviousChapterUseCase = instance(),
 			startDownloadWorkerUseCase = instance(),
 			startDownloadWorkerAfterUpdateUseCase = instance(),
-			getContentURL = instance()
+			getContentURL = instance(),
+			getLastReadChapter = instance()
 		)
 	}
 
@@ -176,7 +177,10 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			updateReaderChapterUseCase = instance(),
 			reportExceptionUseCase = instance(),
 			getReaderSettingsUseCase = instance(),
-			updateReaderSettingUseCase = instance()
+			updateReaderSettingUseCase = instance(),
+			instance(),
+			instance(),
+			instance()
 		)
 	}
 	bind<ARepositoryViewModel>() with provider {

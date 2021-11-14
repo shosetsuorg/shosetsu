@@ -16,7 +16,6 @@ import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
-import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.common.utils.asHtml
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.databinding.ChapterReaderHtmlBinding
@@ -92,12 +91,7 @@ class HTMLReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 							}
 						} else {
 							// Hit bottom
-							chapterReader.viewModel.updateChapter(
-								chapter.copy(
-									readingStatus = ReadingStatus.READ,
-									readingPosition = 0.0
-								),
-							)
+							chapterReader.viewModel.updateChapterAsRead(chapter)
 						}
 					}
 				}

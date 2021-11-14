@@ -16,7 +16,6 @@ import app.shosetsu.android.common.ext.percentageScrolled
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.android.view.widget.TappingTextView
-import app.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.databinding.ChapterReaderTextViewBinding
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -177,12 +176,7 @@ class StringReader(
 			}
 		} else {
 			// Hit bottom
-			chapterReader.viewModel.updateChapter(
-				chapter.copy(
-					readingStatus = ReadingStatus.READ,
-					readingPosition = 0.0
-				),
-			)
+			chapterReader.viewModel.updateChapterAsRead(chapter)
 		}
 	}
 

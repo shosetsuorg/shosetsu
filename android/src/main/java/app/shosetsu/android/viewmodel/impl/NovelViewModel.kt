@@ -64,7 +64,8 @@ class NovelViewModel(
 	private val updateNovelSettingUseCase: UpdateNovelSettingUseCase,
 	private val loadDeletePreviousChapterUseCase: LoadDeletePreviousChapterUseCase,
 	private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
-	private val startDownloadWorkerAfterUpdateUseCase: StartDownloadWorkerAfterUpdateUseCase
+	private val startDownloadWorkerAfterUpdateUseCase: StartDownloadWorkerAfterUpdateUseCase,
+	private val getLastReadChapter: GetLastReadChapterUseCase
 ) : ANovelViewModel() {
 	@ExperimentalCoroutinesApi
 	@get:Synchronized
@@ -73,6 +74,11 @@ class NovelViewModel(
 
 	@ExperimentalCoroutinesApi
 	override val chaptersLive: LiveData<HResult<List<ChapterUI>>> by lazy {
+		chaptersFlow.asIOLiveData()
+	}
+
+	@ExperimentalCoroutinesApi
+	private val chaptersFlow: Flow<HResult<List<ChapterUI>>> by lazy {
 		novelIDLive.transformLatest { id: Int ->
 			emitAll(
 				getChapterUIsUseCase(id)
@@ -86,7 +92,7 @@ class NovelViewModel(
 					.combineSort()
 					.combineReverse()
 			)
-		}.asIOLiveData()
+		}
 	}
 
 	@ExperimentalCoroutinesApi
@@ -207,27 +213,36 @@ class NovelViewModel(
 
 	@ExperimentalCoroutinesApi
 	override fun deletePrevious() {
+		logI("Deleting previous chapters")
 		launchIO {
 			loadDeletePreviousChapterUseCase().handle { chaptersBackToDelete ->
 				if (chaptersBackToDelete != -1) {
-					/**
-					 * [chapters] filters so that it is unread and downloaded
-					 * Iterate through these to delete the previous
-					 */
-					val savedAndUnread =
-						chapters.filter { it.readingStatus == ReadingStatus.READ && it.isSaved }
+					val lastUnreadResult =
+						getLastReadChapter(novelFlow.first { it is HResult.Success }.unwrap()!!.id)
 
-					/**
-					 * Don't delete if the size of savedAndUnread is smaller then the [chaptersBackToDelete]
-					 */
-					if (savedAndUnread.size <= chaptersBackToDelete)
-						return@handle
+					if (lastUnreadResult is HResult.Empty) {
+						logE("Received empty when trying to get lastUnreadResult")
+						return@launchIO
+					}
 
-					/**
-					 * Iterate through the chapters and delete previous chapters
-					 */
-					for (index in 0 until savedAndUnread.size - chaptersBackToDelete)
-						deleteChapterPassageUseCase(savedAndUnread[index])
+					val lastUnread = (lastUnreadResult as HResult.Success).data
+
+					val chapters =
+						chaptersFlow.first { it is HResult.Success }.unwrap()?.sortedBy { it.order }
+							?: return@launchIO
+
+					val indexOfLast = chapters.indexOfFirst { it.id == lastUnread.chapterId }
+
+					if (indexOfLast == -1) {
+						logE("Index of last read chapter turned up negative")
+						return@launchIO
+					}
+
+					if (indexOfLast - chaptersBackToDelete < 0) {
+						return@launchIO
+					}
+
+					deleteChapterPassageUseCase(chapters[indexOfLast - chaptersBackToDelete])
 				}
 			}
 
@@ -446,4 +461,11 @@ class NovelViewModel(
 			}
 		}
 	}
+
+	override var isFromChapterReader: Boolean = false
+		get() = if (field) {
+			val value = field
+			field = !value
+			value
+		} else field
 }

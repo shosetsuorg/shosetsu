@@ -89,4 +89,6 @@ val repositoryModule: DI.Module = DI.Module("repository_module") {
 		BackupUriRepository()
 	}
 
+	bind<IChapterHistoryRepository>() with singleton { TempChapterHistoryRepository() }
+
 }

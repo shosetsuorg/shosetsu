@@ -133,19 +133,20 @@ abstract class AChapterReaderViewModel :
 	/** An easy method to toggle the state of a bookmark */
 	abstract fun toggleBookmark(readerChapterUI: ReaderChapterUI)
 
-	/** Update a [readerChapterUI] */
-	abstract fun updateChapter(
-		readerChapterUI: ReaderChapterUI,
-	)
+	/** Update a [chapter] */
+	abstract fun updateChapter(chapter: ReaderChapterUI)
 
-	/** Called when a [readerChapterUI] is viewed by the user */
-	abstract fun markAsReadingOnView(readerChapterUI: ReaderChapterUI)
+	/** Update [chapter] as Read, this will also clear all reading progress */
+	abstract fun updateChapterAsRead(chapter: ReaderChapterUI)
+
+	/** Called when a [chapter] is viewed by the user */
+	abstract fun markAsReadingOnView(chapter: ReaderChapterUI)
 
 	/**
-	 * Called when a [readerChapterUI] is scrolled,
+	 * Called when a [chapter] is scrolled,
 	 * will also update the [readingPosition] for ease
 	 */
-	abstract fun markAsReadingOnScroll(readerChapterUI: ReaderChapterUI, readingPosition: Double)
+	abstract fun markAsReadingOnScroll(chapter: ReaderChapterUI, readingPosition: Double)
 
 	/**
 	 * Loads a [LiveData] reflection of the global custom css

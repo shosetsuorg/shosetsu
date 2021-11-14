@@ -299,4 +299,20 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 			instance()
 		)
 	}
+
+	bind<GetReadingMarkingTypeUseCase>() with provider { GetReadingMarkingTypeUseCase(instance()) }
+	bind<RecordChapterIsReadingUseCase>() with provider {
+		RecordChapterIsReadingUseCase(
+			instance(),
+			instance()
+		)
+	}
+	bind<RecordChapterIsReadUseCase>() with provider {
+		RecordChapterIsReadUseCase(
+			instance(),
+			instance()
+		)
+	}
+
+	bind<GetLastReadChapterUseCase>() with provider { GetLastReadChapterUseCase(instance()) }
 }

@@ -134,7 +134,38 @@ class DownloadSettingsViewModel(
 			titleRes = R.string.settings_download_notify_extension_install_title
 			descRes = R.string.settings_download_notify_extension_install_desc
 			checkSettingValue(NotifyExtensionDownload)
-		}
+		},
+		seekBarSettingData(9) {
+			titleRes = R.string.settings_download_delete_on_read_title
+			descRes = R.string.settings_download_delete_on_read_desc
+			range { 0F to 5F }
+			settingsRepo.getInt(DeleteReadChapter).handle {
+				progressValue = it.toFloat() + 1
+			}
+			showSectionMark = true
+			showSectionText = true
+
+			seekBySection = true
+			seekByStepSection = true
+			autoAdjustSectionMark = true
+			touchToSeek = true
+			hideBubble = true
+
+			sectionC = 4
+			array.apply {
+				put(0, "Disabled")
+				put(1, "Delete current")
+				put(2, "Previous")
+				put(3, "2nd to last")
+				put(4, "3rd to last")
+
+			}
+			onProgressChanged { _, progress, _, fromUser ->
+				if (fromUser) launchIO {
+					settingsRepo.setInt(DeleteReadChapter, progress - 1)
+				}
+			}
+		},
 	)
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {

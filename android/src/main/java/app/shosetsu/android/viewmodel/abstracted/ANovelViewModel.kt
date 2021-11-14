@@ -131,4 +131,12 @@ abstract class ANovelViewModel
 	abstract fun downloadAllChapters()
 
 	abstract fun updateNovelSetting(novelSettingUI: NovelSettingUI)
+
+	/**
+	 * Remember that the next time the novel controller is rendered,
+	 * that it is from the chapter reader
+	 *
+	 * If returns true, will be false on next get
+	 */
+	abstract var isFromChapterReader: Boolean
 }

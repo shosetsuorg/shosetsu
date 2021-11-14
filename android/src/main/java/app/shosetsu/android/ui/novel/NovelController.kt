@@ -91,6 +91,11 @@ class NovelController(bundle: Bundle) :
 		setHasOptionsMenu(true)
 	}
 
+	override fun onAttach(view: View) {
+		if (viewModel.isFromChapterReader) viewModel.deletePrevious()
+		super.onAttach(view)
+	}
+
 	private fun startSelectionAction(): Boolean {
 		if (actionMode != null) return false
 		hideFAB(resume!!)
@@ -332,6 +337,7 @@ class NovelController(bundle: Bundle) :
 
 	override fun onViewCreated(view: View) {
 		viewModel.setNovelID(args.getNovelID())
+		if (viewModel.isFromChapterReader) viewModel.deletePrevious()
 		binding.swipeRefreshLayout.setOnRefreshListener {
 			if (viewModel.isOnline())
 				refresh()
@@ -418,6 +424,7 @@ class NovelController(bundle: Bundle) :
 		}
 		setOnClickListener { _, _, item, _ ->
 			if (item !is ChapterUI) return@setOnClickListener false
+			viewModel.isFromChapterReader = true
 			activity?.openChapter(item)
 			true
 		}

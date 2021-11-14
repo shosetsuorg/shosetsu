@@ -27,7 +27,6 @@ import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
-import app.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityReaderBinding
 import com.google.android.material.appbar.MaterialToolbar
@@ -492,12 +491,7 @@ class ChapterReader
 					// This was implemented due to performance shortcuts taken due to excessive
 					// [handleChaptersResult] operation time
 					(itemAdapter.getAdapterItem(position - 1) as? ReaderChapterUI)?.let { lastChapter ->
-						viewModel.updateChapter(
-							lastChapter.copy(
-								readingStatus = ReadingStatus.READ,
-								readingPosition = 0.0
-							)
-						)
+						viewModel.updateChapterAsRead(lastChapter)
 					}
 
 				}
