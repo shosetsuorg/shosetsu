@@ -176,7 +176,7 @@
         android:id="@+id/utilityBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/novel_genres"
+        android:layout_above="@id/genre_scroll"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:gravity="center_vertical"
@@ -203,17 +203,24 @@
             android:src="@drawable/open_in_browser" />
     </LinearLayout>
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/novel_genres"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
+    <HorizontalScrollView
+        android:id="@+id/genre_scroll"
         android:layout_alignBottom="@id/frameLayout"
         android:layout_alignParentEnd="true"
-        android:background="@android:color/transparent"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:theme="@style/ChipStyle"
-        android:visibility="visible" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/novel_genres"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:background="@android:color/transparent"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:theme="@style/ChipStyle"
+            android:visibility="visible" />
+    </HorizontalScrollView>
+
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/novel_description"
@@ -222,10 +229,10 @@
         android:layout_below="@id/frameLayout"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
+        android:layout_marginBottom="8dp"
         android:background="@android:color/transparent"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:layout_marginBottom="8dp"
         android:textIsSelectable="true"
         tools:text="A\nB\nC\nD\nE\nF" />
 
