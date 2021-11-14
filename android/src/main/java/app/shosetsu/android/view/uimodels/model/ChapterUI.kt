@@ -82,6 +82,7 @@ data class ChapterUI(
 			binding.readProgressValue.alpha = float
 			binding.readTag.alpha = float
 			binding.downloadTag.alpha = float
+			binding.releaseTag.alpha = float
 		}
 
 		override fun RecyclerNovelChapterBinding.bindView(item: ChapterUI, payloads: List<Any>) {

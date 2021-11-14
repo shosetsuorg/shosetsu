@@ -86,7 +86,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/release_tag"
-            android:layout_width="80dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/titleBox"
             android:layout_alignParentStart="true"
