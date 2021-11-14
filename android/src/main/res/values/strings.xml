@@ -590,6 +590,9 @@
     <string name="settings_advanced_clear_cookies_complete">Cookies cleared</string>
     <string name="settings_download_delete_on_read_title">Delete chapters on read</string>
     <string name="settings_download_delete_on_read_desc">Which chapter to delete when a chapter is read</string>
+    <string name="settings_advanced_theme_desc">Change the theme that the application uses</string>
+    <string name="settings_advanced_purge_novel_cache"><![CDATA[Removes any unbookmarked novels & info from Shosetsu]]></string>
+    <string name="settings_advanced_kill_cycle_workers_button">Kill</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

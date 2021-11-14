@@ -1,27 +1,17 @@
 package app.shosetsu.android.viewmodel.impl.settings
 
 import android.app.Application
-import android.content.res.Resources
-import android.widget.ArrayAdapter
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.backend.workers.perodic.AppUpdateCheckCycleWorker
 import app.shosetsu.android.backend.workers.perodic.BackupCycleWorker
 import app.shosetsu.android.backend.workers.perodic.NovelUpdateCycleWorker
-import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.PurgeNovelCacheUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.buttonSettingData
-import app.shosetsu.android.view.uimodels.settings.dsl.spinnerSettingData
-import app.shosetsu.android.view.uimodels.settings.dsl.spinnerValue
-import app.shosetsu.android.view.uimodels.settings.dsl.switchSettingData
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
-import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.domain.repositories.base.getIntOrDefault
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.successResult
-import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.flow.flow
 
 /*
@@ -60,44 +50,7 @@ class AdvancedSettingsViewModel(
 		}.asIOLiveData()
 
 	override suspend fun settings(): List<SettingsItemData> = listOf(
-		spinnerSettingData(1) {
-			titleRes = R.string.theme
-			try {
-				arrayAdapter = ArrayAdapter(
-					context,
-					android.R.layout.simple_spinner_dropdown_item,
-					context.resources.getStringArray(R.array.application_themes)
-				)
-			} catch (e: Resources.NotFoundException) {
-				reportError(e.toHError())
-			}
 
-			spinnerValue { settingsRepo.getIntOrDefault(AppTheme) }
-		},
-		buttonSettingData(2) {
-			titleRes = R.string.remove_novel_cache
-			textRes = R.string.settings_advanced_purge_button
-		},
-		switchSettingData(3) {
-			titleRes = R.string.settings_advanced_verify_checksum_title
-			descRes = R.string.settings_advanced_verify_checksum_desc
-			checkSettingValue(VerifyCheckSum)
-		},
-		switchSettingData(4) {
-			titleRes = R.string.settings_advanced_require_double_back_title
-			descRes = R.string.settings_advanced_require_double_back_desc
-			checkSettingValue(RequireDoubleBackToExit)
-		},
-		buttonSettingData(5) {
-			titleRes = R.string.settings_advanced_kill_cycle_workers_title
-			descRes = R.string.settings_advanced_kill_cycle_workers_desc
-			textRes = R.string.settings_advanced_kill_cycle_workers_title
-		},
-		buttonSettingData(6) {
-			titleRes = R.string.settings_advanced_clear_cookies_title
-			descRes = R.string.settings_advanced_clear_cookies_desc
-			textRes = R.string.settings_advanced_clear_cookies_button
-		}
 	)
 
 	override fun killCycleWorkers(): HResult<*> {

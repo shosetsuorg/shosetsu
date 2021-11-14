@@ -1,20 +1,32 @@
 package app.shosetsu.android.ui.settings.sub
 
-import android.content.res.Resources
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.webkit.CookieManager
-import android.widget.AdapterView
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.ui.settings.SettingsSubController
-import app.shosetsu.android.view.uimodels.settings.ButtonSettingData
-import app.shosetsu.android.view.uimodels.settings.SpinnerSettingData
-import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.onButtonClicked
-import app.shosetsu.android.view.uimodels.settings.dsl.onSpinnerItemSelected
+import app.shosetsu.android.view.compose.setting.ButtonSettingContent
+import app.shosetsu.android.view.compose.setting.DropdownSettingContent
+import app.shosetsu.android.view.compose.setting.SwitchSettingContent
+import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey
+import app.shosetsu.common.consts.settings.SettingKey.AppTheme
 import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 
@@ -40,14 +52,14 @@ import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
  * Shosetsu
  * 13 / 07 / 2019
  */
-class AdvancedSettings : SettingsSubController() {
-	override val viewModel: AAdvancedSettingsViewModel by viewModel()
+class AdvancedSettings : ShosetsuController() {
+	val viewModel: AAdvancedSettingsViewModel by viewModel()
 	override val viewTitleRes: Int = R.string.settings_advanced
 
 	/**
 	 * Execute a purge from the view model, prompt to retry if failed
 	 */
-	private fun purge() {
+	private fun purgeNovelCache() {
 		viewModel.purgeUselessData().observe {
 			it.handle(
 				onError = {
@@ -56,7 +68,7 @@ class AdvancedSettings : SettingsSubController() {
 						R.string.controller_settings_advanced_snackbar_purge_failure,
 						LENGTH_LONG
 					)
-						?.setAction(R.string.retry) { purge() }
+						?.setAction(R.string.retry) { purgeNovelCache() }
 						?.show()
 				}
 			) {
@@ -66,72 +78,143 @@ class AdvancedSettings : SettingsSubController() {
 		}
 	}
 
-	override val adjustments: List<SettingsItemData>.() -> Unit = {
-		find<ButtonSettingData>(2)?.onButtonClicked {
-			purge()
-		}
 
-		var first = true
-		find<SpinnerSettingData>(1)?.onSpinnerItemSelected { _: AdapterView<*>?, _: View?, position: Int, _: Long ->
-			if (first) {
-				first = false
-				return@onSpinnerItemSelected
-			}
-			launchUI {
-				activity?.onBackPressed()
-				makeSnackBar(
-					R.string.controller_settings_advanced_snackbar_ui_change,
-					Snackbar.LENGTH_INDEFINITE
-				)?.setAction(R.string.apply) {
-					launchIO {
-						viewModel.settingsRepo.setInt(SettingKey.AppTheme, position)
-					}
-				}?.show()
-			}
-		}
-
-		find<ButtonSettingData>(5)?.onButtonClicked {
-			viewModel.killCycleWorkers().handle {
-				makeSnackBar(
-					R.string.settings_advanced_snackbar_cycle_kill_success,
-					LENGTH_LONG
-				)?.apply {
-					setAction(R.string.restart) {
-						viewModel.startCycleWorkers().handle {
-							makeSnackBar(R.string.settings_advanced_cycle_start_success)?.show()
-						}
-					}
-				}?.show()
-			}
-		}
-
-		find<ButtonSettingData>(6)?.onButtonClicked {
-			logI("User wants to clear cookies")
-			logV("Clearing cookies")
-			CookieManager.getInstance().removeAllCookies {
-				logV("Cookies cleared")
-				makeSnackBar(R.string.settings_advanced_clear_cookies_complete)?.show()
-			}
+	private fun clearWebCookies() {
+		logI("User wants to clear cookies")
+		logV("Clearing cookies")
+		CookieManager.getInstance().removeAllCookies {
+			logV("Cookies cleared")
+			makeSnackBar(R.string.settings_advanced_clear_cookies_complete)?.show()
 		}
 	}
 
 
-	@Throws(Resources.NotFoundException::class)
-	override fun onViewCreated(view: View) {
-		/*
-		val theme = (activity as AppCompatActivity).delegate.localNightMode
-		(settings[0] as SpinnerSettingData).spinnerSelection = (if (
-				theme == MODE_NIGHT_YES ||
-				theme == MODE_NIGHT_FOLLOW_SYSTEM ||
-				theme == MODE_NIGHT_AUTO_BATTERY)
-			1 else 0)
+	private fun themeSelected(position: Int) {
+		activity?.onBackPressed()
+		launchUI {
+			makeSnackBar(
+				R.string.controller_settings_advanced_snackbar_ui_change,
+				Snackbar.LENGTH_INDEFINITE
+			)?.setAction(R.string.apply) {
+				launchIO {
+					viewModel.settingsRepo.setInt(AppTheme, position)
+				}
+			}?.show()
+		}
+	}
 
-		if (BuildConfig.DEBUG && findDataByID(9) == -1)
-			settings.add(switchSettingData(9) {
-				title { "Show Intro" }
-				checker { s::showIntro }
-			})
-		 */
-		super.onViewCreated(view)
+	private fun killCycleWorkers() {
+		viewModel.killCycleWorkers().handle {
+			makeSnackBar(
+				R.string.settings_advanced_snackbar_cycle_kill_success,
+				LENGTH_LONG
+			)?.apply {
+				setAction(R.string.restart) {
+					viewModel.startCycleWorkers().handle {
+						makeSnackBar(R.string.settings_advanced_cycle_start_success)?.show()
+					}
+				}
+			}?.show()
+		}
+	}
+
+
+	override fun onViewCreated(view: View) {}
+
+	override fun onCreateView(
+		inflater: LayoutInflater,
+		container: ViewGroup,
+		savedViewState: Bundle?
+	): View = ComposeView(container.context).apply {
+		setViewTitle()
+		setContent {
+			MdcTheme {
+				AdvancedSettingsContent(
+					viewModel,
+					onThemeSelected = ::themeSelected,
+					onPurgeNovelCache = ::purgeNovelCache,
+					onPurgeChapterCache = {},
+					onKillCycleWorkers = ::killCycleWorkers,
+					onClearCookies = ::clearWebCookies
+				)
+			}
+		}
+	}
+}
+
+
+@Composable
+fun AdvancedSettingsContent(
+	viewModel: AAdvancedSettingsViewModel,
+	onThemeSelected: (Int) -> Unit,
+	onPurgeNovelCache: () -> Unit,
+	onPurgeChapterCache: () -> Unit,
+	onKillCycleWorkers: () -> Unit,
+	onClearCookies: () -> Unit
+) {
+	LazyColumn(modifier = Modifier.padding(16.dp)) {
+		item {
+			val choice by viewModel.settingsRepo.getIntFlow(AppTheme)
+				.collectAsState(AppTheme.default)
+
+			DropdownSettingContent(
+				title = stringResource(R.string.theme),
+				description = stringResource(R.string.settings_advanced_theme_desc),
+				choices = stringArrayResource(R.array.application_themes),
+				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				selection = choice,
+				onSelection = onThemeSelected
+			)
+		}
+
+		item {
+			ButtonSettingContent(
+				title = stringResource(R.string.remove_novel_cache),
+				description = stringResource(R.string.settings_advanced_purge_novel_cache),
+				buttonText = stringResource(R.string.settings_advanced_purge_button),
+				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				onClick = onPurgeNovelCache
+			)
+		}
+
+		item {
+			SwitchSettingContent(
+				title = stringResource(R.string.settings_advanced_verify_checksum_title),
+				description = stringResource(R.string.settings_advanced_verify_checksum_desc),
+				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				repo = viewModel.settingsRepo,
+				key = SettingKey.VerifyCheckSum
+			)
+		}
+
+		item {
+			SwitchSettingContent(
+				title = stringResource(R.string.settings_advanced_require_double_back_title),
+				description = stringResource(R.string.settings_advanced_require_double_back_desc),
+				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				repo = viewModel.settingsRepo,
+				key = SettingKey.RequireDoubleBackToExit
+			)
+		}
+
+		item {
+			ButtonSettingContent(
+				title = stringResource(R.string.settings_advanced_kill_cycle_workers_title),
+				description = stringResource(R.string.settings_advanced_kill_cycle_workers_desc),
+				buttonText = stringResource(R.string.settings_advanced_kill_cycle_workers_button),
+				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				onClick = onKillCycleWorkers
+			)
+		}
+
+		item {
+			ButtonSettingContent(
+				title = stringResource(R.string.settings_advanced_clear_cookies_title),
+				description = stringResource(R.string.settings_advanced_clear_cookies_desc),
+				buttonText = stringResource(R.string.settings_advanced_clear_cookies_button),
+				modifier = Modifier.fillMaxWidth(),
+				onClick = onClearCookies
+			)
+		}
 	}
 }
