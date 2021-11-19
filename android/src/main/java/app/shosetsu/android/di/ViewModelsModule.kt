@@ -163,7 +163,9 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			startDownloadWorkerUseCase = instance(),
 			startDownloadWorkerAfterUpdateUseCase = instance(),
 			getContentURL = instance(),
-			getLastReadChapter = instance()
+			getLastReadChapter = instance(),
+			getTrueDelete = instance(),
+			trueDeleteChapter = instance()
 		)
 	}
 

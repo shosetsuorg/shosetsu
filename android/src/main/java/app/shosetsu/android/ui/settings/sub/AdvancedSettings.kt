@@ -216,5 +216,15 @@ fun AdvancedSettingsContent(
 				onClick = onClearCookies
 			)
 		}
+
+		item {
+			SwitchSettingContent(
+				title = stringResource(R.string.settings_advanced_true_chapter_delete_title),
+				description = stringResource(R.string.settings_advanced_true_chapter_delete_desc),
+				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				repo = viewModel.settingsRepo,
+				key = SettingKey.ExposeTrueChapterDelete
+			)
+		}
 	}
 }

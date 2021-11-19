@@ -207,6 +207,8 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object BackupOnLowBattery : BooleanKey("backupLowBattery", true)
 	object BackupOnlyWhenIdle : BooleanKey("backupIdle", false)
 
+	object ExposeTrueChapterDelete : BooleanKey("expose_true_chapter_delete", false)
+
 	// Download Options
 	object CustomExportDirectory : StringKey("downloadDirectory", "")
 

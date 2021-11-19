@@ -570,12 +570,21 @@ class NovelController(bundle: Bundle) :
 		)
 	}
 
+	private fun trueDeleteSelection() {
+		viewModel.trueDelete(ArrayList(selectedChapters))
+	}
+
 	private inner class SelectionActionMode : ActionMode.Callback {
 		override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
 			// Hides the original action bar
 			// (activity as MainActivity?)?.supportActionBar?.hide()
 
 			mode.menuInflater.inflate(R.menu.toolbar_novel_chapters_selected, menu)
+
+			viewModel.getIfAllowTrueDelete().observe {
+				menu.findItem(id.true_delete).isVisible = it
+			}
+
 			mode.setTitle(R.string.selection)
 			binding.bottomMenu.show(mode, R.menu.toolbar_novel_chapters_selected_bottom) {
 				when (it.itemId) {
@@ -630,6 +639,10 @@ class NovelController(bundle: Bundle) :
 				}
 				id.chapter_inverse -> {
 					invertSelection()
+					true
+				}
+				id.true_delete -> {
+					trueDeleteSelection()
 					true
 				}
 				else -> false

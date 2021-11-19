@@ -5,6 +5,7 @@ import app.shosetsu.android.domain.usecases.*
 import app.shosetsu.android.domain.usecases.delete.DeleteChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteDownloadUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteRepositoryUseCase
+import app.shosetsu.android.domain.usecases.delete.TrueDeleteChapterUseCase
 import app.shosetsu.android.domain.usecases.get.*
 import app.shosetsu.android.domain.usecases.load.*
 import app.shosetsu.android.domain.usecases.settings.LoadChaptersResumeFirstUnreadUseCase
@@ -317,4 +318,13 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 	}
 
 	bind<GetLastReadChapterUseCase>() with provider { GetLastReadChapterUseCase(instance()) }
+
+	bind<TrueDeleteChapterUseCase>() with provider {
+		TrueDeleteChapterUseCase(
+			instance(),
+			instance()
+		)
+	}
+	bind<GetTrueDeleteChapterUseCase>() with provider { GetTrueDeleteChapterUseCase(instance()) }
+
 }

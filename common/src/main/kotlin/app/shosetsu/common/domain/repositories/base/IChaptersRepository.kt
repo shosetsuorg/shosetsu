@@ -201,4 +201,6 @@ interface IChaptersRepository {
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType
 	): HResult<*>
+
+	suspend fun delete(chapterUI: ChapterEntity): HResult<*>
 }

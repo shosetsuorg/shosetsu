@@ -20,4 +20,9 @@
         android:title="@string/select_between"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/true_delete"
+        android:title="@string/controller_novel_true_delete"
+        android:visible="false"
+        app:showAsAction="never" />
 </menu>

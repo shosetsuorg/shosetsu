@@ -7,6 +7,7 @@ import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerAfterUpdateUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteChapterPassageUseCase
+import app.shosetsu.android.domain.usecases.delete.TrueDeleteChapterUseCase
 import app.shosetsu.android.domain.usecases.get.*
 import app.shosetsu.android.domain.usecases.load.LoadDeletePreviousChapterUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadChaptersResumeFirstUnreadUseCase
@@ -65,7 +66,9 @@ class NovelViewModel(
 	private val loadDeletePreviousChapterUseCase: LoadDeletePreviousChapterUseCase,
 	private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
 	private val startDownloadWorkerAfterUpdateUseCase: StartDownloadWorkerAfterUpdateUseCase,
-	private val getLastReadChapter: GetLastReadChapterUseCase
+	private val getLastReadChapter: GetLastReadChapterUseCase,
+	private val getTrueDelete: GetTrueDeleteChapterUseCase,
+	private val trueDeleteChapter: TrueDeleteChapterUseCase
 ) : ANovelViewModel() {
 	@ExperimentalCoroutinesApi
 	@get:Synchronized
@@ -99,6 +102,11 @@ class NovelViewModel(
 	override val novelSettingFlow: LiveData<HResult<NovelSettingUI>> by lazy {
 		novelSettingsFlow.asIOLiveData()
 	}
+
+	override fun getIfAllowTrueDelete(): LiveData<Boolean> =
+		flow {
+			emit(getTrueDelete().unwrap() ?: false)
+		}.asIOLiveData()
 
 	private val novelFlow by lazy {
 		novelIDLive.transformLatest {
@@ -443,6 +451,14 @@ class NovelViewModel(
 		logD("Launching update")
 		launchIO {
 			updateNovelSettingUseCase(novelSettingUI)
+		}
+	}
+
+	override fun trueDelete(list: List<ChapterUI>) {
+		launchIO {
+			list.forEach {
+				trueDeleteChapter(it)
+			}
 		}
 	}
 

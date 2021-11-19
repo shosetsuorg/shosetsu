@@ -119,4 +119,11 @@ class DBChaptersDataSource(
 			e.toHError()
 		}
 
+	override suspend fun delete(entity: ChapterEntity): HResult<*> =
+		try {
+			successResult(chaptersDao.delete(entity.toDB()))
+		} catch (e: Exception) {
+			e.toHError()
+		}
+
 }

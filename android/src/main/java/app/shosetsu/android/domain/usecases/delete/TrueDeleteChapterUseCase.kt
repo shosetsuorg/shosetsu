@@ -3,8 +3,7 @@ package app.shosetsu.android.domain.usecases.delete
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.dto.handle
+import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -24,20 +23,21 @@ import app.shosetsu.common.dto.handle
  */
 
 /**
- * shosetsu
- * 26 / 06 / 2020
+ * Shosetsu
+ *
+ * @since 18 / 11 / 2021
+ * @author Doomsdayrs
  */
-class DeleteChapterPassageUseCase(
-	private val iChaptersRepository: IChaptersRepository,
-	private val iExtensionsRepository: IExtensionsRepository
+class TrueDeleteChapterUseCase(
+	private val repo: IChaptersRepository,
+	private val deleteChapter: DeleteChapterPassageUseCase
 ) {
 	suspend operator fun invoke(chapterUI: ChapterUI) {
 		this(chapterUI.convertTo())
 	}
 
-	suspend operator fun invoke(chapterUI: ChapterEntity) {
-		iExtensionsRepository.getExtension(chapterUI.extensionID).handle {
-			iChaptersRepository.deleteChapterPassage(chapterUI, it.chapterType)
-		}
+	suspend operator fun invoke(chapterUI: ChapterEntity): HResult<*> {
+		deleteChapter(chapterUI)
+		return repo.delete(chapterUI)
 	}
 }

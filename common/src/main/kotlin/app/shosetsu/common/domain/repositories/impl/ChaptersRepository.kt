@@ -151,6 +151,12 @@ class ChaptersRepository(
 			chapterEntity.copy(
 				isSaved = false
 			)
-		) ifSo { fileSource.delete(chapterEntity, chapterType) }
+		) ifSo {
+			fileSource.delete(chapterEntity, chapterType)
+		}
+
+
+	override suspend fun delete(entity: ChapterEntity) =
+		dbSource.delete(entity)
 
 }

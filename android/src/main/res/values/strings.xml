@@ -596,6 +596,9 @@
     <string name="controller_configure_extension_listing_desc">What list of novels should be displayed when the user opens up the extension to browse</string>
     <string name="controller_downloads_set_all_pending_title">Set all pending</string>
     <string name="controller_downloads_delete_all_title">Delete All</string>
+    <string name="controller_novel_true_delete">True Delete</string>
+    <string name="settings_advanced_true_chapter_delete_title">Show True Chapter Delete</string>
+    <string name="settings_advanced_true_chapter_delete_desc">Expose an option to truely remove a chapter from Shosetsu.\nUseful when a chapter is bugging</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

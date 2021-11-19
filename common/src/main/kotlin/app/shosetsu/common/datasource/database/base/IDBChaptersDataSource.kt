@@ -63,4 +63,6 @@ interface IDBChaptersDataSource {
 
 	/** Updates a [readerChapterEntity], a cut down version [updateChapter] */
 	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): HResult<*>
+
+	suspend fun delete(entity: ChapterEntity): HResult<*>
 }

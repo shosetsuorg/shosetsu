@@ -132,6 +132,8 @@ abstract class ANovelViewModel
 
 	abstract fun updateNovelSetting(novelSettingUI: NovelSettingUI)
 
+	abstract fun trueDelete(list: List<ChapterUI>)
+
 	/**
 	 * Remember that the next time the novel controller is rendered,
 	 * that it is from the chapter reader
@@ -139,4 +141,7 @@ abstract class ANovelViewModel
 	 * If returns true, will be false on next get
 	 */
 	abstract var isFromChapterReader: Boolean
+
+
+	abstract fun getIfAllowTrueDelete(): LiveData<Boolean>
 }
