@@ -28,6 +28,7 @@ import app.shosetsu.common.dto.handle
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.common.enums.NovelCardType.COMPRESSED
 import app.shosetsu.common.enums.NovelCardType.NORMAL
+import app.shosetsu.lib.exceptions.HTTPException
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ComposeViewBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerCatalogueBinding
@@ -37,6 +38,7 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.scroll.EndlessRecyclerOnScrollListener
 import kotlinx.coroutines.delay
+import org.acra.ACRA
 
 /*
  * This file is part of Shosetsu.
@@ -285,7 +287,15 @@ class CatalogController(
 	}
 
 	override fun handleErrorResult(e: HResult.Error) {
-		logE("Exception", e.exception)
+		binding.fragmentCatalogueProgressBottom.isVisible = false
+		binding.swipeRefreshLayout.isRefreshing = false
+		if (e.exception is HTTPException) {
+			val exception = e.exception as HTTPException
+			makeSnackBar(exception.code.toString())?.show()
+		} else {
+			logE("Exception", e.exception)
+			ACRA.errorReporter.handleException(e.exception)
+		}
 	}
 
 	override fun showLoading() {

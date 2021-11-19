@@ -208,7 +208,6 @@ class CatalogViewModel(
 				getDataLoaderAndLoad(queryFilter).handle(onError = {
 					_canLoadMore = false
 					reportError(it)
-					logE("Error: ${it.code}|${it.message}", it.exception)
 					itemsFlow.tryEmit(it)
 				}, onEmpty = {
 					_canLoadMore = false
