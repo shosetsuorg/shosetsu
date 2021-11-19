@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.isVisible
+import app.shosetsu.common.enums.TriStateState
 import com.github.doomsdayrs.apps.shosetsu.R
 
 class TriStateIcon @JvmOverloads constructor(
@@ -27,7 +28,7 @@ class TriStateIcon @JvmOverloads constructor(
 					uncheckedRes = getResourceId(R.styleable.TriStateIcon_icon_unchecked, -1)
 					ignoredRes = getResourceId(R.styleable.TriStateIcon_icon_ignored, -1)
 					state =
-						TriState.State.values()[getResourceId(
+						TriStateState.values()[getResourceId(
 							R.styleable.TriStateIcon_icon_state,
 							0
 						)]
@@ -37,9 +38,9 @@ class TriStateIcon @JvmOverloads constructor(
 			}
 	}
 
-	override var state: TriState.State = TriState.State.IGNORED
+	override var state: TriStateState = TriStateState.IGNORED
 		set(value) {
-			if (value == TriState.State.IGNORED) {
+			if (value == TriStateState.IGNORED) {
 				if (ignoredRes != -1) {
 					setImageResource(ignoredRes)
 				} else visibility = INVISIBLE
@@ -49,7 +50,7 @@ class TriStateIcon @JvmOverloads constructor(
 			isVisible = true
 
 			if (checkedRes != -1 && uncheckedRes != -1)
-				setImageResource(if (value == TriState.State.CHECKED) checkedRes else uncheckedRes)
+				setImageResource(if (value == TriStateState.CHECKED) checkedRes else uncheckedRes)
 
 			if (onStateChangeListeners != null)
 				onStateChangeListeners.forEach { listener ->
@@ -59,7 +60,7 @@ class TriStateIcon @JvmOverloads constructor(
 			field = value
 		}
 
-	override val onStateChangeListeners = ArrayList<(TriState.State) -> Unit>()
+	override val onStateChangeListeners = ArrayList<(TriStateState) -> Unit>()
 
 	override var skipIgnored: Boolean = false
 }

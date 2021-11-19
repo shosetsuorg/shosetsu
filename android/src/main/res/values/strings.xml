@@ -593,6 +593,7 @@
     <string name="settings_advanced_theme_desc">Change the theme that the application uses</string>
     <string name="settings_advanced_purge_novel_cache"><![CDATA[Removes any unbookmarked novels & info from Shosetsu]]></string>
     <string name="settings_advanced_kill_cycle_workers_button">Kill</string>
+    <string name="controller_configure_extension_listing_desc">What list of novels should be displayed when the user opens up the extension to browse</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

@@ -4,8 +4,6 @@ import androidx.annotation.DrawableRes
 import androidx.core.view.isVisible
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
-import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.adapters.ItemAdapter
 
 /*
  * This file is part of shosetsu.
@@ -34,7 +32,7 @@ import com.mikepenz.fastadapter.adapters.ItemAdapter
  */
 class ListSettingData(id: Int) : SettingsItemData(id) {
 
-	val itemAdapter: ItemAdapter<SettingsItemData> by lazy { ItemAdapter() }
+	var list: List<SettingsItemData> = listOf()
 
 	@DrawableRes
 	var openRes: Int = -1
@@ -69,11 +67,9 @@ class ListSettingData(id: Int) : SettingsItemData(id) {
 			toggle(holder)
 		}
 
-		val fastAdapter: FastAdapter<SettingsItemData> = FastAdapter.with(itemAdapter)
 
 		holder.recyclerView.isVisible = true
 
-		holder.recyclerView.adapter = fastAdapter
 		holder.divider.isVisible = true
 	}
 

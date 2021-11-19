@@ -168,9 +168,6 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 		GetExtensionSettingsUseCase(
 			instance(),
 			instance(),
-			instance(),
-			instance(),
-			instance()
 		)
 	}
 	bind<GetExtensionUIUseCase>() with provider { GetExtensionUIUseCase(instance()) }
@@ -266,6 +263,11 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 	bind<GetExtSelectedListingUseCase>() with provider {
 		GetExtSelectedListingUseCase(instance())
 	}
+
+	bind<GetExtSelectedListingFlowUseCase>() with provider {
+		GetExtSelectedListingFlowUseCase(instance())
+	}
+
 
 	bind<UpdateExtensionSettingUseCase>() with provider {
 		UpdateExtensionSettingUseCase(instance(), instance(), instance())

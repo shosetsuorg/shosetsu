@@ -1,14 +1,16 @@
 package app.shosetsu.android.view.widget
 
-interface TriState {
-	enum class State { IGNORED, CHECKED, UNCHECKED }
+import app.shosetsu.common.enums.TriStateState
 
-	var state: State
+interface TriState {
+
+
+	var state: TriStateState
 
 	/**
 	 * Lambdas that are invoked when the state changes, receiving the new state
 	 */
-	val onStateChangeListeners: ArrayList<(State) -> Unit>
+	val onStateChangeListeners: ArrayList<(TriStateState) -> Unit>
 
 	/**
 	 * Prevents this from going into an ignored state
@@ -19,10 +21,6 @@ interface TriState {
 	 * Cycles through the states of the tristate button
 	 */
 	fun cycleState() {
-		state = when (state) {
-			State.IGNORED -> State.CHECKED
-			State.CHECKED -> State.UNCHECKED
-			State.UNCHECKED -> if (skipIgnored) State.CHECKED else State.IGNORED
-		}
+		state = state.cycle(skipIgnored)
 	}
 }

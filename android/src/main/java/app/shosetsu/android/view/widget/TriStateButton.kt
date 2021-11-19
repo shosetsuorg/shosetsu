@@ -8,8 +8,8 @@ import android.widget.FrameLayout
 import androidx.annotation.StringRes
 import androidx.core.content.res.getResourceIdOrThrow
 import androidx.core.view.isVisible
-import app.shosetsu.android.view.widget.TriState.State
-import app.shosetsu.android.view.widget.TriState.State.*
+import app.shosetsu.common.enums.TriStateState
+import app.shosetsu.common.enums.TriStateState.*
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.TriStateButtonBinding
 
@@ -47,7 +47,7 @@ open class TriStateButton @JvmOverloads constructor(
 	private val uncheckedRes: Int
 	private val ignoredRes: Int
 
-	override var state: State = IGNORED
+	override var state: TriStateState = IGNORED
 		set(value) {
 			field = value
 			onStateChangeListeners.forEach { listener ->
@@ -59,7 +59,7 @@ open class TriStateButton @JvmOverloads constructor(
 	override var skipIgnored: Boolean = false
 
 	private val onClickListeners = ArrayList<(View) -> Unit>()
-	override val onStateChangeListeners = ArrayList<(State) -> Unit>()
+	override val onStateChangeListeners = ArrayList<(TriStateState) -> Unit>()
 
 	private val binding: TriStateButtonBinding by lazy {
 		TriStateButtonBinding.inflate(

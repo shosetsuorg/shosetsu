@@ -3,7 +3,7 @@ package app.shosetsu.android.view.uimodels.settings
 import androidx.annotation.DrawableRes
 import androidx.core.view.isVisible
 import app.shosetsu.android.view.uimodels.settings.base.RightSettingsItemData
-import app.shosetsu.android.view.widget.TriState
+import app.shosetsu.common.enums.TriStateState
 import com.github.doomsdayrs.apps.shosetsu.databinding.SettingsItemBinding
 
 /*
@@ -39,9 +39,9 @@ class TriStateButtonSettingData(id: Int) : RightSettingsItemData(id) {
 	@DrawableRes
 	var ignoredRes: Int = 0
 
-	var state: TriState.State = TriState.State.IGNORED
+	var state: TriStateState = TriStateState.IGNORED
 
-	var onStateChanged: (TriState.State) -> Unit = {}
+	var onStateChanged: (TriStateState) -> Unit = {}
 
 	override fun bindBinding(holder: SettingsItemBinding, payloads: List<Any>) {
 		super.bindBinding(holder, payloads)
@@ -59,7 +59,7 @@ class TriStateButtonSettingData(id: Int) : RightSettingsItemData(id) {
 		holder.triStateIcon.checkedRes = 0
 		holder.triStateIcon.uncheckedRes = 0
 		holder.triStateIcon.ignoredRes = 0
-		holder.triStateIcon.state = TriState.State.IGNORED
+		holder.triStateIcon.state = TriStateState.IGNORED
 		holder.triStateIcon.onStateChangeListeners.remove(onStateChanged)
 	}
 }

@@ -5,8 +5,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.children
-import app.shosetsu.android.view.widget.TriState.State
-import app.shosetsu.android.view.widget.TriState.State.IGNORED
+import app.shosetsu.common.enums.TriStateState
+import app.shosetsu.common.enums.TriStateState.IGNORED
 
 /*
  * This file is part of Shosetsu.
@@ -33,7 +33,7 @@ class TriStateGroup @JvmOverloads constructor(
 	context: Context,
 	attrs: AttributeSet? = null
 ) : LinearLayout(context, attrs) {
-	private val stateChangeListeners = ArrayList<(Int, State) -> Unit>()
+	private val stateChangeListeners = ArrayList<(Int, TriStateState) -> Unit>()
 
 	private val buttons: List<TriState>
 		get() = children.filterIsInstance<TriState>().toList()
@@ -74,7 +74,7 @@ class TriStateGroup @JvmOverloads constructor(
 	fun addOnStateChangeListener(
 		listener: (
 			@ParameterName("id") Int,
-			@ParameterName("state") State
+			@ParameterName("state") TriStateState
 		) -> Unit
 	) = stateChangeListeners.add(listener)
 }

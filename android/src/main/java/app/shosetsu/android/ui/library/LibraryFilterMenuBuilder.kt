@@ -11,12 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
-import app.shosetsu.android.view.widget.TriState.State.*
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
 import app.shosetsu.common.enums.InclusionState
 import app.shosetsu.common.enums.InclusionState.EXCLUDE
 import app.shosetsu.common.enums.InclusionState.INCLUDE
 import app.shosetsu.common.enums.NovelSortType.*
+import app.shosetsu.common.enums.TriStateState.*
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerLibraryBottomMenu0Binding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerLibraryBottomMenu1Binding

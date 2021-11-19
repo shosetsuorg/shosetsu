@@ -2,10 +2,10 @@ package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
-import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
+import app.shosetsu.common.domain.model.local.FilterEntity
 import app.shosetsu.common.dto.HResult
 
 /*
@@ -35,7 +35,15 @@ import app.shosetsu.common.dto.HResult
  */
 abstract class AExtensionConfigureViewModel
 	: ShosetsuViewModel(), SubscribeHandleViewModel<ExtensionUI>, ErrorReportingViewModel {
-	abstract val extensionSettings: LiveData<HResult<List<SettingsItemData>>>
+
+	abstract val extensionListing: LiveData<HResult<ListingSelectionData>>
+	abstract val extensionSettings: LiveData<HResult<List<FilterEntity>>>
+
+	data class ListingSelectionData(
+		val choices: List<String>,
+		val selection: Int
+	)
+
 
 	/** Set the extension ID to use */
 	abstract fun setExtensionID(id: Int)
@@ -43,11 +51,17 @@ abstract class AExtensionConfigureViewModel
 	/**
 	 * Uninstall this extension
 	 */
-	abstract fun uninstall(extensionUI: ExtensionUI)
+	abstract fun uninstall(extension: ExtensionUI)
 
 	/**
 	 * Destroy this controller
 	 */
 	abstract fun destroy()
+
+	abstract fun saveSetting(id: Int, value: String)
+	abstract fun saveSetting(id: Int, value: Boolean)
+	abstract fun saveSetting(id: Int, value: Int)
+
+	abstract fun setSelectedListing(value: Int)
 
 }

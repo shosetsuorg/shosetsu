@@ -1,8 +1,10 @@
 package app.shosetsu.android.domain.usecases.update
 
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
+import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.dto.transform
 
@@ -41,24 +43,32 @@ class UpdateExtensionSettingUseCase(
 			}
 		}
 
-	suspend operator fun invoke(extensionId: Int, settingId: Int, value: Int) =
-		update(extensionId, settingId, value).transform {
-			extSettingsRepo.setInt(extensionId, settingId, value)
+	suspend operator fun invoke(extensionId: Int, settingId: Int, value: Int): HResult<Unit> {
+		logI("Updating setting($settingId) for extension($extensionId) with value $value")
+		return extSettingsRepo.setInt(extensionId, settingId, value).transform {
+			update(extensionId, settingId, value)
 		}
+	}
 
-	suspend operator fun invoke(extensionId: Int, settingId: Int, value: String) =
-		update(extensionId, settingId, value).transform {
-			extSettingsRepo.setString(extensionId, settingId, value)
+	suspend operator fun invoke(extensionId: Int, settingId: Int, value: String): HResult<Unit> {
+		logI("Updating setting($settingId) for extension($extensionId) with value $value")
+		return extSettingsRepo.setString(extensionId, settingId, value).transform {
+			update(extensionId, settingId, value)
 		}
+	}
 
 
-	suspend operator fun invoke(extensionId: Int, settingId: Int, value: Boolean) =
-		update(extensionId, settingId, value).transform {
-			extSettingsRepo.setBoolean(extensionId, settingId, value)
+	suspend operator fun invoke(extensionId: Int, settingId: Int, value: Boolean): HResult<Unit> {
+		logI("Updating setting($settingId) for extension($extensionId) with value $value")
+		return extSettingsRepo.setBoolean(extensionId, settingId, value).transform {
+			update(extensionId, settingId, value)
 		}
+	}
 
-	suspend operator fun invoke(extensionId: Int, settingId: Int, value: Float) =
-		update(extensionId, settingId, value).transform {
-			extSettingsRepo.setFloat(extensionId, settingId, value)
+	suspend operator fun invoke(extensionId: Int, settingId: Int, value: Float): HResult<Unit> {
+		logI("Updating setting($settingId) for extension($extensionId) with value $value")
+		return extSettingsRepo.setFloat(extensionId, settingId, value).transform {
+			update(extensionId, settingId, value)
 		}
+	}
 }

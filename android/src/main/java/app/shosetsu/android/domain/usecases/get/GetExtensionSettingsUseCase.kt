@@ -1,23 +1,10 @@
 package app.shosetsu.android.domain.usecases.get
 
-import android.app.Application
-import android.widget.ArrayAdapter
-import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.launchUI
-import app.shosetsu.android.common.ext.logV
-import app.shosetsu.android.domain.usecases.update.UpdateExtensionSettingUseCase
-import app.shosetsu.android.view.uimodels.settings.DividerSettingItemData
-import app.shosetsu.android.view.uimodels.settings.ListSettingData
-import app.shosetsu.android.view.uimodels.settings.TriStateButtonSettingData
-import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
-import app.shosetsu.android.view.widget.TriState
+import app.shosetsu.common.domain.model.local.FilterEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.dto.*
-import app.shosetsu.lib.Filter
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
+import app.shosetsu.common.enums.TriStateState
 import kotlinx.coroutines.flow.*
 
 /*
@@ -44,206 +31,105 @@ import kotlinx.coroutines.flow.*
  * Loads the extension settings
  */
 class GetExtensionSettingsUseCase(
-	private val iExtensionsRepository: IExtensionsRepository,
 	private val extSettingsRepository: IExtensionSettingsRepository,
-	private val application: Application,
-	private val updateSetting: UpdateExtensionSettingUseCase,
 	private val getExt: GetExtensionUseCase
 ) {
-	private suspend fun asSettingItem(extensionID: Int, filter: Filter<Boolean>) =
+	private fun asSettingItem(
+		extensionID: Int,
+		filter: FilterEntity.Switch
+	): Flow<FilterEntity> =
 		extSettingsRepository.getBooleanFlow(
 			extensionID,
 			filter.id,
 			filter.state
-		).map { state ->
-			switchSettingData(filter.id) {
-				titleText = filter.name
-				isChecked = state
-				onChecked { _, isChecked ->
-					launchIO {
-						updateSetting(
-							extensionID,
-							filter.id,
-							isChecked
-						)
-					}
-				}
-			}
+		).mapLatest { state ->
+			filter.copy(state = state)
 		}
 
-	private suspend fun Array<Filter<*>>.convert(extensionID: Int): Array<Flow<SettingsItemData>> =
-		mapNotNull { filter ->
+	private fun asSettingItem(
+		extensionID: Int,
+		filter: FilterEntity.Checkbox
+	): Flow<FilterEntity> =
+		extSettingsRepository.getBooleanFlow(
+			extensionID,
+			filter.id,
+			filter.state
+		).mapLatest { state ->
+			filter.copy(state = state)
+		}
+
+	/**
+	 * Converts a [List] of [FilterEntity] into a [List] of [Flow]s of [FilterEntity]s
+	 */
+	private suspend fun List<FilterEntity>.convert(extensionID: Int): List<Flow<FilterEntity>> =
+		map { filter ->
 			when (filter) {
-				is Filter.Text -> {
-					this@GetExtensionSettingsUseCase.logV("Converting Filter.Text")
+				is FilterEntity.Text -> {
 					extSettingsRepository.getStringFlow(
 						extensionID,
 						filter.id,
 						filter.state
-					).map { state ->
-						textInputSettingData(filter.id) {
-							titleText = filter.name
-							initialText = state
-							doAfterTextChanged { editable ->
-								launchIO {
-									updateSetting(
-										extensionID,
-										filter.id,
-										editable.toString()
-									)
-								}
-							}
-						}
+					).mapLatest { state ->
+						filter.copy(state = state)
 					}
 				}
-				is Filter.Switch -> {
-					this@GetExtensionSettingsUseCase.logV("Converting Filter.Switch")
+				is FilterEntity.Switch -> {
 					asSettingItem(extensionID, filter)
 				}
-				is Filter.Checkbox -> {
-					this@GetExtensionSettingsUseCase.logV("Converting Filter.Checkbox")
+				is FilterEntity.Checkbox -> {
 					asSettingItem(extensionID, filter)
 				}
-				is Filter.TriState -> {
-					this@GetExtensionSettingsUseCase.logV("Converting Filter.TriState")
-					extSettingsRepository.getIntFlow(
+				is FilterEntity.TriState -> {
+					extSettingsRepository.getStringFlow(
 						extensionID,
 						filter.id,
-						filter.state
-					).map { newState ->
-						TriStateButtonSettingData(filter.id).apply {
-							titleText = filter.name
-							checkedRes = R.drawable.checkbox_checked
-							uncheckedRes = R.drawable.checkbox_inter
-							ignoredRes = R.drawable.checkbox_ignored
-
-							onStateChanged = {
-								launchIO {
-									updateSetting(
-										extensionID,
-										filter.id,
-										state.ordinal
-									)
-								}
-							}
-
-							state = when (newState) {
-								Filter.TriState.STATE_EXCLUDE -> TriState.State.UNCHECKED
-								Filter.TriState.STATE_IGNORED -> TriState.State.IGNORED
-								Filter.TriState.STATE_INCLUDE -> TriState.State.CHECKED
-								else -> TriState.State.IGNORED
-							}
-						}
+						filter.state.name
+					).mapLatest { newState ->
+						filter.copy(state = TriStateState.valueOf(newState))
 					}
 				}
-				is Filter.Dropdown -> {
-					this@GetExtensionSettingsUseCase.logV("Converting Filter.Dropdown")
+				is FilterEntity.Dropdown -> {
 					extSettingsRepository.getIntFlow(
 						extensionID,
 						filter.id,
-						filter.state
-					).map { state ->
-						spinnerSettingData(filter.id) {
-							titleText = filter.name
-							arrayAdapter = ArrayAdapter(
-								application,
-								android.R.layout.simple_spinner_dropdown_item,
-								filter.choices
-							)
-							spinnerValue { state }
-							onSpinnerItemSelected { _, _, position, _ ->
-								launchIO {
-									updateSetting(
-										extensionID,
-										filter.id,
-										position
-									)
-								}
-							}
-						}
+						filter.selected
+					).mapLatest { state ->
+						filter.copy(selected = state)
 					}
 				}
-				is Filter.RadioGroup -> {
-					this@GetExtensionSettingsUseCase.logV("Converting Filter.RadioGroup")
+				is FilterEntity.RadioGroup -> {
 					extSettingsRepository.getIntFlow(
 						extensionID,
 						filter.id,
-						filter.state
-					).map { state ->
+						filter.selected
+					).mapLatest { state ->
 						//TODO RadioGroup
-						spinnerSettingData(filter.id) {
-							titleText = filter.name
-							arrayAdapter = ArrayAdapter(
-								application,
-								android.R.layout.simple_spinner_dropdown_item,
-								filter.choices
-							)
-							spinnerValue { state }
-							onSpinnerItemSelected { _, _, position, _ ->
-								launchIO {
-									updateSetting(
-										extensionID,
-										filter.id,
-										position
-									)
-								}
-							}
-						}
+						filter.copy(selected = state)
 					}
 				}
-				is Filter.List -> {
-					this@GetExtensionSettingsUseCase.logV("Converting Filter.List")
-
-					val list = ListSettingData(filter.id).apply {
-						titleText = filter.name
-						launchIO {
-							filter.filters.convert(extensionID).combine().collectLatest {
-								launchUI {
-									FastAdapterDiffUtil[itemAdapter] =
-										FastAdapterDiffUtil.calculateDiff(itemAdapter, it)
-								}
-							}
-						}
-					}
-					flow {
-						emit(list)
+				is FilterEntity.FList -> {
+					filter.filters.convert(extensionID).combine().mapLatest { subList ->
+						filter.copy(filters = subList)
 					}
 				}
-				is Filter.Group<*> -> {
-					this@GetExtensionSettingsUseCase.logV("Converting Filter.Group")
-					val list = ListSettingData(filter.id).apply {
-						titleText = filter.name
-						launchIO {
-							(filter.filters as Array<Filter<*>>).convert(extensionID).combine()
-								.collectLatest {
-									launchUI {
-										FastAdapterDiffUtil[itemAdapter] =
-											FastAdapterDiffUtil.calculateDiff(itemAdapter, it)
-									}
-								}
-						}
-					}
-					flow {
-						emit(list)
+				is FilterEntity.Group -> {
+					filter.filters.convert(extensionID).combine().mapLatest { subList ->
+						filter.copy(filters = subList)
 					}
 				}
-				is Filter.Header -> flow {
-					this@GetExtensionSettingsUseCase.logV("Converting Filter.Header")
-					emit(headerSettingItemData(filter.id) {
-						titleText = filter.name
-					})
+				is FilterEntity.Header -> flow {
+					emit(filter)
 				}
-				is Filter.Separator -> {
-					this@GetExtensionSettingsUseCase.logV("Converting Filter.Separator")
-					flow { emit(DividerSettingItemData(filter.id)) }
+				is FilterEntity.Separator -> flow {
+					emit(filter)
 				}
 			}
-		}.toTypedArray()
+		}
 
-	private fun Array<Flow<SettingsItemData>>.combine(): Flow<List<SettingsItemData>> =
-		combine(*this) { it.toList() }
+	private fun List<Flow<FilterEntity>>.combine(): Flow<List<FilterEntity>> =
+		combine(this) { it.toList() }
 
-	operator fun invoke(extensionID: Int): Flow<HResult<List<SettingsItemData>>> =
+	operator fun invoke(extensionID: Int): Flow<HResult<List<FilterEntity>>> =
 		flow {
 			if (extensionID == -1) {
 				emit(empty)
@@ -255,7 +141,13 @@ class GetExtensionSettingsUseCase(
 				onEmpty = { emit(empty) },
 				onError = { emit(it) }
 			) { extension ->
-				emitAll(extension.settingsModel.convert(extensionID).combine().mapToSuccess())
+				val list: List<FilterEntity> =
+					extension.settingsModel.map { FilterEntity.fromFilter(it) }
+
+				emitAll(list.convert(extensionID).combine().transformLatest {
+					emit(loading)
+					emit(successResult(it))
+				})
 			}
 		}
 }

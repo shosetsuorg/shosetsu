@@ -3,6 +3,7 @@ package app.shosetsu.android.providers.prefrences
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.common.consts.settings.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -170,17 +171,20 @@ class SharedPreferenceProvider(
 				}
 
 			override fun onSharedPreferenceChanged(sp: SharedPreferences?, s: String) {
+				// Evaluate what setting key [s] corresponds to
 				val key: SettingKey<*> =
 					SettingKey.valueOf(s) ?: when (s.substringBefore("_")) {
-						"int" -> SettingKey.CustomInt(s, 0)
-						"string" -> SettingKey.CustomString(s, "")
-						"boolean" -> SettingKey.CustomBoolean(s, false)
-						"long" -> SettingKey.CustomLong(s, 0L)
-						"float" -> SettingKey.CustomFloat(s, 0f)
-						"stringSet" -> SettingKey.CustomStringSet(s, setOf())
-						else -> return
+						"int" -> SettingKey.CustomInt(s.substringAfter("_"), 0)
+						"string" -> SettingKey.CustomString(s.substringAfter("_"), "")
+						"boolean" -> SettingKey.CustomBoolean(s.substringAfter("_"), false)
+						"long" -> SettingKey.CustomLong(s.substringAfter("_"), 0L)
+						"float" -> SettingKey.CustomFloat(s.substringAfter("_"), 0f)
+						"stringSet" -> SettingKey.CustomStringSet(s.substringAfter("_"), setOf())
+						else -> {
+							logE("No SettingKey has been found matching ($s)")
+							return
+						}
 					}
-
 
 				when (key.default) {
 					is String -> {
