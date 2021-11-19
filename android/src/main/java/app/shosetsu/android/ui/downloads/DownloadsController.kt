@@ -38,7 +38,8 @@ import com.mikepenz.fastadapter.select.selectExtension
  *
  * @author github.com/doomsdayrs
  */
-class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<DownloadUI>(), ExtendedFABController {
+class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<DownloadUI>(),
+	ExtendedFABController {
 
 	override val viewTitleRes: Int = R.string.downloads
 	private val viewModel: ADownloadsViewModel by viewModel()
@@ -125,9 +126,11 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.set_all_pending -> {
-				itemAdapter.itemList.items.forEach {
-					viewModel.start(it)
-				}
+				viewModel.setAllPending()
+				return true
+			}
+			R.id.delete_all -> {
+				viewModel.deleteAll()
 				return true
 			}
 			else -> super.onOptionsItemSelected(item)

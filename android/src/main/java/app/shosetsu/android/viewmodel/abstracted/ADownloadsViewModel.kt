@@ -61,6 +61,15 @@ abstract class ADownloadsViewModel :
 	/** Marks all as paused*/
 	abstract fun pauseAll(list: List<DownloadUI>)
 
+	/**
+	 * Delete all downloads that are not download
+	 */
+	abstract fun deleteAll()
 
 	abstract fun deleteAll(list: List<DownloadUI>)
+
+	/**
+	 * Pauses downloads, waits for downloads to pause, then sets all to pending
+	 */
+	abstract fun setAllPending()
 }

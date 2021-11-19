@@ -594,6 +594,8 @@
     <string name="settings_advanced_purge_novel_cache"><![CDATA[Removes any unbookmarked novels & info from Shosetsu]]></string>
     <string name="settings_advanced_kill_cycle_workers_button">Kill</string>
     <string name="controller_configure_extension_listing_desc">What list of novels should be displayed when the user opens up the extension to browse</string>
+    <string name="controller_downloads_set_all_pending_title">Set all pending</string>
+    <string name="controller_downloads_delete_all_title">Delete All</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

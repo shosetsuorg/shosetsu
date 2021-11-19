@@ -81,8 +81,7 @@ class WebViewApp : AppCompatActivity(), DIAware {
 		} else super.onBackPressed()
 	}
 
-
-	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.webview_menu, menu)
 		return true
 	}

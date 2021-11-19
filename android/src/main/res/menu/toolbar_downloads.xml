@@ -2,5 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/set_all_pending"
-        android:title="Set all pending" />
+        android:title="@string/controller_downloads_set_all_pending_title" />
+
+    <item
+        android:id="@+id/delete_all"
+        android:title="@string/controller_downloads_delete_all_title" />
 </menu>

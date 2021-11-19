@@ -15,7 +15,9 @@ import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.DownloadStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 
 /*
@@ -63,14 +65,18 @@ class DownloadsViewModel(
 		it.status == DownloadStatus.DOWNLOADING
 	})
 
-	@ExperimentalCoroutinesApi
-	override val liveData: LiveData<HResult<List<DownloadUI>>> by lazy {
+	private val downloadsFlow by lazy {
 		flow {
 			emit(loading())
 			emitAll(getDownloadsUseCase().mapLatestResult { list ->
 				successResult(list.sort())
 			})
-		}.asIOLiveData()
+		}
+	}
+
+	@ExperimentalCoroutinesApi
+	override val liveData: LiveData<HResult<List<DownloadUI>>> by lazy {
+		downloadsFlow.asIOLiveData()
 	}
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
@@ -116,9 +122,44 @@ class DownloadsViewModel(
 		}
 	}
 
+	override fun deleteAll() {
+		launchIO {
+			pauseAndWait()
+
+			downloadsFlow.first { it is HResult.Success }.handle { list ->
+				list.forEach { deleteDownloadUseCase(it) }
+			}
+		}
+	}
+
 	override fun deleteAll(list: List<DownloadUI>) {
 		launchIO {
 			list.forEach { deleteDownloadUseCase(it) }
+		}
+	}
+
+	/**
+	 * Pause the downloads and wait for all entities to stop
+	 */
+	private suspend fun pauseAndWait() {
+		settings.setBoolean(IsDownloadPaused, true)
+
+		do {
+			delay(1000)
+		} while (
+			downloadsFlow.first { it is HResult.Success }.unwrap()!!
+				.any { download ->
+					download.status == DownloadStatus.DOWNLOADING || download.status == DownloadStatus.WAITING
+				}
+		)
+	}
+
+	override fun setAllPending() {
+		launchIO {
+			pauseAndWait()
+			downloadsFlow.first { it is HResult.Success }.handle { list ->
+				list.forEach { updateDownloadUseCase(it.copy(status = DownloadStatus.PENDING)) }
+			}
 		}
 	}
 }
