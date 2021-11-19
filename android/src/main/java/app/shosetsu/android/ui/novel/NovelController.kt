@@ -353,28 +353,28 @@ class NovelController(bundle: Bundle) :
 			fastAdapter.getSelectExtension().selectedItems.filterIsInstance<ChapterUI>()
 
 		// If any chapters are bookmarked, show the remove bookmark logo
-		binding.bottomMenu.findItem(id.remove_bookmark)?.isVisible =
+		binding.bottomMenu.findItem(id.remove_bookmark)?.isEnabled =
 			chaptersSelected.any { it.bookmarked }
 
 		// If any chapters are not bookmarked, show bookmark
-		binding.bottomMenu.findItem(id.bookmark)?.isVisible =
+		binding.bottomMenu.findItem(id.bookmark)?.isEnabled =
 			chaptersSelected.any { !it.bookmarked }
 
 		// If any are downloaded, show delete
-		binding.bottomMenu.findItem(id.chapter_delete_selected)?.isVisible =
+		binding.bottomMenu.findItem(id.chapter_delete_selected)?.isEnabled =
 			chaptersSelected.any { it.isSaved }
 
 		// If any are not downloaded, show download option
-		binding.bottomMenu.findItem(id.chapter_download_selected)?.isVisible =
+		binding.bottomMenu.findItem(id.chapter_download_selected)?.isEnabled =
 			chaptersSelected.any { !it.isSaved }
 
 		// If any are unread, show read option
 		if (chaptersSelected.any { it.readingStatus == ReadingStatus.UNREAD }) {
-			binding.bottomMenu.findItem(id.mark_unread)?.isVisible = false
-			binding.bottomMenu.findItem(id.mark_read)?.isVisible = true
+			binding.bottomMenu.findItem(id.mark_unread)?.isEnabled = false
+			binding.bottomMenu.findItem(id.mark_read)?.isEnabled = true
 		} else {
-			binding.bottomMenu.findItem(id.mark_unread)?.isVisible = true
-			binding.bottomMenu.findItem(id.mark_read)?.isVisible = false
+			binding.bottomMenu.findItem(id.mark_unread)?.isEnabled = true
+			binding.bottomMenu.findItem(id.mark_read)?.isEnabled = false
 		}
 	}
 
