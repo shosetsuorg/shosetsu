@@ -350,7 +350,7 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 				logI(LogConstants.SERVICE_NEW)
 				workerManager.enqueueUniqueWork(
 					EXTENSION_INSTALL_WORK_ID,
-					ExistingWorkPolicy.APPEND,
+					ExistingWorkPolicy.APPEND_OR_REPLACE,
 					OneTimeWorkRequestBuilder<ExtensionInstallWorker>().setInputData(data).build()
 				)
 				logI(
