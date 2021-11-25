@@ -67,6 +67,7 @@ class CatalogController(
 	val bundle: Bundle,
 ) : FastAdapterRecyclerController<ControllerCatalogueBinding, ACatalogNovelUI>(bundle),
 	ExtendedFABController {
+	private var bsg: BottomSheetDialog? = null
 
 	/***/
 	val viewModel: ACatalogViewModel by viewModel()
@@ -320,32 +321,36 @@ class CatalogController(
 		fab.setIconResource(R.drawable.filter)
 		fab.setOnClickListener {
 			//bottomMenuRetriever.invoke()?.show()
-			BottomSheetDialog(this.view!!.context).apply {
-				val binding = ComposeViewBinding.inflate(
-					this@CatalogController.activity!!.layoutInflater,
-					null,
-					false
-				)
-
-				this.window?.decorView?.let {
-					ViewTreeLifecycleOwner.set(it, this@CatalogController)
-					ViewTreeSavedStateRegistryOwner.set(it, activity as MainActivity)
-				}
-
-				binding.root.apply {
-					setViewCompositionStrategy(
-						ViewCompositionStrategy.DisposeOnLifecycleDestroyed(this@CatalogController)
+			if (bsg == null)
+				bsg = BottomSheetDialog(this.view!!.context)
+			if (bsg?.isShowing() == false) {
+				bsg?.apply {
+					val binding = ComposeViewBinding.inflate(
+						this@CatalogController.activity!!.layoutInflater,
+						null,
+						false
 					)
-					setContent {
-						MdcTheme(view!!.context) {
-							CatalogFilterMenu(viewModel)
+
+					this.window?.decorView?.let {
+						ViewTreeLifecycleOwner.set(it, this@CatalogController)
+						ViewTreeSavedStateRegistryOwner.set(it, activity as MainActivity)
+					}
+
+					binding.root.apply {
+						setViewCompositionStrategy(
+							ViewCompositionStrategy.DisposeOnLifecycleDestroyed(this@CatalogController)
+						)
+						setContent {
+							MdcTheme(view!!.context) {
+								CatalogFilterMenu(viewModel)
+							}
 						}
 					}
-				}
 
-				setContentView(binding.root)
+					setContentView(binding.root)
 
-			}.show()
+				}?.show()
+			}
 		}
 	}
 }
