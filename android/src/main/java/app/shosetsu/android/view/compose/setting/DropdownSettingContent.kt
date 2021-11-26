@@ -97,14 +97,15 @@ fun DropdownSettingContent(
 				onDismissRequest = { expanded = false },
 			) {
 				choices.forEachIndexed { index, s ->
-					//DropdownMenuItem(
-					Text(
-						text = AnnotatedString(s),
-						modifier = Modifier.padding(8.dp).clickable(onClick = {
+					DropdownMenuItem(
+						onClick = {
 							onSelection(index)
 							expanded = false
-						})
-					)
+					}) {
+						Text(
+							text = AnnotatedString(s)
+						)
+					}
 				}
 			}
 		}

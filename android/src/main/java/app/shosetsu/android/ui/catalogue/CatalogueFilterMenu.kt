@@ -491,14 +491,15 @@ fun CatalogFilterMenuDropDownContent(viewModel: ACatalogViewModel, filter: Filte
 				onDismissRequest = { expanded = false },
 			) {
 				filter.choices.forEachIndexed { i, s ->
-					//DropdownMenuItem(
-					Text(
-						text = AnnotatedString(s),
-						modifier = Modifier.padding(8.dp).clickable(onClick = {
+					DropdownMenuItem(
+						onClick = {
 							viewModel.setFilterIntState(filter, i)
 							expanded = false
-						})
-					)
+						}) {
+						Text(
+							text = AnnotatedString(s)
+						)
+					}
 				}
 			}
 		}
