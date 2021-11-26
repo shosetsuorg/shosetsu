@@ -1,12 +1,14 @@
 package app.shosetsu.android.view.compose.setting
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconToggleButton
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,11 +74,12 @@ fun DropdownSettingContent(
 		Row(
 			verticalAlignment = Alignment.CenterVertically,
 		) {
-			ClickableText(
+			Text(
 				text = AnnotatedString(choices[selection]),
-			) {
-				expanded = true
-			}
+				modifier = Modifier.clickable(onClick = {
+					expanded = true
+				})
+			)
 			IconToggleButton(
 				onCheckedChange = {
 					expanded = it
@@ -94,13 +97,14 @@ fun DropdownSettingContent(
 				onDismissRequest = { expanded = false },
 			) {
 				choices.forEachIndexed { index, s ->
-					ClickableText(
+					//DropdownMenuItem(
+					Text(
 						text = AnnotatedString(s),
-						modifier = Modifier.padding(8.dp),
-						onClick = {
+						modifier = Modifier.padding(8.dp).clickable(onClick = {
 							onSelection(index)
 							expanded = false
 						})
+					)
 				}
 			}
 		}

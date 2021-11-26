@@ -2,10 +2,10 @@ package app.shosetsu.android.ui.catalogue
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -467,11 +467,12 @@ fun CatalogFilterMenuDropDownContent(viewModel: ACatalogViewModel, filter: Filte
 		Row(
 			verticalAlignment = Alignment.CenterVertically,
 		) {
-			ClickableText(
+			Text(
 				text = AnnotatedString(filter.choices[selection]),
-			) {
-				expanded = true
-			}
+				modifier = Modifier.clickable(onClick = {
+					expanded = true
+				})
+			)
 			IconToggleButton(
 				onCheckedChange = {
 					expanded = it
@@ -490,13 +491,14 @@ fun CatalogFilterMenuDropDownContent(viewModel: ACatalogViewModel, filter: Filte
 				onDismissRequest = { expanded = false },
 			) {
 				filter.choices.forEachIndexed { i, s ->
-					ClickableText(
+					//DropdownMenuItem(
+					Text(
 						text = AnnotatedString(s),
-						modifier = Modifier.padding(8.dp),
-						onClick = {
+						modifier = Modifier.padding(8.dp).clickable(onClick = {
 							viewModel.setFilterIntState(filter, i)
 							expanded = false
 						})
+					)
 				}
 			}
 		}
