@@ -59,6 +59,7 @@ import com.mikepenz.fastadapter.binding.listeners.addLongClickListener
 class BrowseController : FastAdapterRecyclerController<ControllerBrowseBinding, ExtensionUI>(),
 	ExtendedFABController {
 	override val viewTitleRes: Int = R.string.browse
+	private var bsg: BottomSheetDialog? = null
 
 	init {
 		setHasOptionsMenu(true)
@@ -205,32 +206,36 @@ class BrowseController : FastAdapterRecyclerController<ControllerBrowseBinding, 
 		this.fab = fab
 		fab.setOnClickListener {
 			//bottomMenuRetriever.invoke()?.show()
-			BottomSheetDialog(this.view!!.context).apply {
-				val binding = ComposeViewBinding.inflate(
-					this@BrowseController.activity!!.layoutInflater,
-					null,
-					false
-				)
-
-				this.window?.decorView?.let {
-					ViewTreeLifecycleOwner.set(it, this@BrowseController)
-					ViewTreeSavedStateRegistryOwner.set(it, activity as MainActivity)
-				}
-
-				binding.root.apply {
-					setViewCompositionStrategy(
-						ViewCompositionStrategy.DisposeOnLifecycleDestroyed(this@BrowseController)
+			if (bsg == null)
+				bsg = BottomSheetDialog(this.view!!.context)
+			if (bsg?.isShowing() == false) {
+				bsg?.apply {
+					val binding = ComposeViewBinding.inflate(
+						this@BrowseController.activity!!.layoutInflater,
+						null,
+						false
 					)
-					setContent {
-						MdcTheme(view!!.context) {
-							BrowseControllerFilterMenu(viewModel)
+
+					this.window?.decorView?.let {
+						ViewTreeLifecycleOwner.set(it, this@BrowseController)
+						ViewTreeSavedStateRegistryOwner.set(it, activity as MainActivity)
+					}
+
+					binding.root.apply {
+						setViewCompositionStrategy(
+							ViewCompositionStrategy.DisposeOnLifecycleDestroyed(this@BrowseController)
+						)
+						setContent {
+							MdcTheme(view!!.context) {
+								BrowseControllerFilterMenu(viewModel)
+							}
 						}
 					}
-				}
 
-				setContentView(binding.root)
+					setContentView(binding.root)
 
-			}.show()
+				}?.show()
+			}
 		}
 		fab.setText(R.string.filter)
 		fab.setIconResource(R.drawable.filter)

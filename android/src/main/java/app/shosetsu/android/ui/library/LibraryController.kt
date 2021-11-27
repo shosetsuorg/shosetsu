@@ -59,6 +59,7 @@ class LibraryController
 	: FastAdapterRefreshableRecyclerController<ABookmarkedNovelUI>(), ExtendedFABController {
 
 	private var fab: ExtendedFloatingActionButton? = null
+	private var bsg: BottomSheetDialog? = null
 
 	override val viewTitleRes: Int = R.string.my_library
 
@@ -325,9 +326,13 @@ class LibraryController
 		this.fab = fab
 		fab.setOnClickListener {
 			//bottomMenuRetriever.invoke()?.show()
-			BottomSheetDialog(binding.root.context).apply {
-				setContentView(getBottomMenuView())
-			}.show()
+			if (bsg == null)
+				bsg = BottomSheetDialog(binding.root.context)
+			if (bsg?.isShowing() == false) {
+				bsg?.apply {
+					setContentView(getBottomMenuView())
+				}?.show()
+			}
 		}
 		fab.setText(R.string.filter)
 		fab.setIconResource(R.drawable.filter)
