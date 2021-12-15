@@ -1,11 +1,24 @@
 {
-  "latestVersion": "1656",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1656/shosetsu-r1656.apk",
+  "latestVersion": "1683",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1683/shosetsu-r1683.apk",
   "releaseNotes": [
-    "- ANDROID 12 USERS, PLEASE DOWNLOAD MANUALLY VIA THIS LINK https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1656/shosetsu-r1656.apk",
-    "- Added file logging",
-    "- Clean up lots of lint errors",
-    "- Migrated to using SplashScreen API",
-    "- Adjust MainActivity navBarColor to transparent black"
+    "- About is now in compose",
+    "- CSS Editor is now implemented",
+    "- WebView now handles back to go back a page",
+    "- Improved cookie handling",
+    "- Re-implemented delete on read",
+    "- AdvancedSettings is now in Compose",
+    "- Fix Button & (E)FAB themeing",
+    "- Wrap release date in Novel info for chapters",
+    "- Made novel genres scrollable in novel info",
+    "- ConfigureExtension is now in compose",
+    "- Selection options in NovelController are now disabled instead of hidden",
+    "- Added cancel all downloads option",
+    "- Improved speed of set all option in downloads",
+    "- Add advanced true delete to completely remove a chapter",
+    "- HTTPException is handled in catalog by snackbar",
+    "- Fix failed extension installs blocking other installs",
+    "- Somewhat fix dropdown colors",
+    "- Disallow duplicate filter popups"
   ]
 }
