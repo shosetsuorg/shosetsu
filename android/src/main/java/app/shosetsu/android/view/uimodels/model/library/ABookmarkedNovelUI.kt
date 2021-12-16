@@ -3,7 +3,6 @@ package app.shosetsu.android.view.uimodels.model.library
 import android.view.View
 import androidx.core.view.isVisible
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
-import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.GetImageURL
 import app.shosetsu.android.view.uimodels.base.GetTitle
@@ -101,7 +100,6 @@ abstract class ABookmarkedNovelUI
 		}
 
 		private fun setUnreadCount(viewHolder: ViewHolder, unreadCount: Int) {
-			logD("Setting unread count of $unreadCount")
 			viewHolder.chip.isVisible = if (unreadCount != 0) {
 				viewHolder.chip.text = unreadCount.toString()
 				true
