@@ -165,8 +165,8 @@ dependencies {
 	implementation("androidx.core:core-ktx:1.7.0")
 	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
 	implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
-	implementation("androidx.room:room-ktx:2.3.0")
-	implementation("androidx.collection:collection-ktx:1.1.0")
+	implementation("androidx.room:room-ktx:2.4.0")
+	implementation("androidx.collection:collection-ktx:1.2.0")
 	implementation("androidx.core:core-splashscreen:1.0.0-alpha02")
 
 	// - Life Cycle
@@ -180,7 +180,7 @@ dependencies {
 	androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
 
 	// Annotations
-	implementation("org.jetbrains:annotations:21.0.1")
+	implementation("org.jetbrains:annotations:23.0.0")
 
 	// Core libraries
 	val shosetsuLibVersion: String by extra
@@ -215,7 +215,7 @@ dependencies {
 	implementation(kotlin("stdlib-jdk8"))
 	implementation(kotlin("reflect"))
 
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
 
 	// Showcase
 	//implementation("com.github.deano2390:MaterialShowcaseView:1.3.4")
@@ -260,8 +260,8 @@ dependencies {
 	implementation("com.github.shosetsuorg:Bubbleseekbar:2dae010baf")
 
 	// Room
-	implementation("androidx.room:room-runtime:2.3.0")
-	kapt("androidx.room:room-compiler:2.3.0")
+	implementation("androidx.room:room-runtime:2.4.0")
+	kapt("androidx.room:room-compiler:2.4.0")
 
 	// Fast Adapter
 	val latestFastAdapterRelease = "5.4.1"
@@ -298,7 +298,7 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.5.2")
 
 	// KTX - Serialization
-	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
 
 	// Roomigrant
 	val enableRoomigrant = false
@@ -338,7 +338,7 @@ dependencies {
 	//androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.2")
 
 	// MDC Adapter
-	implementation("com.google.android.material:compose-theme-adapter:1.1.0")
+	implementation("com.google.android.material:compose-theme-adapter:1.1.1")
 	implementation("com.google.accompanist:accompanist-appcompat-theme:0.15.0")
 	implementation("com.google.accompanist:accompanist-swiperefresh:0.19.0")
 
