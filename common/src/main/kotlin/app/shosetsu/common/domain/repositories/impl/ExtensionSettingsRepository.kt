@@ -5,7 +5,6 @@ import app.shosetsu.common.datasource.file.base.IFileSettingsDataSource
 import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.mapLatestToSuccess
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -36,7 +35,6 @@ class ExtensionSettingsRepository(
 	override suspend fun getSelectedListing(extensionID: Int): HResult<Int> =
 		iFileSettingSystem.getInt("$extensionID", selectedListingKey())
 
-	@ExperimentalCoroutinesApi
 	override suspend fun observeSelectedListing(extensionID: Int): Flow<HResult<Int>> =
 		iFileSettingSystem.observeInt("$extensionID", selectedListingKey())
 			.mapLatestToSuccess()

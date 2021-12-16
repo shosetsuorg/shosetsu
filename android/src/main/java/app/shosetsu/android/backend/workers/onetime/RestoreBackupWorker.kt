@@ -17,18 +17,20 @@ import app.shosetsu.android.common.consts.VERSION_BACKUP
 import app.shosetsu.android.common.consts.WorkerTags.RESTORE_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.backupJSON
+import app.shosetsu.android.domain.model.local.backup.BackupChapterEntity
+import app.shosetsu.android.domain.model.local.backup.BackupExtensionEntity
+import app.shosetsu.android.domain.model.local.backup.BackupNovelEntity
 import app.shosetsu.android.domain.model.local.backup.FleshedBackupEntity
 import app.shosetsu.android.domain.repository.base.IBackupUriRepository
 import app.shosetsu.android.domain.usecases.InstallExtensionUseCase
 import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
-import app.shosetsu.common.domain.model.local.BackupEntity
-import app.shosetsu.common.domain.model.local.NovelEntity
-import app.shosetsu.common.domain.model.local.NovelSettingEntity
-import app.shosetsu.common.domain.model.local.RepositoryEntity
+import app.shosetsu.common.domain.model.local.*
 import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.ReadingStatus
+import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Version
+import app.shosetsu.lib.exceptions.HTTPException
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -201,200 +203,277 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 			// Install the extensions
 			val repoNovels: List<NovelEntity> = novelsRepo.loadNovels().unwrap()!!
 
-			backup.extensions.forEach { (extensionID, backupNovels) ->
-				extensionsRepo.getExtension(extensionID).handle { extensionEntity ->
-					// Install the extension
-					if (!extensionEntity.installed) {
-						notify(getString(R.string.installing) + " ${extensionEntity.id} | ${extensionEntity.name}")
-						installExtension(extensionEntity)
-					}
-					val iExt = extensionEntitiesRepo.get(extensionEntity).unwrap()!!
-
-					// Use a single memory location for the bitmap
-					var bitmap: Bitmap? = null
-
-					fun clearBitmap() {
-						bitmap = null
-					}
-
-					backupNovels.forEach novelLoop@{ (bNovelURL, name, imageURL, bChapters, bSettings) ->
-						// If none match the extension ID and URL, time to load it up
-						val loadImageJob = launchIO {
-							try {
-								bitmap = applicationContext.imageLoader.execute(
-									ImageRequest.Builder(applicationContext).data(imageURL).build()
-								).drawable?.toBitmap()
-							} catch (e: IOException) {
-								logE("Failed to download novel image", e)
-								ACRA.errorReporter.handleException(e)
-							}
-						}
-
-						var targetNovelID = -1
-						if (repoNovels.none { it.extensionID == extensionEntity.id && it.url == bNovelURL }) {
-							notify(R.string.restore_notification_content_novel_load) {
-								setContentTitle(name)
-								setLargeIcon(bitmap)
-							}
-
-							val siteNovel = try {
-								iExt.parseNovel(bNovelURL, true)
-							} catch (e: Exception) {
-								logE("Failed to parse novel while loading backup", e)
-								toast("Failed to parse `$name` in $iExt")
-								ACRA.errorReporter.handleException(e)
-								notify(
-									R.string.restore_notification_content_novel_fail_parse,
-									2000 + bNovelURL.hashCode()
-								) {
-									setContentTitle(name)
-									setLargeIcon(bitmap)
-									setNotOngoing()
-								}
-
-								clearBitmap()
-								return@novelLoop
-							}
-
-							notify(R.string.restore_notification_content_novel_save) {
-								setContentTitle(name)
-								setLargeIcon(bitmap)
-							}
-							novelsRepo.insertReturnStripped(
-								siteNovel.asEntity(
-									link = bNovelURL,
-									extensionID = extensionID,
-								).copy(
-									bookmarked = true
-								)
-							).handle { (id) ->
-								targetNovelID = id
-							}
-
-							notify(R.string.restore_notification_content_novel_chapters_save) {
-								setContentTitle(name)
-								setLargeIcon(bitmap)
-							}
-							chaptersRepo.handleChapters(
-								novelID = targetNovelID,
-								extensionID = extensionID,
-								list = siteNovel.chapters.distinctBy { it.link }
-							).handle(
-								onError = {
-									logE("Failed to handle chapters", it.exception)
-									ACRA.errorReporter.handleException(it.exception)
-								}
-							) {
-								logI("Inserted new chapters")
-							}
-						} else {
-							// Get the novelID from the present novels, or just end this update
-							repoNovels.find { it.extensionID == extensionEntity.id && it.url == bNovelURL }?.id?.let { it ->
-								targetNovelID = it
-							} ?: run {
-								clearBitmap()
-								return@novelLoop
-							}
-						}
-
-						// if the ID is still -1, return
-						if (targetNovelID == -1) {
-							logE("Could not find novel, even after injecting, aborting")
-							clearBitmap()
-							return@novelLoop
-						}
-
-						notify(R.string.restore_notification_content_chapters_load) {
-							setContentTitle(name)
-							setLargeIcon(bitmap)
-						}
-						// get the chapters
-						val repoChapters =
-							chaptersRepo.getChapters(targetNovelID).unwrap() ?: listOf()
-
-						// Go through the chapters updating them
-						for (index in bChapters.indices) {
-							bChapters[index].let { (chapterURL, chapterName, bookmarked, rS, rP) ->
-								repoChapters.find { it.url == chapterURL }?.let { chapterEntity ->
-									notify(getString(R.string.updating) + ": ${chapterEntity.title}") {
-										setContentTitle(name)
-										setLargeIcon(bitmap)
-										setProgress(bChapters.size, index, false)
-										setSilent(true)
-									}
-
-									chaptersRepo.updateChapter(
-										chapterEntity.copy(
-											title = chapterName,
-											bookmarked = bookmarked,
-										).let {
-											when (it.readingStatus) {
-												ReadingStatus.READING -> it
-												ReadingStatus.READ -> it
-												else -> it.copy(
-													readingStatus = rS,
-													readingPosition = rP
-												)
-											}
-										}
-									)
-								}
-							}
-						}
-
-						notify(R.string.restore_notification_content_settings_restore) {
-							setContentTitle(name)
-							setLargeIcon(bitmap)
-							removeProgress()
-						}
-						novelsSettingsRepo.get(targetNovelID).handle(
-							onEmpty = {
-								logI("Inserting novel settings")
-								novelsSettingsRepo.insert(
-									NovelSettingEntity(
-										targetNovelID,
-										sortType = bSettings.sortType,
-										showOnlyReadingStatusOf = bSettings.showOnlyReadingStatusOf,
-										showOnlyBookmarked = bSettings.showOnlyBookmarked,
-										showOnlyDownloaded = bSettings.showOnlyDownloaded,
-										reverseOrder = bSettings.reverseOrder,
-									)
-								)
-							},
-							onError = {
-								logE("Failed to load novel settings")
-								ACRA.errorReporter.handleException(it.exception)
-							}
-						) {
-							logI("Updating novel settings")
-							novelsSettingsRepo.update(
-								it.copy(
-									sortType = bSettings.sortType,
-									showOnlyReadingStatusOf = bSettings.showOnlyReadingStatusOf,
-									showOnlyBookmarked = bSettings.showOnlyBookmarked,
-									showOnlyDownloaded = bSettings.showOnlyDownloaded,
-									reverseOrder = bSettings.reverseOrder,
-								)
-							)
-						}
-
-
-						loadImageJob.join() // Finish the image loading job
-
-						clearBitmap()// Remove data from bitmap
-					}
-				}
-			}
+			backup.extensions.forEach { restoreExtension(repoNovels, it) }
 		}
 
 		System.gc() // Politely ask for a garbage collection
-		delay(1000) // Wait for gc to occur (maybe), also helps with the next notification
+		delay(5000) // Wait for gc to occur (maybe), also helps with the next notification
 
 		notify(R.string.restore_notification_content_completed) {
 			setNotOngoing()
 		}
 		logI("Completed restore")
 		return Result.success()
+	}
+
+	suspend fun restoreExtension(
+		repoNovels: List<NovelEntity>,
+		backupExtensionEntity: BackupExtensionEntity
+	) {
+		val extensionID = backupExtensionEntity.id
+		val backupNovels = backupExtensionEntity.novels
+		logI("$extensionID")
+
+		extensionsRepo.getExtension(extensionID).handle { extensionEntity ->
+			// Install the extension
+			if (!extensionEntity.installed) {
+				notify(getString(R.string.installing) + " ${extensionEntity.id} | ${extensionEntity.name}")
+				installExtension(extensionEntity)
+			}
+			val iExt = extensionEntitiesRepo.get(extensionEntity).unwrap()!!
+
+			backupNovels.forEach novelLoop@{ novelEntity ->
+				try {
+					restoreNovel(
+						iExt,
+						extensionID,
+						novelEntity,
+						repoNovels
+					)
+				} catch (e: Exception) {
+					e.printStackTrace()
+				}
+			}
+		}
+	}
+
+	suspend fun restoreNovel(
+		iExt: IExtension,
+		extensionID: Int,
+		backupNovelEntity: BackupNovelEntity,
+		repoNovels: List<NovelEntity>
+	) {
+		// Use a single memory location for the bitmap
+		var bitmap: Bitmap? = null
+
+		fun clearBitmap() {
+			bitmap = null
+		}
+
+		val bNovelURL = backupNovelEntity.url
+		val name = backupNovelEntity.name
+		val imageURL = backupNovelEntity.imageURL
+		val bChapters = backupNovelEntity.chapters
+		val bSettings = backupNovelEntity.settings
+
+		logI(name)
+
+		// If none match the extension ID and URL, time to load it up
+		val loadImageJob = launchIO {
+			try {
+				bitmap =
+					applicationContext.imageLoader.execute(
+						ImageRequest.Builder(applicationContext).data(imageURL).build()
+					).drawable?.toBitmap()
+
+			} catch (e: IOException) {
+				logE("Failed to download novel image", e)
+				ACRA.errorReporter.handleSilentException(e)
+			}
+		}
+
+		var targetNovelID = -1
+		if (repoNovels.none { it.extensionID == extensionID && it.url == bNovelURL }) {
+			notify(R.string.restore_notification_content_novel_load) {
+				setContentTitle(name)
+				setLargeIcon(bitmap)
+			}
+
+			val siteNovel = try {
+				iExt.parseNovel(bNovelURL, true)
+			} catch (e: Exception) {
+				val cause = e.cause
+				if (cause is HTTPException) {
+					logE("Failed to load novel from website", e)
+
+					notify(
+						getString(
+							R.string.restore_notification_content_novel_fail_parse_http,
+							"${cause.code}"
+						),
+						2000 + bNovelURL.hashCode()
+					) {
+						setContentTitle(name)
+						setLargeIcon(bitmap)
+						setNotOngoing()
+					}
+
+				} else {
+					logE("Failed to parse novel while loading backup", e)
+
+					ACRA.errorReporter.handleException(e, false)
+
+					notify(
+						R.string.restore_notification_content_novel_fail_parse,
+						2000 + bNovelURL.hashCode()
+					) {
+						setContentTitle(name)
+						setLargeIcon(bitmap)
+						setNotOngoing()
+					}
+				}
+				return
+			}
+
+			notify(R.string.restore_notification_content_novel_save) {
+				setContentTitle(name)
+				setLargeIcon(bitmap)
+			}
+			novelsRepo.insertReturnStripped(
+				siteNovel.asEntity(
+					link = bNovelURL,
+					extensionID = extensionID,
+				).copy(
+					bookmarked = true
+				)
+			).handle { (id) ->
+				targetNovelID = id
+			}
+
+			notify(R.string.restore_notification_content_novel_chapters_save) {
+				setContentTitle(name)
+				setLargeIcon(bitmap)
+			}
+			chaptersRepo.handleChapters(
+				novelID = targetNovelID,
+				extensionID = extensionID,
+				list = siteNovel.chapters.distinctBy { it.link }
+			).handle(
+				onError = {
+					logE("Failed to handle chapters", it.exception)
+					ACRA.errorReporter.handleSilentException(it.exception)
+				}
+			) {
+				logI("Inserted new chapters")
+			}
+		} else {
+			// Get the novelID from the present novels, or just end this update
+			repoNovels.find { it.extensionID == extensionID && it.url == bNovelURL }?.id?.let { it ->
+				targetNovelID = it
+			} ?: run {
+				clearBitmap()
+				return
+			}
+		}
+
+		// if the ID is still -1, return
+		if (targetNovelID == -1) {
+			logE("Could not find novel, even after injecting, aborting")
+			clearBitmap()
+			return
+		}
+
+		notify(R.string.restore_notification_content_chapters_load) {
+			setContentTitle(name)
+			setLargeIcon(bitmap)
+		}
+		// get the chapters
+		val repoChapters =
+			chaptersRepo.getChapters(targetNovelID).unwrap() ?: listOf()
+
+		// Go through the chapters updating them
+		for (index in bChapters.indices) {
+			restoreChapter(
+				name,
+				repoChapters,
+				bChapters[index],
+				{ bitmap },
+				bChapters.size,
+				index
+			)
+		}
+
+		notify(R.string.restore_notification_content_settings_restore) {
+			setContentTitle(name)
+			setLargeIcon(bitmap)
+			removeProgress()
+		}
+
+		novelsSettingsRepo.get(targetNovelID).handle(
+			onEmpty = {
+				logI("Inserting novel settings")
+				novelsSettingsRepo.insert(
+					NovelSettingEntity(
+						targetNovelID,
+						sortType = bSettings.sortType,
+						showOnlyReadingStatusOf = bSettings.showOnlyReadingStatusOf,
+						showOnlyBookmarked = bSettings.showOnlyBookmarked,
+						showOnlyDownloaded = bSettings.showOnlyDownloaded,
+						reverseOrder = bSettings.reverseOrder,
+					)
+				)
+			},
+			onError = {
+				logE("Failed to load novel settings")
+				ACRA.errorReporter.handleSilentException(it.exception)
+			}
+		) {
+			novelsSettingsRepo.update(
+				it.copy(
+					sortType = bSettings.sortType,
+					showOnlyReadingStatusOf = bSettings.showOnlyReadingStatusOf,
+					showOnlyBookmarked = bSettings.showOnlyBookmarked,
+					showOnlyDownloaded = bSettings.showOnlyDownloaded,
+					reverseOrder = bSettings.reverseOrder,
+				)
+			)
+		}
+
+
+		loadImageJob.join() // Finish the image loading job
+
+		clearBitmap()// Remove data from bitmap
+	}
+
+	suspend fun restoreChapter(
+		novelName: String,
+		repoChapters: List<ChapterEntity>,
+		backupChapterEntity: BackupChapterEntity,
+		getBitmap: () -> Bitmap?,
+		size: Int,
+		index: Int
+	) {
+		val chapterURL = backupChapterEntity.url
+		val chapterName = backupChapterEntity.name
+		val bookmarked = backupChapterEntity.bookmarked
+		val rS = backupChapterEntity.rS
+		val rP = backupChapterEntity.rP
+
+		repoChapters.find { it.url == chapterURL }?.let { chapterEntity ->
+			logI(chapterName)
+			notify(getString(R.string.updating) + ": ${chapterEntity.title}") {
+				setContentTitle(novelName)
+				setLargeIcon(getBitmap())
+				setProgress(size, index, false)
+				setSilent(true)
+			}
+
+			chaptersRepo.updateChapter(
+				chapterEntity.copy(
+					title = chapterName,
+					bookmarked = bookmarked,
+				).let {
+					when (it.readingStatus) {
+						ReadingStatus.READING -> it
+						ReadingStatus.READ -> it
+						else -> it.copy(
+							readingStatus = rS,
+							readingPosition = rP
+						)
+					}
+				}
+			)
+		}
 	}
 
 	/**
