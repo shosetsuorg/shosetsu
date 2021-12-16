@@ -135,7 +135,7 @@ fun UpdatesContent(
 			onError = {
 				parent.logE("Error on handling result in updates", it.exception)
 
-				ACRA.errorReporter.handleException(it.exception)
+				ACRA.errorReporter.handleException(it.exception, false)
 			},
 			onLoading = {
 				isRefreshing.isRefreshing = true

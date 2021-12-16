@@ -295,7 +295,7 @@ class CatalogController(
 			makeSnackBar(exception.code.toString())?.show()
 		} else {
 			logE("Exception", e.exception)
-			ACRA.errorReporter.handleException(e.exception)
+			ACRA.errorReporter.handleException(e.exception, false)
 		}
 	}
 

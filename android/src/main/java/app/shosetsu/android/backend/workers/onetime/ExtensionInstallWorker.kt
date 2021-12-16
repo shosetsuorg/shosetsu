@@ -282,7 +282,7 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 							onError = {
 								logE("Failed to get chapters by extension", it.exception)
 
-								ACRA.errorReporter.handleException(it.exception)
+								ACRA.errorReporter.handleSilentException(it.exception)
 							}
 						) { list ->
 							list.forEach {
