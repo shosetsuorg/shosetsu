@@ -216,7 +216,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		return Result.success()
 	}
 
-	suspend fun restoreExtension(
+	private suspend fun restoreExtension(
 		repoNovels: List<NovelEntity>,
 		backupExtensionEntity: BackupExtensionEntity
 	) {
@@ -247,7 +247,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		}
 	}
 
-	suspend fun restoreNovel(
+	private suspend fun restoreNovel(
 		iExt: IExtension,
 		extensionID: Int,
 		backupNovelEntity: BackupNovelEntity,
@@ -435,7 +435,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		clearBitmap()// Remove data from bitmap
 	}
 
-	suspend fun restoreChapter(
+	private suspend fun restoreChapter(
 		novelName: String,
 		repoChapters: List<ChapterEntity>,
 		backupChapterEntity: BackupChapterEntity,
