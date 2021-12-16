@@ -178,8 +178,6 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 			 */
 			fun cleanupImageLoader() {
 				imageLoadJob.cancel("Extension already installed")
-
-				imageBitmap?.recycle()
 				imageBitmap = null
 			}
 

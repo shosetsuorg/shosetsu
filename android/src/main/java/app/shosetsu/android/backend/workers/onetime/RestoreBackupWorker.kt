@@ -214,7 +214,6 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 					var bitmap: Bitmap? = null
 
 					fun clearBitmap() {
-						bitmap?.recycle()
 						bitmap = null
 					}
 
