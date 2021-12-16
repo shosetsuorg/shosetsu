@@ -3,11 +3,14 @@ package app.shosetsu.android.datasource.remote.impl
 import app.shosetsu.android.common.consts.REPO_SOURCE_DIR
 import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.common.ext.toHError
+import app.shosetsu.common.consts.ErrorKeys.ERROR_HTTP_ERROR
 import app.shosetsu.common.datasource.remote.base.IRemoteExtensionDataSource
 import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.errorResult
 import app.shosetsu.common.dto.successResult
+import app.shosetsu.lib.exceptions.HTTPException
 import okhttp3.OkHttpClient
 
 /*
@@ -44,14 +47,15 @@ class RemoteExtensionDataSource(
 	): HResult<ByteArray> =
 		try {
 			@Suppress("BlockingMethodInNonBlockingContext")
-			(successResult(
-				client.quickie(
-					makeExtensionURL(
-						repositoryEntity,
-						extensionEntity
-					)
-				).body!!.bytes()
-			))
+			val response = client.quickie(
+				makeExtensionURL(
+					repositoryEntity,
+					extensionEntity
+				)
+			)
+			if (response.code == 200)
+				successResult(response.body!!.bytes())
+			else errorResult(ERROR_HTTP_ERROR, HTTPException(response.code))
 		} catch (e: Exception) {
 			e.toHError()
 		}
