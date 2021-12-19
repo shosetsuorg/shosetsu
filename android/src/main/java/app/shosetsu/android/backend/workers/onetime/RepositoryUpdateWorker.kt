@@ -87,7 +87,7 @@ class RepositoryUpdateWorker(
 				}
 				it
 			}
-		) { databaseLibs ->
+		) { databaseLibs: List<ExtLibEntity> ->
 			/** Libraries not installed or needs update */
 			val libsNotPresent = ArrayList<ExtLibEntity>()
 
@@ -104,16 +104,16 @@ class RepositoryUpdateWorker(
 
 				var install = false
 				var extensionLibraryEntity: ExtLibEntity? = null
-				var version = Version(0, 0, 0)
+				var repoVersion = Version(0, 0, 0)
 
 				if (isInstalled) {
 					//  Checks if an update need
-					version = repoLibVersion
+					repoVersion = repoLibVersion
 					extensionLibraryEntity = databaseLibs.find { it.scriptName == repoLibName }!!
 
 					// If the version compared to the repo version is different, reinstall
-					if (version > extensionLibraryEntity.version) {
-						logI("$repoLibName has update $version available, updating")
+					if (repoVersion > extensionLibraryEntity.version) {
+						logI("$repoLibName has update $repoVersion available, updating")
 						install = true
 					} else {
 						extRepoRepo.getRepo(repository.id!!).handle { repo ->
@@ -132,7 +132,7 @@ class RepositoryUpdateWorker(
 					libsNotPresent.add(
 						extensionLibraryEntity ?: ExtLibEntity(
 							scriptName = repoLibName,
-							version = version,
+							version = repoVersion,
 							repoID = repository.id!!
 						)
 					)
@@ -157,7 +157,6 @@ class RepositoryUpdateWorker(
 			}
 			successResult(0)
 		}
-
 
 	private suspend inline fun handlePresentExtensions(
 		list: List<ExtensionEntity>,
