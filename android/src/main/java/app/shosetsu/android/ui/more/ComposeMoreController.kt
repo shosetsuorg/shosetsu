@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.ui.about.AboutController
+import app.shosetsu.android.ui.backup.BackupSettings
 import app.shosetsu.android.ui.downloads.DownloadsController
 import app.shosetsu.android.ui.repository.RepositoryController
 import app.shosetsu.android.ui.settings.ComposeSettingsController
@@ -137,6 +138,10 @@ fun MoreContent(pushController: (Controller) -> Unit) {
 		Column {
 			MoreItemContent(R.string.downloads, R.drawable.download) {
 				pushController(DownloadsController())
+			}
+
+			MoreItemContent(R.string.backup, R.drawable.restore) {
+				pushController(BackupSettings())
 			}
 
 			MoreItemContent(R.string.repositories, R.drawable.add_shopping_cart) {

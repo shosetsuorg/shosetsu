@@ -1,4 +1,4 @@
-package app.shosetsu.android.ui.settings.sub.backup
+package app.shosetsu.android.ui.backup
 
 import android.content.Context
 import android.net.Uri
@@ -41,7 +41,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * 13 / 07 / 2019
  */
 class BackupSettings : SettingsSubController() {
-	override val viewTitleRes: Int = R.string.settings_backup
+	override val viewTitleRes: Int = R.string.controller_backup_title
 
 	override val viewModel: ABackupSettingsViewModel by viewModel()
 

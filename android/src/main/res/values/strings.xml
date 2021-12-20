@@ -44,7 +44,7 @@
     <string name="settings_reader">Settings > Reader</string>
     <string name="settings_advanced">Settings > Advanced</string>
     <string name="settings_info">Settings > Info</string>
-    <string name="settings_backup">Settings > Backup</string>
+    <string name="controller_backup_title">Backup</string>
 
 
     <!-- Reader Settings -->

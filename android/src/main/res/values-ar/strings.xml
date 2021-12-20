@@ -26,7 +26,7 @@
     <string name="settings_reader">الإعدادات &gt; القارئ</string>
     <string name="settings_advanced">الإعدادات &gt; متقدم</string>
     <string name="settings_info">الإعدادات &gt; المعلومات</string>
-    <string name="settings_backup">الإعدادات &gt; النسخ الاحتياطي</string>
+    <string name="controller_backup_title"> النسخ الاحتياطي</string>
     <!-- Reader Settings -->
     <string name="reader_theme">سمة القارئ</string>
     <string name="text_size">حجم النص</string>

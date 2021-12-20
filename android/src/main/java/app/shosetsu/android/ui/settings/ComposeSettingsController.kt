@@ -22,7 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.ui.settings.sub.*
-import app.shosetsu.android.ui.settings.sub.backup.BackupSettings
 import app.shosetsu.android.view.controller.ShosetsuController
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -116,10 +115,6 @@ fun SettingsContent(pushController: (Controller) -> Unit) {
 
 		SettingMenuItem(R.string.update, R.drawable.update) {
 			pushController(UpdateSettings())
-		}
-
-		SettingMenuItem(R.string.backup, R.drawable.app_update) {
-			pushController(BackupSettings())
 		}
 
 		SettingMenuItem(R.string.advanced, R.drawable.settings) {
