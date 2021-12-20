@@ -2,8 +2,6 @@ package app.shosetsu.android.domain.model.database
 
 import androidx.annotation.NonNull
 import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.dto.Convertible
@@ -34,29 +32,22 @@ import app.shosetsu.lib.Version
  */
 @Entity(
 	tableName = "extensions",
-	foreignKeys = [
-		ForeignKey(
-			entity = DBRepositoryEntity::class,
-			parentColumns = ["id"],
-			childColumns = ["repoID"],
-			onDelete = ForeignKey.NO_ACTION
-		)
-	],
-	indices = [Index("repoID")]
 )
-
 data class DBExtensionEntity(
 	/** Extension ID */
-	@PrimaryKey val id: Int,
+	@PrimaryKey
+	val id: Int,
 
 	/** Repository extension belongs too*/
 	val repoID: Int,
 
 	/** Name of the extension, can be changed */
-	@NonNull var name: String = "",
+	@NonNull
+	var name: String = "",
 
 	/** FileName of the extension */
-	@NonNull val fileName: String = "",
+	@NonNull
+	val fileName: String = "",
 
 	/** Image URL of the extension*/
 	var imageURL: String? = null,
@@ -64,31 +55,23 @@ data class DBExtensionEntity(
 	/** The language of the extension */
 	val lang: String = "",
 
-	/** If extension is enabled */
-	var enabled: Boolean = false,
-
-	/** If extension is installed*/
-	var installed: Boolean = false,
-
 	/**
 	 * Version currently installed
-	 *
-	 * Not null if [installed] = true
 	 */
-	var installedVersion: Version? = null,
+	var version: Version? = null,
 
-	/** Version in repository*/
-	var repositoryVersion: Version = Version(0, 0, 0),
+	/** MD5 to check against */
+	var md5: String = "",
+
+	val type: ExtensionType,
+
+	/** If extension is enabled */
+	var enabled: Boolean = false,
 
 	/**
 	 * The reader type of this extension
 	 */
 	var chapterType: Novel.ChapterType,
-
-	/** MD5 to check against */
-	var md5: String = "",
-
-	val type: ExtensionType
 ) : Convertible<ExtensionEntity> {
 	override fun convertTo(): ExtensionEntity = ExtensionEntity(
 		id = id,
