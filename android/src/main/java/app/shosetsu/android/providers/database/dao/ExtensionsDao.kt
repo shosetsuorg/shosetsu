@@ -42,11 +42,11 @@ interface ExtensionsDao : BaseDao<DBExtensionEntity> {
 	fun loadExtensions(): List<DBExtensionEntity>
 
 	@Throws(SQLiteException::class)
-	@Query("SELECT * FROM extensions WHERE installed = 1 AND enabled = 1")
+	@Query("SELECT * FROM extensions WHERE enabled = 1")
 	fun loadPoweredExtensions(): Flow<List<DBExtensionEntity>>
 
 	@Throws(SQLiteException::class)
-	@Query("SELECT id, name, imageURL FROM extensions WHERE installed = 1 AND enabled = 1")
+	@Query("SELECT id, name, imageURL FROM extensions WHERE enabled = 1")
 	fun loadPoweredExtensionsBasic(): Flow<List<DBStrippedExtensionEntity>>
 
 	@Throws(SQLiteException::class)

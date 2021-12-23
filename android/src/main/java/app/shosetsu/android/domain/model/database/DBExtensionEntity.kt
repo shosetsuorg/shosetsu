@@ -81,9 +81,8 @@ data class DBExtensionEntity(
 		imageURL = imageURL,
 		lang = lang,
 		enabled = enabled,
-		installed = installed,
-		installedVersion = installedVersion,
-		repositoryVersion = repositoryVersion,
+		installed = true,
+		installedVersion = version,
 		chapterType = chapterType,
 		md5 = md5,
 		type = type
