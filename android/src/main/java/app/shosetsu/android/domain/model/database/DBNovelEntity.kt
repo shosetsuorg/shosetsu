@@ -31,7 +31,7 @@ import app.shosetsu.lib.Novel
 	tableName = "novels",
 	foreignKeys = [
 		ForeignKey(
-			entity = DBExtensionEntity::class,
+			entity = DBInstalledExtensionEntity::class,
 			parentColumns = ["id"],
 			childColumns = ["formatterID"],
 			onDelete = ForeignKey.SET_NULL,
