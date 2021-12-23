@@ -61,7 +61,7 @@ data class DBChapterEntity(
 	val novelID: Int,
 
 	@ColumnInfo(name = "formatterID")
-	val extensionID: Int,
+	val extensionID: Int?,
 
 	@NonNull
 	var title: String,
