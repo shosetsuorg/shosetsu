@@ -37,7 +37,7 @@ import app.shosetsu.common.enums.ReadingStatus
 			onDelete = ForeignKey.CASCADE
 		),
 		ForeignKey(
-			entity = DBExtensionEntity::class,
+			entity = DBInstalledExtensionEntity::class,
 			parentColumns = ["id"],
 			childColumns = ["formatterID"],
 			onDelete = ForeignKey.SET_NULL,

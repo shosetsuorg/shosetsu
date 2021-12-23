@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
 	entities = [
 		DBChapterEntity::class,
 		DBDownloadEntity::class,
-		DBExtensionEntity::class,
+		DBInstalledExtensionEntity::class,
 		DBExtLibEntity::class,
 		DBNovelReaderSettingEntity::class,
 		DBNovelEntity::class,

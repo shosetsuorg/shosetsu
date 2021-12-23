@@ -4,7 +4,7 @@ import android.database.sqlite.SQLiteException
 import androidx.room.Dao
 import androidx.room.Ignore
 import androidx.room.Query
-import app.shosetsu.android.domain.model.database.DBExtensionEntity
+import app.shosetsu.android.domain.model.database.DBInstalledExtensionEntity
 import app.shosetsu.android.domain.model.database.DBStrippedExtensionEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import kotlinx.coroutines.flow.Flow
@@ -33,17 +33,17 @@ import kotlinx.coroutines.flow.Flow
  * @author github.com/doomsdayrs
  */
 @Dao
-interface ExtensionsDao : BaseDao<DBExtensionEntity> {
+interface ExtensionsDao : BaseDao<DBInstalledExtensionEntity> {
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions")
-	fun loadExtensionsFlow(): Flow<List<DBExtensionEntity>>
+	fun loadExtensionsFlow(): Flow<List<DBInstalledExtensionEntity>>
 
 	@Query("SELECT * FROM extensions")
-	fun loadExtensions(): List<DBExtensionEntity>
+	fun loadExtensions(): List<DBInstalledExtensionEntity>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions WHERE enabled = 1")
-	fun loadPoweredExtensions(): Flow<List<DBExtensionEntity>>
+	fun loadPoweredExtensions(): Flow<List<DBInstalledExtensionEntity>>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT id, name, imageURL FROM extensions WHERE enabled = 1")
@@ -51,11 +51,11 @@ interface ExtensionsDao : BaseDao<DBExtensionEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions WHERE id = :formatterID LIMIT 1")
-	fun getExtension(formatterID: Int): DBExtensionEntity?
+	fun getExtension(formatterID: Int): DBInstalledExtensionEntity?
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM extensions WHERE id = :formatterID LIMIT 1")
-	fun getExtensionLive(formatterID: Int): Flow<DBExtensionEntity>
+	fun getExtensionLive(formatterID: Int): Flow<DBInstalledExtensionEntity>
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT COUNT(*) FROM extensions WHERE id= :formatterID")
@@ -66,5 +66,5 @@ interface ExtensionsDao : BaseDao<DBExtensionEntity> {
 	fun doesExtensionExist(formatterID: Int): Boolean = getExtensionCountFromID(formatterID) > 0
 
 	@Query("SELECT * FROM extensions WHERE repoID = :repoID")
-	fun getExtensions(repoID: Int): List<DBExtensionEntity>
+	fun getExtensions(repoID: Int): List<DBInstalledExtensionEntity>
 }

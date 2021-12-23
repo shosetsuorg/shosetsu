@@ -33,7 +33,7 @@ import app.shosetsu.lib.Version
 @Entity(
 	tableName = "extensions",
 )
-data class DBExtensionEntity(
+data class DBInstalledExtensionEntity(
 	/** Extension ID */
 	@PrimaryKey
 	val id: Int,
