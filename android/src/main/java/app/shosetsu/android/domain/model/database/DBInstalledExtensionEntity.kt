@@ -31,7 +31,7 @@ import app.shosetsu.lib.Version
  * 05 / 12 / 2020
  */
 @Entity(
-	tableName = "extensions",
+	tableName = "installed_extension",
 )
 data class DBInstalledExtensionEntity(
 	/** Extension ID */
