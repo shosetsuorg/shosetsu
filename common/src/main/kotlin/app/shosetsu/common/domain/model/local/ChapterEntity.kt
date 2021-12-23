@@ -34,7 +34,7 @@ data class ChapterEntity(
 
 	val novelID: Int,
 
-	val extensionID: Int,
+	val extensionID: Int?,
 
 	var title: String,
 
