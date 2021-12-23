@@ -146,6 +146,8 @@ class NovelUpdateWorker(
 			if (onlyUpdateOngoing())
 				list.filter { it.status != Novel.Status.COMPLETED }
 			else list
+		}.transformToSuccess { list ->
+			list.sortedBy { it.title }
 		}.handle(
 			onError = { return Result.failure() },
 			onLoading = { return Result.failure() },
