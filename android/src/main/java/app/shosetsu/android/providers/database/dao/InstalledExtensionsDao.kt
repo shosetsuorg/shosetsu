@@ -33,38 +33,49 @@ import kotlinx.coroutines.flow.Flow
  * @author github.com/doomsdayrs
  */
 @Dao
-interface ExtensionsDao : BaseDao<DBInstalledExtensionEntity> {
-	@Throws(SQLiteException::class)
-	@Query("SELECT * FROM extensions")
-	fun loadExtensionsFlow(): Flow<List<DBInstalledExtensionEntity>>
+interface InstalledExtensionsDao : BaseDao<DBInstalledExtensionEntity> {
 
-	@Query("SELECT * FROM extensions")
+	// All
+
+	@Throws(SQLiteException::class)
+	@Query("SELECT * FROM installed_extension")
 	fun loadExtensions(): List<DBInstalledExtensionEntity>
 
 	@Throws(SQLiteException::class)
-	@Query("SELECT * FROM extensions WHERE enabled = 1")
-	fun loadPoweredExtensions(): Flow<List<DBInstalledExtensionEntity>>
+	@Query("SELECT * FROM installed_extension")
+	fun loadExtensionsFlow(): Flow<List<DBInstalledExtensionEntity>>
+
+	// All specific
 
 	@Throws(SQLiteException::class)
-	@Query("SELECT id, name, imageURL FROM extensions WHERE enabled = 1")
-	fun loadPoweredExtensionsBasic(): Flow<List<DBStrippedExtensionEntity>>
+	@Query("SELECT * FROM installed_extension WHERE enabled = 1")
+	fun loadEnabledExtensions(): Flow<List<DBInstalledExtensionEntity>>
 
 	@Throws(SQLiteException::class)
-	@Query("SELECT * FROM extensions WHERE id = :formatterID LIMIT 1")
-	fun getExtension(formatterID: Int): DBInstalledExtensionEntity?
+	@Query("SELECT id, name, imageURL FROM installed_extension WHERE enabled = 1")
+	fun loadEnabledExtensionsBasic(): Flow<List<DBStrippedExtensionEntity>>
+
+	@Query("SELECT * FROM installed_extension WHERE repoID = :repoID")
+	fun getExtensions(repoID: Int): List<DBInstalledExtensionEntity>
+
+	// Singular
 
 	@Throws(SQLiteException::class)
-	@Query("SELECT * FROM extensions WHERE id = :formatterID LIMIT 1")
-	fun getExtensionLive(formatterID: Int): Flow<DBInstalledExtensionEntity>
+	@Query("SELECT * FROM installed_extension WHERE id = :id LIMIT 1")
+	fun getExtension(id: Int): DBInstalledExtensionEntity?
 
 	@Throws(SQLiteException::class)
-	@Query("SELECT COUNT(*) FROM extensions WHERE id= :formatterID")
-	fun getExtensionCountFromID(formatterID: Int): Int
+	@Query("SELECT * FROM installed_extension WHERE id = :id LIMIT 1")
+	fun getExtensionFlow(id: Int): Flow<DBInstalledExtensionEntity>
+
+	// Misc
+
+	@Throws(SQLiteException::class)
+	@Query("SELECT COUNT(*) FROM installed_extension WHERE id= :id")
+	fun getCount(id: Int): Int
 
 	@Throws(SQLiteException::class)
 	@Ignore
-	fun doesExtensionExist(formatterID: Int): Boolean = getExtensionCountFromID(formatterID) > 0
+	fun doesExtensionExist(id: Int): Boolean = getCount(id) > 0
 
-	@Query("SELECT * FROM extensions WHERE repoID = :repoID")
-	fun getExtensions(repoID: Int): List<DBInstalledExtensionEntity>
 }
