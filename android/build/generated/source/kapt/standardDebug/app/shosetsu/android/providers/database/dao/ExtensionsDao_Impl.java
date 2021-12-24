@@ -34,7 +34,7 @@ import kotlin.coroutines.Continuation;
 import kotlinx.coroutines.flow.Flow;
 
 @SuppressWarnings({"unchecked", "deprecation"})
-public final class ExtensionsDao_Impl implements ExtensionsDao {
+public final class ExtensionsDao_Impl implements InstalledExtensionsDao {
   private final RoomDatabase __db;
 
   private final EntityInsertionAdapter<DBInstalledExtensionEntity> __insertionAdapterOfDBExtensionEntity;
@@ -600,7 +600,7 @@ public final class ExtensionsDao_Impl implements ExtensionsDao {
   }
 
   @Override
-  public Flow<List<DBInstalledExtensionEntity>> loadPoweredExtensions() {
+  public Flow<List<DBInstalledExtensionEntity>> loadEnabledExtensions() {
     final String _sql = "SELECT * FROM extensions WHERE enabled = 1";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
     return CoroutinesRoom.createFlow(__db, false, new String[]{"extensions"}, new Callable<List<DBInstalledExtensionEntity>>() {
@@ -693,7 +693,7 @@ public final class ExtensionsDao_Impl implements ExtensionsDao {
   }
 
   @Override
-  public Flow<List<DBStrippedExtensionEntity>> loadPoweredExtensionsBasic() {
+  public Flow<List<DBStrippedExtensionEntity>> loadEnabledExtensionsBasic() {
     final String _sql = "SELECT id, name, imageURL FROM extensions WHERE enabled = 1";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
     return CoroutinesRoom.createFlow(__db, false, new String[]{"extensions"}, new Callable<List<DBStrippedExtensionEntity>>() {
@@ -738,11 +738,11 @@ public final class ExtensionsDao_Impl implements ExtensionsDao {
   }
 
   @Override
-  public DBInstalledExtensionEntity getExtension(final int formatterID) throws SQLiteException {
+  public DBInstalledExtensionEntity getExtension(final int id) throws SQLiteException {
     final String _sql = "SELECT * FROM extensions WHERE id = ? LIMIT 1";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
-    _statement.bindLong(_argIndex, formatterID);
+    _statement.bindLong(_argIndex, id);
     __db.assertNotSuspendingTransaction();
     final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
     try {
@@ -825,11 +825,11 @@ public final class ExtensionsDao_Impl implements ExtensionsDao {
   }
 
   @Override
-  public Flow<DBInstalledExtensionEntity> getExtensionLive(final int formatterID) {
+  public Flow<DBInstalledExtensionEntity> getExtensionFlow(final int id) {
     final String _sql = "SELECT * FROM extensions WHERE id = ? LIMIT 1";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
-    _statement.bindLong(_argIndex, formatterID);
+    _statement.bindLong(_argIndex, id);
     return CoroutinesRoom.createFlow(__db, false, new String[]{"extensions"}, new Callable<DBInstalledExtensionEntity>() {
       @Override
       public DBInstalledExtensionEntity call() throws Exception {
@@ -920,7 +920,7 @@ public final class ExtensionsDao_Impl implements ExtensionsDao {
   }
 
   @Override
-  public int getExtensionCountFromID(final int formatterID) throws SQLiteException {
+  public int getCount(final int formatterID) throws SQLiteException {
     final String _sql = "SELECT COUNT(*) FROM extensions WHERE id= ?";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
@@ -1030,7 +1030,7 @@ public final class ExtensionsDao_Impl implements ExtensionsDao {
 
   @Override
   public boolean doesExtensionExist(final int formatterID) throws SQLiteException {
-    return ExtensionsDao.DefaultImpls.doesExtensionExist(ExtensionsDao_Impl.this, formatterID);
+    return InstalledExtensionsDao.DefaultImpls.doesExtensionExist(ExtensionsDao_Impl.this, formatterID);
   }
 
   public static List<Class<?>> getRequiredConverters() {

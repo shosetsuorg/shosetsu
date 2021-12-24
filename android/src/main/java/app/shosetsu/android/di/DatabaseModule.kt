@@ -3,7 +3,10 @@ package app.shosetsu.android.di
 import app.shosetsu.android.providers.database.ShosetsuDatabase
 import app.shosetsu.android.providers.database.ShosetsuDatabase.Companion.getRoomDatabase
 import app.shosetsu.android.providers.database.dao.*
-import org.kodein.di.*
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.singleton
 
 /*
  * This file is part of shosetsu.
@@ -35,7 +38,7 @@ val databaseModule: DI.Module = DI.Module("database_module") {
 	bind<ChaptersDao>() with singleton { instance<ShosetsuDatabase>().chaptersDao }
 	bind<DownloadsDao>() with singleton { instance<ShosetsuDatabase>().downloadsDao }
 	bind<ExtensionLibraryDao>() with singleton { instance<ShosetsuDatabase>().extensionLibraryDao }
-	bind<ExtensionsDao>() with singleton { instance<ShosetsuDatabase>().extensionsDao }
+	bind<InstalledExtensionsDao>() with singleton { instance<ShosetsuDatabase>().extensionsDao }
 	bind<NovelReaderSettingsDao>() with singleton { instance<ShosetsuDatabase>().novelReaderSettingsDao }
 	bind<NovelsDao>() with singleton { instance<ShosetsuDatabase>().novelsDao }
 	bind<NovelSettingsDao>() with singleton { instance<ShosetsuDatabase>().novelSettingsDao }

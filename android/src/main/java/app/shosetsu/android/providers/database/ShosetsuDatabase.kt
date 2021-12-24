@@ -74,7 +74,7 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 	abstract val chaptersDao: ChaptersDao
 	abstract val downloadsDao: DownloadsDao
 	abstract val extensionLibraryDao: ExtensionLibraryDao
-	abstract val extensionsDao: ExtensionsDao
+	abstract val extensionsDao: InstalledExtensionsDao
 	abstract val novelReaderSettingsDao: NovelReaderSettingsDao
 	abstract val novelsDao: NovelsDao
 	abstract val novelSettingsDao: NovelSettingsDao

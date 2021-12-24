@@ -35,20 +35,20 @@ import app.shosetsu.lib.Version
 		ForeignKey(
 			entity = DBRepositoryEntity::class,
 			parentColumns = ["id"],
-			childColumns = ["repoID"],
+			childColumns = ["repoId"],
 			onDelete = ForeignKey.CASCADE
 		)
 	],
 	indices = [
-		Index("repoID"),
-		Index("id", "repoID", unique = true)
-	]
+		Index("repoId"),
+	],
+	primaryKeys = ["repoId", "id"]
 )
 
 data class DBRepositoryExtensionEntity(
 	/** Repository extension belongs too*/
 	@NonNull
-	val repoID: Int,
+	val repoId: Int,
 
 	/** Extension ID */
 	@NonNull
