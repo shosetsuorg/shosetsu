@@ -432,7 +432,9 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 
 		loadImageJob.join() // Finish the image loading job
 
-		clearBitmap()// Remove data from bitmap
+		clearBitmap() // Remove data from bitmap
+
+		delay(500) // Delay things a bit
 	}
 
 	private suspend fun restoreChapter(
