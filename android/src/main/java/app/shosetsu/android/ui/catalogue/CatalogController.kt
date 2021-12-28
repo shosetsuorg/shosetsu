@@ -39,6 +39,7 @@ import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.scroll.EndlessRecyclerOnScrollListener
 import kotlinx.coroutines.delay
 import org.acra.ACRA
+import java.net.SocketTimeoutException
 
 /*
  * This file is part of Shosetsu.
@@ -290,12 +291,26 @@ class CatalogController(
 	override fun handleErrorResult(e: HResult.Error) {
 		binding.fragmentCatalogueProgressBottom.isVisible = false
 		binding.swipeRefreshLayout.isRefreshing = false
-		if (e.exception is HTTPException) {
-			val exception = e.exception as HTTPException
-			makeSnackBar(exception.code.toString())?.show()
-		} else {
-			logE("Exception", e.exception)
-			ACRA.errorReporter.handleException(e.exception, false)
+		val exception = e.exception ?: return
+		val cause = exception.cause
+
+		when {
+			exception is HTTPException -> {
+				makeSnackBar(exception.code.toString())?.show()
+			}
+			cause is HTTPException -> {
+				makeSnackBar(cause.code.toString())?.show()
+			}
+			exception is SocketTimeoutException -> {
+				makeSnackBar(exception.message.toString())?.show()
+			}
+			cause is SocketTimeoutException -> {
+				makeSnackBar(cause.message.toString())?.show()
+			}
+			else -> {
+				logE("Exception", e.exception)
+				ACRA.errorReporter.handleException(e.exception, false)
+			}
 		}
 	}
 
@@ -333,7 +348,7 @@ class CatalogController(
 			//bottomMenuRetriever.invoke()?.show()
 			if (bsg == null)
 				bsg = BottomSheetDialog(this.view!!.context)
-			if (bsg?.isShowing() == false) {
+			if (bsg?.isShowing == false) {
 				bsg?.apply {
 					val binding = ComposeViewBinding.inflate(
 						this@CatalogController.activity!!.layoutInflater,

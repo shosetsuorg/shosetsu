@@ -3,7 +3,6 @@ package app.shosetsu.android.viewmodel.abstracted
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.utils.ColumnCalculator
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
-import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.NovelCardType
@@ -34,7 +33,6 @@ import app.shosetsu.lib.IExtension
  */
 abstract class ACatalogViewModel :
 	ShosetsuViewModel(),
-	ErrorReportingViewModel,
 	ColumnCalculator {
 
 	/**

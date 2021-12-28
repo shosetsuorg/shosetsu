@@ -207,7 +207,6 @@ class CatalogViewModel(
 
 				getDataLoaderAndLoad(queryFilter).handle(onError = {
 					_canLoadMore = false
-					reportError(it)
 					itemsFlow.tryEmit(it)
 				}, onEmpty = {
 					_canLoadMore = false
@@ -349,10 +348,6 @@ class CatalogViewModel(
 		launchIO { setNovelUIType(cardType) }
 	}
 
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-		logE("Exception", error.exception)
-		//reportExceptionUseCase(error)
-	}
 
 
 	private val novelCardTypeFlow = loadNovelUITypeUseCase()
