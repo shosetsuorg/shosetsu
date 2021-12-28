@@ -19,7 +19,6 @@ import app.shosetsu.common.dto.handle
 import app.shosetsu.common.dto.ifSo
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.enums.DownloadStatus
-import app.shosetsu.lib.exceptions.HTTPException
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -245,8 +244,7 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 
 						logE("Failed to install ${extension.name}", it.exception)
 
-						if (it.exception !is HTTPException || it.exception?.cause !is HTTPException)
-							ACRA.errorReporter.handleException(it.exception, false)
+						ACRA.errorReporter.handleIfValid(it.exception)
 
 						cleanupImageLoader()
 
