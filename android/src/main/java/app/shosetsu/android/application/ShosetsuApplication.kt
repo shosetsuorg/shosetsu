@@ -3,6 +3,7 @@ package app.shosetsu.android.application
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
@@ -31,6 +32,7 @@ import org.kodein.di.*
 import org.kodein.di.android.x.androidXModule
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.io.PrintStream
 import java.text.SimpleDateFormat
 import java.util.*
@@ -115,7 +117,14 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, DIAware,
 		val fileDate = SimpleDateFormat("yyyy-MM-dd-hh-mm-ss", Locale.ROOT).format(Date())
 		val logFile = File(loggingDir, "shosetsu-log-$fileDate.txt")
 
-		logFile.createNewFile()
+		try {
+			logFile.createNewFile()
+		} catch (e: IOException) {
+			toast(R.string.toast_error_log_failed, Toast.LENGTH_LONG)
+			logE("Failed to create logfile", e)
+			return
+		}
+
 		val logOS = FileOutputStream(logFile)
 
 		fileOut = PrintStream(logOS)
