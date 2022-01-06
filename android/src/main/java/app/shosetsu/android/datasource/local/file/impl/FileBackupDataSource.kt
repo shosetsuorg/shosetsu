@@ -51,12 +51,15 @@ class FileBackupDataSource(
 		return result.transformToSuccess { BackupEntity(it) }
 	}
 
-	override suspend fun saveBackup(backupEntity: BackupEntity): HResult<*> =
-		iFileSystemProvider.writeFile(
+	override suspend fun saveBackup(backupEntity: BackupEntity): HResult<String> {
+		val path = "$BACKUP_DIRECTORY/${backupEntity.fileName}"
+		val result = iFileSystemProvider.writeFile(
 			APP,
-			"$BACKUP_DIRECTORY/${backupEntity.fileName}",
+			path,
 			backupEntity.content
 		)
+		return result.transformToSuccess { path }
+	}
 
 	override suspend fun loadBackups(): HResult<List<String>> =
 		iFileSystemProvider.listFiles(APP, BACKUP_DIRECTORY)

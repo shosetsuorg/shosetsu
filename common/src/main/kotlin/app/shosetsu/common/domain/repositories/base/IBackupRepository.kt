@@ -60,5 +60,8 @@ interface IBackupRepository {
 	suspend fun loadBackup(path: String, isExternal: Boolean = false): HResult<BackupEntity>
 
 
-	suspend fun saveBackup(backupEntity: BackupEntity): HResult<*>
+	/**
+	 * @return Path of new backup
+	 */
+	suspend fun saveBackup(backupEntity: BackupEntity): HResult<String>
 }

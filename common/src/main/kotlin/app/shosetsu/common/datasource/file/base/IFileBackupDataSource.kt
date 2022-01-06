@@ -27,7 +27,7 @@ interface IFileBackupDataSource {
 
 	suspend fun loadBackup(backupName: String, isExternal: Boolean): HResult<BackupEntity>
 
-	suspend fun saveBackup(backupEntity: BackupEntity): HResult<*>
+	suspend fun saveBackup(backupEntity: BackupEntity): HResult<String>
 
 	suspend fun loadBackups(): HResult<List<String>>
 }

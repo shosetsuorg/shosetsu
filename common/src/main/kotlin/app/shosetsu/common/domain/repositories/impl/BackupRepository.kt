@@ -46,6 +46,6 @@ class BackupRepository(
 	override suspend fun loadBackup(path: String, isExternal: Boolean): HResult<BackupEntity> =
 		iFileBackupDataSource.loadBackup(path, isExternal)
 
-	override suspend fun saveBackup(backupEntity: BackupEntity): HResult<*> =
+	override suspend fun saveBackup(backupEntity: BackupEntity): HResult<String> =
 		iFileBackupDataSource.saveBackup(backupEntity)
 }
