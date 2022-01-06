@@ -195,21 +195,22 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 			val base64Bytes = Base64.encode(zippedBytes, Base64.DEFAULT)
 
 			notify("Saving to file")
-			backupRepository.saveBackup(
+			val pathResult = backupRepository.saveBackup(
 				BackupEntity(
 					base64Bytes
 				)
 			)
+			pathResult.handle {
+				notify(R.string.worker_backup_complete) {
+					setOngoing(false)
+				}
 
-			notify("Completed") {
-				setOngoing(false)
+				// Call GC to clean up the bulky resources
+				System.gc()
+				delay(500)
+				backupRepository.updateProgress(successResult(Unit))
+				return Result.success()
 			}
-
-			// Call GC to clean up the bulky resources
-			System.gc()
-			delay(500)
-			backupRepository.updateProgress(successResult(Unit))
-			return Result.success()
 		}
 
 		backupRepository.updateProgress(errorResult(ErrorKeys.ERROR_GENERAL, "Failure"))
