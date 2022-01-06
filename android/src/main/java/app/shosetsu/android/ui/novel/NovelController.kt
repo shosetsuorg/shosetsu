@@ -294,8 +294,23 @@ class NovelController(bundle: Bundle) :
 					chapterUIAdapter.adapterItems
 						.indexOfFirst(predicate)
 						.takeIf { it != -1 }?.let { index ->
+
+							val index = index + 1 // We need to adjust for the header
+
 							launchUI {
 								recyclerView.scrollToPosition(index)
+							}
+
+							delay(100)
+							launchUI {
+								fastAdapter.getItem(index)?.isSelected = true
+								fastAdapter.notifyAdapterItemChanged(index)
+							}
+
+							delay(1000)
+							launchUI {
+								fastAdapter.getItem(index)?.isSelected = false
+								fastAdapter.notifyAdapterItemChanged(index)
 							}
 						} ?: launchUI {
 						makeSnackBar(R.string.toast_error_chapter_jump_invalid_target)
