@@ -33,6 +33,7 @@ import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
 import com.mikepenz.fastadapter.select.getSelectExtension
 import com.mikepenz.fastadapter.select.selectExtension
+import kotlinx.coroutines.delay
 import javax.security.auth.DestroyFailedException
 
 /*
@@ -294,7 +295,7 @@ class NovelController(bundle: Bundle) :
 						.indexOfFirst(predicate)
 						.takeIf { it != -1 }?.let { index ->
 							launchUI {
-								recyclerView.smoothScrollToPosition(index)
+								recyclerView.scrollToPosition(index)
 							}
 						} ?: launchUI {
 						makeSnackBar(R.string.toast_error_chapter_jump_invalid_target)
