@@ -151,10 +151,6 @@ object : ACatalogViewModel() {
 		TODO("Not yet implemented")
 	}
 
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-		TODO("Not yet implemented")
-	}
-
 	override fun getBaseURL(): LiveData<HResult<String>> {
 		TODO("Not yet implemented")
 	}
