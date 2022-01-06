@@ -218,6 +218,8 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	/** How many extension threads allowed to work in the pool */
 	object DownloadExtThreads : IntKey("downloadExtThreads", 1)
 
+	object DownloadNotifyChapters : BooleanKey("download_notify_chapters", false)
+
 	/** If the reader can mark a read chapter as reading when its opened / scrolled */
 	object ReaderMarkReadAsReading : BooleanKey(
 		"readerMarkReadAsReading",

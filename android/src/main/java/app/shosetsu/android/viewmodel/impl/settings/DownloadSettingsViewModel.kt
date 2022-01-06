@@ -166,7 +166,13 @@ class DownloadSettingsViewModel(
 				}
 			}
 		},
-	)
+		switchSettingData(10) {
+			titleText = "Unique chapter notification"
+			descText = "Create a notification for each chapters status when downloading"
+			checkSettingValue(DownloadNotifyChapters)
+		},
+
+		)
 
 	override fun reportError(error: HResult.Error, isSilent: Boolean) {
 	}

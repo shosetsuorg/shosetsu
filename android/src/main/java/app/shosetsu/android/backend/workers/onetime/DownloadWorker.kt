@@ -114,6 +114,10 @@ class DownloadWorker(
 	private suspend fun getDownloadThreadsPerExtension(): Int =
 		settingRepo.getIntOrDefault(DownloadExtThreads)
 
+	/** Retrieves the setting for simultaneous download threads allowed per extension */
+	private suspend fun getNotifyIndividualChapters(): Boolean =
+		settingRepo.getBooleanOrDefault(DownloadNotifyChapters)
+
 	/** Loads the download count that is present currently */
 	private suspend fun getDownloadCount(): Int =
 		downloadsRepo.loadDownloadCount().unwrap() ?: -1
@@ -152,6 +156,8 @@ class DownloadWorker(
 
 
 	private suspend fun notify(downloadEntity: DownloadEntity, isComplete: Boolean = false) {
+		if (!getNotifyIndividualChapters()) return
+
 		val messageId = if (!isComplete) when (downloadEntity.status) {
 			DownloadStatus.PENDING -> R.string.pending
 			DownloadStatus.WAITING -> R.string.waiting
