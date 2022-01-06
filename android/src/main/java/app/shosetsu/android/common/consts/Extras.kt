@@ -1,8 +1,4 @@
-package app.shosetsu.android.domain.usecases.update
-
-import app.shosetsu.common.domain.model.local.ExtensionEntity
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.dto.HResult
+package app.shosetsu.android.common.consts
 
 /*
  * This file is part of shosetsu.
@@ -19,15 +15,9 @@ import app.shosetsu.common.dto.HResult
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * @since 06 / 01 / 2022
+ * @author Doomsdayrs
  */
 
-/**
- * shosetsu
- * 14 / 07 / 2020
- */
-class UpdateExtensionEntityUseCase(
-	private val extensionRepository: IExtensionsRepository,
-) {
-	suspend operator fun invoke(extensionUI: ExtensionEntity): HResult<*> =
-		extensionRepository.update(extensionUI)
-}
+const val EXTRA_UPDATE_EXTENSION_ID = "update_extension_id"

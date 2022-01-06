@@ -29,23 +29,26 @@ import app.shosetsu.common.enums.DownloadStatus
  * shosetsu
  * 13 / 05 / 2020
  */
-class InstallExtensionUIUseCase(
+class RequestInstallExtensionUseCase(
 	private val repo: IExtensionDownloadRepository,
 	private val manager: ExtensionInstallWorker.Manager
 ) {
-	suspend operator fun invoke(extension: ExtensionUI): HResult<*> {
+	suspend operator fun invoke(extension: ExtensionUI) =
+		invoke(extension.id)
+
+	suspend operator fun invoke(id: Int): HResult<*> {
 		val doIt = suspend {
-			repo.add(extension.id).ifSo {
+			repo.add(id).ifSo {
 				successResult(
 					manager.start(
 						Data.Builder().apply {
-							putInt(KEY_EXTENSION_ID, extension.id)
+							putInt(KEY_EXTENSION_ID, id)
 						}.build()
 					)
 				)
 			}
 		}
-		return repo.getStatus(extension.id).transform(
+		return repo.getStatus(id).transform(
 			onEmpty = {
 				doIt()
 			}

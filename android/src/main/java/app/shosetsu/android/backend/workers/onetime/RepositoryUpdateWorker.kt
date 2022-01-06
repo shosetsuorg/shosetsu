@@ -1,11 +1,18 @@
 package app.shosetsu.android.backend.workers.onetime
 
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
+import app.shosetsu.android.backend.receivers.NotificationBroadcastReceiver
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
+import app.shosetsu.android.common.consts.ACTION_UPDATE_EXTENSION
+import app.shosetsu.android.common.consts.EXTRA_UPDATE_EXTENSION_ID
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_REPOSITORY_UPDATE
 import app.shosetsu.android.common.consts.Notifications.ID_REPOSITORY_UPDATE
@@ -176,6 +183,26 @@ class RepositoryUpdateWorker(
 		}
 	}
 
+	private fun NotificationCompat.Builder.addUpdate(extensionId: Int) {
+		val intent = Intent(
+			applicationContext,
+			NotificationBroadcastReceiver::class.java
+		).apply {
+			action = ACTION_UPDATE_EXTENSION
+			putExtra(EXTRA_UPDATE_EXTENSION_ID, extensionId)
+		}
+		addAction(
+			R.drawable.update,
+			getString(R.string.update),
+			PendingIntent.getBroadcast(
+				applicationContext,
+				0,
+				intent,
+				if (SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
+			)
+		)
+	}
+
 	/**
 	 * Handle updating an extension
 	 */
@@ -222,6 +249,7 @@ class RepositoryUpdateWorker(
 								setContentTitle(repoExt.name)
 								removeProgress()
 								setNotOngoing()
+								addUpdate(extensionEntity.id)
 							}
 					}
 				} else {
@@ -246,6 +274,7 @@ class RepositoryUpdateWorker(
 										setContentTitle(repoExt.name)
 										removeProgress()
 										setNotOngoing()
+										addUpdate(extensionEntity.id)
 									}
 							}
 						} else {
@@ -273,6 +302,7 @@ class RepositoryUpdateWorker(
 								setContentTitle(repoExt.name)
 								removeProgress()
 								setNotOngoing()
+								addUpdate(extensionEntity.id)
 							}
 					}
 				} else {

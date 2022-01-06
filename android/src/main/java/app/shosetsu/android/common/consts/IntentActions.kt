@@ -29,3 +29,4 @@ const val ACTION_OPEN_SEARCH = "openSearch"
 
 // Open up the app to display the app update
 const val ACTION_OPEN_APP_UPDATE = "openAppUpdate"
+const val ACTION_UPDATE_EXTENSION = "updateExtension"

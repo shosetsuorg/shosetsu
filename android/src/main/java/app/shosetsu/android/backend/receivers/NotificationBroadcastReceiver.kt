@@ -7,6 +7,10 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import app.shosetsu.android.backend.workers.onetime.DownloadWorker
 import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker
+import app.shosetsu.android.common.consts.ACTION_UPDATE_EXTENSION
+import app.shosetsu.android.common.consts.EXTRA_UPDATE_EXTENSION_ID
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.domain.usecases.RequestInstallExtensionUseCase
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
 
@@ -61,6 +65,19 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
 						-1
 					)
 				)
+			}
+			ACTION_UPDATE_EXTENSION -> {
+				val manager by di.instance<RequestInstallExtensionUseCase>()
+				val extensionId = intent.getIntExtra(
+					EXTRA_UPDATE_EXTENSION_ID,
+					-1
+				)
+				if (extensionId == -1) return
+
+				launchIO {
+					notificationManager.cancel(extensionId + 3000)
+					manager.invoke(extensionId)
+				}
 			}
 		}
 	}

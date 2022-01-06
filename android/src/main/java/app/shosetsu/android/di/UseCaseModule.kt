@@ -66,8 +66,8 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 		StartRepositoryUpdateManagerUseCase(instance())
 	}
 
-	bind<InstallExtensionUIUseCase>() with provider {
-		InstallExtensionUIUseCase(
+	bind<RequestInstallExtensionUseCase>() with provider {
+		RequestInstallExtensionUseCase(
 			instance(),
 			instance()
 		)
@@ -133,7 +133,6 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 	bind<UpdateDownloadUseCase>() with provider { UpdateDownloadUseCase(instance()) }
 	bind<DeleteDownloadUseCase>() with provider { DeleteDownloadUseCase(instance()) }
 
-	bind<UpdateExtensionEntityUseCase>() with provider { UpdateExtensionEntityUseCase(instance()) }
 
 	bind<UpdateBookmarkedNovelUseCase>() with provider { UpdateBookmarkedNovelUseCase(instance()) }
 

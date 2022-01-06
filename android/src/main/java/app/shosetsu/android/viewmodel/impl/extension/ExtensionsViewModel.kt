@@ -44,7 +44,7 @@ import kotlinx.coroutines.flow.*
 class ExtensionsViewModel(
 	private val getExtensionsUI: LoadExtensionsUIUseCase,
 	private val startRepositoryUpdateManager: StartRepositoryUpdateManagerUseCase,
-	private val installExtensionUI: InstallExtensionUIUseCase,
+	private val installExtensionUI: RequestInstallExtensionUseCase,
 	private val uninstallExtensionUI: UninstallExtensionUIUseCase,
 	private val cancelExtensionInstall: CancelExtensionInstallUseCase,
 	private var isOnlineUseCase: IsOnlineUseCase,
