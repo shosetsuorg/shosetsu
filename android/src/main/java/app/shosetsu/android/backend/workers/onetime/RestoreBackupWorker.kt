@@ -307,13 +307,13 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 						setNotOngoing()
 					}
 
-				} else if (cause is LuaError) {
+				} else if (e is LuaError) {
 					logE("Lua error occurred", e)
 
 					notify(
 						getString(
 							R.string.restore_notification_content_novel_fail_lua,
-							"${cause.message}"
+							"${e.message}"
 						),
 						2000 + bNovelURL.hashCode()
 					) {
