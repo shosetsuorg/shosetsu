@@ -312,7 +312,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 
 					notify(
 						getString(
-							R.string.restore_notification_content_novel_fail_parse_http,
+							R.string.restore_notification_content_novel_fail_lua,
 							"${cause.message}"
 						),
 						2000 + bNovelURL.hashCode()
