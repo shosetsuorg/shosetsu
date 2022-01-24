@@ -13,3 +13,8 @@ data class FleshedBackupEntity(
 	val repos: List<BackupRepositoryEntity> = listOf(),
 	val extensions: List<BackupExtensionEntity> = listOf(),
 )
+
+@Serializable
+data class MetaBackupEntity(
+	val version: String?,
+)

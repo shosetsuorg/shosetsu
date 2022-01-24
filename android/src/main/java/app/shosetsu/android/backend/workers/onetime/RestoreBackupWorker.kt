@@ -94,8 +94,8 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 	override val defaultNotificationID: Int = ID_RESTORE
 
 	@Throws(IOException::class)
-	private fun unGZip(content: ByteArray): String =
-		GZIPInputStream(content.inputStream()).bufferedReader().use { it.readText() }
+	private fun unGZip(content: ByteArray) =
+		GZIPInputStream(content.inputStream())
 
 	/**
 	 * Loads a backup via the [Uri] provided by Androids file selection
@@ -153,57 +153,60 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 
 			// Unzip bytes to a string via gzip
 			notify(R.string.restore_notification_content_unzipping_bytes)
-			val unzippedString: String = unGZip(decodedBytes)
-
 
 			// Verifies the version is compatible and then parses it to a backup object
-			val backup = backupJSON.decodeFromJsonElement<FleshedBackupEntity>(
-				backupJSON.parseToJsonElement(
-					unzippedString
-				).jsonObject.also { jsonObject ->
-					// Reads the version line from the json, if it does not exist the process fails
-					val value: String =
-						jsonObject["version"]?.jsonPrimitive?.content ?: return Result.failure()
-							.also {
-								logE(MESSAGE_LOG_JSON_MISSING).also {
-									notify(R.string.restore_notification_content_missing_key) { setNotOngoing() }
-								}
+
+			unGZip(decodedBytes).use { stream ->
+				val metaInfo = backupJSON.decodeFromStream<MetaBackupEntity>(stream)
+
+				// Reads the version line from the json, if it does not exist the process fails
+
+				val metaVersion: String =
+					metaInfo.version ?: return Result.failure()
+						.also {
+							logE(MESSAGE_LOG_JSON_MISSING).also {
+								notify(R.string.restore_notification_content_missing_key) { setNotOngoing() }
 							}
+						}
 
-					// Checks if the version is compatible
-					logV("Version in backup: $value")
+				// Checks if the version is compatible
+				logV("Version in backup: $metaVersion")
 
-					if (!Version(value).isCompatible(Version(VERSION_BACKUP))) {
-						logE(MESSAGE_LOG_JSON_OUTDATED)
-						notify(R.string.restore_notification_content_text_outdated) { setNotOngoing() }
-						return Result.failure()
-					}
-				})
-
-			notify("Adding repositories")
-			// Adds the repositories
-			backup.repos.forEach { (url, name) ->
-				notify("") {
-					setContentTitle(getString(R.string.restore_notification_title_adding_repos))
-					setContentText("$name\n$url")
+				if (!Version(metaVersion).isCompatible(Version(VERSION_BACKUP))) {
+					logE(MESSAGE_LOG_JSON_OUTDATED)
+					notify(R.string.restore_notification_content_text_outdated) { setNotOngoing() }
+					return Result.failure()
 				}
-				extensionsRepoRepo.addRepository(
-					RepositoryEntity(
-						url = url,
-						name = name,
-						isEnabled = true
-					)
-				)
 			}
 
-			notify("Loading repository data")
-			// Load the data from the repositories
-			initializeExtensionsUseCase()
+			unGZip(decodedBytes).use { stream ->
+				val backup = backupJSON.decodeFromStream<FleshedBackupEntity>(stream)
 
-			// Install the extensions
-			val repoNovels: List<NovelEntity> = novelsRepo.loadNovels().unwrap()!!
+				notify("Adding repositories")
+				// Adds the repositories
+				backup.repos.forEach { (url, name) ->
+					notify("") {
+						setContentTitle(getString(R.string.restore_notification_title_adding_repos))
+						setContentText("$name\n$url")
+					}
+					extensionsRepoRepo.addRepository(
+						RepositoryEntity(
+							url = url,
+							name = name,
+							isEnabled = true
+						)
+					)
+				}
 
-			backup.extensions.forEach { restoreExtension(repoNovels, it) }
+				notify("Loading repository data")
+				// Load the data from the repositories
+				initializeExtensionsUseCase()
+
+				// Install the extensions
+				val repoNovels: List<NovelEntity> = novelsRepo.loadNovels().unwrap()!!
+
+				backup.extensions.forEach { restoreExtension(repoNovels, it) }
+			}
 		}
 
 		System.gc() // Politely ask for a garbage collection
