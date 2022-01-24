@@ -538,6 +538,7 @@
     <string name="settings_update_repo_on_low_sto_desc">If toggled on, allows Repositories to update while the device is running out of storage space</string>
     <string name="restore_notification_content_novel_fail_parse">Failed to parse novel</string>
     <string name="restore_notification_content_novel_fail_parse_http">HTTP error occurred, code: %s</string>
+    <string name="restore_notification_content_novel_fail_lua">Failed to parse novel, lua: %s</string>
     <string name="controller_browse_filter_name_label">Extension Name</string>
     <string name="settings_view_legacy_nav_title">Use legacy navigation</string>
     <string name="settings_view_legacy_nav_desc">Use legacy drawer navigation</string>

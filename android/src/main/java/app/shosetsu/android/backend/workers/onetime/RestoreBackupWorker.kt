@@ -17,10 +17,7 @@ import app.shosetsu.android.common.consts.VERSION_BACKUP
 import app.shosetsu.android.common.consts.WorkerTags.RESTORE_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.backupJSON
-import app.shosetsu.android.domain.model.local.backup.BackupChapterEntity
-import app.shosetsu.android.domain.model.local.backup.BackupExtensionEntity
-import app.shosetsu.android.domain.model.local.backup.BackupNovelEntity
-import app.shosetsu.android.domain.model.local.backup.FleshedBackupEntity
+import app.shosetsu.android.domain.model.local.backup.*
 import app.shosetsu.android.domain.repository.base.IBackupUriRepository
 import app.shosetsu.android.domain.usecases.InstallExtensionUseCase
 import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
@@ -35,14 +32,13 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.delay
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.*
 import org.acra.ACRA
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
+import org.luaj.vm2.LuaError
 import java.io.*
 import java.util.zip.GZIPInputStream
 
@@ -311,6 +307,20 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 						setNotOngoing()
 					}
 
+				} else if (cause is LuaError) {
+					logE("Lua error occurred", e)
+
+					notify(
+						getString(
+							R.string.restore_notification_content_novel_fail_parse_http,
+							"${cause.message}"
+						),
+						2000 + bNovelURL.hashCode()
+					) {
+						setContentTitle(name)
+						setLargeIcon(bitmap)
+						setNotOngoing()
+					}
 				} else {
 					logE("Failed to parse novel while loading backup", e)
 
