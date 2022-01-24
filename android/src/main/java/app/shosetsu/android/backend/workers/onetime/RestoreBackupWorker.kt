@@ -335,6 +335,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 						setNotOngoing()
 					}
 				}
+				delay(5000)
 				return
 			}
 
