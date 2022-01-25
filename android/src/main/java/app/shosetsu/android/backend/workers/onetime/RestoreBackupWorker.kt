@@ -42,6 +42,7 @@ import org.kodein.di.android.closestDI
 import org.kodein.di.instance
 import org.luaj.vm2.LuaError
 import java.io.*
+import java.net.UnknownHostException
 import java.util.zip.GZIPInputStream
 
 /*
@@ -294,47 +295,66 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 				iExt.parseNovel(bNovelURL, true)
 			} catch (e: Exception) {
 				val cause = e.cause
-				if (cause is HTTPException) {
-					logE("Failed to load novel from website", e)
+				when {
+					cause is HTTPException -> {
+						logE("Failed to load novel from website", e)
 
-					notify(
-						getString(
-							R.string.restore_notification_content_novel_fail_parse_http,
-							"${cause.code}"
-						),
-						2000 + bNovelURL.hashCode()
-					) {
-						setContentTitle(name)
-						setLargeIcon(bitmap)
-						setNotOngoing()
+						notify(
+							getString(
+								R.string.restore_notification_content_novel_fail_parse_http,
+								"${cause.code}"
+							),
+							2000 + bNovelURL.hashCode()
+						) {
+							setContentTitle(name)
+							setLargeIcon(bitmap)
+							setNotOngoing()
+						}
+
 					}
+					cause is UnknownHostException -> {
+						logE("Failed to locate website", e)
 
-				} else if (e is LuaError) {
-					logE("Lua error occurred", e)
-
-					notify(
-						getString(
-							R.string.restore_notification_content_novel_fail_lua,
-							"${e.message}"
-						),
-						2000 + bNovelURL.hashCode()
-					) {
-						setContentTitle(name)
-						setLargeIcon(bitmap)
-						setNotOngoing()
+						notify(
+							getString(
+								R.string.restore_notification_content_novel_fail_parse_host,
+								"${cause.message}"
+							),
+							2000 + bNovelURL.hashCode()
+						) {
+							setContentTitle(name)
+							setLargeIcon(bitmap)
+							setNotOngoing()
+						}
 					}
-				} else {
-					logE("Failed to parse novel while loading backup", e)
+					e is LuaError -> {
+						logE("Lua error occurred", e)
 
-					ACRA.errorReporter.handleException(e, false)
+						notify(
+							getString(
+								R.string.restore_notification_content_novel_fail_lua,
+								"${e.message}"
+							),
+							2000 + bNovelURL.hashCode()
+						) {
+							setContentTitle(name)
+							setLargeIcon(bitmap)
+							setNotOngoing()
+						}
+					}
+					else -> {
+						logE("Failed to parse novel while loading backup", e)
 
-					notify(
-						R.string.restore_notification_content_novel_fail_parse,
-						2000 + bNovelURL.hashCode()
-					) {
-						setContentTitle(name)
-						setLargeIcon(bitmap)
-						setNotOngoing()
+						ACRA.errorReporter.handleException(e, false)
+
+						notify(
+							R.string.restore_notification_content_novel_fail_parse,
+							2000 + bNovelURL.hashCode()
+						) {
+							setContentTitle(name)
+							setLargeIcon(bitmap)
+							setNotOngoing()
+						}
 					}
 				}
 				delay(5000)
