@@ -199,6 +199,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object NavStyle : IntKey("navigationStyle", 0)
 
 	// Backup Options
+	object RestorePrintChapters : BooleanKey("backupPrintChapters", false)
 	object ShouldBackupChapters : BooleanKey("backupChapters", true)
 	object ShouldBackupSettings : BooleanKey("backupSettings", false)
 	object BackupCycle : IntKey("backupCycle", 12)

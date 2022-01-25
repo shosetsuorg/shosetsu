@@ -100,6 +100,12 @@ class BackupSettingsViewModel(
 			description { R.string.backup_settings_option_desc }
 			checkSettingValue(SettingKey.ShouldBackupSettings)
 		},
+		switchSettingData(6) {
+			titleRes = R.string.backup_restore_print_chapters_title
+			descRes = R.string.backup_restore_print_chapters_desc
+
+			checkSettingValue(SettingKey.RestorePrintChapters)
+		},
 		buttonSettingData(3) {
 			title { R.string.backup_now }
 			text { R.string.backup_now }

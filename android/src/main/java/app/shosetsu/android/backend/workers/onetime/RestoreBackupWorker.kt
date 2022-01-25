@@ -21,6 +21,7 @@ import app.shosetsu.android.domain.model.local.backup.*
 import app.shosetsu.android.domain.repository.base.IBackupUriRepository
 import app.shosetsu.android.domain.usecases.InstallExtensionUseCase
 import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
+import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.*
 import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.dto.*
@@ -32,6 +33,7 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.*
 import org.acra.ACRA
 import org.kodein.di.DI
@@ -451,6 +453,12 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		delay(500) // Delay things a bit
 	}
 
+	private val settings: ISettingsRepository by instance()
+	private val printChapter: Boolean
+		get() = runBlocking {
+			settings.getBooleanOrDefault(SettingKey.RestorePrintChapters)
+		}
+
 	private suspend fun restoreChapter(
 		novelName: String,
 		repoChapters: List<ChapterEntity>,
@@ -466,7 +474,10 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		val rP = backupChapterEntity.rP
 
 		repoChapters.find { it.url == chapterURL }?.let { chapterEntity ->
-			logI(chapterName)
+
+			if (printChapter)
+				logI(chapterName)
+
 			notify(getString(R.string.updating) + ": ${chapterEntity.title}") {
 				setContentTitle(novelName)
 				setLargeIcon(getBitmap())
