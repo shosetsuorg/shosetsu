@@ -51,8 +51,8 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 	bind<SearchBookMarkedNovelsUseCase>() with provider { SearchBookMarkedNovelsUseCase(instance()) }
 
 
-	bind<LoadExtensionsUIUseCase>() with provider {
-		LoadExtensionsUIUseCase(
+	bind<LoadBrowseExtensionsUseCase>() with provider {
+		LoadBrowseExtensionsUseCase(
 			instance(),
 			instance()
 		)

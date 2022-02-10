@@ -1,8 +1,5 @@
 package app.shosetsu.common.datasource.memory.impl
 
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.emptyResult
-import app.shosetsu.common.dto.successResult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
@@ -84,24 +81,20 @@ abstract class AbstractMemoryDataSource<K, V : Any> {
 		}
 	}
 
-	fun remove(key: K): HResult<*> =
-		if (!contains(key)) emptyResult()
-		else {
-			_hashMap.remove(key)
-			successResult("")
-		}
+	fun remove(key: K): Boolean =
+		if (!contains(key)) false
+		else _hashMap.remove(key) != null
 
 	/**
 	 * Assigns [key] to [value]
 	 * If [_hashMap] entries > [maxSize], removes first
 	 */
-	fun put(key: K, value: V): HResult<*> {
+	fun put(key: K, value: V) {
 		if (_hashMap.size > maxSize) {
 			remove(_hashMap.keys.first())
 		}
 
 		_hashMap[key] = System.currentTimeMillis() to value
-		return successResult("")
 	}
 
 	fun contains(key: K): Boolean {
@@ -128,12 +121,11 @@ abstract class AbstractMemoryDataSource<K, V : Any> {
 		return false
 	}
 
-	fun get(key: K): HResult<V> {
+	fun get(key: K): V? {
 		recycle()
 		return if (contains(key)) {
-			_hashMap[key]?.let { HResult.Success(it.second) }
-				?: emptyResult()
-		} else emptyResult()
+			_hashMap[key]?.second
+		} else null
 	}
 
 }

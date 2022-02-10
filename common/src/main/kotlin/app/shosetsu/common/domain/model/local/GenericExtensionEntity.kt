@@ -1,7 +1,6 @@
 package app.shosetsu.common.domain.model.local
 
 import app.shosetsu.lib.ExtensionType
-import app.shosetsu.lib.Novel
 import app.shosetsu.lib.Version
 
 /*
@@ -27,9 +26,11 @@ import app.shosetsu.lib.Version
  * 22 / 04 / 2020
  *
  * @author github.com/doomsdayrs
- * This class represents a formatter
+ *
+ * This represents a single extension,
+ * with data that is common to both Installed and Repository types
  */
-data class ExtensionEntity(
+data class GenericExtensionEntity(
 	/** Extension ID */
 	val id: Int,
 
@@ -37,38 +38,21 @@ data class ExtensionEntity(
 	val repoID: Int,
 
 	/** Name of the extension, can be changed */
-	var name: String = "",
-
-	// TODO repoFileName to allow for filename changes easily
+	val name: String = "",
 
 	/** FileName of the extension */
 	val fileName: String = "",
 
 	/** Image URL of the extension*/
-	var imageURL: String? = null,
+	val imageURL: String? = null,
 
 	/** The language of the extension */
 	val lang: String = "",
 
-	/** If extension is enabled */
-	var enabled: Boolean = false,
-
-	/** If extension is installed*/
-	var installed: Boolean = false,
-
-	/** Version currently installed */
-	var installedVersion: Version? = null,
-
-	/** Version in repository*/
-	var repositoryVersion: Version = Version(0, 0, 0),
-
-	/**
-	 * The chapter type of this extension
-	 */
-	var chapterType: Novel.ChapterType,
+	val version: Version? = null,
 
 	/** MD5 to check against */
-	var md5: String = "",
+	val md5: String = "",
 
 	/**
 	 * What language was used to create this extension

@@ -3,7 +3,6 @@ package app.shosetsu.common.datasource.memory.impl
 import app.shosetsu.common.consts.MEMORY_EXPIRE_EXTENSION_TIME
 import app.shosetsu.common.consts.MEMORY_MAX_EXTENSIONS
 import app.shosetsu.common.datasource.memory.base.IMemExtensionsDataSource
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.IExtension
 
 /*
@@ -33,13 +32,13 @@ class GenericMemExtensionDataSource : IMemExtensionsDataSource,
 	override val maxSize = MEMORY_MAX_EXTENSIONS
 	override val expireTime = MEMORY_EXPIRE_EXTENSION_TIME * 1000 * 60 * 60
 
-	override fun loadExtensionFromMemory(extensionID: Int): HResult<IExtension> =
+	override fun loadExtensionFromMemory(extensionID: Int): IExtension? =
 		get(extensionID)
 
-	override fun putExtensionInMemory(iExtension: IExtension): HResult<*> =
+	override fun putExtensionInMemory(iExtension: IExtension) =
 		put(iExtension.formatterID, iExtension)
 
-	override fun removeExtensionFromMemory(extensionID: Int): HResult<*> =
+	override fun removeExtensionFromMemory(extensionID: Int) =
 		remove(extensionID)
 
 }

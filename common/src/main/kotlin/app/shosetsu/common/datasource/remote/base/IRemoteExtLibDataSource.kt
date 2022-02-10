@@ -1,6 +1,5 @@
 package app.shosetsu.common.datasource.remote.base
 
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.model.local.ExtLibEntity
 
 /*
@@ -34,5 +33,5 @@ interface IRemoteExtLibDataSource {
 	fun downloadLibrary(
 		repoURL: String,
 		extLibEntity: ExtLibEntity,
-	): HResult<String>
+	): String
 }

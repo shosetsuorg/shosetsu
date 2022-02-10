@@ -1,12 +1,14 @@
 package app.shosetsu.android.datasource.local.database.impl
 
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.ext.toDB
-import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.providers.database.dao.InstalledExtensionsDao
-import app.shosetsu.common.datasource.database.base.IDBExtensionsDataSource
-import app.shosetsu.common.domain.model.local.ExtensionEntity
-import app.shosetsu.common.domain.model.local.StrippedExtensionEntity
-import app.shosetsu.common.dto.*
+import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.common.datasource.database.base.IDBInstalledExtensionsDataSource
+import app.shosetsu.common.domain.model.local.GenericExtensionEntity
+import app.shosetsu.common.dto.convertList
+import app.shosetsu.common.dto.mapLatestListTo
+import app.shosetsu.common.dto.mapLatestTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
@@ -36,73 +38,48 @@ import kotlinx.coroutines.flow.flow
  */
 class DBExtensionsDataSource(
 	private val extensionsDao: InstalledExtensionsDao,
-) : IDBExtensionsDataSource {
+) : IDBInstalledExtensionsDataSource {
 	@ExperimentalCoroutinesApi
-	override fun loadExtensionsFlow(): Flow<HResult<List<ExtensionEntity>>> = flow {
-		emit(loading())
-		try {
-			emitAll(extensionsDao.loadExtensionsFlow().mapLatestListTo().mapLatestToSuccess())
-		} catch (e: Exception) {
-			emit(e.toHError())
-		}
+	override fun loadExtensionsFlow(): Flow<List<GenericExtensionEntity>> = flow {
+		emitAll(extensionsDao.loadExtensionsFlow().mapLatestListTo())
 	}
 
 	@ExperimentalCoroutinesApi
-	override fun loadExtensionLive(formatterID: Int): HFlow<ExtensionEntity> = flow {
-		emit(loading())
-		try {
-			emitAll(extensionsDao.getExtensionFlow(formatterID).mapLatestTo().mapLatestToSuccess())
-		} catch (e: Exception) {
-			emit(e.toHError())
-		}
+	override fun loadExtensionLive(formatterID: Int): Flow<GenericExtensionEntity> = flow {
+		emitAll(extensionsDao.getExtensionFlow(formatterID).mapLatestTo())
 	}
 
-	@ExperimentalCoroutinesApi
-	override fun loadPoweredExtensionsCards(): Flow<HResult<List<StrippedExtensionEntity>>> = flow {
-		emit(loading())
-		try {
-			emitAll(
-				extensionsDao.loadEnabledExtensionsBasic().mapLatestListTo().mapLatestToSuccess()
-			)
-		} catch (e: Exception) {
-			emit(e.toHError())
-		}
+	override suspend fun updateExtension(extensionEntity: GenericExtensionEntity): Unit = try {
+		extensionsDao.update(extensionEntity.toDB())
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
 	}
 
-	override suspend fun updateExtension(extensionEntity: ExtensionEntity): HResult<*> = try {
-		successResult(extensionsDao.update(extensionEntity.toDB()))
-	} catch (e: Exception) {
-		e.toHError()
+	override suspend fun deleteExtension(extensionEntity: GenericExtensionEntity): Unit = try {
+		extensionsDao.delete(extensionEntity.toDB())
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
 	}
 
-	override suspend fun deleteExtension(extensionEntity: ExtensionEntity): HResult<*> = try {
-		successResult(extensionsDao.delete(extensionEntity.toDB()))
-	} catch (e: Exception) {
-		e.toHError()
+	override suspend fun loadExtension(formatterID: Int): GenericExtensionEntity? = try {
+		extensionsDao.getExtension(formatterID)?.convertTo()
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
 	}
 
-	override suspend fun loadExtension(formatterID: Int): HResult<ExtensionEntity> = try {
-		extensionsDao.getExtension(formatterID)?.convertTo()?.let { successResult(it) }
-			?: emptyResult()
-	} catch (e: Exception) {
-		e.toHError()
+	override suspend fun getExtensions(repoID: Int): List<GenericExtensionEntity> =
+		extensionsDao.getExtensions(repoID).convertList()
+
+	override suspend fun loadExtensions(): List<GenericExtensionEntity> = try {
+		extensionsDao.loadExtensions().convertList()
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
 	}
 
-	override suspend fun getExtensions(repoID: Int): HResult<List<ExtensionEntity>> = try {
-		successResult(extensionsDao.getExtensions(repoID).convertList())
-	} catch (e: Exception) {
-		e.toHError()
-	}
-
-	override suspend fun loadExtensions(): HResult<List<ExtensionEntity>> = try {
-		successResult(extensionsDao.loadExtensions().convertList())
-	} catch (e: Exception) {
-		e.toHError()
-	}
-
-	override suspend fun insert(extensionEntity: ExtensionEntity): HResult<*> = try {
-		successResult(extensionsDao.insertAbort(extensionEntity.toDB()))
-	} catch (e: Exception) {
-		e.toHError()
+	@Throws(GenericSQLiteException::class)
+	override suspend fun insert(extensionEntity: GenericExtensionEntity): Long = try {
+		extensionsDao.insertAbort(extensionEntity.toDB())
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
 	}
 }

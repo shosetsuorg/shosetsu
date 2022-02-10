@@ -21,7 +21,7 @@ import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.usecases.RemoveExtensionEntityUseCase
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.ExtLibEntity
-import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.dto.HResult
@@ -166,12 +166,12 @@ class RepositoryUpdateWorker(
 		}
 
 	private suspend inline fun handlePresentExtensions(
-		list: List<ExtensionEntity>,
+		list: List<GenericExtensionEntity>,
 		presentExtensions: List<Int>
 	) {
 		list.filterNot { presentExtensions.contains(it.id) }.forEach {
 			if (it.installed)
-				extRepo.update(
+				extRepo.updateRepositoryExtension(
 					it.copy(
 						repositoryVersion = Version(-9, -9, -9)
 					)
@@ -210,7 +210,7 @@ class RepositoryUpdateWorker(
 		extRepo.getExtension(repoExt.id).handle(
 			onEmpty = {
 				extRepo.insert(
-					ExtensionEntity(
+					GenericExtensionEntity(
 						id = repoExt.id,
 						repoID = repo.id!!,
 						name = repoExt.name,
@@ -235,7 +235,7 @@ class RepositoryUpdateWorker(
 				// the id is different, if the version is greater then override
 				if (extensionEntity.repositoryVersion < repoExt.version) {
 					logI("New repository has greater version, updating")
-					extRepo.update(
+					extRepo.updateRepositoryExtension(
 						extensionEntity.copy(
 							repoID = repo.id!!,
 							fileName = repoExt.fileName,
@@ -260,7 +260,7 @@ class RepositoryUpdateWorker(
 						if (!it.isEnabled) {
 							logI("Old repository is disabled, updating for rollback")
 							// the repository is disabled, we can downgrade
-							extRepo.update(
+							extRepo.updateRepositoryExtension(
 								extensionEntity.copy(
 									repoID = repo.id!!,
 									fileName = repoExt.fileName,
@@ -288,7 +288,7 @@ class RepositoryUpdateWorker(
 				// the repo id is the same, check if there is an update
 				if (extensionEntity.repositoryVersion < repoExt.version) {
 					logI("The repository has a newer version")
-					extRepo.update(
+					extRepo.updateRepositoryExtension(
 						extensionEntity.copy(
 							repoID = repo.id!!,
 							fileName = repoExt.fileName,

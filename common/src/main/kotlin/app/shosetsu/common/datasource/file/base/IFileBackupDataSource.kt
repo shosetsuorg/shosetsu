@@ -1,7 +1,6 @@
 package app.shosetsu.common.datasource.file.base
 
 import app.shosetsu.common.domain.model.local.BackupEntity
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of Shosetsu.
@@ -25,9 +24,9 @@ import app.shosetsu.common.dto.HResult
  */
 interface IFileBackupDataSource {
 
-	suspend fun loadBackup(backupName: String, isExternal: Boolean): HResult<BackupEntity>
+	suspend fun loadBackup(backupName: String, isExternal: Boolean): BackupEntity
 
-	suspend fun saveBackup(backupEntity: BackupEntity): HResult<String>
+	suspend fun saveBackup(backupEntity: BackupEntity): String
 
-	suspend fun loadBackups(): HResult<List<String>>
+	suspend fun loadBackups(): List<String>
 }

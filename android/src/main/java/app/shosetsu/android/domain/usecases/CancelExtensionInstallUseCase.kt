@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.android.view.uimodels.model.ExtensionUI
+import app.shosetsu.common.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionDownloadRepository
 
 /*
@@ -30,7 +30,7 @@ class CancelExtensionInstallUseCase(
 	private val repo: IExtensionDownloadRepository
 ) {
 
-	suspend operator fun invoke(extension: ExtensionUI) {
+	suspend operator fun invoke(extension: BrowseExtensionEntity) {
 		repo.remove(extension.id)
 	}
 }

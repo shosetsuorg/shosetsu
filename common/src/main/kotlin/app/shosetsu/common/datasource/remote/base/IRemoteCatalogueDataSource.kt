@@ -1,6 +1,5 @@
 package app.shosetsu.common.datasource.remote.base
 
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 
@@ -31,10 +30,10 @@ interface IRemoteCatalogueDataSource {
 	 * Runs a search on an extension
 	 */
 	suspend fun search(
-			ext: IExtension,
-			query: String,
-			data: Map<Int, Any>,
-	): HResult<List<Novel.Listing>>
+		ext: IExtension,
+		query: String,
+		data: Map<Int, Any>,
+	): List<Novel.Listing>
 
 
 	/**
@@ -44,5 +43,5 @@ interface IRemoteCatalogueDataSource {
 		ext: IExtension,
 		listingIndex: Int,
 		data: Map<Int, Any>,
-	): HResult<List<Novel.Listing>>
+	): List<Novel.Listing>
 }

@@ -1,8 +1,8 @@
 package app.shosetsu.common.datasource.database.base
 
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.ReaderChapterEntity
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
 
@@ -32,37 +32,45 @@ import kotlinx.coroutines.flow.Flow
  */
 interface IDBChaptersDataSource {
 	/** Get the chapters of a novel */
-	suspend fun getChaptersFlow(novelID: Int): Flow<HResult<List<ChapterEntity>>>
+	suspend fun getChaptersFlow(novelID: Int): Flow<List<ChapterEntity>>
 
-	suspend fun getChapters(novelID: Int): HResult<List<ChapterEntity>>
+	@Throws(GenericSQLiteException::class)
+	suspend fun getChapters(novelID: Int): List<ChapterEntity>
 
-	suspend fun getChaptersByExtension(extensionId: Int): HResult<List<ChapterEntity>>
+	@Throws(GenericSQLiteException::class)
+	suspend fun getChaptersByExtension(extensionId: Int): List<ChapterEntity>
 
 	/** Loads a chapter by its ID */
-	suspend fun getChapter(chapterID: Int): HResult<ChapterEntity>
+	@Throws(GenericSQLiteException::class)
+	suspend fun getChapter(chapterID: Int): ChapterEntity?
 
 	/** Loads chapters by novelID */
-	suspend fun getReaderChapters(novelID: Int): Flow<HResult<List<ReaderChapterEntity>>>
+	suspend fun getReaderChapters(novelID: Int): Flow<List<ReaderChapterEntity>>
 
 	/** Handles chapters from a remote source */
+	@Throws(GenericSQLiteException::class)
 	suspend fun handleChapters(
 		novelID: Int,
 		extensionID: Int,
 		list: List<Novel.Chapter>
-	): HResult<*>
+	)
 
 	/** Handles chapters from a remote source, then returns the new chapters */
+	@Throws(IndexOutOfBoundsException::class, GenericSQLiteException::class)
 	suspend fun handleChapterReturn(
 		novelID: Int,
 		extensionID: Int,
 		list: List<Novel.Chapter>,
-	): HResult<List<ChapterEntity>>
+	): List<ChapterEntity>
 
 	/** Updates a [chapterEntity] */
-	suspend fun updateChapter(chapterEntity: ChapterEntity): HResult<*>
+	@Throws(GenericSQLiteException::class)
+	suspend fun updateChapter(chapterEntity: ChapterEntity)
 
 	/** Updates a [readerChapterEntity], a cut down version [updateChapter] */
-	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): HResult<*>
+	@Throws(GenericSQLiteException::class)
+	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity)
 
-	suspend fun delete(entity: ChapterEntity): HResult<*>
+	@Throws(GenericSQLiteException::class)
+	suspend fun delete(entity: ChapterEntity)
 }

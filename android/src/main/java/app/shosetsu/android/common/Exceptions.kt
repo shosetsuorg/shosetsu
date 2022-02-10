@@ -32,3 +32,4 @@ class HResultException(hResult: HResult.Error) : Exception(
 	"${hResult.code} ${hResult.message}",
 	hResult.exception
 )
+

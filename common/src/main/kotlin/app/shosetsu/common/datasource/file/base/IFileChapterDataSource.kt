@@ -33,7 +33,7 @@ interface IFileChapterDataSource {
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType,
 		passage: ByteArray
-	): HResult<*>
+	)
 
 	/**
 	 * Gets chapter passage via it's ID
@@ -42,11 +42,11 @@ interface IFileChapterDataSource {
 	suspend fun load(
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType
-	): HResult<ByteArray>
+	): ByteArray
 
 	/** Deletes a chapter from the filesystem */
 	suspend fun delete(
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType
-	): HResult<*>
+	)
 }

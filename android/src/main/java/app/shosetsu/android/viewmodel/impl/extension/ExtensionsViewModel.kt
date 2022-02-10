@@ -22,16 +22,21 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
-import app.shosetsu.android.domain.ReportExceptionUseCase
-import app.shosetsu.android.domain.usecases.*
-import app.shosetsu.android.domain.usecases.load.LoadExtensionsUIUseCase
-import app.shosetsu.android.view.uimodels.model.ExtensionUI
+import app.shosetsu.android.domain.usecases.CancelExtensionInstallUseCase
+import app.shosetsu.android.domain.usecases.IsOnlineUseCase
+import app.shosetsu.android.domain.usecases.RequestInstallExtensionUseCase
+import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
+import app.shosetsu.android.domain.usecases.load.LoadBrowseExtensionsUseCase
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.consts.settings.SettingKey.BrowseFilteredLanguages
+import app.shosetsu.common.domain.model.local.BrowseExtensionEntity
+import app.shosetsu.common.domain.model.local.ExtensionInstallOptionEntity
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.*
+import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.dto.handle
+import app.shosetsu.common.dto.successResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
@@ -42,53 +47,49 @@ import kotlinx.coroutines.flow.*
  * @author github.com/doomsdayrs
  */
 class ExtensionsViewModel(
-	private val getExtensionsUI: LoadExtensionsUIUseCase,
+	private val getBrowseExtensions: LoadBrowseExtensionsUseCase,
 	private val startRepositoryUpdateManager: StartRepositoryUpdateManagerUseCase,
 	private val installExtensionUI: RequestInstallExtensionUseCase,
-	private val uninstallExtensionUI: UninstallExtensionUIUseCase,
 	private val cancelExtensionInstall: CancelExtensionInstallUseCase,
 	private var isOnlineUseCase: IsOnlineUseCase,
-	private val reportException: ReportExceptionUseCase,
 	override val settingsRepo: ISettingsRepository
 ) : ABrowseViewModel(), ExposedSettingsRepoViewModel {
 
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-		reportException(error)
-	}
 
-	override fun refreshRepository() {
+	override fun refresh() {
 		startRepositoryUpdateManager()
 	}
 
-	override fun installExtension(extensionUI: ExtensionUI) {
+	override fun installExtension(
+		extension: BrowseExtensionEntity,
+		option: ExtensionInstallOptionEntity
+	) {
 		launchIO {
-			installExtensionUI(extensionUI)
+			installExtensionUI(extension, option)
 		}
 	}
 
-	override fun uninstallExtension(extensionUI: ExtensionUI) {
+	override fun updateExtension(ext: BrowseExtensionEntity) {
 		launchIO {
-			uninstallExtensionUI(extensionUI)
+			installExtensionUI(ext)
 		}
 	}
 
-	override fun cancelInstall(extensionUI: ExtensionUI) {
+	override fun cancelInstall(ext: BrowseExtensionEntity) {
 		launchIO {
-			cancelExtensionInstall(extensionUI)
+			cancelExtensionInstall(ext)
 		}
 	}
 
 	@ExperimentalCoroutinesApi
 	private val extensionFlow by lazy {
-		getExtensionsUI()
+		getBrowseExtensions()
 	}
 
 	@ExperimentalCoroutinesApi
 	val languageListFlow by lazy {
-		extensionFlow.map { result ->
-			result.transformToSuccess { list ->
-				list.map { it.lang }.distinct()
-			}
+		extensionFlow.map { list ->
+			list.map { it.lang }.distinct()
 		}
 	}
 
@@ -97,14 +98,13 @@ class ExtensionsViewModel(
 	@ExperimentalCoroutinesApi
 	override val filteredLanguagesLive: LiveData<HResult<FilteredLanguages>> by lazy {
 		languageListFlow.combine(settingsRepo.getStringSetFlow(BrowseFilteredLanguages)) { languageResult, filteredLanguages ->
-			val languageList = languageResult.unwrap() ?: listOf()
 
 			val map = HashMap<String, Boolean>().apply {
-				languageList.forEach { language ->
+				languageResult.forEach { language ->
 					this[language] = !filteredLanguages.contains(language)
 				}
 			}
-			successResult(FilteredLanguages(languageList, map))
+			successResult(FilteredLanguages(languageResult, map))
 		}.asIOLiveData()
 	}
 
@@ -170,8 +170,8 @@ class ExtensionsViewModel(
 	}
 
 	@ExperimentalCoroutinesApi
-	override val liveData: LiveData<HResult<List<ExtensionUI>>> by lazy {
-		extensionFlow.transformLatest { result ->
+	override val liveData: LiveData<List<BrowseExtensionEntity>> by lazy {
+		extensionFlow.transformLatest { list ->
 			emitAll(
 				settingsRepo.getStringSetFlow(BrowseFilteredLanguages)
 					.combine(
@@ -179,22 +179,20 @@ class ExtensionsViewModel(
 							.combine(searchTermFlow) { onlyInstalled, searchTerm ->
 								onlyInstalled to searchTerm
 							}) { languagesToFilter, (onlyInstalled, searchTerm) ->
-						result.transformToSuccess { list ->
-							list
-								.asSequence()
-								.let { sequence ->
-									if (searchTerm.isNotBlank())
-										sequence.filter { it.name.contains(searchTerm) }
-									else sequence
-								}
-								.filter { if (onlyInstalled) it.installed else true }
-								.filterNot { languagesToFilter.contains(it.lang) }
-								.sortedBy { it.name }
-								.sortedBy { it.lang }
-								.sortedBy { !it.installed }
-								.sortedBy { it.updateState() != ExtensionUI.State.UPDATE }
-								.toList()
-						}
+						list
+							.asSequence()
+							.let { sequence ->
+								if (searchTerm.isNotBlank())
+									sequence.filter { it.name.contains(searchTerm) }
+								else sequence
+							}
+							.filter { if (onlyInstalled) it.isInstalled else true }
+							.filterNot { languagesToFilter.contains(it.lang) }
+							.sortedBy { it.name }
+							.sortedBy { it.lang }
+							.sortedBy { !it.isInstalled }
+							.sortedBy { it.isUpdateAvailable }
+							.toList()
 					})
 		}.asIOLiveData()
 	}

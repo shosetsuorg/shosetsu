@@ -1,7 +1,5 @@
 package app.shosetsu.common.datasource.file.base
 
-import app.shosetsu.common.dto.HResult
-
 /*
  * This file is part of shosetsu.
  *
@@ -24,8 +22,8 @@ import app.shosetsu.common.dto.HResult
  * 12 / 05 / 2020
  */
 interface IFileExtLibDataSource {
-	suspend fun writeExtLib(fileName: String, data: String): HResult<*>
-	suspend fun loadExtLib(fileName: String): HResult<String>
-	fun blockingLoadLib(fileName: String): HResult<String>
-	suspend fun deleteExtLib(fileName: String): HResult<*>
+	suspend fun writeExtLib(fileName: String, data: String)
+	suspend fun loadExtLib(fileName: String): String
+	fun blockingLoadLib(fileName: String): String
+	suspend fun deleteExtLib(fileName: String)
 }

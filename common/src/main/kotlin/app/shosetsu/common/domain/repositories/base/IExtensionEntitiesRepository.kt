@@ -1,6 +1,7 @@
 package app.shosetsu.common.domain.repositories.base
 
-import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.IncompatibleExtensionException
+import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.IExtension
 
@@ -43,13 +44,14 @@ interface IExtensionEntitiesRepository {
 	 *
 	 * [HResult.Loading] will never be thrown
 	 */
-	suspend fun get(extensionEntity: ExtensionEntity): HResult<IExtension>
+	@Throws(IncompatibleExtensionException::class)
+	suspend fun get(extensionEntity: GenericExtensionEntity): IExtension
 
-	suspend fun uninstall(extensionEntity: ExtensionEntity): HResult<*>
+	suspend fun uninstall(extensionEntity: GenericExtensionEntity)
 
 	suspend fun save(
-		extensionEntity: ExtensionEntity,
+		extensionEntity: GenericExtensionEntity,
 		iExt: IExtension,
 		extensionContent: ByteArray
-	): HResult<*>
+	)
 }

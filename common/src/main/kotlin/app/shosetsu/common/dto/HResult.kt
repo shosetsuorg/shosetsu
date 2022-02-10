@@ -31,6 +31,7 @@ typealias HList<T> = HResult<List<T>>
  *
  * Handles upstream data results
  */
+@Deprecated("God")
 sealed class HResult<out T> {
 
 	/** The operation was a success, here is your data [data] */

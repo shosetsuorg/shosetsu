@@ -3,7 +3,7 @@ package app.shosetsu.android.domain.model.database
 import androidx.annotation.NonNull
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.dto.Convertible
 import app.shosetsu.lib.ExtensionType
 import app.shosetsu.lib.Novel
@@ -72,8 +72,8 @@ data class DBInstalledExtensionEntity(
 	 * The reader type of this extension
 	 */
 	var chapterType: Novel.ChapterType,
-) : Convertible<ExtensionEntity> {
-	override fun convertTo(): ExtensionEntity = ExtensionEntity(
+) : Convertible<GenericExtensionEntity> {
+	override fun convertTo(): GenericExtensionEntity = GenericExtensionEntity(
 		id = id,
 		repoID = repoID,
 		name = name,
@@ -81,8 +81,7 @@ data class DBInstalledExtensionEntity(
 		imageURL = imageURL,
 		lang = lang,
 		enabled = enabled,
-		installed = true,
-		installedVersion = version,
+		version = version,
 		chapterType = chapterType,
 		md5 = md5,
 		type = type

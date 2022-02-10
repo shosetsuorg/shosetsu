@@ -1,6 +1,5 @@
 package app.shosetsu.common.datasource.remote.base
 
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 
@@ -31,8 +30,8 @@ interface IRemoteNovelDataSource {
 	 * Loads novel info
 	 */
 	suspend fun loadNovel(
-			formatter: IExtension,
-			novelURL: String,
-			loadChapters: Boolean = true,
-	): HResult<Novel.Info>
+		formatter: IExtension,
+		novelURL: String,
+		loadChapters: Boolean = true,
+	): Novel.Info
 }

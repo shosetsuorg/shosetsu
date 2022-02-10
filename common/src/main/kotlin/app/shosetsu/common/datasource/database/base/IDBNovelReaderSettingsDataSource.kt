@@ -1,8 +1,8 @@
 package app.shosetsu.common.datasource.database.base
 
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
-import app.shosetsu.common.dto.HFlow
-import app.shosetsu.common.dto.HResult
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of Shosetsu.
@@ -25,9 +25,14 @@ import app.shosetsu.common.dto.HResult
  * 26 / 02 / 2021
  */
 interface IDBNovelReaderSettingsDataSource {
-	suspend fun get(novelID: Int): HResult<NovelReaderSettingEntity>
-	fun getFlow(novelID: Int): HFlow<NovelReaderSettingEntity>
+	@Throws(GenericSQLiteException::class)
+	suspend fun get(novelID: Int): NovelReaderSettingEntity?
 
-	suspend fun insert(novelReaderSettingEntity: NovelReaderSettingEntity): HResult<*>
-	suspend fun update(novelReaderSettingEntity: NovelReaderSettingEntity): HResult<*>
+	fun getFlow(novelID: Int): Flow<NovelReaderSettingEntity?>
+
+	@Throws(GenericSQLiteException::class)
+	suspend fun insert(novelReaderSettingEntity: NovelReaderSettingEntity): Long
+
+	@Throws(GenericSQLiteException::class)
+	suspend fun update(novelReaderSettingEntity: NovelReaderSettingEntity)
 }

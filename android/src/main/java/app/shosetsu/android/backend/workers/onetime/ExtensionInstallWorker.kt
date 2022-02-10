@@ -16,8 +16,6 @@ import app.shosetsu.android.domain.usecases.InstallExtensionUseCase
 import app.shosetsu.common.consts.settings.SettingKey.NotifyExtensionDownload
 import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.ifSo
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.enums.DownloadStatus
 import coil.imageLoader
 import coil.request.ImageRequest
@@ -69,8 +67,14 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 
 	override suspend fun doWork(): Result {
 		val extensionId = this.inputData.getInt(KEY_EXTENSION_ID, -1)
+		val repositoryId = this.inputData.getInt(KEY_REPOSITORY_ID, -1)
+
 		if (extensionId == -1) {
 			logE("Received negative extension id, aborting")
+			return Result.failure()
+		}
+		if (repositoryId == -1) {
+			logE("Received negative repository id, aborting")
 			return Result.failure()
 		}
 		val notify: Boolean = settingsRepository.getBooleanOrDefault(NotifyExtensionDownload)
@@ -195,99 +199,99 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 			extensionDownloadRepository.updateStatus(
 				extensionId,
 				DownloadStatus.DOWNLOADING
-			).handle {
-				installExtension(extension).handle(
-					onEmpty = {
-						markExtensionDownloadAsError()
+			)
 
-						logE("Received empty result when loading extension from db:($extensionId)")
+			installExtension(extension).handle(
+				onEmpty = {
+					markExtensionDownloadAsError()
 
-						notifyError(
-							"Received empty when installing extension",
-							applicationContext.getString(
-								R.string.notification_content_text_extension_installed_failed,
-								extension.name
-							)
+					logE("Received empty result when loading extension from db:($extensionId)")
+
+					notifyError(
+						"Received empty when installing extension",
+						applicationContext.getString(
+							R.string.notification_content_text_extension_installed_failed,
+							extension.name
 						)
+					)
 
-						cleanupImageLoader()
+					cleanupImageLoader()
 
-						return Result.failure()
-					},
-					onLoading = {
-						markExtensionDownloadAsError()
+					return Result.failure()
+				},
+				onLoading = {
+					markExtensionDownloadAsError()
 
-						logE("Received loading result when loading extension from db($extensionId)")
+					logE("Received loading result when loading extension from db($extensionId)")
 
-						notifyError(
-							"Received loading when installing extension",
-							applicationContext.getString(
-								R.string.notification_content_text_extension_installed_failed,
-								extension.name
-							)
+					notifyError(
+						"Received loading when installing extension",
+						applicationContext.getString(
+							R.string.notification_content_text_extension_installed_failed,
+							extension.name
 						)
+					)
 
-						cleanupImageLoader()
+					cleanupImageLoader()
 
-						return Result.failure()
-					},
-					onError = {
-						markExtensionDownloadAsError()
+					return Result.failure()
+				},
+				onError = {
+					markExtensionDownloadAsError()
 
-						notifyError(
-							it.message,
-							applicationContext.getString(
-								R.string.notification_content_text_extension_installed_failed,
-								extension.name
-							)
+					notifyError(
+						it.message,
+						applicationContext.getString(
+							R.string.notification_content_text_extension_installed_failed,
+							extension.name
 						)
+					)
 
-						logE("Failed to install ${extension.name}", it.exception)
+					logE("Failed to install ${extension.name}", it.exception)
 
-						ACRA.errorReporter.handleIfValid(it.exception)
+					ACRA.errorReporter.handleIfValid(it.exception)
 
-						cleanupImageLoader()
+					cleanupImageLoader()
 
-						return Result.failure()
-					}
-				) { flags ->
-					extensionDownloadRepository.updateStatus(
-						extensionId,
-						DownloadStatus.COMPLETE
-					).ifSo {
-						cancelDefault()
+					return Result.failure()
+				}
+			) { flags ->
+				extensionDownloadRepository.updateStatus(
+					extensionId,
+					DownloadStatus.COMPLETE
+				)
 
-						extensionDownloadRepository.remove(extensionId).ifSo {
-							if (notify)
-								notificationManager.notify(
-									extensionId * -1,
-									baseNotificationBuilder.apply {
-										setContentTitle(
-											applicationContext.getString(
-												R.string.notification_content_text_extension_installed,
-												extension.name
-											)
-										)
-										setContentInfo(extensionDownloaderString)
-										setLargeIcon(imageBitmap)
-										removeProgress()
-										setNotOngoing()
-									}.build()
+				cancelDefault()
+
+				extensionDownloadRepository.remove(extensionId)
+
+				if (notify)
+					notificationManager.notify(
+						extensionId * -1,
+						baseNotificationBuilder.apply {
+							setContentTitle(
+								applicationContext.getString(
+									R.string.notification_content_text_extension_installed,
+									extension.name
 								)
-							successResult()
-						}
-					}
-					if (flags.deleteChapters) {
-						chaptersRepository.getChaptersByExtension(extensionId).handle(
-							onError = {
-								logE("Failed to get chapters by extension", it.exception)
+							)
+							setContentInfo(extensionDownloaderString)
+							setLargeIcon(imageBitmap)
+							removeProgress()
+							setNotOngoing()
+						}.build()
+					)
 
-								ACRA.errorReporter.handleSilentException(it.exception)
-							}
-						) { list ->
-							list.forEach {
-								chaptersRepository.deleteChapterPassage(it, flags.oldType!!)
-							}
+				if (flags.deleteChapters) {
+					chaptersRepository.getChaptersByExtension(extensionId).handle(
+						onError = {
+							logE("Failed to get chapters by extension", it.exception)
+
+							ACRA.errorReporter.handleSilentException(it.exception)
+						}
+					) { list ->
+						list.forEach {
+							chaptersRepository.deleteChapterPassage(it, flags.oldType!!)
 						}
 					}
 				}
@@ -314,6 +318,7 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 
 	companion object {
 		const val KEY_EXTENSION_ID = "extensionId"
+		const val KEY_REPOSITORY_ID = "repoID"
 	}
 
 	/**

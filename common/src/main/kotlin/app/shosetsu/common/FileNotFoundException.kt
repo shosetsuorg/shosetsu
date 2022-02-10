@@ -1,9 +1,4 @@
-package app.shosetsu.common.datasource.file.base
-
-import app.shosetsu.common.FilePermissionException
-import app.shosetsu.common.domain.model.local.GenericExtensionEntity
-import app.shosetsu.lib.IExtension
-import java.io.IOException
+package app.shosetsu.common
 
 /*
  * This file is part of shosetsu.
@@ -23,15 +18,9 @@ import java.io.IOException
  */
 
 /**
- * shosetsu
- * 12 / 05 / 2020
+ * Shosetsu
+ *
+ * @since 30 / 01 / 2022
+ * @author Doomsdayrs
  */
-interface IFileExtensionDataSource {
-	/** Loads the formatter from file system */
-	suspend fun loadExtension(entity: GenericExtensionEntity): IExtension
-
-	@Throws(FilePermissionException::class, IOException::class)
-	suspend fun writeExtension(entity: GenericExtensionEntity, data: ByteArray)
-
-	suspend fun deleteExtension(entity: GenericExtensionEntity)
-}
+class FileNotFoundException(msg: String) : Exception(msg)

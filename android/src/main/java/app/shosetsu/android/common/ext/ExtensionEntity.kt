@@ -1,7 +1,7 @@
 package app.shosetsu.android.common.ext
 
 import app.shosetsu.android.domain.model.database.DBInstalledExtensionEntity
-import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 
 /*
  * This file is part of Shosetsu.
@@ -25,7 +25,7 @@ import app.shosetsu.common.domain.model.local.ExtensionEntity
  * 05 / 12 / 2020
  */
 
-fun ExtensionEntity.toDB(): DBInstalledExtensionEntity = DBInstalledExtensionEntity(
+fun GenericExtensionEntity.toDB(): DBInstalledExtensionEntity = DBInstalledExtensionEntity(
 	id = id,
 	repoID = repoID,
 	name = name,
