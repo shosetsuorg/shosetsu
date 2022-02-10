@@ -1,11 +1,12 @@
 package app.shosetsu.android.datasource.local.database.impl
 
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.ext.toDB
-import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.providers.database.dao.DownloadsDao
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.datasource.database.base.IDBDownloadsDataSource
 import app.shosetsu.common.domain.model.local.DownloadEntity
-import app.shosetsu.common.dto.*
+import app.shosetsu.common.dto.mapLatestListTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
@@ -35,50 +36,53 @@ import kotlinx.coroutines.flow.flow
 class DBDownloadsDataSource(
 	private val downloadsDao: DownloadsDao,
 ) : IDBDownloadsDataSource {
-	override fun loadLiveDownloads(): Flow<HResult<List<DownloadEntity>>> = flow {
-		emit(loading())
+	override fun loadLiveDownloads(): Flow<List<DownloadEntity>> = flow {
 		try {
-			emitAll(downloadsDao.loadDownloadItems().mapLatestListTo().mapLatestToSuccess())
-		} catch (e: Exception) {
-			emit(e.toHError())
+			emitAll(downloadsDao.loadDownloadItems().mapLatestListTo())
+		} catch (e: SQLiteException) {
+			throw GenericSQLiteException(e)
 		}
 	}
 
-	override suspend fun loadDownloadCount(): HResult<Int> = try {
-		successResult(downloadsDao.loadDownloadCount())
-	} catch (e: Exception) {
-		e.toHError()
+	@Throws(GenericSQLiteException::class)
+	override suspend fun loadDownloadCount(): Int = try {
+		(downloadsDao.loadDownloadCount())
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
 	}
 
-	override suspend fun loadFirstDownload(): HResult<DownloadEntity> = try {
+	@Throws(GenericSQLiteException::class)
+	override suspend fun loadFirstDownload(): DownloadEntity? = try {
 		downloadsDao.loadFirstDownload()?.convertTo()
-			?.let { successResult(it) }
-			?: emptyResult()
-	} catch (e: Exception) {
-		e.toHError()
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
 	}
 
-	override suspend fun insertDownload(downloadEntity: DownloadEntity): HResult<Long> = try {
-		successResult(downloadsDao.insertIgnore(downloadEntity.toDB()))
-	} catch (e: Exception) {
-		e.toHError()
+	@Throws(GenericSQLiteException::class)
+	override suspend fun insertDownload(downloadEntity: DownloadEntity): Long = try {
+		(downloadsDao.insertIgnore(downloadEntity.toDB()))
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
 	}
 
-	override suspend fun updateDownload(downloadEntity: DownloadEntity): HResult<*> = try {
-		successResult(downloadsDao.update(downloadEntity.toDB()))
-	} catch (e: Exception) {
-		e.toHError()
+	@Throws(GenericSQLiteException::class)
+	override suspend fun updateDownload(downloadEntity: DownloadEntity): Unit = try {
+		(downloadsDao.update(downloadEntity.toDB()))
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
 	}
 
-	override suspend fun deleteDownload(downloadEntity: DownloadEntity): HResult<*> = try {
-		successResult(downloadsDao.delete(downloadEntity.toDB()))
-	} catch (e: Exception) {
-		e.toHError()
+	@Throws(GenericSQLiteException::class)
+	override suspend fun deleteDownload(downloadEntity: DownloadEntity): Unit = try {
+		(downloadsDao.delete(downloadEntity.toDB()))
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
 	}
 
-	override suspend fun loadDownload(chapterID: Int): HResult<DownloadEntity> = try {
-		downloadsDao.loadDownload(chapterID)?.let { successResult(it.convertTo()) } ?: emptyResult()
-	} catch (e: Exception) {
-		e.toHError()
+	@Throws(GenericSQLiteException::class)
+	override suspend fun loadDownload(chapterID: Int): DownloadEntity? = try {
+		downloadsDao.loadDownload(chapterID)?.convertTo()
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
 	}
 }

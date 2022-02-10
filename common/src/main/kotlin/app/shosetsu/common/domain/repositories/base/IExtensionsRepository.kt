@@ -1,11 +1,12 @@
 package app.shosetsu.common.domain.repositories.base
 
-import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.domain.model.local.BrowseExtensionEntity
+import app.shosetsu.common.domain.model.local.GenericExtensionEntity
+import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
-import app.shosetsu.common.domain.model.local.StrippedExtensionEntity
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
+import app.shosetsu.lib.exceptions.HTTPException
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -33,66 +34,32 @@ import kotlinx.coroutines.flow.Flow
  */
 interface IExtensionsRepository {
 
-	/**
-	 * [Flow] of all [ExtensionEntity] that the app knows of
-	 *
-	 * @return
-	 * [HResult.Success] When properly emits
-	 *
-	 * [HResult.Error] If anything went wrong in the stream
-	 *
-	 * [HResult.Loading] Initial value emitted
-	 *
-	 * [HResult.Empty] Should never occur?
-	 */
-	fun loadExtensionsFLow(): Flow<HResult<List<ExtensionEntity>>>
+	fun loadBrowseExtensions(): Flow<List<BrowseExtensionEntity>>
 
 	/**
-	 * [Flow] of the [ExtensionEntity] with an [ExtensionEntity.id] matching [id]
-	 *
-	 * @return
-	 * [HResult.Success] When properly emits
-	 *
-	 * [HResult.Error] If anything went wrong in the stream
-	 *
-	 * [HResult.Loading] Initial value emitted
-	 *
-	 * [HResult.Empty] If no [ExtensionEntity] matches [id]
+	 * [Flow] of all [GenericExtensionEntity] that the app knows of
 	 */
-	fun getExtensionFlow(id: Int): Flow<HResult<ExtensionEntity>>
+	fun loadExtensionsFLow(): Flow<List<GenericExtensionEntity>>
 
 	/**
-	 * Gets the [ExtensionEntity] that has an [ExtensionEntity.id] matching [id]
-	 *
-	 * @return
-	 * [HResult.Success] If the extension is found
-	 *
-	 * [HResult.Error] If something went wrong retrieving the result
-	 *
-	 * [HResult.Empty] If nothing was found
-	 *
-	 * [HResult.Loading] never
+	 * Retrieves repository extensions with an id matching [id]
 	 */
-	suspend fun getExtension(id: Int): HResult<ExtensionEntity>
+	fun getExtensionFlow(id: Int): Flow<GenericExtensionEntity>
 
 	/**
-	 * Loads all [ExtensionEntity] with an [ExtensionEntity.repoID] matching [repoID]
-	 *
-	 * @return
-	 * [HResult.Success]
-	 *
-	 * [HResult.Error]
-	 *
-	 * [HResult.Empty]
-	 *
-	 * [HResult.Loading]
+	 * Gets the [GenericExtensionEntity] that has an [GenericExtensionEntity.id] matching [id]
 	 */
-	suspend fun getExtensions(repoID: Int): HResult<List<ExtensionEntity>>
+	suspend fun getExtension(id: Int): GenericExtensionEntity?
 
 	/**
-	 * Loads all [ExtensionEntity] present
+	 * Loads all [GenericExtensionEntity] with an [GenericExtensionEntity.repoID] matching [repoID]
 	 */
-	suspend fun loadExtensions(): HResult<List<ExtensionEntity>>
+	suspend fun getRepositoryExtensions(repoID: Int): List<GenericExtensionEntity>
+
+	/**
+	 * Loads all [GenericExtensionEntity] present
+	 */
+	suspend fun loadRepositoryExtensions(): List<GenericExtensionEntity>
 
 	/**
 	 * Flags returned after installing an extension
@@ -109,67 +76,32 @@ interface IExtensionsRepository {
 	/**
 	 * Updates the db that the [extensionEntity] is not installed
 	 *
-	 * @return
-	 * [HResult.Success] Updated
-	 *
-	 * [HResult.Error] Error
-	 *
-	 * [HResult.Empty] never
-	 *
-	 * [HResult.Loading] never
 	 */
-	suspend fun uninstall(extensionEntity: ExtensionEntity): HResult<*>
+	suspend fun uninstall(extensionEntity: GenericExtensionEntity)
 
 	/**
-	 * Updates an [extensionEntity]
-	 *
-	 * @return
-	 * [HResult.Success] if the operation completed properly
-	 *
-	 * [HResult.Error] if anything went wrong
-	 *
-	 * [HResult.Empty] never
-	 *
-	 * [HResult.Loading] never
+	 * Updates an [GenericExtensionEntity]
 	 */
-	suspend fun update(extensionEntity: ExtensionEntity): HResult<*>
+	suspend fun updateRepositoryExtension(extensionEntity: GenericExtensionEntity)
 
 	/**
-	 * Gets enabled [ExtensionEntity] but as [StrippedExtensionEntity]
-	 *
-	 * This method is more IO efficient, as it should not be loading extra data it does not need
-	 * as compared to calling for all the [ExtensionEntity]s and just mapping them
-	 *
-	 * @return
-	 * [HResult.Success] Successfully loaded
-	 *
-	 * [HResult.Error] Error occurred loading
-	 *
-	 * [HResult.Empty] No extensions
-	 *
-	 * [HResult.Loading] Initial value
+	 * Updates an [InstalledExtensionEntity]
 	 */
-	fun loadStrippedExtensionFlow(): Flow<HResult<List<StrippedExtensionEntity>>>
-
+	suspend fun updateInstalledExtension(extensionEntity: InstalledExtensionEntity)
 
 	/**
-	 * This removes the extension from db
-	 *
-	 * @return
-	 * [HResult.Success] [extensionEntity] removed
-	 *
-	 * [HResult.Error] Error removing [extensionEntity]
-	 *
-	 * [HResult.Empty] never
-	 *
-	 * [HResult.Loading] never
+	 * This removes the extension completely from the application
 	 */
-	suspend fun delete(extensionEntity: ExtensionEntity): HResult<*>
+	suspend fun delete(extensionEntity: GenericExtensionEntity)
 
-	suspend fun insert(extensionEntity: ExtensionEntity): HResult<*>
+	/**
+	 * Insert a new extension
+	 */
+	suspend fun insert(extensionEntity: GenericExtensionEntity): Long
 
+	@Throws(HTTPException::class)
 	suspend fun downloadExtension(
 		repositoryEntity: RepositoryEntity,
-		extension: ExtensionEntity
-	): HResult<ByteArray>
+		extension: GenericExtensionEntity
+	): ByteArray
 }

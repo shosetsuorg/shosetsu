@@ -5,7 +5,7 @@ import androidx.core.view.isVisible
 import app.shosetsu.android.common.ext.shosetsuLoad
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
-import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.dto.Convertible
 import app.shosetsu.lib.ExtensionType
 import app.shosetsu.lib.Novel
@@ -34,6 +34,7 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ExtensionCardBinding
  * shosetsu
  * 24 / 04 / 2020
  */
+@Deprecated("Replaced")
 data class ExtensionUI(
 	val id: Int,
 	val repoID: Int,
@@ -48,7 +49,7 @@ data class ExtensionUI(
 	val chapterType: Novel.ChapterType,
 	var md5: String,
 	val extType: ExtensionType
-) : BaseRecyclerItem<ExtensionUI.ViewHolder>(), Convertible<ExtensionEntity> {
+) : BaseRecyclerItem<ExtensionUI.ViewHolder>(), Convertible<GenericExtensionEntity> {
 	override val layoutRes: Int = R.layout.extension_card
 	override val type: Int = R.layout.extension_card
 	override var identifier: Long
@@ -69,7 +70,7 @@ data class ExtensionUI(
 			State.UPDATE else State.NO_UPDATE
 	}
 
-	override fun convertTo(): ExtensionEntity = ExtensionEntity(
+	override fun convertTo(): GenericExtensionEntity = GenericExtensionEntity(
 		id,
 		repoID,
 		name,

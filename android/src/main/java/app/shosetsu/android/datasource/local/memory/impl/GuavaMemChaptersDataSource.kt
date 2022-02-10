@@ -5,9 +5,6 @@ import app.shosetsu.android.common.ext.set
 import app.shosetsu.common.consts.MEMORY_EXPIRE_CHAPTER_TIME
 import app.shosetsu.common.consts.MEMORY_MAX_CHAPTERS
 import app.shosetsu.common.datasource.memory.base.IMemChaptersDataSource
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.emptyResult
-import app.shosetsu.common.dto.successResult
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
 import java.util.concurrent.TimeUnit.MINUTES
@@ -40,9 +37,10 @@ class GuavaMemChaptersDataSource : IMemChaptersDataSource {
 		.expireAfterWrite(MEMORY_EXPIRE_CHAPTER_TIME, MINUTES)
 		.build()
 
-	override fun saveChapterInCache(chapterID: Int, chapter: ByteArray): HResult<*> =
-		successResult(chapters.set(chapterID, chapter))
+	override fun saveChapterInCache(chapterID: Int, chapter: ByteArray) {
+		chapters[chapterID] = chapter
+	}
 
-	override fun loadChapterFromCache(chapterID: Int): HResult<ByteArray> =
-		chapters[chapterID]?.let { successResult(it) } ?: emptyResult()
+	override fun loadChapterFromCache(chapterID: Int): ByteArray? =
+		chapters[chapterID]
 }

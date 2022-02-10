@@ -1,11 +1,11 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
-import app.shosetsu.android.view.uimodels.model.ExtensionUI
-import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
-import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
+import app.shosetsu.android.viewmodel.base.SubscribeViewModel
+import app.shosetsu.common.domain.model.local.BrowseExtensionEntity
+import app.shosetsu.common.domain.model.local.ExtensionInstallOptionEntity
 import app.shosetsu.common.dto.HResult
 
 /*
@@ -34,9 +34,28 @@ import app.shosetsu.common.dto.HResult
  */
 abstract class ABrowseViewModel :
 	ShosetsuViewModel(),
-	SubscribeHandleViewModel<List<ExtensionUI>>,
-	IsOnlineCheckViewModel,
-	ErrorReportingViewModel {
+	SubscribeViewModel<List<BrowseExtensionEntity>>,
+	IsOnlineCheckViewModel {
+
+	data class FilteredLanguages(
+		val languages: List<String>,
+		val states: Map<String, Boolean>
+	)
+
+	/** Refreshes the repositories and data values */
+	abstract fun refresh()
+
+	/** Installs an extension */
+	abstract fun installExtension(
+		extension: BrowseExtensionEntity,
+		option: ExtensionInstallOptionEntity
+	)
+
+	/** Update an extension, only works if it is already installed */
+	abstract fun updateExtension(ext: BrowseExtensionEntity)
+
+	/** Cancel an extension install */
+	abstract fun cancelInstall(ext: BrowseExtensionEntity)
 
 
 	/**
@@ -47,34 +66,19 @@ abstract class ABrowseViewModel :
 	 */
 	abstract val filteredLanguagesLive: LiveData<HResult<FilteredLanguages>>
 
-	abstract val onlyInstalledLive: LiveData<Boolean>
-
-	data class FilteredLanguages(
-		val languages: List<String>,
-		val states: Map<String, Boolean>
-	)
-
-	/** Refreshes the repositories and data values */
-	abstract fun refreshRepository()
-
-	/** Installs an extension (can also update it) */
-	abstract fun installExtension(extensionUI: ExtensionUI)
-
-	/** Uninstalls an extension */
-	abstract fun uninstallExtension(extensionUI: ExtensionUI)
-
-	/** Cancel an extension install */
-	abstract fun cancelInstall(extensionUI: ExtensionUI)
-
 	/**
 	 * Set if a language is filtered or not
 	 */
 	abstract fun setLanguageFiltered(language: String, state: Boolean)
 
+
+	abstract val onlyInstalledLive: LiveData<Boolean>
+
 	/**
 	 * Set if to only show installed or not
 	 */
 	abstract fun showOnlyInstalled(state: Boolean)
+
 
 	abstract val searchTermLive: LiveData<String>
 
@@ -82,7 +86,6 @@ abstract class ABrowseViewModel :
 	 * Filter the extension list to only display extensions matching [name]
 	 */
 	abstract fun setSearch(name: String)
-
 
 	/**
 	 * Reset the term set by [setSearch]

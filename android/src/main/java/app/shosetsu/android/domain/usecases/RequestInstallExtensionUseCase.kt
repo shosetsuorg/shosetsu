@@ -3,9 +3,11 @@ package app.shosetsu.android.domain.usecases
 import androidx.work.Data
 import app.shosetsu.android.backend.workers.onetime.ExtensionInstallWorker
 import app.shosetsu.android.backend.workers.onetime.ExtensionInstallWorker.Companion.KEY_EXTENSION_ID
-import app.shosetsu.android.view.uimodels.model.ExtensionUI
+import app.shosetsu.android.backend.workers.onetime.ExtensionInstallWorker.Companion.KEY_REPOSITORY_ID
+import app.shosetsu.common.domain.model.local.BrowseExtensionEntity
+import app.shosetsu.common.domain.model.local.ExtensionInstallOptionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionDownloadRepository
-import app.shosetsu.common.dto.*
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.enums.DownloadStatus
 
 /*
@@ -30,32 +32,41 @@ import app.shosetsu.common.enums.DownloadStatus
  * 13 / 05 / 2020
  */
 class RequestInstallExtensionUseCase(
+	private val extRepo: IExtensionsRepository,
 	private val repo: IExtensionDownloadRepository,
 	private val manager: ExtensionInstallWorker.Manager
 ) {
-	suspend operator fun invoke(extension: ExtensionUI) =
-		invoke(extension.id)
+	suspend operator fun invoke(
+		extension: BrowseExtensionEntity,
+		option: ExtensionInstallOptionEntity
+	) =
+		invoke(extension.id, option.repoId)
 
-	suspend operator fun invoke(id: Int): HResult<*> {
+	/**
+	 * Update an extension
+	 */
+	suspend operator fun invoke(
+		extension: BrowseExtensionEntity,
+	) =
+		invoke(extension.id, extension.installedRepo)
+
+	suspend operator fun invoke(id: Int, repoId: Int) {
 		val doIt = suspend {
-			repo.add(id).ifSo {
-				successResult(
-					manager.start(
-						Data.Builder().apply {
-							putInt(KEY_EXTENSION_ID, id)
-						}.build()
-					)
-				)
-			}
+			repo.add(id)
+			manager.start(
+				Data.Builder().apply {
+					putInt(KEY_EXTENSION_ID, id)
+					putInt(KEY_REPOSITORY_ID, repoId)
+				}.build()
+			)
 		}
-		return repo.getStatus(id).transform(
-			onEmpty = {
-				doIt()
+
+		when (val status = repo.getStatus(id)) {
+			DownloadStatus.WAITING -> doIt()
+			else -> {
+				if (status == DownloadStatus.ERROR || status == DownloadStatus.COMPLETE)
+					doIt()
 			}
-		) {
-			if (it == DownloadStatus.ERROR || it == DownloadStatus.COMPLETE)
-				doIt()
-			else emptyResult()
 		}
 	}
 }

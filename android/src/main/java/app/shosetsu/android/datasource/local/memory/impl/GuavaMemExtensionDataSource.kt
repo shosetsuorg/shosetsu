@@ -5,9 +5,6 @@ import app.shosetsu.android.common.ext.set
 import app.shosetsu.common.consts.MEMORY_EXPIRE_EXT_LIB_TIME
 import app.shosetsu.common.consts.MEMORY_MAX_EXTENSIONS
 import app.shosetsu.common.datasource.memory.base.IMemExtensionsDataSource
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.emptyResult
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.lib.IExtension
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
@@ -41,18 +38,19 @@ class GuavaMemExtensionDataSource : IMemExtensionsDataSource {
 		.expireAfterAccess(MEMORY_EXPIRE_EXT_LIB_TIME, MINUTES)
 		.build()
 
-	override fun loadExtensionFromMemory(extensionID: Int): HResult<IExtension> {
+	override fun loadExtensionFromMemory(extensionID: Int): IExtension? {
 		//	logV("Loading formatter $extensionID from memory")
-		return extensionsCache[extensionID]?.let { successResult(it) } ?: emptyResult()
+		return extensionsCache[extensionID]
 	}
 
-	override fun putExtensionInMemory(iExtension: IExtension): HResult<*> {
+	override fun putExtensionInMemory(iExtension: IExtension) {
 		//	logV("Putting formatter ${iExtension.formatterID} into memory")
-		return successResult(extensionsCache.set(iExtension.formatterID, iExtension))
+		extensionsCache[iExtension.formatterID] = iExtension
 	}
 
-	override fun removeExtensionFromMemory(extensionID: Int): HResult<*> {
+	override fun removeExtensionFromMemory(extensionID: Int): Boolean {
 		//	logV("Removing formatter $extensionID from memory")
-		return successResult(extensionsCache.invalidate(extensionID))
+		extensionsCache.invalidate(extensionID)
+		return true
 	}
 }

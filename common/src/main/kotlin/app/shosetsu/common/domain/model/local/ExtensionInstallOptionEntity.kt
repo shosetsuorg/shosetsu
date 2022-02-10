@@ -1,9 +1,6 @@
-package app.shosetsu.common.datasource.file.base
+package app.shosetsu.common.domain.model.local
 
-import app.shosetsu.common.FilePermissionException
-import app.shosetsu.common.domain.model.local.GenericExtensionEntity
-import app.shosetsu.lib.IExtension
-import java.io.IOException
+import app.shosetsu.lib.Version
 
 /*
  * This file is part of shosetsu.
@@ -23,15 +20,20 @@ import java.io.IOException
  */
 
 /**
- * shosetsu
- * 12 / 05 / 2020
+ * Shosetsu
+ *
+ * @since 29 / 01 / 2022
+ * @author Doomsdayrs
+ *
+ * Represents what can be installed.
+ * This is presented to a user when they want to install an extension
+ *
+ * @param repoId What repository this belongs to
+ * @param repoName The name of the repository
+ * @param version The version of the extension in the repository
  */
-interface IFileExtensionDataSource {
-	/** Loads the formatter from file system */
-	suspend fun loadExtension(entity: GenericExtensionEntity): IExtension
-
-	@Throws(FilePermissionException::class, IOException::class)
-	suspend fun writeExtension(entity: GenericExtensionEntity, data: ByteArray)
-
-	suspend fun deleteExtension(entity: GenericExtensionEntity)
-}
+data class ExtensionInstallOptionEntity(
+	val repoId: Int,
+	val repoName: String,
+	val version: Version
+)

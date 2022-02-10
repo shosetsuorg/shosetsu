@@ -1,9 +1,6 @@
 package app.shosetsu.common.domain.repositories.impl
 
 import app.shosetsu.common.domain.repositories.base.IExtensionDownloadRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.emptyResult
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.enums.DownloadStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,26 +29,29 @@ import kotlinx.coroutines.flow.MutableStateFlow
  * @author Doomsdayrs
  */
 class ExtensionDownloadRepository : IExtensionDownloadRepository {
-	private val statusMap = HashMap<Int, MutableStateFlow<HResult<DownloadStatus>>>()
+	private val statusMap = HashMap<Int, MutableStateFlow<DownloadStatus>>()
 
-	private fun HashMap<Int, MutableStateFlow<HResult<DownloadStatus>>>.iGet(extension: Int) =
-		getOrPut(extension) { MutableStateFlow(emptyResult()) }
+	private fun HashMap<Int, MutableStateFlow<DownloadStatus>>.iGet(extension: Int) =
+		getOrPut(extension) { MutableStateFlow(DownloadStatus.WAITING) }
 
-	override suspend fun add(extension: Int): HResult<*> =
-		successResult(statusMap.iGet(extension).emit(successResult(DownloadStatus.PENDING)))
+	override suspend fun add(extension: Int) {
+		statusMap.iGet(extension).emit(DownloadStatus.PENDING)
+	}
 
-	override suspend fun remove(extension: Int): HResult<*> =
-		successResult(statusMap.iGet(extension).tryEmit(emptyResult()))
+	override suspend fun remove(extension: Int) {
+		statusMap.iGet(extension).emit(DownloadStatus.WAITING)
+	}
 
-	override suspend fun getStatus(extension: Int): HResult<DownloadStatus> =
+	override suspend fun getStatus(extension: Int): DownloadStatus =
 		statusMap.iGet(extension).value
 
-	override suspend fun getStatusFlow(extension: Int): Flow<HResult<DownloadStatus>> =
+	override suspend fun getStatusFlow(extension: Int): Flow<DownloadStatus> =
 		statusMap.iGet(extension)
 
 	override suspend fun updateStatus(
 		extension: Int,
 		status: DownloadStatus
-	): HResult<*> =
-		successResult(statusMap.iGet(extension).emit(successResult(status)))
+	) {
+		statusMap.iGet(extension).emit(status)
+	}
 }

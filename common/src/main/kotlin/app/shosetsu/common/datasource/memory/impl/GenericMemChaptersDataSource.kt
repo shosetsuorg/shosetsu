@@ -3,7 +3,6 @@ package app.shosetsu.common.datasource.memory.impl
 import app.shosetsu.common.consts.MEMORY_EXPIRE_CHAPTER_TIME
 import app.shosetsu.common.consts.MEMORY_MAX_CHAPTERS
 import app.shosetsu.common.datasource.memory.base.IMemChaptersDataSource
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of Shosetsu.
@@ -32,10 +31,10 @@ class GenericMemChaptersDataSource : IMemChaptersDataSource,
 	override val expireTime = MEMORY_EXPIRE_CHAPTER_TIME * 1000 * 60
 	override val maxSize = MEMORY_MAX_CHAPTERS
 
-	override fun saveChapterInCache(chapterID: Int, chapter: ByteArray): HResult<*> =
+	override fun saveChapterInCache(chapterID: Int, chapter: ByteArray) =
 		put(chapterID, chapter)
 
-	override fun loadChapterFromCache(chapterID: Int): HResult<ByteArray> =
+	override fun loadChapterFromCache(chapterID: Int): ByteArray? =
 		get(chapterID)
 
 }

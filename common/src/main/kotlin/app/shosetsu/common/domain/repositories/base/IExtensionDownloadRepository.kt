@@ -1,6 +1,5 @@
 package app.shosetsu.common.domain.repositories.base
 
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.DownloadStatus
 import kotlinx.coroutines.flow.Flow
 
@@ -33,13 +32,13 @@ import kotlinx.coroutines.flow.Flow
  * @author Doomsdayrs
  */
 interface IExtensionDownloadRepository {
-	suspend fun add(extension: Int): HResult<*>
+	suspend fun add(extension: Int)
 
-	suspend fun remove(extension: Int): HResult<*>
+	suspend fun remove(extension: Int)
 
-	suspend fun getStatus(extension: Int): HResult<DownloadStatus>
+	suspend fun getStatus(extension: Int): DownloadStatus
 
-	suspend fun getStatusFlow(extension: Int): Flow<HResult<DownloadStatus>>
+	suspend fun getStatusFlow(extension: Int): Flow<DownloadStatus>
 
-	suspend fun updateStatus(extension: Int, status: DownloadStatus): HResult<*>
+	suspend fun updateStatus(extension: Int, status: DownloadStatus)
 }

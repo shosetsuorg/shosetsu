@@ -90,5 +90,5 @@ interface IExtensionRepoRepository {
 
 	suspend fun insert(entity: RepositoryEntity): HResult<*>
 
-	suspend fun getRepo(id: Int): HResult<RepositoryEntity>
+	suspend fun getRepo(id: Int): RepositoryEntity?
 }

@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
-import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.dto.*
@@ -17,7 +17,7 @@ class LoadSearchRowUIUseCase(
 			.transformLatest { result ->
 				emit(
 					result.transform { list ->
-						val arrayList = arrayListOf<ExtensionEntity>()
+						val arrayList = arrayListOf<GenericExtensionEntity>()
 						list.forEach { extension ->
 							extEntitiesRepo.get(extension).handle { entity ->
 								if (entity.hasSearch) {

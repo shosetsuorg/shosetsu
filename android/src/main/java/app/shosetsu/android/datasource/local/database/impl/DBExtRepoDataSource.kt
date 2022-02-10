@@ -1,13 +1,13 @@
 package app.shosetsu.android.datasource.local.database.impl
 
 import android.database.sqlite.SQLiteException
-import app.shosetsu.android.common.dto.errorResult
-import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.domain.model.database.DBRepositoryEntity
 import app.shosetsu.android.providers.database.dao.RepositoryDao
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.datasource.database.base.IDBExtRepoDataSource
 import app.shosetsu.common.domain.model.local.RepositoryEntity
-import app.shosetsu.common.dto.*
+import app.shosetsu.common.dto.convertList
+import app.shosetsu.common.dto.mapLatestListTo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
@@ -37,50 +37,50 @@ import kotlinx.coroutines.flow.flow
 class DBExtRepoDataSource(
 	private val repositoryDao: RepositoryDao,
 ) : IDBExtRepoDataSource {
-	override fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>> = flow {
+	@ExperimentalCoroutinesApi
+	override fun loadRepositoriesLive(): Flow<List<RepositoryEntity>> = flow {
 		try {
-			emitAll(repositoryDao.loadRepositoriesLive().mapLatestListTo().mapLatestToSuccess())
-		} catch (e: Exception) {
-			emit(e.toHError())
-		}
-	}
-
-	override suspend fun loadRepositories(): HResult<List<RepositoryEntity>> = try {
-		successResult(repositoryDao.loadRepositories().convertList())
-	} catch (e: Exception) {
-		e.toHError()
-	}
-
-	override suspend fun loadRepository(repoID: Int): HResult<RepositoryEntity> = try {
-		repositoryDao.loadRepositoryFromID(repoID)?.let { successResult(it.convertTo()) }
-			?: emptyResult()
-	} catch (e: Exception) {
-		e.toHError()
-	}
-
-	override suspend fun addRepository(repositoryEntity: RepositoryEntity): HResult<*> =
-		try {
-			successResult(repositoryDao.insertAbort(repositoryEntity.toDB()))
+			emitAll(repositoryDao.loadRepositoriesLive().mapLatestListTo())
 		} catch (e: SQLiteException) {
-			errorResult(e)
+			throw GenericSQLiteException(e)
+		}
+	}
+
+	override suspend fun loadRepositories(): List<RepositoryEntity> = try {
+		(repositoryDao.loadRepositories().convertList())
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
+	}
+
+	override suspend fun loadRepository(repoID: Int): RepositoryEntity? = try {
+		repositoryDao.loadRepositoryFromID(repoID)?.let { it.convertTo() }
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
+	}
+
+	override suspend fun addRepository(repositoryEntity: RepositoryEntity): Long =
+		try {
+			(repositoryDao.insertAbort(repositoryEntity.toDB()))
+		} catch (e: SQLiteException) {
+			throw GenericSQLiteException(e)
 		}
 
-	override suspend fun remove(entity: RepositoryEntity): HResult<*> = try {
-		successResult(repositoryDao.delete(entity.toDB()))
+	override suspend fun remove(entity: RepositoryEntity): Unit = try {
+		(repositoryDao.delete(entity.toDB()))
 	} catch (e: SQLiteException) {
-		errorResult(e)
+		throw GenericSQLiteException(e)
 	}
 
-	override suspend fun update(entity: RepositoryEntity): HResult<*> = try {
-		successResult(repositoryDao.update(entity.toDB()))
+	override suspend fun update(entity: RepositoryEntity): Unit = try {
+		(repositoryDao.update(entity.toDB()))
 	} catch (e: SQLiteException) {
-		errorResult(e)
+		throw GenericSQLiteException(e)
 	}
 
-	override suspend fun insert(entity: RepositoryEntity): HResult<*> = try {
-		successResult(repositoryDao.insertReplace(entity.toDB()))
+	override suspend fun insert(entity: RepositoryEntity): Long = try {
+		(repositoryDao.insertReplace(entity.toDB()))
 	} catch (e: SQLiteException) {
-		errorResult(e)
+		throw GenericSQLiteException(e)
 	}
 
 	fun RepositoryEntity.toDB() = DBRepositoryEntity(id, url, name, isEnabled)

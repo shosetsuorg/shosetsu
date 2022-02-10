@@ -1,16 +1,16 @@
 package app.shosetsu.android.domain.usecases
 
 import app.shosetsu.common.consts.ErrorKeys
-import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.errorResult
 import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
 import app.shosetsu.common.utils.asIEntity
 import app.shosetsu.lib.Novel
+import app.shosetsu.lib.exceptions.HTTPException
 
 /*
  * This file is part of shosetsu.
@@ -40,58 +40,51 @@ class InstallExtensionUseCase(
 	private val extensionEntitiesRepository: IExtensionEntitiesRepository,
 	private val extensionRepoRepository: IExtensionRepoRepository
 ) {
-	suspend operator fun invoke(extensionEntity: ExtensionEntity): HResult<IExtensionsRepository.InstallExtensionFlags> {
-		return extensionRepoRepository.getRepo(extensionEntity.repoID).transform { repo ->
-			extensionRepository.downloadExtension(
-				repo,
-				extensionEntity
-			).transform { extensionContent ->
-				try {
-					val iExt = extensionEntity.asIEntity(extensionContent)
+	@Throws(HTTPException::class)
+	suspend operator fun invoke(extensionEntity: GenericExtensionEntity): HResult<IExtensionsRepository.InstallExtensionFlags> {
+		val repo = extensionRepoRepository.getRepo(extensionEntity.repoID)!!
 
-					// Write to storage/cache
-					extensionEntitiesRepository.save(extensionEntity, iExt, extensionContent)
-						.transform {
-							// Update database info
-							iExt.exMetaData.let { meta ->
-								extensionEntity.installedVersion = meta.version
-								extensionEntity.repositoryVersion = meta.version
-							}
+		val extensionContent: ByteArray = extensionRepository.downloadExtension(
+			repo,
+			extensionEntity
+		)
 
-							extensionEntity.name = iExt.name
-							extensionEntity.imageURL = iExt.imageURL
-							extensionEntity.installed = true
-							extensionEntity.enabled = true
+		try {
+			val iExt = extensionEntity.asIEntity(extensionContent)
 
-							val oldType: Novel.ChapterType?
-							val deleteChapters: Boolean
+			// Write to storage/cache
+			extensionEntitiesRepository.save(extensionEntity, iExt, extensionContent)
 
-							if (extensionEntity.installedVersion != null && extensionEntity.installedVersion!! < iExt.exMetaData.version) {
-								oldType = extensionEntity.chapterType
-								deleteChapters = oldType != iExt.chapterType
-							} else {
-								deleteChapters = false
-								oldType = null
-							}
+			val oldType: Novel.ChapterType?
+			val deleteChapters: Boolean
 
-							extensionEntity.chapterType = iExt.chapterType
-							extensionRepository.update(extensionEntity)
-
-							successResult(
-								IExtensionsRepository.InstallExtensionFlags(
-									deleteChapters,
-									oldType
-								)
-							)
-						}
-
-
-				} catch (e: IllegalArgumentException) {
-					errorResult(ErrorKeys.ERROR_LUA_BROKEN, e)
-				} catch (e: Exception) {
-					errorResult(ErrorKeys.ERROR_GENERAL, e)
-				}
+			if (extensionEntity.installedVersion != null && extensionEntity.installedVersion!! < iExt.exMetaData.version) {
+				oldType = extensionEntity.chapterType
+				deleteChapters = oldType != iExt.chapterType
+			} else {
+				deleteChapters = false
+				oldType = null
 			}
+
+			extensionEntity.chapterType = iExt.chapterType
+			extensionRepository.updateRepositoryExtension(
+				extensionEntity.copy(
+					chapterType = iExt.chapterType
+				)
+			)
+
+			successResult(
+				IExtensionsRepository.InstallExtensionFlags(
+					deleteChapters,
+					oldType
+				)
+			)
+
+
+		} catch (e: IllegalArgumentException) {
+			errorResult(ErrorKeys.ERROR_LUA_BROKEN, e)
+		} catch (e: Exception) {
+			errorResult(ErrorKeys.ERROR_GENERAL, e)
 		}
 	}
 }

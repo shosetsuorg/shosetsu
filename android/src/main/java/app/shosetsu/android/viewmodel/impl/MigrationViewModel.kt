@@ -5,7 +5,7 @@ import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.usecases.get.GetNovelUIUseCase
-import app.shosetsu.android.domain.usecases.load.LoadExtensionsUIUseCase
+import app.shosetsu.android.domain.usecases.load.LoadBrowseExtensionsUseCase
 import app.shosetsu.android.view.uimodels.model.MigrationExtensionUI
 import app.shosetsu.android.view.uimodels.model.MigrationNovelUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
@@ -40,7 +40,7 @@ import kotlinx.coroutines.flow.*
  */
 class MigrationViewModel(
 	private val getNovelUI: GetNovelUIUseCase,
-	private val loadExtensionsFlow: LoadExtensionsUIUseCase
+	private val loadBrowseExtensionsFlow: LoadBrowseExtensionsUseCase
 ) : AMigrationViewModel() {
 	private val novelIds: MutableStateFlow<IntArray> = MutableStateFlow(intArrayOf())
 
@@ -91,7 +91,7 @@ class MigrationViewModel(
 		flow {
 			emit(loading)
 			emitAll(
-				loadExtensionsFlow().map { hResult ->
+				loadBrowseExtensionsFlow().map { hResult ->
 					hResult.transformToSuccess { list ->
 						list.filter { it.installed }.map {
 							MigrationExtensionUI(

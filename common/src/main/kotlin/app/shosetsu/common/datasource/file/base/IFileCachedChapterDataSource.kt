@@ -39,7 +39,7 @@ interface IFileCachedChapterDataSource {
 		chapterID: Int,
 		chapterType: Novel.ChapterType,
 		passage: ByteArray
-	): HResult<*>
+	)
 
 	/**
 	 * Gets chapter passage via it's ID
@@ -49,5 +49,5 @@ interface IFileCachedChapterDataSource {
 	suspend fun loadChapterPassage(
 		chapterID: Int,
 		chapterType: Novel.ChapterType
-	): HResult<ByteArray>
+	): ByteArray
 }

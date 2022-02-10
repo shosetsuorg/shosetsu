@@ -1,6 +1,6 @@
 package app.shosetsu.common.datasource.database.base
 
-import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.DownloadEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -27,24 +27,29 @@ import kotlinx.coroutines.flow.Flow
  */
 interface IDBDownloadsDataSource {
 	/** Loads LiveData of [DownloadEntity]s */
-	fun loadLiveDownloads(): Flow<HResult<List<DownloadEntity>>>
+	fun loadLiveDownloads(): Flow<List<DownloadEntity>>
 
 	/** Loads the download count */
-	suspend fun loadDownloadCount(): HResult<Int>
+	@Throws(GenericSQLiteException::class)
+	suspend fun loadDownloadCount(): Int
 
 	/** Loads the first download that isn't paused or broken */
-	suspend fun loadFirstDownload(): HResult<DownloadEntity>
+	@Throws(GenericSQLiteException::class)
+	suspend fun loadFirstDownload(): DownloadEntity?
 
 	/** Inserts a new [DownloadEntity] */
-	suspend fun insertDownload(downloadEntity: DownloadEntity): HResult<Long>
+	@Throws(GenericSQLiteException::class)
+	suspend fun insertDownload(downloadEntity: DownloadEntity): Long
 
 	/** Updates a [DownloadEntity] */
-	suspend fun updateDownload(downloadEntity: DownloadEntity): HResult<*>
+	@Throws(GenericSQLiteException::class)
+	suspend fun updateDownload(downloadEntity: DownloadEntity)
 
 	/** Deletes a [DownloadEntity] */
-	suspend fun deleteDownload(downloadEntity: DownloadEntity): HResult<*>
-
+	@Throws(GenericSQLiteException::class)
+	suspend fun deleteDownload(downloadEntity: DownloadEntity)
 
 	/** Loads a [DownloadEntity] via its [chapterID] */
-	suspend fun loadDownload(chapterID: Int): HResult<DownloadEntity>
+	@Throws(GenericSQLiteException::class)
+	suspend fun loadDownload(chapterID: Int): DownloadEntity?
 }

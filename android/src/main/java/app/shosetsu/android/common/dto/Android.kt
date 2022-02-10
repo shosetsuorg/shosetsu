@@ -1,10 +1,5 @@
 package app.shosetsu.android.common.dto
 
-import android.database.sqlite.SQLiteException
-import app.shosetsu.common.consts.ErrorKeys
-import app.shosetsu.common.dto.HResult
-import org.json.JSONException
-
 /*
  * This file is part of Shosetsu.
  *
@@ -21,11 +16,3 @@ import org.json.JSONException
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
-
-
-/** An exception occurred in SQL*/
-fun errorResult(e: SQLiteException): HResult.Error =
-	HResult.Error(ErrorKeys.ERROR_HTTP_SQL, e.message ?: "UnknownSQLException", e)
-
-fun errorResult(e: JSONException): HResult.Error =
-	HResult.Error(ErrorKeys.ERROR_JSON, e.message ?: "UnknownJSONException", e)
