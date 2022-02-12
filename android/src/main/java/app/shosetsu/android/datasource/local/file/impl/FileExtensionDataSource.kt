@@ -40,11 +40,11 @@ class FileExtensionDataSource(
 ) : IFileExtensionDataSource {
 	init {
 		logV("Creating required directories")
-		if (iFileSystemProvider.createDirectory(FILES, MERGED_DIR)) {
+		try {
+			iFileSystemProvider.createDirectory(FILES, MERGED_DIR)
 			logV("Created required directories")
-		} else {
-			logV("Error on creation of directories $MERGED_DIR")
-
+		} catch (e: Exception) {
+			logV("Error on creation of directories `$MERGED_DIR`", e)
 		}
 	}
 
@@ -52,7 +52,7 @@ class FileExtensionDataSource(
 		"$MERGED_DIR${entity.fileName}.${entity.type.fileExtension}"
 
 
-	@Throws(FileNotFoundException::class)
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
 	override suspend fun loadExtension(entity: GenericExtensionEntity): IExtension =
 		entity.asIEntity(iFileSystemProvider.readFile(FILES, makeExtensionFileURL(entity)))
 
@@ -65,8 +65,10 @@ class FileExtensionDataSource(
 		)
 
 
-	override suspend fun deleteExtension(entity: GenericExtensionEntity) =
+	@Throws(FilePermissionException::class)
+	override suspend fun deleteExtension(entity: GenericExtensionEntity) {
 		iFileSystemProvider.deleteFile(FILES, makeExtensionFileURL(entity))
+	}
 
 	companion object {
 		const val MERGED_DIR = "$FILE_SOURCE_DIR$FILE_SCRIPT_DIR"

@@ -1,13 +1,14 @@
 package app.shosetsu.android.datasource.local.file.impl
 
-import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.logV
+import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.datasource.file.base.IFileBackupDataSource
 import app.shosetsu.common.domain.model.local.BackupEntity
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.transformToSuccess
 import app.shosetsu.common.enums.ExternalFileDir.APP
 import app.shosetsu.common.providers.file.base.IFileSystemProvider
+import java.io.IOException
 
 /*
  * This file is part of Shosetsu.
@@ -34,34 +35,38 @@ class FileBackupDataSource(
 ) : IFileBackupDataSource {
 
 	init {
-		launchIO {
+		try {
 			iFileSystemProvider.createDirectory(APP, BACKUP_DIRECTORY)
+			logV("Created directory: `$BACKUP_DIRECTORY`")
+		} catch (e: Exception) {
+			logE("Failed to create directory", e)
 		}
 	}
 
 	override suspend fun loadBackup(
 		backupName: String,
 		isExternal: Boolean
-	): HResult<BackupEntity> {
+	): BackupEntity {
 		logI("Reading backup: $backupName")
 		val result = if (!isExternal)
 			iFileSystemProvider.readFile(APP, "$BACKUP_DIRECTORY/${backupName}")
 		else iFileSystemProvider.readFile(backupName)
 
-		return result.transformToSuccess { BackupEntity(it) }
+		return BackupEntity(result)
 	}
 
-	override suspend fun saveBackup(backupEntity: BackupEntity): HResult<String> {
+	@Throws(FilePermissionException::class, IOException::class)
+	override suspend fun saveBackup(backupEntity: BackupEntity): String {
 		val path = "$BACKUP_DIRECTORY/${backupEntity.fileName}"
-		val result = iFileSystemProvider.writeFile(
+		iFileSystemProvider.writeFile(
 			APP,
 			path,
 			backupEntity.content
 		)
-		return result.transformToSuccess { path }
+		return path
 	}
 
-	override suspend fun loadBackups(): HResult<List<String>> =
+	override suspend fun loadBackups(): List<String> =
 		iFileSystemProvider.listFiles(APP, BACKUP_DIRECTORY)
 
 	companion object {
