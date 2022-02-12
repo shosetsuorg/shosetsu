@@ -1,10 +1,12 @@
 package app.shosetsu.android.datasource.local.file.impl
 
-import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.datasource.local.file.base.IFileCrashDataSource
-import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.enums.ExternalFileDir.APP
 import app.shosetsu.common.providers.file.base.IFileSystemProvider
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -35,15 +37,19 @@ class FileCrashDataSource(
 	private val fileSystem: IFileSystemProvider
 ) : IFileCrashDataSource {
 	init {
-		launchIO {
+		try {
 			fileSystem.createDirectory(APP, DIRECTORY)
+			logV("Directory created")
+		} catch (e: Exception) {
+			logE("Failed to create directory", e)
 		}
 	}
 
 	val creationDate: String
 		get() = SimpleDateFormat("yyyy-MM-dd-hh-mm-ss", Locale.ROOT).format(Date())
 
-	override fun writeCrash(log: String): HResult<*> =
+	@Throws(FilePermissionException::class, IOException::class)
+	override fun writeCrash(log: String): Unit =
 		fileSystem.writeFile(APP, "$DIRECTORY/shosetsu-crash-$creationDate.txt", log.toByteArray())
 
 	companion object {

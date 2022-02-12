@@ -1,14 +1,14 @@
 package app.shosetsu.android.datasource.local.file.impl
 
 import app.shosetsu.android.common.ext.logV
+import app.shosetsu.common.FileNotFoundException
+import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.datasource.file.base.IFileChapterDataSource
 import app.shosetsu.common.domain.model.local.ChapterEntity
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.transform
 import app.shosetsu.common.enums.ExternalFileDir.DOWNLOADS
 import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import app.shosetsu.lib.Novel
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -36,48 +36,51 @@ class FileChapterDataSource(
 ) : IFileChapterDataSource {
 	init {
 		logV("Creating required directories")
-		iFileSystemProvider.createDirectory(DOWNLOADS, "chapters").handle(
-			onError = {
-				logV("Error on creation of directories $it")
-			},
-			onSuccess = {
-				logV("Created required directories")
-			}
-		)
+
+		try {
+			iFileSystemProvider.createDirectory(DOWNLOADS, "chapters")
+			logV("Created required directories")
+		} catch (e: Exception) {
+			logV("Error on creation of directories", e)
+		}
+
 	}
 
 	/** Makes path */
 	private fun makePath(ce: ChapterEntity, chapterType: Novel.ChapterType): String =
 		"/chapters/${ce.extensionID}/${ce.novelID}/${ce.id}.${chapterType.fileExtension}"
 
+	@Throws(FilePermissionException::class, IOException::class)
 	override suspend fun save(
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType,
 		passage: ByteArray,
-	): HResult<*> {
+	) {
 		val path = makePath(chapterEntity, chapterType)
-		return iFileSystemProvider.createDirectory(
+		iFileSystemProvider.createDirectory(
 			DOWNLOADS,
 			path.substringBeforeLast("/")
-		).transform {
-			iFileSystemProvider.writeFile(
-				DOWNLOADS,
-				path,
-				passage
-			)
-		}
+		)
+
+		iFileSystemProvider.writeFile(
+			DOWNLOADS,
+			path,
+			passage
+		)
 	}
 
+	@Throws(FilePermissionException::class, FileNotFoundException::class)
 	override suspend fun load(
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType,
-	): HResult<ByteArray> =
+	): ByteArray =
 		iFileSystemProvider.readFile(DOWNLOADS, makePath(chapterEntity, chapterType))
 
+	@Throws(FilePermissionException::class)
 	override suspend fun delete(
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType
-	): HResult<*> =
+	) {
 		iFileSystemProvider.deleteFile(DOWNLOADS, makePath(chapterEntity, chapterType))
-
+	}
 }

@@ -6,11 +6,6 @@ import android.os.Environment.DIRECTORY_DOWNLOADS
 import app.shosetsu.common.FileNotFoundException
 import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.FilePermissionException.PermissionType
-import app.shosetsu.common.consts.ErrorKeys.ERROR_LACK_PERM
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.emptyResult
-import app.shosetsu.common.dto.errorResult
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.enums.ExternalFileDir
 import app.shosetsu.common.enums.InternalFileDir
 import app.shosetsu.common.providers.file.base.IFileSystemProvider
@@ -92,38 +87,38 @@ class AndroidFileSystemProvider(
 	): Boolean = if (!File(externalFileDir.path() + path).exists())
 		(false) else (true)
 
-	@Throws(FileNotFoundException::class)
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
 	override fun readFile(internalFileDir: InternalFileDir, path: String): ByteArray {
 		val file = File(internalFileDir.path() + path)
 
 		//logV("Reading $path in ${internalFileDir.path()} to $file")
 
 		if (!file.exists()) throw FileNotFoundException("$path does not exist")
-		if (!file.canRead())
-			throw FilePermissionException(file.path, PermissionType.READ)
+		if (!file.canRead()) throw FilePermissionException(file.path, PermissionType.READ)
 
 		return file.readBytes()
 	}
 
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
 	override fun readFile(externalFileDir: ExternalFileDir, path: String): ByteArray {
 		val file = File(externalFileDir.path() + path)
 
 		//logV("Reading $path in ${externalFileDir.path()} to $file")
 
 		if (!file.exists()) throw FileNotFoundException("$path does not exist")
-		if (!file.canRead())
-			throw FilePermissionException(file.path, PermissionType.READ)
+		if (!file.canRead()) throw FilePermissionException(file.path, PermissionType.READ)
 		return file.readBytes()
 	}
 
-	override fun readFile(path: String): HResult<ByteArray> {
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
+	override fun readFile(path: String): ByteArray {
 		val file = File(path)
 
 		//	logV("Reading $path to $file")
 
-		if (!file.exists()) return emptyResult()
-		if (!file.canRead()) return errorResult(ERROR_LACK_PERM, "Cannot read file: $file")
-		return successResult(file.readBytes())
+		if (!file.exists()) throw FileNotFoundException("File not found: `$path`")
+		if (!file.canRead()) throw FilePermissionException(path, PermissionType.READ)
+		return file.readBytes()
 	}
 
 	@Throws(FilePermissionException::class)
@@ -142,7 +137,7 @@ class AndroidFileSystemProvider(
 		val file = File(externalFileDir.path() + path)
 		//	logV("Deleting $path in ${externalFileDir.path()} to $file")
 
-		if (!file.canWrite() && file.exists())
+		if (!file.canWrite())
 			throw FilePermissionException(file.path, PermissionType.WRITE)
 
 		return file.delete()

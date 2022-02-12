@@ -2,7 +2,6 @@ package app.shosetsu.common.providers.file.base
 
 import app.shosetsu.common.FileNotFoundException
 import app.shosetsu.common.FilePermissionException
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.ExternalFileDir
 import app.shosetsu.common.enums.InternalFileDir
 import java.io.IOException
@@ -48,7 +47,7 @@ interface IFileSystemProvider {
 	 *
 	 * @return file content
 	 */
-	@Throws(FileNotFoundException::class)
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
 	fun readFile(internalFileDir: InternalFileDir, path: String): ByteArray
 
 	/**
@@ -56,6 +55,7 @@ interface IFileSystemProvider {
 	 *
 	 * @return file content
 	 */
+	@Throws(FilePermissionException::class, FileNotFoundException::class)
 	fun readFile(externalFileDir: ExternalFileDir, path: String): ByteArray
 
 
@@ -65,7 +65,8 @@ interface IFileSystemProvider {
 	 * @param path Absolute path to a file
 	 * @return file content
 	 */
-	fun readFile(path: String): HResult<ByteArray>
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
+	fun readFile(path: String): ByteArray
 
 	@Throws(FilePermissionException::class)
 	fun deleteFile(internalFileDir: InternalFileDir, path: String): Boolean

@@ -1,21 +1,20 @@
 package app.shosetsu.android.datasource.local.file.impl
 
 import app.shosetsu.android.common.consts.APP_UPDATE_CACHE_FILE
-import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.toHError
+import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.datasource.local.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.domain.model.remote.AppUpdateDTO
+import app.shosetsu.common.FileNotFoundException
+import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.emptyResult
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
 import app.shosetsu.common.enums.InternalFileDir.CACHE
 import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -41,55 +40,54 @@ import kotlinx.serialization.json.Json
 class FileAppUpdateDataSource(
 	private val iFileSystemProvider: IFileSystemProvider
 ) : IFileCachedAppUpdateDataSource {
-	override val updateAvaLive: MutableStateFlow<HResult<AppUpdateEntity>> by lazy {
-		MutableStateFlow(emptyResult())
+	override val updateAvaLive: MutableStateFlow<AppUpdateEntity?> by lazy {
+		MutableStateFlow(null)
 	}
 
 	init {
-		launchIO {
+		try {
 			iFileSystemProvider.createDirectory(CACHE, updatesPath)
+			logV("Created directory: `$updatesPath`")
+		} catch (e: Exception) {
+			logE("Failed to create directory", e)
 		}
 	}
 
-	private fun write(debugAppUpdate: AppUpdateDTO): HResult<*> = try {
+	@Throws(FilePermissionException::class, IOException::class)
+	private fun write(debugAppUpdate: AppUpdateDTO) =
 		iFileSystemProvider.writeFile(
 			CACHE,
 			APP_UPDATE_CACHE_FILE,
 			Json.encodeToString(debugAppUpdate).encodeToByteArray()
 		)
-	} catch (e: Exception) {
-		e.toHError()
-	}
 
-	override suspend fun loadCachedAppUpdate(): HResult<AppUpdateEntity> =
-		updateAvaLive.value.takeIf { it is HResult.Success }
-			?: iFileSystemProvider.readFile(
-				CACHE,
-				APP_UPDATE_CACHE_FILE
-			).transform {
-				successResult(
-					Json.decodeFromString<AppUpdateDTO>(it.decodeToString()).convertTo()
-				)
-			}
+	@Throws(FileNotFoundException::class)
+	override suspend fun loadCachedAppUpdate(): AppUpdateEntity =
+		updateAvaLive.value ?: Json.decodeFromString<AppUpdateDTO>(
+			iFileSystemProvider.readFile(CACHE, APP_UPDATE_CACHE_FILE).decodeToString()
+		).convertTo()
 
+
+	@Throws(FilePermissionException::class, IOException::class)
 	override suspend fun putAppUpdateInCache(
 		appUpdate: AppUpdateEntity,
 		isUpdate: Boolean
-	): HResult<*> {
-		updateAvaLive.value = if (isUpdate) successResult(appUpdate) else emptyResult()
-		return write(AppUpdateDTO.fromEntity(appUpdate))
+	) {
+		updateAvaLive.value = if (isUpdate) appUpdate else null
+		write(AppUpdateDTO.fromEntity(appUpdate))
 	}
 
+	@Throws(IOException::class, FilePermissionException::class, FileNotFoundException::class)
 	override fun saveAPK(
 		appUpdate: AppUpdateEntity,
-		bufferedSource: ByteArray
-	): HResult<String> = iFileSystemProvider.doesFileExist(CACHE, updatesCPath)
-		.transform { doesFileExist ->
-			if (doesFileExist) iFileSystemProvider.deleteFile(CACHE, updatesCPath)
-			iFileSystemProvider.createFile(CACHE, updatesCPath)
-			iFileSystemProvider.writeFile(CACHE, updatesCPath, bufferedSource)
-			iFileSystemProvider.retrievePath(CACHE, updatesCPath)
-		}
+		bytes: ByteArray
+	): String {
+		if (iFileSystemProvider.doesFileExist(CACHE, updatesCPath))
+			iFileSystemProvider.deleteFile(CACHE, updatesCPath)
+		iFileSystemProvider.createFile(CACHE, updatesCPath)
+		iFileSystemProvider.writeFile(CACHE, updatesCPath, bytes)
+		return iFileSystemProvider.retrievePath(CACHE, updatesCPath)
+	}
 
 	companion object {
 		const val updatesPath = "/updates/"
