@@ -6,10 +6,7 @@ import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.dto.transform
-import app.shosetsu.common.dto.transmogrify
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 
@@ -52,17 +49,17 @@ class GetCatalogueQueryDataUseCase(
 		ext: IExtension,
 		query: String,
 		filters: Map<Int, Any>
-	): HResult<List<ACatalogNovelUI>> = novelsRepository.getCatalogueSearch(
+	): List<ACatalogNovelUI> = novelsRepository.getCatalogueSearch(
 		ext,
 		query,
 		filters
-	).transform {
+	).let {
 		val data: List<Novel.Listing> = it
-		iSettingsRepository.getInt(SettingKey.SelectedNovelCardType).transform { cardType ->
-			successResult(data.map { novelListing ->
+		iSettingsRepository.getInt(SettingKey.SelectedNovelCardType).let { cardType ->
+			(data.map { novelListing ->
 				novelListing.convertTo(ext)
 			}.mapNotNull { ne ->
-				novelsRepository.insertReturnStripped(ne).transmogrify { card ->
+				novelsRepository.insertReturnStripped(ne)?.let { card ->
 					convertNCToCNUIUseCase(card, cardType)
 				}
 			})

@@ -1,9 +1,7 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.common.domain.model.local.FilterEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
-import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.TriStateState
 import kotlinx.coroutines.flow.*
 
@@ -129,25 +127,18 @@ class GetExtensionSettingsUseCase(
 	private fun List<Flow<FilterEntity>>.combine(): Flow<List<FilterEntity>> =
 		combine(this) { it.toList() }
 
-	operator fun invoke(extensionID: Int): Flow<HResult<List<FilterEntity>>> =
+	operator fun invoke(extensionID: Int): Flow<List<FilterEntity>> =
 		flow {
 			if (extensionID == -1) {
-				emit(empty)
+				emit(emptyList())
 				return@flow
 			}
 
-			getExt(extensionID).handle(
-				onLoading = { emit(loading) },
-				onEmpty = { emit(empty) },
-				onError = { emit(it) }
-			) { extension ->
+			getExt(extensionID)?.let { extension ->
 				val list: List<FilterEntity> =
 					extension.settingsModel.map { FilterEntity.fromFilter(it) }
 
-				emitAll(list.convert(extensionID).combine().transformLatest {
-					emit(loading)
-					emit(successResult(it))
-				})
+				emitAll(list.convert(extensionID).combine())
 			}
 		}
 }

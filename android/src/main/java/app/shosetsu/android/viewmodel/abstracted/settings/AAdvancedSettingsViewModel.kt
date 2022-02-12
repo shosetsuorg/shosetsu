@@ -2,7 +2,6 @@ package app.shosetsu.android.viewmodel.abstracted.settings
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -31,8 +30,8 @@ abstract class AAdvancedSettingsViewModel(iSettingsRepository: ISettingsReposito
 	/**
 	 * Executes a purge async, provides a [LiveData] for result
 	 */
-	abstract fun purgeUselessData(): LiveData<HResult<*>>
+	abstract fun purgeUselessData(): LiveData<Unit>
 
-	abstract fun killCycleWorkers(): HResult<*>
-	abstract fun startCycleWorkers(): HResult<*>
+	abstract fun killCycleWorkers()
+	abstract fun startCycleWorkers()
 }

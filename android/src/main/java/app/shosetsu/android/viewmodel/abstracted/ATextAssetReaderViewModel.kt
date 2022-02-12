@@ -3,8 +3,7 @@ package app.shosetsu.android.viewmodel.abstracted
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.enums.TextAsset
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
-import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
-import app.shosetsu.common.dto.HResult
+import app.shosetsu.android.viewmodel.base.SubscribeViewModel
 
 /*
  * This file is part of shosetsu.
@@ -29,17 +28,17 @@ import app.shosetsu.common.dto.HResult
  * @since 29 / 06 / 2021
  * @author Doomsdayrs
  */
-abstract class ATextAssetReaderViewModel : ShosetsuViewModel(), SubscribeHandleViewModel<String> {
+abstract class ATextAssetReaderViewModel : ShosetsuViewModel(), SubscribeViewModel<String> {
 
 	/**
 	 * [LiveData] of text to display
 	 */
-	abstract override val liveData: LiveData<HResult<String>>
+	abstract override val liveData: LiveData<String>
 
 	/**
 	 * [LiveData] of the current [TextAsset]
 	 */
-	abstract val targetLiveData: LiveData<HResult<TextAsset>>
+	abstract val targetLiveData: LiveData<TextAsset>
 
 	/**
 	 * Set the target asset to read

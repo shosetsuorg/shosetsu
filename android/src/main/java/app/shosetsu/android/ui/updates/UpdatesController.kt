@@ -9,12 +9,10 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -33,8 +31,7 @@ import app.shosetsu.android.view.controller.base.CollapsedToolBarController
 import app.shosetsu.android.view.uimodels.model.UpdateUI
 import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.AUpdatesViewModel
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.empty
+import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.common.dto.handle
 import coil.compose.rememberImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -110,9 +107,9 @@ fun UpdatesContent(
 	parent: ComposeUpdatesController,
 	viewModel: AUpdatesViewModel,
 	onRefresh: () -> Unit,
-	openChapter: (UpdateUI) -> Unit
+	openChapter: (UpdateCompleteEntity) -> Unit
 ) {
-	val result: HResult<Map<DateTime, List<UpdateUI>>> by viewModel.items.observeAsState(empty)
+	val result: Map<DateTime, List<UpdateCompleteEntity>> by viewModel.items.observeAsState(listOf())
 
 	val isRefreshing = SwipeRefreshState(false)
 

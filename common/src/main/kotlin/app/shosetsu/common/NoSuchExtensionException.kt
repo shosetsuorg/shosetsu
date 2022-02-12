@@ -1,6 +1,4 @@
-package app.shosetsu.android.viewmodel.base
-
-import androidx.lifecycle.LiveData
+package app.shosetsu.common
 
 /*
  * This file is part of shosetsu.
@@ -19,17 +17,10 @@ import androidx.lifecycle.LiveData
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 /**
- * shosetsu
- * 29 / 04 / 2020
+ * Shosetsu
  *
- * @author github.com/doomsdayrs
- * Allows a view to subscribe to the view model
+ * @since 12 / 02 / 2022
+ * @author Doomsdayrs
  */
-interface SubscribeViewModel<T> {
-	/**
-	 * LiveData of this class
-	 */
-	val liveData: LiveData<T>
-}
+class NoSuchExtensionException(message: String) : Exception(message)

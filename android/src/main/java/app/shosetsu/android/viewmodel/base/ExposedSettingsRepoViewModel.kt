@@ -13,7 +13,7 @@ import app.shosetsu.android.view.uimodels.settings.TextInputSettingData
 import app.shosetsu.android.view.uimodels.settings.base.ToggleableStateSettingData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.domain.repositories.base.*
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 
 /*
  * This file is part of Shosetsu.
@@ -43,7 +43,7 @@ interface ExposedSettingsRepoViewModel {
 
 	@SettingsItemDSL
 	suspend fun NumberPickerSettingData.settingValue(key: SettingKey<Int>) {
-		initalValue { settingsRepo.getIntOrDefault(key) }
+		initalValue { settingsRepo.getInt(key) }
 		onValueSelected { _: NumberPicker?, _: Int, newVal: Int ->
 			launchIO { settingsRepo.setInt(key, newVal) }
 		}
@@ -54,7 +54,7 @@ interface ExposedSettingsRepoViewModel {
 	 */
 	@SettingsItemDSL
 	suspend fun SpinnerSettingData.spinnerSettingValue(key: SettingKey<Int>) {
-		spinnerValue { settingsRepo.getIntOrDefault(key) }
+		spinnerValue { settingsRepo.getInt(key) }
 		var first = true
 		onSpinnerItemSelected { _: AdapterView<*>?, _: View?, position: Int, _: Long ->
 			launchIO {
@@ -72,7 +72,7 @@ interface ExposedSettingsRepoViewModel {
 	 */
 	@SettingsItemDSL
 	suspend fun ToggleableStateSettingData.checkSettingValue(key: SettingKey<Boolean>) {
-		isChecked = settingsRepo.getBooleanOrDefault(key)
+		isChecked = settingsRepo.getBoolean(key)
 		onChecked { _: CompoundButton?, isChecked: Boolean ->
 			launchIO {
 				settingsRepo.setBoolean(key, isChecked)
@@ -82,7 +82,7 @@ interface ExposedSettingsRepoViewModel {
 
 	@SettingsItemDSL
 	suspend fun TextInputSettingData.textSettingValue(key: SettingKey<String>) {
-		initialText = settingsRepo.getStringOrDefault(key)
+		initialText = settingsRepo.getString(key)
 		doAfterTextChanged { editable: Editable ->
 			launchIO {
 				settingsRepo.setString(key, editable.toString())
@@ -101,7 +101,7 @@ interface ExposedSettingsRepoViewModel {
 	 */
 	@SettingsItemDSL
 	suspend fun DoubleNumberSettingData.settingValue(key: SettingKey<Float>) {
-		settingsRepo.getFloatOrDefault(key).let { settingValue: Float ->
+		settingsRepo.getFloat(key).let { settingValue: Float ->
 			initialWhole = wholeSteps.indexOfFirst { it == settingValue.toInt() }.orZero()
 			val decimal: Int = ((settingValue % 1) * 100).toInt()
 			initialDecimal = decimalSteps.indexOfFirst { it == decimal }.orZero()

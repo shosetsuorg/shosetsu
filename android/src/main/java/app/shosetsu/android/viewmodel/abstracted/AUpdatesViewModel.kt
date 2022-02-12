@@ -1,9 +1,8 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
-import app.shosetsu.android.view.uimodels.model.UpdateUI
 import app.shosetsu.android.viewmodel.base.*
-import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.common.enums.ReadingStatus
 import org.joda.time.DateTime
 
@@ -33,11 +32,11 @@ import org.joda.time.DateTime
  */
 abstract class AUpdatesViewModel
 	: ShosetsuViewModel(),
-	SubscribeHandleViewModel<List<UpdateUI>>,
+	SubscribeViewModel<List<UpdateCompleteEntity>>,
 	ErrorReportingViewModel,
 	StartUpdateManagerViewModel, IsOnlineCheckViewModel {
 
-	abstract val items: LiveData<HResult<Map<DateTime, List<UpdateUI>>>>
+	abstract val items: LiveData<Map<DateTime, List<UpdateCompleteEntity>>>
 
-	abstract suspend fun updateChapter(updateUI: UpdateUI, readingStatus: ReadingStatus)
+	abstract suspend fun updateChapter(updateUI: UpdateCompleteEntity, readingStatus: ReadingStatus)
 }

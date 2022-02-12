@@ -1,8 +1,6 @@
 package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.empty
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -30,10 +28,10 @@ import kotlinx.coroutines.flow.flow
 class GetExtSelectedListingFlowUseCase(
 	private val iExtensionSettingsRepository: IExtensionSettingsRepository
 ) {
-	suspend operator fun invoke(extensionId: Int): Flow<HResult<Int>> =
+	suspend operator fun invoke(extensionId: Int): Flow<Int> =
 		flow {
 			if (extensionId == -1) {
-				emit(empty)
+				emit(-1)
 				return@flow
 			}
 

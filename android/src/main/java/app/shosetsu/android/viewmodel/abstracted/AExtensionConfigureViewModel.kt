@@ -4,9 +4,8 @@ import androidx.lifecycle.LiveData
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
-import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
+import app.shosetsu.android.viewmodel.base.SubscribeViewModel
 import app.shosetsu.common.domain.model.local.FilterEntity
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -34,10 +33,10 @@ import app.shosetsu.common.dto.HResult
  * [liveData] is of the formatter object itself
  */
 abstract class AExtensionConfigureViewModel
-	: ShosetsuViewModel(), SubscribeHandleViewModel<ExtensionUI>, ErrorReportingViewModel {
+	: ShosetsuViewModel(), SubscribeViewModel<ExtensionUI>, ErrorReportingViewModel {
 
-	abstract val extensionListing: LiveData<HResult<ListingSelectionData>>
-	abstract val extensionSettings: LiveData<HResult<List<FilterEntity>>>
+	abstract val extensionListing: LiveData<ListingSelectionData>
+	abstract val extensionSettings: LiveData<List<FilterEntity>>
 
 	data class ListingSelectionData(
 		val choices: List<String>,

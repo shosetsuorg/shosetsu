@@ -6,7 +6,6 @@ import app.shosetsu.android.view.uimodels.model.MigrationNovelUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.common.domain.model.local.StrippedBookmarkedNovelEntity
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -36,17 +35,17 @@ abstract class AMigrationViewModel : ShosetsuViewModel() {
 	/**
 	 * The query that is being used for the current novel to be searched for
 	 */
-	abstract val currentQuery: LiveData<HResult<String>>
+	abstract val currentQuery: LiveData<String>
 
 	/**
 	 * The extensions to select from
 	 */
-	abstract val extensions: LiveData<HResult<List<MigrationExtensionUI>>>
+	abstract val extensions: LiveData<List<MigrationExtensionUI>>
 
 	/**
 	 * Novels that will be transfered
 	 */
-	abstract val novels: LiveData<HResult<List<MigrationNovelUI>>>
+	abstract val novels: LiveData<List<MigrationNovelUI>>
 
 	/**
 	 * Which novel is currently being worked on
@@ -61,7 +60,7 @@ abstract class AMigrationViewModel : ShosetsuViewModel() {
 	/**
 	 * Provides the results found for a novel
 	 */
-	abstract fun getResults(novelUI: NovelUI): LiveData<HResult<StrippedBookmarkedNovelEntity>>
+	abstract fun getResults(novelUI: NovelUI): LiveData<StrippedBookmarkedNovelEntity>
 
 	/**
 	 * Set the novels to work with

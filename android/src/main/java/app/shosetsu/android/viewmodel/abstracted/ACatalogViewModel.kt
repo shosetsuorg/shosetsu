@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.utils.ColumnCalculator
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
@@ -38,12 +37,12 @@ abstract class ACatalogViewModel :
 	/**
 	 * What is currently being displayed to the user
 	 */
-	abstract val itemsLive: LiveData<HResult<List<ACatalogNovelUI>>>
+	abstract val itemsLive: LiveData<List<ACatalogNovelUI>>
 
 	/**
 	 * The list of items that will be presented as the filter menu
 	 */
-	abstract val filterItemsLive: LiveData<HResult<List<Filter<*>>>>
+	abstract val filterItemsLive: LiveData<List<Filter<*>>>
 
 	/**
 	 * enable or disable searching
@@ -53,7 +52,7 @@ abstract class ACatalogViewModel :
 	/**
 	 * Name of the extension that is used for its catalogue
 	 */
-	abstract val extensionName: LiveData<HResult<String>>
+	abstract val extensionName: LiveData<String>
 
 	/**
 	 * What type of card to display
@@ -90,7 +89,7 @@ abstract class ACatalogViewModel :
 	 * Bookmarks and loads the specific novel in the background
 	 * @param novelID ID of novel to load
 	 */
-	abstract fun backgroundNovelAdd(novelID: Int): LiveData<HResult<*>>
+	abstract fun backgroundNovelAdd(novelID: Int): LiveData<Unit>
 
 	/**
 	 * Apply filters
@@ -128,6 +127,6 @@ abstract class ACatalogViewModel :
 	/**
 	 * Get the URL to open web view for the extension
 	 */
-	abstract fun getBaseURL(): LiveData<HResult<String>>
+	abstract fun getBaseURL(): LiveData<String>
 
 }

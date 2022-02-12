@@ -1,7 +1,6 @@
 package app.shosetsu.android.viewmodel.base
 
 import app.shosetsu.android.common.HResultException
-import app.shosetsu.common.dto.HResult.Error
 import org.acra.ACRA
 
 /*

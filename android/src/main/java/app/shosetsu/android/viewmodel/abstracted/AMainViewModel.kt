@@ -5,7 +5,6 @@ import app.shosetsu.android.common.enums.NavigationStyle
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.AppThemes
 
 /*
@@ -30,7 +29,7 @@ import app.shosetsu.common.enums.AppThemes
  * 20 / 06 / 2020
  */
 abstract class AMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel {
-	abstract fun startAppUpdateCheck(): LiveData<HResult<AppUpdateEntity>>
+	abstract fun startAppUpdateCheck(): LiveData<AppUpdateEntity>
 
 	/**
 	 * If 0, Bottom
@@ -51,7 +50,7 @@ abstract class AMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel {
 	 * If stable-utd, will open up up-to-down
 	 * If stable-fdr, will open up f-droid
 	 */
-	abstract fun handleAppUpdate(): LiveData<HResult<AppUpdateAction>>
+	abstract fun handleAppUpdate(): LiveData<AppUpdateAction>
 
 	sealed class AppUpdateAction {
 
@@ -70,7 +69,7 @@ abstract class AMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel {
 
 	}
 
-	abstract val backupProgressState: LiveData<HResult<Unit>>
+	abstract val backupProgressState: LiveData<Unit>
 
 	/** If the application should show the show splash screen */
 	abstract suspend fun showIntro(): Boolean
