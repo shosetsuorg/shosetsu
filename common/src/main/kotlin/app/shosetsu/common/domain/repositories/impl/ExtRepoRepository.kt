@@ -4,9 +4,6 @@ import app.shosetsu.common.datasource.database.base.IDBExtRepoDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteExtRepoDataSource
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
 import app.shosetsu.lib.json.RepoIndex
 import kotlinx.coroutines.flow.Flow
 
@@ -35,31 +32,31 @@ class ExtRepoRepository(
 	private val databaseSource: IDBExtRepoDataSource,
 	private val remoteSource: IRemoteExtRepoDataSource
 ) : IExtensionRepoRepository {
-	override suspend fun getRepoData(entity: RepositoryEntity): HResult<RepoIndex> =
+	override suspend fun getRepoData(entity: RepositoryEntity): RepoIndex =
 		remoteSource.downloadRepoData(entity)
 
-	override suspend fun loadRepositories(): HResult<List<RepositoryEntity>> =
+	override suspend fun loadRepositories(): List<RepositoryEntity> =
 		databaseSource.loadRepositories()
 
 	/**
 	 * TODO Create a direct to database call that cuts out the kotlin filtering
 	 */
-	override suspend fun loadEnabledRepos(): HResult<List<RepositoryEntity>> =
-		loadRepositories().transform { list -> successResult(list.filter { it.isEnabled }) }
+	override suspend fun loadEnabledRepos(): List<RepositoryEntity> =
+		loadRepositories().filter { it.isEnabled }
 
-	override fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>> =
+	override fun loadRepositoriesLive(): Flow<List<RepositoryEntity>> =
 		databaseSource.loadRepositoriesLive()
 
-	override suspend fun addRepository(entity: RepositoryEntity): HResult<*> =
+	override suspend fun addRepository(entity: RepositoryEntity): Long =
 		databaseSource.addRepository(entity)
 
-	override suspend fun remove(entity: RepositoryEntity): HResult<*> =
+	override suspend fun remove(entity: RepositoryEntity): Unit =
 		databaseSource.remove(entity)
 
-	override suspend fun update(entity: RepositoryEntity): HResult<*> =
+	override suspend fun update(entity: RepositoryEntity): Unit =
 		databaseSource.update(entity)
 
-	override suspend fun insert(entity: RepositoryEntity): HResult<*> =
+	override suspend fun insert(entity: RepositoryEntity): Long =
 		databaseSource.insert(entity)
 
 	override suspend fun getRepo(id: Int): RepositoryEntity? =

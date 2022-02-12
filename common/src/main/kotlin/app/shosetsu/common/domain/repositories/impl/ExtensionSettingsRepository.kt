@@ -3,8 +3,6 @@ package app.shosetsu.common.domain.repositories.impl
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.datasource.file.base.IFileSettingsDataSource
 import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.mapLatestToSuccess
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -32,39 +30,38 @@ class ExtensionSettingsRepository(
 ) : IExtensionSettingsRepository {
 	private fun selectedListingKey() = CustomInt("selectedListing", 0)
 
-	override suspend fun getSelectedListing(extensionID: Int): HResult<Int> =
+	override suspend fun getSelectedListing(extensionID: Int): Int =
 		iFileSettingSystem.getInt("$extensionID", selectedListingKey())
 
-	override suspend fun observeSelectedListing(extensionID: Int): Flow<HResult<Int>> =
+	override suspend fun observeSelectedListing(extensionID: Int): Flow<Int> =
 		iFileSettingSystem.observeInt("$extensionID", selectedListingKey())
-			.mapLatestToSuccess()
 
-	override suspend fun setSelectedListing(extensionID: Int, selectedListing: Int): HResult<*> =
+	override suspend fun setSelectedListing(extensionID: Int, selectedListing: Int): Unit =
 		iFileSettingSystem.setInt("$extensionID", selectedListingKey(), selectedListing)
 
 
-	override suspend fun getInt(extensionID: Int, settingID: Int, default: Int): HResult<Int> =
+	override suspend fun getInt(extensionID: Int, settingID: Int, default: Int): Int =
 		iFileSettingSystem.getInt("$extensionID", CustomInt("$settingID", default))
 
 	override suspend fun getString(
 		extensionID: Int,
 		settingID: Int,
 		default: String
-	): HResult<String> =
+	): String =
 		iFileSettingSystem.getString("$extensionID", CustomString("$settingID", default))
 
 	override suspend fun getBoolean(
 		extensionID: Int,
 		settingID: Int,
 		default: Boolean
-	): HResult<Boolean> =
+	): Boolean =
 		iFileSettingSystem.getBoolean("$extensionID", CustomBoolean("$settingID", default))
 
 	override suspend fun getFloat(
 		extensionID: Int,
 		settingID: Int,
 		default: Float
-	): HResult<Float> =
+	): Float =
 		iFileSettingSystem.getFloat("$extensionID", CustomFloat("$settingID", default))
 
 
@@ -97,15 +94,15 @@ class ExtensionSettingsRepository(
 		iFileSettingSystem.observeFloat("$extensionID", CustomFloat("$settingID", default))
 
 
-	override suspend fun setInt(extensionID: Int, settingID: Int, value: Int): HResult<*> =
+	override suspend fun setInt(extensionID: Int, settingID: Int, value: Int): Unit =
 		iFileSettingSystem.setInt("$extensionID", CustomInt("$settingID", 0), value)
 
-	override suspend fun setString(extensionID: Int, settingID: Int, value: String): HResult<*> =
+	override suspend fun setString(extensionID: Int, settingID: Int, value: String): Unit =
 		iFileSettingSystem.setString("$extensionID", CustomString("$settingID", ""), value)
 
-	override suspend fun setBoolean(extensionID: Int, settingID: Int, value: Boolean): HResult<*> =
+	override suspend fun setBoolean(extensionID: Int, settingID: Int, value: Boolean): Unit =
 		iFileSettingSystem.setBoolean("$extensionID", CustomBoolean("$settingID", false), value)
 
-	override suspend fun setFloat(extensionID: Int, settingID: Int, value: Float): HResult<*> =
+	override suspend fun setFloat(extensionID: Int, settingID: Int, value: Float): Unit =
 		iFileSettingSystem.setFloat("$extensionID", CustomFloat("$settingID", 0f), value)
 }

@@ -44,7 +44,7 @@ interface IExtensionRepoRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun getRepoData(entity: RepositoryEntity): HResult<RepoIndex>
+	suspend fun getRepoData(entity: RepositoryEntity): RepoIndex
 
 	/**
 	 * Loads all repositories present
@@ -58,7 +58,7 @@ interface IExtensionRepoRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun loadRepositories(): HResult<List<RepositoryEntity>>
+	suspend fun loadRepositories(): List<RepositoryEntity>
 
 
 	/**
@@ -66,7 +66,7 @@ interface IExtensionRepoRepository {
 	 *  where [RepositoryEntity.isEnabled]=false
 	 * @see loadRepositories
 	 */
-	suspend fun loadEnabledRepos(): HResult<List<RepositoryEntity>>
+	suspend fun loadEnabledRepos(): List<RepositoryEntity>
 
 	/**
 	 * Loads all repositories present
@@ -80,15 +80,15 @@ interface IExtensionRepoRepository {
 	 *
 	 * [HResult.Loading] Initial value
 	 */
-	fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>>
+	fun loadRepositoriesLive(): Flow<List<RepositoryEntity>>
 
-	suspend fun addRepository(entity: RepositoryEntity): HResult<*>
+	suspend fun addRepository(entity: RepositoryEntity): Long
 
-	suspend fun remove(entity: RepositoryEntity): HResult<*>
+	suspend fun remove(entity: RepositoryEntity)
 
-	suspend fun update(entity: RepositoryEntity): HResult<*>
+	suspend fun update(entity: RepositoryEntity)
 
-	suspend fun insert(entity: RepositoryEntity): HResult<*>
+	suspend fun insert(entity: RepositoryEntity): Long
 
 	suspend fun getRepo(id: Int): RepositoryEntity?
 }

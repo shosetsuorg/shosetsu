@@ -40,7 +40,7 @@ interface IUpdatesRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun addUpdates(list: List<UpdateEntity>): HResult<Array<Long>>
+	suspend fun addUpdates(list: List<UpdateEntity>): Array<Long>
 
 	/**
 	 * [HResult] [Flow] of [List] of [UpdateEntity] of all entities present
@@ -54,7 +54,7 @@ interface IUpdatesRepository {
 	 *
 	 * [HResult.Loading] Initial value
 	 */
-	suspend fun getUpdatesFlow(): Flow<HResult<List<UpdateEntity>>>
+	suspend fun getUpdatesFlow(): Flow<List<UpdateEntity>>
 
 	/**
 	 * [HResult] [Flow] of [List] of [UpdateCompleteEntity] of all entities present
@@ -68,5 +68,5 @@ interface IUpdatesRepository {
 	 *
 	 * [HResult.Loading] Initial value
 	 */
-	suspend fun getCompleteUpdatesFlow(): Flow<HResult<List<UpdateCompleteEntity>>>
+	suspend fun getCompleteUpdatesFlow(): Flow<List<UpdateCompleteEntity>>
 }

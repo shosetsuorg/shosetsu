@@ -42,7 +42,7 @@ interface IAppUpdatesRepository {
 	 *
 	 * [HResult.Loading] Initial value
 	 */
-	fun loadAppUpdateFlow(): Flow<HResult<AppUpdateEntity>>
+	fun loadAppUpdateFlow(): Flow<AppUpdateEntity>
 
 	/**
 	 * Load an app update if present
@@ -52,7 +52,7 @@ interface IAppUpdatesRepository {
 	 *
 	 * [HResult.Success] if an app update is present
 	 */
-	suspend fun loadRemoteUpdate(): HResult<AppUpdateEntity>
+	suspend fun loadRemoteUpdate(): AppUpdateEntity
 
 	/**
 	 * Load an app update if present
@@ -62,7 +62,7 @@ interface IAppUpdatesRepository {
 	 *
 	 * [HResult.Success] if an app update is present
 	 */
-	suspend fun loadAppUpdate(): HResult<AppUpdateEntity>
+	suspend fun loadAppUpdate(): AppUpdateEntity
 
 	/**
 	 * Can the app self update itself
@@ -76,12 +76,12 @@ interface IAppUpdatesRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	fun canSelfUpdate(): HResult<Boolean>
+	fun canSelfUpdate(): Boolean
 
 	/**
 	 * Downloads the app update specified by [appUpdateEntity]
 	 *
 	 * @return Path of the apk file, this is messy but it must be done so the intent can work
 	 */
-	suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): HResult<String>
+	suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): String
 }

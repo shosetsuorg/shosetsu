@@ -17,10 +17,10 @@ package app.shosetsu.common.domain.repositories.impl
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
-import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.datasource.database.base.IDBDownloadsDataSource
 import app.shosetsu.common.domain.model.local.DownloadEntity
+import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -32,26 +32,30 @@ import kotlinx.coroutines.flow.Flow
 class DownloadsRepository(
 	private val iLocalDownloadsDataSource: IDBDownloadsDataSource,
 ) : IDownloadsRepository {
-	override fun loadDownloadsFlow(): Flow<HResult<List<DownloadEntity>>> =
+	override fun loadDownloadsFlow(): Flow<List<DownloadEntity>> =
 		iLocalDownloadsDataSource.loadLiveDownloads()
 
-	override suspend fun loadFirstDownload(): HResult<DownloadEntity> =
+	@Throws(GenericSQLiteException::class)
+	override suspend fun loadFirstDownload(): DownloadEntity? =
 		iLocalDownloadsDataSource.loadFirstDownload()
 
-	override suspend fun loadDownloadCount(): HResult<Int> =
+	@Throws(GenericSQLiteException::class)
+	override suspend fun loadDownloadCount(): Int =
 		iLocalDownloadsDataSource.loadDownloadCount()
 
-	override suspend fun getDownload(chapterID: Int): HResult<DownloadEntity> =
+	@Throws(GenericSQLiteException::class)
+	override suspend fun getDownload(chapterID: Int): DownloadEntity? =
 		iLocalDownloadsDataSource.loadDownload(chapterID)
 
-	override suspend fun addDownload(download: DownloadEntity): HResult<Long> =
+	@Throws(GenericSQLiteException::class)
+	override suspend fun addDownload(download: DownloadEntity): Long =
 		iLocalDownloadsDataSource.insertDownload(download)
 
-	override suspend fun update(download: DownloadEntity): HResult<*> =
+	@Throws(GenericSQLiteException::class)
+	override suspend fun update(download: DownloadEntity): Unit =
 		iLocalDownloadsDataSource.updateDownload(download)
 
-	override suspend fun deleteEntity(download: DownloadEntity): HResult<*> =
+	@Throws(GenericSQLiteException::class)
+	override suspend fun deleteEntity(download: DownloadEntity): Unit =
 		iLocalDownloadsDataSource.deleteDownload(download)
-
-
 }

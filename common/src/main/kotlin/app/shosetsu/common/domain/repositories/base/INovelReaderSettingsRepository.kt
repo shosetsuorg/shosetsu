@@ -1,8 +1,7 @@
 package app.shosetsu.common.domain.repositories.base
 
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
-import app.shosetsu.common.dto.HFlow
-import app.shosetsu.common.dto.HResult
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of Shosetsu.
@@ -25,9 +24,9 @@ import app.shosetsu.common.dto.HResult
  * 24 / 02 / 2021
  */
 interface INovelReaderSettingsRepository {
-	suspend fun get(novelID: Int): HResult<NovelReaderSettingEntity>
-	fun getFlow(novelID: Int): HFlow<NovelReaderSettingEntity>
+	suspend fun get(novelID: Int): NovelReaderSettingEntity?
+	fun getFlow(novelID: Int): Flow<NovelReaderSettingEntity?>
 
-	suspend fun insert(novelReaderSettingEntity: NovelReaderSettingEntity): HResult<*>
-	suspend fun update(novelReaderSettingEntity: NovelReaderSettingEntity): HResult<*>
+	suspend fun insert(novelReaderSettingEntity: NovelReaderSettingEntity): Long
+	suspend fun update(novelReaderSettingEntity: NovelReaderSettingEntity)
 }

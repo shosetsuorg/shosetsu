@@ -1,6 +1,5 @@
 package app.shosetsu.common.domain.repositories.base
 
-import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -27,16 +26,16 @@ import kotlinx.coroutines.flow.Flow
  * Provides all functions needed for extension settings
  */
 interface IExtensionSettingsRepository {
-	suspend fun getSelectedListing(extensionID: Int): HResult<Int>
-	suspend fun observeSelectedListing(extensionID: Int): Flow<HResult<Int>>
-	suspend fun setSelectedListing(extensionID: Int, selectedListing: Int): HResult<*>
+	suspend fun getSelectedListing(extensionID: Int): Int
+	suspend fun observeSelectedListing(extensionID: Int): Flow<Int>
+	suspend fun setSelectedListing(extensionID: Int, selectedListing: Int)
 
 	// -- suspended getters
 
-	suspend fun getInt(extensionID: Int, settingID: Int, default: Int): HResult<Int>
-	suspend fun getString(extensionID: Int, settingID: Int, default: String): HResult<String>
-	suspend fun getBoolean(extensionID: Int, settingID: Int, default: Boolean): HResult<Boolean>
-	suspend fun getFloat(extensionID: Int, settingID: Int, default: Float): HResult<Float>
+	suspend fun getInt(extensionID: Int, settingID: Int, default: Int): Int
+	suspend fun getString(extensionID: Int, settingID: Int, default: String): String
+	suspend fun getBoolean(extensionID: Int, settingID: Int, default: Boolean): Boolean
+	suspend fun getFloat(extensionID: Int, settingID: Int, default: Float): Float
 
 	// -- flow getters
 
@@ -47,8 +46,8 @@ interface IExtensionSettingsRepository {
 
 	// -- setters
 
-	suspend fun setInt(extensionID: Int, settingID: Int, value: Int): HResult<*>
-	suspend fun setString(extensionID: Int, settingID: Int, value: String): HResult<*>
-	suspend fun setBoolean(extensionID: Int, settingID: Int, value: Boolean): HResult<*>
-	suspend fun setFloat(extensionID: Int, settingID: Int, value: Float): HResult<*>
+	suspend fun setInt(extensionID: Int, settingID: Int, value: Int)
+	suspend fun setString(extensionID: Int, settingID: Int, value: String)
+	suspend fun setBoolean(extensionID: Int, settingID: Int, value: Boolean)
+	suspend fun setFloat(extensionID: Int, settingID: Int, value: Float)
 }
