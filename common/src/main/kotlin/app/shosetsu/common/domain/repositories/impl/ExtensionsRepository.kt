@@ -44,7 +44,7 @@ class ExtensionsRepository(
 	override fun getExtensionFlow(id: Int): Flow<GenericExtensionEntity> =
 		installedDBSource.loadExtensionLive(id)
 
-	override suspend fun getExtension(id: Int): GenericExtensionEntity =
+	override suspend fun getExtension(id: Int): GenericExtensionEntity? =
 		installedDBSource.loadExtension(id)
 
 	override suspend fun uninstall(extensionEntity: GenericExtensionEntity) {

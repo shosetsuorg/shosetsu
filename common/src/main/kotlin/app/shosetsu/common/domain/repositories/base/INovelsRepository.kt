@@ -44,7 +44,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Loading] Initial Value
 	 */
-	fun loadLibraryNovelEntities(): Flow<HResult<List<LibraryNovelEntity>>>
+	fun loadLibraryNovelEntities(): Flow<List<LibraryNovelEntity>>
 
 	/**
 	 * Loads all [NovelEntity]s that are bookmarked
@@ -58,7 +58,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun loadBookmarkedNovelEntities(): HResult<List<NovelEntity>>
+	suspend fun loadBookmarkedNovelEntities(): List<NovelEntity>
 
 	/**
 	 * Loads all [NovelEntity]s that are in the repository
@@ -72,7 +72,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun loadNovels(): HResult<List<NovelEntity>>
+	suspend fun loadNovels(): List<NovelEntity>
 
 	/**
 	 * Searches the bookmarked novels and returns a live data of them
@@ -86,7 +86,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun searchBookmarked(string: String): HResult<List<StrippedBookmarkedNovelEntity>>
+	suspend fun searchBookmarked(string: String): List<StrippedBookmarkedNovelEntity>
 
 	/**
 	 * Loads the [NovelEntity] by its [novelID]
@@ -100,7 +100,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun getNovel(novelID: Int): HResult<NovelEntity>
+	suspend fun getNovel(novelID: Int): NovelEntity?
 
 	/**
 	 * Loads live data of the [NovelEntity] by its [novelID]
@@ -114,7 +114,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Loading] Initial value
 	 */
-	suspend fun getNovelFlow(novelID: Int): Flow<HResult<NovelEntity>>
+	suspend fun getNovelFlow(novelID: Int): Flow<NovelEntity?>
 
 	/**
 	 * Inserts the [novelEntity] and returns a UI version of it
@@ -128,7 +128,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun insertReturnStripped(novelEntity: NovelEntity): HResult<StrippedNovelEntity>
+	suspend fun insertReturnStripped(novelEntity: NovelEntity): StrippedNovelEntity?
 
 	/**
 	 * Inserts the [novelEntity]
@@ -142,7 +142,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun insert(novelEntity: NovelEntity): HResult<*>
+	suspend fun insert(novelEntity: NovelEntity): Long
 
 	/**
 	 * Updates the [novelEntity]
@@ -156,7 +156,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun update(novelEntity: NovelEntity): HResult<*>
+	suspend fun update(novelEntity: NovelEntity)
 
 	/**
 	 * Updates a novel entity with new data
@@ -170,7 +170,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun updateNovelData(novelEntity: NovelEntity, novelInfo: Novel.Info): HResult<*>
+	suspend fun updateNovelData(novelEntity: NovelEntity, novelInfo: Novel.Info)
 
 	/**
 	 * Updates a list of bookmarked novels
@@ -184,7 +184,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun updateLibraryNovelEntity(list: List<LibraryNovelEntity>): HResult<*>
+	suspend fun updateLibraryNovelEntity(list: List<LibraryNovelEntity>)
 
 	/**
 	 * Retrieves NovelInfo from it's source
@@ -202,14 +202,14 @@ interface INovelsRepository {
 		extension: IExtension,
 		novelEntity: NovelEntity,
 		loadChapters: Boolean,
-	): HResult<Novel.Info>
+	): Novel.Info
 
 
 	/**
 	 *  Removes all novels that are not bookmarked
 	 *  This should cascade and delete all their chapters as well
 	 */
-	suspend fun clearUnBookmarkedNovels(): HResult<*>
+	suspend fun clearUnBookmarkedNovels()
 
 
 	/**
@@ -228,7 +228,7 @@ interface INovelsRepository {
 		ext: IExtension,
 		query: String,
 		data: Map<Int, Any>
-	): HResult<List<Novel.Listing>>
+	): List<Novel.Listing>
 
 	/**
 	 * Loads catalogue data of an [IExtension]
@@ -246,5 +246,5 @@ interface INovelsRepository {
 		ext: IExtension,
 		listing: Int,
 		data: Map<Int, Any>,
-	): HResult<List<Novel.Listing>>
+	): List<Novel.Listing>
 }

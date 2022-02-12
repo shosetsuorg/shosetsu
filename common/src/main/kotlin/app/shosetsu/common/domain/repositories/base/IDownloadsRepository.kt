@@ -1,5 +1,6 @@
 package app.shosetsu.common.domain.repositories.base
 
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.DownloadEntity
 import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
@@ -41,7 +42,7 @@ interface IDownloadsRepository {
 	 *
 	 * [HResult.Loading] Initial value
 	 */
-	fun loadDownloadsFlow(): Flow<HResult<List<DownloadEntity>>>
+	fun loadDownloadsFlow(): Flow<List<DownloadEntity>>
 
 	/**
 	 * Loads the first download
@@ -55,7 +56,8 @@ interface IDownloadsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun loadFirstDownload(): HResult<DownloadEntity>
+	@Throws(GenericSQLiteException::class)
+	suspend fun loadFirstDownload(): DownloadEntity?
 
 	/**
 	 * Queries for the download count
@@ -69,7 +71,8 @@ interface IDownloadsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun loadDownloadCount(): HResult<Int>
+	@Throws(GenericSQLiteException::class)
+	suspend fun loadDownloadCount(): Int
 
 	/**
 	 * Gets a download entity by its ID
@@ -83,7 +86,8 @@ interface IDownloadsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun getDownload(chapterID: Int): HResult<DownloadEntity>
+	@Throws(GenericSQLiteException::class)
+	suspend fun getDownload(chapterID: Int): DownloadEntity?
 
 	/**
 	 * Adds a new download to the repository
@@ -97,7 +101,8 @@ interface IDownloadsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun addDownload(download: DownloadEntity): HResult<Long>
+	@Throws(GenericSQLiteException::class)
+	suspend fun addDownload(download: DownloadEntity): Long
 
 	/**
 	 * Updates a download in repository
@@ -111,7 +116,8 @@ interface IDownloadsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun update(download: DownloadEntity): HResult<*>
+	@Throws(GenericSQLiteException::class)
+	suspend fun update(download: DownloadEntity)
 
 	/**
 	 * Removes the [download] from the repository
@@ -125,7 +131,6 @@ interface IDownloadsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun deleteEntity(download: DownloadEntity): HResult<*>
-
-
+	@Throws(GenericSQLiteException::class)
+	suspend fun deleteEntity(download: DownloadEntity)
 }

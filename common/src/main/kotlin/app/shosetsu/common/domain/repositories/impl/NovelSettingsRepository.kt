@@ -3,7 +3,6 @@ package app.shosetsu.common.domain.repositories.impl
 import app.shosetsu.common.datasource.database.base.IDBNovelSettingsDataSource
 import app.shosetsu.common.domain.model.local.NovelSettingEntity
 import app.shosetsu.common.domain.repositories.base.INovelSettingsRepository
-import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -29,15 +28,15 @@ import kotlinx.coroutines.flow.Flow
 class NovelSettingsRepository(
 	private val database: IDBNovelSettingsDataSource
 ) : INovelSettingsRepository {
-	override suspend fun get(novelID: Int): HResult<NovelSettingEntity> =
+	override suspend fun get(novelID: Int): NovelSettingEntity? =
 		database.get(novelID)
 
-	override fun getFlow(novelID: Int): Flow<HResult<NovelSettingEntity>> =
+	override fun getFlow(novelID: Int): Flow<NovelSettingEntity?> =
 		database.getFlow(novelID)
 
-	override suspend fun update(novelSettingEntity: NovelSettingEntity): HResult<*> =
+	override suspend fun update(novelSettingEntity: NovelSettingEntity): Unit =
 		database.update(novelSettingEntity)
 
-	override suspend fun insert(novelSettingEntity: NovelSettingEntity): HResult<*> =
+	override suspend fun insert(novelSettingEntity: NovelSettingEntity): Long =
 		database.insert(novelSettingEntity)
 }

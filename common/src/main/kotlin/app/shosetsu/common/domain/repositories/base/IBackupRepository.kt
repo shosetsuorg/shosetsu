@@ -27,8 +27,12 @@ import kotlinx.coroutines.flow.Flow
  * Planned backup repository, handles saving and loading backups
  */
 interface IBackupRepository {
+	enum class BackupProgress {
+		IN_PROGRESS,
+		NOT_STARTED,
+	}
 
-	val backupProgress: Flow<HResult<Unit>>
+	val backupProgress: Flow<BackupProgress>
 
 
 	/**
@@ -36,14 +40,14 @@ interface IBackupRepository {
 	 *
 	 * Will cause emission of [backupProgress]
 	 */
-	fun updateProgress(result: HResult<Unit>)
+	fun updateProgress(result: BackupProgress)
 
 	/**
 	 * Reads the backup directory
 	 *
 	 * @return a list of filenames to select from
 	 */
-	suspend fun loadBackups(): HResult<List<String>>
+	suspend fun loadBackups(): List<String>
 
 
 	/**
@@ -57,11 +61,11 @@ interface IBackupRepository {
 	 * [HResult.Error] An exception occurred when loading
 	 * [HResult.Loading] never
 	 */
-	suspend fun loadBackup(path: String, isExternal: Boolean = false): HResult<BackupEntity>
+	suspend fun loadBackup(path: String, isExternal: Boolean = false): BackupEntity
 
 
 	/**
 	 * @return Path of new backup
 	 */
-	suspend fun saveBackup(backupEntity: BackupEntity): HResult<String>
+	suspend fun saveBackup(backupEntity: BackupEntity): String
 }

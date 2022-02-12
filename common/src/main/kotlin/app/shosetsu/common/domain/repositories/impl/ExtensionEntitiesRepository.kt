@@ -8,7 +8,6 @@ import app.shosetsu.common.datasource.file.base.IFileSettingsDataSource
 import app.shosetsu.common.datasource.memory.base.IMemExtensionsDataSource
 import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
 import java.io.IOException
@@ -75,21 +74,21 @@ class ExtensionEntitiesRepository(
 	}
 
 
-	suspend fun getInt(extensionID: Int, settingID: Int, default: Int): HResult<Int> =
+	suspend fun getInt(extensionID: Int, settingID: Int, default: Int): Int =
 		settingsSource.getInt("$extensionID", SettingKey.CustomInt("$settingID", default))
 
 	suspend fun getString(
 		extensionID: Int,
 		settingID: Int,
 		default: String
-	): HResult<String> =
+	): String =
 		settingsSource.getString("$extensionID", SettingKey.CustomString("$settingID", default))
 
 	suspend fun getBoolean(
 		extensionID: Int,
 		settingID: Int,
 		default: Boolean
-	): HResult<Boolean> =
+	): Boolean =
 		settingsSource.getBoolean(
 			"$extensionID",
 			SettingKey.CustomBoolean("$settingID", default)
@@ -99,7 +98,7 @@ class ExtensionEntitiesRepository(
 		extensionID: Int,
 		settingID: Int,
 		default: Float
-	): HResult<Float> =
+	): Float =
 		settingsSource.getFloat("$extensionID", SettingKey.CustomFloat("$settingID", default))
 
 	private suspend fun setSettings(extension: IExtension, filters: Array<out Filter<out Any?>>) {

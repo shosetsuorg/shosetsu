@@ -3,8 +3,7 @@ package app.shosetsu.common.domain.repositories.impl
 import app.shosetsu.common.datasource.file.base.IFileBackupDataSource
 import app.shosetsu.common.domain.model.local.BackupEntity
 import app.shosetsu.common.domain.repositories.base.IBackupRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.empty
+import app.shosetsu.common.domain.repositories.base.IBackupRepository.BackupProgress
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -31,21 +30,25 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class BackupRepository(
 	private val iFileBackupDataSource: IFileBackupDataSource
 ) : IBackupRepository {
-	private val _backupProgress: MutableStateFlow<HResult<Unit>> by lazy { MutableStateFlow(empty) }
+	private val _backupProgress: MutableStateFlow<BackupProgress> by lazy {
+		MutableStateFlow(
+			BackupProgress.NOT_STARTED
+		)
+	}
 
-	override val backupProgress: Flow<HResult<Unit>>
+	override val backupProgress: Flow<BackupProgress>
 		get() = _backupProgress
 
-	override fun updateProgress(result: HResult<Unit>) {
+	override fun updateProgress(result: BackupProgress) {
 		_backupProgress.tryEmit(result)
 	}
 
-	override suspend fun loadBackups(): HResult<List<String>> =
+	override suspend fun loadBackups(): List<String> =
 		iFileBackupDataSource.loadBackups()
 
-	override suspend fun loadBackup(path: String, isExternal: Boolean): HResult<BackupEntity> =
+	override suspend fun loadBackup(path: String, isExternal: Boolean): BackupEntity =
 		iFileBackupDataSource.loadBackup(path, isExternal)
 
-	override suspend fun saveBackup(backupEntity: BackupEntity): HResult<String> =
+	override suspend fun saveBackup(backupEntity: BackupEntity): String =
 		iFileBackupDataSource.saveBackup(backupEntity)
 }
