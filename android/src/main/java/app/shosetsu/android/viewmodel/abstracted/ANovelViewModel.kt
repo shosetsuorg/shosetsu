@@ -6,7 +6,6 @@ import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.common.view.uimodel.NovelSettingUI
 import javax.security.auth.Destroyable
@@ -38,9 +37,9 @@ import javax.security.auth.Destroyable
 abstract class ANovelViewModel
 	: ShosetsuViewModel(), IsOnlineCheckViewModel, Destroyable, ErrorReportingViewModel {
 
-	abstract val novelLive: LiveData<HResult<NovelUI>>
-	abstract val chaptersLive: LiveData<HResult<List<ChapterUI>>>
-	abstract val novelSettingFlow: LiveData<HResult<NovelSettingUI>>
+	abstract val novelLive: LiveData<NovelUI>
+	abstract val chaptersLive: LiveData<List<ChapterUI>>
+	abstract val novelSettingFlow: LiveData<NovelSettingUI>
 
 	/** Set's the value to be loaded */
 	abstract fun setNovelID(novelID: Int)
@@ -51,19 +50,19 @@ abstract class ANovelViewModel
 	/**
 	 * Return the novelURL to utilize in some way
 	 */
-	abstract fun getNovelURL(): LiveData<HResult<String>>
+	abstract fun getNovelURL(): LiveData<String>
 
 	data class NovelShareInfo(
 		val novelTitle: String,
 		val novelURL: String
 	)
 
-	abstract fun getShareInfo(): LiveData<HResult<NovelShareInfo>>
+	abstract fun getShareInfo(): LiveData<NovelShareInfo>
 
 	/**
 	 * Return the chapterURL to utilize in some way
 	 */
-	abstract fun getChapterURL(chapterUI: ChapterUI): LiveData<HResult<String>>
+	abstract fun getChapterURL(chapterUI: ChapterUI): LiveData<String>
 
 	/** Instruction to download a specific chapter */
 	abstract fun downloadChapter(vararg chapterUI: ChapterUI, startManager: Boolean = false)
@@ -73,7 +72,7 @@ abstract class ANovelViewModel
 	abstract fun deletePrevious()
 
 	/** Next chapter to read uwu */
-	abstract fun openLastRead(array: List<ChapterUI>): LiveData<HResult<Int>>
+	abstract fun openLastRead(array: List<ChapterUI>): LiveData<Int>
 
 	/**
 	 * Marks all the provided chapters as whatever [readingStatus] is
@@ -87,7 +86,7 @@ abstract class ANovelViewModel
 
 
 	/** Refresh media */
-	abstract fun refresh(): LiveData<HResult<*>>
+	abstract fun refresh(): LiveData<Unit>
 
 	/**
 	 * Is the novel bookmarked?

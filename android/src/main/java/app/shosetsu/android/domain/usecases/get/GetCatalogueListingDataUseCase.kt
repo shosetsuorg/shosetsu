@@ -7,10 +7,6 @@ import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
-import app.shosetsu.common.dto.transmogrify
 import app.shosetsu.lib.IExtension
 
 /*
@@ -43,27 +39,27 @@ class GetCatalogueListingDataUseCase(
 	suspend operator fun invoke(
 		iExtension: IExtension,
 		data: Map<Int, Any>
-	): HResult<List<ACatalogNovelUI>> =
-		settingsRepo.getInt(SettingKey.SelectedNovelCardType).transform { cardType ->
+	): List<ACatalogNovelUI> =
+		settingsRepo.getInt(SettingKey.SelectedNovelCardType).let { cardType ->
 			extSettingsRepo.getSelectedListing(iExtension.formatterID)
-				.transform { selectedListing ->
+				.let { selectedListing ->
 					// Load catalogue data
 
 					novelsRepository.getCatalogueData(
 						iExtension,
 						selectedListing,
 						data
-					).transform { list ->
-						successResult(list.map { novelListing ->
+					).let { list ->
+						list.map { novelListing ->
 							novelListing.convertTo(iExtension)
 						}.mapNotNull { ne ->
-						// For each, insert and return a stripped card
-						// This operation is to pre-cache URL and ID so loading occurs smoothly
-						novelsRepository.insertReturnStripped(ne).transmogrify { result ->
-							convertNCToCNUIUseCase(result, cardType)
+							// For each, insert and return a stripped card
+							// This operation is to pre-cache URL and ID so loading occurs smoothly
+							novelsRepository.insertReturnStripped(ne)?.let { result ->
+								convertNCToCNUIUseCase(result, cardType)
+							}
 						}
-					})
+					}
 				}
-			}
 		}
 }

@@ -7,8 +7,7 @@ import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
-import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
-import app.shosetsu.common.dto.HResult
+import app.shosetsu.android.viewmodel.base.SubscribeViewModel
 
 /*
  * This file is part of shosetsu.
@@ -32,7 +31,7 @@ import app.shosetsu.common.dto.HResult
  * 06 / 05 / 2020
  */
 abstract class AChapterReaderViewModel :
-	SubscribeHandleViewModel<List<ReaderUIItem<*, *>>>,
+	SubscribeViewModel<List<ReaderUIItem<*, *>>>,
 	ShosetsuViewModel(),
 	ErrorReportingViewModel,
 	ExposedSettingsRepoViewModel {
@@ -128,7 +127,7 @@ abstract class AChapterReaderViewModel :
 	abstract fun setNovelID(novelID: Int)
 
 	/** Start loading up a [readerChapterUI]'s passage */
-	abstract fun getChapterPassage(readerChapterUI: ReaderChapterUI): LiveData<HResult<ByteArray>>
+	abstract fun getChapterPassage(readerChapterUI: ReaderChapterUI): LiveData<ByteArray>
 
 	/** An easy method to toggle the state of a bookmark */
 	abstract fun toggleBookmark(readerChapterUI: ReaderChapterUI)
@@ -156,7 +155,7 @@ abstract class AChapterReaderViewModel :
 	/**
 	 * Loads the settings list for the bottom bar
 	 */
-	abstract fun getSettings(): LiveData<HResult<List<SettingsItemData>>>
+	abstract fun getSettings(): LiveData<List<SettingsItemData>>
 
 
 	/**

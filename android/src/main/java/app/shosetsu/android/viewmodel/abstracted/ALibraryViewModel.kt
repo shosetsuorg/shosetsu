@@ -33,7 +33,7 @@ import app.shosetsu.common.enums.NovelSortType
  * @author github.com/doomsdayrs
  */
 abstract class ALibraryViewModel :
-	SubscribeHandleViewModel<List<ABookmarkedNovelUI>>,
+	SubscribeViewModel<List<ABookmarkedNovelUI>>,
 	ShosetsuViewModel(),
 	IsOnlineCheckViewModel,
 	StartUpdateManagerViewModel,

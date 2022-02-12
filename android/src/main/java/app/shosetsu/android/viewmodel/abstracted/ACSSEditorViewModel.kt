@@ -2,7 +2,6 @@ package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -39,10 +38,10 @@ abstract class ACSSEditorViewModel : ShosetsuViewModel() {
 	abstract fun write(content: String)
 
 	abstract fun appendText(pasteContent: String)
-	abstract fun setCSSId(int: Int): LiveData<HResult<*>>
+	abstract fun setCSSId(int: Int): LiveData<Unit>
 
-	abstract val cssContent: LiveData<HResult<String>>
-	abstract val cssTitle: LiveData<HResult<String>>
+	abstract val cssContent: LiveData<String>
+	abstract val cssTitle: LiveData<String>
 
 	abstract val isCSSValid: LiveData<Boolean>
 	abstract val cssInvalidReason: LiveData<String?>

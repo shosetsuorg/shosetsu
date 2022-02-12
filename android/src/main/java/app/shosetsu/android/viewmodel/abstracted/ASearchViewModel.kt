@@ -5,7 +5,6 @@ import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
-import app.shosetsu.common.dto.HResult
 import javax.security.auth.Destroyable
 
 /*
@@ -33,9 +32,9 @@ import javax.security.auth.Destroyable
  * 01 / 05 / 2020
  */
 abstract class ASearchViewModel : ShosetsuViewModel(), ErrorReportingViewModel, Destroyable {
-	abstract val listings: LiveData<HResult<List<SearchRowUI>>>
+	abstract val listings: LiveData<List<SearchRowUI>>
 
 	abstract fun setQuery(query: String)
-	abstract fun searchLibrary(): LiveData<HResult<List<ACatalogNovelUI>>>
-	abstract fun searchExtension(extensionId: Int): LiveData<HResult<List<ACatalogNovelUI>>>
+	abstract fun searchLibrary(): LiveData<List<ACatalogNovelUI>>
+	abstract fun searchExtension(extensionId: Int): LiveData<List<ACatalogNovelUI>>
 }

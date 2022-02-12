@@ -2,7 +2,6 @@ package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.common.domain.model.local.ChapterHistoryEntity
 import app.shosetsu.common.domain.repositories.base.IChapterHistoryRepository
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -34,7 +33,7 @@ import app.shosetsu.common.dto.HResult
 class GetLastReadChapterUseCase(
 	private val chapterHistory: IChapterHistoryRepository
 ) {
-	operator fun invoke(novelId: Int): HResult<ChapterHistoryEntity> {
+	operator fun invoke(novelId: Int): ChapterHistoryEntity? {
 		return chapterHistory.getLastRead(novelId)
 	}
 }

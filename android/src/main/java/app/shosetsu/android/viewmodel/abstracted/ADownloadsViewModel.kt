@@ -5,7 +5,7 @@ import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
-import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
+import app.shosetsu.android.viewmodel.base.SubscribeViewModel
 
 /*
  * This file is part of shosetsu.
@@ -32,7 +32,7 @@ import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
  * @author github.com/doomsdayrs
  */
 abstract class ADownloadsViewModel :
-	SubscribeHandleViewModel<List<DownloadUI>>,
+	SubscribeViewModel<List<DownloadUI>>,
 	ShosetsuViewModel(),
 	IsOnlineCheckViewModel,
 	ErrorReportingViewModel {

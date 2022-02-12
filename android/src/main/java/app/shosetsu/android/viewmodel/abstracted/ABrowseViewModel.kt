@@ -6,7 +6,6 @@ import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeViewModel
 import app.shosetsu.common.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.common.domain.model.local.ExtensionInstallOptionEntity
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -64,7 +63,7 @@ abstract class ABrowseViewModel :
 	 * First value is a list of possible strings
 	 * Second value is if it is filtered or not
 	 */
-	abstract val filteredLanguagesLive: LiveData<HResult<FilteredLanguages>>
+	abstract val filteredLanguagesLive: LiveData<FilteredLanguages>
 
 	/**
 	 * Set if a language is filtered or not

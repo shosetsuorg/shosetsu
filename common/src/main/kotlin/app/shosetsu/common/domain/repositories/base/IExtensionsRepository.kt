@@ -50,6 +50,7 @@ interface IExtensionsRepository {
 	 * Gets the [GenericExtensionEntity] that has an [GenericExtensionEntity.id] matching [id]
 	 */
 	suspend fun getExtension(id: Int): GenericExtensionEntity?
+	suspend fun getInstalledExtension(id: Int): InstalledExtensionEntity?
 
 	/**
 	 * Loads all [GenericExtensionEntity] with an [GenericExtensionEntity.repoID] matching [repoID]
