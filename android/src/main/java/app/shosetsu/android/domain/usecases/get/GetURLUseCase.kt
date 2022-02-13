@@ -2,7 +2,6 @@ package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
-import app.shosetsu.common.dto.transformToSuccess
 import app.shosetsu.lib.IExtension.Companion.KEY_CHAPTER_URL
 import app.shosetsu.lib.IExtension.Companion.KEY_NOVEL_URL
 
@@ -32,7 +31,7 @@ import app.shosetsu.lib.IExtension.Companion.KEY_NOVEL_URL
  */
 class GetURLUseCase(private val getExt: GetExtensionUseCase) {
 	suspend operator fun invoke(url: String, formatterID: Int, type: Int) =
-		getExt(formatterID).transformToSuccess { it.expandURL(url, type) }
+		getExt(formatterID)?.expandURL(url, type)
 
 	suspend operator fun invoke(novelUI: NovelUI) =
 		this(novelUI.novelURL, novelUI.extID, KEY_NOVEL_URL)

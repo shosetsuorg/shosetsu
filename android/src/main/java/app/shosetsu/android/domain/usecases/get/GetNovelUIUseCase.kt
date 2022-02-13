@@ -33,18 +33,20 @@ class GetNovelUIUseCase(
 	private val extensionRepository: IExtensionsRepository
 ) {
 	@ExperimentalCoroutinesApi
-	operator fun invoke(novelID: Int): Flow<NovelUI> = flow {
+	operator fun invoke(novelID: Int): Flow<NovelUI?> = flow {
 		if (novelID != -1)
 			emitAll(novelsRepository.getNovelFlow(novelID).mapLatest {
-				it.let { novelEntity ->
+				it?.let { novelEntity ->
 					(NovelConversionFactory(novelEntity).convertTo())
 				}
 			}.map { novelUI ->
-				extensionRepository.getExtension(novelUI.extID).let { ext ->
-					(novelUI.apply {
-						extName = ext.name
-					})
-				}
+				if (novelUI != null)
+					extensionRepository.getExtension(novelUI.extID)?.let { ext ->
+						novelUI.apply {
+							extName = ext.name
+						}
+					}
+				else null
 			})
 	}
 }

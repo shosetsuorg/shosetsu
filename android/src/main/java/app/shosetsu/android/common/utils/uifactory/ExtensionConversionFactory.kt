@@ -2,9 +2,6 @@ package app.shosetsu.android.common.utils.uifactory
 
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.common.domain.model.local.GenericExtensionEntity
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
@@ -52,9 +49,6 @@ class ExtensionConversionFactory(data: GenericExtensionEntity) :
 fun List<GenericExtensionEntity>.mapToFactory() =
 	map { ExtensionConversionFactory(it) }
 
-fun HResult<List<GenericExtensionEntity>>.mapResultWithFactory() =
-	transform { successResult(it.mapToFactory()) }
-
 @ExperimentalCoroutinesApi
-fun Flow<HResult<List<GenericExtensionEntity>>>.mapLatestToResultFlowWithFactory(): Flow<HResult<List<ExtensionConversionFactory>>> =
-	mapLatest { it.mapResultWithFactory() }
+fun Flow<List<GenericExtensionEntity>>.mapLatestFlowWithFactory(): Flow<List<ExtensionConversionFactory>> =
+	mapLatest { it.mapToFactory() }

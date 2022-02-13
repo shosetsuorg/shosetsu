@@ -3,7 +3,6 @@ package app.shosetsu.android.domain.usecases
 import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.dto.ifSo
 
 /*
  * This file is part of shosetsu.
@@ -35,8 +34,7 @@ class RemoveExtensionEntityUseCase(
 	private val extensionEntitiesRepository: IExtensionEntitiesRepository
 ) {
 	suspend operator fun invoke(entity: GenericExtensionEntity) {
-		extensionEntitiesRepository.uninstall(entity) ifSo {
-			extensionRepository.delete(entity)
-		}
+		extensionEntitiesRepository.uninstall(entity)
+		extensionRepository.delete(entity)
 	}
 }

@@ -32,7 +32,7 @@ class UpdateLibraryFilterSettingsUseCase(
 	suspend operator fun invoke(librarySortFilterEntity: LibrarySortFilterEntity) {
 		iSettingsRepository.setString(
 			SettingKey.LibraryFilter,
-			Json { }.encodeToString(librarySortFilterEntity)
+			Json.encodeToString(librarySortFilterEntity)
 		)
 	}
 }

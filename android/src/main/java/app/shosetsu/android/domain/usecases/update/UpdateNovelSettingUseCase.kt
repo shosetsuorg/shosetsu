@@ -2,7 +2,6 @@ package app.shosetsu.android.domain.usecases.update
 
 import app.shosetsu.common.domain.model.local.NovelSettingEntity
 import app.shosetsu.common.domain.repositories.base.INovelSettingsRepository
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.view.uimodel.NovelSettingUI
 
 /*
@@ -28,9 +27,9 @@ import app.shosetsu.common.view.uimodel.NovelSettingUI
 class UpdateNovelSettingUseCase(
 	private val novelSettingsRepository: INovelSettingsRepository
 ) {
-	suspend operator fun invoke(novelSettingUI: NovelSettingUI): HResult<*> =
+	suspend operator fun invoke(novelSettingUI: NovelSettingUI) =
 		invoke(novelSettingUI.convertTo())
 
-	suspend operator fun invoke(novelSettingEntity: NovelSettingEntity): HResult<*> =
+	suspend operator fun invoke(novelSettingEntity: NovelSettingEntity) =
 		novelSettingsRepository.update(novelSettingEntity)
 }

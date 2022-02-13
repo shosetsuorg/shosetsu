@@ -5,7 +5,6 @@ import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.errorResult
 import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.utils.asIEntity
@@ -41,7 +40,7 @@ class InstallExtensionUseCase(
 	private val extensionRepoRepository: IExtensionRepoRepository
 ) {
 	@Throws(HTTPException::class)
-	suspend operator fun invoke(extensionEntity: GenericExtensionEntity): HResult<IExtensionsRepository.InstallExtensionFlags> {
+	suspend operator fun invoke(extensionEntity: GenericExtensionEntity): IExtensionsRepository.InstallExtensionFlags {
 		val repo = extensionRepoRepository.getRepo(extensionEntity.repoID)!!
 
 		val extensionContent: ByteArray = extensionRepository.downloadExtension(

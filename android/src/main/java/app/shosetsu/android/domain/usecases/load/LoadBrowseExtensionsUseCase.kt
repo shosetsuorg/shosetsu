@@ -3,7 +3,6 @@ package app.shosetsu.android.domain.usecases.load
 import app.shosetsu.common.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionDownloadRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.dto.loading
 import app.shosetsu.common.enums.DownloadStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -35,7 +34,6 @@ class LoadBrowseExtensionsUseCase(
 ) {
 	@ExperimentalCoroutinesApi
 	operator fun invoke(): Flow<List<BrowseExtensionEntity>> = flow {
-		loading()
 		val flow = extensionsRepository.loadBrowseExtensions()
 			.transformLatest { extensionList -> // Merge with downloadStatus
 				val listOfFlows: List<Flow<BrowseExtensionEntity?>> =

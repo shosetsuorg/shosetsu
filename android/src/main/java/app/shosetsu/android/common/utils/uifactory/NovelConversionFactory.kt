@@ -2,9 +2,6 @@ package app.shosetsu.android.common.utils.uifactory
 
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.common.domain.model.local.NovelEntity
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
@@ -52,9 +49,6 @@ class NovelConversionFactory(data: NovelEntity) : UIConversionFactory<NovelEntit
 fun List<NovelEntity>.mapToFactory() =
 	map { NovelConversionFactory(it) }
 
-fun HResult<List<NovelEntity>>.mapResultWithFactory() =
-	transform { successResult(it.mapToFactory()) }
-
 @ExperimentalCoroutinesApi
-fun Flow<HResult<List<NovelEntity>>>.mapLatestToResultFlowWithFactory() =
-	mapLatest { it.mapResultWithFactory() }
+fun Flow<List<NovelEntity>>.mapLatestToResultFlowWithFactory() =
+	mapLatest { it.mapToFactory() }
