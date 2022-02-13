@@ -4,9 +4,6 @@ import app.shosetsu.android.domain.usecases.start.StartDownloadWorkerUseCase
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
 
 /*
  * This file is part of Shosetsu.
@@ -42,13 +39,13 @@ class StartDownloadWorkerAfterUpdateUseCase(
 	/**
 	 * @return true if updating, false otherwise
 	 */
-	suspend operator fun invoke(chapters: List<ChapterEntity>): HResult<Boolean> =
-		sR.getBoolean(SettingKey.DownloadNewNovelChapters).transform { isDownloadOnUpdate ->
+	suspend operator fun invoke(chapters: List<ChapterEntity>): Boolean =
+		sR.getBoolean(SettingKey.DownloadNewNovelChapters).let { isDownloadOnUpdate ->
 			if (isDownloadOnUpdate) {
 				chapters.forEach { download(it) }
 				startDownloadWorker()
-				successResult(true)
+				true
 			} else
-				successResult(false)
+				false
 		}
 }

@@ -3,7 +3,6 @@ package app.shosetsu.android.domain.usecases.update
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of Shosetsu.
@@ -28,7 +27,7 @@ import app.shosetsu.common.dto.HResult
 class UpdateRepositoryUseCase(
 	private val iExtensionRepoRepository: IExtensionRepoRepository
 ) {
-	suspend operator fun invoke(repositoryEntity: RepositoryEntity): HResult<*> =
+	suspend operator fun invoke(repositoryEntity: RepositoryEntity) =
 		iExtensionRepoRepository.update(repositoryEntity)
 
 	suspend operator fun invoke(repositoryUI: RepositoryUI) = invoke(repositoryUI.convertTo())

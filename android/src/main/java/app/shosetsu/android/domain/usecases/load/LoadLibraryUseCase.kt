@@ -7,9 +7,6 @@ import app.shosetsu.android.view.uimodels.model.library.NormalBookmarkedNovelUI
 import app.shosetsu.common.consts.settings.SettingKey.SelectedNovelCardType
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.common.enums.NovelCardType.*
 import kotlinx.coroutines.flow.Flow
@@ -41,12 +38,12 @@ class LoadLibraryUseCase(
 	private val novelsRepo: INovelsRepository,
 	private val settingsRepo: ISettingsRepository,
 ) {
-	operator fun invoke(): Flow<HResult<List<ABookmarkedNovelUI>>> =
+	operator fun invoke(): Flow<List<ABookmarkedNovelUI>> =
 		novelsRepo.loadLibraryNovelEntities()
 			.combine(settingsRepo.getIntFlow(SelectedNovelCardType).mapLatest {
 				NovelCardType.valueOf(it)
 			}) { origin, cardType ->
-				origin.transform {
+				origin.let {
 					val list = it
 					val newList = list.map { (id, title, imageURL, bookmarked, unread,
 						                         genres, authors, artists, tags) ->
@@ -86,7 +83,7 @@ class LoadLibraryUseCase(
 							)
 						}
 					}
-					successResult(newList)
+					newList
 				}
 			}
 }

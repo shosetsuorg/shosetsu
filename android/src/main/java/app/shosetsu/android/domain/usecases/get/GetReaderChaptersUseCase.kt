@@ -6,7 +6,6 @@ import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -41,19 +40,20 @@ class GetReaderChaptersUseCase(
 	private val novelRepo: INovelsRepository
 ) {
 	@ExperimentalCoroutinesApi
-	operator fun invoke(novelID: Int): Flow<HResult<List<ReaderChapterUI>>> =
+	operator fun invoke(novelID: Int): Flow<List<ReaderChapterUI>> =
 		flow {
-			emit(loading())
-			emitAll(chapterRepo.getReaderChaptersFlow(novelID)
-				.combine(settingsRepo.getBooleanFlow(ReaderStringToHtml)) { list, convertToHtml ->
-					list.transformToSuccess { it to convertToHtml }
-				}.combine(novelRepo.getNovelFlow(novelID)) { result, novelResult ->
-					result.transform { pair -> novelResult.transformToSuccess { pair to it } }
-				}.mapLatestResult { (pair, novel) ->
-					pair.let { (list, convertToHtml) ->
-						extRepo.getExtension(novel.extensionID)
-							.transform { extensionEntity ->
-								successResult(list.map { (id, url, title, readingPosition, readingStatus, bookmarked) ->
+			emitAll(
+				novelRepo.getNovelFlow(novelID)
+					.combine(chapterRepo.getReaderChaptersFlow(novelID)) { novel, chapters ->
+						novel to chapters
+					}
+					.combine(settingsRepo.getBooleanFlow(ReaderStringToHtml)) { (novel, list), convertToHtml ->
+						if (novel != null) {
+							val extensionEntity =
+								extRepo.getInstalledExtension(novel.extensionID)
+
+							if (extensionEntity != null) {
+								list.map { (id, url, title, readingPosition, readingStatus, bookmarked) ->
 									ReaderChapterUI(
 										id,
 										url,
@@ -64,10 +64,10 @@ class GetReaderChaptersUseCase(
 										extensionEntity.chapterType,
 										convertToHtml
 									)
-								})
-							}
+								}
+							} else emptyList()
+						} else emptyList()
 					}
-				}
 			)
 		}
 }

@@ -3,8 +3,6 @@ package app.shosetsu.android.domain.usecases
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.ifSo
 
 /*
  * This file is part of shosetsu.
@@ -31,10 +29,9 @@ class UninstallExtensionUIUseCase(
 	private val extensionRepository: IExtensionsRepository,
 	private val extensionEntitiesRepository: IExtensionEntitiesRepository
 ) {
-	suspend operator fun invoke(extensionEntity: ExtensionUI): HResult<*> {
-		return extensionEntitiesRepository.uninstall(extensionEntity.convertTo()) ifSo {
-			extensionRepository.uninstall(extensionEntity.convertTo())
-		}
+	suspend operator fun invoke(extensionEntity: ExtensionUI) {
+		return extensionEntitiesRepository.uninstall(extensionEntity.convertTo())
+		extensionRepository.uninstall(extensionEntity.convertTo())
 	}
 
 }

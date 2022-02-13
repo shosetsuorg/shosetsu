@@ -1,7 +1,6 @@
 package app.shosetsu.android.domain.usecases
 
 import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of Shosetsu.
@@ -23,5 +22,5 @@ import app.shosetsu.common.dto.HResult
 class CanAppSelfUpdateUseCase(
 	private val iAppUpdatesRepository: IAppUpdatesRepository
 ) {
-	operator fun invoke(): HResult<Boolean> = iAppUpdatesRepository.canSelfUpdate()
+	operator fun invoke(): Boolean = iAppUpdatesRepository.canSelfUpdate()
 }

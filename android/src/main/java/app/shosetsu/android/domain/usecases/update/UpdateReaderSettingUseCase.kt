@@ -2,7 +2,6 @@ package app.shosetsu.android.domain.usecases.update
 
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.common.domain.repositories.base.INovelReaderSettingsRepository
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of Shosetsu.
@@ -28,6 +27,6 @@ class UpdateReaderSettingUseCase(
 	private val repo: INovelReaderSettingsRepository
 ) {
 
-	suspend operator fun invoke(entity: NovelReaderSettingEntity): HResult<*> =
+	suspend operator fun invoke(entity: NovelReaderSettingEntity) =
 		repo.update(entity)
 }

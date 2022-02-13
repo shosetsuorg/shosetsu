@@ -2,7 +2,6 @@ package app.shosetsu.android.domain.usecases
 
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of Shosetsu.
@@ -29,7 +28,7 @@ import app.shosetsu.common.dto.HResult
 class PurgeNovelCacheUseCase(
 	private val iNovelsRepository: INovelsRepository
 ) {
-	suspend operator fun invoke(): HResult<*> {
+	suspend operator fun invoke() {
 		logI("Purging novel cache")
 		return iNovelsRepository.clearUnBookmarkedNovels()
 	}
