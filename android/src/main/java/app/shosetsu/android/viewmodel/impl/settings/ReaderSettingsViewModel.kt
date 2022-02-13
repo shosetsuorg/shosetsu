@@ -7,8 +7,6 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.load.LoadReaderThemes
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
@@ -17,8 +15,6 @@ import app.shosetsu.android.viewmodel.abstracted.settings.AReaderSettingsViewMod
 import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.domain.repositories.base.getStringOrDefault
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.MarkingType
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -47,7 +43,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class ReaderSettingsViewModel(
 	iSettingsRepository: ISettingsRepository,
 	private val app: Application,
-	private val reportExceptionUseCase: ReportExceptionUseCase,
 	val loadReaderThemes: LoadReaderThemes
 ) : AReaderSettingsViewModel(iSettingsRepository) {
 
@@ -55,35 +50,32 @@ class ReaderSettingsViewModel(
 	override fun getReaderThemes(): LiveData<List<ColorChoiceUI>> =
 		loadReaderThemes().asIOLiveData()
 
+	@Throws(NotFoundException::class)
 	override suspend fun settings(): List<SettingsItemData> = listOf(
 		customSettingData(1) {
-			title { "" }
+			titleText = ""
 		},
 		paragraphSpacingOption(2),
 		spinnerSettingData(9) {
-			title { "Text Alignment" }
-			try {
-				arrayAdapter = ArrayAdapter(
-					app.applicationContext,
-					android.R.layout.simple_spinner_dropdown_item,
-					app.applicationContext.resources!!.getStringArray(R.array.text_alignments)
-				)
-			} catch (e: NotFoundException) {
-				reportExceptionUseCase(e.toHError())
-			}
+			titleText = "Text Alignment"
+			arrayAdapter = ArrayAdapter(
+				app.applicationContext,
+				android.R.layout.simple_spinner_dropdown_item,
+				app.applicationContext.resources!!.getStringArray(R.array.text_alignments)
+			)
 			spinnerSettingValue(ReaderTextAlignment)
 		},
 		textSizeOption(3),
 		paragraphIndentOption(4, app.applicationContext),
 		customBottomSettingData(5) {
-			title { R.string.reader_theme }
+			titleRes = R.string.reader_theme
 		},
 		invertChapterSwipeOption(6),
 		tapToScrollOption(7),
 		volumeScrollingOption(13),
 		switchSettingData(8) {
-			title { R.string.settings_reader_title_mark_read_as_reading }
-			description { R.string.settings_reader_desc_mark_read_as_reading }
+			titleRes = R.string.settings_reader_title_mark_read_as_reading
+			descRes = R.string.settings_reader_desc_mark_read_as_reading
 			checkSettingValue(ReaderMarkReadAsReading)
 		},
 		horizontalSwitchOption(9),
@@ -95,18 +87,14 @@ class ReaderSettingsViewModel(
 		stringAsHtmlOption(11),
 		continuousScrollOption(12),
 		spinnerSettingData(0) {
-			title { R.string.marking_mode }
-			try {
-				arrayAdapter = ArrayAdapter(
-					app.applicationContext,
-					android.R.layout.simple_spinner_dropdown_item,
-					app.applicationContext.resources!!.getStringArray(R.array.marking_names)
-				)
-			} catch (e: NotFoundException) {
-				reportExceptionUseCase.invoke(e.toHError())
-			}
+			titleRes = R.string.marking_mode
+			arrayAdapter = ArrayAdapter(
+				app.applicationContext,
+				android.R.layout.simple_spinner_dropdown_item,
+				app.applicationContext.resources!!.getStringArray(R.array.marking_names)
+			)
 			spinnerValue {
-				when (MarkingType.valueOf(settingsRepo.getStringOrDefault(ReadingMarkingType))) {
+				when (MarkingType.valueOf(settingsRepo.getString(ReadingMarkingType))) {
 					MarkingType.ONSCROLL -> 1
 					MarkingType.ONVIEW -> 0
 				}
@@ -134,9 +122,6 @@ class ReaderSettingsViewModel(
 		showReaderDivider(15),
 	)
 
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-		reportExceptionUseCase(error)
-	}
 }
 
 suspend fun ExposedSettingsRepoViewModel.stringAsHtmlOption(id: Int) =

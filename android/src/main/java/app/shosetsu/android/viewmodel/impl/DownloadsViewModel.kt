@@ -2,7 +2,6 @@ package app.shosetsu.android.viewmodel.impl
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteDownloadUseCase
 import app.shosetsu.android.domain.usecases.load.LoadDownloadsUseCase
@@ -12,13 +11,13 @@ import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.ADownloadsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.IsDownloadPaused
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.DownloadStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -50,7 +49,6 @@ class DownloadsViewModel(
 	private val deleteDownloadUseCase: DeleteDownloadUseCase,
 	private val settings: ISettingsRepository,
 	private var isOnlineUseCase: IsOnlineUseCase,
-	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : ADownloadsViewModel() {
 
 	private fun List<DownloadUI>.sort() = sortedWith(compareBy<DownloadUI> {
@@ -67,20 +65,15 @@ class DownloadsViewModel(
 
 	private val downloadsFlow by lazy {
 		flow {
-			emit(loading())
-			emitAll(getDownloadsUseCase().mapLatestResult { list ->
-				successResult(list.sort())
+			emitAll(getDownloadsUseCase().mapLatest { list ->
+				list.sort()
 			})
 		}
 	}
 
 	@ExperimentalCoroutinesApi
-	override val liveData: LiveData<HResult<List<DownloadUI>>> by lazy {
+	override val liveData: LiveData<List<DownloadUI>> by lazy {
 		downloadsFlow.asIOLiveData()
-	}
-
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-		reportExceptionUseCase(error)
 	}
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
@@ -91,7 +84,7 @@ class DownloadsViewModel(
 
 	override fun togglePause() {
 		launchIO {
-			settings.getBoolean(IsDownloadPaused).handle { isPaused ->
+			settings.getBoolean(IsDownloadPaused).let { isPaused ->
 				settings.setBoolean(IsDownloadPaused, !isPaused)
 				if (isPaused) startDownloadWorkerUseCase()
 			}
@@ -126,7 +119,7 @@ class DownloadsViewModel(
 		launchIO {
 			pauseAndWait()
 
-			downloadsFlow.first { it is HResult.Success }.handle { list ->
+			downloadsFlow.first { it.isNotEmpty() }.let { list ->
 				list.forEach { deleteDownloadUseCase(it) }
 			}
 		}
@@ -147,17 +140,16 @@ class DownloadsViewModel(
 		do {
 			delay(1000)
 		} while (
-			downloadsFlow.first { it is HResult.Success }.unwrap()!!
-				.any { download ->
-					download.status == DownloadStatus.DOWNLOADING || download.status == DownloadStatus.WAITING
-				}
+			downloadsFlow.first { it.isNotEmpty() }.any { download ->
+				download.status == DownloadStatus.DOWNLOADING || download.status == DownloadStatus.WAITING
+			}
 		)
 	}
 
 	override fun setAllPending() {
 		launchIO {
 			pauseAndWait()
-			downloadsFlow.first { it is HResult.Success }.handle { list ->
+			downloadsFlow.first { it.isNotEmpty() }.let { list ->
 				list.forEach { updateDownloadUseCase(it.copy(status = DownloadStatus.PENDING)) }
 			}
 		}

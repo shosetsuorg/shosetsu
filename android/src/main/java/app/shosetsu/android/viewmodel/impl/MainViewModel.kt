@@ -16,8 +16,8 @@ import app.shosetsu.android.domain.usecases.start.StartAppUpdateInstallWorkerUse
 import app.shosetsu.android.viewmodel.abstracted.AMainViewModel
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
+import app.shosetsu.common.domain.repositories.base.IBackupRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.AppThemes
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -76,7 +76,7 @@ class MainViewModel(
 		}
 	}
 
-	override fun startAppUpdateCheck(): LiveData<HResult<AppUpdateEntity>> =
+	override fun startAppUpdateCheck(): LiveData<AppUpdateEntity> =
 		loadAppUpdateFlowLiveUseCase().asIOLiveData()
 
 	override val navigationStyle: NavigationStyle
@@ -88,15 +88,15 @@ class MainViewModel(
 	override val appThemeLiveData: LiveData<AppThemes>
 		get() = loadLiveAppThemeUseCase().asIOLiveData()
 
-	override fun handleAppUpdate(): LiveData<HResult<AppUpdateAction>> =
+	override fun handleAppUpdate(): LiveData<AppUpdateAction> =
 		flow {
 			emit(
-				canAppSelfUpdateUseCase().transform { canSelfUpdate ->
+				canAppSelfUpdateUseCase().let { canSelfUpdate ->
 					if (canSelfUpdate) {
 						startInstallWorker()
-						successResult(AppUpdateAction.SelfUpdate)
+						AppUpdateAction.SelfUpdate
 					} else {
-						loadAppUpdateUseCase().transformToSuccess {
+						loadAppUpdateUseCase().let {
 							AppUpdateAction.UserUpdate(
 								it.version,
 								it.url
@@ -107,7 +107,7 @@ class MainViewModel(
 			)
 		}.asIOLiveData()
 
-	override val backupProgressState: LiveData<HResult<Unit>> by lazy {
+	override val backupProgressState: LiveData<IBackupRepository.BackupProgress> by lazy {
 		loadBackupProgress().asIOLiveData()
 	}
 
@@ -123,8 +123,7 @@ class MainViewModel(
 	}
 
 	override suspend fun showIntro(): Boolean =
-		settingsRepository.getBoolean(SettingKey.FirstTime).unwrap() ?: SettingKey.FirstTime.default
-
+		settingsRepository.getBoolean(SettingKey.FirstTime)
 
 	override fun toggleShowIntro() {
 		launchIO {

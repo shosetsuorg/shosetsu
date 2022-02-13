@@ -4,10 +4,10 @@ import android.app.Application
 import android.graphics.Color
 import android.widget.ArrayAdapter
 import androidx.annotation.WorkerThread
-import androidx.lifecycle.*
-import app.shosetsu.android.common.dto.*
-import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.domain.ReportExceptionUseCase
+import androidx.lifecycle.LiveData
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logD
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.model.local.ColorChoiceData
 import app.shosetsu.android.domain.usecases.RecordChapterIsReadUseCase
 import app.shosetsu.android.domain.usecases.RecordChapterIsReadingUseCase
@@ -27,8 +27,6 @@ import app.shosetsu.android.viewmodel.impl.settings.*
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.domain.repositories.base.getStringSetOrDefault
-import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.MarkingType
 import app.shosetsu.common.enums.MarkingType.ONSCROLL
 import app.shosetsu.common.enums.MarkingType.ONVIEW
@@ -67,7 +65,6 @@ class ChapterReaderViewModel(
 	private val loadReaderChaptersUseCase: GetReaderChaptersUseCase,
 	private val loadChapterPassageUseCase: GetChapterPassageUseCase,
 	private val updateReaderChapterUseCase: UpdateReaderChapterUseCase,
-	private val reportExceptionUseCase: ReportExceptionUseCase,
 	private val getReaderSettingsUseCase: GetReaderSettingUseCase,
 	private val updateReaderSettingUseCase: UpdateReaderSettingUseCase,
 	private val getReadingMarkingType: GetReadingMarkingTypeUseCase,
@@ -84,11 +81,11 @@ class ChapterReaderViewModel(
 	 *
 	 * ChapterID to the data flow for it
 	 */
-	private val hashMap: HashMap<Int, Flow<HResult<ByteArray>>> = hashMapOf()
+	private val hashMap: HashMap<Int, Flow<ByteArray>> = hashMapOf()
 
 
 	@ExperimentalCoroutinesApi
-	private val chaptersFlow by lazy {
+	private val chaptersFlow: Flow<List<ReaderChapterUI>> by lazy {
 		novelIDLive.transformLatest { nId ->
 			emitAll(
 				loadReaderChaptersUseCase(nId)
@@ -97,7 +94,7 @@ class ChapterReaderViewModel(
 	}
 
 	@ExperimentalCoroutinesApi
-	override val liveData: LiveData<HList<ReaderUIItem<*, *>>> by lazy {
+	override val liveData: LiveData<List<ReaderUIItem<*, *>>> by lazy {
 		chaptersFlow
 			.combineDividers() // Add dividers
 
@@ -106,7 +103,7 @@ class ChapterReaderViewModel(
 			.asIOLiveData()
 	}
 
-	private fun HFlow<List<ReaderUIItem<*, *>>>.combineInvert(): Flow<HResult<List<ReaderUIItem<*, *>>>> =
+	private fun Flow<List<ReaderUIItem<*, *>>>.combineInvert(): Flow<List<ReaderUIItem<*, *>>> =
 		combine(
 			// Only invert if horizontalSwipe && invertSwipe are true.
 			// Because who will read with an inverted vertical scroll??
@@ -115,22 +112,18 @@ class ChapterReaderViewModel(
 					horizontalSwipe && invertSwipe
 				}
 		) { listResult, b ->
-			listResult.transform { list ->
+			listResult.let { list ->
 				if (b) {
-					successResult(
-						ArrayList(list).apply {
-							reverse()
-						}
-					)
+					list.reversed()
 				} else {
-					successResult(list)
+					list
 				}
 			}
 		}
 
-	private fun HListFlow<ReaderChapterUI>.combineDividers(): Flow<HResult<List<ReaderUIItem<*, *>>>> =
+	private fun Flow<List<ReaderChapterUI>>.combineDividers(): Flow<List<ReaderUIItem<*, *>>> =
 		combine(settingsRepo.getBooleanFlow(ReaderShowChapterDivider)) { result, value ->
-			result.transform {
+			result.let {
 				if (value) {
 					val modified = ArrayList<ReaderUIItem<*, *>>(it)
 					// Adds the "No more chapters" marker
@@ -148,16 +141,16 @@ class ChapterReaderViewModel(
 							)
 						)
 
-					successResult(modified)
+					modified
 				} else {
-					successResult(it)
+					it
 				}
 			}
 		}
 
 
 	@ExperimentalCoroutinesApi
-	private val readerSettingsFlow: Flow<HResult<NovelReaderSettingEntity>> by lazy {
+	private val readerSettingsFlow: Flow<NovelReaderSettingEntity> by lazy {
 		novelIDLive.transformLatest {
 			emitAll(getReaderSettingsUseCase(it))
 		}
@@ -166,7 +159,7 @@ class ChapterReaderViewModel(
 	@ExperimentalCoroutinesApi
 	override val liveTheme: LiveData<Pair<Int, Int>> by lazy {
 		settingsRepo.getIntFlow(ReaderTheme).transformLatest { id: Int ->
-			settingsRepo.getStringSetOrDefault(ReaderUserThemes)
+			settingsRepo.getStringSet(ReaderUserThemes)
 				.map { ColorChoiceData.fromString(it) }
 				.find { it.identifier == id.toLong() }
 				?.let { (_, _, textColor, backgroundColor) ->
@@ -182,9 +175,9 @@ class ChapterReaderViewModel(
 	@ExperimentalCoroutinesApi
 	override val liveIndentSize: LiveData<Int> by lazy {
 		readerSettingsFlow.mapLatest { result ->
-			result.unwrap()?.paragraphIndentSize?.also {
+			result.paragraphIndentSize.also {
 				_defaultIndentSize = it
-			} ?: defaultIndentSize
+			}
 		}.asIOLiveData()
 	}
 
@@ -192,9 +185,9 @@ class ChapterReaderViewModel(
 	override val liveParagraphSpacing: LiveData<Float> by lazy {
 		readerSettingsFlow.mapLatest { result ->
 			logV("Mapping latest paragraph spacing")
-			result.unwrap()?.paragraphSpacingSize?.also {
+			result.paragraphSpacingSize?.also {
 				_defaultParaSpacing = it
-			} ?: defaultParaSpacing
+			}
 		}.asIOLiveData()
 	}
 
@@ -265,10 +258,6 @@ class ChapterReaderViewModel(
 		}.asIOLiveData()
 	}
 
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-		reportExceptionUseCase(error)
-	}
-
 	override fun setNovelID(novelID: Int) {
 		logV("novelID=$novelID")
 		when {
@@ -285,10 +274,9 @@ class ChapterReaderViewModel(
 	}
 
 	@WorkerThread
-	override fun getChapterPassage(readerChapterUI: ReaderChapterUI): LiveData<HResult<ByteArray>> =
+	override fun getChapterPassage(readerChapterUI: ReaderChapterUI): LiveData<ByteArray> =
 		hashMap.getOrPut(readerChapterUI.id) {
 			flow {
-				emit(loading())
 				emit(loadChapterPassageUseCase(readerChapterUI))
 			}
 		}.asIOLiveData()
@@ -331,14 +319,14 @@ class ChapterReaderViewModel(
 		markingType: MarkingType,
 		readingPosition: Double = chapterUI.readingPosition
 	) = launchIO {
-		settingsRepo.getBoolean(ReaderMarkReadAsReading).handle { markReadAsReading ->
+		settingsRepo.getBoolean(ReaderMarkReadAsReading).let { markReadAsReading ->
 			/*
 			 * If marking chapters that are read as reading is disabled
 			 * and the chapter's readingStatus is read, return to prevent further IO.
 			 */
 			if (!markReadAsReading && chapterUI.readingStatus == READ) return@launchIO
 
-			getReadingMarkingType().handle { value ->
+			getReadingMarkingType().let { value ->
 				updateReaderChapterUseCase(
 					chapterUI.copy(
 						readingStatus = if (value == markingType) {
@@ -369,70 +357,67 @@ class ChapterReaderViewModel(
 
 
 	@ExperimentalCoroutinesApi
-	override fun getSettings(): LiveData<HResult<List<SettingsItemData>>> =
+	override fun getSettings(): LiveData<List<SettingsItemData>> =
 		flow {
 			// First build the universal setting interface
-			emit(loading)
-			emit(successResult(settings()))
-		}.combine(readerSettingsFlow) { settingsListResult, readerSettingsResult ->
+			emit(settings())
+		}.combine(readerSettingsFlow) { settingsList, settingEntity ->
 			/*
 			 * Combining the universal setting flow and the readerSettingFlow
 			 * Handle both results together, then transform the result, adding UI for reader specific settings
 			 */
 
-			(settingsListResult thenAlso readerSettingsResult).transformToSuccess { (settingsList, settingEntity) ->
-				ArrayList(settingsList).apply {
-					add(floatButtonSettingData(1) {
-						title { R.string.paragraph_spacing }
-						minWhole = 0
+			ArrayList(settingsList).apply {
+				add(floatButtonSettingData(1) {
+					title { R.string.paragraph_spacing }
+					minWhole = 0
 
-						settingEntity.paragraphSpacingSize.let { settingValue ->
-							initialWhole =
-								wholeSteps.indexOfFirst { it == settingValue.toInt() }.orZero()
-							val decimal: Int = ((settingValue % 1) * 100).toInt()
-							initialDecimal = decimalSteps.indexOfFirst { it == decimal }.orZero()
-						}
+					settingEntity.paragraphSpacingSize.let { settingValue ->
+						initialWhole =
+							wholeSteps.indexOfFirst { it == settingValue.toInt() }.orZero()
+						val decimal: Int = ((settingValue % 1) * 100).toInt()
+						initialDecimal = decimalSteps.indexOfFirst { it == decimal }.orZero()
+					}
 
-						onValueSelected { selected ->
-							launchIO {
+					onValueSelected { selected ->
+						launchIO {
 
-								updateReaderSettingUseCase(
-									settingEntity.copy(
-										paragraphSpacingSize = selected.toFloat()
-									)
+							updateReaderSettingUseCase(
+								settingEntity.copy(
+									paragraphSpacingSize = selected.toFloat()
 								)
-							}
+							)
 						}
-					})
-					add(spinnerSettingData(2) {
-						val context = application.applicationContext
-						title { R.string.paragraph_indent }
-						arrayAdapter = ArrayAdapter(
-							context,
-							android.R.layout.simple_spinner_dropdown_item,
-							context.resources!!.getStringArray(R.array.sizes_with_none)
-						)
+					}
+				})
+				add(spinnerSettingData(2) {
+					val context = application.applicationContext
+					title { R.string.paragraph_indent }
+					arrayAdapter = ArrayAdapter(
+						context,
+						android.R.layout.simple_spinner_dropdown_item,
+						context.resources!!.getStringArray(R.array.sizes_with_none)
+					)
 
-						spinnerValue { settingEntity.paragraphIndentSize }
-						var first = true
-						onSpinnerItemSelected { _, _, position, _ ->
-							launchIO {
-								if (first) {
-									first = false
-									return@launchIO
-								}
-								updateReaderSettingUseCase(
-									settingEntity.copy(
-										paragraphIndentSize = position
-									)
+					spinnerValue { settingEntity.paragraphIndentSize }
+					var first = true
+					onSpinnerItemSelected { _, _, position, _ ->
+						launchIO {
+							if (first) {
+								first = false
+								return@launchIO
+							}
+							updateReaderSettingUseCase(
+								settingEntity.copy(
+									paragraphIndentSize = position
 								)
-							}
+							)
 						}
-					})
+					}
+				})
 
-					// Sort so the result will be ordered properly
-					sortBy { it.id }
-				}
+				// Sort so the result will be ordered properly
+				sortBy { it.id }
 			}
 		}.asIOLiveData()
 

@@ -8,7 +8,6 @@ import app.shosetsu.android.viewmodel.abstracted.ACSSEditorViewModel
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.StyleEntity
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.*
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
@@ -50,11 +49,9 @@ class CSSEditorViewModel(
 
 	private val styleFlow by lazy {
 		cssIDFlow.map { id ->
-			successResult(
-				StyleEntity(
-					id,
-					app.resources.getString(R.string.default_reader)
-				)
+			StyleEntity(
+				id,
+				app.resources.getString(R.string.default_reader)
 			)
 		}
 	}
@@ -113,26 +110,27 @@ class CSSEditorViewModel(
 		cssContentFlow.tryEmit(combined)
 	}
 
-	override fun setCSSId(int: Int): LiveData<HResult<*>> =
+	override fun setCSSId(int: Int): LiveData<Unit> =
 		flow {
 			when {
-				int == cssIDFlow.value -> emit(successResult(Unit))
+				int == cssIDFlow.value -> emit(Unit)
 				int != cssIDFlow.value -> {
 					undoStack.clear()
 					redoStack.clear()
 					cssContentFlow.emit("")
 					cssIDFlow.emit(int)
-					emit(successResult(Unit))
+					emit(Unit)
 				}
-				else -> emit(emptyResult())
+				else -> {
+				}
 			}
 		}.asIOLiveData()
 
 	init {
 		launchIO {
 			styleFlow.collect { result ->
-				result.handle {
-					settingsRepo.getString(SettingKey.ReaderHtmlCss).handle {
+				result.let {
+					settingsRepo.getString(SettingKey.ReaderHtmlCss).let {
 						cssContentFlow.emit(it)
 					}
 				}
@@ -141,12 +139,12 @@ class CSSEditorViewModel(
 	}
 
 
-	override val cssContent: LiveData<HResult<String>> by lazy {
-		cssContentFlow.map { successResult(it) }.asIOLiveData()
+	override val cssContent: LiveData<String> by lazy {
+		cssContentFlow.map { it }.asIOLiveData()
 	}
 
-	override val cssTitle: LiveData<HResult<String>> by lazy {
-		styleFlow.mapResult { successResult(it.title) }.asIOLiveData()
+	override val cssTitle: LiveData<String> by lazy {
+		styleFlow.map { it.title }.asIOLiveData()
 	}
 
 	override val isCSSValid: LiveData<Boolean> by lazy {
