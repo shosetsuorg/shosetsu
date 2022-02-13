@@ -3,20 +3,19 @@ package app.shosetsu.android.viewmodel.impl
 import android.app.Application
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.NovelBackgroundAddUseCase
 import app.shosetsu.android.domain.usecases.get.GetCatalogueListingDataUseCase
 import app.shosetsu.android.domain.usecases.get.GetCatalogueQueryDataUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtensionUseCase
-import app.shosetsu.android.domain.usecases.load.*
+import app.shosetsu.android.domain.usecases.load.LoadNovelUIColumnsHUseCase
+import app.shosetsu.android.domain.usecases.load.LoadNovelUIColumnsPUseCase
+import app.shosetsu.android.domain.usecases.load.LoadNovelUITypeUseCase
 import app.shosetsu.android.domain.usecases.settings.SetNovelUITypeUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.CompactCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
-import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
@@ -55,7 +54,6 @@ class CatalogViewModel(
 	private val backgroundAddUseCase: NovelBackgroundAddUseCase,
 	private val getCatalogueListingData: GetCatalogueListingDataUseCase,
 	private val loadCatalogueQueryDataUseCase: GetCatalogueQueryDataUseCase,
-	private var reportExceptionUseCase: ReportExceptionUseCase,
 	private val loadNovelUITypeUseCase: LoadNovelUITypeUseCase,
 	private val loadNovelUIColumnsHUseCase: LoadNovelUIColumnsHUseCase,
 	private val loadNovelUIColumnsPUseCase: LoadNovelUIColumnsPUseCase,
@@ -70,9 +68,12 @@ class CatalogViewModel(
 
 	private var ext: IExtension? = null
 
-	private val iExtensionFlow: Flow<HResult<IExtension>> by lazy {
-		extensionIDFlow.mapLatest { extensionID ->
-			getExtensionUseCase(extensionID).apply { ext = unwrap() }
+	private val iExtensionFlow: Flow<IExtension> by lazy {
+		extensionIDFlow.transformLatest { extensionID ->
+			ext = getExtensionUseCase(extensionID)
+
+			if (ext != null)
+				emit(ext!!)
 		}
 	}
 
@@ -81,9 +82,9 @@ class CatalogViewModel(
 	 */
 	private val extensionIDFlow: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
 
-	override val itemsLive: LiveData<HResult<List<ACatalogNovelUI>>> by lazy {
+	override val itemsLive: LiveData<List<ACatalogNovelUI>> by lazy {
 		itemsFlow.combine(novelCardTypeFlow) { items, type ->
-			items.transformToSuccess { list ->
+			items.let { list ->
 				list.map { card ->
 					when (type) {
 						NovelCardType.NORMAL -> {
@@ -116,12 +117,12 @@ class CatalogViewModel(
 		}.asIOLiveData()
 	}
 
-	private val itemsFlow: MutableStateFlow<HResult<List<ACatalogNovelUI>>> by lazy {
-		MutableStateFlow(loading)
+	private val itemsFlow: MutableStateFlow<List<ACatalogNovelUI>> by lazy {
+		MutableStateFlow(emptyList())
 	}
 
-	private val filterItemFlow: Flow<HResult<Array<Filter<*>>>> by lazy {
-		iExtensionFlow.mapLatestResult { successResult(it.searchFiltersModel) }
+	private val filterItemFlow: Flow<Array<Filter<*>>> by lazy {
+		iExtensionFlow.mapLatest { (it.searchFiltersModel) }
 	}
 
 	/**
@@ -129,23 +130,22 @@ class CatalogViewModel(
 	 */
 	private val filterReloadFlow = MutableStateFlow(true)
 
-	override val filterItemsLive: LiveData<HResult<List<Filter<*>>>>
-		get() = filterItemFlow.mapLatestResult { successResult(it.toList()) }.asIOLiveData()
+	override val filterItemsLive: LiveData<List<Filter<*>>>
+		get() = filterItemFlow.mapLatest { it.toList() }.asIOLiveData()
 
 	override val hasSearchLive: LiveData<Boolean> by lazy {
-		iExtensionFlow.mapLatest { it.unwrap()?.hasSearch == true }.asIOLiveData()
+		iExtensionFlow.mapLatest { it.hasSearch }.asIOLiveData()
 	}
 
-	override val extensionName: LiveData<HResult<String>> by lazy {
-		iExtensionFlow.mapLatestResult { successResult(it.name) }.asIOLiveData()
+	override val extensionName: LiveData<String> by lazy {
+		iExtensionFlow.mapLatest { it.name }.asIOLiveData()
 	}
 
 	private var stateManager = StateManager()
 
-	override fun getBaseURL(): LiveData<HResult<String>> =
+	override fun getBaseURL(): LiveData<String> =
 		flow {
-			emit(iExtensionFlow.mapResult { successResult(it.baseURL) }
-				.first { it !is HResult.Empty })
+			emitAll(iExtensionFlow.mapLatest { it.baseURL })
 		}.asIOLiveData()
 
 	/**
@@ -175,8 +175,8 @@ class CatalogViewModel(
 			private var _canLoadMore = true
 
 			init {
-				itemsFlow.tryEmit(successResult(emptyList()))
-				itemsFlow.tryEmit(loading)
+				itemsFlow.tryEmit(emptyList())
+				// TODO LOADING
 			}
 
 			/**
@@ -203,22 +203,26 @@ class CatalogViewModel(
 					this.cancel("Extension not loaded")
 					return@launchIO
 				}
-				itemsFlow.tryEmit(loading())
+				itemsFlow.tryEmit(emptyList()) // TODO LOADING
 
-				getDataLoaderAndLoad(queryFilter).handle(onError = {
+				try {
+					val result = getDataLoaderAndLoad(queryFilter)
+					if (result.isEmpty())
+						_canLoadMore = false
+					else {
+						values.plusAssign(result)
+						itemsFlow.tryEmit(values)
+					}
+				} catch (e: Exception) {
 					_canLoadMore = false
-					itemsFlow.tryEmit(it)
-				}, onEmpty = {
-					_canLoadMore = false
-				}, onLoading = {
-				}) { newList ->
-					values.plusAssign(newList)
-					itemsFlow.tryEmit(successResult(values))
+					// TODO How to feed this to UI
+					logE("Cannot load more", e)
 				}
+
 				currentMaxPage++
 			}
 
-			private suspend fun getDataLoaderAndLoad(queryFilter: QueryFilter): HResult<List<ACatalogNovelUI>> {
+			private suspend fun getDataLoaderAndLoad(queryFilter: QueryFilter): List<ACatalogNovelUI> {
 				return if (queryFilter.query.isEmpty()) {
 					logV("Loading listing data")
 					getCatalogueListingData(
@@ -276,15 +280,15 @@ class CatalogViewModel(
 	}
 
 	override fun resetView() {
-		itemsFlow.tryEmit(successResult(arrayListOf()))
+		itemsFlow.tryEmit(emptyList())
 		queryState = ""
 		filterDataState.clear()
 		applyFilter()
 	}
 
-	override fun backgroundNovelAdd(novelID: Int): LiveData<HResult<*>> =
+	override fun backgroundNovelAdd(novelID: Int): LiveData<Unit> =
 		flow {
-			emit(loading)
+			// TODO LOADING
 			emit(backgroundAddUseCase(novelID))
 		}.asIOLiveData()
 
@@ -296,8 +300,8 @@ class CatalogViewModel(
 	override fun destroy() {
 		queryState = ""
 		extensionIDFlow.value = -1
-		itemsFlow.tryEmit(successResult(arrayListOf()))
-		itemsFlow.tryEmit(loading)
+		itemsFlow.tryEmit(emptyList())
+		// TODO LOADING
 		filterDataState.clear()
 		stateManager = StateManager()
 	}
@@ -347,7 +351,6 @@ class CatalogViewModel(
 	override fun setViewType(cardType: NovelCardType) {
 		launchIO { setNovelUIType(cardType) }
 	}
-
 
 
 	private val novelCardTypeFlow = loadNovelUITypeUseCase()

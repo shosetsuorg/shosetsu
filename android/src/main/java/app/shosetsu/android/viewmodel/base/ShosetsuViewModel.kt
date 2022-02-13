@@ -1,5 +1,6 @@
 package app.shosetsu.android.viewmodel.base
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -28,6 +29,6 @@ import kotlinx.coroutines.flow.Flow
  * 30 / 10 / 2020
  */
 abstract class ShosetsuViewModel : ViewModel() {
-	fun <T> Flow<T>.asIOLiveData() =
+	fun <T> Flow<T>.asIOLiveData(): LiveData<T> =
 		asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
 }

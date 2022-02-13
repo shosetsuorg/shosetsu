@@ -54,7 +54,7 @@ abstract class ABackupSettingsViewModel(iSettingsRepository: ISettingsRepository
 	/**
 	 * @return the backup file to export
 	 */
-	abstract fun getBackupToExport(): String
+	abstract fun getBackupToExport(): String?
 
 	/**
 	 * Cancel export process

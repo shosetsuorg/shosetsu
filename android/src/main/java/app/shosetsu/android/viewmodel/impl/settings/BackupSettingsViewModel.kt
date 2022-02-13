@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker
 import app.shosetsu.android.common.ext.logV
-import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.load.LoadInternalBackupNamesUseCase
 import app.shosetsu.android.domain.usecases.start.StartBackupWorkerUseCase
 import app.shosetsu.android.domain.usecases.start.StartExportBackupWorkerUseCase
@@ -14,9 +13,6 @@ import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.ABackupSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.emptyResult
-import app.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.flow.flow
 
@@ -43,7 +39,6 @@ import kotlinx.coroutines.flow.flow
  */
 class BackupSettingsViewModel(
 	iSettingsRepository: ISettingsRepository,
-	private val reportExceptionUseCase: ReportExceptionUseCase,
 	private val manager: NovelUpdateWorker.Manager,
 	private val startBackupWorkerUseCase: StartBackupWorkerUseCase,
 	private val loadInternalBackupNamesUseCase: LoadInternalBackupNamesUseCase,
@@ -56,7 +51,7 @@ class BackupSettingsViewModel(
 		startBackupWorkerUseCase()
 	}
 
-	override fun loadInternalOptions(): LiveData<HResult<List<String>>> = flow {
+	override fun loadInternalOptions(): LiveData<List<String>> = flow {
 		emit(loadInternalBackupNamesUseCase())
 	}.asIOLiveData()
 
@@ -76,8 +71,8 @@ class BackupSettingsViewModel(
 		this.backupToExport = backupToExport
 	}
 
-	override fun getBackupToExport(): HResult<String> =
-		if (backupToExport != null) successResult(backupToExport!!) else emptyResult()
+	override fun getBackupToExport(): String? =
+		if (backupToExport != null) backupToExport!! else null
 
 	override fun clearExport() {
 		backupToExport = null
@@ -119,8 +114,4 @@ class BackupSettingsViewModel(
 			textRes = R.string.settings_backup_export
 		}
 	)
-
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-		reportExceptionUseCase(error)
-	}
 }

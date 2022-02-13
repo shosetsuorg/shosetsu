@@ -5,6 +5,7 @@ import app.shosetsu.android.common.enums.NavigationStyle
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
+import app.shosetsu.common.domain.repositories.base.IBackupRepository
 import app.shosetsu.common.enums.AppThemes
 
 /*
@@ -69,7 +70,7 @@ abstract class AMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel {
 
 	}
 
-	abstract val backupProgressState: LiveData<Unit>
+	abstract val backupProgressState: LiveData<IBackupRepository.BackupProgress>
 
 	/** If the application should show the show splash screen */
 	abstract suspend fun showIntro(): Boolean

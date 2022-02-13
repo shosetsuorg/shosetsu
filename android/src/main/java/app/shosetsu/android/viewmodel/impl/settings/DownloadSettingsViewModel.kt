@@ -8,9 +8,9 @@ import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.ADownloadSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.*
 import com.github.doomsdayrs.apps.shosetsu.R
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 
 /*
  * This file is part of shosetsu.
@@ -40,12 +40,12 @@ class DownloadSettingsViewModel(
 
 	override suspend fun settings(): List<SettingsItemData> = listOf(
 		seekBarSettingData(6) {
-			title { "Download thread pool size" }
-			description { "How many simultaneous downloads occur at once" }
+			titleText = "Download thread pool size"
+			descText = "How many simultaneous downloads occur at once"
 			range { 1F to 6F }
-			settingsRepo.getInt(DownloadThreadPool).handle {
-				progressValue = it.toFloat()
-			}
+
+			progressValue = settingsRepo.getInt(DownloadThreadPool).toFloat()
+
 			showSectionMark = true
 			showSectionText = true
 
@@ -73,12 +73,12 @@ class DownloadSettingsViewModel(
 		},
 
 		seekBarSettingData(6) {
-			title { "Download threads per Extension" }
-			description { "How many simultaneous downloads per extension that can occur at once" }
+			titleText = "Download threads per Extension"
+			descText = "How many simultaneous downloads per extension that can occur at once"
 			range { 1F to 6F }
-			settingsRepo.getInt(DownloadExtThreads).handle {
-				progressValue = it.toFloat()
-			}
+
+			progressValue = settingsRepo.getInt(DownloadExtThreads).toFloat()
+
 			showSectionMark = true
 			showSectionText = true
 
@@ -139,9 +139,9 @@ class DownloadSettingsViewModel(
 			titleRes = R.string.settings_download_delete_on_read_title
 			descRes = R.string.settings_download_delete_on_read_desc
 			range { 0F to 5F }
-			settingsRepo.getInt(DeleteReadChapter).handle {
-				progressValue = it.toFloat() + 1
-			}
+
+			progressValue = settingsRepo.getInt(DeleteReadChapter).toFloat() + 1
+
 			showSectionMark = true
 			showSectionText = true
 
@@ -173,9 +173,6 @@ class DownloadSettingsViewModel(
 		},
 
 		)
-
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-	}
 
 	override var downloadWorkerSettingsChanged: Boolean = false
 

@@ -8,3 +8,4 @@ kotlin.io.use block
 app.shosetsu.common.dto.handle onLoading
 app.shosetsu.common.dto.handle onSuccess
 kotlin.run block
+app.shosetsu.android.view.uimodels.settings.dsl.spinnerSettingData action

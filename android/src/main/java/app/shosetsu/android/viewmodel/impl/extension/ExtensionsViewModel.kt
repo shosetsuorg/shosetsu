@@ -34,9 +34,6 @@ import app.shosetsu.common.consts.settings.SettingKey.BrowseFilteredLanguages
 import app.shosetsu.common.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.common.domain.model.local.ExtensionInstallOptionEntity
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.successResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
@@ -95,7 +92,7 @@ class ExtensionsViewModel(
 
 	private val searchTermFlow: MutableStateFlow<String> by lazy { MutableStateFlow("") }
 
-	override val filteredLanguagesLive: LiveData<HResult<FilteredLanguages>> by lazy {
+	override val filteredLanguagesLive: LiveData<FilteredLanguages> by lazy {
 		languageListFlow.combine(settingsRepo.getStringSetFlow(BrowseFilteredLanguages)) { languageResult, filteredLanguages ->
 
 			val map = HashMap<String, Boolean>().apply {
@@ -103,7 +100,7 @@ class ExtensionsViewModel(
 					this[language] = !filteredLanguages.contains(language)
 				}
 			}
-			successResult(FilteredLanguages(languageResult, map))
+			FilteredLanguages(languageResult, map)
 		}.asIOLiveData()
 	}
 
@@ -119,26 +116,27 @@ class ExtensionsViewModel(
 	override fun setLanguageFiltered(language: String, state: Boolean) {
 		logI("Language $language updated to state $state")
 		launchIO {
-			settingsRepo.getStringSet(BrowseFilteredLanguages).handle(
-				onError = {
-					logE("Failed to retrieve $BrowseFilteredLanguages", it.exception)
-				}
-			) { set ->
-				val mutableSet = set.toMutableSet()
+			try {
+				settingsRepo.getStringSet(BrowseFilteredLanguages).let { set ->
+					val mutableSet = set.toMutableSet()
 
-				if (state) {
-					mutableSet.removeAll { it == language }
-				} else {
-					mutableSet.add(language)
-				}
-
-				settingsRepo.setStringSet(BrowseFilteredLanguages, mutableSet).handle(
-					onError = {
-						logE("Failed to update $BrowseFilteredLanguages", it.exception)
+					if (state) {
+						mutableSet.removeAll { it == language }
+					} else {
+						mutableSet.add(language)
 					}
-				) {
-					logV("Done")
+
+					try {
+						settingsRepo.setStringSet(BrowseFilteredLanguages, mutableSet)
+						logV("Done")
+					} catch (e: Exception) {
+						logE("Failed to update $BrowseFilteredLanguages", e)
+					}
+
 				}
+			} catch (e: Exception) {
+				logE("Failed to retrieve $BrowseFilteredLanguages", e)
+
 			}
 		}
 	}
@@ -146,12 +144,11 @@ class ExtensionsViewModel(
 	override fun showOnlyInstalled(state: Boolean) {
 		logI("Show only installed new state: $state")
 		launchIO {
-			settingsRepo.setBoolean(SettingKey.BrowseOnlyInstalled, state).handle(
-				onError = {
-					logE("Failed to update ${SettingKey.BrowseOnlyInstalled}", it.exception)
-				}
-			) {
+			try {
+				settingsRepo.setBoolean(SettingKey.BrowseOnlyInstalled, state)
 				logV("Done")
+			} catch (e: Exception) {
+				logE("Failed to update ${SettingKey.BrowseOnlyInstalled}", e)
 			}
 		}
 	}

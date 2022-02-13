@@ -1,17 +1,12 @@
 package app.shosetsu.android.viewmodel.impl.settings
 
 import android.app.Application
-import android.content.res.Resources
 import android.widget.ArrayAdapter
-import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AViewSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.domain.repositories.base.getIntOrDefault
-import app.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -38,7 +33,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
 class ViewSettingsViewModel(
 	iSettingsRepository: ISettingsRepository,
 	private val application: Application,
-	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : AViewSettingsViewModel(iSettingsRepository) {
 	override suspend fun settings(): List<SettingsItemData> = listOf(
 
@@ -60,24 +54,17 @@ class ViewSettingsViewModel(
 
 			spinnerSettingValue(SelectedNovelCardType)
 
-			try {
-				arrayAdapter = ArrayAdapter(
-					application,
-					android.R.layout.simple_spinner_dropdown_item,
-					application.resources!!.getStringArray(R.array.novel_card_types)
-				)
-			} catch (e: Resources.NotFoundException) {
-				reportExceptionUseCase.invoke(e.toHError())
-			}
+			arrayAdapter = ArrayAdapter(
+				application,
+				android.R.layout.simple_spinner_dropdown_item,
+				application.resources!!.getStringArray(R.array.novel_card_types)
+			)
 		},
 		switchSettingData(4) {
-			title { "Legacy navigation" }
-			description { "Disableds bottom navigation, enables drawer" }
-			isChecked = settingsRepo.getIntOrDefault(NavStyle) == 1
+			titleText = "Legacy navigation"
+			descText = "Disableds bottom navigation, enables drawer"
+			isChecked = settingsRepo.getInt(NavStyle) == 1
 		}
 	)
 
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-		reportExceptionUseCase(error)
-	}
 }
