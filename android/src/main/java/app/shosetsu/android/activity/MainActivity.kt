@@ -2,12 +2,13 @@ package app.shosetsu.android.activity
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.DownloadManager.*
+import android.app.DownloadManager.ACTION_DOWNLOAD_COMPLETE
 import android.app.SearchManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.*
+import android.content.Intent.ACTION_MAIN
+import android.content.Intent.ACTION_SEARCH
 import android.content.IntentFilter
 import android.os.Bundle
 import android.view.View
@@ -21,6 +22,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.core.os.bundleOf
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.GravityCompat
@@ -40,10 +43,9 @@ import app.shosetsu.android.ui.library.LibraryController
 import app.shosetsu.android.ui.more.ComposeMoreController
 import app.shosetsu.android.ui.search.SearchController
 import app.shosetsu.android.ui.updates.ComposeUpdatesController
-import app.shosetsu.android.view.controller.*
 import app.shosetsu.android.view.controller.base.*
 import app.shosetsu.android.viewmodel.abstracted.AMainViewModel
-import app.shosetsu.common.dto.handle
+import app.shosetsu.common.domain.repositories.base.IBackupRepository
 import app.shosetsu.common.enums.AppThemes.*
 import com.bluelinelabs.conductor.Conductor.attachRouter
 import com.bluelinelabs.conductor.Controller
@@ -56,10 +58,10 @@ import com.google.android.material.snackbar.BaseTransientBottomBar.Duration
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import org.acra.ACRA
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
-import java.util.*
 
 
 /*
@@ -85,6 +87,8 @@ import java.util.*
  *
  * @author github.com/doomsdayrs
  */
+@ExperimentalMaterialApi
+@ExperimentalFoundationApi
 class MainActivity : AppCompatActivity(), DIAware,
 	ControllerChangeHandler.ControllerChangeListener {
 	companion object {
@@ -252,6 +256,8 @@ class MainActivity : AppCompatActivity(), DIAware,
 		}
 	}
 
+	@ExperimentalMaterialApi
+	@ExperimentalFoundationApi
 	private fun setupView() {
 		//Sets the toolbar
 		setSupportActionBar(binding.toolbar)
@@ -282,6 +288,8 @@ class MainActivity : AppCompatActivity(), DIAware,
 	/**
 	 * Setup the navigation drawer
 	 */
+	@ExperimentalMaterialApi
+	@ExperimentalFoundationApi
 	private fun setupNavigationDrawer() {
 		logV("Setting up legacy navigation")
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -313,6 +321,8 @@ class MainActivity : AppCompatActivity(), DIAware,
 	/**
 	 * Setup the bottom navigation
 	 */
+	@ExperimentalMaterialApi
+	@ExperimentalFoundationApi
 	private fun setupBottomNavigationDrawer() {
 		logV("Setting up modern navigation")
 		binding.drawerLayout.setDrawerLockMode(
@@ -328,6 +338,8 @@ class MainActivity : AppCompatActivity(), DIAware,
 		}
 	}
 
+	@ExperimentalMaterialApi
+	@ExperimentalFoundationApi
 	private fun handleNavigationSelected(id: Int) {
 		when (id) {
 			R.id.nav_library -> setRoot(LibraryController(), R.id.nav_library)
@@ -397,17 +409,15 @@ class MainActivity : AppCompatActivity(), DIAware,
 	}
 
 	private fun setupProcesses() {
-		viewModel.startAppUpdateCheck().observe(this) { result ->
-			result.handle(
-				onError = {
-					applicationContext.toast("$result")
-				}
-			) {
-				val update = it
+		viewModel.startAppUpdateCheck().collectLA(this, catch = {
+			applicationContext.toast("$it")
+			ACRA.errorReporter.handleException(it)
+		}) { result ->
+			if (result != null)
 				AlertDialog.Builder(this).apply {
 					setTitle(R.string.update_app_now_question)
 					setMessage(
-						"${update.version}\t${update.versionCode}\n" + update.notes.joinToString(
+						"${result.version}\t${result.versionCode}\n" + result.notes.joinToString(
 							"\n"
 						)
 					)
@@ -424,22 +434,22 @@ class MainActivity : AppCompatActivity(), DIAware,
 				}.let {
 					launchUI { it.show() }
 				}
-			}
 		}
-		viewModel.backupProgressState.observe(this) {
-			it.handle(
-				onLoading = {
+		viewModel.backupProgressState.collectLA(this, catch = {
+			logE("Backup failed", it)
+			ACRA.errorReporter.handleException(it)
+			binding.backupWarning.isVisible = false
+		}) {
+			when (it) {
+				IBackupRepository.BackupProgress.IN_PROGRESS -> {
 					binding.backupWarning.isVisible = true
-				},
-				onEmpty = {
-					binding.backupWarning.isVisible = false
-				},
-				onError = {
-					logE("Backup failed", it.exception)
+				}
+				IBackupRepository.BackupProgress.NOT_STARTED -> {
 					binding.backupWarning.isVisible = false
 				}
-			) {
-				binding.backupWarning.isVisible = false
+				IBackupRepository.BackupProgress.COMPLETE -> {
+					binding.backupWarning.isVisible = false
+				}
 			}
 		}
 	}
@@ -461,7 +471,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 	}
 
 	private fun handleAppUpdate() {
-		viewModel.handleAppUpdate().handleObserve(this) {
+		viewModel.handleAppUpdate().collectLA(this, catch = {}) {
 			when (it) {
 				AMainViewModel.AppUpdateAction.SelfUpdate -> {
 					makeSnackBar(R.string.activity_main_app_update_download)

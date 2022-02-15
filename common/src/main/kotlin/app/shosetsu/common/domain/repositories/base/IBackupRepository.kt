@@ -30,6 +30,7 @@ interface IBackupRepository {
 	enum class BackupProgress {
 		IN_PROGRESS,
 		NOT_STARTED,
+		COMPLETE
 	}
 
 	val backupProgress: Flow<BackupProgress>
