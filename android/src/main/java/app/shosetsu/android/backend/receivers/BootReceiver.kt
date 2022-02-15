@@ -12,7 +12,6 @@ import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.HResult
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -26,7 +25,7 @@ class BootReceiver : BroadcastReceiver() {
 	 * Handles reception
 	 */
 	override fun onReceive(context: Context, intent: Intent) {
-		logI( "Received BOOT_COMPLETED signal")
+		logI("Received BOOT_COMPLETED signal")
 		if (intent.action != Intent.ACTION_BOOT_COMPLETED) {
 			logE("Action did not match")
 			return
@@ -43,7 +42,7 @@ class BootReceiver : BroadcastReceiver() {
 		operator fun invoke() {
 			launchIO {
 				val b = iSettingsRepository.getBoolean(SettingKey.UpdateNovelsOnStartup)
-				if (b is HResult.Success && b.data && !manager.isRunning()) {
+				if (b && !manager.isRunning()) {
 					Log.i(logID(), "Starting update worker on boot")
 					manager.start()
 				}
@@ -58,7 +57,7 @@ class BootReceiver : BroadcastReceiver() {
 		operator fun invoke() {
 			launchIO {
 				val b = iSettingsRepository.getBoolean(SettingKey.AppUpdateOnStartup)
-				if (b is HResult.Success && b.data && !manager.isRunning()) {
+				if (b && !manager.isRunning()) {
 					Log.i(logID(), "Starting app update worker on boot")
 					manager.start()
 				}
