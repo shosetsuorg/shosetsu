@@ -603,6 +603,7 @@
     <string name="toast_error_log_failed">Failed to create logfile, No logs will be stored</string>
     <string name="worker_backup_complete">Backup Complete</string>
     <string name="controller_browse_ext_icon_desc">Icon of the extension</string>
+    <string name="controller_backup_error_unselected">No backup has been selected to export</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>
