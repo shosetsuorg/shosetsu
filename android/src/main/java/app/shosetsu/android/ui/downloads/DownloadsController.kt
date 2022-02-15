@@ -158,7 +158,7 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 		}
 	}
 
-	override fun handleErrorResult(e: Throwable) {
+	override fun handleRecyclerException(e: Throwable) {
 		TODO("HANDLE")
 	}
 

@@ -54,11 +54,13 @@ class RepositoryController : FastAdapterRefreshableRecyclerController<Repository
 
 	override fun setupRecyclerView() {
 		super.setupRecyclerView()
-		viewModel.liveData.observe(this) { handleRecyclerUpdate(it) }
+		viewModel.liveData.observe(catch = {
+			handleRecyclerException(it)
+		}) { handleRecyclerUpdate(it) }
 	}
 
-	override fun handleErrorResult(e: Throwable) {
-		viewModel.reportError(e)
+	override fun handleRecyclerException(e: Throwable) {
+		TODO("HANDLE")
 	}
 
 	override fun FastAdapter<RepositoryUI>.setupFastAdapter() {
@@ -81,8 +83,9 @@ class RepositoryController : FastAdapterRefreshableRecyclerController<Repository
 	}
 
 	private fun undoRemoveRepository(item: RepositoryUI) {
-		viewModel.undoRemove(item).handleObserve(
-			onError = {
+		viewModel.undoRemove(item).observe(
+
+			catch = {
 				logError { it }
 				// Warn the user that there was an error
 				makeSnackBar(R.string.controller_repositories_snackbar_fail_undo_repo_removal)
@@ -104,9 +107,9 @@ class RepositoryController : FastAdapterRefreshableRecyclerController<Repository
 
 	private fun removeRepository(item: RepositoryUI) {
 		// Pass item to viewModel to remove, observe result
-		viewModel.remove(item).handleObserve(
-			onError = {
-				logE("Failed to remove repository $item", it.exception)
+		viewModel.remove(item).observe(
+			catch = {
+				logE("Failed to remove repository $item", it)
 				makeSnackBar(R.string.toast_repository_remove_fail)
 					?.setAction(R.string.generic_question_retry) {
 						removeRepository(item)
@@ -129,8 +132,8 @@ class RepositoryController : FastAdapterRefreshableRecyclerController<Repository
 	}
 
 	private fun toggleIsEnabled(item: RepositoryUI) {
-		viewModel.toggleIsEnabled(item).handleObserve(
-			onError = {
+		viewModel.toggleIsEnabled(item).observe(
+			catch = {
 				// Inform the user of an error
 				makeSnackBar(R.string.toast_error_repository_toggle_enabled_failed)
 					// Ask the user if they want to retry
@@ -155,8 +158,8 @@ class RepositoryController : FastAdapterRefreshableRecyclerController<Repository
 	}
 
 	private fun addRepository(name: String, url: String) {
-		viewModel.addRepository(name, url).handleObserve(
-			onError = {
+		viewModel.addRepository(name, url).observe(
+			catch = {
 				// Inform the user the repository couldn't be added
 				makeSnackBar(R.string.toast_repository_add_fail)
 					// Ask the user if they want to retry

@@ -297,7 +297,7 @@ class CatalogController(
 		binding.swipeRefreshLayout.isRefreshing = false
 	}
 
-	override fun handleErrorResult(e: Throwable) {
+	override fun handleRecyclerException(e: Throwable) {
 		binding.fragmentCatalogueProgressBottom.isVisible = false
 		binding.swipeRefreshLayout.isRefreshing = false
 		val cause = e.cause

@@ -42,7 +42,7 @@ abstract class SettingsSubController : GenericFastAdapterRecyclerController<Sett
 		super.updateUI(newList.apply(adjustments))
 	}
 
-	override fun handleErrorResult(e: Throwable) {
+	override fun handleRecyclerException(e: Throwable) {
 		e.exception?.printStackTrace()
 		viewModel.reportError(e)
 
