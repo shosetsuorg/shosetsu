@@ -6,14 +6,15 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
+import app.shosetsu.android.common.ext.collectLA
 import app.shosetsu.android.common.ext.logID
+import app.shosetsu.android.common.ext.logWTF
 import app.shosetsu.android.common.ext.setOnClickListener
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.ui.search.SearchController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ASearchViewModel
-import app.shosetsu.common.dto.HResult
 import com.bluelinelabs.conductor.Controller
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
@@ -69,34 +70,29 @@ class SearchRowAdapter(
 
 		binding.recyclerView.adapter = fastAdapter
 
-		val handleUpdate = { result: HResult<List<ACatalogNovelUI>> ->
-			when (result) {
-				is HResult.Loading -> {
-					binding.progressBar.isVisible = true
-				}
-				is HResult.Empty -> {
-					binding.progressBar.isVisible = false
-				}
-				is HResult.Error -> {
-					binding.progressBar.isVisible = false
-				}
-				is HResult.Success -> {
-					binding.progressBar.isVisible = false
-					FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(
-						itemAdapter,
-						result.data
-					)
-				}
-			}
+		val handleUpdate = { result: List<ACatalogNovelUI> ->
+			binding.progressBar.isVisible = false
+			FastAdapterDiffUtil[itemAdapter] = FastAdapterDiffUtil.calculateDiff(
+				itemAdapter,
+				result
+			)
 		}
 
-		getItem(position)?.let { (formatterID) ->
-			if (formatterID != -1) {
-				viewModel.searchExtension(formatterID).observe(controller) {
+		getItem(position)?.let { (id) ->
+			viewModel.getIsLoading(id).collectLA(controller, catch = {
+				logWTF("What?")
+			}) {
+				binding.progressBar.isVisible = it
+			}
+			if (id != -1) {
+				viewModel.searchExtension(id).collectLA(controller,
+					catch = {
+						TODO("Handle")
+					}) {
 					handleUpdate(it)
 				}
 			} else {
-				viewModel.searchLibrary().observe(controller) {
+				viewModel.searchLibrary().collectLA(controller, catch = { TODO("Handle") }) {
 					handleUpdate(it)
 				}
 			}

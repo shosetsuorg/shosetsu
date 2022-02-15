@@ -67,7 +67,7 @@ class SearchController(bundle: Bundle) : GenericFastAdapterRecyclerController<Se
 	}
 
 	override fun handleRecyclerException(e: Throwable) {
-		viewModel.reportError(e)
+		TODO("Handle")
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = true
