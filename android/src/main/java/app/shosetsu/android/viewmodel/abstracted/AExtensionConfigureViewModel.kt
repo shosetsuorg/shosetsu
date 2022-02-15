@@ -1,10 +1,10 @@
 package app.shosetsu.android.viewmodel.abstracted
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeViewModel
 import app.shosetsu.common.domain.model.local.FilterEntity
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -34,8 +34,8 @@ import app.shosetsu.common.domain.model.local.FilterEntity
 abstract class AExtensionConfigureViewModel
 	: ShosetsuViewModel(), SubscribeViewModel<ExtensionUI?> {
 
-	abstract val extensionListing: LiveData<ListingSelectionData>
-	abstract val extensionSettings: LiveData<List<FilterEntity>>
+	abstract val extensionListing: Flow<ListingSelectionData>
+	abstract val extensionSettings: Flow<List<FilterEntity>>
 
 	data class ListingSelectionData(
 		val choices: List<String>,
