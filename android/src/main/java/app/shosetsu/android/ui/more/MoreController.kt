@@ -57,6 +57,7 @@ import com.google.android.material.composethemeadapter.MdcTheme
  *
  * Option for download queue
  */
+@ExperimentalMaterialApi
 class ComposeMoreController
 	: ShosetsuController(), CollapsedToolBarController {
 
@@ -64,7 +65,6 @@ class ComposeMoreController
 
 	override fun onViewCreated(view: View) {}
 
-	@ExperimentalMaterialApi
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup,
