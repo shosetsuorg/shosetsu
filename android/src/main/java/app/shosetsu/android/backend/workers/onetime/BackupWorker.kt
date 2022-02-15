@@ -208,7 +208,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 				// Call GC to clean up the bulky resources
 				System.gc()
 				delay(500)
-				backupRepository.updateProgress(successResult(Unit))
+				backupRepository.updateProgress(IBackupRepository.BackupProgress.COMPLETE)
 				return Result.success()
 			}
 		}

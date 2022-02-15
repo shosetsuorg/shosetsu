@@ -20,7 +20,7 @@ import app.shosetsu.common.domain.repositories.base.IBackupRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.enums.AppThemes
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
 
@@ -107,8 +107,8 @@ class MainViewModel(
 			)
 		}.asIOLiveData()
 
-	override val backupProgressState: LiveData<IBackupRepository.BackupProgress> by lazy {
-		loadBackupProgress().asIOLiveData()
+	override val backupProgressState: Flow<IBackupRepository.BackupProgress> by lazy {
+		loadBackupProgress()
 	}
 
 	private var showIntro = SettingKey.FirstTime.default
