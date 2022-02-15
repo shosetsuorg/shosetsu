@@ -4,14 +4,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
-import app.shosetsu.android.common.ext.getString
-import app.shosetsu.android.common.ext.handleObserve
-import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.common.ext.logV
-import app.shosetsu.common.dto.HResult
+import app.shosetsu.android.common.ext.*
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.archlifecycle.LifecycleController
 import com.github.doomsdayrs.apps.shosetsu.R
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 
@@ -103,13 +101,17 @@ abstract class ShosetsuController : LifecycleController, DIAware {
 	fun <T> LiveData<T>.observe(observer: (T) -> Unit) =
 		observe(this@ShosetsuController, observer)
 
-	/**
-	 * Convenience method to simplify [handleObserve] with self
-	 */
-	inline fun <T : HResult<D>, reified D> LiveData<T>.handleObserve(
-		crossinline onLoading: () -> Unit = {},
-		crossinline onEmpty: () -> Unit = {},
-		crossinline onError: (HResult.Error) -> Unit = {},
-		crossinline onSuccess: (D) -> Unit
-	) = handleObserve(this@ShosetsuController, onLoading, onEmpty, onError, onSuccess)
+	fun <T> Flow<T>.observe(
+		catch: suspend FlowCollector<T>.(Throwable) -> Unit,
+		onCollect: FlowCollector<T>
+	) =
+		collectLA(this@ShosetsuController, catch, onCollect)
+
+	fun <T> Flow<T>.observeLatest(
+		catch: suspend FlowCollector<T>.(Throwable) -> Unit,
+		onCollect: FlowCollector<T>
+	) =
+		collectLatestLA(this@ShosetsuController, catch, onCollect)
+
+
 }

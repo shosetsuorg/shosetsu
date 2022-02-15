@@ -163,6 +163,7 @@ dependencies {
 	implementation("androidx.browser:browser:1.4.0")
 	implementation("androidx.core:core-ktx:1.7.0")
 	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
+	implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
 	implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.1")
 	implementation("androidx.room:room-ktx:2.4.1")
 	implementation("androidx.collection:collection-ktx:1.2.0")
@@ -297,7 +298,7 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.0")
 
 	// KTX - Serialization
-	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
 	// Roomigrant
 	val enableRoomigrant = false

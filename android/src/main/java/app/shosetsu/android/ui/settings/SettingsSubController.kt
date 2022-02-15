@@ -5,7 +5,6 @@ import androidx.annotation.CallSuper
 import app.shosetsu.android.view.controller.GenericFastAdapterRecyclerController
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.settings.ASubSettingsViewModel
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -43,7 +42,7 @@ abstract class SettingsSubController : GenericFastAdapterRecyclerController<Sett
 		super.updateUI(newList.apply(adjustments))
 	}
 
-	override fun handleErrorResult(e: HResult.Error) {
+	override fun handleErrorResult(e: Throwable) {
 		e.exception?.printStackTrace()
 		viewModel.reportError(e)
 

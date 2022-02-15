@@ -24,7 +24,6 @@ import app.shosetsu.android.view.controller.BottomMenuBasicFastAdapterRecyclerCo
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.ADownloadsViewModel
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.DownloadStatus.*
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -159,7 +158,7 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 		}
 	}
 
-	override fun handleErrorResult(e: HResult.Error) {
+	override fun handleErrorResult(e: Throwable) {
 		viewModel.reportError(e)
 	}
 

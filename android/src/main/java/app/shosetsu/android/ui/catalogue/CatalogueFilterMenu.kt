@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -17,18 +16,13 @@ import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.map
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.loading
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.lib.Filter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.composethemeadapter.MdcTheme
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 /*
@@ -53,45 +47,47 @@ import kotlinx.coroutines.flow.flow
 
 private val dummyViewModel = @SuppressLint("StaticFieldLeak")
 object : ACatalogViewModel() {
-	override val itemsLive: LiveData<HResult<List<ACatalogNovelUI>>>
+	override val itemsLive: Flow<List<ACatalogNovelUI>>
 		get() = TODO("Not yet implemented")
-	override val filterItemsLive: LiveData<HResult<List<Filter<*>>>> by lazy {
+	override val filterItemsLive: Flow<List<Filter<*>>> by lazy {
 		flow {
 			emit(
-				successResult(
-					listOf(
-						Filter.Header("This is a header"),
-						Filter.Separator(),
-						Filter.Text(1, "Text input"),
-						Filter.Switch(2, "Switch"),
-						Filter.Checkbox(3, "Checkbox"),
-						Filter.TriState(4, "Tri state"),
-						Filter.Dropdown(5, "Drop down", arrayOf("A", "B", "C")),
-						Filter.RadioGroup(6, "Radio group", arrayOf("A", "B", "C")),
-						Filter.List(
-							"List", arrayOf(
-								Filter.Switch(7, "Switch"),
-								Filter.Checkbox(8, "Checkbox"),
-								Filter.TriState(9, "Tri state"),
-							)
-						),
-						Filter.Group(
-							"Group", arrayOf(
-								Filter.Switch(10, "Switch"),
-								Filter.Switch(11, "Switch"),
-								Filter.Switch(12, "Switch"),
-							)
+				listOf(
+					Filter.Header("This is a header"),
+					Filter.Separator(),
+					Filter.Text(1, "Text input"),
+					Filter.Switch(2, "Switch"),
+					Filter.Checkbox(3, "Checkbox"),
+					Filter.TriState(4, "Tri state"),
+					Filter.Dropdown(5, "Drop down", arrayOf("A", "B", "C")),
+					Filter.RadioGroup(6, "Radio group", arrayOf("A", "B", "C")),
+					Filter.List(
+						"List", arrayOf(
+							Filter.Switch(7, "Switch"),
+							Filter.Checkbox(8, "Checkbox"),
+							Filter.TriState(9, "Tri state"),
+						)
+					),
+					Filter.Group(
+						"Group", arrayOf(
+							Filter.Switch(10, "Switch"),
+							Filter.Switch(11, "Switch"),
+							Filter.Switch(12, "Switch"),
 						)
 					)
 				)
 			)
-		}.asIOLiveData()
+		}
 	}
-	override val hasSearchLive: LiveData<Boolean>
+	override val hasSearchLive: Flow<Boolean>
 		get() = TODO("Not yet implemented")
-	override val extensionName: LiveData<HResult<String>>
+	override val hasSearch: Boolean
 		get() = TODO("Not yet implemented")
-	override val novelCardTypeLive: LiveData<NovelCardType>
+	override val extensionName: Flow<String>
+		get() = TODO("Not yet implemented")
+	override val novelCardTypeLive: Flow<NovelCardType>
+		get() = TODO("Not yet implemented")
+	override val novelCardType: NovelCardType
 		get() = TODO("Not yet implemented")
 
 	override fun setExtensionID(extensionID: Int) {
@@ -110,7 +106,7 @@ object : ACatalogViewModel() {
 		TODO("Not yet implemented")
 	}
 
-	override fun backgroundNovelAdd(novelID: Int): LiveData<HResult<*>> {
+	override fun backgroundNovelAdd(novelID: Int): Flow<BackgroundNovelAddProgress> {
 		TODO("Not yet implemented")
 	}
 
@@ -130,28 +126,28 @@ object : ACatalogViewModel() {
 		TODO("Not yet implemented")
 	}
 
-	override fun getFilterStringState(id: Filter<String>): LiveData<String> =
-		flow { emit(id.state) }.asIOLiveData()
+	override fun getFilterStringState(id: Filter<String>): Flow<String> =
+		flow { emit(id.state) }
 
 	override fun setFilterStringState(id: Filter<String>, value: String) {
 		TODO("Not yet implemented")
 	}
 
-	override fun getFilterBooleanState(id: Filter<Boolean>): LiveData<Boolean> =
-		flow { emit(id.state) }.asIOLiveData()
+	override fun getFilterBooleanState(id: Filter<Boolean>): Flow<Boolean> =
+		flow { emit(id.state) }
 
 	override fun setFilterBooleanState(id: Filter<Boolean>, value: Boolean) {
 		TODO("Not yet implemented")
 	}
 
-	override fun getFilterIntState(id: Filter<Int>): LiveData<Int> =
-		flow { emit(id.state) }.asIOLiveData()
+	override fun getFilterIntState(id: Filter<Int>): Flow<Int> =
+		flow { emit(id.state) }
 
 	override fun setFilterIntState(id: Filter<Int>, value: Int) {
 		TODO("Not yet implemented")
 	}
 
-	override fun getBaseURL(): LiveData<HResult<String>> {
+	override fun getBaseURL(): Flow<String> {
 		TODO("Not yet implemented")
 	}
 
@@ -181,12 +177,10 @@ fun CatalogFilterMenu(viewModel: ACatalogViewModel) {
 
 @Composable
 fun CatalogFilterMenuMainContent(viewModel: ACatalogViewModel) {
-	val items by viewModel.filterItemsLive.observeAsState(initial = loading)
+	val items by viewModel.filterItemsLive.collectAsState(initial = emptyList())
 
 	Column(modifier = Modifier.fillMaxWidth()) {
-		items.handle {
-			CatalogFilterMenuFilterListContent(viewModel, it)
-		}
+		CatalogFilterMenuFilterListContent(viewModel, items)
 	}
 }
 
@@ -337,7 +331,7 @@ fun PreviewCatalogFilterMenuTextContent() =
 @Composable
 fun CatalogFilterMenuTextContent(viewModel: ACatalogViewModel, filter: Filter.Text) {
 	val text by viewModel.getFilterStringState(filter)
-		.observeAsState(initial = "")
+		.collectAsState(initial = "")
 
 	TextField(
 		modifier = Modifier.fillMaxWidth(),
@@ -360,7 +354,7 @@ fun PreviewCatalogFilterMenuSwitchContent() = MdcTheme {
 @Composable
 fun CatalogFilterMenuSwitchContent(viewModel: ACatalogViewModel, filter: Filter.Switch) {
 	val state by viewModel.getFilterBooleanState(filter)
-		.observeAsState(initial = false)
+		.collectAsState(initial = false)
 
 	Row(
 		modifier = Modifier.fillMaxWidth(),
@@ -383,7 +377,7 @@ fun PreviewCatalogFilterMenuCheckboxContent() = MdcTheme {
 @Composable
 fun CatalogFilterMenuCheckboxContent(viewModel: ACatalogViewModel, filter: Filter.Checkbox) {
 	val state by viewModel.getFilterBooleanState(filter)
-		.observeAsState(initial = false)
+		.collectAsState(initial = false)
 
 	Row(
 		modifier = Modifier.fillMaxWidth(),
@@ -406,27 +400,24 @@ fun PreviewCatalogFilterMenuTriStateContent() = MdcTheme {
 @Composable
 fun CatalogFilterMenuTriStateContent(viewModel: ACatalogViewModel, filter: Filter.TriState) {
 	val triState by viewModel.getFilterIntState(filter)
-		.map {
-			when (it) {
-				Filter.TriState.STATE_IGNORED -> ToggleableState.Indeterminate
-				Filter.TriState.STATE_EXCLUDE -> ToggleableState.Off
-				Filter.TriState.STATE_INCLUDE -> ToggleableState.On
-				else -> ToggleableState.Off
-			}
-		}
-		.observeAsState(initial = ToggleableState.Off)
-
+		.collectAsState(initial = ToggleableState.Off)
+	val convertedState = when (triState) {
+		Filter.TriState.STATE_IGNORED -> ToggleableState.Indeterminate
+		Filter.TriState.STATE_EXCLUDE -> ToggleableState.Off
+		Filter.TriState.STATE_INCLUDE -> ToggleableState.On
+		else -> ToggleableState.Off
+	}
 	Row(
 		modifier = Modifier.fillMaxWidth(),
 		horizontalArrangement = Arrangement.SpaceBetween
 	) {
 		Text(text = filter.name)
 		TriStateCheckbox(
-			state = triState,
+			state = convertedState,
 			onClick = {
 				viewModel.setFilterIntState(
 					filter,
-					when (triState) {
+					when (convertedState) {
 						ToggleableState.On -> Filter.TriState.STATE_EXCLUDE
 						ToggleableState.Off -> Filter.TriState.STATE_IGNORED
 						ToggleableState.Indeterminate -> Filter.TriState.STATE_INCLUDE
@@ -449,7 +440,7 @@ fun PreviewCatalogFilterMenuDropDownContent() = MdcTheme {
 @Composable
 fun CatalogFilterMenuDropDownContent(viewModel: ACatalogViewModel, filter: Filter.Dropdown) {
 	val selection by viewModel.getFilterIntState(filter)
-		.observeAsState(initial = 0)
+		.collectAsState(initial = 0)
 	var expanded by remember { mutableStateOf(false) }
 
 	Row(
@@ -514,7 +505,7 @@ fun PreviewCatalogFilterMenuRadioGroupContent() = MdcTheme {
 @Composable
 fun CatalogFilterMenuRadioGroupContent(viewModel: ACatalogViewModel, filter: Filter.RadioGroup) {
 	val selection by viewModel.getFilterIntState(filter)
-		.observeAsState(initial = 0)
+		.collectAsState(initial = 0)
 	var expanded by remember { mutableStateOf(true) }
 
 	Column(

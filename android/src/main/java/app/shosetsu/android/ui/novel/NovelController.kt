@@ -532,7 +532,7 @@ class NovelController(bundle: Bundle) :
 		binding.progressBar.isVisible = true
 	}
 
-	override fun handleErrorResult(e: HResult.Error) {
+	override fun handleErrorResult(e: Throwable) {
 		viewModel.reportError(e)
 	}
 
