@@ -34,8 +34,8 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -49,16 +49,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.getSystemService
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.map
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.viewmodel.abstracted.ACSSEditorViewModel
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.unwrap
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.composethemeadapter.MdcTheme
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -85,33 +81,23 @@ class CSSEditorActivity : AppCompatActivity(), DIAware {
 		requestWindowFeature(Window.FEATURE_NO_TITLE)
 		if (savedInstanceState != null) {
 			viewModel.setCSSId(savedInstanceState.getInt(CSS_ID, -1))
-				.handleObserve(
+				.collectLA(
 					this,
-					onEmpty = {
+					catch = {
 						toast(R.string.activity_css_id_fail)
 						finish()
 					},
-				)
+				) {
+					// good :D
+				}
 		}
 
 		setContent {
-			val cssTitle by viewModel.cssTitle.map {
-				it.unwrap(
-					onLoading = {
-						stringResource(R.string.loading)
-					},
-					onError = {
-						stringResource(R.string.error)
-					},
-					onEmpty = {
-						""
-					},
-				)!!
-			}.observeAsState(stringResource(R.string.loading))
+			val cssTitle by viewModel.cssTitle.collectAsState(stringResource(R.string.loading))
 
 
-			val isCSSInvalid by viewModel.isCSSValid.observeAsState(true)
-			val cssInvalidReason by viewModel.cssInvalidReason.observeAsState(null)
+			val isCSSInvalid by viewModel.isCSSValid.collectAsState(true)
+			val cssInvalidReason by viewModel.cssInvalidReason.collectAsState(null)
 
 			MdcTheme {
 				CSSEditorContent(
@@ -166,7 +152,7 @@ fun PreviewCSSEditorContent() {
 	MdcTheme {
 		CSSEditorContent(
 			"TestCSS",
-			liveData<HResult<String>> { emit(successResult("")) },
+			flow { emit("") },
 			onBack = {},
 			onNewText = {},
 			onUndo = {},
@@ -183,7 +169,7 @@ fun PreviewCSSEditorContent() {
 @Composable
 fun CSSEditorContent(
 	cssTitle: String,
-	cssContentLive: LiveData<HResult<String>>,
+	cssContentLive: Flow<String>,
 	isCSSInvalid: Boolean,
 	cssInvalidReason: String? = null,
 	onBack: () -> Unit,
@@ -194,8 +180,8 @@ fun CSSEditorContent(
 	onPaste: () -> Unit,
 	onExport: () -> Unit,
 	hasPaste: Boolean = true,
-	canUndoLive: LiveData<Boolean> = liveData { emit(true) },
-	canRedoLive: LiveData<Boolean> = liveData { emit(true) },
+	canUndoLive: Flow<Boolean> = flow { emit(true) },
+	canRedoLive: Flow<Boolean> = flow { emit(true) },
 	onSave: () -> Unit
 ) {
 	val fabShape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50))
@@ -270,7 +256,7 @@ fun CSSEditorContent(
 						Row(
 							verticalAlignment = Alignment.CenterVertically,
 						) {
-							val canUndo by canUndoLive.observeAsState(false)
+							val canUndo by canUndoLive.collectAsState(false)
 							IconButton(onClick = onUndo, enabled = canUndo) {
 								Icon(
 									painterResource(R.drawable.ic_baseline_undo_24),
@@ -301,7 +287,7 @@ fun CSSEditorContent(
 									stringResource(R.string.activity_css_export)
 								)
 							}
-							val canRedo by canRedoLive.observeAsState(false)
+							val canRedo by canRedoLive.collectAsState(false)
 							IconButton(onClick = onRedo, enabled = canRedo) {
 								Icon(
 									painterResource(R.drawable.ic_baseline_redo_24),
@@ -329,19 +315,7 @@ fun CSSEditorContent(
 		isFloatingActionButtonDocked = true,
 		floatingActionButtonPosition = FabPosition.Center
 	) {
-		val cssContent by cssContentLive.map {
-			it.unwrap(
-				onLoading = {
-					""
-				},
-				onError = {
-					""
-				},
-				onEmpty = {
-					""
-				},
-			)!!
-		}.observeAsState("")
+		val cssContent by cssContentLive.collectAsState("")
 
 		Column {
 			AndroidView(
