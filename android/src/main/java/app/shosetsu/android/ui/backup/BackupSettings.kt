@@ -16,7 +16,6 @@ import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.onButtonClicked
 import app.shosetsu.android.viewmodel.abstracted.settings.ABackupSettingsViewModel
 import app.shosetsu.common.consts.BACKUP_FILE_EXTENSION
-import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -47,7 +46,7 @@ class BackupSettings : SettingsSubController() {
 
 
 	private fun openBackupSelection(onBackupSelected: (String) -> Unit) {
-		viewModel.loadInternalOptions().handleObserve { list ->
+		viewModel.loadInternalOptions().observe { list ->
 			AlertDialog.Builder(recyclerView.context!!).apply {
 				setTitle(R.string.settings_backup_alert_internal_title)
 				setItems(
@@ -160,9 +159,17 @@ class BackupSettings : SettingsSubController() {
 	}
 
 	private fun performExportSelection() {
-		viewModel.getBackupToExport().handle { backupFileName ->
-			observer.selectLocationToExportLauncher.launch(backupFileName)
+		val backupFileName = viewModel.getBackupToExport()
+
+		if (backupFileName == null) {
+			makeSnackBar(R.string.controller_backup_error_unselected)
+				?.setAction(R.string.retry) {
+					performExportSelection()
+				}?.show()
+			return
 		}
+
+		observer.selectLocationToExportLauncher.launch(backupFileName)
 	}
 
 	private fun performFileSelection() {
