@@ -11,11 +11,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -33,9 +29,6 @@ import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.uimodels.model.MigrationExtensionUI
 import app.shosetsu.android.view.uimodels.model.MigrationNovelUI
 import app.shosetsu.android.viewmodel.abstracted.AMigrationViewModel
-import app.shosetsu.common.dto.empty
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.loading
 import coil.compose.rememberImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.composethemeadapter.MdcTheme
@@ -66,6 +59,7 @@ import com.google.android.material.composethemeadapter.MdcTheme
  * @author github.com/doomsdayrs
  * yes, a THIRD ONE
  */
+@ExperimentalMaterialApi
 class MigrationController(bundle: Bundle) : ShosetsuController(bundle) {
 	companion object {
 		const val TARGETS_BUNDLE_KEY: String = "targets"
@@ -92,9 +86,9 @@ class MigrationController(bundle: Bundle) : ShosetsuController(bundle) {
 
 @Composable
 fun MigrationContent(viewModel: AMigrationViewModel) {
-	val novelList by viewModel.novels.observeAsState(loading)
-	val extensionsToSelect by viewModel.extensions.observeAsState(initial = empty)
-	val currentQuery by viewModel.currentQuery.observeAsState(initial = empty)
+	val novelList by viewModel.novels.collectAsState(emptyList())
+	val extensionsToSelect by viewModel.extensions.collectAsState(initial = emptyList())
+	val currentQuery by viewModel.currentQuery.collectAsState(null)
 
 	Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
 		// Novels that the user selected to transfer
@@ -103,20 +97,18 @@ fun MigrationContent(viewModel: AMigrationViewModel) {
 				.fillMaxWidth()
 				.fillMaxHeight(.25f)
 		) {
-			novelList.handle(
-				onLoading = { MigrationNovelsLoadingContent() }
-			) { list ->
-				MigrationNovelsContent(list = list) {
-					viewModel.setWorkingOn(it.id)
-				}
+			// TODO Loading via loading flow
+			// MigrationNovelsLoadingContent()
+			MigrationNovelsContent(list = novelList) {
+				viewModel.setWorkingOn(it.id)
 			}
 		}
 
 
 		Text(text = "With name")
 
-		currentQuery.handle { query ->
-			TextField(value = query, onValueChange = { viewModel.setQuery(it) })
+		if (currentQuery != null) {
+			TextField(value = currentQuery!!, onValueChange = { viewModel.setQuery(it) })
 		}
 
 		Text(text = "In")
@@ -127,16 +119,14 @@ fun MigrationContent(viewModel: AMigrationViewModel) {
 				.fillMaxWidth()
 				.fillMaxHeight(.25f)
 		) {
-			extensionsToSelect.handle(
-				onEmpty = { MigrationExtensionsLoadingContent() }
-			) { list ->
-				MigrationExtensionsContent(
-					list = list,
-					onClick = {
-						viewModel.setSelectedExtension(it)
-					}
-				)
-			}
+			// TODO Loading via loading flow
+			// MigrationExtensionsLoadingContent()
+			MigrationExtensionsContent(
+				list = extensionsToSelect,
+				onClick = {
+					viewModel.setSelectedExtension(it)
+				}
+			)
 		}
 
 		// Holds an arrow indicating it will be transferred to
