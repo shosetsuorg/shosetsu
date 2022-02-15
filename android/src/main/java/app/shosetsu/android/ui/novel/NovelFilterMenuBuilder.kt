@@ -5,21 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
 import androidx.viewpager.widget.PagerAdapter
-import app.shosetsu.android.common.ext.handleObserve
+import app.shosetsu.android.common.ext.collectLatestLA
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.ChapterSortType.SOURCE
 import app.shosetsu.common.enums.ChapterSortType.UPLOAD
 import app.shosetsu.common.enums.ReadingStatus.READ
 import app.shosetsu.common.enums.ReadingStatus.UNREAD
-import app.shosetsu.common.enums.TriStateState.*
+import app.shosetsu.common.enums.TriStateState.CHECKED
+import app.shosetsu.common.enums.TriStateState.UNCHECKED
 import app.shosetsu.common.view.uimodel.NovelSettingUI
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.databinding.*
+import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottomMenu0Binding
+import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottomMenu1Binding
+import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottomMenuBinding
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of Shosetsu.
@@ -49,7 +51,7 @@ class NovelFilterMenuBuilder(
 	private val inflater: LayoutInflater,
 	private val viewModel: ANovelViewModel
 ) {
-	private val novelSettingFlow: LiveData<HResult<NovelSettingUI>> =
+	private val novelSettingFlow: Flow<NovelSettingUI> =
 		viewModel.novelSettingFlow
 
 	private fun updateNovelSetting(novelSettingUI: NovelSettingUI) =
@@ -65,7 +67,10 @@ class NovelFilterMenuBuilder(
 				this.adapter = menuAdapter
 				var isInitialSetup = true
 				menuAdapter.onMenuCreated = {
-					novelSettingFlow.handleObserve(novelControllerLifeCycle) { settings ->
+					novelSettingFlow.collectLatestLA(novelControllerLifeCycle,
+						catch = {
+							TODO("Handle")
+						}) { settings ->
 						this@NovelFilterMenuBuilder.logV("Settings $settings")
 
 						// Prevents some data overflow by only running certain loads once
