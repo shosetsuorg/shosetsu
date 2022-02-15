@@ -79,8 +79,5 @@ abstract class ViewedController<VB : ViewBinding> : ShosetsuController {
 	 */
 	abstract fun bindView(inflater: LayoutInflater): VB
 
-	/**
-	 * Show an error on screen
-	 */
-	abstract fun handleErrorResult(e: Throwable)
+
 }

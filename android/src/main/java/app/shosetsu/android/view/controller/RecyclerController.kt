@@ -93,10 +93,15 @@ abstract class RecyclerController<AD, IT, VB> : ViewedController<VB>
 	 */
 	fun Flow<List<IT>>.observeRecyclerUpdates() =
 		observe(catch = {
-			handleErrorResult(it)
+			handleRecyclerException(it)
 		}) {
 			handleRecyclerUpdate(it)
 		}
+
+	/**
+	 * Show an error on screen
+	 */
+	abstract fun handleRecyclerException(e: Throwable)
 
 	abstract override fun onViewCreated(view: View)
 

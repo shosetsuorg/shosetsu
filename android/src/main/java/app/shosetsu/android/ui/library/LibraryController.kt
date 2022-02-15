@@ -349,7 +349,7 @@ class LibraryController
 		else displayOfflineSnackBar(R.string.generic_error_cannot_update_library_offline)
 	}
 
-	override fun handleErrorResult(e: Throwable) {
+	override fun handleRecyclerException(e: Throwable) {
 		logE("Error occurred", e)
 		makeSnackBar(e.message ?: "Unknown Error")?.show()
 		TODO("HANDLE")

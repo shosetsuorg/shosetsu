@@ -494,7 +494,7 @@ class NovelController(bundle: Bundle) :
 	private fun setObserver() {
 		viewModel.novelLive.observe(
 			catch = {
-				handleErrorResult(it)
+				handleRecyclerException(it)
 			}
 		) { result ->
 			activity?.invalidateOptionsMenu()
@@ -535,7 +535,7 @@ class NovelController(bundle: Bundle) :
 		binding.progressBar.isVisible = true
 	}
 
-	override fun handleErrorResult(e: Throwable) {
+	override fun handleRecyclerException(e: Throwable) {
 		TODO("HANDLE")
 	}
 

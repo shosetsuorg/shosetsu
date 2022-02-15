@@ -1,11 +1,10 @@
 package app.shosetsu.android.viewmodel.abstracted
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
-import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeViewModel
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of Shosetsu.
@@ -29,14 +28,14 @@ import app.shosetsu.android.viewmodel.base.SubscribeViewModel
  * 16 / 09 / 2020
  */
 abstract class ARepositoryViewModel
-	: SubscribeViewModel<List<RepositoryUI>>, ShosetsuViewModel(), ErrorReportingViewModel,
+	: SubscribeViewModel<List<RepositoryUI>>, ShosetsuViewModel(),
 	IsOnlineCheckViewModel {
 	/**
 	 * Adds a URL via a string the user provides
 	 *
 	 * @param url THe URL of the repository
 	 */
-	abstract fun addRepository(name: String, url: String): LiveData<Unit>
+	abstract fun addRepository(name: String, url: String): Flow<Unit>
 
 	/**
 	 * Checks if the string provided is a valid URL
@@ -46,12 +45,12 @@ abstract class ARepositoryViewModel
 	/**
 	 * Remove the repo from the app
 	 */
-	abstract fun remove(repositoryInfoUI: RepositoryUI): LiveData<Unit>
+	abstract fun remove(repositoryInfoUI: RepositoryUI): Flow<Unit>
 
 	/**
 	 * Toggles the state of [RepositoryUI.isRepoEnabled], returns the new state
 	 */
-	abstract fun toggleIsEnabled(repositoryInfoUI: RepositoryUI): LiveData<Boolean>
+	abstract fun toggleIsEnabled(repositoryInfoUI: RepositoryUI): Flow<Boolean>
 
 	/**
 	 * Start the repository updater
@@ -61,5 +60,5 @@ abstract class ARepositoryViewModel
 	/**
 	 * Try to restore a repository
 	 */
-	abstract fun undoRemove(item: RepositoryUI): LiveData<Unit>
+	abstract fun undoRemove(item: RepositoryUI): Flow<Unit>
 }

@@ -66,7 +66,7 @@ class SearchController(bundle: Bundle) : GenericFastAdapterRecyclerController<Se
 		searchView?.setOnQueryTextListener(InternalQuery())
 	}
 
-	override fun handleErrorResult(e: Throwable) {
+	override fun handleRecyclerException(e: Throwable) {
 		viewModel.reportError(e)
 	}
 
