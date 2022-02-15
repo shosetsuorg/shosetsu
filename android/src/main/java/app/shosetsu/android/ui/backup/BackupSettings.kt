@@ -50,12 +50,16 @@ class BackupSettings : SettingsSubController() {
 		viewModel.loadInternalOptions().handleObserve { list ->
 			AlertDialog.Builder(recyclerView.context!!).apply {
 				setTitle(R.string.settings_backup_alert_internal_title)
-				setItems(list.map {
-					it
-						.removePrefix("shosetsu-backup-")
-						.removeSuffix(".$BACKUP_FILE_EXTENSION")
-					// TODO Map dates with proper localization
-				}.toTypedArray()) { d, w ->
+				setItems(
+					list.map {
+						it
+							.removePrefix("shosetsu-backup-")
+							.removeSuffix(".$BACKUP_FILE_EXTENSION")
+						// TODO Map dates with proper localization
+					}
+						.sorted()
+						.toTypedArray()
+				) { d, w ->
 					onBackupSelected(list[w])
 					d.dismiss()
 				}
