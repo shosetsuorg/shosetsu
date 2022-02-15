@@ -2,8 +2,6 @@ package app.shosetsu.android.view.controller
 
 import android.os.Bundle
 import androidx.viewbinding.ViewBinding
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.GenericItem
 import com.mikepenz.fastadapter.adapters.ItemAdapter
@@ -72,13 +70,9 @@ abstract class FastAdapterRecyclerController<VB, ITEM> :
 		itemAdapter: ItemAdapter<T>,
 		showEmpty: () -> Unit,
 		hideEmpty: () -> Unit,
-		result: HResult<List<T>>
-	) = result.handle(
-		onLoading = { showLoading() },
-		onError = { handleErrorResult(it) },
-		onEmpty = { showEmpty() }
-	) { newList ->
-		updateUI(itemAdapter, showEmpty, hideEmpty, newList)
+		result: List<T>
+	) {
+		updateUI(itemAdapter, showEmpty, hideEmpty, result)
 	}
 
 

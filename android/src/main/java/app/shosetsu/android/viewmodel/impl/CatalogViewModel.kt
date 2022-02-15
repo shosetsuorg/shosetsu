@@ -133,9 +133,17 @@ class CatalogViewModel(
 	override val filterItemsLive: LiveData<List<Filter<*>>>
 		get() = filterItemFlow.mapLatest { it.toList() }.asIOLiveData()
 
-	override val hasSearchLive: LiveData<Boolean> by lazy {
-		iExtensionFlow.mapLatest { it.hasSearch }.asIOLiveData()
+	override val hasSearchLive: Flow<Boolean> by lazy {
+		iExtensionFlow.mapLatest { it.hasSearch }.transformLatest {
+			_hasSearch = it
+			emit(it)
+		}
 	}
+
+	private var _hasSearch: Boolean = false
+
+	override val hasSearch: Boolean
+		get() = _hasSearch
 
 	override val extensionName: LiveData<String> by lazy {
 		iExtensionFlow.mapLatest { it.name }.asIOLiveData()
@@ -286,11 +294,12 @@ class CatalogViewModel(
 		applyFilter()
 	}
 
-	override fun backgroundNovelAdd(novelID: Int): LiveData<Unit> =
+	override fun backgroundNovelAdd(novelID: Int): Flow<BackgroundNovelAddProgress> =
 		flow {
-			// TODO LOADING
-			emit(backgroundAddUseCase(novelID))
-		}.asIOLiveData()
+			emit(BackgroundNovelAddProgress.ADDING)
+			backgroundAddUseCase(novelID)
+			emit(BackgroundNovelAddProgress.ADDED)
+		}
 
 	override fun applyFilter() {
 		stateManager = StateManager()
@@ -355,9 +364,17 @@ class CatalogViewModel(
 
 	private val novelCardTypeFlow = loadNovelUITypeUseCase()
 
-	override val novelCardTypeLive: LiveData<NovelCardType> by lazy {
-		novelCardTypeFlow.asIOLiveData()
+	override val novelCardTypeLive: Flow<NovelCardType> by lazy {
+		novelCardTypeFlow.transformLatest {
+			_novelCardType = it
+			emit(it)
+		}
 	}
+
+	private var _novelCardType: NovelCardType = NovelCardType.NORMAL
+
+	override val novelCardType: NovelCardType
+		get() = _novelCardType
 
 	private var columnP: Int = SettingKey.ChapterColumnsInPortait.default
 

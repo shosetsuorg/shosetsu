@@ -7,7 +7,7 @@ import java.io.IOException
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-	val kotlinVersion: String by extra("1.5.31")
+	val kotlinVersion: String by extra("1.6.0")
 
 	repositories {
 		google()

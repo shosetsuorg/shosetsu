@@ -20,7 +20,6 @@ import app.shosetsu.android.view.controller.base.syncFABWithRecyclerView
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.common.enums.NovelCardType.*
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -347,7 +346,7 @@ class LibraryController
 		else displayOfflineSnackBar(R.string.generic_error_cannot_update_library_offline)
 	}
 
-	override fun handleErrorResult(e: HResult.Error) {
+	override fun handleErrorResult(e: Throwable) {
 		logE("Error occurred", e.exception)
 		viewModel.reportError(e)
 		makeSnackBar(e.message)?.show()

@@ -23,8 +23,8 @@ import app.shosetsu.android.view.controller.FastAdapterRecyclerController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
+import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel.BackgroundNovelAddProgress.ADDED
+import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel.BackgroundNovelAddProgress.ADDING
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.common.enums.NovelCardType.COMPRESSED
 import app.shosetsu.common.enums.NovelCardType.NORMAL
@@ -95,7 +95,7 @@ class CatalogController(
 	}
 
 	override fun createLayoutManager(): RecyclerView.LayoutManager {
-		return when (viewModel.novelCardTypeLive.value) {
+		return when (viewModel.novelCardType) {
 			COMPRESSED -> LinearLayoutManager(
 				context,
 				VERTICAL,
@@ -140,22 +140,27 @@ class CatalogController(
 			return false
 		}
 
-		viewModel.backgroundNovelAdd(item.id).observe { result ->
-			result.handle(
-				onLoading = {
+		viewModel.backgroundNovelAdd(item.id).observe(
+			catch = {
+				TODO("Handle")
+			}
+		) { result ->
+			when (result) {
+				ADDING -> {
 					makeSnackBar(R.string.controller_catalogue_toast_background_add)?.show()
-				},
-			) {
-				makeSnackBar(
-					getString(
-						R.string.controller_catalogue_toast_background_add_success,
-						item.title.let {
-							if (it.length > 20)
-								it.substring(0, 20) + "..."
-							else it
-						}
-					)
-				)?.show()
+				}
+				ADDED -> {
+					makeSnackBar(
+						getString(
+							R.string.controller_catalogue_toast_background_add_success,
+							item.title.let {
+								if (it.length > 20)
+									it.substring(0, 20) + "..."
+								else it
+							}
+						)
+					)?.show()
+				}
 			}
 		}
 
@@ -213,7 +218,7 @@ class CatalogController(
 
 	private fun configureViewTypeMenu(menu: Menu, isRetry: Boolean = false) {
 		logI("Syncing menu")
-		when (viewModel.novelCardTypeLive.value) {
+		when (viewModel.novelCardType) {
 			NORMAL -> {
 				menu.findItem(R.id.view_type_normal)?.isChecked = true
 			}
@@ -243,7 +248,7 @@ class CatalogController(
 		configureViewTypeMenu(menu)
 
 		menu.findItem(R.id.search_item)?.let { searchItem ->
-			if (viewModel.hasSearchLive.value != true) {
+			if (!viewModel.hasSearch) {
 				logV("Hiding search icon")
 				menu.removeItem(R.id.search_item)
 				return@let
@@ -274,7 +279,11 @@ class CatalogController(
 				true
 			}
 			R.id.web_view -> {
-				viewModel.getBaseURL().handleObserve {
+				viewModel.getBaseURL().observe(
+					catch = {
+						TODO("HANDLE")
+					}
+				) {
 					activity?.openInWebView(it)
 				}
 				true
@@ -288,28 +297,27 @@ class CatalogController(
 		binding.swipeRefreshLayout.isRefreshing = false
 	}
 
-	override fun handleErrorResult(e: HResult.Error) {
+	override fun handleErrorResult(e: Throwable) {
 		binding.fragmentCatalogueProgressBottom.isVisible = false
 		binding.swipeRefreshLayout.isRefreshing = false
-		val exception = e.exception ?: return
-		val cause = exception.cause
+		val cause = e.cause
 
 		when {
-			exception is HTTPException -> {
-				makeSnackBar(exception.code.toString())?.show()
+			e is HTTPException -> {
+				makeSnackBar(e.code.toString())?.show()
 			}
 			cause is HTTPException -> {
 				makeSnackBar(cause.code.toString())?.show()
 			}
-			exception is SocketTimeoutException -> {
-				makeSnackBar(exception.message.toString())?.show()
+			e is SocketTimeoutException -> {
+				makeSnackBar(e.message.toString())?.show()
 			}
 			cause is SocketTimeoutException -> {
 				makeSnackBar(cause.message.toString())?.show()
 			}
 			else -> {
-				logE("Exception", e.exception)
-				ACRA.errorReporter.handleException(e.exception, false)
+				logE("Exception", e.cause)
+				ACRA.errorReporter.handleException(e.cause, false)
 			}
 		}
 	}
@@ -323,18 +331,23 @@ class CatalogController(
 	private fun setupObservers() {
 		viewModel.itemsLive.observeRecyclerUpdates()
 
-		viewModel.extensionName.handleObserve(this, onLoading = {
-			setViewTitle(getString(R.string.loading))
+		setViewTitle(getString(R.string.loading))
+		viewModel.extensionName.observe(catch = {
+			TODO("HANDLE")
 		}) {
 			setViewTitle(it)
 			if (recyclerArray.isEmpty()) viewModel.resetView()
 		}
 
-		viewModel.hasSearchLive.observe {
+		viewModel.hasSearchLive.observe(catch = {
+			TODO("HANDLE")
+		}) {
 			activity?.invalidateOptionsMenu()
 		}
 
-		viewModel.novelCardTypeLive.observe {
+		viewModel.novelCardTypeLive.observe(catch = {
+			TODO("HANDLE")
+		}) {
 			binding.recyclerView.layoutManager = createLayoutManager()
 		}
 	}
