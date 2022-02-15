@@ -9,6 +9,7 @@ import app.shosetsu.android.backend.workers.onetime.DownloadWorker
 import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker
 import app.shosetsu.android.common.consts.ACTION_UPDATE_EXTENSION
 import app.shosetsu.android.common.consts.EXTRA_UPDATE_EXTENSION_ID
+import app.shosetsu.android.common.consts.EXTRA_UPDATE_REPO_ID
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.usecases.RequestInstallExtensionUseCase
 import org.kodein.di.android.closestDI
@@ -72,11 +73,15 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
 					EXTRA_UPDATE_EXTENSION_ID,
 					-1
 				)
-				if (extensionId == -1) return
+				val repoId = intent.getIntExtra(
+					EXTRA_UPDATE_REPO_ID,
+					-1
+				)
+				if (extensionId == -1 || repoId == -1) return
 
 				launchIO {
 					notificationManager.cancel(extensionId + 3000)
-					manager.invoke(extensionId)
+					manager.invoke(extensionId, repoId)
 				}
 			}
 		}
