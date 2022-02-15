@@ -3,7 +3,10 @@ package app.shosetsu.android.ui.library
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,7 +17,7 @@ import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.library.listener.LibrarySearchQuery
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.novel.NovelController
-import app.shosetsu.android.view.controller.*
+import app.shosetsu.android.view.controller.FastAdapterRefreshableRecyclerController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.syncFABWithRecyclerView
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
@@ -347,9 +350,9 @@ class LibraryController
 	}
 
 	override fun handleErrorResult(e: Throwable) {
-		logE("Error occurred", e.exception)
-		viewModel.reportError(e)
-		makeSnackBar(e.message)?.show()
+		logE("Error occurred", e)
+		makeSnackBar(e.message ?: "Unknown Error")?.show()
+		TODO("HANDLE")
 	}
 
 }
