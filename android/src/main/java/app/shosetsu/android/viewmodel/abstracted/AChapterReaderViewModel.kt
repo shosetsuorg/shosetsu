@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeViewModel
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -33,7 +33,6 @@ import app.shosetsu.android.viewmodel.base.SubscribeViewModel
 abstract class AChapterReaderViewModel :
 	SubscribeViewModel<List<ReaderUIItem<*, *>>>,
 	ShosetsuViewModel(),
-	ErrorReportingViewModel,
 	ExposedSettingsRepoViewModel {
 
 	/**
@@ -155,7 +154,7 @@ abstract class AChapterReaderViewModel :
 	/**
 	 * Loads the settings list for the bottom bar
 	 */
-	abstract fun getSettings(): LiveData<List<SettingsItemData>>
+	abstract fun getSettings(): Flow<List<SettingsItemData>>
 
 
 	/**

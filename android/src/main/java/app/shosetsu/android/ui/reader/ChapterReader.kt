@@ -25,8 +25,6 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityReaderBinding
 import com.google.android.material.appbar.MaterialToolbar
@@ -191,20 +189,11 @@ class ChapterReader
 	}
 
 	private fun setObservers() {
-		viewModel.liveData.observe { result ->
-			result.handle(
-				onLoading = {
-					logD("Loading chapters")
-				},
-				onError = {
-					logE("Error occured while loading chapters", it.exception)
-				},
-				onEmpty = {
-					logD("Recieved an empty result")
-				}
-			) {
-				handleChaptersResult(it)
-			}
+		logD("Loading chapters")
+		viewModel.liveData.collectLA(this, catch = {
+			logE("Error occured while loading chapters", it)
+		}) { result ->
+			handleChaptersResult(result)
 		}
 
 		viewModel.liveTheme.observe {
@@ -353,7 +342,7 @@ class ChapterReader
 		bottomMenuRecycler.apply {
 			val itemAdapter = ItemAdapter<SettingsItemData>()
 			adapter = FastAdapter.with(itemAdapter)
-			viewModel.getSettings().handleObserve { newList ->
+			viewModel.getSettings().collectLA(this@ChapterReader, catch = {}) { newList ->
 				FastAdapterDiffUtil[itemAdapter] = calculateDiff(itemAdapter, newList)
 			}
 		}
@@ -450,9 +439,6 @@ class ChapterReader
 
 	private fun <T> LiveData<T>.observe(observer: (T) -> Unit) =
 		observe(this@ChapterReader, observer)
-
-	private inline fun <reified T> LiveData<HResult<T>>.handleObserve(crossinline observer: (T) -> Unit) =
-		handleObserve(this@ChapterReader, onSuccess = observer)
 
 	inner class ChapterReaderPageChange : OnPageChangeCallback() {
 		override fun onPageSelected(position: Int) {
