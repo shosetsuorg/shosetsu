@@ -1,17 +1,17 @@
 package app.shosetsu.android.domain.repository.impl
 
-import app.shosetsu.android.common.dto.errorResult
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.datasource.database.base.IDBExtLibDataSource
 import app.shosetsu.common.datasource.file.base.IFileExtLibDataSource
 import app.shosetsu.common.datasource.memory.base.IMemExtLibDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteExtLibDataSource
 import app.shosetsu.common.domain.model.local.ExtLibEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionLibrariesRepository
-import app.shosetsu.common.dto.*
 import app.shosetsu.lib.Version
 import app.shosetsu.lib.json.J_VERSION
-import org.json.JSONException
-import org.json.JSONObject
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 /*
  * This file is part of shosetsu.
@@ -40,36 +40,28 @@ class ExtensionLibrariesRepository(
 	private val remoteSource: IRemoteExtLibDataSource,
 	private val memSource: IMemExtLibDataSource,
 ) : IExtensionLibrariesRepository {
+	@Throws(GenericSQLiteException::class)
 	override suspend fun loadExtLibByRepo(
 		repoID: Int,
-	): HResult<List<ExtLibEntity>> =
+	): List<ExtLibEntity> =
 		databaseSource.loadExtLibByRepo(repoID)
 
-	@Throws(JSONException::class)
+	@Throws(GenericSQLiteException::class)
 	override suspend fun installExtLibrary(
 		repoURL: String,
 		extLibEntity: ExtLibEntity,
-	): HResult<*> =
-		remoteSource.downloadLibrary(repoURL, extLibEntity).transform {
-			val data = it
-			val json = JSONObject(data.substring(0, data.indexOf("\n")).replace("--", "").trim())
-			try {
-				extLibEntity.version = Version(json.getString(J_VERSION))
-				databaseSource.updateOrInsert(extLibEntity).ifSo {
-					memSource.setLibrary(extLibEntity.scriptName, data).ifSo {
-						fileSource.writeExtLib(extLibEntity.scriptName, data)
-					}
-				}
-			} catch (e: JSONException) {
-				errorResult(e)
-			}
-		}
+	) {
+		val data = remoteSource.downloadLibrary(repoURL, extLibEntity)
+		val json =
+			Json.parseToJsonElement(data.substring(0, data.indexOf("\n")).replace("--", "").trim())
+		extLibEntity.version = Version(json.jsonObject[J_VERSION]!!.jsonPrimitive.content)
+		databaseSource.updateOrInsert(extLibEntity)
+		memSource.setLibrary(extLibEntity.scriptName, data)
+		fileSource.writeExtLib(extLibEntity.scriptName, data)
+	}
 
-	override fun blockingLoadExtLibrary(name: String): HResult<String> =
-		memSource.loadLibrary(name).catch {
-			fileSource.blockingLoadLib(name).transform {
-				memSource.setLibrary(name, it)
-				successResult(it)
-			}
+	override fun blockingLoadExtLibrary(name: String): String =
+		memSource.loadLibrary(name) ?: fileSource.blockingLoadLib(name).also {
+			memSource.setLibrary(name, it)
 		}
 }

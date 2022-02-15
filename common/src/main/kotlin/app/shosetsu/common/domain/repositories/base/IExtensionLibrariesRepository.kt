@@ -1,7 +1,7 @@
 package app.shosetsu.common.domain.repositories.base
 
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.ExtLibEntity
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -29,28 +29,13 @@ interface IExtensionLibrariesRepository {
 	/**
 	 * Loads extension libraries by its repository
 	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Loading] never
+	 * @return entity from repo
 	 */
+	@Throws(GenericSQLiteException::class)
 	suspend fun loadExtLibByRepo(repoID: Int): List<ExtLibEntity>
 
 	/**
 	 * Installs an extension library by its repository
-	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] never
-	 *
-	 * [HResult.Loading] never
 	 */
 	suspend fun installExtLibrary(
 		repoURL: String,
@@ -59,14 +44,7 @@ interface IExtensionLibrariesRepository {
 
 	/**
 	 * @param name Name of the library requested
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Loading] never
+	 * @return Library ext content
 	 */
-	fun blockingLoadExtLibrary(name: String): HResult<String>
+	fun blockingLoadExtLibrary(name: String): String
 }
