@@ -14,10 +14,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel.FilteredLanguages
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.loading
-import app.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.composethemeadapter.MdcTheme
 
@@ -49,9 +45,10 @@ import com.google.android.material.composethemeadapter.MdcTheme
 @Composable
 fun BrowseControllerFilterMenu(viewModel: ABrowseViewModel) {
 	val showOnlyInstalled by viewModel.onlyInstalledLive.observeAsState(initial = false)
-	val languageList: HResult<FilteredLanguages> by viewModel.filteredLanguagesLive.observeAsState(
-		initial = loading
+	val languageList: FilteredLanguages by viewModel.filteredLanguagesLive.observeAsState(
+		initial = FilteredLanguages(emptyList(), emptyMap())
 	)
+
 	var hideLanguageFilter by remember { mutableStateOf(false) }
 
 	val searchTerm by viewModel.searchTermLive.observeAsState("")
@@ -101,7 +98,7 @@ fun BrowseControllerNameFilter(searchTerm: String, setSearchTerm: (newTerm: Stri
 @Composable
 fun PreviewBrowseControllerLanguagesFilter() {
 	BrowseControllerLanguagesFilter(
-		successResult(FilteredLanguages(listOf("en"), mapOf("en" to true))),
+		FilteredLanguages(listOf("en"), mapOf("en" to true)),
 		false,
 		{ _, _ -> },
 		{}
@@ -110,7 +107,7 @@ fun PreviewBrowseControllerLanguagesFilter() {
 
 @Composable
 fun BrowseControllerLanguagesFilter(
-	languageList: HResult<FilteredLanguages>,
+	languageList: FilteredLanguages,
 	hidden: Boolean,
 	setLanguageFilterState: (language: String, newState: Boolean) -> Unit,
 	setHidden: (newValue: Boolean) -> Unit
@@ -140,7 +137,7 @@ fun BrowseControllerLanguagesFilter(
 		}
 
 		if (!hidden) {
-			languageList.handle { (languages, state) ->
+			languageList.let { (languages, state) ->
 				Divider(modifier = Modifier.padding(bottom = 8.dp, end = 8.dp))
 
 				BrowseControllerLanguagesContent(
