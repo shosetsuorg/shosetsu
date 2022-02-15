@@ -2,9 +2,11 @@ package app.shosetsu.android.ui.settings
 
 import android.view.View
 import androidx.annotation.CallSuper
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.view.controller.GenericFastAdapterRecyclerController
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.settings.ASubSettingsViewModel
+import org.acra.ACRA
 
 /*
  * This file is part of shosetsu.
@@ -43,9 +45,8 @@ abstract class SettingsSubController : GenericFastAdapterRecyclerController<Sett
 	}
 
 	override fun handleRecyclerException(e: Throwable) {
-		e.exception?.printStackTrace()
-		viewModel.reportError(e)
-
+		logE("Error", e)
+		ACRA.errorReporter.handleException(e)
 	}
 
 	/** Finds a setting via its data ID */

@@ -50,13 +50,13 @@ import com.google.android.material.composethemeadapter.MdcTheme
  * @since 06 / 10 / 2021
  * @author Doomsdayrs
  */
+@ExperimentalMaterialApi
 class ComposeSettingsController : ShosetsuController() {
 
 	override val viewTitleRes: Int = R.string.settings
 
 	override fun onViewCreated(view: View) {}
 
-	@ExperimentalMaterialApi
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup,

@@ -16,7 +16,6 @@ import app.shosetsu.android.view.uimodels.settings.dsl.customView
 import app.shosetsu.android.view.uimodels.settings.dsl.onButtonClicked
 import app.shosetsu.android.viewmodel.abstracted.settings.AReaderSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.dto.transmogrify
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
@@ -99,7 +98,6 @@ class ReaderSettings : SettingsSubController() {
 					itemAdapter.clear()
 					launchIO {
 						val v = viewModel.settingsRepo.getInt(SettingKey.ReaderTheme)
-							.transmogrify { it }!!
 						list.find {
 							it.identifier == v.toLong()
 						}?.isSelected = true

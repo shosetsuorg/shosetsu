@@ -24,7 +24,6 @@ import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.consts.settings.SettingKey.AppTheme
-import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.snackbar.Snackbar
@@ -60,21 +59,20 @@ class AdvancedSettings : ShosetsuController() {
 	 * Execute a purge from the view model, prompt to retry if failed
 	 */
 	private fun purgeNovelCache() {
-		viewModel.purgeUselessData().observe {
-			it.handle(
-				onError = {
-					logE("Failed to purge")
-					makeSnackBar(
-						R.string.controller_settings_advanced_snackbar_purge_failure,
-						LENGTH_LONG
-					)
-						?.setAction(R.string.retry) { purgeNovelCache() }
-						?.show()
-				}
-			) {
-				makeSnackBar(R.string.controller_settings_advanced_snackbar_purge_success)
+		viewModel.purgeUselessData().observe(
+			catch = {
+				logE("Failed to purge")
+				makeSnackBar(
+					R.string.controller_settings_advanced_snackbar_purge_failure,
+					LENGTH_LONG
+				)
+					?.setAction(R.string.retry) { purgeNovelCache() }
 					?.show()
 			}
+		) {
+
+			makeSnackBar(R.string.controller_settings_advanced_snackbar_purge_success)
+				?.show()
 		}
 	}
 
@@ -104,18 +102,16 @@ class AdvancedSettings : ShosetsuController() {
 	}
 
 	private fun killCycleWorkers() {
-		viewModel.killCycleWorkers().handle {
-			makeSnackBar(
-				R.string.settings_advanced_snackbar_cycle_kill_success,
-				LENGTH_LONG
-			)?.apply {
-				setAction(R.string.restart) {
-					viewModel.startCycleWorkers().handle {
-						makeSnackBar(R.string.settings_advanced_cycle_start_success)?.show()
-					}
-				}
-			}?.show()
-		}
+		viewModel.killCycleWorkers()
+		makeSnackBar(
+			R.string.settings_advanced_snackbar_cycle_kill_success,
+			LENGTH_LONG
+		)?.apply {
+			setAction(R.string.restart) {
+				viewModel.startCycleWorkers()
+				makeSnackBar(R.string.settings_advanced_cycle_start_success)?.show()
+			}
+		}?.show()
 	}
 
 

@@ -11,8 +11,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
@@ -22,9 +22,6 @@ import app.shosetsu.android.common.ext.getString
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.ATextAssetReaderViewModel
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.loading
 import com.google.android.material.composethemeadapter.MdcTheme
 
 /*
@@ -64,18 +61,17 @@ class TextAssetReader(bundleI: Bundle) : ShosetsuController(bundleI) {
 		savedViewState: Bundle?
 	): View = ComposeView(container.context).apply {
 		setContent {
-			val content by viewModel.liveData.observeAsState(initial = loading)
+			val content by viewModel.liveData.collectAsState(initial = null)
 			MdcTheme {
 				TextAssetReaderContent(content)
 			}
 		}
 	}
 
-	@ExperimentalStdlibApi
 	override fun onViewCreated(view: View) {
 		viewModel.setTarget(args.getInt(BUNDLE_KEY, TextAsset.LICENSE.bundle.getInt(BUNDLE_KEY)))
 
-		viewModel.targetLiveData.handleObserve {
+		viewModel.targetLiveData.observe(catch = {}) {
 			setViewTitle(getString(it.titleRes))
 		}
 	}
@@ -88,8 +84,8 @@ class TextAssetReader(bundleI: Bundle) : ShosetsuController(bundleI) {
 }
 
 @Composable
-fun TextAssetReaderContent(text: HResult<String>) {
-	text.handle {
+fun TextAssetReaderContent(text: String?) {
+	if (text != null) {
 		Box(
 			modifier = Modifier
 				.verticalScroll(
@@ -97,7 +93,7 @@ fun TextAssetReaderContent(text: HResult<String>) {
 				)
 				.fillMaxSize()
 		) {
-			Text(text = it, modifier = Modifier.padding(16.dp))
+			Text(text = text, modifier = Modifier.padding(16.dp))
 		}
 	}
 }
