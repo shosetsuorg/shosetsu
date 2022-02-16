@@ -32,6 +32,11 @@ fun getCommitCount(): String = "git rev-list --count HEAD".execute().getText().t
 
 val acraPropertiesFile = rootProject.file("acra.properties")
 val acraProperties = Properties()
+android {
+    lint {
+        abortOnError = false
+    }
+}
 
 if (acraPropertiesFile.exists())
 	acraProperties.load(FileInputStream(acraPropertiesFile))
@@ -133,12 +138,6 @@ android.applicationVariants.forEach { variant ->
 		}
 	}
 
-}
-
-android {
-	lintOptions {
-		isAbortOnError = false
-	}
 }
 
 dependencies {
