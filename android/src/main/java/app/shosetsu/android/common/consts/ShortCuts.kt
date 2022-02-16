@@ -2,6 +2,8 @@ package app.shosetsu.android.common.consts
 
 import android.content.Context
 import android.content.Intent
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.core.content.pm.ShortcutInfoCompat.Builder
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat.createWithResource
@@ -29,8 +31,9 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * shosetsu
  * 06 / 09 / 2020
  */
+@ExperimentalFoundationApi
+@ExperimentalMaterialApi
 object ShortCuts {
-
 
 	fun createShortcuts(context: Context) {
 		ShortcutManagerCompat.addDynamicShortcuts(

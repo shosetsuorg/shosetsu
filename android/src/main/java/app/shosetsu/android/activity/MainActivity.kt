@@ -22,8 +22,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.core.os.bundleOf
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.GravityCompat
@@ -87,8 +85,6 @@ import org.kodein.di.android.closestDI
  *
  * @author github.com/doomsdayrs
  */
-@ExperimentalMaterialApi
-@ExperimentalFoundationApi
 class MainActivity : AppCompatActivity(), DIAware,
 	ControllerChangeHandler.ControllerChangeListener {
 	companion object {
@@ -256,8 +252,6 @@ class MainActivity : AppCompatActivity(), DIAware,
 		}
 	}
 
-	@ExperimentalMaterialApi
-	@ExperimentalFoundationApi
 	private fun setupView() {
 		//Sets the toolbar
 		setSupportActionBar(binding.toolbar)
@@ -288,8 +282,6 @@ class MainActivity : AppCompatActivity(), DIAware,
 	/**
 	 * Setup the navigation drawer
 	 */
-	@ExperimentalMaterialApi
-	@ExperimentalFoundationApi
 	private fun setupNavigationDrawer() {
 		logV("Setting up legacy navigation")
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -321,8 +313,6 @@ class MainActivity : AppCompatActivity(), DIAware,
 	/**
 	 * Setup the bottom navigation
 	 */
-	@ExperimentalMaterialApi
-	@ExperimentalFoundationApi
 	private fun setupBottomNavigationDrawer() {
 		logV("Setting up modern navigation")
 		binding.drawerLayout.setDrawerLockMode(
@@ -338,8 +328,6 @@ class MainActivity : AppCompatActivity(), DIAware,
 		}
 	}
 
-	@ExperimentalMaterialApi
-	@ExperimentalFoundationApi
 	private fun handleNavigationSelected(id: Int) {
 		when (id) {
 			R.id.nav_library -> setRoot(LibraryController(), R.id.nav_library)
