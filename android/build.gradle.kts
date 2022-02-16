@@ -58,8 +58,8 @@ android {
 			}
 		}
 
-		buildConfigField("String", "acraUsername", acraProperties["username"]?.toString() ?: "")
-		buildConfigField("String", "acraPassword", acraProperties["password"]?.toString() ?: "")
+		buildConfigField("String", "acraUsername", acraProperties["username"]?.toString() ?: "\"\"")
+		buildConfigField("String", "acraPassword", acraProperties["password"]?.toString() ?: "\"\"")
 
 	}
 
@@ -70,7 +70,7 @@ android {
 	}
 
 	composeOptions {
-		kotlinCompilerExtensionVersion = "1.0.5"
+		kotlinCompilerExtensionVersion = "1.1.0"
 	}
 
 	buildTypes {
@@ -144,29 +144,29 @@ dependencies {
 	implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
 	// Google view things
-	implementation("com.google.android.material:material:1.4.0")
+	implementation("com.google.android.material:material:1.5.0")
 
 	// Androidx
-	implementation("androidx.constraintlayout:constraintlayout:2.1.2")
+	implementation("androidx.constraintlayout:constraintlayout:2.1.3")
 	implementation("androidx.work:work-runtime:2.7.1")
 	implementation("androidx.work:work-runtime-ktx:2.7.1")
 	implementation("androidx.gridlayout:gridlayout:1.0.0")
-	implementation("androidx.preference:preference-ktx:1.1.1")
+	implementation("androidx.preference:preference-ktx:1.2.0")
 	implementation("androidx.recyclerview:recyclerview:1.2.1")
 	implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
-	implementation("androidx.appcompat:appcompat:1.4.0")
+	implementation("androidx.appcompat:appcompat:1.4.1")
 	implementation("androidx.multidex:multidex:2.0.1")
 	//implementation("androidx.biometric:biometric:1.1.0") TODO biometric unlocking
 	implementation("androidx.annotation:annotation:1.3.0")
-	implementation("androidx.appcompat:appcompat:1.4.0")
+	implementation("androidx.appcompat:appcompat:1.4.1")
 	implementation("androidx.cardview:cardview:1.0.0")
 	implementation("androidx.browser:browser:1.4.0")
 	implementation("androidx.core:core-ktx:1.7.0")
-	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
-	implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
-	implementation("androidx.room:room-ktx:2.4.0")
+	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
+	implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.1")
+	implementation("androidx.room:room-ktx:2.4.1")
 	implementation("androidx.collection:collection-ktx:1.2.0")
-	implementation("androidx.core:core-splashscreen:1.0.0-alpha02")
+	implementation("androidx.core:core-splashscreen:1.0.0-beta01")
 
 	// - Life Cycle
 	implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
@@ -214,7 +214,7 @@ dependencies {
 	implementation(kotlin("stdlib-jdk8"))
 	implementation(kotlin("reflect"))
 
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
 
 	// Showcase
 	//implementation("com.github.deano2390:MaterialShowcaseView:1.3.4")
@@ -259,8 +259,8 @@ dependencies {
 	implementation("com.github.shosetsuorg:Bubbleseekbar:2dae010baf")
 
 	// Room
-	implementation("androidx.room:room-runtime:2.4.0")
-	kapt("androidx.room:room-compiler:2.4.0")
+	implementation("androidx.room:room-runtime:2.4.1")
+	kapt("androidx.room:room-compiler:2.4.1")
 
 	// Fast Adapter
 	val latestFastAdapterRelease = "5.4.1"
@@ -294,7 +294,7 @@ dependencies {
 
 	// KTX
 
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.5.2")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.0")
 
 	// KTX - Serialization
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
@@ -313,17 +313,17 @@ dependencies {
 
 
 	// Compose
-	implementation("androidx.compose.ui:ui:1.0.5")
+	implementation("androidx.compose.ui:ui:1.1.0")
 
-	implementation("androidx.compose.compiler:compiler:1.0.5")
+	implementation("androidx.compose.compiler:compiler:1.1.0")
 
 	//- Tooling support (Previews, etc.)
-	implementation("androidx.compose.ui:ui-tooling:1.0.5")
+	implementation("androidx.compose.ui:ui-tooling:1.1.0")
 	//- Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-	implementation("androidx.compose.foundation:foundation:1.0.5")
+	implementation("androidx.compose.foundation:foundation:1.1.0")
 
 	// - Material
-	implementation("androidx.compose.material:material:1.0.5")
+	implementation("androidx.compose.material:material:1.1.0")
 	//implementation("androidx.compose.material:material-ripple:1.0.2")
 
 	//- Material design icons
@@ -331,13 +331,13 @@ dependencies {
 	//implementation("androidx.compose.material:material-icons-extended:1.0.2")
 
 	//- Integration with observables
-	implementation("androidx.compose.runtime:runtime-livedata:1.0.5")
+	implementation("androidx.compose.runtime:runtime-livedata:1.1.0")
 
 	//- UI Tests
 	//androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.2")
 
 	// MDC Adapter
-	implementation("com.google.android.material:compose-theme-adapter:1.1.1")
+	implementation("com.google.android.material:compose-theme-adapter:1.1.4")
 	implementation("com.google.accompanist:accompanist-appcompat-theme:0.15.0")
 	implementation("com.google.accompanist:accompanist-swiperefresh:0.19.0")
 
