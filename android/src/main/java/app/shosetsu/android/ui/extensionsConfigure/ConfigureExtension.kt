@@ -73,7 +73,6 @@ class ConfigureExtension(bundle: Bundle) : ShosetsuController(bundle),
 		viewModel.setExtensionID(args.getInt(BUNDLE_EXTENSION))
 	}
 
-	@ExperimentalFoundationApi
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup,

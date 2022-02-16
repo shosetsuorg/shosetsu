@@ -84,7 +84,6 @@ class MainViewModel(
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
 
-	@ExperimentalCoroutinesApi
 	override val appThemeLiveData: LiveData<AppThemes>
 		get() = loadLiveAppThemeUseCase().asIOLiveData()
 

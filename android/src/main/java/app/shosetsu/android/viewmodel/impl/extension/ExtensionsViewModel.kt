@@ -94,7 +94,6 @@ class ExtensionsViewModel(
 
 	private val searchTermFlow: MutableStateFlow<String> by lazy { MutableStateFlow("") }
 
-	@ExperimentalCoroutinesApi
 	override val filteredLanguagesLive: LiveData<HResult<FilteredLanguages>> by lazy {
 		languageListFlow.combine(settingsRepo.getStringSetFlow(BrowseFilteredLanguages)) { languageResult, filteredLanguages ->
 			val languageList = languageResult.unwrap() ?: listOf()
@@ -169,7 +168,6 @@ class ExtensionsViewModel(
 		searchTermFlow.asIOLiveData()
 	}
 
-	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<List<ExtensionUI>>> by lazy {
 		extensionFlow.transformLatest { result ->
 			emitAll(

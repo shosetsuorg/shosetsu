@@ -74,7 +74,6 @@ class DownloadsViewModel(
 		}
 	}
 
-	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<List<DownloadUI>>> by lazy {
 		downloadsFlow.asIOLiveData()
 	}

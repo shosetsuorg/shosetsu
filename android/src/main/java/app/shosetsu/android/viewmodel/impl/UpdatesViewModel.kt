@@ -57,7 +57,6 @@ class UpdatesViewModel(
 			}
 	}
 
-	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<List<UpdateUI>>> by lazy {
 		updatesFlow.asIOLiveData()
 	}

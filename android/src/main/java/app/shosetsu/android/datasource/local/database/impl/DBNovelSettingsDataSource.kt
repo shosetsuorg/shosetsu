@@ -39,7 +39,6 @@ class DBNovelSettingsDataSource(
 	private val dao: NovelSettingsDao
 ) : IDBNovelSettingsDataSource {
 
-	@ExperimentalCoroutinesApi
 	override fun getFlow(novelID: Int): Flow<HResult<NovelSettingEntity>> =
 		dao.getFlow(novelID).map {
 			it?.let { successResult(it.convertTo()) } ?: emptyResult()

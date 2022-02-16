@@ -77,7 +77,6 @@ class MigrationController(bundle: Bundle) : ShosetsuController(bundle) {
 		viewModel.setNovels(args.getIntArray(TARGETS_BUNDLE_KEY)!!)
 	}
 
-	@ExperimentalMaterialApi
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup,

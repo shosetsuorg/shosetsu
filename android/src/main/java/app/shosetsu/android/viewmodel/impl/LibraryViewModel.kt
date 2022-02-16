@@ -81,27 +81,22 @@ class LibraryViewModel(
 
 	private val librarySourceFlow: Flow<HResult<List<ABookmarkedNovelUI>>> by lazy { libraryAsCardsUseCase() }
 
-	@ExperimentalCoroutinesApi
 	override val genresLiveData: LiveData<List<String>> by lazy {
 		stripOutList { it.genres }
 	}
 
-	@ExperimentalCoroutinesApi
 	override val tagsLiveData: LiveData<List<String>> by lazy {
 		stripOutList { it.tags }
 	}
 
-	@ExperimentalCoroutinesApi
 	override val authorsLiveData: LiveData<List<String>> by lazy {
 		stripOutList { it.authors }
 	}
 
-	@ExperimentalCoroutinesApi
 	override val artistsLiveData: LiveData<List<String>> by lazy {
 		stripOutList { it.artists }
 	}
 
-	@ExperimentalCoroutinesApi
 	override val novelCardTypeLiveData: LiveData<NovelCardType> by lazy {
 		loadNovelUITypeUseCase().asIOLiveData()
 	}

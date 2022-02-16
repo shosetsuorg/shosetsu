@@ -45,7 +45,6 @@ class DBNovelsDataSource(
 		e.toHError()
 	}
 
-	@ExperimentalCoroutinesApi
 	override fun loadBookmarkedNovelsFlow(
 	): Flow<HResult<List<LibraryNovelEntity>>> = flow {
 		emit(loading())
@@ -62,7 +61,6 @@ class DBNovelsDataSource(
 		e.toHError()
 	}
 
-	@ExperimentalCoroutinesApi
 	override suspend fun getNovelFlow(novelID: Int): Flow<HResult<NovelEntity>> = flow {
 		try {
 			emitAll(

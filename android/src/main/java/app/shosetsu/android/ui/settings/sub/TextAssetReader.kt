@@ -71,7 +71,6 @@ class TextAssetReader(bundleI: Bundle) : ShosetsuController(bundleI) {
 		}
 	}
 
-	@ExperimentalStdlibApi
 	override fun onViewCreated(view: View) {
 		viewModel.setTarget(args.getInt(BUNDLE_KEY, TextAsset.LICENSE.bundle.getInt(BUNDLE_KEY)))
 

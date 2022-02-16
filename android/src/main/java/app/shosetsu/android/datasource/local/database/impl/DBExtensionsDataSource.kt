@@ -37,7 +37,6 @@ import kotlinx.coroutines.flow.flow
 class DBExtensionsDataSource(
 	private val extensionsDao: ExtensionsDao,
 ) : IDBExtensionsDataSource {
-	@ExperimentalCoroutinesApi
 	override fun loadExtensionsFlow(): Flow<HResult<List<ExtensionEntity>>> = flow {
 		emit(loading())
 		try {
@@ -47,7 +46,6 @@ class DBExtensionsDataSource(
 		}
 	}
 
-	@ExperimentalCoroutinesApi
 	override fun loadExtensionLive(formatterID: Int): HFlow<ExtensionEntity> = flow {
 		emit(loading())
 		try {
@@ -57,7 +55,6 @@ class DBExtensionsDataSource(
 		}
 	}
 
-	@ExperimentalCoroutinesApi
 	override fun loadPoweredExtensionsCards(): Flow<HResult<List<StrippedExtensionEntity>>> = flow {
 		emit(loading())
 		try {

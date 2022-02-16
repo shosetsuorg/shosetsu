@@ -64,7 +64,6 @@ class ComposeMoreController
 
 	override fun onViewCreated(view: View) {}
 
-	@ExperimentalMaterialApi
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup,

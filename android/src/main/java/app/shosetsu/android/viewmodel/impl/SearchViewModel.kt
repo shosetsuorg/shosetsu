@@ -68,13 +68,11 @@ class SearchViewModel(
 		this.queryFlow.value = query
 	}
 
-	@ExperimentalCoroutinesApi
 	override fun searchLibrary(): LiveData<HResult<List<ACatalogNovelUI>>> =
 		searchFlows.getOrPut(-1) {
 			libraryResultFlow
 		}.asIOLiveData()
 
-	@ExperimentalCoroutinesApi
 	override fun searchExtension(extensionId: Int): LiveData<HResult<List<ACatalogNovelUI>>> =
 		searchFlows.getOrPut(extensionId) {
 			logD("Creating new flow for extension")

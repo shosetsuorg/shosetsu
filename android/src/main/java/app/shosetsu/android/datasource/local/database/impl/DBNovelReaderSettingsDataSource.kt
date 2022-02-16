@@ -46,7 +46,6 @@ class DBNovelReaderSettingsDataSource(
 		e.toHError()
 	}
 
-	@ExperimentalCoroutinesApi
 	override fun getFlow(novelID: Int): HFlow<NovelReaderSettingEntity> = flow {
 		try {
 			emitAll(dao.getFlow(novelID).mapLatest { it?.convertTo() }

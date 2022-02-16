@@ -37,7 +37,6 @@ import kotlinx.coroutines.flow.flow
 class DBExtRepoDataSource(
 	private val repositoryDao: RepositoryDao,
 ) : IDBExtRepoDataSource {
-	@ExperimentalCoroutinesApi
 	override fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>> = flow {
 		try {
 			emitAll(repositoryDao.loadRepositoriesLive().mapLatestListTo().mapLatestToSuccess())

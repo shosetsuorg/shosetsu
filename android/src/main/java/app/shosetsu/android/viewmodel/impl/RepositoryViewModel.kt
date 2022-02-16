@@ -50,7 +50,6 @@ class RepositoryViewModel(
 	private val isOnlineUseCase: IsOnlineUseCase
 ) : ARepositoryViewModel() {
 
-	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<List<RepositoryUI>>> by lazy {
 		loadRepositoriesUseCase().asIOLiveData()
 	}

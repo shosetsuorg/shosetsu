@@ -96,7 +96,6 @@ class ChapterReaderViewModel(
 		}
 	}
 
-	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HList<ReaderUIItem<*, *>>> by lazy {
 		chaptersFlow
 			.combineDividers() // Add dividers
@@ -163,7 +162,6 @@ class ChapterReaderViewModel(
 		}
 	}
 
-	@ExperimentalCoroutinesApi
 	override val liveTheme: LiveData<Pair<Int, Int>> by lazy {
 		settingsRepo.getIntFlow(ReaderTheme).transformLatest { id: Int ->
 			settingsRepo.getStringSetOrDefault(ReaderUserThemes)
@@ -179,7 +177,6 @@ class ChapterReaderViewModel(
 		}.asIOLiveData()
 	}
 
-	@ExperimentalCoroutinesApi
 	override val liveIndentSize: LiveData<Int> by lazy {
 		readerSettingsFlow.mapLatest { result ->
 			result.unwrap()?.paragraphIndentSize?.also {
@@ -188,7 +185,6 @@ class ChapterReaderViewModel(
 		}.asIOLiveData()
 	}
 
-	@ExperimentalCoroutinesApi
 	override val liveParagraphSpacing: LiveData<Float> by lazy {
 		readerSettingsFlow.mapLatest { result ->
 			logV("Mapping latest paragraph spacing")
@@ -198,7 +194,6 @@ class ChapterReaderViewModel(
 		}.asIOLiveData()
 	}
 
-	@ExperimentalCoroutinesApi
 	override val liveTextSize: LiveData<Float> by lazy {
 		settingsRepo.getFloatFlow(ReaderTextSize).mapLatest {
 			_defaultTextSize = it
@@ -206,7 +201,6 @@ class ChapterReaderViewModel(
 		}.asIOLiveData()
 	}
 
-	@ExperimentalCoroutinesApi
 	override val liveVolumeScroll: LiveData<Boolean> by lazy {
 		settingsRepo.getBooleanFlow(ReaderVolumeScroll).mapLatest {
 			_defaultVolumeScroll = it
@@ -257,7 +251,6 @@ class ChapterReaderViewModel(
 		get() = _isHorizontalReading
 
 
-	@ExperimentalCoroutinesApi
 	override val liveChapterDirection: LiveData<Boolean> by lazy {
 		isHorizontalPageSwapping.mapLatest {
 			_isHorizontalReading = it
@@ -368,7 +361,6 @@ class ChapterReaderViewModel(
 		settingsRepo.getStringFlow(ReaderHtmlCss).asIOLiveData()
 
 
-	@ExperimentalCoroutinesApi
 	override fun getSettings(): LiveData<HResult<List<SettingsItemData>>> =
 		flow {
 			// First build the universal setting interface

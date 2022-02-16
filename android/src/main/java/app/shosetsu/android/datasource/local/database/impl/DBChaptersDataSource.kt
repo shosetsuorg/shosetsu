@@ -39,7 +39,6 @@ class DBChaptersDataSource(
 	private val chaptersDao: ChaptersDao,
 ) : IDBChaptersDataSource {
 
-	@ExperimentalCoroutinesApi
 	override suspend fun getChaptersFlow(
 		novelID: Int,
 	): HListFlow<ChapterEntity> = flow {
@@ -70,7 +69,6 @@ class DBChaptersDataSource(
 		e.toHError()
 	}
 
-	@ExperimentalCoroutinesApi
 	override suspend fun getReaderChapters(
 		novelID: Int,
 	): HListFlow<ReaderChapterEntity> = flow {

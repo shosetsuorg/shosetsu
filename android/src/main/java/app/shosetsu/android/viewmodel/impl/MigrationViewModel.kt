@@ -54,7 +54,6 @@ class MigrationViewModel(
 	 */
 	private val queryMap = hashMapOf<Int, MutableStateFlow<String>>()
 
-	@ExperimentalCoroutinesApi
 	override val currentQuery: LiveData<HResult<String>> by lazy {
 		flow {
 			emit(loading)
@@ -88,8 +87,6 @@ class MigrationViewModel(
 		}.asIOLiveData()
 	}
 
-
-	@ExperimentalCoroutinesApi
 	override val extensions: LiveData<HResult<List<MigrationExtensionUI>>> by lazy {
 		flow {
 			emit(loading)
@@ -165,7 +162,6 @@ class MigrationViewModel(
 		}
 	}
 
-	@ExperimentalCoroutinesApi
 	override val novels: LiveData<HResult<List<MigrationNovelUI>>> by lazy { novelFlow.asIOLiveData() }
 
 	/**

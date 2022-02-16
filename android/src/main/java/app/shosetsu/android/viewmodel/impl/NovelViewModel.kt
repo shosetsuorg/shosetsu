@@ -75,7 +75,6 @@ class NovelViewModel(
 	private val chapters: ArrayList<ChapterUI>
 		get() = chaptersLive.value?.transmogrify { ArrayList((it)) } ?: arrayListOf()
 
-	@ExperimentalCoroutinesApi
 	override val chaptersLive: LiveData<HResult<List<ChapterUI>>> by lazy {
 		chaptersFlow.asIOLiveData()
 	}
@@ -98,7 +97,6 @@ class NovelViewModel(
 		}
 	}
 
-	@ExperimentalCoroutinesApi
 	override val novelSettingFlow: LiveData<HResult<NovelSettingUI>> by lazy {
 		novelSettingsFlow.asIOLiveData()
 	}
@@ -114,7 +112,6 @@ class NovelViewModel(
 		}
 	}
 
-	@ExperimentalCoroutinesApi
 	override val novelLive: LiveData<HResult<NovelUI>> by lazy {
 		novelFlow.asIOLiveData()
 	}
@@ -219,7 +216,6 @@ class NovelViewModel(
 		}
 	}
 
-	@ExperimentalCoroutinesApi
 	override fun deletePrevious() {
 		logI("Deleting previous chapters")
 		launchIO {
@@ -257,7 +253,6 @@ class NovelViewModel(
 		}
 	}
 
-	@ExperimentalCoroutinesApi
 	override fun destroy() {
 		novelIDLive.tryEmit(-1) // Reset view to nothing
 	}
@@ -344,14 +339,12 @@ class NovelViewModel(
 		novelIDLive.tryEmit(novelID)
 	}
 
-	@ExperimentalCoroutinesApi
 	override fun toggleNovelBookmark() {
 		launchIO {
 			novelLive.value?.handle { updateNovelUseCase(it.copy(bookmarked = !it.bookmarked)) }
 		}
 	}
 
-	@ExperimentalCoroutinesApi
 	override fun isBookmarked(): Boolean = novelLive.value?.transmogrify { it.bookmarked }
 		?: false
 
@@ -395,7 +388,6 @@ class NovelViewModel(
 		}
 	}
 
-	@ExperimentalCoroutinesApi
 	override fun downloadNextChapter() {
 		launchIO {
 			val array = chapters.sortedBy { it.order }
@@ -405,7 +397,6 @@ class NovelViewModel(
 		}
 	}
 
-	@ExperimentalCoroutinesApi
 	override fun downloadNextCustomChapters(max: Int) {
 		launchIO {
 			val array = chapters.sortedBy { it.order }
@@ -424,13 +415,10 @@ class NovelViewModel(
 		}
 	}
 
-	@ExperimentalCoroutinesApi
 	override fun downloadNext5Chapters() = downloadNextCustomChapters(5)
 
-	@ExperimentalCoroutinesApi
 	override fun downloadNext10Chapters() = downloadNextCustomChapters(10)
 
-	@ExperimentalCoroutinesApi
 	override fun downloadAllUnreadChapters() {
 		launchIO {
 			downloadChapter(*chapters.filter { it.readingStatus == ReadingStatus.UNREAD }
@@ -439,7 +427,6 @@ class NovelViewModel(
 		}
 	}
 
-	@ExperimentalCoroutinesApi
 	override fun downloadAllChapters() {
 		launchIO {
 			downloadChapter(*chapters.toTypedArray())

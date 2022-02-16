@@ -56,7 +56,6 @@ class ComposeSettingsController : ShosetsuController() {
 
 	override fun onViewCreated(view: View) {}
 
-	@ExperimentalMaterialApi
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup,

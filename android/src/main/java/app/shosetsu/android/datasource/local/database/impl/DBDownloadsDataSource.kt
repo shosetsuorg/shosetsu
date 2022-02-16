@@ -35,7 +35,6 @@ import kotlinx.coroutines.flow.flow
 class DBDownloadsDataSource(
 	private val downloadsDao: DownloadsDao,
 ) : IDBDownloadsDataSource {
-	@ExperimentalCoroutinesApi
 	override fun loadLiveDownloads(): Flow<HResult<List<DownloadEntity>>> = flow {
 		emit(loading())
 		try {

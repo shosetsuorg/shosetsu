@@ -50,7 +50,6 @@ class ExtensionConfigureViewModel(
 ) : AExtensionConfigureViewModel() {
 	private val extensionIdFlow: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
 
-	@ExperimentalCoroutinesApi
 	override val liveData: LiveData<HResult<ExtensionUI>> by lazy {
 		extensionIdFlow.transformLatest { id ->
 			emitAll(loadExtensionUI(id))
@@ -85,12 +84,10 @@ class ExtensionConfigureViewModel(
 		}
 	}
 
-	@ExperimentalCoroutinesApi
 	override val extensionSettings: LiveData<HResult<List<FilterEntity>>> by lazy {
 		extensionSettingsFlow.asIOLiveData()
 	}
 
-	@ExperimentalCoroutinesApi
 	override val extensionListing: LiveData<HResult<ListingSelectionData>> by lazy {
 		extListNamesFlow.asIOLiveData()
 	}

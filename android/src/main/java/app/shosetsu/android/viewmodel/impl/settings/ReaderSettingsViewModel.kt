@@ -51,7 +51,6 @@ class ReaderSettingsViewModel(
 	val loadReaderThemes: LoadReaderThemes
 ) : AReaderSettingsViewModel(iSettingsRepository) {
 
-	@ExperimentalCoroutinesApi
 	override fun getReaderThemes(): LiveData<List<ColorChoiceUI>> =
 		loadReaderThemes().asIOLiveData()
 

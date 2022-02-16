@@ -39,7 +39,6 @@ import kotlinx.coroutines.flow.flow
 class DBUpdatesDataSource(
 	private val updatesDao: UpdatesDao,
 ) : IDBUpdatesDataSource {
-	@ExperimentalCoroutinesApi
 	override suspend fun getUpdates(): Flow<HResult<List<UpdateEntity>>> = flow {
 		try {
 			emitAll(updatesDao.loadUpdates().mapLatestListTo().mapLatestToSuccess())
@@ -54,7 +53,6 @@ class DBUpdatesDataSource(
 		e.toHError()
 	}
 
-	@ExperimentalCoroutinesApi
 	override suspend fun getCompleteUpdates(
 	): Flow<HResult<List<UpdateCompleteEntity>>> = flow {
 		try {
