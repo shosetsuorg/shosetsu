@@ -2,7 +2,6 @@ package app.shosetsu.common.domain.repositories.base
 
 import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.DownloadEntity
-import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 /*
