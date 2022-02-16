@@ -1,7 +1,5 @@
 package app.shosetsu.android.common
 
-import app.shosetsu.common.dto.HResult
-
 /*
  * This file is part of shosetsu.
  *
@@ -17,19 +15,12 @@ import app.shosetsu.common.dto.HResult
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
  */
 
 /**
- * shosetsu
- * 15 / 04 / 2020
+ * Shosetsu
  *
- * @author github.com/doomsdayrs
+ * @since 15 / 02 / 2022
+ * @author Doomsdayrs
  */
-class IncorrectDateException(message: String?) : Exception(message)
-
-class HResultException(hResult: HResult.Error) : Exception(
-	"${hResult.code} ${hResult.message}",
-	hResult.exception
-)
-
+class NullContentResolverException : Exception("Null content resolver")

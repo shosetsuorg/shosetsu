@@ -27,6 +27,6 @@ import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
 class LoadRemoteAppUpdateUseCase(
 	private val iAppUpdatesRepository: IAppUpdatesRepository
 ) {
-	suspend operator fun invoke(): AppUpdateEntity =
+	suspend operator fun invoke(): AppUpdateEntity? =
 		iAppUpdatesRepository.loadRemoteUpdate()
 }

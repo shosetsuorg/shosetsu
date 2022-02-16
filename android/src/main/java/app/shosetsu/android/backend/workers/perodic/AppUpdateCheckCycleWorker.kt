@@ -2,6 +2,8 @@ package app.shosetsu.android.backend.workers.perodic
 
 import android.content.Context
 import android.os.Build
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.work.*
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
@@ -13,8 +15,6 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
-import app.shosetsu.common.domain.repositories.base.getIntOrDefault
 import org.kodein.di.instance
 import java.util.concurrent.TimeUnit
 
@@ -39,6 +39,8 @@ import java.util.concurrent.TimeUnit
  * shosetsu
  * 06 / 09 / 2020
  */
+@ExperimentalMaterialApi
+@ExperimentalFoundationApi
 class AppUpdateCheckCycleWorker(
 	appContext: Context,
 	params: WorkerParameters
@@ -81,13 +83,13 @@ class AppUpdateCheckCycleWorker(
 		private val iSettingsRepository: ISettingsRepository by instance()
 
 		private suspend fun appUpdateCycle(): Long =
-			iSettingsRepository.getIntOrDefault(AppUpdateCycle).toLong()
+			iSettingsRepository.getInt(AppUpdateCycle).toLong()
 
 		private suspend fun appUpdateOnMetered(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(AppUpdateOnMeteredConnection)
+			iSettingsRepository.getBoolean(AppUpdateOnMeteredConnection)
 
 		private suspend fun appUpdateOnlyIdle(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(AppUpdateOnlyWhenIdle)
+			iSettingsRepository.getBoolean(AppUpdateOnlyWhenIdle)
 
 		/**
 		 * Returns the status of the service.

@@ -7,23 +7,23 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
+import app.shosetsu.android.common.NullContentResolverException
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.Notifications.ID_EXPORT
 import app.shosetsu.android.common.consts.WorkerTags.EXPORT_BACKUP_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.repository.base.IBackupUriRepository
+import app.shosetsu.common.FilePermissionException
+import app.shosetsu.common.FilePermissionException.PermissionType
 import app.shosetsu.common.domain.model.local.BackupEntity
 import app.shosetsu.common.domain.repositories.base.IBackupRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.errorResult
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.successResult
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
+import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 
@@ -70,17 +70,23 @@ class ExportBackupWorker(appContext: Context, params: WorkerParameters) : Corout
 	/**
 	 * Loads a backup via the [Uri] provided by Androids file selection
 	 */
-	private fun writeToUri(uri: Uri, backupEntity: BackupEntity): HResult<*> {
-		val contentResolver = applicationContext.contentResolver ?: return errorResult(
-			NullPointerException("Null contentResolver")
-		)
+	@Throws(
+		FileNotFoundException::class,
+		FilePermissionException::class,
+		NullContentResolverException::class
+	)
+	private fun writeToUri(uri: Uri, backupEntity: BackupEntity) {
+		val contentResolver = applicationContext.contentResolver
+			?: throw NullContentResolverException()
+
 		contentResolver.openFileDescriptor(uri, "w")?.use { descriptor ->
 			FileOutputStream(descriptor.fileDescriptor).use {
 				it.write(backupEntity.content)
 			}
-		} ?: return errorResult(NullPointerException("Did not have write permissions"))
-
-		return successResult()
+		} ?: throw FilePermissionException(
+			uri.path ?: "",
+			PermissionType.WRITE
+		)
 	}
 
 	@Throws(IOException::class)
@@ -94,10 +100,32 @@ class ExportBackupWorker(appContext: Context, params: WorkerParameters) : Corout
 		}
 
 		notify(R.string.export_backup_notification_content_starting)
-		backupUriRepo.take().handle { uri ->
-			backupRepo.loadBackup(backupName).handle {
-				writeToUri(uri, it)
+		val uri = backupUriRepo.take()
+
+		if (uri == null) {
+			notify(R.string.export_backup_notification_missing_uri) {
+				setNotOngoing()
 			}
+			return Result.failure()
+		}
+
+		val backupEntity = backupRepo.loadBackup(backupName);
+
+		if (backupEntity == null) {
+			notify(R.string.export_backup_notification_invalid_backup) {
+				setNotOngoing()
+			}
+			return Result.failure()
+		}
+
+		try {
+			writeToUri(uri, backupEntity)
+		} catch (e: NullContentResolverException) {
+			TODO("handle")
+		} catch (e: FileNotFoundException) {
+			TODO("handle")
+		} catch (e: FilePermissionException) {
+			TODO("handle")
 		}
 
 		notify(R.string.restore_notification_content_completed) {

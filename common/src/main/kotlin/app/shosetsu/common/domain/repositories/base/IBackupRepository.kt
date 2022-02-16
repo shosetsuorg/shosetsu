@@ -1,7 +1,6 @@
 package app.shosetsu.common.domain.repositories.base
 
 import app.shosetsu.common.domain.model.local.BackupEntity
-import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -30,7 +29,8 @@ interface IBackupRepository {
 	enum class BackupProgress {
 		IN_PROGRESS,
 		NOT_STARTED,
-		COMPLETE
+		COMPLETE,
+		FAILURE
 	}
 
 	val backupProgress: Flow<BackupProgress>
@@ -55,14 +55,8 @@ interface IBackupRepository {
 	 * Loads a backup via its name
 	 * @param path File name / Direct Path of a backup
 	 * @param isExternal, if true then [path] is a direct path
-	 *
-	 * @return
-	 * [HResult.Success] Backup entity
-	 * [HResult.Empty] Such does not exist
-	 * [HResult.Error] An exception occurred when loading
-	 * [HResult.Loading] never
 	 */
-	suspend fun loadBackup(path: String, isExternal: Boolean = false): BackupEntity
+	suspend fun loadBackup(path: String, isExternal: Boolean = false): BackupEntity?
 
 
 	/**

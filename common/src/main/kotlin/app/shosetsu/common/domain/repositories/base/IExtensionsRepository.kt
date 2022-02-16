@@ -105,4 +105,9 @@ interface IExtensionsRepository {
 		repositoryEntity: RepositoryEntity,
 		extension: GenericExtensionEntity
 	): ByteArray
+
+	/**
+	 * Check if a given extension is installed
+	 */
+	fun isExtensionInstalled(extensionEntity: GenericExtensionEntity): Boolean
 }

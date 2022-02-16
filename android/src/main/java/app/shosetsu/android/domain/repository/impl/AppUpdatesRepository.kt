@@ -68,7 +68,7 @@ class AppUpdatesRepository(
 		}
 	}
 
-	override suspend fun loadRemoteUpdate(): HResult<AppUpdateEntity> =
+	override suspend fun loadRemoteUpdate(): AppUpdateEntity? =
 		iRemoteAppUpdateDataSource.loadAppUpdate().transform { appUpdateEntity ->
 			compareVersion(appUpdateEntity).also {
 				iFileAppUpdateDataSource.putAppUpdateInCache(

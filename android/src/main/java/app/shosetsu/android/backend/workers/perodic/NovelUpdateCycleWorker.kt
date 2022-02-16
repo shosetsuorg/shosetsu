@@ -16,8 +16,6 @@ import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
-import app.shosetsu.common.domain.repositories.base.getIntOrDefault
 import org.kodein.di.instance
 import java.util.concurrent.TimeUnit.HOURS
 import androidx.work.PeriodicWorkRequestBuilder as PWRB
@@ -90,19 +88,19 @@ class NovelUpdateCycleWorker(
 
 
 		private suspend fun updateCycle(): Long =
-			iSettingsRepository.getIntOrDefault(NovelUpdateCycle).toLong()
+			iSettingsRepository.getInt(NovelUpdateCycle).toLong()
 
 		private suspend fun updateOnMetered(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(NovelUpdateOnMeteredConnection)
+			iSettingsRepository.getBoolean(NovelUpdateOnMeteredConnection)
 
 		private suspend fun updateOnLowStorage(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(NovelUpdateOnLowStorage)
+			iSettingsRepository.getBoolean(NovelUpdateOnLowStorage)
 
 		private suspend fun updateOnLowBattery(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(NovelUpdateOnLowBattery)
+			iSettingsRepository.getBoolean(NovelUpdateOnLowBattery)
 
 		private suspend fun updateOnlyIdle(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(NovelUpdateOnlyWhenIdle)
+			iSettingsRepository.getBoolean(NovelUpdateOnlyWhenIdle)
 
 		/**
 		 * Returns the status of the service.

@@ -19,10 +19,12 @@ import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_DOWNLOAD
 import app.shosetsu.android.common.consts.WorkerTags.DOWNLOAD_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.usecases.get.GetExtensionUseCase
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.DownloadEntity
-import app.shosetsu.common.domain.repositories.base.*
-import app.shosetsu.common.dto.*
+import app.shosetsu.common.domain.repositories.base.IChaptersRepository
+import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.enums.DownloadStatus
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.Job
@@ -104,35 +106,34 @@ class DownloadWorker(
 
 	/** Retrieves the setting for if the download system is paused or not */
 	private suspend fun isDownloadPaused(): Boolean =
-		settingRepo.getBooleanOrDefault(IsDownloadPaused)
+		settingRepo.getBoolean(IsDownloadPaused)
 
 	/** Retrieves the setting for simultaneous download threads allowed */
 	private suspend fun getDownloadThreads(): Int =
-		settingRepo.getIntOrDefault(DownloadThreadPool)
+		settingRepo.getInt(DownloadThreadPool)
 
 	/** Retrieves the setting for simultaneous download threads allowed per extension */
 	private suspend fun getDownloadThreadsPerExtension(): Int =
-		settingRepo.getIntOrDefault(DownloadExtThreads)
+		settingRepo.getInt(DownloadExtThreads)
 
 	/** Retrieves the setting for simultaneous download threads allowed per extension */
 	private suspend fun getNotifyIndividualChapters(): Boolean =
-		settingRepo.getBooleanOrDefault(DownloadNotifyChapters)
+		settingRepo.getBoolean(DownloadNotifyChapters)
 
 	/** Loads the download count that is present currently */
+	@Throws(GenericSQLiteException::class)
 	private suspend fun getDownloadCount(): Int =
-		downloadsRepo.loadDownloadCount().unwrap() ?: -1
+		downloadsRepo.loadDownloadCount()
 
-
-	private suspend fun download(downloadEntity: DownloadEntity): HResult<*> =
-		chapRepo.getChapter(downloadEntity.chapterID).transform { chapterEntity ->
-			getExt(chapterEntity.extensionID).transform { iExtension ->
-				chapRepo.getChapterPassage(iExtension, chapterEntity).transform { passage ->
+	private suspend fun download(downloadEntity: DownloadEntity) =
+		chapRepo.getChapter(downloadEntity.chapterID)!!.let { chapterEntity ->
+			getExt(chapterEntity.extensionID!!)!!.let { iExtension ->
+				chapRepo.getChapterPassage(iExtension, chapterEntity).let { passage ->
 					chapRepo.saveChapterPassageToStorage(
 						chapterEntity,
 						iExtension.chapterType,
 						passage
 					)
-					successResult("Chapter Loaded")
 				}
 			}
 		}
@@ -192,7 +193,7 @@ class DownloadWorker(
 	 * This will respect the amount of threads running currently
 	 */
 	private fun launchDownload(): Job = launchIO {
-		downloadsRepo.loadFirstDownload().handle { downloadEntity ->
+		downloadsRepo.loadFirstDownload()?.let { downloadEntity ->
 			val extID = downloadEntity.extensionID
 
 			//	notify("Pending", downloadEntity.chapterID + 100) { setNotOngoing()setSubText("Download")setContentTitle(downloadEntity.chapterName) }
@@ -268,38 +269,23 @@ class DownloadWorker(
 			logV("Downloading $downloadEntity")
 			notify(downloadEntity)
 
-			download(downloadEntity).handle(
-				onError = {
-					downloadsRepo.update(
-						downloadEntity.copy(
-							status = DownloadStatus.ERROR
-						).also {
-							notify(it)
-						}
-					)
-					launchUI {
-						toast { it.message }
+			try {
+				download(downloadEntity)
+			} catch (e: Exception) {//TODO specify
+				downloadsRepo.update(
+					downloadEntity.copy(
+						status = DownloadStatus.ERROR
+					).also {
+						notify(it)
 					}
-				},
-				onEmpty = {
-					downloadsRepo.update(
-						downloadEntity.copy(
-							status = DownloadStatus.ERROR
-						).also {
-							notify(it)
-						}
-					)
-					launchUI {
-						toast { "Empty Error" }
-					}
-				},
-				onLoading = {
-					error("Impossible")
+				)
+				launchUI {
+					toast { e.message ?: "Download error" }
 				}
-			) {
-				notify(downloadEntity, isComplete = true)
-				downloadsRepo.deleteEntity(downloadEntity)
 			}
+
+			notify(downloadEntity, isComplete = true)
+			downloadsRepo.deleteEntity(downloadEntity)
 
 
 			activeJobs-- // Drops active job count once completed task
@@ -349,16 +335,16 @@ class DownloadWorker(
 		private val iSettingsRepository by instance<ISettingsRepository>()
 
 		private suspend fun downloadOnMetered(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(DownloadOnMeteredConnection)
+			iSettingsRepository.getBoolean(DownloadOnMeteredConnection)
 
 		private suspend fun downloadOnLowStorage(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(DownloadOnLowStorage)
+			iSettingsRepository.getBoolean(DownloadOnLowStorage)
 
 		private suspend fun downloadOnLowBattery(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(DownloadOnLowBattery)
+			iSettingsRepository.getBoolean(DownloadOnLowBattery)
 
 		private suspend fun downloadOnlyIdle(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(DownloadOnlyWhenIdle)
+			iSettingsRepository.getBoolean(DownloadOnlyWhenIdle)
 
 		override fun getWorkerState(index: Int) =
 			workerManager.getWorkInfosForUniqueWork(DOWNLOAD_WORK_ID).get()[index].state

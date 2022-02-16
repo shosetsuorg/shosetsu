@@ -11,8 +11,6 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
-import app.shosetsu.common.domain.repositories.base.getIntOrDefault
 import org.kodein.di.instance
 import java.util.concurrent.TimeUnit
 
@@ -78,16 +76,16 @@ class BackupCycleWorker(
 		private val iSettingsRepository: ISettingsRepository by instance()
 
 		private suspend fun backupCycle(): Long =
-			iSettingsRepository.getIntOrDefault(BackupCycle).toLong()
+			iSettingsRepository.getInt(BackupCycle).toLong()
 
 		private suspend fun requiresBackupOnIdle(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(BackupOnlyWhenIdle)
+			iSettingsRepository.getBoolean(BackupOnlyWhenIdle)
 
 		private suspend fun allowsBackupOnLowStorage(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(BackupOnLowStorage)
+			iSettingsRepository.getBoolean(BackupOnLowStorage)
 
 		private suspend fun allowsBackupOnLowBattery(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(BackupOnLowBattery)
+			iSettingsRepository.getBoolean(BackupOnLowBattery)
 
 		/**
 		 * Returns the status of the service.
