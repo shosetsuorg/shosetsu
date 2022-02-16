@@ -1,22 +1,11 @@
-[![Dev Status](https://travis-ci.com/shosetsuorg/android-app.svg?branch=development)](https://travis-ci.com/shosetsuorg/android-app)
-[![Master Status](https://travis-ci.com/shosetsuorg/android-app.svg?branch=master)](https://travis-ci.com/shosetsuorg/android-app)
-
-# ![logo](https://github.com/shosetsuorg/android-app/blob/development/android/src/main/res/mipmap-hdpi/ic_launcher.png) Shosetsu
+#  Shosetsu
 
 The Free & Open Source Android Application for reading (Light) Novels!
 
 We appreciate any help in improving the app, so let us know by [opening an issue](../../issues/new).
 
-Download Development! | There is no mainline ;-;
----------------------- | ---------------------
-
-<a href="https://github.com/shosetsuorg/shosetsu-preview/releases/latest"><img src="https://github.com/shosetsuorg/android-app/blob/development/android/src/debug/res/mipmap-xxxhdpi/ic_launcher.png" alt="Get it directly!" height="80"></a>
-
-Join us on our Discord server:
-
-<a href="https://discord.gg/ttSX7gB">
-    <img src="https://discordapp.com/assets/e4923594e694a21542a489471ecffa50.svg" alt="Discord Channel" width=240px>
-</a>
+## Download:
+### [Latest](https://github.com/shosetsuorg/shosetsu-preview/releases/latest)
 
 ## Capabilities:
 
@@ -30,9 +19,19 @@ Join us on our Discord server:
 
 [1] Using HTML reader
 
+
+## Community
+
+Join us on our Discord server:
+
+<a href="https://discord.gg/ttSX7gB">
+    <img src="https://discordapp.com/assets/e4923594e694a21542a489471ecffa50.svg" alt="Discord Channel" width=240px>
+</a>
+
 ## Screenshots:
 
 ### Your own catalog!
+
 <p align="center">
     <img src="./screenshots/shosetsu-library.png" width="50%"></img>
 </p>
