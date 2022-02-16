@@ -40,21 +40,27 @@ import org.kodein.di.singleton
 
 val memoryDataSourceModule: DI.Module = DI.Module("cache_data_source") {
 	bind<IMemChaptersDataSource>() with singleton {
-		if (SDK_INT <= M)
-			GenericMemChaptersDataSource() else
+		if (SDK_INT <= M) {
+			GenericMemChaptersDataSource()
+		} else {
 			GuavaMemChaptersDataSource()
+		}
 	}
 
 	bind<IMemExtensionsDataSource>() with singleton {
-		if (SDK_INT <= M)
-			GenericMemExtensionDataSource() else
+		if (SDK_INT <= M) {
+			GenericMemExtensionDataSource()
+		} else {
 			GuavaMemExtensionDataSource()
+		}
 	}
 
 	bind<IMemExtLibDataSource>() with singleton {
-		if (SDK_INT <= M)
-			GenericMemExtLibDataSource() else
+		if (SDK_INT <= M) {
+			GenericMemExtLibDataSource()
+		} else {
 			GuavaMemExtLibDataSource()
+		}
 	}
 
 }

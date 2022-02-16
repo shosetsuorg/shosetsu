@@ -3,7 +3,6 @@ package app.shosetsu.android.datasource.local.file.impl
 import app.shosetsu.android.providers.prefrences.SharedPreferenceProvider
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.datasource.file.base.IFileSettingsDataSource
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -31,63 +30,48 @@ class FileSharedPreferencesSettingsDataSource(
 	private val provider: SharedPreferenceProvider
 ) : IFileSettingsDataSource {
 
-	@ExperimentalCoroutinesApi
 	override fun observeLong(name: String, key: SettingKey<Long>): Flow<Long> =
 		provider.observeLong(name, key)
 
-	@ExperimentalCoroutinesApi
 	override fun observeString(name: String, key: SettingKey<String>): Flow<String> =
 		provider.observeString(name, key)
 
-	@ExperimentalCoroutinesApi
 	override fun observeInt(name: String, key: SettingKey<Int>): Flow<Int> =
 		provider.observeInt(name, key)
 
-	@ExperimentalCoroutinesApi
 	override fun observeBoolean(name: String, key: SettingKey<Boolean>): Flow<Boolean> =
 		provider.observeBoolean(name, key)
 
-	@ExperimentalCoroutinesApi
 	override fun observeStringSet(name: String, key: SettingKey<Set<String>>): Flow<Set<String>> =
 		provider.observeStringSet(name, key)
 
-	@ExperimentalCoroutinesApi
 	override fun observeFloat(name: String, key: SettingKey<Float>): Flow<Float> =
 		provider.observeFloat(name, key)
 
-	@ExperimentalCoroutinesApi
 	override suspend fun getLong(name: String, key: SettingKey<Long>): Long =
 		(provider.getLong(name, key))
 
-	@ExperimentalCoroutinesApi
 	override suspend fun getString(name: String, key: SettingKey<String>): String =
 		(provider.getString(name, key))
 
-	@ExperimentalCoroutinesApi
 	override suspend fun getInt(name: String, key: SettingKey<Int>): Int =
 		(provider.getInt(name, key))
 
-
-	@ExperimentalCoroutinesApi
 	override suspend fun getBoolean(name: String, key: SettingKey<Boolean>): Boolean =
 		(provider.getBoolean(name, key))
 
-	@ExperimentalCoroutinesApi
 	override suspend fun getStringSet(
 		name: String,
 		key: SettingKey<Set<String>>
 	): Set<String> =
 		(provider.getStringSet(name, key))
 
-	@ExperimentalCoroutinesApi
 	override suspend fun getFloat(name: String, key: SettingKey<Float>) =
 		(provider.getFloat(name, key))
 
-	@ExperimentalCoroutinesApi
 	override suspend fun setLong(name: String, key: SettingKey<Long>, value: Long): Unit =
 		(provider.setLong(name, key, value))
 
-	@ExperimentalCoroutinesApi
 	override suspend fun setString(
 		name: String,
 		key: SettingKey<String>,
@@ -95,11 +79,9 @@ class FileSharedPreferencesSettingsDataSource(
 	): Unit =
 		(provider.setString(name, key, value))
 
-	@ExperimentalCoroutinesApi
 	override suspend fun setInt(name: String, key: SettingKey<Int>, value: Int): Unit =
 		(provider.setInt(name, key, value))
 
-	@ExperimentalCoroutinesApi
 	override suspend fun setBoolean(
 		name: String,
 		key: SettingKey<Boolean>,
@@ -107,7 +89,6 @@ class FileSharedPreferencesSettingsDataSource(
 	): Unit =
 		(provider.setBoolean(name, key, value))
 
-	@ExperimentalCoroutinesApi
 	override suspend fun setStringSet(
 		name: String,
 		key: SettingKey<Set<String>>,
@@ -115,7 +96,6 @@ class FileSharedPreferencesSettingsDataSource(
 	): Unit =
 		(provider.setStringSet(name, key, value))
 
-	@ExperimentalCoroutinesApi
 	override suspend fun setFloat(name: String, key: SettingKey<Float>, value: Float): Unit =
 		(provider.setFloat(name, key, value))
 

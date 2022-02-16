@@ -9,7 +9,6 @@ import app.shosetsu.common.domain.model.local.LibraryNovelEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.StrippedNovelEntity
 import app.shosetsu.common.dto.convertList
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -45,7 +44,6 @@ class DBNovelsDataSource(
 		throw GenericSQLiteException(e)
 	}
 
-	@ExperimentalCoroutinesApi
 	override fun loadBookmarkedNovelsFlow(
 	): Flow<List<LibraryNovelEntity>> = flow {
 		try {
@@ -61,7 +59,6 @@ class DBNovelsDataSource(
 		throw GenericSQLiteException(e)
 	}
 
-	@ExperimentalCoroutinesApi
 	override suspend fun getNovelFlow(novelID: Int): Flow<NovelEntity?> = flow {
 		try {
 			emitAll(novelsDao.getNovelFlow(novelID).map { it?.convertTo() })

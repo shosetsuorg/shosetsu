@@ -6,11 +6,11 @@ import app.shosetsu.android.providers.database.dao.DownloadsDao
 import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.datasource.database.base.IDBDownloadsDataSource
 import app.shosetsu.common.domain.model.local.DownloadEntity
-import app.shosetsu.common.dto.mapLatestListTo
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import app.shosetsu.common.dto.convertList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 /*
  * This file is part of shosetsu.
@@ -36,10 +36,9 @@ import kotlinx.coroutines.flow.flow
 class DBDownloadsDataSource(
 	private val downloadsDao: DownloadsDao,
 ) : IDBDownloadsDataSource {
-	@ExperimentalCoroutinesApi
 	override fun loadLiveDownloads(): Flow<List<DownloadEntity>> = flow {
 		try {
-			emitAll(downloadsDao.loadDownloadItems().mapLatestListTo())
+			emitAll(downloadsDao.loadDownloadItems().map { it.convertList() })
 		} catch (e: SQLiteException) {
 			throw GenericSQLiteException(e)
 		}

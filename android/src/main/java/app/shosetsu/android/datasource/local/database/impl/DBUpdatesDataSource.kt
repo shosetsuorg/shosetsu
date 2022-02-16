@@ -7,11 +7,11 @@ import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.datasource.database.base.IDBUpdatesDataSource
 import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.common.domain.model.local.UpdateEntity
-import app.shosetsu.common.dto.mapLatestListTo
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import app.shosetsu.common.dto.convertList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 /*
  * This file is part of shosetsu.
@@ -37,10 +37,9 @@ import kotlinx.coroutines.flow.flow
 class DBUpdatesDataSource(
 	private val updatesDao: UpdatesDao,
 ) : IDBUpdatesDataSource {
-	@ExperimentalCoroutinesApi
 	override suspend fun getUpdates(): Flow<List<UpdateEntity>> = flow {
 		try {
-			emitAll(updatesDao.loadUpdates().mapLatestListTo())
+			emitAll(updatesDao.loadUpdates().map { it.convertList() })
 		} catch (e: SQLiteException) {
 			throw GenericSQLiteException(e)
 		}
@@ -52,7 +51,6 @@ class DBUpdatesDataSource(
 		throw GenericSQLiteException(e)
 	}
 
-	@ExperimentalCoroutinesApi
 	override suspend fun getCompleteUpdates(
 	): Flow<List<UpdateCompleteEntity>> = flow {
 		try {

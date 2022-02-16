@@ -7,12 +7,10 @@ import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.datasource.database.base.IDBInstalledExtensionsDataSource
 import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.dto.convertList
-import app.shosetsu.common.dto.mapLatestListTo
-import app.shosetsu.common.dto.mapLatestTo
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 /*
  * This file is part of Shosetsu.
@@ -39,14 +37,12 @@ import kotlinx.coroutines.flow.flow
 class DBExtensionsDataSource(
 	private val extensionsDao: InstalledExtensionsDao,
 ) : IDBInstalledExtensionsDataSource {
-	@ExperimentalCoroutinesApi
 	override fun loadExtensionsFlow(): Flow<List<GenericExtensionEntity>> = flow {
-		emitAll(extensionsDao.loadExtensionsFlow().mapLatestListTo())
+		emitAll(extensionsDao.loadExtensionsFlow().map { it.convertList() })
 	}
 
-	@ExperimentalCoroutinesApi
 	override fun loadExtensionLive(formatterID: Int): Flow<GenericExtensionEntity> = flow {
-		emitAll(extensionsDao.getExtensionFlow(formatterID).mapLatestTo())
+		emitAll(extensionsDao.getExtensionFlow(formatterID).map { it.convertTo() })
 	}
 
 	override suspend fun updateExtension(extensionEntity: GenericExtensionEntity): Unit = try {

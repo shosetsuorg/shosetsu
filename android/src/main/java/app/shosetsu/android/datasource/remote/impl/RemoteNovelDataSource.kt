@@ -1,9 +1,6 @@
 package app.shosetsu.android.datasource.remote.impl
 
-import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.common.datasource.remote.base.IRemoteNovelDataSource
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 
@@ -30,17 +27,11 @@ import app.shosetsu.lib.Novel
  * 12 / May / 2020
  */
 class RemoteNovelDataSource : IRemoteNovelDataSource {
+
 	override suspend fun loadNovel(
 		formatter: IExtension,
 		novelURL: String,
 		loadChapters: Boolean,
-	): HResult<Novel.Info> {
-		return try {
-			successResult(
-				formatter.parseNovel(novelURL, loadChapters)
-			)
-		} catch (e: Exception) {
-			e.toHError()
-		}
-	}
+	): Novel.Info =
+		formatter.parseNovel(novelURL, loadChapters)
 }
