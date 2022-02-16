@@ -6,7 +6,6 @@ import app.shosetsu.android.providers.database.dao.NovelReaderSettingsDao
 import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.datasource.database.base.IDBNovelReaderSettingsDataSource
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -41,7 +40,6 @@ class DBNovelReaderSettingsDataSource(
 		throw GenericSQLiteException(e)
 	}
 
-	@ExperimentalCoroutinesApi
 	override fun getFlow(novelID: Int): Flow<NovelReaderSettingEntity?> = flow {
 		try {
 			emitAll(dao.getFlow(novelID).mapLatest { it?.convertTo() })

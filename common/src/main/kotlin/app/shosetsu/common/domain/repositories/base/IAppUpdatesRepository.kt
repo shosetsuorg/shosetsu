@@ -30,7 +30,7 @@ interface IAppUpdatesRepository {
 	/**
 	 * Flow of app updates
 	 */
-	fun loadAppUpdateFlow(): Flow<AppUpdateEntity>
+	fun loadAppUpdateFlow(): Flow<AppUpdateEntity?>
 
 	/**
 	 * Load an app update if present

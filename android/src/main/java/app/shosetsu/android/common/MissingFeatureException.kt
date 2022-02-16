@@ -1,7 +1,4 @@
-package app.shosetsu.android.datasource.remote.impl
-
-import app.shosetsu.common.datasource.remote.base.IRemoteChaptersDataSource
-import app.shosetsu.lib.IExtension
+package app.shosetsu.android.common
 
 /*
  * This file is part of shosetsu.
@@ -21,12 +18,10 @@ import app.shosetsu.lib.IExtension
  */
 
 /**
- * shosetsu
- * 12 / 05 / 2020
+ * Shosetsu
+ *
+ * @since 15 / 02 / 2022
+ * @author Doomsdayrs
  */
-class RemoteChaptersDataSource : IRemoteChaptersDataSource {
-	override suspend fun loadChapterPassage(
-		formatter: IExtension,
-		chapterURL: String,
-	): ByteArray = formatter.getPassage(chapterURL)
-}
+class MissingFeatureException(feature: String) :
+	Exception("This flavour does not have the feature: $feature")

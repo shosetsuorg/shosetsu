@@ -2,9 +2,6 @@ package app.shosetsu.android.domain.repository.impl
 
 import android.net.Uri
 import app.shosetsu.android.domain.repository.base.IBackupUriRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.emptyResult
-import app.shosetsu.common.dto.successResult
 
 /*
  * This file is part of shosetsu.
@@ -32,13 +29,14 @@ import app.shosetsu.common.dto.successResult
 class BackupUriRepository : IBackupUriRepository {
 	private var uri: Uri? = null
 
-	override fun give(path: Uri): HResult<*> {
+	override fun give(path: Uri) {
 		uri = path
-		return successResult()
 	}
 
-	override fun take(): HResult<Uri> =
-		if (uri != null)
-			successResult(uri!!).also { uri = null }
-		else emptyResult()
+	override fun take(): Uri? =
+		if (uri != null) {
+			uri!!.also { uri = null }
+		} else {
+			null
+		}
 }

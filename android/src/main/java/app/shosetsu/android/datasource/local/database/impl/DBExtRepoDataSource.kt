@@ -7,11 +7,10 @@ import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.datasource.database.base.IDBExtRepoDataSource
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.dto.convertList
-import app.shosetsu.common.dto.mapLatestListTo
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 /*
  * This file is part of shosetsu.
@@ -37,10 +36,9 @@ import kotlinx.coroutines.flow.flow
 class DBExtRepoDataSource(
 	private val repositoryDao: RepositoryDao,
 ) : IDBExtRepoDataSource {
-	@ExperimentalCoroutinesApi
 	override fun loadRepositoriesLive(): Flow<List<RepositoryEntity>> = flow {
 		try {
-			emitAll(repositoryDao.loadRepositoriesLive().mapLatestListTo())
+			emitAll(repositoryDao.loadRepositoriesLive().map { it.convertList() })
 		} catch (e: SQLiteException) {
 			throw GenericSQLiteException(e)
 		}

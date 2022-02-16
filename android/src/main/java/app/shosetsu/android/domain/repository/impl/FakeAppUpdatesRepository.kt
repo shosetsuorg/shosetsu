@@ -1,11 +1,10 @@
 package app.shosetsu.android.domain.repository.impl
 
+import app.shosetsu.android.common.MissingFeatureException
 import app.shosetsu.android.datasource.local.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
-import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
-import app.shosetsu.common.dto.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -34,37 +33,37 @@ class FakeAppUpdatesRepository(
 	private val iFileAppUpdateDataSource: IFileCachedAppUpdateDataSource,
 	private val iRemoteAppUpdateDataSource: IRemoteAppUpdateDataSource,
 ) : IAppUpdatesRepository {
-	private val _appUpdateFlow = MutableStateFlow<HResult<AppUpdateEntity>>(empty)
+	private val _appUpdateFlow = MutableStateFlow<AppUpdateEntity?>(null)
 
-	override fun loadAppUpdateFlow(): Flow<HResult<AppUpdateEntity>> =
+	override fun loadAppUpdateFlow(): Flow<AppUpdateEntity?> =
 		_appUpdateFlow
 
-	override suspend fun loadRemoteUpdate(): AppUpdateEntity? =
+	override suspend fun loadRemoteUpdate(): AppUpdateEntity =
 		loadAppUpdate()
 
-	override suspend fun loadAppUpdate(): HResult<AppUpdateEntity> =
-		successResult(
-			AppUpdateEntity(
-				"v3.0.0",
-				999,
-				"https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1136/shosetsu-r1136.apk",
-				listOf("This is a fake update")
-			)
-		).also {
-			_appUpdateFlow.emit(loading)
-			_appUpdateFlow.emit(it)
-		}
+	override suspend fun loadAppUpdate(): AppUpdateEntity {
+		val entity = AppUpdateEntity(
+			"v3.0.0",
+			999,
+			"https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1136/shosetsu-r1136.apk",
+			listOf("This is a fake update")
+		)
 
-	override fun canSelfUpdate(): HResult<Boolean> =
-		successResult(true)
+		_appUpdateFlow.emit(entity)
 
-	override suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): HResult<String> =
+		return entity
+	}
+
+	override fun canSelfUpdate(): Boolean =
+		true
+
+	override suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): String =
 		if (iRemoteAppUpdateDataSource is IRemoteAppUpdateDataSource.Downloadable)
-			iRemoteAppUpdateDataSource.downloadAppUpdate(appUpdateEntity).transform { response ->
+			iRemoteAppUpdateDataSource.downloadAppUpdate(appUpdateEntity).let { response ->
 				iFileAppUpdateDataSource.saveAPK(appUpdateEntity, response).also {
 					// Call GC to clean up the chunky objects
 					System.gc()
 				}
 			}
-		else errorResult(ErrorKeys.ERROR_INVALID_FEATURE, "This flavor cannot self update")
+		else throw MissingFeatureException("self update")
 }

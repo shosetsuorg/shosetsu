@@ -8,12 +8,11 @@ import app.shosetsu.common.datasource.database.base.IDBChaptersDataSource
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.ReaderChapterEntity
 import app.shosetsu.common.dto.convertList
-import app.shosetsu.common.dto.mapLatestListTo
 import app.shosetsu.lib.Novel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 /*
  * This file is part of Shosetsu.
@@ -47,7 +46,7 @@ class DBChaptersDataSource(
 		novelID: Int,
 	): Flow<List<ChapterEntity>> = flow {
 		try {
-			emitAll(chaptersDao.getChaptersFlow(novelID).mapLatestListTo())
+			emitAll(chaptersDao.getChaptersFlow(novelID).map { it.convertList() })
 		} catch (e: SQLiteException) {
 			throw GenericSQLiteException(e)
 		}
