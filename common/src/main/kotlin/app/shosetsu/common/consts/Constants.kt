@@ -23,7 +23,7 @@ const val REPOSITORY_HELP_URL = "https://shosetsu.app/help/guides/repositories/"
 
 const val URL_WEBSITE = "https://shosetsu.app"
 
-const val URL_GITHUB_APP = "https://github.com/shosetsuorg/android-app"
+const val URL_GITHUB_APP = "https://github.com/shosetsuorg/shosetsu"
 const val URL_GITHUB_EXTENSIONS = "https://github.com/shosetsuorg/extensions"
 const val URL_PATREON = "https://www.patreon.com/doomsdayrs"
 

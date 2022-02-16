@@ -43,7 +43,7 @@ class GithubAppUpdateDataSource(
 	private val okHttpClient: OkHttpClient
 ) : IRemoteAppUpdateDataSource, IRemoteAppUpdateDataSource.Downloadable {
 	private val SHOSETSU_GIT_UPDATE_URL: String by lazy {
-		"https://raw.githubusercontent.com/shosetsuorg/android-app/${
+		"https://raw.githubusercontent.com/shosetsuorg/shosetsu/${
 			DEBUG ifSo "development" ?: "master"
 		}/android/src/${
 			DEBUG ifSo "debug" ?: "master"

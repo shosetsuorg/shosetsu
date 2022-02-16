@@ -6,7 +6,7 @@
     <string name="website_url" translatable="false">https://shosetsu.app</string>
 
     <string name="github" translatable="false">Github</string>
-    <string name="github_url" translatable="false">https://github.com/shosetsuorg/android-app</string>
+    <string name="github_url" translatable="false">https://github.com/shosetsuorg/shosetsu</string>
     <string name="extensions_url" translatable="false">https://github.com/shosetsuorg/extensions</string>
 
     <string name="discord" translatable="false">Discord</string>
