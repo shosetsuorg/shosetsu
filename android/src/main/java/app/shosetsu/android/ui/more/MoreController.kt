@@ -57,7 +57,6 @@ import com.google.android.material.composethemeadapter.MdcTheme
  *
  * Option for download queue
  */
-@ExperimentalMaterialApi
 class ComposeMoreController
 	: ShosetsuController(), CollapsedToolBarController {
 
@@ -81,7 +80,7 @@ class ComposeMoreController
 	}
 }
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MoreItemContent(
 	@StringRes title: Int,
@@ -111,14 +110,13 @@ fun MoreItemContent(
 	}
 }
 
-@ExperimentalMaterialApi
 @Preview
 @Composable
 fun PreviewMoreContent() {
 	MoreContent { }
 }
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MoreContent(pushController: (Controller) -> Unit) {
 	Column(

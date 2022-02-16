@@ -67,8 +67,6 @@ import java.util.*
  * @since 09 / 10 / 2021
  * @author Doomsdayrs
  */
-@ExperimentalMaterialApi
-@ExperimentalFoundationApi
 class ComposeUpdatesController : CollapsedToolBarController, ShosetsuController() {
 	override val viewTitleRes: Int = R.string.updates
 
@@ -76,6 +74,10 @@ class ComposeUpdatesController : CollapsedToolBarController, ShosetsuController(
 
 	override fun onViewCreated(view: View) {}
 
+	@OptIn(
+		ExperimentalMaterialApi::class,
+		ExperimentalFoundationApi::class
+	)
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup,
