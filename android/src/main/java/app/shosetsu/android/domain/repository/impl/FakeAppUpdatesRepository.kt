@@ -39,7 +39,7 @@ class FakeAppUpdatesRepository(
 	override fun loadAppUpdateFlow(): Flow<HResult<AppUpdateEntity>> =
 		_appUpdateFlow
 
-	override suspend fun loadRemoteUpdate(): HResult<AppUpdateEntity> =
+	override suspend fun loadRemoteUpdate(): AppUpdateEntity? =
 		loadAppUpdate()
 
 	override suspend fun loadAppUpdate(): HResult<AppUpdateEntity> =

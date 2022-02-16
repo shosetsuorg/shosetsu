@@ -1,7 +1,6 @@
 package app.shosetsu.android.domain.repository.base
 
 import android.net.Uri
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -34,11 +33,11 @@ interface IBackupUriRepository {
 	 *
 	 * Overwrites any previously given uri
 	 */
-	fun give(path: Uri): HResult<*>
+	fun give(path: Uri)
 
 	/**
 	 * Take the [Uri] from the repository
 	 */
-	fun take(): HResult<Uri>
+	fun take(): Uri?
 
 }

@@ -1,7 +1,6 @@
 package app.shosetsu.common.domain.repositories.base
 
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
-import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -30,51 +29,21 @@ import kotlinx.coroutines.flow.Flow
 interface IAppUpdatesRepository {
 	/**
 	 * Flow of app updates
-	 *
-	 * Will only be a Success if a version is found higher then the current
-	 *
-	 * @return
-	 * [HResult.Success] There is an update
-	 *
-	 * [HResult.Error] Something went wrong loading updates
-	 *
-	 * [HResult.Empty] No updates found
-	 *
-	 * [HResult.Loading] Initial value
 	 */
 	fun loadAppUpdateFlow(): Flow<AppUpdateEntity>
 
 	/**
 	 * Load an app update if present
-	 *
-	 * @return
-	 * [HResult.Empty] if no app updates are present
-	 *
-	 * [HResult.Success] if an app update is present
 	 */
-	suspend fun loadRemoteUpdate(): AppUpdateEntity
+	suspend fun loadRemoteUpdate(): AppUpdateEntity?
 
 	/**
 	 * Load an app update if present
-	 *
-	 * @return
-	 * [HResult.Empty] if no app updates are present
-	 *
-	 * [HResult.Success] if an app update is present
 	 */
-	suspend fun loadAppUpdate(): AppUpdateEntity
+	suspend fun loadAppUpdate(): AppUpdateEntity?
 
 	/**
 	 * Can the app self update itself
-	 *
-	 * @return
-	 * [HResult.Success] boolean true if the app can self update, false otherwise
-	 *
-	 * [HResult.Error] something went wrong
-	 *
-	 * [HResult.Empty] never
-	 *
-	 * [HResult.Loading] never
 	 */
 	fun canSelfUpdate(): Boolean
 

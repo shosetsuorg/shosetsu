@@ -24,10 +24,7 @@ import app.shosetsu.common.domain.model.local.ExtLibEntity
 import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.*
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.Version
 import app.shosetsu.lib.json.RepoExtension
@@ -74,7 +71,7 @@ class RepositoryUpdateWorker(
 	private val iSettingsRepository by instance<ISettingsRepository>()
 
 	private suspend fun disableOnFail(): Boolean =
-		iSettingsRepository.getBooleanOrDefault(SettingKey.RepoUpdateDisableOnFail)
+		iSettingsRepository.getBoolean(SettingKey.RepoUpdateDisableOnFail)
 
 	/**
 	 * Updates the libraries in the program
@@ -85,85 +82,86 @@ class RepositoryUpdateWorker(
 	private suspend fun updateLibraries(
 		repoExtLibList: List<RepoLibrary>,
 		repository: RepositoryEntity,
-	): HResult<*> =
-		extensionLibrariesRepo.loadExtLibByRepo(repository.id!!).transform(
-			onError = {
-				with(it) {
-					notify("Failed to load ext libs of repo: $code : $message")
-					logE("Failed to load ext libs of repo: $code : $message", exception)
-				}
-				it
+	) {
+		val databaseLibs = try {
+			extensionLibrariesRepo.loadExtLibByRepo(repository.id!!)
+		} catch (e: Exception) {
+			with(e) {
+				notify("Failed to load ext libs of repo: : $message")
+				logE("Failed to load ext libs of repo: $message", e)
 			}
-		) { databaseLibs: List<ExtLibEntity> ->
-			/** Libraries not installed or needs update */
-			val libsNotPresent = ArrayList<ExtLibEntity>()
+			return
+		}
 
-			// Loops through the libraries from the remote repository
-			val repoExtLibListSize = repoExtLibList.size
+		/** Libraries not installed or needs update */
+		val libsNotPresent = ArrayList<ExtLibEntity>()
 
-			repoExtLibList.forEachIndexed { index, (repoLibName, repoLibVersion) ->
-				notify("Checking $repoLibName from ${repository.name}") {
-					setSilent(true)
-					setProgress(repoExtLibListSize, index + 1, false)
-				}
+		// Loops through the libraries from the remote repository
+		val repoExtLibListSize = repoExtLibList.size
 
-				val isInstalled = databaseLibs.any { it.scriptName == repoLibName }
+		repoExtLibList.forEachIndexed { index, (repoLibName, repoLibVersion) ->
+			notify("Checking $repoLibName from ${repository.name}") {
+				setSilent(true)
+				setProgress(repoExtLibListSize, index + 1, false)
+			}
 
-				var install = false
-				var extensionLibraryEntity: ExtLibEntity? = null
-				var repoVersion = Version(0, 0, 0)
+			val isInstalled = databaseLibs.any { it.scriptName == repoLibName }
 
-				if (isInstalled) {
-					//  Checks if an update need
-					repoVersion = repoLibVersion
-					extensionLibraryEntity = databaseLibs.find { it.scriptName == repoLibName }!!
+			var install = false
+			var extensionLibraryEntity: ExtLibEntity? = null
+			var repoVersion = Version(0, 0, 0)
 
-					// If the version compared to the repo version is different, reinstall
-					if (repoVersion > extensionLibraryEntity.version) {
-						logI("$repoLibName has update $repoVersion available, updating")
-						install = true
-					} else {
-						extRepoRepo.getRepo(repository.id!!).handle { repo ->
-							if (!repo.isEnabled) {
-								logI("${repo.name} is disabled, downgrading $repoLibName")
-								install = true
-							}
+			if (isInstalled) {
+				//  Checks if an update need
+				repoVersion = repoLibVersion
+				extensionLibraryEntity =
+					databaseLibs.find { it.scriptName == repoLibName }!!
+
+				// If the version compared to the repo version is different, reinstall
+				if (repoVersion > extensionLibraryEntity.version) {
+					logI("$repoLibName has update $repoVersion available, updating")
+					install = true
+				} else {
+					extRepoRepo.getRepo(repository.id!!)?.let { repo ->
+						if (!repo.isEnabled) {
+							logI("${repo.name} is disabled, downgrading $repoLibName")
+							install = true
 						}
 					}
-				} else {
-					install = true
 				}
+			} else {
+				install = true
+			}
 
-				// If install is true, then it adds it to the list for later
-				if (install)
-					libsNotPresent.add(
-						extensionLibraryEntity ?: ExtLibEntity(
-							scriptName = repoLibName,
-							version = repoVersion,
-							repoID = repository.id!!
-						)
+			// If install is true, then it adds it to the list for later
+			if (install)
+				libsNotPresent.add(
+					extensionLibraryEntity ?: ExtLibEntity(
+						scriptName = repoLibName,
+						version = repoVersion,
+						repoID = repository.id!!
 					)
-			}
-			notify("Finished checking extensions from ${repository.name}") {
-				setSilent(true)
-				removeProgress()
-			}
-
-			// For each library not present, installs
-			libsNotPresent.forEach {
-				notify("Installing ${it.scriptName} from ${repository.name}") {
-					setSilent(true)
-					setProgress(1, 0, true)
-				}
-				extensionLibrariesRepo.installExtLibrary(repository.url, it)
-			}
-
-			notify("Completed extension library update for ${repository.name}") {
-				setSilent(true)
-				removeProgress()
-			}
-			successResult(0)
+				)
 		}
+		notify("Finished checking extensions from ${repository.name}") {
+			setSilent(true)
+			removeProgress()
+		}
+
+		// For each library not present, installs
+		libsNotPresent.forEach {
+			notify("Installing ${it.scriptName} from ${repository.name}") {
+				setSilent(true)
+				setProgress(1, 0, true)
+			}
+			extensionLibrariesRepo.installExtLibrary(repository.url, it)
+		}
+
+		notify("Completed extension library update for ${repository.name}") {
+			setSilent(true)
+			removeProgress()
+		}
+	}
 
 	private suspend inline fun handlePresentExtensions(
 		list: List<GenericExtensionEntity>,

@@ -31,9 +31,6 @@ import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.transformToSuccess
 import app.shosetsu.lib.Novel
 import coil.imageLoader
 import coil.request.ImageRequest
@@ -112,19 +109,19 @@ class NovelUpdateWorker(
 	private val iSettingsRepository: ISettingsRepository by instance()
 
 	private suspend fun onlyUpdateOngoing(): Boolean =
-		iSettingsRepository.getBooleanOrDefault(OnlyUpdateOngoingNovels)
+		iSettingsRepository.getBoolean(OnlyUpdateOngoingNovels)
 
 	private suspend fun downloadOnUpdate(): Boolean =
-		iSettingsRepository.getBooleanOrDefault(DownloadNewNovelChapters)
+		iSettingsRepository.getBoolean(DownloadNewNovelChapters)
 
 	private suspend fun notificationStyle(): Boolean =
-		iSettingsRepository.getBooleanOrDefault(UpdateNotificationStyle)
+		iSettingsRepository.getBoolean(UpdateNotificationStyle)
 
 	private suspend fun showProgress(): Boolean =
-		iSettingsRepository.getBooleanOrDefault(NovelUpdateShowProgress)
+		iSettingsRepository.getBoolean(NovelUpdateShowProgress)
 
 	private suspend fun classicFinale(): Boolean =
-		iSettingsRepository.getBooleanOrDefault(NovelUpdateClassicFinish)
+		iSettingsRepository.getBoolean(NovelUpdateClassicFinish)
 
 	override suspend fun doWork(): Result {
 		// Log that the worker is executing
@@ -142,17 +139,13 @@ class NovelUpdateWorker(
 		/** Collect updated chapters to be used */
 		val updatedChapters = arrayListOf<ChapterEntity>()
 
-		iNovelsRepository.loadBookmarkedNovelEntities().transformToSuccess { list ->
+		iNovelsRepository.loadBookmarkedNovelEntities().let { list ->
 			if (onlyUpdateOngoing())
 				list.filter { it.status != Novel.Status.COMPLETED }
 			else list
-		}.transformToSuccess { list ->
+		}.let { list ->
 			list.sortedBy { it.title }
-		}.handle(
-			onError = { return Result.failure() },
-			onLoading = { return Result.failure() },
-			onEmpty = { return Result.failure() },
-		) { novels ->
+		}.let { novels ->
 			var progress = 0
 
 			novels.forEach { nE ->
@@ -175,36 +168,38 @@ class NovelUpdateWorker(
 					addCancelAction()
 				}
 
-				loadRemoteNovelUseCase(nE, true).handle(
-					onError = onError@{
-						if (it.exception is CancellationException) {
-							logE("Job was canceled", it.exception)
-							return@onError
-						}
-						logE("Failed to load novel: $nE", it.exception)
-						notify(
-							"${it.code} : ${it.message}",
-							10000 + nE.id!!
-						) {
-							setContentTitle(
-								getString(
-									R.string.worker_novel_update_load_failure,
-									nE.title
-								)
-							)
-
-							setNotOngoing()
-							removeProgress()
-							addCancelAction()
-							this.priority = NotificationCompat.PRIORITY_HIGH
-						}
+				val it = try {
+					loadRemoteNovelUseCase(nE, true)
+				} catch (e: Exception) {
+					if (e is CancellationException) {
+						logE("Job was canceled", e)
+						return@forEach
 					}
-				) {
+					logE("Failed to load novel: $nE", e)
+					notify(
+						"${e.message}",
+						10000 + nE.id!!
+					) {
+						setContentTitle(
+							getString(
+								R.string.worker_novel_update_load_failure,
+								nE.title
+							)
+						)
+
+						setNotOngoing()
+						removeProgress()
+						addCancelAction()
+						this.priority = NotificationCompat.PRIORITY_HIGH
+					}
+					return@forEach
+				}
+				if (it != null)
 					if (it.updatedChapters.isNotEmpty()) {
 						updateNovels.add(nE)
 						updatedChapters.addAll(it.updatedChapters)
 					}
-				}
+				//TODO Handle null
 				progress++
 			}
 
@@ -271,16 +266,16 @@ class NovelUpdateWorker(
 		private val iSettingsRepository by instance<ISettingsRepository>()
 
 		private suspend fun updateOnMetered(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(NovelUpdateOnMeteredConnection)
+			iSettingsRepository.getBoolean(NovelUpdateOnMeteredConnection)
 
 		private suspend fun updateOnLowStorage(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(NovelUpdateOnLowStorage)
+			iSettingsRepository.getBoolean(NovelUpdateOnLowStorage)
 
 		private suspend fun updateOnLowBattery(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(NovelUpdateOnLowBattery)
+			iSettingsRepository.getBoolean(NovelUpdateOnLowBattery)
 
 		private suspend fun updateOnlyIdle(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(NovelUpdateOnlyWhenIdle)
+			iSettingsRepository.getBoolean(NovelUpdateOnlyWhenIdle)
 
 		/**
 		 * Returns the status of the service.
