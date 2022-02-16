@@ -1,7 +1,6 @@
 package app.shosetsu.common.datasource.file.base
 
 import app.shosetsu.common.FileNotFoundException
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.Novel
 
 /*

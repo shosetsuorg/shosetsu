@@ -3,7 +3,6 @@ package app.shosetsu.common.datasource.file.base
 import app.shosetsu.common.FileNotFoundException
 import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.domain.model.local.ChapterEntity
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.Novel
 import java.io.IOException
 

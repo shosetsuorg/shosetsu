@@ -8,7 +8,6 @@ import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.StrippedBookmarkedNovelEntity
 import app.shosetsu.common.domain.model.local.StrippedNovelEntity
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
-import app.shosetsu.common.dto.emptyResult
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
@@ -66,11 +65,13 @@ class NovelsRepository(
 	 */
 	override suspend fun searchBookmarked(string: String): List<StrippedBookmarkedNovelEntity> =
 		loadBookmarkedNovelEntities().let { list ->
-			if (list.isEmpty()) emptyResult()
-			list.filter { it.title.contains(string, false) }
-				.map { (id, _, _, _, _, _, title, imageURL, _, _, _, _, _, _) ->
-					StrippedBookmarkedNovelEntity(id!!, title, imageURL)
-				}
+			if (list.isEmpty())
+				emptyList()
+			else
+				list.filter { it.title.contains(string, false) }
+					.map { (id, _, _, _, _, _, title, imageURL, _, _, _, _, _, _) ->
+						StrippedBookmarkedNovelEntity(id!!, title, imageURL)
+					}
 		}
 
 

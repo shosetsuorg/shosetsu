@@ -3,7 +3,9 @@ package app.shosetsu.common.domain.repositories.impl
 import app.shosetsu.common.datasource.database.base.IDBInstalledExtensionsDataSource
 import app.shosetsu.common.datasource.database.base.IDBRepositoryExtensionsDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteExtensionDataSource
+import app.shosetsu.common.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.common.domain.model.local.GenericExtensionEntity
+import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.lib.exceptions.HTTPException
@@ -37,6 +39,9 @@ class ExtensionsRepository(
 	private val repoDBSource: IDBRepositoryExtensionsDataSource,
 	private val remoteSource: IRemoteExtensionDataSource,
 ) : IExtensionsRepository {
+	override fun loadBrowseExtensions(): Flow<List<BrowseExtensionEntity>> {
+		TODO("Not yet implemented")
+	}
 
 	override fun loadExtensionsFLow(): Flow<List<GenericExtensionEntity>> =
 		installedDBSource.loadExtensionsFlow()
@@ -47,12 +52,28 @@ class ExtensionsRepository(
 	override suspend fun getExtension(id: Int): GenericExtensionEntity? =
 		installedDBSource.loadExtension(id)
 
+	override suspend fun getInstalledExtension(id: Int): InstalledExtensionEntity? {
+		TODO("Not yet implemented")
+	}
+
+	override suspend fun getRepositoryExtensions(repoID: Int): List<GenericExtensionEntity> {
+		TODO("Not yet implemented")
+	}
+
+	override suspend fun loadRepositoryExtensions(): List<GenericExtensionEntity> {
+		TODO("Not yet implemented")
+	}
+
 	override suspend fun uninstall(extensionEntity: GenericExtensionEntity) {
 		installedDBSource.deleteExtension(extensionEntity)
 	}
 
 	override suspend fun updateRepositoryExtension(extensionEntity: GenericExtensionEntity): Unit =
 		installedDBSource.updateExtension(extensionEntity)
+
+	override suspend fun updateInstalledExtension(extensionEntity: InstalledExtensionEntity) {
+		TODO("Not yet implemented")
+	}
 
 	override suspend fun delete(extensionEntity: GenericExtensionEntity) {
 		installedDBSource.deleteExtension(extensionEntity)
@@ -68,4 +89,8 @@ class ExtensionsRepository(
 		extension: GenericExtensionEntity
 	): ByteArray =
 		remoteSource.downloadExtension(repositoryEntity, extension)
+
+	override fun isExtensionInstalled(extensionEntity: GenericExtensionEntity): Boolean {
+		TODO("Not yet implemented")
+	}
 }

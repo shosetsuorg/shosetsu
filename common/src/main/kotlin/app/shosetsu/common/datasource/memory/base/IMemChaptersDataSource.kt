@@ -1,6 +1,5 @@
 package app.shosetsu.common.datasource.memory.base
 
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.

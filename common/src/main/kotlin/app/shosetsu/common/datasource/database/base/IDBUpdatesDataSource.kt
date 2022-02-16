@@ -3,7 +3,6 @@ package app.shosetsu.common.datasource.database.base
 import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.common.domain.model.local.UpdateEntity
-import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 /*
