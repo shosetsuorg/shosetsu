@@ -78,8 +78,10 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 			it.status == PAUSED
 		}
 
+		val isPaused = viewModel.isDownloadPaused.value == true
+
 		binding.bottomMenu.findItem(R.id.delete)?.isVisible = selectedDownloads.any {
-			it.status == PAUSED || it.status == PENDING || it.status == ERROR
+			it.status == PAUSED || it.status == PENDING || it.status == ERROR || (isPaused && it.status == DOWNLOADING)
 		}
 	}
 
