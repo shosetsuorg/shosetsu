@@ -28,6 +28,6 @@ import kotlinx.coroutines.flow.Flow
 class LoadAppUpdateFlowLiveUseCase(
 	private val iAppUpdatesRepository: IAppUpdatesRepository
 ) {
-	operator fun invoke(): Flow<AppUpdateEntity> =
+	operator fun invoke(): Flow<AppUpdateEntity?> =
 		iAppUpdatesRepository.loadAppUpdateFlow()
 }

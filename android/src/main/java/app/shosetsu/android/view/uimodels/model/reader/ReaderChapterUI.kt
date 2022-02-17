@@ -1,8 +1,8 @@
 package app.shosetsu.android.view.uimodels.model.reader
 
 import android.view.View
+import app.shosetsu.android.common.ext.collectLA
 import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.common.ext.logError
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
@@ -10,10 +10,10 @@ import app.shosetsu.android.ui.reader.types.model.HTMLReader
 import app.shosetsu.android.ui.reader.types.model.StringReader
 import app.shosetsu.common.domain.model.local.ReaderChapterEntity
 import app.shosetsu.common.dto.Convertible
-import app.shosetsu.common.dto.handle
 import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.lib.Novel.ChapterType
 import com.github.doomsdayrs.apps.shosetsu.R
+import org.acra.ACRA
 
 /**
  * Data class that holds each chapter and its data (not including text content)
@@ -79,22 +79,21 @@ data class ReaderChapterUI(
 		logI("Binding view")
 		super.bindView(holder, payloads)
 		chapterReader?.let { reader ->
-			reader.viewModel.getChapterPassage(this).observe(reader) { result ->
-				result.handle(
-					onLoading = { holder.showLoadingProgress() },
-					onEmpty = { holder.hideLoadingProgress() },
-					onError = {
-						logError { it }
-						//	holder.setError(it.message, "Retry") {
-						//		TODO("Figure out how to restart the liveData")
-						//		}
-					}) { data ->
-					//logD("Successfully loaded :D")
-					holder.hideLoadingProgress()
-					holder.setData(data)
-					holder.itemView.post {
-						holder.setProgress(this.readingPosition)
-					}
+			holder.showLoadingProgress()
+			reader.viewModel.getChapterPassage(this).collectLA(reader, catch = {
+				ACRA.errorReporter.handleException(it)
+				//	holder.setError(it.message, "Retry") {
+				//		TODO("Figure out how to restart the liveData")
+				//		}
+			}) { data ->
+				if (data == null) return@collectLA
+
+				//logD("Successfully loaded :D")
+				holder.hideLoadingProgress()
+
+				holder.setData(data)
+				holder.itemView.post {
+					holder.setProgress(this.readingPosition)
 				}
 			}
 		} ?: logE("Provided reader is null")

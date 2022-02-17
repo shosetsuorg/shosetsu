@@ -147,7 +147,9 @@ class MainActivity : AppCompatActivity(), DIAware,
 			}
 		}
 
-		viewModel.appThemeLiveData.observe(this) {
+		viewModel.appThemeLiveData.collectLA(this, catch = {
+			TODO("Error")
+		}) {
 			logI("Setting theme to $it")
 			when (it) {
 				FOLLOW_SYSTEM -> {

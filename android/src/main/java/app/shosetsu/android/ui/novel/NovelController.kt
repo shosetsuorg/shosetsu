@@ -33,6 +33,8 @@ import com.mikepenz.fastadapter.items.AbstractItem
 import com.mikepenz.fastadapter.select.getSelectExtension
 import com.mikepenz.fastadapter.select.selectExtension
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import org.acra.ACRA
 import javax.security.auth.DestroyFailedException
 
@@ -191,7 +193,8 @@ class NovelController(bundle: Bundle) :
 					TODO("Handle")
 				}
 			) {
-				activity?.share(it.novelURL, it.novelTitle)
+				if (it != null)
+					activity?.share(it.novelURL, it.novelTitle)
 			}
 			true
 		}
@@ -337,7 +340,10 @@ class NovelController(bundle: Bundle) :
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_novel, menu)
-		menu.findItem(id.source_migrate).isVisible = viewModel.isBookmarked()
+
+		runBlocking {
+			menu.findItem(id.source_migrate).isVisible = viewModel.isBookmarked().first()
+		}
 	}
 
 	override fun onViewCreated(view: View) {
@@ -467,7 +473,8 @@ class NovelController(bundle: Bundle) :
 				TODO("Handle")
 			}
 		) {
-			activity?.openInWebView(it)
+			if (it != null)
+				activity?.openInWebView(it)
 		}
 	}
 
@@ -497,6 +504,8 @@ class NovelController(bundle: Bundle) :
 				handleRecyclerException(it)
 			}
 		) { result ->
+			if (result == null) return@observe
+
 			activity?.invalidateOptionsMenu()
 			// If the data is not present, loads it
 			if (!result.loaded) {

@@ -5,7 +5,6 @@ import androidx.room.Dao
 import androidx.room.Ignore
 import androidx.room.Query
 import app.shosetsu.android.domain.model.database.DBInstalledExtensionEntity
-import app.shosetsu.android.domain.model.database.DBStrippedExtensionEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import kotlinx.coroutines.flow.Flow
 
@@ -50,10 +49,6 @@ interface InstalledExtensionsDao : BaseDao<DBInstalledExtensionEntity> {
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM installed_extension WHERE enabled = 1")
 	fun loadEnabledExtensions(): Flow<List<DBInstalledExtensionEntity>>
-
-	@Throws(SQLiteException::class)
-	@Query("SELECT id, name, imageURL FROM installed_extension WHERE enabled = 1")
-	fun loadEnabledExtensionsBasic(): Flow<List<DBStrippedExtensionEntity>>
 
 	@Query("SELECT * FROM installed_extension WHERE repoID = :repoID")
 	fun getExtensions(repoID: Int): List<DBInstalledExtensionEntity>

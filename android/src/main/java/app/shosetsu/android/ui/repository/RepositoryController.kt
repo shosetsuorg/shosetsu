@@ -15,6 +15,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar.BaseCallback.
 import com.google.android.material.snackbar.Snackbar
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.listeners.addClickListener
+import org.acra.ACRA
 import androidx.appcompat.app.AlertDialog.Builder as AlertDialogBuilder
 
 /*
@@ -86,7 +87,9 @@ class RepositoryController : FastAdapterRefreshableRecyclerController<Repository
 		viewModel.undoRemove(item).observe(
 
 			catch = {
-				logError { it }
+				it.printStackTrace()
+				ACRA.errorReporter.handleSilentException(it)
+
 				// Warn the user that there was an error
 				makeSnackBar(R.string.controller_repositories_snackbar_fail_undo_repo_removal)
 					// Ask if the user wants to retry

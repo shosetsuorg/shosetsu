@@ -6,7 +6,6 @@ import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.transform
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 
@@ -41,9 +40,9 @@ class GetCatalogueQueryDataUseCase(
 		extID: Int,
 		query: String,
 		filters: Map<Int, Any>
-	) = getExt(extID).transform {
+	): List<ACatalogNovelUI> = getExt(extID)?.let {
 		invoke(it, query, filters)
-	}
+	} ?: emptyList()
 
 	suspend operator fun invoke(
 		ext: IExtension,

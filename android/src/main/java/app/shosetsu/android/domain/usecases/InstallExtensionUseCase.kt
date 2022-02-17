@@ -5,8 +5,6 @@ import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.dto.errorResult
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.utils.asIEntity
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.exceptions.HTTPException

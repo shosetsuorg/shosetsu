@@ -143,7 +143,7 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 	}
 
 	override fun onViewCreated(view: View) {
-		viewModel.liveData.observe(this) { handleRecyclerUpdate(it) }
+		viewModel.liveData.observe(catch = {}) { handleRecyclerUpdate(it) }
 		viewModel.isDownloadPaused.observe(this) {
 			fab?.setText(
 				if (it)

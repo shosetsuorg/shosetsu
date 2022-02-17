@@ -1,6 +1,5 @@
 package app.shosetsu.android.di
 
-import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.*
 import app.shosetsu.android.domain.usecases.delete.DeleteChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteDownloadUseCase
@@ -13,7 +12,6 @@ import app.shosetsu.android.domain.usecases.settings.LoadNavigationStyleUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadRequireDoubleBackUseCase
 import app.shosetsu.android.domain.usecases.settings.SetNovelUITypeUseCase
 import app.shosetsu.android.domain.usecases.start.*
-import app.shosetsu.android.domain.usecases.toast.ToastErrorUseCase
 import app.shosetsu.android.domain.usecases.update.*
 import org.kodein.di.DI
 import org.kodein.di.bind
@@ -68,6 +66,7 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 
 	bind<RequestInstallExtensionUseCase>() with provider {
 		RequestInstallExtensionUseCase(
+			instance(),
 			instance(),
 			instance()
 		)
@@ -149,7 +148,6 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 			instance(),
 		)
 	}
-	bind<ToastErrorUseCase>() with provider { ToastErrorUseCase(instance()) }
 	bind<IsOnlineUseCase>() with provider { IsOnlineUseCase(instance()) }
 
 	bind<LoadAppUpdateFlowLiveUseCase>() with provider { LoadAppUpdateFlowLiveUseCase(instance()) }
@@ -179,7 +177,6 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 		LoadChaptersResumeFirstUnreadUseCase(instance())
 	}
 
-	bind<ReportExceptionUseCase>() with provider { ReportExceptionUseCase(instance(), instance()) }
 	bind<LoadNavigationStyleUseCase>() with provider { LoadNavigationStyleUseCase(instance()) }
 	bind<LoadRequireDoubleBackUseCase>() with provider { LoadRequireDoubleBackUseCase(instance()) }
 

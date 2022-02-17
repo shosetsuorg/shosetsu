@@ -196,39 +196,39 @@ class ChapterReader
 			handleChaptersResult(result)
 		}
 
-		viewModel.liveTheme.observe {
+		viewModel.liveTheme.collectLA(this, catch = {}) {
 			applyToChapterViews {
 				syncTextColor()
 				syncBackgroundColor()
 			}
 		}
 
-		viewModel.liveIndentSize.observe {
+		viewModel.liveIndentSize.collectLA(this, catch = {}) {
 			applyToChapterViews {
 				syncParagraphIndent()
 			}
 		}
 
-		viewModel.liveParagraphSpacing.observe {
+		viewModel.liveParagraphSpacing.collectLA(this, catch = {}) {
 			logD("Updating paragraph spacing to reader UI")
 			applyToChapterViews { syncParagraphSpacing() }
 		}
 
-		viewModel.liveTextSize.observe {
+		viewModel.liveTextSize.collectLA(this, catch = {}) {
 			applyToChapterViews { syncTextSize() }
 		}
 
-		viewModel.liveVolumeScroll.observe {
+		viewModel.liveVolumeScroll.collectLA(this, catch = {}) {
 		}
 
-		viewModel.liveChapterDirection.observe {
+		viewModel.liveChapterDirection.collectLA(this, catch = {}) {
 			viewpager.orientation = if (it) ORIENTATION_HORIZONTAL else ORIENTATION_VERTICAL
 		}
 
-		viewModel.liveKeepScreenOn.observe {
+		viewModel.liveKeepScreenOn.collectLA(this, catch = {}) {
 			binding.root.keepScreenOn = it
 		}
-		viewModel.liveIsScreenRotationLocked.observe {
+		viewModel.liveIsScreenRotationLocked.collectLA(this, catch = {}) {
 			if (it) {
 				lockRotation()
 				rotationLockButton.setImageResource(R.drawable.ic_baseline_screen_lock_rotation_24)

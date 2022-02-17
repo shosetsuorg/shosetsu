@@ -12,6 +12,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import app.shosetsu.android.common.ext.collectLA
 import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
@@ -19,7 +20,6 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.common.utils.asHtml
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.databinding.ChapterReaderHtmlBinding
-import java.util.*
 
 /*
  * This file is part of Shosetsu.
@@ -266,7 +266,7 @@ class HTMLReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 		super.bindView(item, payloads)
 		syncStylesWithViewModel()
 		injectCss()
-		viewModel.loadChapterCss().observe(chapterReader) {
+		viewModel.loadChapterCss().collectLA(chapterReader, catch = {}) {
 			injectCss()
 		}
 	}

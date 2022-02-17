@@ -1,9 +1,13 @@
 package app.shosetsu.android.domain.usecases.get
 
+import app.shosetsu.android.common.utils.uifactory.mapLatestToResultFlowWithFactory
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
+import app.shosetsu.common.dto.convertList
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -33,7 +37,7 @@ class GetChapterUIsUseCase(
 		if (novelID != -1)
 			emitAll(
 				chapters.getChaptersLive(novelID).mapLatestToResultFlowWithFactory()
-					.mapLatestResultListTo()
+					.mapLatest { it.convertList() }
 			)
 	}
 }

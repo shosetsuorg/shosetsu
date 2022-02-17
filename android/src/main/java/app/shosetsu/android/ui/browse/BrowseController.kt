@@ -23,7 +23,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
@@ -32,7 +31,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -109,8 +107,6 @@ class BrowseController : ShosetsuController(),
 		}
 	}
 
-	@ExperimentalFoundationApi
-	@ExperimentalMaterialApi
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup,
@@ -119,7 +115,7 @@ class BrowseController : ShosetsuController(),
 		setViewTitle()
 		setContent {
 			MdcTheme {
-				val entites by viewModel.liveData.observeAsState(listOf())
+				val entites by viewModel.liveData.collectAsState(listOf())
 				var isRefreshing by remember { mutableStateOf(false) }
 				BrowseContent(
 					entites,
@@ -229,8 +225,6 @@ class BrowseController : ShosetsuController(),
 	}
 }
 
-@ExperimentalFoundationApi
-@ExperimentalMaterialApi
 @Composable
 fun BrowseContent(
 	entities: List<BrowseExtensionEntity>,
@@ -277,8 +271,7 @@ fun BrowseContent(
 	}
 }
 
-@ExperimentalFoundationApi
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 fun BrowseExtensionContent(
 	item: BrowseExtensionEntity,

@@ -24,7 +24,6 @@ import app.shosetsu.common.domain.model.local.ExtLibEntity
 import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.*
-import app.shosetsu.common.dto.handle
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.Version
 import app.shosetsu.lib.json.RepoExtension
@@ -205,7 +204,7 @@ class RepositoryUpdateWorker(
 	 * Handle updating an extension
 	 */
 	private suspend fun updateExtension(repo: RepositoryEntity, repoExt: RepoExtension) {
-		extRepo.getExtension(repoExt.id).handle(
+		extRepo.getExtension(repoExt.id).let(
 			onEmpty = {
 				extRepo.insert(
 					GenericExtensionEntity(
@@ -410,13 +409,13 @@ class RepositoryUpdateWorker(
 		private val iSettingsRepository by instance<ISettingsRepository>()
 
 		private suspend fun updateOnMetered(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(SettingKey.RepoUpdateOnMeteredConnection)
+			iSettingsRepository.getBoolean(SettingKey.RepoUpdateOnMeteredConnection)
 
 		private suspend fun updateOnLowStorage(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(SettingKey.RepoUpdateOnLowStorage)
+			iSettingsRepository.getBoolean(SettingKey.RepoUpdateOnLowStorage)
 
 		private suspend fun updateOnLowBattery(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(SettingKey.RepoUpdateOnLowBattery)
+			iSettingsRepository.getBoolean(SettingKey.RepoUpdateOnLowBattery)
 
 		/**
 		 * Returns the status of the service.

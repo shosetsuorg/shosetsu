@@ -48,12 +48,12 @@ abstract class AChapterReaderViewModel :
 	/**
 	 * Should the screen be locked
 	 */
-	abstract val liveIsScreenRotationLocked: LiveData<Boolean>
+	abstract val liveIsScreenRotationLocked: Flow<Boolean>
 
 	/**
 	 * Should the reader keep the screen on
 	 */
-	abstract val liveKeepScreenOn: LiveData<Boolean>
+	abstract val liveKeepScreenOn: Flow<Boolean>
 
 	/**
 	 * The current chapter ID that is being read
@@ -63,21 +63,21 @@ abstract class AChapterReaderViewModel :
 	/**
 	 * Pair of Text color to background color
 	 */
-	abstract val liveTheme: LiveData<Pair<Int, Int>>
+	abstract val liveTheme: Flow<Pair<Int, Int>>
 
-	abstract val liveIndentSize: LiveData<Int>
+	abstract val liveIndentSize: Flow<Int>
 
-	abstract val liveParagraphSpacing: LiveData<Float>
+	abstract val liveParagraphSpacing: Flow<Float>
 
-	abstract val liveTextSize: LiveData<Float>
+	abstract val liveTextSize: Flow<Float>
 
-	abstract val liveVolumeScroll: LiveData<Boolean>
+	abstract val liveVolumeScroll: Flow<Boolean>
 
 	/**
 	 * false    -> vertical paging
 	 * true     -> horizontal paging
 	 */
-	abstract val liveChapterDirection: LiveData<Boolean>
+	abstract val liveChapterDirection: Flow<Boolean>
 
 	/**
 	 * The text size that should be used by default for newly created views
@@ -126,7 +126,7 @@ abstract class AChapterReaderViewModel :
 	abstract fun setNovelID(novelID: Int)
 
 	/** Start loading up a [readerChapterUI]'s passage */
-	abstract fun getChapterPassage(readerChapterUI: ReaderChapterUI): LiveData<ByteArray>
+	abstract fun getChapterPassage(readerChapterUI: ReaderChapterUI): Flow<ByteArray?>
 
 	/** An easy method to toggle the state of a bookmark */
 	abstract fun toggleBookmark(readerChapterUI: ReaderChapterUI)
@@ -149,7 +149,7 @@ abstract class AChapterReaderViewModel :
 	/**
 	 * Loads a [LiveData] reflection of the global custom css
 	 */
-	abstract fun loadChapterCss(): LiveData<String>
+	abstract fun loadChapterCss(): Flow<String>
 
 	/**
 	 * Loads the settings list for the bottom bar

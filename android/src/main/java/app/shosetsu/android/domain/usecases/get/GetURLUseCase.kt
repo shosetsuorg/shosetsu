@@ -37,5 +37,5 @@ class GetURLUseCase(private val getExt: GetExtensionUseCase) {
 		this(novelUI.novelURL, novelUI.extID, KEY_NOVEL_URL)
 
 	suspend operator fun invoke(chapterUI: ChapterUI) =
-		this(chapterUI.link, chapterUI.extensionID, KEY_CHAPTER_URL)
+		this(chapterUI.link, chapterUI.extensionID!!, KEY_CHAPTER_URL)
 }

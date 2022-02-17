@@ -72,7 +72,8 @@ class TextAssetReader(bundleI: Bundle) : ShosetsuController(bundleI) {
 		viewModel.setTarget(args.getInt(BUNDLE_KEY, TextAsset.LICENSE.bundle.getInt(BUNDLE_KEY)))
 
 		viewModel.targetLiveData.observe(catch = {}) {
-			setViewTitle(getString(it.titleRes))
+			if (it != null)
+				setViewTitle(getString(it.titleRes))
 		}
 	}
 

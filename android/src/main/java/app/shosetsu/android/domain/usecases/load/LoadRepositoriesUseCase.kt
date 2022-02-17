@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.mapLatest
 class LoadRepositoriesUseCase(
 	private val iExtRepoRepository: IExtensionRepoRepository
 ) {
-	@ExperimentalCoroutinesApi
+	@OptIn(ExperimentalCoroutinesApi::class)
 	operator fun invoke(): Flow<List<RepositoryUI>> =
 		iExtRepoRepository.loadRepositoriesLive().mapLatestToResultFlowWithFactory()
 			.mapLatest { it.convertList() }

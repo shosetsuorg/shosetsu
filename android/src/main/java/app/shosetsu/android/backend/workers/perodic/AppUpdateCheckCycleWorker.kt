@@ -2,8 +2,6 @@ package app.shosetsu.android.backend.workers.perodic
 
 import android.content.Context
 import android.os.Build
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.work.*
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
@@ -39,8 +37,6 @@ import java.util.concurrent.TimeUnit
  * shosetsu
  * 06 / 09 / 2020
  */
-@ExperimentalMaterialApi
-@ExperimentalFoundationApi
 class AppUpdateCheckCycleWorker(
 	appContext: Context,
 	params: WorkerParameters

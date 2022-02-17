@@ -4,7 +4,6 @@ import android.app.Application
 import android.graphics.Color
 import android.widget.ArrayAdapter
 import androidx.annotation.WorkerThread
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logV
@@ -82,7 +81,7 @@ class ChapterReaderViewModel(
 	 *
 	 * ChapterID to the data flow for it
 	 */
-	private val hashMap: HashMap<Int, Flow<ByteArray>> = hashMapOf()
+	private val hashMap: HashMap<Int, Flow<ByteArray?>> = hashMapOf()
 
 
 	private val chaptersFlow: Flow<List<ReaderChapterUI>> by lazy {
@@ -153,7 +152,7 @@ class ChapterReaderViewModel(
 		}
 	}
 
-	override val liveTheme: LiveData<Pair<Int, Int>> by lazy {
+	override val liveTheme: Flow<Pair<Int, Int>> by lazy {
 		settingsRepo.getIntFlow(ReaderTheme).transformLatest { id: Int ->
 			settingsRepo.getStringSet(ReaderUserThemes)
 				.map { ColorChoiceData.fromString(it) }
@@ -165,42 +164,42 @@ class ChapterReaderViewModel(
 					emit(textColor to backgroundColor)
 				} ?: emit(Color.BLACK to Color.WHITE)
 
-		}.asIOLiveData()
+		}
 	}
 
-	override val liveIndentSize: LiveData<Int> by lazy {
+	override val liveIndentSize: Flow<Int> by lazy {
 		readerSettingsFlow.mapLatest { result ->
 			result.paragraphIndentSize.also {
 				_defaultIndentSize = it
 			}
-		}.asIOLiveData()
+		}
 	}
 
-	override val liveParagraphSpacing: LiveData<Float> by lazy {
+	override val liveParagraphSpacing: Flow<Float> by lazy {
 		readerSettingsFlow.mapLatest { result ->
 			logV("Mapping latest paragraph spacing")
 			result.paragraphSpacingSize.also {
 				_defaultParaSpacing = it
 			}
-		}.asIOLiveData()
+		}
 	}
 
-	override val liveTextSize: LiveData<Float> by lazy {
+	override val liveTextSize: Flow<Float> by lazy {
 		settingsRepo.getFloatFlow(ReaderTextSize).mapLatest {
 			_defaultTextSize = it
 			it
-		}.asIOLiveData()
+		}
 	}
 
-	override val liveVolumeScroll: LiveData<Boolean> by lazy {
+	override val liveVolumeScroll: Flow<Boolean> by lazy {
 		settingsRepo.getBooleanFlow(ReaderVolumeScroll).mapLatest {
 			_defaultVolumeScroll = it
 			it
-		}.asIOLiveData()
+		}
 	}
 
-	override val liveKeepScreenOn: LiveData<Boolean> by lazy {
-		settingsRepo.getBooleanFlow(ReaderKeepScreenOn).asIOLiveData()
+	override val liveKeepScreenOn: Flow<Boolean> by lazy {
+		settingsRepo.getBooleanFlow(ReaderKeepScreenOn)
 	}
 
 	override var currentChapterID: Int = -1
@@ -242,11 +241,11 @@ class ChapterReaderViewModel(
 		get() = _isHorizontalReading
 
 
-	override val liveChapterDirection: LiveData<Boolean> by lazy {
+	override val liveChapterDirection: Flow<Boolean> by lazy {
 		isHorizontalPageSwapping.mapLatest {
 			_isHorizontalReading = it
 			it
-		}.asIOLiveData()
+		}
 	}
 
 	override fun setNovelID(novelID: Int) {
@@ -265,12 +264,12 @@ class ChapterReaderViewModel(
 	}
 
 	@WorkerThread
-	override fun getChapterPassage(readerChapterUI: ReaderChapterUI): LiveData<ByteArray> =
+	override fun getChapterPassage(readerChapterUI: ReaderChapterUI): Flow<ByteArray?> =
 		hashMap.getOrPut(readerChapterUI.id) {
 			flow {
 				emit(loadChapterPassageUseCase(readerChapterUI))
 			}
-		}.asIOLiveData()
+		}
 
 	override fun toggleBookmark(readerChapterUI: ReaderChapterUI) {
 		updateChapter(
@@ -341,8 +340,8 @@ class ChapterReaderViewModel(
 	}
 
 
-	override fun loadChapterCss(): LiveData<String> =
-		settingsRepo.getStringFlow(ReaderHtmlCss).asIOLiveData()
+	override fun loadChapterCss(): Flow<String> =
+		settingsRepo.getStringFlow(ReaderHtmlCss)
 
 
 	override fun getSettings(): Flow<List<SettingsItemData>> =
@@ -434,8 +433,8 @@ class ChapterReaderViewModel(
 		}
 	}
 
-	override val liveIsScreenRotationLocked: LiveData<Boolean>
-		get() = isScreenRotationLockedFlow.asIOLiveData()
+	override val liveIsScreenRotationLocked: Flow<Boolean>
+		get() = isScreenRotationLockedFlow
 
 	override fun toggleScreenRotationLock() {
 		isScreenRotationLockedFlow.value = !isScreenRotationLockedFlow.value

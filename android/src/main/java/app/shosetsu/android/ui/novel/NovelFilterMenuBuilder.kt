@@ -51,7 +51,7 @@ class NovelFilterMenuBuilder(
 	private val inflater: LayoutInflater,
 	private val viewModel: ANovelViewModel
 ) {
-	private val novelSettingFlow: Flow<NovelSettingUI> =
+	private val novelSettingFlow: Flow<NovelSettingUI?> =
 		viewModel.novelSettingFlow
 
 	private fun updateNovelSetting(novelSettingUI: NovelSettingUI) =
@@ -71,6 +71,8 @@ class NovelFilterMenuBuilder(
 						catch = {
 							TODO("Handle")
 						}) { settings ->
+						if (settings == null) return@collectLatestLA
+
 						this@NovelFilterMenuBuilder.logV("Settings $settings")
 
 						// Prevents some data overflow by only running certain loads once

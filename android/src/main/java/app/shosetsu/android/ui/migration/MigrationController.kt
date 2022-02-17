@@ -59,7 +59,6 @@ import com.google.android.material.composethemeadapter.MdcTheme
  * @author github.com/doomsdayrs
  * yes, a THIRD ONE
  */
-@ExperimentalMaterialApi
 class MigrationController(bundle: Bundle) : ShosetsuController(bundle) {
 	companion object {
 		const val TARGETS_BUNDLE_KEY: String = "targets"

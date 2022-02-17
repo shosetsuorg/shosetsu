@@ -29,17 +29,17 @@ import kotlinx.coroutines.flow.Flow
  * @since 29 / 06 / 2021
  * @author Doomsdayrs
  */
-abstract class ATextAssetReaderViewModel : ShosetsuViewModel(), SubscribeViewModel<String> {
+abstract class ATextAssetReaderViewModel : ShosetsuViewModel(), SubscribeViewModel<String?> {
 
 	/**
 	 * [LiveData] of text to display
 	 */
-	abstract override val liveData: Flow<String>
+	abstract override val liveData: Flow<String?>
 
 	/**
 	 * [LiveData] of the current [TextAsset]
 	 */
-	abstract val targetLiveData: Flow<TextAsset>
+	abstract val targetLiveData: Flow<TextAsset?>
 
 	/**
 	 * Set the target asset to read

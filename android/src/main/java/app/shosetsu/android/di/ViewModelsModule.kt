@@ -59,7 +59,6 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			updateBookmarkedNovelUseCase = instance(),
 			isOnlineUseCase = instance(),
 			startUpdateWorkerUseCase = instance(),
-			reportExceptionUseCase = instance(),
 			loadNovelUITypeUseCase = instance(),
 			setNovelUITypeUseCase = instance(),
 			loadNovelUIColumnsH = instance(),
@@ -76,7 +75,6 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			deleteDownloadUseCase = instance(),
 			settings = instance(),
 			isOnlineUseCase = instance(),
-			reportExceptionUseCase = instance()
 		)
 	}
 	bind<ASearchViewModel>() with provider {
@@ -84,15 +82,14 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			searchBookMarkedNovelsUseCase = instance(),
 			loadSearchRowUIUseCase = instance(),
 			loadCatalogueQueryDataUseCase = instance(),
-			reportExceptionUseCase = instance()
 		)
 	}
 	bind<AUpdatesViewModel>() with provider {
 		UpdatesViewModel(
 			getUpdatesUseCase = instance(),
-			reportExceptionUseCase = instance(),
 			startUpdateWorkerUseCase = instance(),
-			isOnlineUseCase = instance()
+			isOnlineUseCase = instance(),
+			updateChapterUseCase = instance()
 		)
 	}
 
@@ -105,12 +102,11 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 	// Catalog(s)
 	bind<ACatalogViewModel>() with provider {
 		CatalogViewModel(
-			application = instance(),
 			getExtensionUseCase = instance(),
 			backgroundAddUseCase = instance(),
 			getCatalogueListingData = instance(),
 			loadCatalogueQueryDataUseCase = instance(),
-			reportExceptionUseCase = instance(),
+
 			loadNovelUITypeUseCase = instance(),
 			loadNovelUIColumnsHUseCase = instance(),
 			loadNovelUIColumnsPUseCase = instance(),
@@ -127,13 +123,10 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			instance(),
 			instance(),
 			instance(),
-			instance(),
-			instance()
 		)
 	}
 	bind<AExtensionConfigureViewModel>() with provider {
 		ExtensionConfigureViewModel(
-			instance(),
 			instance(),
 			instance(),
 			instance(),
@@ -149,7 +142,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 		NovelViewModel(
 			getChapterUIsUseCase = instance(),
 			loadNovelUIUseCase = instance(),
-			reportExceptionUseCase = instance(),
+
 			updateNovelUseCase = instance(),
 			loadRemoteNovel = instance(),
 			isOnlineUseCase = instance(),
@@ -177,7 +170,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			loadReaderChaptersUseCase = instance(),
 			loadChapterPassageUseCase = instance(),
 			updateReaderChapterUseCase = instance(),
-			reportExceptionUseCase = instance(),
+
 			getReaderSettingsUseCase = instance(),
 			updateReaderSettingUseCase = instance(),
 			instance(),
@@ -188,7 +181,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 	bind<ARepositoryViewModel>() with provider {
 		RepositoryViewModel(
 			loadRepositoriesUseCase = instance(),
-			reportExceptionUseCase = instance(),
+
 			addRepositoryUseCase = instance(),
 			deleteRepositoryUseCase = instance(),
 			updateRepositoryUseCase = instance(),
@@ -203,8 +196,6 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 	bind<AAdvancedSettingsViewModel>() with provider {
 		AdvancedSettingsViewModel(
 			iSettingsRepository = instance(),
-			context = instance(),
-			reportExceptionUseCase = instance(),
 			purgeNovelCacheUseCase = instance(),
 			instance(),
 			instance(),
@@ -214,7 +205,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 	bind<ABackupSettingsViewModel>() with provider {
 		BackupSettingsViewModel(
 			iSettingsRepository = instance(),
-			reportExceptionUseCase = instance(),
+
 			manager = instance(),
 			startBackupWorkerUseCase = instance(),
 			loadInternalBackupNamesUseCase = instance(),
@@ -232,7 +223,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 		ReaderSettingsViewModel(
 			iSettingsRepository = instance(),
 			app = instance(),
-			reportExceptionUseCase = instance(),
+
 			loadReaderThemes = instance()
 		)
 	}
@@ -248,7 +239,6 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 		ViewSettingsViewModel(
 			iSettingsRepository = instance(),
 			application = instance(),
-			reportExceptionUseCase = instance()
 		)
 	}
 	bind<ATextAssetReaderViewModel>() with provider {

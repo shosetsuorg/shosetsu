@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.Base64
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.work.*
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
@@ -28,18 +29,20 @@ import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Version
 import app.shosetsu.lib.exceptions.HTTPException
+import coil.imageLoader
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.decodeFromStream
 import org.acra.ACRA
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
 import org.luaj.vm2.LuaError
-import java.io.*
+import java.io.BufferedInputStream
+import java.io.IOException
 import java.net.UnknownHostException
 import java.util.zip.GZIPInputStream
 

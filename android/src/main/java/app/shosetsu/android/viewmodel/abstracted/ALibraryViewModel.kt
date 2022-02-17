@@ -3,7 +3,10 @@ package app.shosetsu.android.viewmodel.abstracted
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.utils.ColumnCalculator
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
-import app.shosetsu.android.viewmodel.base.*
+import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
+import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
+import app.shosetsu.android.viewmodel.base.StartUpdateManagerViewModel
+import app.shosetsu.android.viewmodel.base.SubscribeViewModel
 import app.shosetsu.common.enums.InclusionState
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.common.enums.NovelSortType
@@ -37,7 +40,6 @@ abstract class ALibraryViewModel :
 	ShosetsuViewModel(),
 	IsOnlineCheckViewModel,
 	StartUpdateManagerViewModel,
-	ErrorReportingViewModel,
 	ColumnCalculator {
 
 	/** All genres from all [ABookmarkedNovelUI] combined*/
