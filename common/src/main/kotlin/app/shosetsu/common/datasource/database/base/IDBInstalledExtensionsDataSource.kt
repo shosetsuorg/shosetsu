@@ -1,7 +1,7 @@
 package app.shosetsu.common.datasource.database.base
 
 import app.shosetsu.common.GenericSQLiteException
-import app.shosetsu.common.domain.model.local.GenericExtensionEntity
+import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -30,29 +30,29 @@ import kotlinx.coroutines.flow.Flow
  */
 interface IDBInstalledExtensionsDataSource {
 	/** Loads LiveData of extensions */
-	fun loadExtensionsFlow(): Flow<List<GenericExtensionEntity>>
+	fun loadExtensionsFlow(): Flow<List<InstalledExtensionEntity>>
 
 	/** Updates [extensionEntity] */
 	@Throws(GenericSQLiteException::class)
-	suspend fun updateExtension(extensionEntity: GenericExtensionEntity)
+	suspend fun updateExtension(extensionEntity: InstalledExtensionEntity)
 
 	/** Delete [extensionEntity] */
 	@Throws(GenericSQLiteException::class)
-	suspend fun deleteExtension(extensionEntity: GenericExtensionEntity)
+	suspend fun deleteExtension(extensionEntity: InstalledExtensionEntity)
 
-	/** Load an [GenericExtensionEntity] via its [formatterID]*/
+	/** Load an [InstalledExtensionEntity] via its [formatterID]*/
 	@Throws(GenericSQLiteException::class)
-	suspend fun loadExtension(formatterID: Int): GenericExtensionEntity?
+	suspend fun loadExtension(formatterID: Int): InstalledExtensionEntity?
 
-	/** Load an [GenericExtensionEntity] via its [formatterID]*/
-	fun loadExtensionLive(formatterID: Int): Flow<GenericExtensionEntity>
-
-	@Throws(GenericSQLiteException::class)
-	suspend fun getExtensions(repoID: Int): List<GenericExtensionEntity>
+	/** Load an [InstalledExtensionEntity] via its [formatterID]*/
+	fun loadExtensionLive(formatterID: Int): Flow<InstalledExtensionEntity>
 
 	@Throws(GenericSQLiteException::class)
-	suspend fun loadExtensions(): List<GenericExtensionEntity>
+	suspend fun getExtensions(repoID: Int): List<InstalledExtensionEntity>
 
 	@Throws(GenericSQLiteException::class)
-	suspend fun insert(extensionEntity: GenericExtensionEntity): Long
+	suspend fun loadExtensions(): List<InstalledExtensionEntity>
+
+	@Throws(GenericSQLiteException::class)
+	suspend fun insert(extensionEntity: InstalledExtensionEntity): Long
 }

@@ -43,14 +43,14 @@ class ExtensionsRepository(
 		TODO("Not yet implemented")
 	}
 
-	override fun loadExtensionsFLow(): Flow<List<GenericExtensionEntity>> =
+	override fun loadExtensionsFLow(): Flow<List<InstalledExtensionEntity>> =
 		installedDBSource.loadExtensionsFlow()
 
-	override fun getExtensionFlow(id: Int): Flow<GenericExtensionEntity> =
+	override fun getExtensionFlow(id: Int): Flow<InstalledExtensionEntity> =
 		installedDBSource.loadExtensionLive(id)
 
-	override suspend fun getExtension(id: Int): GenericExtensionEntity? =
-		installedDBSource.loadExtension(id)
+	override suspend fun getExtension(id: Int): GenericExtensionEntity =
+		repoDBSource.loadExtension(id)
 
 	override suspend fun getInstalledExtension(id: Int): InstalledExtensionEntity? {
 		TODO("Not yet implemented")
@@ -64,24 +64,28 @@ class ExtensionsRepository(
 		TODO("Not yet implemented")
 	}
 
-	override suspend fun uninstall(extensionEntity: GenericExtensionEntity) {
+	override suspend fun uninstall(extensionEntity: InstalledExtensionEntity) {
 		installedDBSource.deleteExtension(extensionEntity)
 	}
 
 	override suspend fun updateRepositoryExtension(extensionEntity: GenericExtensionEntity): Unit =
-		installedDBSource.updateExtension(extensionEntity)
+		repoDBSource.updateExtension(extensionEntity)
 
 	override suspend fun updateInstalledExtension(extensionEntity: InstalledExtensionEntity) {
-		TODO("Not yet implemented")
+		installedDBSource.updateExtension(extensionEntity)
 	}
 
 	override suspend fun delete(extensionEntity: GenericExtensionEntity) {
-		installedDBSource.deleteExtension(extensionEntity)
+		installedDBSource.loadExtension(extensionEntity.id)?.let {
+			installedDBSource.deleteExtension(it)
+		}
+
 		repoDBSource.deleteExtension(extensionEntity)
 	}
 
 	override suspend fun insert(extensionEntity: GenericExtensionEntity): Long =
-		installedDBSource.insert(extensionEntity)
+		repoDBSource.insert(extensionEntity)
+
 
 	@Throws(HTTPException::class)
 	override suspend fun downloadExtension(

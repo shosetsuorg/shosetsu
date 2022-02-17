@@ -28,9 +28,9 @@ import app.shosetsu.android.view.compose.setting.StringSettingContent
 import app.shosetsu.android.view.compose.setting.SwitchSettingContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
-import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.viewmodel.abstracted.AExtensionConfigureViewModel
 import app.shosetsu.common.domain.model.local.FilterEntity
+import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.common.enums.TriStateState
 import app.shosetsu.lib.ExtensionType
 import app.shosetsu.lib.Novel
@@ -267,20 +267,18 @@ fun SettingsItemAsCompose(
 @Composable
 fun PreviewConfigureExtensionHeaderContent() {
 	ConfigureExtensionHeaderContent(
-		ExtensionUI(
+		InstalledExtensionEntity(
 			1,
 			1,
 			"This is an extension",
 			"fileName",
 			"",
 			"en",
-			true,
-			true,
-			installedVersion = Version(1, 0, 0),
-			Version(1, 0, 0),
-			Novel.ChapterType.HTML,
-			"",
-			ExtensionType.LuaScript
+			version = Version(1, 0, 0),
+			md5 = "",
+			type = ExtensionType.LuaScript,
+			enabled = true,
+			chapterType = Novel.ChapterType.HTML
 		)
 	) {
 
@@ -289,7 +287,7 @@ fun PreviewConfigureExtensionHeaderContent() {
 
 @Composable
 fun ConfigureExtensionHeaderContent(
-	extension: ExtensionUI,
+	extension: InstalledExtensionEntity,
 	onUninstall: () -> Unit
 ) {
 	Card {

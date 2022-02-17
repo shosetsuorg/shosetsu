@@ -2,6 +2,7 @@ package app.shosetsu.android.common.ext
 
 import app.shosetsu.android.domain.model.database.DBInstalledExtensionEntity
 import app.shosetsu.common.domain.model.local.GenericExtensionEntity
+import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 
 /*
  * This file is part of Shosetsu.
@@ -25,7 +26,7 @@ import app.shosetsu.common.domain.model.local.GenericExtensionEntity
  * 05 / 12 / 2020
  */
 
-fun GenericExtensionEntity.toDB(): DBInstalledExtensionEntity = DBInstalledExtensionEntity(
+fun InstalledExtensionEntity.toDB(): DBInstalledExtensionEntity = DBInstalledExtensionEntity(
 	id = id,
 	repoID = repoID,
 	name = name,
@@ -33,8 +34,20 @@ fun GenericExtensionEntity.toDB(): DBInstalledExtensionEntity = DBInstalledExten
 	imageURL = imageURL,
 	lang = lang,
 	chapterType = chapterType,
-	version = installedVersion,
+	version = version,
 	md5 = md5,
 	type = type,
 	enabled = enabled
+)
+
+fun InstalledExtensionEntity.generify(): GenericExtensionEntity = GenericExtensionEntity(
+	id = id,
+	repoID = repoID,
+	name = name,
+	fileName = fileName,
+	imageURL = imageURL,
+	lang = lang,
+	version = version,
+	md5 = md5,
+	type = type,
 )

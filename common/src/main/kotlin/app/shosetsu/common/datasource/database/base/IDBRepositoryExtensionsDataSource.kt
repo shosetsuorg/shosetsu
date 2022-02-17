@@ -54,5 +54,5 @@ interface IDBRepositoryExtensionsDataSource {
 	suspend fun loadExtensions(): List<GenericExtensionEntity>
 
 	@Throws(GenericSQLiteException::class)
-	suspend fun insert(extensionEntity: GenericExtensionEntity)
+	suspend fun insert(extensionEntity: GenericExtensionEntity): Long
 }

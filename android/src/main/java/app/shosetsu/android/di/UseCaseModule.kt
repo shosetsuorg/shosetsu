@@ -135,8 +135,8 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 
 	bind<UpdateBookmarkedNovelUseCase>() with provider { UpdateBookmarkedNovelUseCase(instance()) }
 
-	bind<UninstallExtensionUIUseCase>() with provider {
-		UninstallExtensionUIUseCase(
+	bind<UninstallExtensionUseCase>() with provider {
+		UninstallExtensionUseCase(
 			instance(),
 			instance()
 		)

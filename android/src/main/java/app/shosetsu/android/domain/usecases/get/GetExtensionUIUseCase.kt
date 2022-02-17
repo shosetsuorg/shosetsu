@@ -1,12 +1,8 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.android.common.utils.uifactory.ExtensionConversionFactory
-import app.shosetsu.android.view.uimodels.model.ExtensionUI
+import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 
 /*
  * This file is part of shosetsu.
@@ -32,13 +28,6 @@ import kotlinx.coroutines.flow.map
 class GetExtensionUIUseCase(
 	private val iExtensionsRepository: IExtensionsRepository,
 ) {
-	operator fun invoke(id: Int): Flow<ExtensionUI?> = flow {
-		if (id != -1)
-			emitAll(
-				iExtensionsRepository.getExtensionFlow(id).map {
-					ExtensionConversionFactory(it).convertTo()
-				}
-			)
-		else emit(null)
-	}
+	operator fun invoke(id: Int): Flow<InstalledExtensionEntity> =
+		iExtensionsRepository.getExtensionFlow(id)
 }

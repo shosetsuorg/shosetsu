@@ -20,16 +20,16 @@ package app.shosetsu.android.viewmodel.impl.extension
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
-import app.shosetsu.android.domain.usecases.UninstallExtensionUIUseCase
+import app.shosetsu.android.domain.usecases.UninstallExtensionUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtListingNamesUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtSelectedListingFlowUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtensionSettingsUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtensionUIUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateExtSelectedListing
 import app.shosetsu.android.domain.usecases.update.UpdateExtensionSettingUseCase
-import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.viewmodel.abstracted.AExtensionConfigureViewModel
 import app.shosetsu.common.domain.model.local.FilterEntity
+import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,7 +45,7 @@ import kotlinx.coroutines.flow.transformLatest
 @OptIn(ExperimentalCoroutinesApi::class)
 class ExtensionConfigureViewModel(
 	private val loadExtensionUI: GetExtensionUIUseCase,
-	private val uninstallExtensionUI: UninstallExtensionUIUseCase,
+	private val uninstallExtensionUI: UninstallExtensionUseCase,
 	private val getExtensionSettings: GetExtensionSettingsUseCase,
 	private val getExtListNames: GetExtListingNamesUseCase,
 	private val updateExtSelectedListing: UpdateExtSelectedListing,
@@ -54,7 +54,7 @@ class ExtensionConfigureViewModel(
 ) : AExtensionConfigureViewModel() {
 	private val extensionIdFlow: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
 
-	override val liveData: Flow<ExtensionUI?> by lazy {
+	override val liveData: Flow<InstalledExtensionEntity> by lazy {
 		extensionIdFlow.transformLatest { id ->
 			emitAll(loadExtensionUI(id))
 		}
@@ -106,7 +106,7 @@ class ExtensionConfigureViewModel(
 		}
 	}
 
-	override fun uninstall(extension: ExtensionUI) {
+	override fun uninstall(extension: InstalledExtensionEntity) {
 		launchIO {
 			uninstallExtensionUI(extension)
 		}

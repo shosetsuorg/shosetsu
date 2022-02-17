@@ -1,5 +1,6 @@
 package app.shosetsu.android.domain.usecases.load
 
+import app.shosetsu.android.common.ext.generify
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
@@ -19,9 +20,9 @@ class LoadSearchRowUIUseCase(
 					result.let { list ->
 						val arrayList = arrayListOf<GenericExtensionEntity>()
 						list.forEach { extension ->
-							extEntitiesRepo.get(extension).let { entity ->
+							extEntitiesRepo.get(extension.generify()).let { entity ->
 								if (entity.hasSearch) {
-									arrayList.add(extension)
+									arrayList.add(extension.generify())
 								}
 							}
 						}

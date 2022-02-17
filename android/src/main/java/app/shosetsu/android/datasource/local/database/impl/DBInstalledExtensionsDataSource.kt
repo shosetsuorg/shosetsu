@@ -5,7 +5,7 @@ import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.providers.database.dao.InstalledExtensionsDao
 import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.datasource.database.base.IDBInstalledExtensionsDataSource
-import app.shosetsu.common.domain.model.local.GenericExtensionEntity
+import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.common.dto.convertList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
@@ -34,46 +34,46 @@ import kotlinx.coroutines.flow.map
  * shosetsu
  * 12 / May / 2020
  */
-class DBExtensionsDataSource(
+class DBInstalledExtensionsDataSource(
 	private val extensionsDao: InstalledExtensionsDao,
 ) : IDBInstalledExtensionsDataSource {
-	override fun loadExtensionsFlow(): Flow<List<GenericExtensionEntity>> = flow {
+	override fun loadExtensionsFlow(): Flow<List<InstalledExtensionEntity>> = flow {
 		emitAll(extensionsDao.loadExtensionsFlow().map { it.convertList() })
 	}
 
-	override fun loadExtensionLive(formatterID: Int): Flow<GenericExtensionEntity> = flow {
+	override fun loadExtensionLive(formatterID: Int): Flow<InstalledExtensionEntity> = flow {
 		emitAll(extensionsDao.getExtensionFlow(formatterID).map { it.convertTo() })
 	}
 
-	override suspend fun updateExtension(extensionEntity: GenericExtensionEntity): Unit = try {
+	override suspend fun updateExtension(extensionEntity: InstalledExtensionEntity): Unit = try {
 		extensionsDao.update(extensionEntity.toDB())
 	} catch (e: SQLiteException) {
 		throw GenericSQLiteException(e)
 	}
 
-	override suspend fun deleteExtension(extensionEntity: GenericExtensionEntity): Unit = try {
+	override suspend fun deleteExtension(extensionEntity: InstalledExtensionEntity): Unit = try {
 		extensionsDao.delete(extensionEntity.toDB())
 	} catch (e: SQLiteException) {
 		throw GenericSQLiteException(e)
 	}
 
-	override suspend fun loadExtension(formatterID: Int): GenericExtensionEntity? = try {
+	override suspend fun loadExtension(formatterID: Int): InstalledExtensionEntity? = try {
 		extensionsDao.getExtension(formatterID)?.convertTo()
 	} catch (e: SQLiteException) {
 		throw GenericSQLiteException(e)
 	}
 
-	override suspend fun getExtensions(repoID: Int): List<GenericExtensionEntity> =
+	override suspend fun getExtensions(repoID: Int): List<InstalledExtensionEntity> =
 		extensionsDao.getExtensions(repoID).convertList()
 
-	override suspend fun loadExtensions(): List<GenericExtensionEntity> = try {
+	override suspend fun loadExtensions(): List<InstalledExtensionEntity> = try {
 		extensionsDao.loadExtensions().convertList()
 	} catch (e: SQLiteException) {
 		throw GenericSQLiteException(e)
 	}
 
 	@Throws(GenericSQLiteException::class)
-	override suspend fun insert(extensionEntity: GenericExtensionEntity): Long = try {
+	override suspend fun insert(extensionEntity: InstalledExtensionEntity): Long = try {
 		extensionsDao.insertAbort(extensionEntity.toDB())
 	} catch (e: SQLiteException) {
 		throw GenericSQLiteException(e)

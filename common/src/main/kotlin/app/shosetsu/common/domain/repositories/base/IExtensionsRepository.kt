@@ -39,12 +39,12 @@ interface IExtensionsRepository {
 	/**
 	 * [Flow] of all [GenericExtensionEntity] that the app knows of
 	 */
-	fun loadExtensionsFLow(): Flow<List<GenericExtensionEntity>>
+	fun loadExtensionsFLow(): Flow<List<InstalledExtensionEntity>>
 
 	/**
 	 * Retrieves repository extensions with an id matching [id]
 	 */
-	fun getExtensionFlow(id: Int): Flow<GenericExtensionEntity>
+	fun getExtensionFlow(id: Int): Flow<InstalledExtensionEntity>
 
 	/**
 	 * Gets the [GenericExtensionEntity] that has an [GenericExtensionEntity.id] matching [id]
@@ -78,7 +78,7 @@ interface IExtensionsRepository {
 	 * Updates the db that the [extensionEntity] is not installed
 	 *
 	 */
-	suspend fun uninstall(extensionEntity: GenericExtensionEntity)
+	suspend fun uninstall(extensionEntity: InstalledExtensionEntity)
 
 	/**
 	 * Updates an [GenericExtensionEntity]

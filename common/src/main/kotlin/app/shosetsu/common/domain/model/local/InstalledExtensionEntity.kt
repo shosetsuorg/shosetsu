@@ -49,7 +49,7 @@ data class InstalledExtensionEntity(
 	/**
 	 * Version currently installed
 	 */
-	val version: Version?,
+	val version: Version,
 
 	/** MD5 to check against */
 	val md5: String,
