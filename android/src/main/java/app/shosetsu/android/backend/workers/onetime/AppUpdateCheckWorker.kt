@@ -4,6 +4,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
@@ -52,6 +54,8 @@ import org.kodein.di.instance
  *
  * Checks for an app update with a notification representing progress
  */
+@ExperimentalFoundationApi
+@ExperimentalMaterialApi
 class AppUpdateCheckWorker(
 	appContext: Context,
 	params: WorkerParameters
