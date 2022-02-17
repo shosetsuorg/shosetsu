@@ -101,8 +101,7 @@ class ComposeUpdatesController : CollapsedToolBarController, ShosetsuController(
 	}
 }
 
-@ExperimentalMaterialApi
-@ExperimentalFoundationApi
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UpdatesContent(
 	parent: ComposeUpdatesController,
@@ -184,7 +183,7 @@ fun PreviewUpdateItemContent() {
 }
 
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun UpdateItemContent(updateUI: UpdateUI, onClick: () -> Unit) {
 	Card(

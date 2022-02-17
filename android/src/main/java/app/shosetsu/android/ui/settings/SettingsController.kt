@@ -70,7 +70,7 @@ class ComposeSettingsController : ShosetsuController() {
 	}
 }
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SettingMenuItem(@StringRes title: Int, @DrawableRes drawableRes: Int, onClick: () -> Unit) {
 	Card(
@@ -96,7 +96,6 @@ fun SettingMenuItem(@StringRes title: Int, @DrawableRes drawableRes: Int, onClic
 	}
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun SettingsContent(pushController: (Controller) -> Unit) {
 	Column {

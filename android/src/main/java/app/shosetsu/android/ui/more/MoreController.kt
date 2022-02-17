@@ -80,7 +80,7 @@ class ComposeMoreController
 	}
 }
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MoreItemContent(
 	@StringRes title: Int,
@@ -110,14 +110,12 @@ fun MoreItemContent(
 	}
 }
 
-@ExperimentalMaterialApi
 @Preview
 @Composable
 fun PreviewMoreContent() {
 	MoreContent { }
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun MoreContent(pushController: (Controller) -> Unit) {
 	Column(

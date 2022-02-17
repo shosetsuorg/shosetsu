@@ -90,7 +90,6 @@ class MigrationController(bundle: Bundle) : ShosetsuController(bundle) {
 	}
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun MigrationContent(viewModel: AMigrationViewModel) {
 	val novelList by viewModel.novels.observeAsState(loading)
@@ -161,7 +160,6 @@ fun MigrationExtensionsLoadingContent() {
 	LinearProgressIndicator()
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun MigrationExtensionsContent(
 	list: List<MigrationExtensionUI>,
@@ -200,7 +198,7 @@ fun PreviewMigrationExtensionItemContent() {
 	}
 }
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MigrationExtensionItemContent(
 	item: MigrationExtensionUI,
@@ -245,7 +243,6 @@ fun MigrationNovelsLoadingContent() {
 	LinearProgressIndicator()
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun MigrationNovelsContent(list: List<MigrationNovelUI>, onClick: (MigrationNovelUI) -> Unit) {
 	LazyRow(
@@ -311,7 +308,7 @@ fun PreviewMigrationNovelItemContent() {
 	}
 }
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MigrationNovelItemContent(item: MigrationNovelUI, onClick: (MigrationNovelUI) -> Unit) {
 	Card(

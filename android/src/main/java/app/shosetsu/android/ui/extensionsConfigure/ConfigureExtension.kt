@@ -93,7 +93,7 @@ class ConfigureExtension(bundle: Bundle) : ShosetsuController(bundle),
 }
 
 
-@ExperimentalFoundationApi
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ConfigureExtensionContent(
 	viewModel: AExtensionConfigureViewModel,

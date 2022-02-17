@@ -182,7 +182,7 @@ fun AboutItem(
 	}
 }
 
-@ExperimentalMaterialApi
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AboutContent(
 	currentVersion: String,
