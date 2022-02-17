@@ -93,13 +93,12 @@ class ChapterReaderViewModel(
 		}
 	}
 
-	override val liveData: LiveData<List<ReaderUIItem<*, *>>> by lazy {
+	override val liveData: Flow<List<ReaderUIItem<*, *>>> by lazy {
 		chaptersFlow
 			.combineDividers() // Add dividers
 
 			// Invert chapters after all processing has been done
 			.combineInvert()
-			.asIOLiveData()
 	}
 
 	private fun Flow<List<ReaderUIItem<*, *>>>.combineInvert(): Flow<List<ReaderUIItem<*, *>>> =
@@ -181,7 +180,7 @@ class ChapterReaderViewModel(
 	override val liveParagraphSpacing: LiveData<Float> by lazy {
 		readerSettingsFlow.mapLatest { result ->
 			logV("Mapping latest paragraph spacing")
-			result.paragraphSpacingSize?.also {
+			result.paragraphSpacingSize.also {
 				_defaultParaSpacing = it
 			}
 		}.asIOLiveData()
@@ -349,7 +348,7 @@ class ChapterReaderViewModel(
 		settingsRepo.getStringFlow(ReaderHtmlCss).asIOLiveData()
 
 
-	override fun getSettings(): LiveData<List<SettingsItemData>> =
+	override fun getSettings(): Flow<List<SettingsItemData>> =
 		flow {
 			// First build the universal setting interface
 			emit(settings())
@@ -411,7 +410,7 @@ class ChapterReaderViewModel(
 				// Sort so the result will be ordered properly
 				sortBy { it.id }
 			}
-		}.asIOLiveData()
+		}
 
 	private val isScreenRotationLockedFlow = MutableStateFlow(false)
 
