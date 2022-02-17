@@ -9,7 +9,8 @@ import app.shosetsu.android.domain.usecases.start.StartBackupWorkerUseCase
 import app.shosetsu.android.domain.usecases.start.StartExportBackupWorkerUseCase
 import app.shosetsu.android.domain.usecases.start.StartRestoreWorkerUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.*
+import app.shosetsu.android.view.uimodels.settings.dsl.buttonSettingData
+import app.shosetsu.android.view.uimodels.settings.dsl.switchSettingData
 import app.shosetsu.android.viewmodel.abstracted.settings.ABackupSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
@@ -86,13 +87,13 @@ class BackupSettingsViewModel(
 
 	override suspend fun settings(): List<SettingsItemData> = listOf(
 		switchSettingData(0) {
-			title { R.string.backup_chapters_option }
-			description { R.string.backup_chapters_option_description }
+			titleRes = R.string.backup_chapters_option
+			descRes = R.string.backup_chapters_option_description
 			checkSettingValue(SettingKey.ShouldBackupChapters)
 		},
 		switchSettingData(1) {
-			title { R.string.backup_settings_option }
-			description { R.string.backup_settings_option_desc }
+			titleRes = R.string.backup_settings_option
+			descRes = R.string.backup_settings_option_desc
 			checkSettingValue(SettingKey.ShouldBackupSettings)
 		},
 		switchSettingData(6) {
@@ -102,12 +103,12 @@ class BackupSettingsViewModel(
 			checkSettingValue(SettingKey.RestorePrintChapters)
 		},
 		buttonSettingData(3) {
-			title { R.string.backup_now }
-			text { R.string.backup_now }
+			titleRes = R.string.backup_now
+			textRes = R.string.backup_now
 		},
 		buttonSettingData(4) {
-			title { R.string.restore_now }
-			text { R.string.restore_now }
+			titleRes = R.string.restore_now
+			textRes = R.string.restore_now
 		},
 		buttonSettingData(5) {
 			titleRes = R.string.settings_backup_export

@@ -43,6 +43,7 @@ import kotlinx.coroutines.flow.*
  *
  * @author github.com/doomsdayrs
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class ExtensionsViewModel(
 	private val getBrowseExtensions: LoadBrowseExtensionsUseCase,
 	private val startRepositoryUpdateManager: StartRepositoryUpdateManagerUseCase,
@@ -78,13 +79,11 @@ class ExtensionsViewModel(
 		}
 	}
 
-	@ExperimentalCoroutinesApi
 	private val extensionFlow by lazy {
 		getBrowseExtensions()
 	}
 
-	@ExperimentalCoroutinesApi
-	val languageListFlow by lazy {
+	private val languageListFlow by lazy {
 		extensionFlow.map { list ->
 			list.map { it.lang }.distinct()
 		}
@@ -165,8 +164,7 @@ class ExtensionsViewModel(
 		searchTermFlow.asIOLiveData()
 	}
 
-	@ExperimentalCoroutinesApi
-	override val liveData: LiveData<List<BrowseExtensionEntity>> by lazy {
+	override val liveData: Flow<List<BrowseExtensionEntity>> by lazy {
 		extensionFlow.transformLatest { list ->
 			emitAll(
 				settingsRepo.getStringSetFlow(BrowseFilteredLanguages)
@@ -190,7 +188,7 @@ class ExtensionsViewModel(
 							.sortedBy { it.isUpdateAvailable }
 							.toList()
 					})
-		}.asIOLiveData()
+		}
 	}
 
 	override fun isOnline(): Boolean = isOnlineUseCase()

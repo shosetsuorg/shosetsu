@@ -37,7 +37,10 @@ import app.shosetsu.common.enums.InclusionState.INCLUDE
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.common.enums.NovelSortType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.mapLatest
 import java.util.Locale.getDefault as LGD
 
 /**
@@ -137,7 +140,7 @@ class LibraryViewModel(
 	 *
 	 * This also connects all the filtering as well
 	 */
-	override val liveData: LiveData<List<ABookmarkedNovelUI>> by lazy {
+	override val liveData: Flow<List<ABookmarkedNovelUI>> by lazy {
 		librarySourceFlow
 			.combineArtistFilter()
 			.combineAuthorFilter()
@@ -146,7 +149,6 @@ class LibraryViewModel(
 			.combineUnreadStatus()
 			.combineSortType()
 			.combineSortReverse()
-			.asIOLiveData()
 	}
 
 	override val columnsInH
@@ -158,7 +160,7 @@ class LibraryViewModel(
 	/**
 	 * Removes the list for filtering from the [ABookmarkedNovelUI] with the flow
 	 */
-	@ExperimentalCoroutinesApi
+	@OptIn(ExperimentalCoroutinesApi::class)
 	private fun stripOutList(
 		strip: (ABookmarkedNovelUI) -> List<String>
 	): LiveData<List<String>> = librarySourceFlow.mapLatest { result ->

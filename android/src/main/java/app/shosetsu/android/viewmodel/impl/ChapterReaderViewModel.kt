@@ -59,6 +59,7 @@ import kotlinx.coroutines.flow.*
  *
  * TODO delete previous chapter
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class ChapterReaderViewModel(
 	private val application: Application,
 	override val settingsRepo: ISettingsRepository,
@@ -84,7 +85,6 @@ class ChapterReaderViewModel(
 	private val hashMap: HashMap<Int, Flow<ByteArray>> = hashMapOf()
 
 
-	@ExperimentalCoroutinesApi
 	private val chaptersFlow: Flow<List<ReaderChapterUI>> by lazy {
 		novelIDLive.transformLatest { nId ->
 			emitAll(
@@ -147,7 +147,6 @@ class ChapterReaderViewModel(
 		}
 
 
-	@ExperimentalCoroutinesApi
 	private val readerSettingsFlow: Flow<NovelReaderSettingEntity> by lazy {
 		novelIDLive.transformLatest {
 			emitAll(getReaderSettingsUseCase(it))
@@ -318,19 +317,17 @@ class ChapterReaderViewModel(
 			 */
 			if (!markReadAsReading && chapterUI.readingStatus == READ) return@launchIO
 
-			getReadingMarkingType().let { value ->
-				updateReaderChapterUseCase(
-					chapterUI.copy(
-						readingStatus = if (value == markingType) {
-							launchIO {
-								recordChapterIsReading(chapterUI)
-							}
-							READING
-						} else chapterUI.readingStatus,
-						readingPosition = readingPosition
-					)
+			updateReaderChapterUseCase(
+				chapterUI.copy(
+					readingStatus = if (getReadingMarkingType() == markingType) {
+						launchIO {
+							recordChapterIsReading(chapterUI)
+						}
+						READING
+					} else chapterUI.readingStatus,
+					readingPosition = readingPosition
 				)
-			}
+			)
 		}
 	}
 
@@ -360,7 +357,7 @@ class ChapterReaderViewModel(
 
 			ArrayList(settingsList).apply {
 				add(floatButtonSettingData(1) {
-					title { R.string.paragraph_spacing }
+					titleRes = R.string.paragraph_spacing
 					minWhole = 0
 
 					settingEntity.paragraphSpacingSize.let { settingValue ->
@@ -383,7 +380,8 @@ class ChapterReaderViewModel(
 				})
 				add(spinnerSettingData(2) {
 					val context = application.applicationContext
-					title { R.string.paragraph_indent }
+					titleRes = R.string.paragraph_indent
+					@Suppress("CheckedExceptionsKotlin")
 					arrayAdapter = ArrayAdapter(
 						context,
 						android.R.layout.simple_spinner_dropdown_item,

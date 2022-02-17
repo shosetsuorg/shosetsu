@@ -35,10 +35,11 @@ import kotlinx.coroutines.flow.mapLatest
 class LoadDownloadsUseCase(
 	private val iDownloadsRepository: IDownloadsRepository,
 ) {
-	@ExperimentalCoroutinesApi
+	@OptIn(ExperimentalCoroutinesApi::class)
 	operator fun invoke(): Flow<List<DownloadUI>> = flow {
 		emitAll(
-			iDownloadsRepository.loadDownloadsFlow().mapLatestToResultFlowWithFactory().mapLatest { it.convertList() }
+			iDownloadsRepository.loadDownloadsFlow().mapLatestToResultFlowWithFactory()
+				.mapLatest { it.convertList() }
 		)
 	}
 }

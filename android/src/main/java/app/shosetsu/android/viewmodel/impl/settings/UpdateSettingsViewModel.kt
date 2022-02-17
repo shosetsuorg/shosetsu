@@ -12,7 +12,6 @@ import app.shosetsu.android.viewmodel.abstracted.settings.AUpdateSettingsViewMod
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import com.github.doomsdayrs.apps.shosetsu.R
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 
 /*
@@ -188,7 +187,7 @@ class UpdateSettingsViewModel(
 		// next 16
 	)
 
-	fun restartNovelUpdater() {
+	private fun restartNovelUpdater() {
 		logI("Restarting novel updaters")
 		// If the update manager was enqueued, kill it.
 		if (novelUpdateManager.count != 0 && novelUpdateManager.getWorkerState() == WorkInfo.State.ENQUEUED)
@@ -198,7 +197,7 @@ class UpdateSettingsViewModel(
 		novelUpdateCycleManager.start()
 	}
 
-	fun restartRepoUpdater() {
+	private fun restartRepoUpdater() {
 		logI("Restarting repo updater")
 
 		repoUpdateManager.stop()

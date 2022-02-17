@@ -14,10 +14,7 @@ import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.enums.DownloadStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.*
 
 /*
  * This file is part of shosetsu.
@@ -42,6 +39,7 @@ import kotlinx.coroutines.flow.mapLatest
  *
  * @author github.com/doomsdayrs
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class DownloadsViewModel(
 	private val getDownloadsUseCase: LoadDownloadsUseCase,
 	private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
@@ -71,8 +69,8 @@ class DownloadsViewModel(
 		}
 	}
 
-	override val liveData: LiveData<List<DownloadUI>> by lazy {
-		downloadsFlow.asIOLiveData()
+	override val liveData: Flow<List<DownloadUI>> by lazy {
+		downloadsFlow
 	}
 
 	override fun isOnline(): Boolean = isOnlineUseCase()

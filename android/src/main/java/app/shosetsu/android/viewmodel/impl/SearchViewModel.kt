@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.SearchBookMarkedNovelsUseCase
 import app.shosetsu.android.domain.usecases.get.GetCatalogueQueryDataUseCase
 import app.shosetsu.android.domain.usecases.load.LoadSearchRowUIUseCase
@@ -12,10 +11,6 @@ import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ASearchViewModel
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.loading
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,38 +41,39 @@ class SearchViewModel(
 	private val searchBookMarkedNovelsUseCase: SearchBookMarkedNovelsUseCase,
 	private val loadSearchRowUIUseCase: LoadSearchRowUIUseCase,
 	private val loadCatalogueQueryDataUseCase: GetCatalogueQueryDataUseCase,
-	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : ASearchViewModel() {
 	private val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
 
 	private val searchFlows =
-		HashMap<Int, Flow<HResult<List<ACatalogNovelUI>>>>()
+		HashMap<Int, Flow<List<ACatalogNovelUI>>>()
 
-	override val listings: LiveData<HResult<List<SearchRowUI>>> by lazy {
+	private val loadingFlows = HashMap<Int, Flow<Boolean>>()
+
+	override val listings: LiveData<List<SearchRowUI>> by lazy {
 		liveData {
-			emit(loading())
 			emitSource(loadSearchRowUIUseCase().asIOLiveData())
 		}
-	}
-
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-		reportExceptionUseCase(error)
 	}
 
 	override fun setQuery(query: String) {
 		this.queryFlow.value = query
 	}
 
-	override fun searchLibrary(): LiveData<HResult<List<ACatalogNovelUI>>> =
+	override fun searchLibrary(): Flow<List<ACatalogNovelUI>> =
 		searchFlows.getOrPut(-1) {
 			libraryResultFlow
-		}.asIOLiveData()
+		}
 
-	override fun searchExtension(extensionId: Int): LiveData<HResult<List<ACatalogNovelUI>>> =
+	override fun searchExtension(extensionId: Int): Flow<List<ACatalogNovelUI>> =
 		searchFlows.getOrPut(extensionId) {
 			logD("Creating new flow for extension")
 			loadExtension(extensionId)
-		}.asIOLiveData()
+		}
+
+	override fun getIsLoading(id: Int): Flow<Boolean> =
+		loadingFlows.getOrPut(id) {
+			MutableStateFlow(true)
+		}
 
 	/**
 	 * Clears out all the data
@@ -90,29 +86,26 @@ class SearchViewModel(
 	/**
 	 * Creates a flow for a library query
 	 */
-	@ExperimentalCoroutinesApi
-	private val libraryResultFlow: Flow<HResult<List<ACatalogNovelUI>>> by lazy {
+	@OptIn(ExperimentalCoroutinesApi::class)
+	private val libraryResultFlow: Flow<List<ACatalogNovelUI>> by lazy {
 		queryFlow.transformLatest { query ->
-			emit(successResult(listOf()))
-			emit(loading)
-
-			emit(searchBookMarkedNovelsUseCase(query).transform {
-				successResult(it.map { (id, title, imageURL) ->
+			(getIsLoading(-1) as MutableStateFlow).emit(true)
+			emit(searchBookMarkedNovelsUseCase(query).let {
+				it.map { (id, title, imageURL) ->
 					FullCatalogNovelUI(id, title, imageURL, false)
-				})
+				}
 			})
+			(getIsLoading(-1) as MutableStateFlow).emit(false)
 		}
 	}
 
 	/**
 	 * Creates a flow for an extension query
 	 */
-	@ExperimentalCoroutinesApi
-	private fun loadExtension(extensionID: Int): Flow<HResult<List<ACatalogNovelUI>>> =
+	@OptIn(ExperimentalCoroutinesApi::class)
+	private fun loadExtension(extensionID: Int): Flow<List<ACatalogNovelUI>> =
 		queryFlow.transformLatest { query ->
-			emit(successResult(listOf()))
-			emit(loading)
-
+			(getIsLoading(extensionID) as MutableStateFlow).emit(true)
 			emit(
 				loadCatalogueQueryDataUseCase(
 					extensionID,
@@ -120,5 +113,6 @@ class SearchViewModel(
 					mapOf()
 				)
 			)
+			(getIsLoading(extensionID) as MutableStateFlow).emit(true)
 		}
 }

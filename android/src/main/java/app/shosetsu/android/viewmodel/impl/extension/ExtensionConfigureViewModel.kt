@@ -17,7 +17,6 @@ package app.shosetsu.android.viewmodel.impl.extension
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
@@ -43,6 +42,7 @@ import kotlinx.coroutines.flow.transformLatest
  *
  * @author github.com/doomsdayrs
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class ExtensionConfigureViewModel(
 	private val loadExtensionUI: GetExtensionUIUseCase,
 	private val uninstallExtensionUI: UninstallExtensionUIUseCase,
@@ -54,14 +54,12 @@ class ExtensionConfigureViewModel(
 ) : AExtensionConfigureViewModel() {
 	private val extensionIdFlow: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
 
-	override val liveData: LiveData<ExtensionUI?> by lazy {
+	override val liveData: Flow<ExtensionUI?> by lazy {
 		extensionIdFlow.transformLatest { id ->
 			emitAll(loadExtensionUI(id))
-		}.asIOLiveData()
+		}
 	}
 
-
-	@ExperimentalCoroutinesApi
 	private val extListNamesFlow: Flow<ListingSelectionData> by lazy {
 		extensionIdFlow.transformLatest { extensionID ->
 			val listingNames: List<String> = getExtListNames(extensionID)
@@ -74,19 +72,18 @@ class ExtensionConfigureViewModel(
 		}
 	}
 
-	@ExperimentalCoroutinesApi
 	private val extensionSettingsFlow: Flow<List<FilterEntity>> by lazy {
 		extensionIdFlow.transformLatest { extensionID ->
 			emitAll(getExtensionSettings(extensionID))
 		}
 	}
 
-	override val extensionSettings: LiveData<List<FilterEntity>> by lazy {
-		extensionSettingsFlow.asIOLiveData()
+	override val extensionSettings: Flow<List<FilterEntity>> by lazy {
+		extensionSettingsFlow
 	}
 
-	override val extensionListing: LiveData<ListingSelectionData> by lazy {
-		extListNamesFlow.asIOLiveData()
+	override val extensionListing: Flow<ListingSelectionData> by lazy {
+		extListNamesFlow
 	}
 
 	override fun setExtensionID(id: Int) {

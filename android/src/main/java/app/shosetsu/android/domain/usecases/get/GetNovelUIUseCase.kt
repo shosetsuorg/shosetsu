@@ -32,7 +32,7 @@ class GetNovelUIUseCase(
 	private val novelsRepository: INovelsRepository,
 	private val extensionRepository: IExtensionsRepository
 ) {
-	@ExperimentalCoroutinesApi
+	@OptIn(ExperimentalCoroutinesApi::class)
 	operator fun invoke(novelID: Int): Flow<NovelUI?> = flow {
 		if (novelID != -1)
 			emitAll(novelsRepository.getNovelFlow(novelID).mapLatest {

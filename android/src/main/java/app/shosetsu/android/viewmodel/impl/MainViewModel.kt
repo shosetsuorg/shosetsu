@@ -1,6 +1,5 @@
 package app.shosetsu.android.viewmodel.impl
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.enums.NavigationStyle
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logV
@@ -19,7 +18,6 @@ import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.domain.repositories.base.IBackupRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.enums.AppThemes
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
@@ -76,18 +74,18 @@ class MainViewModel(
 		}
 	}
 
-	override fun startAppUpdateCheck(): LiveData<AppUpdateEntity> =
-		loadAppUpdateFlowLiveUseCase().asIOLiveData()
+	override fun startAppUpdateCheck(): Flow<AppUpdateEntity?> =
+		loadAppUpdateFlowLiveUseCase()
 
 	override val navigationStyle: NavigationStyle
 		get() = _navigationStyle
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
 
-	override val appThemeLiveData: LiveData<AppThemes>
-		get() = loadLiveAppThemeUseCase().asIOLiveData()
+	override val appThemeLiveData: Flow<AppThemes>
+		get() = loadLiveAppThemeUseCase()
 
-	override fun handleAppUpdate(): LiveData<AppUpdateAction> =
+	override fun handleAppUpdate(): Flow<AppUpdateAction?> =
 		flow {
 			emit(
 				canAppSelfUpdateUseCase().let { canSelfUpdate ->
@@ -95,7 +93,7 @@ class MainViewModel(
 						startInstallWorker()
 						AppUpdateAction.SelfUpdate
 					} else {
-						loadAppUpdateUseCase().let {
+						loadAppUpdateUseCase()?.let {
 							AppUpdateAction.UserUpdate(
 								it.version,
 								it.url
@@ -104,7 +102,7 @@ class MainViewModel(
 					}
 				}
 			)
-		}.asIOLiveData()
+		}
 
 	override val backupProgressState: Flow<IBackupRepository.BackupProgress> by lazy {
 		loadBackupProgress()

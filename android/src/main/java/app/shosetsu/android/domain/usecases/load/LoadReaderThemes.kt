@@ -40,7 +40,7 @@ class LoadReaderThemes(
 	private val iSettingsRepository: ISettingsRepository,
 	private val context: Context
 ) {
-	@ExperimentalCoroutinesApi
+	@OptIn(ExperimentalCoroutinesApi::class)
 	operator fun invoke(): Flow<List<ColorChoiceUI>> {
 		return iSettingsRepository.getStringSetFlow(ReaderUserThemes)
 			.mapLatest { set: Set<String> ->

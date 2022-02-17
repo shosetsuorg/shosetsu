@@ -1,7 +1,5 @@
 package app.shosetsu.android.viewmodel.impl
 
-import android.app.Application
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.usecases.NovelBackgroundAddUseCase
 import app.shosetsu.android.domain.usecases.get.GetCatalogueListingDataUseCase
@@ -47,9 +45,8 @@ import kotlinx.coroutines.flow.*
  * shosetsu
  * 01 / 05 / 2020
  */
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 class CatalogViewModel(
-	private val application: Application,
 	private val getExtensionUseCase: GetExtensionUseCase,
 	private val backgroundAddUseCase: NovelBackgroundAddUseCase,
 	private val getCatalogueListingData: GetCatalogueListingDataUseCase,
@@ -82,7 +79,7 @@ class CatalogViewModel(
 	 */
 	private val extensionIDFlow: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
 
-	override val itemsLive: LiveData<List<ACatalogNovelUI>> by lazy {
+	override val itemsLive: Flow<List<ACatalogNovelUI>> by lazy {
 		itemsFlow.combine(novelCardTypeFlow) { items, type ->
 			items.let { list ->
 				list.map { card ->
@@ -114,7 +111,7 @@ class CatalogViewModel(
 					}
 				}
 			}
-		}.asIOLiveData()
+		}
 	}
 
 	private val itemsFlow: MutableStateFlow<List<ACatalogNovelUI>> by lazy {
@@ -130,8 +127,8 @@ class CatalogViewModel(
 	 */
 	private val filterReloadFlow = MutableStateFlow(true)
 
-	override val filterItemsLive: LiveData<List<Filter<*>>>
-		get() = filterItemFlow.mapLatest { it.toList() }.asIOLiveData()
+	override val filterItemsLive: Flow<List<Filter<*>>>
+		get() = filterItemFlow.mapLatest { it.toList() }
 
 	override val hasSearchLive: Flow<Boolean> by lazy {
 		iExtensionFlow.mapLatest { it.hasSearch }.transformLatest {
@@ -145,16 +142,16 @@ class CatalogViewModel(
 	override val hasSearch: Boolean
 		get() = _hasSearch
 
-	override val extensionName: LiveData<String> by lazy {
-		iExtensionFlow.mapLatest { it.name }.asIOLiveData()
+	override val extensionName: Flow<String> by lazy {
+		iExtensionFlow.mapLatest { it.name }
 	}
 
 	private var stateManager = StateManager()
 
-	override fun getBaseURL(): LiveData<String> =
+	override fun getBaseURL(): Flow<String> =
 		flow {
 			emitAll(iExtensionFlow.mapLatest { it.baseURL })
-		}.asIOLiveData()
+		}
 
 	/**
 	 * Handles the current state of the UI
@@ -316,10 +313,10 @@ class CatalogViewModel(
 	}
 
 
-	override fun getFilterStringState(id: Filter<String>): LiveData<String> =
+	override fun getFilterStringState(id: Filter<String>): Flow<String> =
 		filterDataState.specialGetOrPut(id.id) {
 			MutableStateFlow(id.state)
-		}.asIOLiveData()
+		}
 
 	override fun setFilterStringState(id: Filter<String>, value: String) {
 		filterDataState.specialGetOrPut(id.id) {
@@ -327,10 +324,10 @@ class CatalogViewModel(
 		}.tryEmit(value)
 	}
 
-	override fun getFilterBooleanState(id: Filter<Boolean>): LiveData<Boolean> =
+	override fun getFilterBooleanState(id: Filter<Boolean>): Flow<Boolean> =
 		filterDataState.specialGetOrPut(id.id) {
 			MutableStateFlow(id.state)
-		}.asIOLiveData()
+		}
 
 	override fun setFilterBooleanState(id: Filter<Boolean>, value: Boolean) {
 		filterDataState.specialGetOrPut(id.id) {
@@ -338,10 +335,10 @@ class CatalogViewModel(
 		}.tryEmit(value)
 	}
 
-	override fun getFilterIntState(id: Filter<Int>): LiveData<Int> =
+	override fun getFilterIntState(id: Filter<Int>): Flow<Int> =
 		filterDataState.specialGetOrPut(id.id) {
 			MutableStateFlow(id.state)
-		}.asIOLiveData()
+		}
 
 	override fun setFilterIntState(id: Filter<Int>, value: Int) {
 		filterDataState.specialGetOrPut(id.id) {
@@ -362,7 +359,7 @@ class CatalogViewModel(
 	}
 
 
-	private val novelCardTypeFlow = loadNovelUITypeUseCase()
+	private val novelCardTypeFlow by lazy { loadNovelUITypeUseCase() }
 
 	override val novelCardTypeLive: Flow<NovelCardType> by lazy {
 		novelCardTypeFlow.transformLatest {
@@ -410,7 +407,10 @@ class CatalogViewModel(
 	): O {
 		// Do not use computeIfAbsent on JVM8 as it would change locking behavior
 		return this[key].takeIf { value -> value is O }?.let { value -> value as O }
-			?: getDefaultValue().also { defaultValue -> put(key, defaultValue as V) }
+			?: getDefaultValue().also { defaultValue ->
+				@Suppress("UNCHECKED_CAST")
+				put(key, defaultValue as V)
+			}
 	}
 }
 

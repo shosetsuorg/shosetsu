@@ -6,7 +6,6 @@ import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emitAll
@@ -39,7 +38,6 @@ class GetReaderChaptersUseCase(
 	private val extRepo: IExtensionsRepository,
 	private val novelRepo: INovelsRepository
 ) {
-	@ExperimentalCoroutinesApi
 	operator fun invoke(novelID: Int): Flow<List<ReaderChapterUI>> =
 		flow {
 			emitAll(

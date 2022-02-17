@@ -1,6 +1,5 @@
 package app.shosetsu.android.viewmodel.impl
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
@@ -11,7 +10,6 @@ import app.shosetsu.android.view.uimodels.model.MigrationNovelUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.AMigrationViewModel
 import app.shosetsu.common.domain.model.local.StrippedBookmarkedNovelEntity
-import app.shosetsu.common.dto.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
@@ -38,6 +36,7 @@ import kotlinx.coroutines.flow.*
  * @since 04 / 08 / 2021
  * @author Doomsdayrs
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class MigrationViewModel(
 	private val getNovelUI: GetNovelUIUseCase,
 	private val loadBrowseExtensionsFlow: LoadBrowseExtensionsUseCase
@@ -54,65 +53,38 @@ class MigrationViewModel(
 	 */
 	private val queryMap = hashMapOf<Int, MutableStateFlow<String>>()
 
-	override val currentQuery: LiveData<HResult<String>> by lazy {
-		flow {
-			emit(loading)
+	override val currentQuery: Flow<String> by lazy {
+		whichFlow.transformLatest { currentNovelId ->
 			emitAll(
-				whichFlow.transformLatest { currentNovelId ->
+				novelFlow.transformLatest { novelResult ->
 					emitAll(
-						novelFlow.transformLatest { novelResult ->
-							novelResult.handle(
-								onEmpty = {
-									emit(empty)
-								},
-								onLoading = {
-									emit(loading)
-								},
-								onError = {
-									emit(it)
-								}
-							) { novelList ->
-								emitAll(
-									queryMap.getOrPut(currentNovelId) {
-										MutableStateFlow(
-											novelList.find { it.id == currentNovelId }?.title ?: ""
-										)
-									}.map { successResult(it) }
-								)
-							}
-						}
+						queryMap.getOrPut(currentNovelId) {
+							MutableStateFlow(
+								novelResult.find { it.id == currentNovelId }?.title ?: ""
+							)
+						}.map { it }
 					)
 				}
 			)
-		}.asIOLiveData()
+		}
 	}
 
-	override val extensions: LiveData<HResult<List<MigrationExtensionUI>>> by lazy {
+
+	override val extensions: Flow<List<MigrationExtensionUI>> by lazy {
 		flow {
-			emit(loading)
 			emitAll(
 				loadBrowseExtensionsFlow().map { hResult ->
-					hResult.transformToSuccess { list ->
-						list.filter { it.installed }.map {
+					hResult.let { list ->
+						list.filter { it.isInstalled }.map {
 							MigrationExtensionUI(
 								it.id,
 								it.name,
-								it.imageURL ?: ""
+								it.imageURL
 							)
 						}
 					}
 				}.transform { extensionsResult ->
-					extensionsResult.handle(
-						onEmpty = {
-							emit(empty)
-						},
-						onError = {
-							emit(it)
-						},
-						onLoading = {
-							emit(loading)
-						}
-					) { mExtensions ->
+					extensionsResult.let { mExtensions ->
 						emitAll(
 							whichFlow.transformLatest { selectedId ->
 								emitAll(
@@ -120,11 +92,11 @@ class MigrationViewModel(
 										MutableStateFlow(mExtensions.firstOrNull()?.id ?: -1)
 									}
 										.mapLatest { selectedExtension ->
-											successResult(mExtensions.map { extension ->
+											mExtensions.map { extension ->
 												extension.copy(
 													isSelected = selectedExtension == extension.id
 												)
-											})
+											}
 										}
 								)
 							}
@@ -132,25 +104,28 @@ class MigrationViewModel(
 					}
 				}
 			)
-		}.asIOLiveData()
+		}
 	}
 
-	@ExperimentalCoroutinesApi
-	private val novelFlow by lazy {
+	private val novelFlow: Flow<List<MigrationNovelUI>> by lazy {
 		novelIds.transformLatest { ids ->
+
 			emitAll(
-				ids.map {
-					getNovelUI(it)
-				}.combineResults()
-			)
-		}.mapLatest { result ->
-			result.transformToSuccess { list ->
-				list.map {
-					MigrationNovelUI(it.id, it.title, it.imageURL)
+				combine(
+					ids.map {
+						getNovelUI(it)
+					}
+				) {
+					it.filterNotNull()
 				}
+			)
+
+		}.mapLatest { result ->
+			result.map {
+				MigrationNovelUI(it.id, it.title, it.imageURL)
 			}
 		}.combine(whichFlow) { list, id ->
-			val result = list.transformToSuccess {
+			val result = list.let {
 				it.map { novelUI ->
 					novelUI.copy(
 						isSelected = novelUI.id == id
@@ -162,7 +137,7 @@ class MigrationViewModel(
 		}
 	}
 
-	override val novels: LiveData<HResult<List<MigrationNovelUI>>> by lazy { novelFlow.asIOLiveData() }
+	override val novels: Flow<List<MigrationNovelUI>> by lazy { novelFlow }
 
 	/**
 	 * Which novel is being worked on rn
@@ -173,18 +148,17 @@ class MigrationViewModel(
 		MutableStateFlow(novelIds.value.firstOrNull() ?: -1)
 	}
 
-	override val which: LiveData<Int>
-		get() = whichFlow.asIOLiveData()
+	override val which: Flow<Int>
+		get() = whichFlow
 
 	override fun setWorkingOn(novelId: Int) {
 		logI("Now working on $novelId")
 		whichFlow.value = novelId
 	}
 
-	override fun getResults(novelUI: NovelUI): LiveData<HResult<StrippedBookmarkedNovelEntity>> =
+	override fun getResults(novelUI: NovelUI): Flow<StrippedBookmarkedNovelEntity> =
 		flow {
-			emit(loading)
-		}.asIOLiveData()
+		}
 
 	override fun setNovels(array: IntArray) {
 		novelIds.value = array

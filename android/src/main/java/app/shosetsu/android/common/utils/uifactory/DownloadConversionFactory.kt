@@ -44,6 +44,6 @@ class DownloadConversionFactory(
 fun List<DownloadEntity>.mapToFactory() =
 	map { DownloadConversionFactory(it) }
 
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 fun Flow<List<DownloadEntity>>.mapLatestToResultFlowWithFactory() =
 	mapLatest { it.mapToFactory() }

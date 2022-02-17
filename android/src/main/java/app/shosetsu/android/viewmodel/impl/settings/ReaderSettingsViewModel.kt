@@ -17,7 +17,6 @@ import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.enums.MarkingType
 import com.github.doomsdayrs.apps.shosetsu.R
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /*
  * This file is part of shosetsu.
@@ -110,11 +109,11 @@ class ReaderSettingsViewModel(
 		},
 
 		switchSettingData(8) {
-			title { "Resume first unread" }
-			description {
+			titleText = "Resume first unread"
+			descText =
 				"Instead of resuming the first chapter reading/unread, " +
 						"the app will open the first unread chapter"
-			}
+
 			checkSettingValue(ChaptersResumeFirstUnread)
 		},
 		readerKeepScreenOnOption(14),
@@ -126,37 +125,35 @@ class ReaderSettingsViewModel(
 suspend fun ExposedSettingsRepoViewModel.stringAsHtmlOption(id: Int) =
 	switchSettingData(id) {
 		titleRes = R.string.settings_reader_title_string_to_html
-		description { R.string.settings_reader_desc_string_to_html }
+		descRes = R.string.settings_reader_desc_string_to_html
 		checkSettingValue(ReaderStringToHtml)
 	}
 
 suspend fun ExposedSettingsRepoViewModel.horizontalSwitchOption(id: Int) =
 	switchSettingData(id) {
 		titleRes = R.string.settings_reader_title_horizontal_option
-		description { R.string.settings_reader_desc_horizontal_option }
+		descRes = R.string.settings_reader_desc_horizontal_option
 		checkSettingValue(ReaderHorizontalPageSwap)
 	}
 
 suspend fun ExposedSettingsRepoViewModel.invertChapterSwipeOption(id: Int) =
 	switchSettingData(id) {
 		titleRes = R.string.settings_reader_inverted_swipe_title
-
-		description { R.string.settings_reader_inverted_swipe_desc }
+		descRes = R.string.settings_reader_inverted_swipe_desc
 		checkSettingValue(ReaderIsInvertedSwipe)
 	}
 
 suspend fun ExposedSettingsRepoViewModel.showReaderDivider(id: Int) =
 	switchSettingData(id) {
 		titleRes = R.string.settings_reader_show_divider
-
-		description { R.string.settings_reader_show_divider_desc }
+		descRes = R.string.settings_reader_show_divider_desc
 		checkSettingValue(ReaderShowChapterDivider)
 	}
 
 suspend fun ExposedSettingsRepoViewModel.continuousScrollOption(id: Int) =
 	switchSettingData(id) {
 		titleRes = R.string.settings_reader_title_continous_scroll
-		description { R.string.settings_reader_desc_continous_scroll }
+		descRes = R.string.settings_reader_desc_continous_scroll
 		checkSettingValue(ReaderContinuousScroll)
 	}
 
@@ -169,7 +166,7 @@ suspend fun ExposedSettingsRepoViewModel.tapToScrollOption(id: Int) =
 suspend fun ExposedSettingsRepoViewModel.readerKeepScreenOnOption(id: Int) =
 	switchSettingData(id) {
 		titleRes = R.string.settings_reader_keep_screen_on
-		description { R.string.settings_reader_keep_screen_on_desc }
+		descRes = R.string.settings_reader_keep_screen_on_desc
 		checkSettingValue(ReaderKeepScreenOn)
 	}
 
@@ -190,6 +187,7 @@ suspend fun ExposedSettingsRepoViewModel.textSizeOption(id: Int) =
 suspend fun ExposedSettingsRepoViewModel.paragraphIndentOption(id: Int, context: Context) =
 	spinnerSettingData(id) {
 		titleRes = R.string.paragraph_indent
+		@Suppress("CheckedExceptionsKotlin") // Resource might not exist
 		arrayAdapter = ArrayAdapter(
 			context,
 			android.R.layout.simple_spinner_dropdown_item,

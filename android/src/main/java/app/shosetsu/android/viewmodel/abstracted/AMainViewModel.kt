@@ -1,6 +1,5 @@
 package app.shosetsu.android.viewmodel.abstracted
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.enums.NavigationStyle
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
@@ -39,7 +38,7 @@ abstract class AMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel {
 	 */
 	abstract val navigationStyle: NavigationStyle
 
-	abstract val appThemeLiveData: LiveData<AppThemes>
+	abstract val appThemeLiveData: Flow<AppThemes>
 
 	abstract val requireDoubleBackToExit: Boolean
 
@@ -52,7 +51,7 @@ abstract class AMainViewModel : ShosetsuViewModel(), IsOnlineCheckViewModel {
 	 * If stable-utd, will open up up-to-down
 	 * If stable-fdr, will open up f-droid
 	 */
-	abstract fun handleAppUpdate(): Flow<AppUpdateAction>
+	abstract fun handleAppUpdate(): Flow<AppUpdateAction?>
 
 	sealed class AppUpdateAction {
 

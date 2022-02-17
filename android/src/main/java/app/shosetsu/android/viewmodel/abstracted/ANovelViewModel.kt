@@ -36,10 +36,10 @@ import javax.security.auth.Destroyable
 abstract class ANovelViewModel
 	: ShosetsuViewModel(), IsOnlineCheckViewModel, Destroyable {
 
-	abstract val novelLive: Flow<NovelUI>
+	abstract val novelLive: Flow<NovelUI?>
 	abstract val isRefreshing: Flow<Boolean>
 	abstract val chaptersLive: Flow<List<ChapterUI>>
-	abstract val novelSettingFlow: Flow<NovelSettingUI>
+	abstract val novelSettingFlow: Flow<NovelSettingUI?>
 
 	/** Set's the value to be loaded */
 	abstract fun setNovelID(novelID: Int)
@@ -50,19 +50,19 @@ abstract class ANovelViewModel
 	/**
 	 * Return the novelURL to utilize in some way
 	 */
-	abstract fun getNovelURL(): Flow<String>
+	abstract fun getNovelURL(): Flow<String?>
 
 	data class NovelShareInfo(
 		val novelTitle: String,
 		val novelURL: String
 	)
 
-	abstract fun getShareInfo(): Flow<NovelShareInfo>
+	abstract fun getShareInfo(): Flow<NovelShareInfo?>
 
 	/**
 	 * Return the chapterURL to utilize in some way
 	 */
-	abstract fun getChapterURL(chapterUI: ChapterUI): Flow<String>
+	abstract fun getChapterURL(chapterUI: ChapterUI): Flow<String?>
 
 	/** Instruction to download a specific chapter */
 	abstract fun downloadChapter(vararg chapterUI: ChapterUI, startManager: Boolean = false)
@@ -91,7 +91,7 @@ abstract class ANovelViewModel
 	/**
 	 * Is the novel bookmarked?
 	 */
-	abstract fun isBookmarked(): Boolean
+	abstract fun isBookmarked(): Flow<Boolean>
 
 	/** Self explanatory */
 	abstract fun markChapterAsRead(chapterUI: ChapterUI)

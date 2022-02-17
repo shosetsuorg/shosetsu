@@ -9,7 +9,6 @@ import app.shosetsu.android.viewmodel.abstracted.settings.ADownloadSettingsViewM
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import com.github.doomsdayrs.apps.shosetsu.R
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 
 /*
@@ -106,29 +105,29 @@ class DownloadSettingsViewModel(
 		},
 		// TODO Figure out how to change download directory
 		switchSettingData(3) {
-			title { R.string.download_chapter_updates }
+			titleRes = R.string.download_chapter_updates
 			checkSettingValue(DownloadNewNovelChapters)
 		},
 		switchSettingData(2) {
-			title { "Allow downloading on metered connection" }
+			titleText = "Allow downloading on metered connection"
 			checkSettingValue(DownloadOnMeteredConnection)
 		},
 		switchSettingData(3) {
-			title { "Download on low battery" }
+			titleText = "Download on low battery"
 			checkSettingValue(DownloadOnLowBattery)
 		},
 		switchSettingData(4) {
-			title { "Download on low storage" }
+			titleText = "Download on low storage"
 			checkSettingValue(DownloadOnLowStorage)
 		},
 		switchSettingData(5) {
-			title { "Download only when idle" }
+			titleText = "Download only when idle"
 			requiredVersion { android.os.Build.VERSION_CODES.M }
 			checkSettingValue(DownloadOnlyWhenIdle)
 		},
 		switchSettingData(6) {
-			title { "Bookmarked novel on download" }
-			description { "If a novel is not bookmarked when a chapter is downloaded, this will" }
+			titleText = "Bookmarked novel on download"
+			descText = "If a novel is not bookmarked when a chapter is downloaded, this will"
 		},
 		switchSettingData(7) {
 			titleRes = R.string.settings_download_notify_extension_install_title

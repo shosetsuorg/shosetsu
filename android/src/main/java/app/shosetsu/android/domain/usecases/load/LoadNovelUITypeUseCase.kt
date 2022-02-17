@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.mapLatest
 class LoadNovelUITypeUseCase(
 	private val repository: ISettingsRepository
 ) {
-	@ExperimentalCoroutinesApi
+	@OptIn(ExperimentalCoroutinesApi::class)
 	operator fun invoke(): Flow<NovelCardType> {
 		return repository.getIntFlow(SettingKey.SelectedNovelCardType).mapLatest {
 			NovelCardType.valueOf(it)

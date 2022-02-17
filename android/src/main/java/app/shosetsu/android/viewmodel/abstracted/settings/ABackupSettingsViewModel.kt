@@ -61,5 +61,5 @@ abstract class ABackupSettingsViewModel(iSettingsRepository: ISettingsRepository
 	 */
 	abstract fun clearExport()
 
-	abstract fun exportBackup(it: Uri)
+	abstract fun exportBackup(uri: Uri)
 }

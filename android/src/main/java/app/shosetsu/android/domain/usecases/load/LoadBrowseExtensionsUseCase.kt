@@ -32,7 +32,7 @@ class LoadBrowseExtensionsUseCase(
 	private val extensionsRepository: IExtensionsRepository,
 	private val extensionDownloadRepository: IExtensionDownloadRepository
 ) {
-	@ExperimentalCoroutinesApi
+	@OptIn(ExperimentalCoroutinesApi::class)
 	operator fun invoke(): Flow<List<BrowseExtensionEntity>> = flow {
 		val flow = extensionsRepository.loadBrowseExtensions()
 			.transformLatest { extensionList -> // Merge with downloadStatus

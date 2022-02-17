@@ -3,7 +3,10 @@ package app.shosetsu.android.viewmodel.impl.settings
 import android.app.Application
 import android.widget.ArrayAdapter
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.*
+import app.shosetsu.android.view.uimodels.settings.dsl.numberPickerSettingData
+import app.shosetsu.android.view.uimodels.settings.dsl.range
+import app.shosetsu.android.view.uimodels.settings.dsl.spinnerSettingData
+import app.shosetsu.android.view.uimodels.settings.dsl.switchSettingData
 import app.shosetsu.android.viewmodel.abstracted.settings.AViewSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
@@ -37,23 +40,24 @@ class ViewSettingsViewModel(
 	override suspend fun settings(): List<SettingsItemData> = listOf(
 
 		numberPickerSettingData(1) {
-			title { R.string.columns_of_novel_listing_p }
-			description { (R.string.columns_zero_automatic) }
+			titleRes = R.string.columns_of_novel_listing_p
+			descRes = (R.string.columns_zero_automatic)
 			settingValue(ChapterColumnsInPortait)
 			range { 0 to 10 }
 		},
 		numberPickerSettingData(2) {
-			title { R.string.columns_of_novel_listing_h }
-			description { (R.string.columns_zero_automatic) }
+			titleRes = R.string.columns_of_novel_listing_h
+			descRes = (R.string.columns_zero_automatic)
 			settingValue(ChapterColumnsInLandscape)
 			range { 0 to 10 }
 		},
 		spinnerSettingData(3) {
-			title { R.string.novel_card_type_selector_title }
-			description { R.string.novel_card_type_selector_desc }
+			titleRes = R.string.novel_card_type_selector_title
+			descRes = R.string.novel_card_type_selector_desc
 
 			spinnerSettingValue(SelectedNovelCardType)
 
+			@Suppress("CheckedExceptionsKotlin") // Resource might be null
 			arrayAdapter = ArrayAdapter(
 				application,
 				android.R.layout.simple_spinner_dropdown_item,
