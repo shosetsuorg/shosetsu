@@ -1,11 +1,17 @@
 {
-  "latestVersion": "1697",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1697/shosetsu-r1697.apk",
+  "latestVersion": "1724",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1724/shosetsu-r1724.apk",
   "releaseNotes": [
-    "- Fixed random crashing due to recycled bitmaps",
-    "- Fix exceptions crashing app",
-    "- Fix backup restore crashing completely",
-    "- Move Backup out of Settings and into More",
-    "- Update novels alphabetically"
+    "- Add delay when restoring novels",
+    "- Handle exceptions a bit better",
+    "- Respond to result of saving a backup",
+    "- It is now optional to have individual download notifications",
+    "- Instant jump to chapter",
+    "- Add hint effect when jumping to chapter",
+    "- Add update button to extension update notification",
+    "- Fix OOM when restoring backups",
+    "- Add option to disable logging of chapters during restore",
+    "- Update dependencies",
+    "- Add strange exception for when a download is stuck as downloading"
   ]
 }
