@@ -22,8 +22,12 @@ We appreciate any help in improving the app, so let us know by [opening an issue
 
 ## Community
 
-Join us on our Discord server:
+### Matrix
+<a href="https://matrix.to/#/#shosetsu:matrix.org">
+    <img src="https://raw.githubusercontent.com/matrix-org/matrix.org/master/content/matrix%20logo.svg" alt="Matrix Space" width=240px>
+</a>
 
+### Discord
 <a href="https://discord.gg/ttSX7gB">
     <img src="https://discordapp.com/assets/e4923594e694a21542a489471ecffa50.svg" alt="Discord Channel" width=240px>
 </a>
