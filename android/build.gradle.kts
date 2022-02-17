@@ -199,7 +199,7 @@ dependencies {
 	//implementation("us.feras.mdv:markdownview:1.1.0")
 
 	// Time control
-	implementation("joda-time:joda-time:2.10.10")
+	implementation("joda-time:joda-time:2.10.13")
 
 
 	// TODO Implement readerview provided by Mozilla
@@ -210,13 +210,13 @@ dependencies {
 	//implementation("com.zhkrb.cloudflare-scrape-android:scrape-webview:0.0.3")
 
 	// Network
-	implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.2")
+	implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.4")
 
 	// Kotlin libraries
 	implementation(kotlin("stdlib-jdk8"))
 	implementation(kotlin("reflect"))
 
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
 
 	// Showcase
 	//implementation("com.github.deano2390:MaterialShowcaseView:1.3.4")
@@ -347,6 +347,6 @@ dependencies {
 	implementation("androidx.activity:activity-ktx:1.4.0")
 	implementation("androidx.activity:activity-compose:1.4.0")
 
-	implementation("com.chargemap.compose:numberpicker:0.0.10")
+	implementation("com.chargemap.compose:numberpicker:0.0.11")
 
 }
