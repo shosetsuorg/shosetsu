@@ -49,8 +49,8 @@ class ExtensionsRepository(
 	override fun getExtensionFlow(id: Int): Flow<InstalledExtensionEntity> =
 		installedDBSource.loadExtensionLive(id)
 
-	override suspend fun getExtension(id: Int): GenericExtensionEntity =
-		repoDBSource.loadExtension(id)
+	override suspend fun getExtension(repoId: Int, extId: Int): GenericExtensionEntity =
+		repoDBSource.loadExtension(repoId, extId)
 
 	override suspend fun getInstalledExtension(id: Int): InstalledExtensionEntity? {
 		TODO("Not yet implemented")

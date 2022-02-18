@@ -41,7 +41,7 @@ class GetNovelUIUseCase(
 				}
 			}.map { novelUI ->
 				if (novelUI != null)
-					extensionRepository.getExtension(novelUI.extID)?.let { ext ->
+					extensionRepository.getInstalledExtension(novelUI.extID)?.let { ext ->
 						novelUI.apply {
 							extName = ext.name
 						}

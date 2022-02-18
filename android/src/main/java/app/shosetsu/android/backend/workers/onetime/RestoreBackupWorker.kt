@@ -23,7 +23,10 @@ import app.shosetsu.android.domain.repository.base.IBackupUriRepository
 import app.shosetsu.android.domain.usecases.InstallExtensionUseCase
 import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.domain.model.local.*
+import app.shosetsu.common.domain.model.local.BackupEntity
+import app.shosetsu.common.domain.model.local.ChapterEntity
+import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.domain.model.local.NovelSettingEntity
 import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.lib.IExtension
@@ -189,11 +192,8 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 					setContentText("$name\n$url")
 				}
 				extensionsRepoRepo.addRepository(
-					RepositoryEntity(
-						url = url,
-						name = name,
-						isEnabled = true
-					)
+					url,
+					name,
 				)
 			}
 
@@ -226,8 +226,8 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		val extensionID = backupExtensionEntity.id
 		val backupNovels = backupExtensionEntity.novels
 		logI("$extensionID")
-
-		extensionsRepo.getExtension(extensionID)?.let { extensionEntity ->
+		// TODO Critical, Rework extensions to enable the below to work properly. DO NOT RELEASE.
+		extensionsRepo.getExtension(2, extensionID)?.let { extensionEntity ->
 			// Install the extension
 			if (!extensionsRepo.isExtensionInstalled(extensionEntity)) {
 				notify(getString(R.string.installing) + " ${extensionEntity.id} | ${extensionEntity.name}")

@@ -81,7 +81,7 @@ interface IExtensionRepoRepository {
 	 */
 	fun loadRepositoriesLive(): Flow<List<RepositoryEntity>>
 
-	suspend fun addRepository(entity: RepositoryEntity): Long
+	suspend fun addRepository(url: String, name: String): Long
 
 	suspend fun remove(entity: RepositoryEntity)
 

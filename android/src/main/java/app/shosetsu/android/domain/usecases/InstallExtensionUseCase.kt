@@ -1,10 +1,12 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.common.consts.ErrorKeys
+import app.shosetsu.android.common.ext.generify
 import app.shosetsu.common.domain.model.local.GenericExtensionEntity
+import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository.InstallExtensionFlags
 import app.shosetsu.common.utils.asIEntity
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.exceptions.HTTPException
@@ -38,50 +40,66 @@ class InstallExtensionUseCase(
 	private val extensionRepoRepository: IExtensionRepoRepository
 ) {
 	@Throws(HTTPException::class)
-	suspend operator fun invoke(extensionEntity: GenericExtensionEntity): IExtensionsRepository.InstallExtensionFlags {
-		val repo = extensionRepoRepository.getRepo(extensionEntity.repoID)!!
+	suspend operator fun invoke(extToInstall: GenericExtensionEntity): InstallExtensionFlags {
+		val repo = extensionRepoRepository.getRepo(extToInstall.repoID)!!
 
 		val extensionContent: ByteArray = extensionRepository.downloadExtension(
 			repo,
-			extensionEntity
+			extToInstall
 		)
 
-		try {
-			val iExt = extensionEntity.asIEntity(extensionContent)
-
-			// Write to storage/cache
-			extensionEntitiesRepository.save(extensionEntity, iExt, extensionContent)
-
-			val oldType: Novel.ChapterType?
-			val deleteChapters: Boolean
-
-			if (extensionEntity.installedVersion != null && extensionEntity.installedVersion!! < iExt.exMetaData.version) {
-				oldType = extensionEntity.chapterType
-				deleteChapters = oldType != iExt.chapterType
-			} else {
-				deleteChapters = false
-				oldType = null
-			}
-
-			extensionEntity.chapterType = iExt.chapterType
-			extensionRepository.updateRepositoryExtension(
-				extensionEntity.copy(
-					chapterType = iExt.chapterType
-				)
-			)
-
-			successResult(
-				IExtensionsRepository.InstallExtensionFlags(
-					deleteChapters,
-					oldType
-				)
-			)
+		val iExt = extToInstall.asIEntity(extensionContent)
 
 
-		} catch (e: IllegalArgumentException) {
-			errorResult(ErrorKeys.ERROR_LUA_BROKEN, e)
-		} catch (e: Exception) {
-			errorResult(ErrorKeys.ERROR_GENERAL, e)
+		val oldType: Novel.ChapterType?
+		val deleteChapters: Boolean
+
+		val installedExt = extensionRepository.getInstalledExtension(extToInstall.id)
+
+		if (installedExt != null && installedExt.version < iExt.exMetaData.version) {
+			oldType = installedExt.chapterType
+			deleteChapters = oldType != iExt.chapterType
+		} else {
+			oldType = null
+			deleteChapters = false
 		}
+
+		// Uninstall the currently installed version of the extension
+		if (installedExt != null)
+			extensionEntitiesRepository.uninstall(installedExt.generify())
+
+		// Write to storage/cache
+		extensionEntitiesRepository.save(extToInstall, iExt, extensionContent)
+
+		extensionRepository.updateInstalledExtension(
+			installedExt?.copy(
+				repoID = extToInstall.repoID,
+				name = extToInstall.fileName,
+				fileName = extToInstall.fileName,
+				imageURL = extToInstall.imageURL,
+				lang = extToInstall.lang,
+				version = extToInstall.version,
+				md5 = extToInstall.md5,
+				type = extToInstall.type,
+				chapterType = iExt.chapterType
+			) ?: InstalledExtensionEntity(
+				id = extToInstall.id,
+				repoID = extToInstall.repoID,
+				name = extToInstall.name,
+				fileName = extToInstall.fileName,
+				imageURL = extToInstall.imageURL,
+				lang = extToInstall.lang,
+				version = extToInstall.version,
+				md5 = extToInstall.md5,
+				type = extToInstall.type,
+				enabled = true,
+				chapterType = iExt.chapterType
+			)
+		)
+
+		return InstallExtensionFlags(
+			deleteChapters,
+			oldType
+		)
 	}
 }

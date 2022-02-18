@@ -23,8 +23,10 @@ import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.ExtLibEntity
 import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
-import app.shosetsu.common.domain.repositories.base.*
-import app.shosetsu.lib.Novel
+import app.shosetsu.common.domain.repositories.base.IExtensionLibrariesRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
+import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.lib.Version
 import app.shosetsu.lib.json.RepoExtension
 import app.shosetsu.lib.json.RepoLibrary
@@ -167,10 +169,10 @@ class RepositoryUpdateWorker(
 		presentExtensions: List<Int>
 	) {
 		list.filterNot { presentExtensions.contains(it.id) }.forEach {
-			if (it.installed)
+			if (extRepo.isExtensionInstalled(it))
 				extRepo.updateRepositoryExtension(
 					it.copy(
-						repositoryVersion = Version(-9, -9, -9)
+						version = Version(-9, -9, -9)
 					)
 				)
 			else {
@@ -180,6 +182,9 @@ class RepositoryUpdateWorker(
 		}
 	}
 
+	/**
+	 * TODO move to another worker / stage of this worker
+	 */
 	private fun NotificationCompat.Builder.addUpdate(extensionId: Int) {
 		val intent = Intent(
 			applicationContext,
@@ -204,108 +209,35 @@ class RepositoryUpdateWorker(
 	 * Handle updating an extension
 	 */
 	private suspend fun updateExtension(repo: RepositoryEntity, repoExt: RepoExtension) {
-		extRepo.getExtension(repoExt.id).let(
-			onEmpty = {
-				extRepo.insert(
-					GenericExtensionEntity(
-						id = repoExt.id,
-						repoID = repo.id!!,
-						name = repoExt.name,
-						fileName = repoExt.fileName,
-						imageURL = repoExt.imageURL,
-						lang = repoExt.lang,
-						repositoryVersion = repoExt.version,
-						chapterType = Novel.ChapterType.STRING,
-						md5 = repoExt.md5,
-						type = repoExt.type
-					).also {
-						logI("Inserting new extension, $it")
-					}
+		val extensionEntity = extRepo.getExtension(repo.id, repoExt.id)
+		if (extensionEntity == null) {
+			extRepo.insert(
+				GenericExtensionEntity(
+					id = repoExt.id,
+					repoID = repo.id,
+					name = repoExt.name,
+					fileName = repoExt.fileName,
+					imageURL = repoExt.imageURL,
+					lang = repoExt.lang,
+					version = repoExt.version,
+					md5 = repoExt.md5,
+					type = repoExt.type
+				).also {
+					logI("Inserting new extension, $it")
+				}
+			)
+		} else {
+			extRepo.updateRepositoryExtension(
+				extensionEntity.copy(
+					name = repoExt.name,
+					fileName = repoExt.fileName,
+					imageURL = repoExt.imageURL,
+					lang = repoExt.lang,
+					version = repoExt.version,
+					md5 = repoExt.md5,
+					type = repoExt.type
 				)
-			}
-		) { extensionEntity ->
-			logI("====== Comparing ${extensionEntity.name} to new data")
-			logD("${extensionEntity.repoID} =?= ${repo.id}")
-			logD("${extensionEntity.repositoryVersion} =?= ${repoExt.version}")
-			if (extensionEntity.repoID != repo.id) {
-				logI("Repos are different")
-				// the id is different, if the version is greater then override
-				if (extensionEntity.repositoryVersion < repoExt.version) {
-					logI("New repository has greater version, updating")
-					extRepo.updateRepositoryExtension(
-						extensionEntity.copy(
-							repoID = repo.id!!,
-							fileName = repoExt.fileName,
-							repositoryVersion = repoExt.version,
-							md5 = repoExt.md5,
-							type = repoExt.type,
-						)
-					).handle {
-						if (extensionEntity.installed)
-							notify("${repoExt.version} update available", repoExt.id + 3000) {
-								setContentTitle(repoExt.name)
-								removeProgress()
-								setNotOngoing()
-								addUpdate(extensionEntity.id)
-							}
-					}
-				} else {
-					logI("Version is less, checking for rollback")
-					// the version is not less then the other
-					// check if the repository is disabled or not
-					extRepoRepo.getRepo(repo.id!!).handle {
-						if (!it.isEnabled) {
-							logI("Old repository is disabled, updating for rollback")
-							// the repository is disabled, we can downgrade
-							extRepo.updateRepositoryExtension(
-								extensionEntity.copy(
-									repoID = repo.id!!,
-									fileName = repoExt.fileName,
-									repositoryVersion = repoExt.version,
-									md5 = repoExt.md5,
-									type = repoExt.type,
-								)
-							).handle {
-								if (extensionEntity.installed)
-									notify("${repoExt.version} rollback", repoExt.id + 3000) {
-										setContentTitle(repoExt.name)
-										removeProgress()
-										setNotOngoing()
-										addUpdate(extensionEntity.id)
-									}
-							}
-						} else {
-							// repository is enabled and is the highest version, ignore
-							logI("Rollback not possible")
-						}
-					}
-				}
-			} else {
-				logI("repo matches")
-				// the repo id is the same, check if there is an update
-				if (extensionEntity.repositoryVersion < repoExt.version) {
-					logI("The repository has a newer version")
-					extRepo.updateRepositoryExtension(
-						extensionEntity.copy(
-							repoID = repo.id!!,
-							fileName = repoExt.fileName,
-							repositoryVersion = repoExt.version,
-							md5 = repoExt.md5,
-							type = repoExt.type,
-						)
-					).handle {
-						if (extensionEntity.installed)
-							notify("${repoExt.version} update available", repoExt.id + 3000) {
-								setContentTitle(repoExt.name)
-								removeProgress()
-								setNotOngoing()
-								addUpdate(extensionEntity.id)
-							}
-					}
-				} else {
-					logI("No update available")
-				}
-			}
+			)
 		}
 	}
 
@@ -326,9 +258,7 @@ class RepositoryUpdateWorker(
 		}
 
 		// Loop through extensions from the repository, remove obsolete or warn about obsolete
-		extRepo.getExtensions(repo.id!!).handle { r ->
-			handlePresentExtensions(r, presentExtensions)
-		}
+		handlePresentExtensions(extRepo.getRepositoryExtensions(repo.id), presentExtensions)
 
 		return presentExtensions
 	}
@@ -336,50 +266,41 @@ class RepositoryUpdateWorker(
 	override suspend fun doWork(): Result {
 		logI("Starting Update")
 		notify("Starting Repository Update") { setOngoing() }
-		extRepoRepo.loadEnabledRepos().handle(
-			onError = {
-				notify("Failed to get repos")
-				return Result.failure()
-			}
-		) { repos: List<RepositoryEntity> ->
+		extRepoRepo.loadEnabledRepos().let { repos: List<RepositoryEntity> ->
 			var presentExtensions = ArrayList<Int>()
 			for (repo in repos) {
 				logI("Updating $repo")
 				// gets the latest list for the repo
-				extRepoRepo.getRepoData(repo).handle(
-					onError = {
-						notify(
-							"${it.code} : ${it.message}",
-							notificationId = ID_REPOSITORY_UPDATE + 1 + (repo.id ?: 0)
-						) {
-							removeProgress()
-							setContentTitle("${repo.name} failed to load")
-							setNotOngoing()
-						}
-						logE(
-							"${repo.name} failed to load ${it.code} : ${it.message}",
-							it.exception
-						)
-						if (disableOnFail()) {
-							logI("Disabling repository: $repo")
-							extRepoRepo.update(repo.copy(isEnabled = false))
-						}
-					},
-					onEmpty = {
-						logE("Received no data for $repo")
+				val repoIndex = try {
+					extRepoRepo.getRepoData(repo)
+				} catch (e: Exception) {//TODO specify
+					notify(
+						": ${e.message}",
+						notificationId = ID_REPOSITORY_UPDATE + 1 + (repo.id ?: 0)
+					) {
+						removeProgress()
+						setContentTitle("${repo.name} failed to load")
+						setNotOngoing()
 					}
-				) { repoIndex ->
-					updateLibraries(repoIndex.libraries, repo)
-
-					val result = updateExtensions(repoIndex.extensions, repo)
-					presentExtensions.addAll(result)
-					presentExtensions = ArrayList(presentExtensions.distinct())
+					logE(
+						"${repo.name} failed to load : ${e.message}",
+						e
+					)
+					if (disableOnFail()) {
+						logI("Disabling repository: $repo")
+						extRepoRepo.update(repo.copy(isEnabled = false))
+					}
+					return@let
 				}
+
+				updateLibraries(repoIndex.libraries, repo)
+
+				val result = updateExtensions(repoIndex.extensions, repo)
+				presentExtensions.addAll(result)
+				presentExtensions = ArrayList(presentExtensions.distinct())
 			}
 
-			extRepo.loadExtensions().handle { entityList ->
-				handlePresentExtensions(entityList, presentExtensions)
-			}
+			handlePresentExtensions(extRepo.loadRepositoryExtensions(), presentExtensions)
 		}
 		notify("Completed") { setNotOngoing() }
 		delay(1000)

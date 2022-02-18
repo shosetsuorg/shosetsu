@@ -1,5 +1,6 @@
 package app.shosetsu.android.domain.usecases.update
 
+import app.shosetsu.android.common.ext.generify
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
@@ -34,8 +35,8 @@ class UpdateExtensionSettingUseCase(
 	private val extSettingsRepo: IExtensionSettingsRepository
 ) {
 	private suspend fun update(extensionId: Int, settingId: Int, value: Any?) =
-		extRepo.getExtension(extensionId)?.let { entity ->
-			extEntitiesRepo.get(entity).let {
+		extRepo.getInstalledExtension(extensionId)?.let { entity ->
+			extEntitiesRepo.get(entity.generify()).let {
 				(it.updateSetting(settingId, value))
 			}
 		}

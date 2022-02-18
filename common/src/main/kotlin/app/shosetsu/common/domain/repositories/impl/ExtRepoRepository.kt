@@ -47,8 +47,8 @@ class ExtRepoRepository(
 	override fun loadRepositoriesLive(): Flow<List<RepositoryEntity>> =
 		databaseSource.loadRepositoriesLive()
 
-	override suspend fun addRepository(entity: RepositoryEntity): Long =
-		databaseSource.addRepository(entity)
+	override suspend fun addRepository(url: String, name: String): Long =
+		databaseSource.addRepository(url, name)
 
 	override suspend fun remove(entity: RepositoryEntity): Unit =
 		databaseSource.remove(entity)

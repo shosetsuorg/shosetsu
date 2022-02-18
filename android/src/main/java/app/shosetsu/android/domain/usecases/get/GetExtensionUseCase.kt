@@ -1,5 +1,6 @@
 package app.shosetsu.android.domain.usecases.get
 
+import app.shosetsu.android.common.ext.generify
 import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.lib.IExtension
@@ -43,8 +44,8 @@ class GetExtensionUseCase(
 		if (extensionId == -1)
 			return null
 
-		return extRepo.getExtension(extensionId)?.let {
-			extEntitiesRepo.get(it)
+		return extRepo.getInstalledExtension(extensionId)?.let {
+			extEntitiesRepo.get(it.generify())
 		}
 	}
 }

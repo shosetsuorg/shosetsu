@@ -132,7 +132,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 			// Extensions each novel requires
 			// Distinct, with no duplicates
 			val extensions = novels.map {
-				extensionsRepository.getExtension(it.extensionID)!!
+				extensionsRepository.getInstalledExtension(it.extensionID)!!
 			}.distinct()
 
 			notify("Loading repositories required")

@@ -78,7 +78,7 @@ class ExtensionRepositoryTest : DIAware {
 			)
 
 			// Add the temp entity
-			val result = repo.addRepository(tempRepoValue)
+			val result = repo.addRepository(tempRepoValue, name, true)
 			result.handle(
 				onError = {
 					it.exception?.printStackTrace()
@@ -98,7 +98,9 @@ class ExtensionRepositoryTest : DIAware {
 
 			// Duplicate injection
 			logD<ExtensionRepositoryTest>("Attempting database duplicate injection")
-			require(repo.addRepository(handle).unwrap() == null) { "Did not properly reject" }
+			require(
+				repo.addRepository(handle, name, true).unwrap() == null
+			) { "Did not properly reject" }
 			logD<ExtensionRepositoryTest>("Properly rejected")
 
 			print()

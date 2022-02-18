@@ -1,6 +1,5 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
 
 /*
@@ -26,6 +25,6 @@ import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
 class AddRepositoryUseCase(
 	private val iRepositoryRepository: IExtensionRepoRepository
 ) {
-	suspend operator fun invoke(repositoryEntity: RepositoryEntity) =
-		iRepositoryRepository.addRepository(repositoryEntity)
+	suspend operator fun invoke(url: String, name: String) =
+		iRepositoryRepository.addRepository(url, name)
 }

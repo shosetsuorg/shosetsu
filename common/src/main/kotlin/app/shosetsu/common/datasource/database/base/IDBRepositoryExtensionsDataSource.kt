@@ -42,7 +42,7 @@ interface IDBRepositoryExtensionsDataSource {
 
 	/** Load an [GenericExtensionEntity] via its [formatterID]*/
 	@Throws(GenericSQLiteException::class)
-	suspend fun loadExtension(formatterID: Int): GenericExtensionEntity
+	suspend fun loadExtension(repoId: Int, extId: Int): GenericExtensionEntity
 
 	/** Load an [GenericExtensionEntity] via its [id]*/
 	fun loadExtensionLive(id: Int): Flow<GenericExtensionEntity>

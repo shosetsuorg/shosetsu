@@ -9,7 +9,6 @@ import app.shosetsu.android.domain.usecases.load.LoadRepositoriesUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateRepositoryUseCase
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.android.viewmodel.abstracted.ARepositoryViewModel
-import app.shosetsu.common.domain.model.local.RepositoryEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -49,7 +48,7 @@ class RepositoryViewModel(
 	}
 
 	override fun addRepository(name: String, url: String) = flow {
-		addRepositoryUseCase(RepositoryEntity(url = url, name = name, isEnabled = true))
+		addRepositoryUseCase(url = url, name = name)
 		emit(Unit)
 	}
 

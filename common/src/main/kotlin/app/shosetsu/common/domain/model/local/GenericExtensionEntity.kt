@@ -49,7 +49,7 @@ data class GenericExtensionEntity(
 	/** The language of the extension */
 	val lang: String = "",
 
-	val version: Version? = null,
+	val version: Version,
 
 	/** MD5 to check against */
 	val md5: String = "",

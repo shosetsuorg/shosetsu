@@ -56,9 +56,9 @@ class DBExtRepoDataSource(
 		throw GenericSQLiteException(e)
 	}
 
-	override suspend fun addRepository(repositoryEntity: RepositoryEntity): Long =
+	override suspend fun addRepository(url: String, name: String): Long =
 		try {
-			(repositoryDao.insertAbort(repositoryEntity.toDB()))
+			(repositoryDao.insertAbort(DBRepositoryEntity(null, url, name, true)))
 		} catch (e: SQLiteException) {
 			throw GenericSQLiteException(e)
 		}

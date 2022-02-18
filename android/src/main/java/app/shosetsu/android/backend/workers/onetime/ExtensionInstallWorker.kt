@@ -115,7 +115,7 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 
 		// Notify progress
 		val extension = try {
-			extensionRepository.getExtension(extensionId)
+			extensionRepository.getExtension(repositoryId, extensionId)
 		} catch (e: Exception) {//TODO specify
 			markExtensionDownloadAsError()
 

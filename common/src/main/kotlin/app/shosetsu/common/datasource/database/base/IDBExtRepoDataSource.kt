@@ -38,7 +38,7 @@ interface IDBExtRepoDataSource {
 	suspend fun loadRepository(repoID: Int): RepositoryEntity?
 
 	@Throws(GenericSQLiteException::class)
-	suspend fun addRepository(repositoryEntity: RepositoryEntity): Long
+	suspend fun addRepository(url: String, name: String): Long
 
 	@Throws(GenericSQLiteException::class)
 	suspend fun remove(entity: RepositoryEntity)
