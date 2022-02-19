@@ -44,7 +44,7 @@ data class GenericExtensionEntity(
 	val fileName: String = "",
 
 	/** Image URL of the extension*/
-	val imageURL: String? = null,
+	val imageURL: String,
 
 	/** The language of the extension */
 	val lang: String = "",

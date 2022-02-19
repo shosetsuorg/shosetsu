@@ -32,6 +32,9 @@ interface IDBRepositoryExtensionsDataSource {
 	/** Loads LiveData of extensions */
 	fun loadExtensionsFlow(): Flow<List<GenericExtensionEntity>>
 
+	@Throws(GenericSQLiteException::class)
+	suspend fun loadExtensions(): List<GenericExtensionEntity>
+
 	/** Updates [extensionEntity] */
 	@Throws(GenericSQLiteException::class)
 	suspend fun updateExtension(extensionEntity: GenericExtensionEntity)
@@ -42,16 +45,10 @@ interface IDBRepositoryExtensionsDataSource {
 
 	/** Load an [GenericExtensionEntity] via its [formatterID]*/
 	@Throws(GenericSQLiteException::class)
-	suspend fun loadExtension(repoId: Int, extId: Int): GenericExtensionEntity
-
-	/** Load an [GenericExtensionEntity] via its [id]*/
-	fun loadExtensionLive(id: Int): Flow<GenericExtensionEntity>
+	suspend fun loadExtension(repoId: Int, extId: Int): GenericExtensionEntity?
 
 	@Throws(GenericSQLiteException::class)
 	suspend fun getExtensions(repoID: Int): List<GenericExtensionEntity>
-
-	@Throws(GenericSQLiteException::class)
-	suspend fun loadExtensions(): List<GenericExtensionEntity>
 
 	@Throws(GenericSQLiteException::class)
 	suspend fun insert(extensionEntity: GenericExtensionEntity): Long

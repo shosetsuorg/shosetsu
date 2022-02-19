@@ -1,15 +1,15 @@
 package app.shosetsu.common.domain.repositories.impl
 
+import app.shosetsu.common.datasource.database.base.IDBExtRepoDataSource
 import app.shosetsu.common.datasource.database.base.IDBInstalledExtensionsDataSource
 import app.shosetsu.common.datasource.database.base.IDBRepositoryExtensionsDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteExtensionDataSource
-import app.shosetsu.common.domain.model.local.BrowseExtensionEntity
-import app.shosetsu.common.domain.model.local.GenericExtensionEntity
-import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
-import app.shosetsu.common.domain.model.local.RepositoryEntity
+import app.shosetsu.common.domain.model.local.*
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.lib.exceptions.HTTPException
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transformLatest
 
 /*
  * This file is part of shosetsu.
@@ -38,9 +38,54 @@ class ExtensionsRepository(
 	private val installedDBSource: IDBInstalledExtensionsDataSource,
 	private val repoDBSource: IDBRepositoryExtensionsDataSource,
 	private val remoteSource: IRemoteExtensionDataSource,
+	private val _repoDBSource: IDBExtRepoDataSource
 ) : IExtensionsRepository {
+	@OptIn(ExperimentalCoroutinesApi::class)
 	override fun loadBrowseExtensions(): Flow<List<BrowseExtensionEntity>> {
-		TODO("Not yet implemented")
+		return repoDBSource.loadExtensionsFlow().transformLatest { list ->
+
+			val browseExtensions = list.groupBy { it.id }.map { (extId, matchingExtensions) ->
+				println("Working on extension $extId")
+				val installedExt = installedDBSource.loadExtension(extId)
+				val firstExt = matchingExtensions.first()
+
+				BrowseExtensionEntity(
+					id = extId,
+					name = installedExt?.name ?: firstExt.name,
+					imageURL = installedExt?.imageURL ?: firstExt.imageURL,
+					lang = installedExt?.lang ?: firstExt.lang,
+					installOptions = if (installedExt == null) {
+						matchingExtensions.mapNotNull { genericExt ->
+							val repo = _repoDBSource.loadRepository(genericExt.id)
+
+							if (repo != null && repo.isEnabled)
+								ExtensionInstallOptionEntity(
+									genericExt.repoID,
+									repo.name,
+									genericExt.version
+								)
+							else null
+						}
+					} else emptyList(),
+					isInstalled = installedExt != null,
+					installedVersion = installedExt?.version,
+					installedRepo = installedExt?.repoID ?: -1,
+					isUpdateAvailable = if (installedExt != null) {
+						val repoVersion =
+							matchingExtensions.find { it.repoID == installedExt.repoID }?.version
+
+						if (repoVersion != null) {
+							installedExt.version > repoVersion
+						} else false
+					} else false,
+					updateVersion = matchingExtensions.find { it.repoID == installedExt?.repoID }?.version,
+					isInstalling = false, // We can ignore this, another layer will set it
+				)
+			}
+
+			emit(browseExtensions)
+		}
+
 	}
 
 	override fun loadExtensionsFLow(): Flow<List<InstalledExtensionEntity>> =
@@ -49,20 +94,17 @@ class ExtensionsRepository(
 	override fun getExtensionFlow(id: Int): Flow<InstalledExtensionEntity> =
 		installedDBSource.loadExtensionLive(id)
 
-	override suspend fun getExtension(repoId: Int, extId: Int): GenericExtensionEntity =
+	override suspend fun getExtension(repoId: Int, extId: Int): GenericExtensionEntity? =
 		repoDBSource.loadExtension(repoId, extId)
 
-	override suspend fun getInstalledExtension(id: Int): InstalledExtensionEntity? {
-		TODO("Not yet implemented")
-	}
+	override suspend fun getInstalledExtension(id: Int): InstalledExtensionEntity? =
+		installedDBSource.loadExtension(id)
 
-	override suspend fun getRepositoryExtensions(repoID: Int): List<GenericExtensionEntity> {
-		TODO("Not yet implemented")
-	}
+	override suspend fun getRepositoryExtensions(repoID: Int): List<GenericExtensionEntity> =
+		repoDBSource.getExtensions(repoID)
 
-	override suspend fun loadRepositoryExtensions(): List<GenericExtensionEntity> {
-		TODO("Not yet implemented")
-	}
+	override suspend fun loadRepositoryExtensions(): List<GenericExtensionEntity> =
+		repoDBSource.loadExtensions()
 
 	override suspend fun uninstall(extensionEntity: InstalledExtensionEntity) {
 		installedDBSource.deleteExtension(extensionEntity)
@@ -94,7 +136,6 @@ class ExtensionsRepository(
 	): ByteArray =
 		remoteSource.downloadExtension(repositoryEntity, extension)
 
-	override fun isExtensionInstalled(extensionEntity: GenericExtensionEntity): Boolean {
-		TODO("Not yet implemented")
-	}
+	override suspend fun isExtensionInstalled(extensionEntity: GenericExtensionEntity): Boolean =
+		installedDBSource.loadExtension(extensionEntity.id) != null
 }

@@ -34,6 +34,7 @@ import app.shosetsu.common.consts.settings.SettingKey.BrowseFilteredLanguages
 import app.shosetsu.common.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.common.domain.model.local.ExtensionInstallOptionEntity
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
@@ -80,7 +81,7 @@ class ExtensionsViewModel(
 	}
 
 	private val extensionFlow by lazy {
-		getBrowseExtensions()
+		getBrowseExtensions().flowOn(Dispatchers.IO)
 	}
 
 	private val languageListFlow by lazy {

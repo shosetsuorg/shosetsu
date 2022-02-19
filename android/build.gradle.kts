@@ -326,6 +326,9 @@ dependencies {
 	implementation("androidx.compose.ui:ui-tooling:1.1.0")
 	//- Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
 	implementation("androidx.compose.foundation:foundation:1.1.0")
+	implementation("androidx.compose.animation:animation:1.1.0")
+	implementation("androidx.compose.animation:animation-graphics:1.1.0")
+	implementation("androidx.compose.animation:animation-core:1.1.0")
 
 	// - Material
 	implementation("androidx.compose.material:material:1.1.0")

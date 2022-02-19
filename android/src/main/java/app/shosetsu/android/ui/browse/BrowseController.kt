@@ -23,29 +23,31 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.compose.animation.graphics.res.animatedVectorResource
+import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
+import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
-import app.shosetsu.android.common.ext.displayOfflineSnackBar
-import app.shosetsu.android.common.ext.makeSnackBar
-import app.shosetsu.android.common.ext.shosetsuPush
-import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.CatalogController
 import app.shosetsu.android.ui.extensionsConfigure.ConfigureExtension
 import app.shosetsu.android.view.compose.EmptyDataContent
@@ -56,6 +58,7 @@ import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.common.consts.REPOSITORY_HELP_URL
 import app.shosetsu.common.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.common.domain.model.local.ExtensionInstallOptionEntity
+import app.shosetsu.lib.Version
 import coil.compose.rememberImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ComposeViewBinding
@@ -225,6 +228,48 @@ class BrowseController : ShosetsuController(),
 	}
 }
 
+@Preview
+@Composable
+fun PreviewBrowseContent() {
+	BrowseContent(
+		entities = listOf(
+			BrowseExtensionEntity(
+				1,
+				"Fake",
+				"",
+				"en",
+				installOptions = null,
+				isInstalled = true,
+				installedVersion = Version(1, 1, 1),
+				installedRepo = 1,
+				isUpdateAvailable = false,
+				updateVersion = Version(1, 2, 1),
+				isInstalling = false
+			),
+			BrowseExtensionEntity(
+				2,
+				"Fake",
+				"",
+				"en",
+				installOptions = null,
+				isInstalled = true,
+				installedVersion = Version(1, 1, 1),
+				installedRepo = 1,
+				isUpdateAvailable = false,
+				updateVersion = Version(1, 2, 1),
+				isInstalling = false
+			),
+		),
+		{},
+		{ a, b -> },
+		{},
+		{},
+		{},
+		{},
+		false
+	)
+}
+
 @Composable
 fun BrowseContent(
 	entities: List<BrowseExtensionEntity>,
@@ -236,10 +281,17 @@ fun BrowseContent(
 	cancelInstall: (BrowseExtensionEntity) -> Unit,
 	isRefreshing: Boolean
 ) {
-	SwipeRefresh(state = SwipeRefreshState(isRefreshing), refresh) {
+	SwipeRefresh(
+		state = SwipeRefreshState(isRefreshing), refresh, modifier = Modifier.fillMaxSize()
+	) {
 		if (entities.isNotEmpty()) {
-			LazyColumn {
+			LazyColumn(
+				modifier = Modifier.fillMaxSize()
+			) {
 				items(entities, key = { it.id }) { entity ->
+					launchIO {
+						println("Item $entity")
+					}
 					BrowseExtensionContent(
 						entity,
 						install = {
@@ -271,7 +323,35 @@ fun BrowseContent(
 	}
 }
 
-@OptIn(ExperimentalMaterialApi::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
+@Preview
+@Composable
+fun PreviewBrowseExtensionContent() {
+	BrowseExtensionContent(
+		BrowseExtensionEntity(
+			1,
+			"Fake",
+			"",
+			"en",
+			installOptions = null,
+			isInstalled = true,
+			installedVersion = Version(1, 1, 1),
+			installedRepo = 1,
+			isUpdateAvailable = false,
+			updateVersion = Version(1, 2, 1),
+			isInstalling = false
+		),
+		{},
+		{},
+		{},
+		{},
+		{}
+	)
+}
+
+@OptIn(
+	ExperimentalMaterialApi::class, androidx.compose.foundation.ExperimentalFoundationApi::class,
+	androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi::class
+)
 @Composable
 fun BrowseExtensionContent(
 	item: BrowseExtensionEntity,
@@ -282,30 +362,49 @@ fun BrowseExtensionContent(
 	cancelInstall: () -> Unit
 ) {
 	Card(
-		onClick = openCatalogue
+		onClick = openCatalogue,
 	) {
-		Row {
-			Image(
-				painter = if (item.imageURL.isNotEmpty()) {
-					rememberImagePainter(item.imageURL)
-				} else {
-					painterResource(R.drawable.broken_image)
-				},
-				stringResource(R.string.controller_browse_ext_icon_desc)
-			)
-			Column {
-				Text(item.name)
-				Row {
-					Text(item.lang)
+		Row(
+			modifier = Modifier.fillMaxWidth(),
+			horizontalArrangement = Arrangement.SpaceBetween,
+			verticalAlignment = Alignment.CenterVertically
+		) {
+			Row(
+				modifier = Modifier.fillMaxWidth(.50f),
+				verticalAlignment = Alignment.CenterVertically
+			) {
+				Image(
+					painter = if (item.imageURL.isNotEmpty()) {
+						rememberImagePainter(item.imageURL)
+					} else {
+						painterResource(R.drawable.broken_image)
+					},
+					stringResource(R.string.controller_browse_ext_icon_desc)
+				)
+				Column(
+					modifier = Modifier.fillMaxWidth()
+				) {
+					Text(item.name)
+					Row(
+						modifier = Modifier.fillMaxWidth(),
+					) {
+						Text(item.lang)
 
-					if (item.isInstalled && item.installedVersion != null)
-						Text(item.installedVersion!!.toString())
+						if (item.isInstalled && item.installedVersion != null)
+							Text(
+								item.installedVersion!!.toString(),
+								modifier = Modifier.padding(start = 8.dp)
+							)
 
-					if (item.isUpdateAvailable && item.updateVersion != null)
-						Text(item.updateVersion!!.toString())
+						if (item.isUpdateAvailable && item.updateVersion != null)
+							Text(
+								item.updateVersion!!.toString(),
+								modifier = Modifier.padding(start = 8.dp)
+							)
+					}
 				}
 			}
-			if (!item.isInstalled && !item.isInstalling) {
+			if (!item.isInstalled && !item.isInstalling && !item.installOptions.isNullOrEmpty()) {
 				var isDropdownVisible by remember { mutableStateOf(false) }
 				IconButton(
 					onClick = {
@@ -368,8 +467,11 @@ fun BrowseExtensionContent(
 						onLongClick = cancelInstall,
 					)
 				) {
+					val image =
+						AnimatedImageVector.animatedVectorResource(R.drawable.animated_refresh)
+
 					Icon(
-						painterResource(R.drawable.animated_refresh),
+						rememberAnimatedVectorPainter(image, false),
 						stringResource(R.string.installing)
 					)
 				}

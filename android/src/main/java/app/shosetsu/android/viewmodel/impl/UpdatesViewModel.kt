@@ -10,7 +10,9 @@ import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.common.enums.ReadingStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.transformLatest
 import org.joda.time.DateTime
 
 /*
@@ -45,15 +47,11 @@ class UpdatesViewModel(
 	private val updateChapterUseCase: UpdateChapterUseCase
 ) : AUpdatesViewModel() {
 	private val updatesFlow by lazy {
-		getUpdatesUseCase()
-			.mapLatest { list ->
-				list.sortedByDescending { it.time }
-			}
-			.mapLatest { hResult ->
-				hResult.let {
-					it.ifEmpty { emptyList() }
-				}
-			}
+		getUpdatesUseCase().transformLatest {
+			isRefreshing.emit(true)
+			emit(it.ifEmpty { emptyList() }.sortedByDescending { it.time })
+			isRefreshing.emit(false)
+		}
 	}
 
 	override val liveData: Flow<List<UpdateCompleteEntity>> by lazy {
@@ -64,8 +62,7 @@ class UpdatesViewModel(
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
 
-	override val isRefreshing: Flow<Boolean>
-		get() = TODO("Not yet implemented")
+	override val isRefreshing: MutableStateFlow<Boolean> by lazy { MutableStateFlow(false) }
 
 	override val items: Flow<Map<DateTime, List<UpdateCompleteEntity>>> by lazy {
 		updatesFlow.mapLatest { result ->

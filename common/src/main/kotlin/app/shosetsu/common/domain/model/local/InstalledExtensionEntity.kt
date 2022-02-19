@@ -41,7 +41,7 @@ data class InstalledExtensionEntity(
 	val fileName: String,
 
 	/** Image URL of the extension*/
-	val imageURL: String?,
+	val imageURL: String,
 
 	/** The language of the extension */
 	val lang: String,

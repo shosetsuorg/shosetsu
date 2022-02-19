@@ -109,5 +109,5 @@ interface IExtensionsRepository {
 	/**
 	 * Check if a given extension is installed
 	 */
-	fun isExtensionInstalled(extensionEntity: GenericExtensionEntity): Boolean
+	suspend fun isExtensionInstalled(extensionEntity: GenericExtensionEntity): Boolean
 }

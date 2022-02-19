@@ -4,6 +4,8 @@ import androidx.annotation.NonNull
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import app.shosetsu.common.domain.model.local.GenericExtensionEntity
+import app.shosetsu.common.dto.Convertible
 import app.shosetsu.lib.ExtensionType
 import app.shosetsu.lib.Version
 
@@ -79,4 +81,16 @@ data class DBRepositoryExtensionEntity(
 
 	@NonNull
 	val type: ExtensionType
-)
+) : Convertible<GenericExtensionEntity> {
+	override fun convertTo(): GenericExtensionEntity = GenericExtensionEntity(
+		id,
+		repoId,
+		name,
+		fileName,
+		imageURL,
+		lang,
+		version,
+		md5,
+		type
+	)
+}
