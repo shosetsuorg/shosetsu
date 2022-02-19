@@ -232,10 +232,11 @@ class BrowseController : ShosetsuController(),
 @Composable
 fun PreviewBrowseContent() {
 	BrowseContent(
-		entities = listOf(
+		entities =
+		List(10) {
 			BrowseExtensionEntity(
-				1,
-				"Fake",
+				it,
+				"Fake a b c",
 				"",
 				"en",
 				installOptions = null,
@@ -245,21 +246,8 @@ fun PreviewBrowseContent() {
 				isUpdateAvailable = false,
 				updateVersion = Version(1, 2, 1),
 				isInstalling = false
-			),
-			BrowseExtensionEntity(
-				2,
-				"Fake",
-				"",
-				"en",
-				installOptions = null,
-				isInstalled = true,
-				installedVersion = Version(1, 1, 1),
-				installedRepo = 1,
-				isUpdateAvailable = false,
-				updateVersion = Version(1, 2, 1),
-				isInstalling = false
-			),
-		),
+			)
+		},
 		{},
 		{ a, b -> },
 		{},
@@ -329,7 +317,7 @@ fun PreviewBrowseExtensionContent() {
 	BrowseExtensionContent(
 		BrowseExtensionEntity(
 			1,
-			"Fake",
+			"Fake a  aaaaaaaaaaaaaaaaa",
 			"",
 			"en",
 			installOptions = null,
@@ -363,15 +351,15 @@ fun BrowseExtensionContent(
 ) {
 	Card(
 		onClick = openCatalogue,
+		modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp)
 	) {
 		Row(
-			modifier = Modifier.fillMaxWidth(),
+			modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp, end = 8.dp),
 			horizontalArrangement = Arrangement.SpaceBetween,
 			verticalAlignment = Alignment.CenterVertically
 		) {
 			Row(
-				modifier = Modifier.fillMaxWidth(.50f),
-				verticalAlignment = Alignment.CenterVertically
+				verticalAlignment = Alignment.CenterVertically,
 			) {
 				Image(
 					painter = if (item.imageURL.isNotEmpty()) {
@@ -382,11 +370,9 @@ fun BrowseExtensionContent(
 					stringResource(R.string.controller_browse_ext_icon_desc)
 				)
 				Column(
-					modifier = Modifier.fillMaxWidth()
 				) {
 					Text(item.name)
 					Row(
-						modifier = Modifier.fillMaxWidth(),
 					) {
 						Text(item.lang)
 
@@ -404,78 +390,84 @@ fun BrowseExtensionContent(
 					}
 				}
 			}
-			if (!item.isInstalled && !item.isInstalling && !item.installOptions.isNullOrEmpty()) {
-				var isDropdownVisible by remember { mutableStateOf(false) }
-				IconButton(
-					onClick = {
-						isDropdownVisible = true
+			Row(
+				verticalAlignment = Alignment.CenterVertically,
+				horizontalArrangement = Arrangement.End
+			) {
+				if (!item.isInstalled && !item.isInstalling && !item.installOptions.isNullOrEmpty()) {
+					var isDropdownVisible by remember { mutableStateOf(false) }
+					IconButton(
+						onClick = {
+							isDropdownVisible = true
+						}
+					) {
+						Icon(painterResource(R.drawable.download), null)
 					}
-				) {
-					Icon(painterResource(R.drawable.download), null)
-				}
-				DropdownMenu(
-					expanded = isDropdownVisible,
-					onDismissRequest = { isDropdownVisible = false },
-				) {
-					item.installOptions?.forEach { s ->
-						DropdownMenuItem(
-							onClick = {
-								install(s)
-								isDropdownVisible = false
-							}
-						) {
-							Column {
-								Text(
-									text = AnnotatedString(s.repoName)
-								)
-								Text(
-									text = AnnotatedString(s.version.toString())
-								)
+					DropdownMenu(
+						expanded = isDropdownVisible,
+						onDismissRequest = { isDropdownVisible = false },
+					) {
+						item.installOptions?.forEach { s ->
+							DropdownMenuItem(
+								onClick = {
+									install(s)
+									isDropdownVisible = false
+								}
+							) {
+								Column {
+									Text(
+										text = AnnotatedString(s.repoName)
+									)
+									Text(
+										text = AnnotatedString(s.version.toString())
+									)
+								}
 							}
 						}
 					}
 				}
-			}
 
-			if (item.isUpdateAvailable) {
-				IconButton(
-					onClick = update
-				) {
-					Icon(
-						painterResource(R.drawable.tinted_update),
-						stringResource(R.string.update)
-					)
+				if (item.isUpdateAvailable) {
+					IconButton(
+						onClick = update
+					) {
+						Icon(
+							painterResource(R.drawable.tinted_update),
+							stringResource(R.string.update)
+						)
+					}
 				}
-			}
 
-			if (item.isInstalled) {
-				IconButton(
-					onClick = openSettings
-				) {
-					Icon(
-						painterResource(R.drawable.settings),
-						stringResource(R.string.settings)
-					)
+				if (item.isInstalled) {
+					IconButton(
+						onClick = openSettings
+					) {
+						Icon(
+							painterResource(R.drawable.settings),
+							stringResource(R.string.settings)
+						)
+					}
 				}
-			}
 
-			if (item.isInstalling) {
-				IconButton(
-					onClick = {},
-					modifier = Modifier.combinedClickable(
+				if (item.isInstalling) {
+					IconButton(
 						onClick = {},
-						onLongClick = cancelInstall,
-					)
-				) {
-					val image =
-						AnimatedImageVector.animatedVectorResource(R.drawable.animated_refresh)
+						modifier = Modifier.combinedClickable(
+							onClick = {},
+							onLongClick = cancelInstall,
+						)
+					) {
+						val image =
+							AnimatedImageVector.animatedVectorResource(R.drawable.animated_refresh)
 
-					Icon(
-						rememberAnimatedVectorPainter(image, false),
-						stringResource(R.string.installing)
-					)
+						Icon(
+							rememberAnimatedVectorPainter(image, false),
+							stringResource(R.string.installing)
+						)
+					}
 				}
 			}
+
 		}
 	}
 }
