@@ -54,10 +54,10 @@ class InstallExtensionUseCase(
 		val oldType: Novel.ChapterType?
 		val deleteChapters: Boolean
 
-		val installedExt = extensionRepository.getInstalledExtension(extToInstall.id)
+		val oldInstalledExt = extensionRepository.getInstalledExtension(extToInstall.id)
 
-		if (installedExt != null && installedExt.version < iExt.exMetaData.version) {
-			oldType = installedExt.chapterType
+		if (oldInstalledExt != null && oldInstalledExt.version < iExt.exMetaData.version) {
+			oldType = oldInstalledExt.chapterType
 			deleteChapters = oldType != iExt.chapterType
 		} else {
 			oldType = null
@@ -65,37 +65,43 @@ class InstallExtensionUseCase(
 		}
 
 		// Uninstall the currently installed version of the extension
-		if (installedExt != null)
-			extensionEntitiesRepository.uninstall(installedExt.generify())
+		if (oldInstalledExt != null)
+			extensionEntitiesRepository.uninstall(oldInstalledExt.generify())
 
 		// Write to storage/cache
 		extensionEntitiesRepository.save(extToInstall, iExt, extensionContent)
 
-		extensionRepository.updateInstalledExtension(
-			installedExt?.copy(
-				repoID = extToInstall.repoID,
-				name = extToInstall.fileName,
-				fileName = extToInstall.fileName,
-				imageURL = extToInstall.imageURL,
-				lang = extToInstall.lang,
-				version = extToInstall.version,
-				md5 = extToInstall.md5,
-				type = extToInstall.type,
-				chapterType = iExt.chapterType
-			) ?: InstalledExtensionEntity(
-				id = extToInstall.id,
-				repoID = extToInstall.repoID,
-				name = extToInstall.name,
-				fileName = extToInstall.fileName,
-				imageURL = extToInstall.imageURL,
-				lang = extToInstall.lang,
-				version = extToInstall.version,
-				md5 = extToInstall.md5,
-				type = extToInstall.type,
-				enabled = true,
-				chapterType = iExt.chapterType
+		if (oldInstalledExt != null)
+			extensionRepository.updateInstalledExtension(
+				oldInstalledExt?.copy(
+					repoID = extToInstall.repoID,
+					name = extToInstall.fileName,
+					fileName = extToInstall.fileName,
+					imageURL = extToInstall.imageURL,
+					lang = extToInstall.lang,
+					version = extToInstall.version,
+					md5 = extToInstall.md5,
+					type = extToInstall.type,
+					chapterType = iExt.chapterType
+				)
 			)
-		)
+		else {
+			extensionRepository.insert(
+				InstalledExtensionEntity(
+					id = extToInstall.id,
+					repoID = extToInstall.repoID,
+					name = extToInstall.name,
+					fileName = extToInstall.fileName,
+					imageURL = extToInstall.imageURL,
+					lang = extToInstall.lang,
+					version = extToInstall.version,
+					md5 = extToInstall.md5,
+					type = extToInstall.type,
+					enabled = true,
+					chapterType = iExt.chapterType
+				)
+			)
+		}
 
 		return InstallExtensionFlags(
 			deleteChapters,

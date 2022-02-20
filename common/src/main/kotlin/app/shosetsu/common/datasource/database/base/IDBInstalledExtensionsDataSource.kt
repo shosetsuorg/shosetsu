@@ -45,7 +45,7 @@ interface IDBInstalledExtensionsDataSource {
 	suspend fun loadExtension(formatterID: Int): InstalledExtensionEntity?
 
 	/** Load an [InstalledExtensionEntity] via its [formatterID]*/
-	fun loadExtensionLive(formatterID: Int): Flow<InstalledExtensionEntity>
+	fun loadExtensionLive(formatterID: Int): Flow<InstalledExtensionEntity?>
 
 	@Throws(GenericSQLiteException::class)
 	suspend fun getExtensions(repoID: Int): List<InstalledExtensionEntity>

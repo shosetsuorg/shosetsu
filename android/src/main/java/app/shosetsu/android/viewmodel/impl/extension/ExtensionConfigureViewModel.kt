@@ -54,7 +54,7 @@ class ExtensionConfigureViewModel(
 ) : AExtensionConfigureViewModel() {
 	private val extensionIdFlow: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
 
-	override val liveData: Flow<InstalledExtensionEntity> by lazy {
+	override val liveData: Flow<InstalledExtensionEntity?> by lazy {
 		extensionIdFlow.transformLatest { id ->
 			emitAll(loadExtensionUI(id))
 		}

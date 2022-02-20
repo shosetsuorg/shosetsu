@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.Flow
  * [liveData] is of the formatter object itself
  */
 abstract class AExtensionConfigureViewModel
-	: ShosetsuViewModel(), SubscribeViewModel<InstalledExtensionEntity> {
+	: ShosetsuViewModel(), SubscribeViewModel<InstalledExtensionEntity?> {
 
 	abstract val extensionListing: Flow<ListingSelectionData>
 	abstract val extensionSettings: Flow<List<FilterEntity>>

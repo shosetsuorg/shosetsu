@@ -41,6 +41,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewTreeLifecycleOwner
@@ -277,7 +279,8 @@ fun BrowseContent(
 	) {
 		if (entities.isNotEmpty()) {
 			LazyColumn(
-				modifier = Modifier.fillMaxSize()
+				modifier = Modifier.fillMaxSize(),
+				contentPadding = PaddingValues(bottom = 198.dp)
 			) {
 				items(entities, key = { it.id }) { entity ->
 					BrowseExtensionContent(
@@ -340,7 +343,8 @@ fun PreviewBrowseExtensionContent() {
 
 @OptIn(
 	ExperimentalMaterialApi::class, androidx.compose.foundation.ExperimentalFoundationApi::class,
-	androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi::class
+	androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi::class,
+	androidx.compose.ui.unit.ExperimentalUnitApi::class
 )
 @Composable
 fun BrowseExtensionContent(
@@ -356,7 +360,7 @@ fun BrowseExtensionContent(
 		modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp)
 	) {
 		Row(
-			modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp, end = 8.dp),
+			modifier = Modifier.fillMaxWidth().padding(end = 8.dp),
 			horizontalArrangement = Arrangement.SpaceBetween,
 			verticalAlignment = Alignment.CenterVertically
 		) {
@@ -369,25 +373,28 @@ fun BrowseExtensionContent(
 					} else {
 						painterResource(R.drawable.broken_image)
 					},
-					stringResource(R.string.controller_browse_ext_icon_desc)
+					stringResource(R.string.controller_browse_ext_icon_desc),
+					modifier = Modifier.size(64.dp)
 				)
 				Column(
+					modifier = Modifier.padding(start = 8.dp)
 				) {
 					Text(item.name)
-					Row(
-					) {
-						Text(item.lang)
+					Row {
+						Text(item.lang, fontSize = TextUnit(14f, TextUnitType.Sp))
 
 						if (item.isInstalled && item.installedVersion != null)
 							Text(
 								item.installedVersion!!.toString(),
-								modifier = Modifier.padding(start = 8.dp)
+								modifier = Modifier.padding(start = 8.dp),
+								fontSize = TextUnit(14f, TextUnitType.Sp)
 							)
 
 						if (item.isUpdateAvailable && item.updateVersion != null)
 							Text(
 								item.updateVersion!!.toString(),
-								modifier = Modifier.padding(start = 8.dp)
+								modifier = Modifier.padding(start = 8.dp),
+								fontSize = TextUnit(14f, TextUnitType.Sp)
 							)
 					}
 				}

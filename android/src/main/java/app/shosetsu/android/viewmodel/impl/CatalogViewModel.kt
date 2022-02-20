@@ -111,7 +111,7 @@ class CatalogViewModel(
 					}
 				}
 			}
-		}
+		}.onIO()
 	}
 
 	private val itemsFlow: MutableStateFlow<List<ACatalogNovelUI>> by lazy {
@@ -128,13 +128,13 @@ class CatalogViewModel(
 	private val filterReloadFlow = MutableStateFlow(true)
 
 	override val filterItemsLive: Flow<List<Filter<*>>>
-		get() = filterItemFlow.mapLatest { it.toList() }
+		get() = filterItemFlow.mapLatest { it.toList() }.onIO()
 
 	override val hasSearchLive: Flow<Boolean> by lazy {
 		iExtensionFlow.mapLatest { it.hasSearch }.transformLatest {
 			_hasSearch = it
 			emit(it)
-		}
+		}.onIO()
 	}
 
 	private var _hasSearch: Boolean = false
@@ -143,7 +143,7 @@ class CatalogViewModel(
 		get() = _hasSearch
 
 	override val extensionName: Flow<String> by lazy {
-		iExtensionFlow.mapLatest { it.name }
+		iExtensionFlow.mapLatest { it.name }.onIO()
 	}
 
 	private var stateManager = StateManager()

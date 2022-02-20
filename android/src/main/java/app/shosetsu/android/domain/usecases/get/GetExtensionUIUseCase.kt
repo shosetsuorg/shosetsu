@@ -28,6 +28,6 @@ import kotlinx.coroutines.flow.Flow
 class GetExtensionUIUseCase(
 	private val iExtensionsRepository: IExtensionsRepository,
 ) {
-	operator fun invoke(id: Int): Flow<InstalledExtensionEntity> =
-		iExtensionsRepository.getExtensionFlow(id)
+	operator fun invoke(id: Int): Flow<InstalledExtensionEntity?> =
+		iExtensionsRepository.getInstalledExtensionFlow(id)
 }

@@ -61,7 +61,7 @@ interface InstalledExtensionsDao : BaseDao<DBInstalledExtensionEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query("SELECT * FROM installed_extension WHERE id = :id LIMIT 1")
-	fun getExtensionFlow(id: Int): Flow<DBInstalledExtensionEntity>
+	fun getExtensionFlow(id: Int): Flow<DBInstalledExtensionEntity?>
 
 	// Misc
 

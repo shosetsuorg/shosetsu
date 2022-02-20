@@ -41,8 +41,8 @@ class DBInstalledExtensionsDataSource(
 		emitAll(extensionsDao.loadExtensionsFlow().map { it.convertList() })
 	}
 
-	override fun loadExtensionLive(formatterID: Int): Flow<InstalledExtensionEntity> = flow {
-		emitAll(extensionsDao.getExtensionFlow(formatterID).map { it.convertTo() })
+	override fun loadExtensionLive(formatterID: Int): Flow<InstalledExtensionEntity?> = flow {
+		emitAll(extensionsDao.getExtensionFlow(formatterID).map { it?.convertTo() })
 	}
 
 	override suspend fun updateExtension(extensionEntity: InstalledExtensionEntity): Unit = try {
