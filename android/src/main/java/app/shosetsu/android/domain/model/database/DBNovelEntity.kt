@@ -54,7 +54,7 @@ data class DBNovelEntity(
 
 	/** Source this novel is from */
 	@ColumnInfo(name = "formatterID")
-	val extensionID: Int,
+	val extensionID: Int?,
 
 	/** If this novel is in the user's library */
 	var bookmarked: Boolean = false,

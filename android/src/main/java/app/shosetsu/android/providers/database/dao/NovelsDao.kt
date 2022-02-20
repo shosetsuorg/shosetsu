@@ -85,7 +85,7 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 	@Transaction
 	@Throws(SQLiteException::class)
 	suspend fun insertReturnStripped(entity: DBNovelEntity): DBStrippedNovelEntity? =
-		loadNovelID(entity.url, entity.extensionID)?.let { id ->
+		loadNovelID(entity.url, entity.extensionID!!)?.let { id ->
 			loadDBStrippedNovelEntity(id)
 		} ?: loadDBStrippedNovelEntityViaRow(insertAbort(entity))
 

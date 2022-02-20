@@ -35,7 +35,7 @@ data class NovelEntity(
 	var url: String,
 
 	/** Source this novel is from */
-	val extensionID: Int,
+	val extensionID: Int?,
 
 	/** If this novel is in the user's library */
 	var bookmarked: Boolean = false,

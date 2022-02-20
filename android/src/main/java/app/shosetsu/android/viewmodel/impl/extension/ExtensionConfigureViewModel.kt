@@ -57,7 +57,7 @@ class ExtensionConfigureViewModel(
 	override val liveData: Flow<InstalledExtensionEntity?> by lazy {
 		extensionIdFlow.transformLatest { id ->
 			emitAll(loadExtensionUI(id))
-		}
+		}.onIO()
 	}
 
 	private val extListNamesFlow: Flow<ListingSelectionData> by lazy {
@@ -79,11 +79,11 @@ class ExtensionConfigureViewModel(
 	}
 
 	override val extensionSettings: Flow<List<FilterEntity>> by lazy {
-		extensionSettingsFlow
+		extensionSettingsFlow.onIO()
 	}
 
 	override val extensionListing: Flow<ListingSelectionData> by lazy {
-		extListNamesFlow
+		extListNamesFlow.onIO()
 	}
 
 	override fun setExtensionID(id: Int) {
