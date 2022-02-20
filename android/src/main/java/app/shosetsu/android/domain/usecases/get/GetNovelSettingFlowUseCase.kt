@@ -1,6 +1,8 @@
 package app.shosetsu.android.domain.usecases.get
 
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.utils.uifactory.NovelSettingConversionFactory
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.NovelSettingEntity
 import app.shosetsu.common.domain.repositories.base.INovelSettingsRepository
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
@@ -37,11 +39,15 @@ class GetNovelSettingFlowUseCase(
 	private val iNovelsRepository: INovelsRepository
 ) {
 	operator fun invoke(novelID: Int): Flow<NovelSettingUI?> =
-		novelSettingsRepository.getFlow(novelID).transform { settingsResult ->
-			settingsResult?.let {
+		novelSettingsRepository.getFlow(novelID).transform { settings ->
+			settings?.let {
 				emit(NovelSettingConversionFactory(it).convertTo())
 			} ?: run {
-				novelSettingsRepository.insert(NovelSettingEntity(novelID))
+				try {
+					novelSettingsRepository.insert(NovelSettingEntity(novelID))
+				} catch (e: GenericSQLiteException) {
+					logE("Cannot insert, Already inserted?", e)
+				}
 			}
 		}
 }

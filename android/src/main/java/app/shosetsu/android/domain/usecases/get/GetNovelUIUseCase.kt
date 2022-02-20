@@ -45,7 +45,7 @@ class GetNovelUIUseCase(
 						novelUI.apply {
 							extName = ext.name
 						}
-					}
+					} ?: novelUI
 				else null
 			})
 	}
