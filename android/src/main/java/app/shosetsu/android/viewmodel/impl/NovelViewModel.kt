@@ -72,7 +72,7 @@ class NovelViewModel(
 ) : ANovelViewModel() {
 
 	override val chaptersLive: Flow<List<ChapterUI>> by lazy {
-		chaptersFlow
+		chaptersFlow.onIO()
 	}
 
 	private val chaptersFlow: Flow<List<ChapterUI>> by lazy {
@@ -88,30 +88,35 @@ class NovelViewModel(
 					.combineSort()
 					.combineReverse()
 			)
-			isRefreshing.emit(false)
+			_isRefreshing.emit(false)
 		}
 	}
 
 	override val novelSettingFlow: Flow<NovelSettingUI?> by lazy {
-		novelSettingsFlow
+		novelSettingsFlow.onIO()
 	}
 
 	override fun getIfAllowTrueDelete(): Flow<Boolean> =
 		flow {
 			emit(getTrueDelete())
-		}
+		}.onIO()
 
 	private val novelFlow: Flow<NovelUI?> by lazy {
 		novelIDLive.transformLatest {
-			isRefreshing.emit(true)
+			_isRefreshing.emit(true)
 			emitAll(loadNovelUIUseCase(it))
 		}
 	}
 
 	override val novelLive: Flow<NovelUI?> by lazy {
-		novelFlow
+		novelFlow.onIO()
 	}
-	override val isRefreshing: MutableStateFlow<Boolean> by lazy { MutableStateFlow(false) }
+
+	private val _isRefreshing by lazy {
+		MutableStateFlow(false)
+	}
+
+	override val isRefreshing: Flow<Boolean> = _isRefreshing.onIO()
 
 	private val novelSettingsFlow: Flow<NovelSettingUI?> by lazy {
 		novelIDLive.transformLatest { emitAll(getNovelSettingFlowUseCase(it)) }
@@ -269,12 +274,12 @@ class NovelViewModel(
 					array.indexOf(chapter)
 				}
 			)
-		}
+		}.onIO()
 
 	override fun getNovelURL(): Flow<String?> =
 		flow {
 			emit(getContentURL(novelFlow.first { it != null }!!))
-		}
+		}.onIO()
 
 	override fun getShareInfo(): Flow<NovelShareInfo?> =
 		flow {
@@ -283,12 +288,12 @@ class NovelViewModel(
 					NovelShareInfo(it.title, url)
 				}
 			})
-		}
+		}.onIO()
 
 	override fun getChapterURL(chapterUI: ChapterUI): Flow<String?> =
 		flow {
 			emit(getContentURL(chapterUI))
-		}
+		}.onIO()
 
 	override fun refresh(): Flow<Unit> =
 		flow {
@@ -296,7 +301,7 @@ class NovelViewModel(
 				startDownloadWorkerAfterUpdateUseCase(it.updatedChapters)
 			}
 			emit(Unit)
-		}
+		}.onIO()
 
 	override fun setNovelID(novelID: Int) {
 		when {
@@ -319,7 +324,7 @@ class NovelViewModel(
 
 	override fun isBookmarked(): Flow<Boolean> = flow {
 		emit(novelFlow.first()?.bookmarked ?: false)
-	}
+	}.onIO()
 
 	override fun markChapterAsRead(chapterUI: ChapterUI) {
 		launchIO {

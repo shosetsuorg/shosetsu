@@ -41,11 +41,13 @@ class GetNovelUIUseCase(
 				}
 			}.map { novelUI ->
 				if (novelUI != null)
-					extensionRepository.getInstalledExtension(novelUI.extID)?.let { ext ->
-						novelUI.apply {
-							extName = ext.name
+					if (novelUI.extID != null)
+						extensionRepository.getInstalledExtension(novelUI.extID)?.let { ext ->
+							novelUI.apply {
+								extName = ext.name
+							}
 						}
-					}
+					else novelUI
 				else null
 			})
 	}
