@@ -426,12 +426,13 @@ fun BrowseExtensionContent(
 									isDropdownVisible = false
 								}
 							) {
-								Column {
+								Row {
 									Text(
 										text = AnnotatedString(s.repoName)
 									)
 									Text(
-										text = AnnotatedString(s.version.toString())
+										text = AnnotatedString(s.version.toString()),
+										modifier = Modifier.padding(start = 8.dp)
 									)
 								}
 							}
