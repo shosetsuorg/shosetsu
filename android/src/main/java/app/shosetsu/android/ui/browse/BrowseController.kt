@@ -419,7 +419,7 @@ fun BrowseExtensionContent(
 						expanded = isDropdownVisible,
 						onDismissRequest = { isDropdownVisible = false },
 					) {
-						item.installOptions?.forEach { s ->
+						item.installOptions?.sortedBy { it.version }?.forEach { s ->
 							DropdownMenuItem(
 								onClick = {
 									install(s)
