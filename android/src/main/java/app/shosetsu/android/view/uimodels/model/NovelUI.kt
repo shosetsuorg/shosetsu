@@ -43,7 +43,7 @@ data class NovelUI(
 
 	val novelURL: String,
 
-	val extID: Int?,
+	val extID: Int,
 
 	var extName: String = "",
 

@@ -33,10 +33,8 @@ class GetURLUseCase(private val getExt: GetExtensionUseCase) {
 	suspend operator fun invoke(url: String, formatterID: Int, type: Int): String? =
 		getExt(formatterID)?.expandURL(url, type)
 
-	suspend operator fun invoke(novelUI: NovelUI): String? {
-		if (novelUI.extID == null) return null
-		return this(novelUI.novelURL, novelUI.extID, KEY_NOVEL_URL)
-	}
+	suspend operator fun invoke(novelUI: NovelUI): String? =
+		this(novelUI.novelURL, novelUI.extID, KEY_NOVEL_URL)
 
 	suspend operator fun invoke(chapterUI: ChapterUI): String? =
 		this(chapterUI.link, chapterUI.extensionID!!, KEY_CHAPTER_URL)
