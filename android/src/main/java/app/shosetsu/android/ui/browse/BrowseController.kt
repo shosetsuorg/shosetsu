@@ -407,7 +407,10 @@ fun BrowseExtensionContent(
 					var isDropdownVisible by remember { mutableStateOf(false) }
 					IconButton(
 						onClick = {
-							isDropdownVisible = true
+							// We can skip to dropdown if there is only 1 install option
+							if (item.installOptions!!.size != 1)
+								isDropdownVisible = true
+							else install(item.installOptions!![0])
 						}
 					) {
 						Icon(painterResource(R.drawable.download), null)
