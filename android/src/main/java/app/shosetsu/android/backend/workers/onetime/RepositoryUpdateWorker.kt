@@ -169,13 +169,14 @@ class RepositoryUpdateWorker(
 		presentExtensions: List<Int>
 	) {
 		list.filterNot { presentExtensions.contains(it.id) }.forEach {
-			if (extRepo.isExtensionInstalled(it))
+			// for each extension that is not present in the present in the repository
+			if (extRepo.isExtensionInstalled(it)) {
 				extRepo.updateRepositoryExtension(
 					it.copy(
 						version = Version(-9, -9, -9)
 					)
 				)
-			else {
+			} else {
 				logI("Removing Extension: $it")
 				removeExtension(it)
 			}

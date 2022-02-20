@@ -27,16 +27,19 @@ import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -357,130 +360,154 @@ fun BrowseExtensionContent(
 ) {
 	Card(
 		onClick = openCatalogue,
-		modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp)
+		modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp),
+		shape = RoundedCornerShape(16.dp)
 	) {
-		Row(
-			modifier = Modifier.fillMaxWidth().padding(end = 8.dp),
-			horizontalArrangement = Arrangement.SpaceBetween,
-			verticalAlignment = Alignment.CenterVertically
-		) {
+		Column {
 			Row(
-				verticalAlignment = Alignment.CenterVertically,
+				modifier = Modifier.fillMaxWidth().padding(end = 8.dp),
+				horizontalArrangement = Arrangement.SpaceBetween,
+				verticalAlignment = Alignment.CenterVertically
 			) {
-				Image(
-					painter = if (item.imageURL.isNotEmpty()) {
-						rememberImagePainter(item.imageURL)
-					} else {
-						painterResource(R.drawable.broken_image)
-					},
-					stringResource(R.string.controller_browse_ext_icon_desc),
-					modifier = Modifier.size(64.dp)
-				)
-				Column(
-					modifier = Modifier.padding(start = 8.dp)
+				Row(
+					verticalAlignment = Alignment.CenterVertically,
 				) {
-					Text(item.name)
-					Row {
-						Text(item.lang, fontSize = TextUnit(14f, TextUnitType.Sp))
-
-						if (item.isInstalled && item.installedVersion != null)
-							Text(
-								item.installedVersion!!.toString(),
-								modifier = Modifier.padding(start = 8.dp),
-								fontSize = TextUnit(14f, TextUnitType.Sp)
-							)
-
-						if (item.isUpdateAvailable && item.updateVersion != null)
-							Text(
-								item.updateVersion!!.toString(),
-								modifier = Modifier.padding(start = 8.dp),
-								fontSize = TextUnit(14f, TextUnitType.Sp)
-							)
-					}
-				}
-			}
-			Row(
-				verticalAlignment = Alignment.CenterVertically,
-				horizontalArrangement = Arrangement.End
-			) {
-				if (!item.isInstalled && !item.isInstalling && !item.installOptions.isNullOrEmpty()) {
-					var isDropdownVisible by remember { mutableStateOf(false) }
-					IconButton(
-						onClick = {
-							// We can skip to dropdown if there is only 1 install option
-							if (item.installOptions!!.size != 1)
-								isDropdownVisible = true
-							else install(item.installOptions!![0])
-						}
+					Image(
+						painter = if (item.imageURL.isNotEmpty()) {
+							rememberImagePainter(item.imageURL)
+						} else {
+							painterResource(R.drawable.broken_image)
+						},
+						stringResource(R.string.controller_browse_ext_icon_desc),
+						modifier = Modifier.size(64.dp)
+					)
+					Column(
+						modifier = Modifier.padding(start = 8.dp)
 					) {
-						Icon(painterResource(R.drawable.download), null)
-					}
-					DropdownMenu(
-						expanded = isDropdownVisible,
-						onDismissRequest = { isDropdownVisible = false },
-					) {
-						item.installOptions?.sortedBy { it.version }?.forEach { s ->
-							DropdownMenuItem(
-								onClick = {
-									install(s)
-									isDropdownVisible = false
-								}
-							) {
-								Row {
+						Text(item.name)
+						Row {
+							Text(item.lang, fontSize = TextUnit(14f, TextUnitType.Sp))
+
+							if (item.isInstalled && item.installedVersion != null)
+								Text(
+									item.installedVersion!!.toString(),
+									modifier = Modifier.padding(start = 8.dp),
+									fontSize = TextUnit(14f, TextUnitType.Sp)
+								)
+
+							if (item.isUpdateAvailable && item.updateVersion != null) {
+								if (item.updateVersion != Version(-9, -9, -9))
 									Text(
-										text = AnnotatedString(s.repoName)
+										stringResource(
+											R.string.update_to,
+											item.updateVersion!!.toString()
+										),
+										modifier = Modifier.padding(start = 8.dp),
+										fontSize = TextUnit(14f, TextUnitType.Sp),
+										color = colorResource(R.color.colorAccent)
 									)
-									Text(
-										text = AnnotatedString(s.version.toString()),
-										modifier = Modifier.padding(start = 8.dp)
-									)
-								}
 							}
 						}
 					}
 				}
-
-				if (item.isUpdateAvailable) {
-					IconButton(
-						onClick = update
-					) {
-						Icon(
-							painterResource(R.drawable.tinted_update),
-							stringResource(R.string.update)
-						)
+				Row(
+					verticalAlignment = Alignment.CenterVertically,
+					horizontalArrangement = Arrangement.End
+				) {
+					if (!item.isInstalled && !item.isInstalling && !item.installOptions.isNullOrEmpty()) {
+						var isDropdownVisible by remember { mutableStateOf(false) }
+						IconButton(
+							onClick = {
+								// We can skip to dropdown if there is only 1 install option
+								if (item.installOptions!!.size != 1)
+									isDropdownVisible = true
+								else install(item.installOptions!![0])
+							}
+						) {
+							Icon(painterResource(R.drawable.download), null)
+						}
+						DropdownMenu(
+							expanded = isDropdownVisible,
+							onDismissRequest = { isDropdownVisible = false },
+						) {
+							item.installOptions?.sortedBy { it.version }?.forEach { s ->
+								DropdownMenuItem(
+									onClick = {
+										install(s)
+										isDropdownVisible = false
+									}
+								) {
+									Row {
+										Text(
+											text = AnnotatedString(s.repoName)
+										)
+										Text(
+											text = AnnotatedString(s.version.toString()),
+											modifier = Modifier.padding(start = 8.dp)
+										)
+									}
+								}
+							}
+						}
 					}
-				}
 
-				if (item.isInstalled) {
-					IconButton(
-						onClick = openSettings
-					) {
-						Icon(
-							painterResource(R.drawable.settings),
-							stringResource(R.string.settings)
-						)
+					if (item.isUpdateAvailable) {
+						IconButton(
+							onClick = update
+						) {
+							Icon(
+								painterResource(R.drawable.tinted_update),
+								stringResource(R.string.update)
+							)
+						}
 					}
-				}
 
-				if (item.isInstalling) {
-					IconButton(
-						onClick = {},
-						modifier = Modifier.combinedClickable(
+					if (item.isInstalled) {
+						IconButton(
+							onClick = openSettings
+						) {
+							Icon(
+								painterResource(R.drawable.settings),
+								stringResource(R.string.settings)
+							)
+						}
+					}
+
+					if (item.isInstalling) {
+						IconButton(
 							onClick = {},
-							onLongClick = cancelInstall,
-						)
-					) {
-						val image =
-							AnimatedImageVector.animatedVectorResource(R.drawable.animated_refresh)
+							modifier = Modifier.combinedClickable(
+								onClick = {},
+								onLongClick = cancelInstall,
+							)
+						) {
+							val image =
+								AnimatedImageVector.animatedVectorResource(R.drawable.animated_refresh)
 
-						Icon(
-							rememberAnimatedVectorPainter(image, false),
-							stringResource(R.string.installing)
+							Icon(
+								rememberAnimatedVectorPainter(image, false),
+								stringResource(R.string.installing)
+							)
+						}
+					}
+				}
+
+			}
+
+			if (item.isUpdateAvailable && item.updateVersion != null) {
+				if (item.updateVersion == Version(-9, -9, -9)) {
+					Box(
+						modifier = Modifier.background(colorResource(R.color.colorAccent))
+							.fillMaxWidth()
+					) {
+						Text(
+							stringResource(R.string.obsolete_extension),
+							color = colorResource(R.color.design_default_color_on_primary),
+							modifier = Modifier.padding(8.dp).align(Alignment.Center)
 						)
 					}
 				}
 			}
-
 		}
 	}
 }
