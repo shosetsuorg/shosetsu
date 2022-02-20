@@ -208,7 +208,7 @@ fun AdvancedSettingsContent(
 				title = stringResource(R.string.settings_advanced_clear_cookies_title),
 				description = stringResource(R.string.settings_advanced_clear_cookies_desc),
 				buttonText = stringResource(R.string.settings_advanced_clear_cookies_button),
-				modifier = Modifier.fillMaxWidth(),
+				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
 				onClick = onClearCookies
 			)
 		}
@@ -220,6 +220,16 @@ fun AdvancedSettingsContent(
 				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
 				repo = viewModel.settingsRepo,
 				key = SettingKey.ExposeTrueChapterDelete
+			)
+		}
+
+		item {
+			SwitchSettingContent(
+				title = stringResource(R.string.settings_advanced_log_title),
+				description = stringResource(R.string.settings_advanced_log_desc),
+				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				repo = viewModel.settingsRepo,
+				key = SettingKey.LogToFile
 			)
 		}
 	}

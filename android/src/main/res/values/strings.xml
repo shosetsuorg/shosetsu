@@ -610,6 +610,8 @@
     <string name="controller_backup_error_unselected">No backup has been selected to export</string>
     <string name="export_backup_notification_missing_uri">URI not provided to export backup to</string>
     <string name="export_backup_notification_invalid_backup">No such backup exists</string>
+    <string name="settings_advanced_log_title">Log to file</string>
+    <string name="settings_advanced_log_desc">Enabling logs to a file, but may cause slow downs.\nRequires a restart</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>
