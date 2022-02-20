@@ -47,7 +47,10 @@ import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
-import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.common.ext.displayOfflineSnackBar
+import app.shosetsu.android.common.ext.makeSnackBar
+import app.shosetsu.android.common.ext.shosetsuPush
+import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.catalogue.CatalogController
 import app.shosetsu.android.ui.extensionsConfigure.ConfigureExtension
 import app.shosetsu.android.view.compose.EmptyDataContent
@@ -277,9 +280,6 @@ fun BrowseContent(
 				modifier = Modifier.fillMaxSize()
 			) {
 				items(entities, key = { it.id }) { entity ->
-					launchIO {
-						println("Item $entity")
-					}
 					BrowseExtensionContent(
 						entity,
 						install = {
@@ -320,8 +320,10 @@ fun PreviewBrowseExtensionContent() {
 			"Fake a  aaaaaaaaaaaaaaaaa",
 			"",
 			"en",
-			installOptions = null,
-			isInstalled = true,
+			installOptions = listOf(
+				ExtensionInstallOptionEntity(1, "Wowa", Version(1, 1, 1))
+			),
+			isInstalled = false,
 			installedVersion = Version(1, 1, 1),
 			installedRepo = 1,
 			isUpdateAvailable = false,

@@ -45,7 +45,6 @@ class ExtensionsRepository(
 		return repoDBSource.loadExtensionsFlow().transformLatest { list ->
 
 			val browseExtensions = list.groupBy { it.id }.map { (extId, matchingExtensions) ->
-				println("Working on extension $extId")
 				val installedExt = installedDBSource.loadExtension(extId)
 				val firstExt = matchingExtensions.first()
 
@@ -56,7 +55,7 @@ class ExtensionsRepository(
 					lang = installedExt?.lang ?: firstExt.lang,
 					installOptions = if (installedExt == null) {
 						matchingExtensions.mapNotNull { genericExt ->
-							val repo = _repoDBSource.loadRepository(genericExt.id)
+							val repo = _repoDBSource.loadRepository(genericExt.repoID)
 
 							if (repo != null && repo.isEnabled)
 								ExtensionInstallOptionEntity(
