@@ -64,8 +64,8 @@ class ExtensionsRepository(
 										genericExt.version
 									)
 								else null
-							}
-						} else emptyList(),
+							}.sortedBy { it.repoId }.sortedBy { it.version }
+						} else null,
 						isInstalled = installedExt != null,
 						installedVersion = installedExt?.version,
 						installedRepo = installedExt?.repoID ?: -1,
