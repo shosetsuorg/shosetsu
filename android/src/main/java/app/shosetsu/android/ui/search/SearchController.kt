@@ -38,6 +38,9 @@ import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ASearchViewModel
 import coil.compose.rememberImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -79,21 +82,24 @@ class SearchController(bundle: Bundle) : ShosetsuController(bundle) {
 		savedViewState: Bundle?
 	): View = ComposeView(container.context).apply {
 		setContent {
-			val rows by viewModel.listings.collectAsState(listOf())
-			SearchContent(
-				rows,
-				viewModel::getIsLoading,
-				{
-					if (it == -1)
-						viewModel.searchLibrary()
-					else viewModel.searchExtension(it)
-				},
-				viewModel::getException,
-				{
-					router.shosetsuPush(NovelController(bundleOf(BundleKeys.BUNDLE_NOVEL_ID to it.id)))
-				},
-				viewModel::refresh
-			)
+			MdcTheme {
+				val rows by viewModel.listings.collectAsState(listOf())
+				SearchContent(
+					rows,
+					viewModel::getIsLoading,
+					{
+						if (it == -1)
+							viewModel.searchLibrary()
+						else viewModel.searchExtension(it)
+					},
+					viewModel::getException,
+					{
+						router.shosetsuPush(NovelController(bundleOf(BundleKeys.BUNDLE_NOVEL_ID to it.id)))
+					},
+					viewModel::refresh,
+					viewModel::refresh
+				)
+			}
 		}
 	}
 
@@ -159,7 +165,8 @@ fun PreviewSearchContent() {
 			flow { emit(null) }
 		},
 		onClick = {},
-		onRefresh = {}
+		onRefresh = {},
+		onRefreshAll = {}
 	)
 }
 
@@ -170,27 +177,33 @@ fun SearchContent(
 	getChildren: (id: Int) -> Flow<List<ACatalogNovelUI>>,
 	getException: (id: Int) -> Flow<Throwable?>,
 	onClick: (ACatalogNovelUI) -> Unit,
-	onRefresh: (id: Int) -> Unit
+	onRefresh: (id: Int) -> Unit,
+	onRefreshAll: () -> Unit
 ) {
-	LazyColumn(
-		modifier = Modifier.fillMaxSize()
+	SwipeRefresh(
+		rememberSwipeRefreshState(false),
+		onRefresh = onRefreshAll
 	) {
+		LazyColumn(
+			modifier = Modifier.fillMaxSize()
+		) {
 
-		items(rows, key = { it.extensionID }) { row ->
-			val isLoading by getIsLoading(row.extensionID).collectAsState(false)
-			val exception by getException(row.extensionID).collectAsState(null)
-			val children by getChildren(row.extensionID).collectAsState(listOf())
+			items(rows, key = { it.extensionID }) { row ->
+				val isLoading by getIsLoading(row.extensionID).collectAsState(false)
+				val exception by getException(row.extensionID).collectAsState(null)
+				val children by getChildren(row.extensionID).collectAsState(listOf())
 
-			SearchRowContent(
-				row,
-				isLoading,
-				children,
-				onClick,
-				exception
-			) {
-				onRefresh(row.extensionID)
+				SearchRowContent(
+					row,
+					isLoading,
+					children,
+					onClick,
+					exception
+				) {
+					onRefresh(row.extensionID)
+				}
+
 			}
-
 		}
 	}
 }
