@@ -11,10 +11,7 @@ import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ASearchViewModel
 import app.shosetsu.common.GenericSQLiteException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.transformLatest
+import kotlinx.coroutines.flow.*
 
 /*
  * This file is part of shosetsu.
@@ -122,50 +119,67 @@ class SearchViewModel(
 	 */
 	@OptIn(ExperimentalCoroutinesApi::class)
 	private val libraryResultFlow: Flow<List<ACatalogNovelUI>> by lazy {
-		queryFlow.combine(getRefreshFlow(-1)) { query, _ -> query }
-			.transformLatest<String, List<ACatalogNovelUI>> { query ->
+		val flow = MutableStateFlow<List<ACatalogNovelUI>>(listOf())
 
-				(getIsLoading(-1) as MutableStateFlow).emit(true)
-				getExceptionFlow(-1).emit(null)
+		launchIO {
+			flow.emitAll(
+				queryFlow.combine(getRefreshFlow(-1)) { query, _ -> query }
+					.transformLatest<String, List<ACatalogNovelUI>> { query ->
 
-				try {
-					emit(searchBookMarkedNovelsUseCase(query).let {
-						it.map { (id, title, imageURL) ->
-							FullCatalogNovelUI(id, title, imageURL, false)
+						(getIsLoading(-1) as MutableStateFlow).emit(true)
+						getExceptionFlow(-1).emit(null)
+
+						try {
+							emit(searchBookMarkedNovelsUseCase(query).let {
+								it.map { (id, title, imageURL) ->
+									FullCatalogNovelUI(id, title, imageURL, false)
+								}
+							})
+						} catch (e: GenericSQLiteException) {
+							getExceptionFlow(-1).emit(e)
 						}
-					})
-				} catch (e: GenericSQLiteException) {
-					getExceptionFlow(-1).emit(e)
-				}
 
 
-				(getIsLoading(-1) as MutableStateFlow).emit(false)
-			}.onIO()
+						(getIsLoading(-1) as MutableStateFlow).emit(false)
+					}
+			)
+
+		}
+
+		flow.onIO()
 	}
 
 	/**
 	 * Creates a flow for an extension query
 	 */
 	@OptIn(ExperimentalCoroutinesApi::class)
-	private fun loadExtension(extensionID: Int): Flow<List<ACatalogNovelUI>> =
-		queryFlow.combine(getRefreshFlow(extensionID)) { query, _ -> query }
-			.transformLatest { query ->
+	private fun loadExtension(extensionID: Int): Flow<List<ACatalogNovelUI>> {
+		val flow = MutableStateFlow<List<ACatalogNovelUI>>(listOf())
 
-				(getIsLoading(extensionID) as MutableStateFlow).emit(true)
-				getExceptionFlow(extensionID).emit(null)
+		launchIO {
+			flow.emitAll(
+				queryFlow.combine(getRefreshFlow(extensionID)) { query, _ -> query }
+					.transformLatest { query ->
 
-				try {
-					emit(
-						loadCatalogueQueryDataUseCase(
-							extensionID,
-							query,
-							mapOf()
-						)
-					)
-				} catch (e: Exception) {
-					getExceptionFlow(extensionID).emit(e)
-				}
+						(getIsLoading(extensionID) as MutableStateFlow).emit(true)
+						getExceptionFlow(extensionID).emit(null)
 
-				(getIsLoading(extensionID) as MutableStateFlow).emit(false)
-			}.onIO()
+						try {
+							emit(
+								loadCatalogueQueryDataUseCase(
+									extensionID,
+									query,
+									mapOf()
+								)
+							)
+						} catch (e: Exception) {
+							getExceptionFlow(extensionID).emit(e)
+						}
+
+						(getIsLoading(extensionID) as MutableStateFlow).emit(false)
+					})
+		}
+
+		return flow.onIO()
+	}
 }
