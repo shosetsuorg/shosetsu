@@ -1,5 +1,6 @@
 package app.shosetsu.common.domain.repositories.base
 
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -24,9 +25,14 @@ import kotlinx.coroutines.flow.Flow
  * 24 / 02 / 2021
  */
 interface INovelReaderSettingsRepository {
+	@Throws(GenericSQLiteException::class)
 	suspend fun get(novelID: Int): NovelReaderSettingEntity?
+
 	fun getFlow(novelID: Int): Flow<NovelReaderSettingEntity?>
 
+	@Throws(GenericSQLiteException::class)
 	suspend fun insert(novelReaderSettingEntity: NovelReaderSettingEntity): Long
+
+	@Throws(GenericSQLiteException::class)
 	suspend fun update(novelReaderSettingEntity: NovelReaderSettingEntity)
 }

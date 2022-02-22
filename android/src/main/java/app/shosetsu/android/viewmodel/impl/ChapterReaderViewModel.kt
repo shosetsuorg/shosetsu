@@ -98,6 +98,7 @@ class ChapterReaderViewModel(
 
 			// Invert chapters after all processing has been done
 			.combineInvert()
+			.onIO()
 	}
 
 	private fun Flow<List<ReaderUIItem<*, *>>>.combineInvert(): Flow<List<ReaderUIItem<*, *>>> =
@@ -164,7 +165,7 @@ class ChapterReaderViewModel(
 					emit(textColor to backgroundColor)
 				} ?: emit(Color.BLACK to Color.WHITE)
 
-		}
+		}.onIO()
 	}
 
 	override val liveIndentSize: Flow<Int> by lazy {
@@ -172,7 +173,7 @@ class ChapterReaderViewModel(
 			result.paragraphIndentSize.also {
 				_defaultIndentSize = it
 			}
-		}
+		}.onIO()
 	}
 
 	override val liveParagraphSpacing: Flow<Float> by lazy {
@@ -181,25 +182,25 @@ class ChapterReaderViewModel(
 			result.paragraphSpacingSize.also {
 				_defaultParaSpacing = it
 			}
-		}
+		}.onIO()
 	}
 
 	override val liveTextSize: Flow<Float> by lazy {
 		settingsRepo.getFloatFlow(ReaderTextSize).mapLatest {
 			_defaultTextSize = it
 			it
-		}
+		}.onIO()
 	}
 
 	override val liveVolumeScroll: Flow<Boolean> by lazy {
 		settingsRepo.getBooleanFlow(ReaderVolumeScroll).mapLatest {
 			_defaultVolumeScroll = it
 			it
-		}
+		}.onIO()
 	}
 
 	override val liveKeepScreenOn: Flow<Boolean> by lazy {
-		settingsRepo.getBooleanFlow(ReaderKeepScreenOn)
+		settingsRepo.getBooleanFlow(ReaderKeepScreenOn).onIO()
 	}
 
 	override var currentChapterID: Int = -1
@@ -245,7 +246,7 @@ class ChapterReaderViewModel(
 		isHorizontalPageSwapping.mapLatest {
 			_isHorizontalReading = it
 			it
-		}
+		}.onIO()
 	}
 
 	override fun setNovelID(novelID: Int) {
@@ -269,7 +270,7 @@ class ChapterReaderViewModel(
 			flow {
 				emit(loadChapterPassageUseCase(readerChapterUI))
 			}
-		}
+		}.onIO()
 
 	override fun toggleBookmark(readerChapterUI: ReaderChapterUI) {
 		updateChapter(
@@ -407,7 +408,7 @@ class ChapterReaderViewModel(
 				// Sort so the result will be ordered properly
 				sortBy { it.id }
 			}
-		}
+		}.onIO()
 
 	private val isScreenRotationLockedFlow = MutableStateFlow(false)
 
@@ -434,7 +435,7 @@ class ChapterReaderViewModel(
 	}
 
 	override val liveIsScreenRotationLocked: Flow<Boolean>
-		get() = isScreenRotationLockedFlow
+		get() = isScreenRotationLockedFlow.onIO()
 
 	override fun toggleScreenRotationLock() {
 		isScreenRotationLockedFlow.value = !isScreenRotationLockedFlow.value
