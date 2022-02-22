@@ -1,6 +1,5 @@
 package app.shosetsu.android.viewmodel.abstracted
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
@@ -32,10 +31,34 @@ import javax.security.auth.Destroyable
  * 01 / 05 / 2020
  */
 abstract class ASearchViewModel : ShosetsuViewModel(), Destroyable {
-	abstract val listings: LiveData<List<SearchRowUI>>
+	abstract val listings: Flow<List<SearchRowUI>>
 
 	abstract fun setQuery(query: String)
+
 	abstract fun searchLibrary(): Flow<List<ACatalogNovelUI>>
+
+	/**
+	 * Gets the search flow of an extension
+	 */
 	abstract fun searchExtension(extensionId: Int): Flow<List<ACatalogNovelUI>>
+
+	/**
+	 * Refresh all rows
+	 */
+	abstract fun refresh()
+
+	/**
+	 * Refresh a specific row
+	 */
+	abstract fun refresh(id: Int)
+
+	/**
+	 * Get if a certain row is loading or not
+	 */
 	abstract fun getIsLoading(id: Int): Flow<Boolean>
+
+	/**
+	 * Get the exception that occurred in a certain row
+	 */
+	abstract fun getException(id: Int): Flow<Throwable?>
 }
