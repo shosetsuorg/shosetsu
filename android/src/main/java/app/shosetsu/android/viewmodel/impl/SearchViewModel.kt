@@ -52,6 +52,9 @@ class SearchViewModel(
 
 	private val loadingFlows = HashMap<Int, Flow<Boolean>>()
 
+	override val query: Flow<String>
+		get() = queryFlow.onIO()
+
 	override val listings: Flow<List<SearchRowUI>> by lazy {
 		loadSearchRowUIUseCase().onIO()
 	}

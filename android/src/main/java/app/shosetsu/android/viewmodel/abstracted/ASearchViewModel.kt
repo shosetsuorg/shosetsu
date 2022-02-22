@@ -31,6 +31,9 @@ import javax.security.auth.Destroyable
  * 01 / 05 / 2020
  */
 abstract class ASearchViewModel : ShosetsuViewModel(), Destroyable {
+
+	abstract val query: Flow<String>
+
 	abstract val listings: Flow<List<SearchRowUI>>
 
 	abstract fun setQuery(query: String)

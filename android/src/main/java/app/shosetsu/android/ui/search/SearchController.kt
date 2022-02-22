@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import app.shosetsu.android.common.consts.BundleKeys
+import app.shosetsu.android.common.ext.collectLA
 import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.novel.NovelController
@@ -70,7 +71,6 @@ import kotlinx.coroutines.flow.flow
 class SearchController(bundle: Bundle) : ShosetsuController(bundle) {
 	override val viewTitleRes: Int = R.string.search
 	internal val viewModel: ASearchViewModel by viewModel()
-	private var searchView: SearchView? = null
 
 	init {
 		setHasOptionsMenu(true)
@@ -105,14 +105,17 @@ class SearchController(bundle: Bundle) : ShosetsuController(bundle) {
 
 	override fun onDestroy() {
 		super.onDestroy()
-		searchView = null
 		viewModel.destroy()
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_search, menu)
-		searchView = menu.findItem(R.id.search).actionView as SearchView
-		searchView?.setOnQueryTextListener(InternalQuery())
+		val searchView = menu.findItem(R.id.search).actionView as SearchView
+		searchView.setOnQueryTextListener(InternalQuery())
+		searchView.setIconifiedByDefault(false)
+		viewModel.query.collectLA(this, catch = {}) {
+			searchView.setQuery(it, false)
+		}
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = true
