@@ -2,6 +2,7 @@ package app.shosetsu.android.domain.usecases
 
 import app.shosetsu.android.common.utils.uifactory.StrippedNovelConversionFactory
 import app.shosetsu.android.view.uimodels.model.IDTitleImageUI
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.dto.convertList
 
@@ -29,6 +30,7 @@ import app.shosetsu.common.dto.convertList
 class SearchBookMarkedNovelsUseCase(
 	private val iNovelsRepository: INovelsRepository,
 ) {
+	@Throws(GenericSQLiteException::class)
 	suspend operator fun invoke(p1: String): List<IDTitleImageUI> =
 		iNovelsRepository.searchBookmarked(p1).map { StrippedNovelConversionFactory(it) }
 			.convertList()

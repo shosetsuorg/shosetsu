@@ -1,5 +1,6 @@
 package app.shosetsu.common.domain.repositories.impl
 
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.datasource.database.base.IDBNovelsDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteCatalogueDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteNovelDataSource
@@ -43,6 +44,7 @@ class NovelsRepository(
 	override fun loadLibraryNovelEntities(): Flow<List<LibraryNovelEntity>> =
 		database.loadBookmarkedNovelsFlow()
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun loadBookmarkedNovelEntities(): List<NovelEntity> =
 		database.loadBookmarkedNovels()
 
@@ -63,6 +65,7 @@ class NovelsRepository(
 	/**
 	 * TODO this operation is resource intensive, create a low level DB object
 	 */
+	@Throws(GenericSQLiteException::class)
 	override suspend fun searchBookmarked(string: String): List<StrippedBookmarkedNovelEntity> =
 		loadBookmarkedNovelEntities().let { list ->
 			if (list.isEmpty())

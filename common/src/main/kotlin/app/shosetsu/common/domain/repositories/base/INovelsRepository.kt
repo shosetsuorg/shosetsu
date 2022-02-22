@@ -15,6 +15,7 @@ package app.shosetsu.common.domain.repositories.base
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.LibraryNovelEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.StrippedBookmarkedNovelEntity
@@ -57,6 +58,7 @@ interface INovelsRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
+	@Throws(GenericSQLiteException::class)
 	suspend fun loadBookmarkedNovelEntities(): List<NovelEntity>
 
 	/**
@@ -76,15 +78,8 @@ interface INovelsRepository {
 	/**
 	 * Searches the bookmarked novels and returns a live data of them
 	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Loading] never
 	 */
+	@Throws(GenericSQLiteException::class)
 	suspend fun searchBookmarked(string: String): List<StrippedBookmarkedNovelEntity>
 
 	/**
