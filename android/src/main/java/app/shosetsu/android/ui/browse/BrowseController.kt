@@ -101,8 +101,10 @@ class BrowseController : ShosetsuController(),
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_browse, menu)
-		(menu.findItem(R.id.search).actionView as SearchView)
-			.setOnQueryTextListener(BrowseSearchQuery { router.shosetsuPush(it) })
+		(menu.findItem(R.id.search).actionView as SearchView).apply {
+			setOnQueryTextListener(BrowseSearchQuery { router.shosetsuPush(it) })
+			isSubmitButtonEnabled = true
+		}
 	}
 
 	private fun installExtension(
@@ -345,7 +347,8 @@ fun PreviewBrowseExtensionContent() {
 }
 
 @OptIn(
-	ExperimentalMaterialApi::class, androidx.compose.foundation.ExperimentalFoundationApi::class,
+	ExperimentalMaterialApi::class,
+	androidx.compose.foundation.ExperimentalFoundationApi::class,
 	androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi::class,
 	androidx.compose.ui.unit.ExperimentalUnitApi::class
 )
