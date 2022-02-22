@@ -47,7 +47,7 @@ class RemoteExtensionDataSource(
 				extensionEntity
 			)
 		)
-		if (response.code == 200)
+		if (response.isSuccessful)
 			return response.body!!.bytes()
 		else throw HTTPException(response.code)
 	}
