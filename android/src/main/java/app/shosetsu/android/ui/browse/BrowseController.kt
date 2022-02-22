@@ -101,6 +101,9 @@ class BrowseController : ShosetsuController(),
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_browse, menu)
+	}
+
+	override fun onPrepareOptionsMenu(menu: Menu) {
 		(menu.findItem(R.id.search).actionView as SearchView).apply {
 			setOnQueryTextListener(BrowseSearchQuery { router.shosetsuPush(it) })
 			isSubmitButtonEnabled = true

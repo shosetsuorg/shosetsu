@@ -110,6 +110,9 @@ class SearchController(bundle: Bundle) : ShosetsuController(bundle) {
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_search, menu)
+	}
+
+	override fun onPrepareOptionsMenu(menu: Menu) {
 		val searchView = menu.findItem(R.id.search).actionView as SearchView
 		searchView.setOnQueryTextListener(InternalQuery())
 		searchView.setIconifiedByDefault(false)
