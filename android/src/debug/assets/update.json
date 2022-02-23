@@ -1,17 +1,10 @@
 {
-  "latestVersion": "1724",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1724/shosetsu-r1724.apk",
+  "latestVersion": "1731",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1731/shosetsu-r1731.apk",
   "releaseNotes": [
-    "- Add delay when restoring novels",
-    "- Handle exceptions a bit better",
-    "- Respond to result of saving a backup",
-    "- It is now optional to have individual download notifications",
-    "- Instant jump to chapter",
-    "- Add hint effect when jumping to chapter",
-    "- Add update button to extension update notification",
-    "- Fix OOM when restoring backups",
-    "- Add option to disable logging of chapters during restore",
-    "- Update dependencies",
-    "- Add strange exception for when a download is stuck as downloading"
+    "- Optimize BackupWorker to be more memory efficient",
+    "- BackupOnlyModified added, default is true, will only backup chapters that have been modified",
+    "- Allow delete selection & pause selection in Downloads to effect all items",
+    "- Fix 'delete all' and 'set all pending' in Downloads worker"
   ]
 }
