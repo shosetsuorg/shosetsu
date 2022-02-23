@@ -606,6 +606,8 @@
     <string name="backup_restore_print_chapters_title">Print chapter names during restore</string>
     <string name="backup_restore_print_chapters_desc">Print chapter names to log during restore.\nUseful for debugging, not useful otherwise.\nMust be set before restoring</string>
     <string name="restore_notification_content_novel_fail_parse_host">Failed to find website: %s</string>
+    <string name="backup_only_modified_title">Backup only modified</string>
+    <string name="backup_only_modified_desc">Backup only modified chapters, this saves on memory and file size</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

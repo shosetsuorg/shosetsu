@@ -200,6 +200,11 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 	// Backup Options
 	object RestorePrintChapters : BooleanKey("backupPrintChapters", false)
+
+	/**
+	 * If true, backup only contains chapters that have been modified, else they are ignored
+	 */
+	object BackupOnlyModifiedChapters : BooleanKey("backup_only_modified", true)
 	object ShouldBackupChapters : BooleanKey("backupChapters", true)
 	object ShouldBackupSettings : BooleanKey("backupSettings", false)
 	object BackupCycle : IntKey("backupCycle", 12)

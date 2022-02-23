@@ -88,6 +88,8 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 	private suspend fun backupSettings() =
 		iSettingsRepository.getBooleanOrDefault(ShouldBackupSettings)
 
+	private suspend fun backupOnlyModified() =
+		iSettingsRepository.getBooleanOrDefault(BackupOnlyModifiedChapters)
 
 	@Throws(IOException::class)
 	fun gzip(content: String): ByteArray {
@@ -98,8 +100,12 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 
 	private suspend fun getBackupChapters(novelID: Int): List<BackupChapterEntity> {
 		if (backupChapters())
-			chaptersRepository.getChapters(novelID).handle {
-				return it.map { chapterEntity ->
+			chaptersRepository.getChapters(novelID).handle { list ->
+				return list.filter {
+					if (backupOnlyModified()) {
+						it.bookmarked || it.readingStatus != ReadingStatus.UNREAD || it.readingPosition != 0.0
+					} else true
+				}.map { chapterEntity ->
 					BackupChapterEntity(
 						chapterEntity.url,
 						chapterEntity.title,

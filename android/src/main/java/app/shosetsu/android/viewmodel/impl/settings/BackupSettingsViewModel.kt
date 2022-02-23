@@ -100,6 +100,11 @@ class BackupSettingsViewModel(
 			description { R.string.backup_settings_option_desc }
 			checkSettingValue(SettingKey.ShouldBackupSettings)
 		},
+		switchSettingData(7) {
+			title { R.string.backup_only_modified_title }
+			description { R.string.backup_only_modified_desc }
+			checkSettingValue(SettingKey.BackupOnlyModifiedChapters)
+		},
 		switchSettingData(6) {
 			titleRes = R.string.backup_restore_print_chapters_title
 			descRes = R.string.backup_restore_print_chapters_desc
