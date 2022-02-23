@@ -215,18 +215,14 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 	}
 
 	private fun pauseSelection() {
-		fastAdapter.getSelectExtension().selectedItems.filter {
-			it.status == PENDING || it.status == ERROR
-		}.let {
-			viewModel.pauseAll(it)
+		fastAdapter.getSelectExtension().selectedItems.let {
+			viewModel.pauseAll(it.toList())
 		}
 	}
 
-	private fun deleteNotDownloadingSelection() {
-		fastAdapter.getSelectExtension().selectedItems.filter {
-			it.status == PENDING || it.status == ERROR || it.status == PAUSED
-		}.let {
-			viewModel.deleteAll(it)
+	private fun deleteSelected() {
+		fastAdapter.getSelectExtension().selectedItems.let {
+			viewModel.deleteAll(it.toList())
 		}
 	}
 
@@ -268,7 +264,7 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 						true
 					}
 					R.id.delete -> {
-						deleteNotDownloadingSelection()
+						deleteSelected()
 						actionMode?.finish()
 						true
 					}
