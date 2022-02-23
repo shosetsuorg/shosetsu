@@ -151,7 +151,7 @@ class CatalogViewModel(
 	override fun getBaseURL(): Flow<String> =
 		flow {
 			emitAll(iExtensionFlow.mapLatest { it.baseURL })
-		}
+		}.onIO()
 
 	/**
 	 * Handles the current state of the UI
@@ -296,7 +296,7 @@ class CatalogViewModel(
 			emit(BackgroundNovelAddProgress.ADDING)
 			backgroundAddUseCase(novelID)
 			emit(BackgroundNovelAddProgress.ADDED)
-		}
+		}.onIO()
 
 	override fun applyFilter() {
 		stateManager = StateManager()
