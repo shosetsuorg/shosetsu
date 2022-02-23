@@ -35,13 +35,6 @@ import app.shosetsu.common.enums.ReadingStatus
 			parentColumns = ["id"],
 			childColumns = ["novelID"],
 			onDelete = ForeignKey.CASCADE
-		),
-		ForeignKey(
-			entity = DBInstalledExtensionEntity::class,
-			parentColumns = ["id"],
-			childColumns = ["formatterID"],
-			onDelete = ForeignKey.SET_NULL,
-			onUpdate = ForeignKey.CASCADE
 		)
 	],
 	indices = [
@@ -61,7 +54,7 @@ data class DBChapterEntity(
 	val novelID: Int,
 
 	@ColumnInfo(name = "formatterID")
-	val extensionID: Int?,
+	val extensionID: Int,
 
 	@NonNull
 	var title: String,
