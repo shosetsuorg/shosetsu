@@ -14,7 +14,6 @@ import app.shosetsu.common.consts.settings.SettingKey.IsDownloadPaused
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.DownloadStatus
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
@@ -138,19 +137,11 @@ class DownloadsViewModel(
 	}
 
 	/**
-	 * Pause the downloads and wait for all entities to stop
+	 * Pause the downloads and wait 1 second
 	 */
 	private suspend fun pauseAndWait() {
 		settings.setBoolean(IsDownloadPaused, true)
-
-		do {
-			delay(1000)
-		} while (
-			downloadsFlow.first { it is HResult.Success }.unwrap()!!
-				.any { download ->
-					download.status == DownloadStatus.DOWNLOADING || download.status == DownloadStatus.WAITING
-				}
-		)
+		delay(1000)
 	}
 
 	override fun setAllPending() {
