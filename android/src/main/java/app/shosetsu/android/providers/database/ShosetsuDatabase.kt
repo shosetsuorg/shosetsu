@@ -56,7 +56,7 @@ import kotlinx.coroutines.launch
 		DBRepositoryEntity::class,
 		DBUpdate::class,
 	],
-	version = 5
+	version = 6
 )
 @TypeConverters(
 	ChapterSortTypeConverter::class,
