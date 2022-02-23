@@ -18,8 +18,11 @@ import app.shosetsu.android.domain.model.local.backup.*
 import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.BackupEntity
+import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.dto.*
+import app.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.delay
 import kotlinx.serialization.encodeToString
@@ -127,21 +130,38 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 		backupRepository.updateProgress(loading)
 		val backupSettings = backupSettings()
 
-		novelRepository.loadBookmarkedNovelEntities().handle { novels ->
+
+		lateinit var novelsToChapters: List<Pair<NovelEntity, List<BackupChapterEntity>>>
+		lateinit var extensions: List<ExtensionEntity>
+
+		/*
+		Run to isolate the variable 'novels' so it can be trashed, hopefully saving memory
+		 */
+		val success = run {
+			val novels = novelRepository.loadBookmarkedNovelEntities().unwrap() ?: return@run false
+
+			logI("Loaded ${novels.size} novel(s)")
 			notify("Loaded ${novels.size} novel(s)")
 
+			logI("Retrieving and mapping chapters")
 			notify("Retrieving and mapping chapters")
 			// Novels to their chapters
-			val novelsToChapters = novels.map { it to getBackupChapters(it.id!!) }
+			novelsToChapters = novels.map { it to getBackupChapters(it.id!!) }
 
-
+			logI("Loading extensions required")
 			notify("Loading extensions required")
 			// Extensions each novel requires
 			// Distinct, with no duplicates
-			val extensions = novels.map {
+			extensions = novels.map {
 				extensionsRepository.getExtension(it.extensionID).unwrap()!!
 			}.distinct()
 
+			true
+		}
+		System.gc() // please clean up
+
+		if (success) {
+			logI("Loading repositories required")
 			notify("Loading repositories required")
 			// All the repos required for backup
 			// Contains only the repos that are used
@@ -155,51 +175,65 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 						BackupRepositoryEntity(url, name)
 					}
 
-			notify("Creating backup entity")
-			val backup = FleshedBackupEntity(
-				repos = repositoriesRequired,
-				// Creates the trees
-				extensions = extensions.map { extensionEntity ->
-					BackupExtensionEntity(
-						extensionEntity.id,
-						novelsToChapters.filter { (novel, _) ->
-							novel.extensionID == extensionEntity.id
-						}.map { (novel, chapters) ->
-							val settings =
-								if (backupSettings)
-									novelSettingsRepository.get(novel.id!!).unwrap()
-								else null
+			val base64Bytes = run {
+				val zippedBytes = run {
+					val stringBackup = run {
+						logI("Creating backup entity")
+						notify("Creating backup entity")
+						val backup = FleshedBackupEntity(
+							repos = repositoriesRequired,
+							// Creates the trees
+							extensions = extensions.map { extensionEntity ->
+								BackupExtensionEntity(
+									extensionEntity.id,
+									novelsToChapters.filter { (novel, _) ->
+										novel.extensionID == extensionEntity.id
+									}.map { (novel, chapters) ->
+										val settings =
+											if (backupSettings)
+												novelSettingsRepository.get(novel.id!!).unwrap()
+											else null
 
-							val bSettings = settings?.let {
-								BackupNovelSettingEntity(
-									it.sortType,
-									it.showOnlyReadingStatusOf,
-									it.showOnlyBookmarked,
-									it.showOnlyDownloaded
+										val bSettings = settings?.let {
+											BackupNovelSettingEntity(
+												it.sortType,
+												it.showOnlyReadingStatusOf,
+												it.showOnlyBookmarked,
+												it.showOnlyDownloaded
+											)
+										} ?: BackupNovelSettingEntity()
+
+										BackupNovelEntity(
+											novel.url,
+											novel.title,
+											novel.imageURL,
+											chapters,
+											settings = bSettings
+										)
+									}
 								)
-							} ?: BackupNovelSettingEntity()
+							}
+						)
 
-							BackupNovelEntity(
-								novel.url,
-								novel.title,
-								novel.imageURL,
-								chapters,
-								settings = bSettings
-							)
-						}
-					)
+						logI("Encoding to json")
+						notify("Encoding to json")
+						backupJSON.encodeToString(backup)
+					}
+					System.gc() // please clean up
+
+					logI("Zipping bytes")
+					notify("Zipping bytes")
+					gzip(stringBackup)
 				}
-			)
+				System.gc() // please clean up
 
-			notify("Encoding to json")
-			val stringBackup = backupJSON.encodeToString(backup)
+				logI("Encoding via bas64")
+				notify("Encoding via bas64")
+				Base64.encode(zippedBytes, Base64.DEFAULT)
+			}
+			System.gc() // please clean up
 
-			notify("Zipping bytes")
-			val zippedBytes = gzip(stringBackup)
-
-			notify("Encoding via bas64")
-			val base64Bytes = Base64.encode(zippedBytes, Base64.DEFAULT)
-
+			logI("Saving to file")
 			notify("Saving to file")
 			val pathResult = backupRepository.saveBackup(
 				BackupEntity(
