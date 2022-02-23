@@ -364,6 +364,27 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 							}
 						}
 
+					},
+					object: Migration(5,6){
+						override fun migrate(database: SupportSQLiteDatabase) {
+
+							// Chapters
+                            // We drop the foreign key relation with extensions
+                            database.setForeignKeyConstraintsEnabled(false)
+						    database.beginTransaction()
+                            database.execSQL("ALTER TABLE `chapters` RENAME TO `chapters_old`")
+                            database.execSQL("CREATE TABLE IF NOT EXISTS `chapters` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `url` TEXT NOT NULL, `novelID` INTEGER NOT NULL, `formatterID` INTEGER NOT NULL, `title` TEXT NOT NULL, `releaseDate` TEXT NOT NULL, `order` REAL NOT NULL, `readingPosition` REAL NOT NULL, `readingStatus` INTEGER NOT NULL, `bookmarked` INTEGER NOT NULL, `isSaved` INTEGER NOT NULL, FOREIGN KEY(`novelID`) REFERENCES `novels`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )")
+                            database.execSQL("INSERT INTO `chapters` SELECT * FROM `chapters_old`")
+                            database.execSQL("CREATE INDEX IF NOT EXISTS `index_chapters_novelID` ON `chapters` (`novelID`)")
+                            database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_chapters_url_formatterID` ON `chapters` (`url`, `formatterID`)")
+                            database.execSQL("CREATE INDEX IF NOT EXISTS `index_chapters_formatterID` ON `chapters` (`formatterID`)")
+                            database.endTransaction()
+                            database.setForeignKeyConstraintsEnabled(true)
+
+							TODO("Complete migration")
+
+						}
+
 					}
 				).build()
 
