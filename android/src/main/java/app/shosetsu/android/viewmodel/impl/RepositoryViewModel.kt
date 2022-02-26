@@ -64,7 +64,7 @@ class RepositoryViewModel(
 	override fun remove(repositoryInfoUI: RepositoryUI) =
 		flow {
 			emit(deleteRepositoryUseCase(repositoryInfoUI))
-		}
+		}.onIO()
 
 	override fun toggleIsEnabled(repositoryInfoUI: RepositoryUI): Flow<Boolean> =
 		flow {

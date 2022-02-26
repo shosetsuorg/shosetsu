@@ -34,9 +34,11 @@ import app.shosetsu.lib.Version
 @Entity(
 	tableName = "repository_extension",
 	foreignKeys = [
-		// We cascade delete the repository version of the extension when the repository is removed.
-		// This ensures data is cleaned up properly.
-		// No entity should relate to this entity.
+		/**
+		 * We cascade delete the repository version of the extension when the repository is removed.
+		 * This ensures data is cleaned up properly.
+		 * No entity should relate to this entity.
+		 */
 		ForeignKey(
 			entity = DBRepositoryEntity::class,
 			parentColumns = ["id"],
@@ -47,6 +49,9 @@ import app.shosetsu.lib.Version
 	indices = [
 		Index("repoId"),
 	],
+	/**
+	 * Both repoId & id make a primary key.
+	 */
 	primaryKeys = ["repoId", "id"]
 )
 

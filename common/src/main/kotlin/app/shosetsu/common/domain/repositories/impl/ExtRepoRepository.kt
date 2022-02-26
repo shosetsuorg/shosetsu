@@ -1,5 +1,6 @@
 package app.shosetsu.common.domain.repositories.impl
 
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.datasource.database.base.IDBExtRepoDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteExtRepoDataSource
 import app.shosetsu.common.domain.model.local.RepositoryEntity
@@ -50,6 +51,7 @@ class ExtRepoRepository(
 	override suspend fun addRepository(url: String, name: String): Long =
 		databaseSource.addRepository(url, name)
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun remove(entity: RepositoryEntity): Unit =
 		databaseSource.remove(entity)
 

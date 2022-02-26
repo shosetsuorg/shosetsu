@@ -33,7 +33,6 @@ import app.shosetsu.lib.Novel
 @Entity(
 	tableName = "novels",
 	indices = [
-		Index("formatterID"),
 		Index(value = ["url", "formatterID"], unique = true)
 	]
 )

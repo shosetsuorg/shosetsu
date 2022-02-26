@@ -39,7 +39,7 @@ data class ChapterUI(
 	val id: Int,
 	val novelID: Int,
 	val link: String,
-	val extensionID: Int?,
+	val extensionID: Int,
 	var title: String,
 	var releaseDate: String,
 	var order: Double,

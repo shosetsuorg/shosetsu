@@ -40,7 +40,6 @@ import app.shosetsu.common.enums.ReadingStatus
 	indices = [
 		Index("novelID"),
 		Index(value = ["url", "formatterID"], unique = true),
-		Index("formatterID")
 	]
 )
 data class DBChapterEntity(

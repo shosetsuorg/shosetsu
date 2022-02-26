@@ -1,5 +1,6 @@
 package app.shosetsu.common.domain.repositories.base
 
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.lib.json.RepoIndex
 import kotlinx.coroutines.flow.Flow
@@ -83,6 +84,7 @@ interface IExtensionRepoRepository {
 
 	suspend fun addRepository(url: String, name: String): Long
 
+	@Throws(GenericSQLiteException::class)
 	suspend fun remove(entity: RepositoryEntity)
 
 	suspend fun update(entity: RepositoryEntity)

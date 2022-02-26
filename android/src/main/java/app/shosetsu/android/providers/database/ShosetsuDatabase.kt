@@ -365,24 +365,54 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 						}
 
 					},
-					object: Migration(5,6){
+					object : Migration(5, 6) {
 						override fun migrate(database: SupportSQLiteDatabase) {
 
 							// Chapters
-                            // We drop the foreign key relation with extensions
-                            database.setForeignKeyConstraintsEnabled(false)
-						    database.beginTransaction()
-                            database.execSQL("ALTER TABLE `chapters` RENAME TO `chapters_old`")
-                            database.execSQL("CREATE TABLE IF NOT EXISTS `chapters` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `url` TEXT NOT NULL, `novelID` INTEGER NOT NULL, `formatterID` INTEGER NOT NULL, `title` TEXT NOT NULL, `releaseDate` TEXT NOT NULL, `order` REAL NOT NULL, `readingPosition` REAL NOT NULL, `readingStatus` INTEGER NOT NULL, `bookmarked` INTEGER NOT NULL, `isSaved` INTEGER NOT NULL, FOREIGN KEY(`novelID`) REFERENCES `novels`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )")
-                            database.execSQL("INSERT INTO `chapters` SELECT * FROM `chapters_old`")
-                            database.execSQL("CREATE INDEX IF NOT EXISTS `index_chapters_novelID` ON `chapters` (`novelID`)")
-                            database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_chapters_url_formatterID` ON `chapters` (`url`, `formatterID`)")
-                            database.execSQL("CREATE INDEX IF NOT EXISTS `index_chapters_formatterID` ON `chapters` (`formatterID`)")
-                            database.endTransaction()
-                            database.setForeignKeyConstraintsEnabled(true)
+							// We drop the foreign key relation with extensions
+							database.setForeignKeyConstraintsEnabled(false)
+							database.beginTransaction()
+							database.execSQL("ALTER TABLE `chapters` RENAME TO `chapters_old`")
+							database.execSQL("CREATE TABLE IF NOT EXISTS `chapters` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `url` TEXT NOT NULL, `novelID` INTEGER NOT NULL, `formatterID` INTEGER NOT NULL, `title` TEXT NOT NULL, `releaseDate` TEXT NOT NULL, `order` REAL NOT NULL, `readingPosition` REAL NOT NULL, `readingStatus` INTEGER NOT NULL, `bookmarked` INTEGER NOT NULL, `isSaved` INTEGER NOT NULL, FOREIGN KEY(`novelID`) REFERENCES `novels`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )")
+							database.execSQL("INSERT INTO `chapters` SELECT * FROM `chapters_old`")
+							database.execSQL("DROP TABLE IF EXISTS `chapters_old`")
+							database.execSQL("CREATE INDEX IF NOT EXISTS `index_chapters_novelID` ON `chapters` (`novelID`)")
+							database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_chapters_url_formatterID` ON `chapters` (`url`, `formatterID`)")
+							database.endTransaction()
+							database.setForeignKeyConstraintsEnabled(true)
 
-							TODO("Complete migration")
+							// Novels
+							database.setForeignKeyConstraintsEnabled(false)
+							database.beginTransaction()
+							database.execSQL("ALTER TABLE `novels` RENAME TO `novels_old`")
+							database.execSQL("CREATE TABLE IF NOT EXISTS `novels` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `url` TEXT NOT NULL, `formatterID` INTEGER NOT NULL, `bookmarked` INTEGER NOT NULL, `loaded` INTEGER NOT NULL, `title` TEXT NOT NULL, `imageURL` TEXT NOT NULL, `description` TEXT NOT NULL, `language` TEXT NOT NULL, `genres` TEXT NOT NULL, `authors` TEXT NOT NULL, `artists` TEXT NOT NULL, `tags` TEXT NOT NULL, `status` INTEGER NOT NULL)")
+							database.execSQL("INSERT INTO `novels` SELECT * FROM `novels_old`")
+							database.execSQL("DROP TABLE IF EXISTS `novels_old`")
+							database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_novels_url_formatterID` ON `novels` (`url`, `formatterID`)")
+							database.endTransaction()
+							database.setForeignKeyConstraintsEnabled(true)
 
+							// Extensions
+							database.setForeignKeyConstraintsEnabled(false)
+							database.beginTransaction()
+							database.execSQL("CREATE TABLE IF NOT EXISTS `installed_extension` (`id` INTEGER NOT NULL, `repoID` INTEGER NOT NULL, `name` TEXT NOT NULL, `fileName` TEXT NOT NULL, `imageURL` TEXT NOT NULL, `lang` TEXT NOT NULL, `version` TEXT NOT NULL, `md5` TEXT NOT NULL, `type` INTEGER NOT NULL, `enabled` INTEGER NOT NULL, `chapterType` INTEGER NOT NULL, PRIMARY KEY(`id`))")
+							database.execSQL("CREATE TABLE IF NOT EXISTS `repository_extension` (`repoId` INTEGER NOT NULL, `id` INTEGER NOT NULL, `name` TEXT NOT NULL, `fileName` TEXT NOT NULL, `imageURL` TEXT NOT NULL, `lang` TEXT NOT NULL, `version` TEXT NOT NULL, `md5` TEXT NOT NULL, `type` INTEGER NOT NULL, PRIMARY KEY(`repoId`, `id`), FOREIGN KEY(`repoId`) REFERENCES `repositories`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )")
+							database.execSQL("INSERT INTO `repository_extension` SELECT `repoID`, `id`, `name`, `fileName`, `imageURL`, `lang`, `repositoryVersion`, `md5`, `type` FROM `extensions`")
+							database.execSQL("INSERT INTO `installed_extension` SELECT `id`, `repoID`, `name`, `fileName`, `imageURL`, `lang`, `installedVersion`, `md5`, `type`, `enabled`, `chapterType` FROM `extensions` WHERE `installed`=1")
+							database.execSQL("DROP TABLE IF EXISTS `extensions`")
+							database.execSQL("CREATE INDEX IF NOT EXISTS `index_repository_extension_repoId` ON `repository_extension` (`repoId`)")
+							database.endTransaction()
+							database.setForeignKeyConstraintsEnabled(true)
+
+							// Extension Libs
+							database.setForeignKeyConstraintsEnabled(false)
+							database.beginTransaction()
+							database.execSQL("ALTER TABLE `libs` RENAME TO `libs_old`")
+							database.execSQL("CREATE TABLE IF NOT EXISTS `libs` (`scriptName` TEXT NOT NULL, `version` TEXT NOT NULL, `repoID` INTEGER NOT NULL, PRIMARY KEY(`scriptName`))")
+							database.execSQL("INSERT INTO `libs` SELECT * FROM `libs_old`")
+							database.execSQL("DROP TABLE IF EXISTS `libs_old`")
+							database.endTransaction()
+							database.setForeignKeyConstraintsEnabled(true)
 						}
 
 					}
