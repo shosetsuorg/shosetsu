@@ -1,7 +1,9 @@
 package app.shosetsu.common.domain.repositories.base
 
+import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.domain.model.local.BackupEntity
 import kotlinx.coroutines.flow.Flow
+import java.io.IOException
 
 /*
  * This file is part of Shosetsu.
@@ -62,5 +64,6 @@ interface IBackupRepository {
 	/**
 	 * @return Path of new backup
 	 */
+	@Throws(FilePermissionException::class, IOException::class)
 	suspend fun saveBackup(backupEntity: BackupEntity): String
 }

@@ -1,11 +1,13 @@
 package app.shosetsu.common.domain.repositories.impl
 
+import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.datasource.file.base.IFileBackupDataSource
 import app.shosetsu.common.domain.model.local.BackupEntity
 import app.shosetsu.common.domain.repositories.base.IBackupRepository
 import app.shosetsu.common.domain.repositories.base.IBackupRepository.BackupProgress
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.io.IOException
 
 /*
  * This file is part of Shosetsu.
@@ -49,6 +51,7 @@ class BackupRepository(
 	override suspend fun loadBackup(path: String, isExternal: Boolean): BackupEntity =
 		iFileBackupDataSource.loadBackup(path, isExternal)
 
+	@Throws(FilePermissionException::class, IOException::class)
 	override suspend fun saveBackup(backupEntity: BackupEntity): String =
 		iFileBackupDataSource.saveBackup(backupEntity)
 }

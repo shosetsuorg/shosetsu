@@ -1,10 +1,14 @@
 package app.shosetsu.common.domain.repositories.base
 
+import app.shosetsu.common.FileNotFoundException
+import app.shosetsu.common.FilePermissionException
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.ReaderChapterEntity
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -38,15 +42,8 @@ interface IChaptersRepository {
 	 *
 	 * Saves successful passages into caches
 	 *
-	 * @return
-	 * [HResult.Success] Chapter successfully retrieved
-	 *
-	 * [HResult.Error] Something went wrong loading the chapter
-	 *
-	 * [HResult.Empty] Nothing was found for the chapter
-	 *
-	 * [HResult.Loading] never
 	 */
+	@Throws(FilePermissionException::class, FileNotFoundException::class)
 	suspend fun getChapterPassage(
 		formatter: IExtension,
 		entity: ChapterEntity,
@@ -57,15 +54,8 @@ interface IChaptersRepository {
 	 *
 	 * Will not save into any caches, as is assuming content retrieved from [getChapterPassage]
 	 *
-	 * @return
-	 * [HResult.Success] Chapter saved to storage scornfully
-	 *
-	 * [HResult.Error] Something went wrong saving to storage
-	 *
-	 * [HResult.Empty] never
-	 *
-	 * [HResult.Loading] never
 	 */
+	@Throws(FilePermissionException::class, IOException::class, GenericSQLiteException::class)
 	suspend fun saveChapterPassageToStorage(
 		entity: ChapterEntity,
 		chapterType: Novel.ChapterType,
@@ -74,16 +64,8 @@ interface IChaptersRepository {
 
 	/**
 	 * Handles chapters for ze novel
-	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
+	@Throws(GenericSQLiteException::class)
 	suspend fun handleChapters(
 		novelID: Int,
 		extensionID: Int,
@@ -92,16 +74,8 @@ interface IChaptersRepository {
 
 	/**
 	 * Handles chapters return, but returns the chapters that are new
-	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Loading] TODO RETURN DESCRIPTION
 	 */
+	@Throws(IndexOutOfBoundsException::class, GenericSQLiteException::class)
 	suspend fun handleChaptersReturn(
 		novelID: Int,
 		extensionID: Int,
@@ -110,96 +84,49 @@ interface IChaptersRepository {
 
 	/**
 	 * Loads [ChapterEntity]s matching [novelID] in a [Flow] of [HResult]
-	 *
-	 * @return [Flow] of
-	 *
-	 * [HResult.Success] Chapters found and returned
-	 *
-	 * [HResult.Error] Something went wrong loading the chapters
-	 *
-	 * [HResult.Empty] never?
-	 *
-	 * [HResult.Loading] Initial
 	 */
 	suspend fun getChaptersLive(novelID: Int): Flow<List<ChapterEntity>>
 
+	@Throws(GenericSQLiteException::class)
 	suspend fun getChapters(novelID: Int): List<ChapterEntity>
 
+	@Throws(GenericSQLiteException::class)
 	suspend fun getChaptersByExtension(extensionId: Int): List<ChapterEntity>
 
 	/**
 	 * Loads a [ChapterEntity] by its [chapterID]
-	 *
-	 * @return
-	 * [HResult.Success] Chapter successfully loaded
-	 *
-	 * [HResult.Error] Exception occurred loading entity
-	 *
-	 * [HResult.Empty] No such chapter exists
-	 *
-	 * [HResult.Loading] never
 	 */
+	@Throws(GenericSQLiteException::class)
 	suspend fun getChapter(chapterID: Int): ChapterEntity?
 
 	/**
 	 * Update [chapterEntity] in database
-	 *
-	 * @return
-	 * [HResult.Success] [ChapterEntity] updated properly
-	 *
-	 * [HResult.Error] Exception occurred when saving
-	 *
-	 * [HResult.Empty] never
-	 *
-	 * [HResult.Loading] never
 	 */
+	@Throws(GenericSQLiteException::class)
 	suspend fun updateChapter(chapterEntity: ChapterEntity)
 
 	/**
 	 * Loads [ReaderChapterEntity]s by it's [novelID]
-	 *
-	 * @return
-	 * [HResult.Success] [List] of [ReaderChapterEntity]
-	 *
-	 * [HResult.Error] Exception occurred loading
-	 *
-	 * [HResult.Empty] No entities found
-	 *
-	 * [HResult.Loading] Initial value
 	 */
 	suspend fun getReaderChaptersFlow(novelID: Int): Flow<List<ReaderChapterEntity>>
 
 	/**
 	 * Update [readerChapterEntity] in database
-	 *
-	 * @return
-	 * [HResult.Success] [readerChapterEntity] successfully updated
-	 *
-	 * [HResult.Error] Something went wrong
-	 *
-	 * [HResult.Empty] never
-	 *
-	 * [HResult.Loading] never
 	 */
+	@Throws(GenericSQLiteException::class)
 	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity)
 
 	/**
 	 * Delete the chapter passage from storage
 	 *
 	 * Also deletes from memory and cache
-	 * @return
-	 * [HResult.Success] [chapterEntity]s passage deleted
-	 *
-	 * [HResult.Error] Something went wrong attempting to save
-	 *
-	 * [HResult.Empty] never
-	 *
-	 * [HResult.Loading] never
 	 */
+	@Throws(GenericSQLiteException::class, FilePermissionException::class)
 	suspend fun deleteChapterPassage(
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType
 	)
 
+	@Throws(GenericSQLiteException::class)
 	suspend fun delete(chapterUI: ChapterEntity)
 }

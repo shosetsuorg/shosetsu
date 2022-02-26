@@ -1,5 +1,8 @@
 package app.shosetsu.common.domain.repositories.impl
 
+import app.shosetsu.common.FileNotFoundException
+import app.shosetsu.common.FilePermissionException
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.datasource.database.base.IDBChaptersDataSource
 import app.shosetsu.common.datasource.file.base.IFileCachedChapterDataSource
 import app.shosetsu.common.datasource.file.base.IFileChapterDataSource
@@ -11,6 +14,7 @@ import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -54,6 +58,7 @@ class ChaptersRepository(
 		result: ByteArray
 	) = saveChapterPassageToMemory(entity, chapterType, result)
 
+	@Throws(FilePermissionException::class, FileNotFoundException::class)
 	override suspend fun getChapterPassage(
 		formatter: IExtension,
 		entity: ChapterEntity,
@@ -101,6 +106,7 @@ class ChaptersRepository(
 	 * We want to ensure that the [passage] is saved either to [memorySource] or [fileSource] first off
 	 * After that, then we can update the [entity] to say [passage] was properly saved
 	 */
+	@Throws(FilePermissionException::class, IOException::class, GenericSQLiteException::class)
 	override suspend fun saveChapterPassageToStorage(
 		entity: ChapterEntity,
 		chapterType: Novel.ChapterType,
@@ -113,12 +119,14 @@ class ChaptersRepository(
 		dbSource.updateChapter(entity.copy(isSaved = true))
 	}
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun handleChapters(
 		novelID: Int,
 		extensionID: Int, list: List<Novel.Chapter>,
 	): Unit =
 		dbSource.handleChapters(novelID, extensionID, list)
 
+	@Throws(IndexOutOfBoundsException::class, GenericSQLiteException::class)
 	override suspend fun handleChaptersReturn(
 		novelID: Int,
 		extensionID: Int, list: List<Novel.Chapter>,
@@ -128,15 +136,19 @@ class ChaptersRepository(
 	override suspend fun getChaptersLive(novelID: Int): Flow<List<ChapterEntity>> =
 		dbSource.getChaptersFlow(novelID)
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun getChapters(novelID: Int): List<ChapterEntity> =
 		dbSource.getChapters(novelID)
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun getChaptersByExtension(extensionId: Int): List<ChapterEntity> =
 		dbSource.getChaptersByExtension(extensionId)
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun updateChapter(chapterEntity: ChapterEntity): Unit =
 		dbSource.updateChapter(chapterEntity)
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun getChapter(chapterID: Int): ChapterEntity? =
 		dbSource.getChapter(chapterID)
 
@@ -144,9 +156,11 @@ class ChaptersRepository(
 		novelID: Int,
 	): Flow<List<ReaderChapterEntity>> = dbSource.getReaderChapters(novelID)
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): Unit =
 		dbSource.updateReaderChapter(readerChapterEntity)
 
+	@Throws(GenericSQLiteException::class, FilePermissionException::class)
 	override suspend fun deleteChapterPassage(
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType
@@ -160,6 +174,7 @@ class ChaptersRepository(
 	}
 
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun delete(entity: ChapterEntity) =
 		dbSource.delete(entity)
 
