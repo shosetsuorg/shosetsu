@@ -12,6 +12,7 @@ import app.shosetsu.android.viewmodel.abstracted.ADownloadsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.IsDownloadPaused
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.enums.DownloadStatus
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 

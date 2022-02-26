@@ -17,7 +17,7 @@ import app.shosetsu.android.common.utils.backupJSON
 import app.shosetsu.android.domain.model.local.backup.*
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.BackupEntity
-import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.repositories.base.*
 import app.shosetsu.common.domain.repositories.base.IBackupRepository.BackupProgress
@@ -131,13 +131,13 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 
 
 		lateinit var novelsToChapters: List<Pair<NovelEntity, List<BackupChapterEntity>>>
-		lateinit var extensions: List<ExtensionEntity>
+		lateinit var extensions: List<InstalledExtensionEntity>
 
 		/*
 		Run to isolate the variable 'novels' so it can be trashed, hopefully saving memory
 		 */
 		val success = run {
-			val novels = novelRepository.loadBookmarkedNovelEntities()?: return@run false
+			val novels = novelRepository.loadBookmarkedNovelEntities() ?: return@run false
 
 			logI("Loaded ${novels.size} novel(s)")
 			notify("Loaded ${novels.size} novel(s)")
@@ -192,7 +192,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 									}.map { (novel, chapters) ->
 										val settings =
 											if (backupSettings)
-												novelSettingsRepository.get(novel.id!!).unwrap()
+												novelSettingsRepository.get(novel.id!!)
 											else null
 
 										val bSettings = settings?.let {
