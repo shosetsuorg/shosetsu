@@ -1,7 +1,6 @@
 package app.shosetsu.android.common.ext
 
 import android.util.Log.*
-import app.shosetsu.common.dto.HResult
 import java.io.PrintStream
 
 /*
@@ -32,16 +31,6 @@ const val CRED: String = "\u001B[31m"
 fun writeT(t: Throwable? = null) {
 	if (t != null)
 		fileOut?.println(t.stackTraceToString())
-}
-
-inline fun <reified T : Any> T.logError(error: () -> HResult.Error) {
-	error().let { (k, m, e) ->
-		e(logID(), "Error Result:\t$k by $e\tmessage:\n$m")
-		if (e != null) {
-			e(logID(), "\nStacktrace${e.stackTrace.contentToString()}")
-			e(logID(), "\nStacktrace${e.cause}")
-		}
-	}
 }
 
 inline fun <reified T> T.logI(message: String?, t: Throwable? = null): Int {

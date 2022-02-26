@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import app.shosetsu.android.common.ext.context
-import app.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding.inflate
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -49,7 +49,7 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerRecyclerBinding
  */
 abstract class RecyclerController<AD, IT, VB> : ViewedController<VB>
 		where AD : RecyclerView.Adapter<*>,
-		      VB : ViewBinding {
+			  VB : ViewBinding {
 
 
 	lateinit var recyclerView: RecyclerView
@@ -79,12 +79,11 @@ abstract class RecyclerController<AD, IT, VB> : ViewedController<VB>
 	}
 
 	/** @param result [HResult], if [HResult.Success] then updates UI */
-	open fun handleRecyclerUpdate(result: HResult<List<IT>>) = when (result) {
-		HResult.Loading -> showLoading()
-		is HResult.Success -> updateUI(result.data)
-		is HResult.Error -> handleErrorResult(result)
-		HResult.Empty -> showEmpty()
-		else -> {
+	open fun handleRecyclerUpdate(result: List<IT>) {
+		if (result.isEmpty()) {
+			showEmpty()
+		} else {
+			updateUI(result)
 		}
 	}
 
@@ -92,10 +91,17 @@ abstract class RecyclerController<AD, IT, VB> : ViewedController<VB>
 	 * Convenience method to observe a [LiveData] containing data
 	 * that matches what [handleRecyclerUpdate] needs
 	 */
-	fun LiveData<HResult<List<IT>>>.observeRecyclerUpdates() =
-		observe(this@RecyclerController) {
+	fun Flow<List<IT>>.observeRecyclerUpdates() =
+		observe(catch = {
+			handleRecyclerException(it)
+		}) {
 			handleRecyclerUpdate(it)
 		}
+
+	/**
+	 * Show an error on screen
+	 */
+	abstract fun handleRecyclerException(e: Throwable)
 
 	abstract override fun onViewCreated(view: View)
 

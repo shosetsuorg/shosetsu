@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.Flow
 interface NovelSettingsDao : BaseDao<DBNovelSettingsEntity> {
 
 	@Query("SELECT * FROM novel_settings WHERE novelID == :novelID LIMIT 1")
+	@Throws(SQLiteException::class)
 	fun getFlow(novelID: Int): Flow<DBNovelSettingsEntity?>
 
 	@Query("SELECT * FROM novel_settings WHERE novelID == :novelID LIMIT 1")

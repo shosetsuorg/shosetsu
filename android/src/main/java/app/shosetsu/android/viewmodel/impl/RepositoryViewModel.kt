@@ -1,7 +1,5 @@
 package app.shosetsu.android.viewmodel.impl
 
-import androidx.lifecycle.LiveData
-import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.AddRepositoryUseCase
 import app.shosetsu.android.domain.usecases.ForceInsertRepositoryUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
@@ -11,11 +9,7 @@ import app.shosetsu.android.domain.usecases.load.LoadRepositoriesUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateRepositoryUseCase
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.android.viewmodel.abstracted.ARepositoryViewModel
-import app.shosetsu.common.domain.model.local.RepositoryEntity
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 /*
@@ -41,7 +35,6 @@ import kotlinx.coroutines.flow.flow
  */
 class RepositoryViewModel(
 	private val loadRepositoriesUseCase: LoadRepositoriesUseCase,
-	private val reportExceptionUseCase: ReportExceptionUseCase,
 	private val addRepositoryUseCase: AddRepositoryUseCase,
 	private val deleteRepositoryUseCase: DeleteRepositoryUseCase,
 	private val updateRepositoryUseCase: UpdateRepositoryUseCase,
@@ -50,38 +43,36 @@ class RepositoryViewModel(
 	private val isOnlineUseCase: IsOnlineUseCase
 ) : ARepositoryViewModel() {
 
-	override val liveData: LiveData<HResult<List<RepositoryUI>>> by lazy {
-		loadRepositoriesUseCase().asIOLiveData()
+	override val liveData: Flow<List<RepositoryUI>> by lazy {
+		loadRepositoriesUseCase()
 	}
 
 	override fun addRepository(name: String, url: String) = flow {
-		emit(addRepositoryUseCase(RepositoryEntity(url = url, name = name, isEnabled = true)))
-	}.asIOLiveData()
+		addRepositoryUseCase(url = url, name = name)
+		emit(Unit)
+	}
 
-	override fun undoRemove(item: RepositoryUI): LiveData<HResult<*>> = flow {
-		emit(forceInsertRepositoryUseCase(item))
-	}.asIOLiveData()
+	override fun undoRemove(item: RepositoryUI): Flow<Unit> = flow {
+		forceInsertRepositoryUseCase(item)
+		emit(Unit)
+	}
 
 	override fun isURL(string: String): Boolean {
 		return false
 	}
 
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-		reportExceptionUseCase(error)
-	}
-
 	override fun remove(repositoryInfoUI: RepositoryUI) =
 		flow {
 			emit(deleteRepositoryUseCase(repositoryInfoUI))
-		}.asIOLiveData()
+		}.onIO()
 
-	override fun toggleIsEnabled(repositoryInfoUI: RepositoryUI): LiveData<HResult<Boolean>> =
+	override fun toggleIsEnabled(repositoryInfoUI: RepositoryUI): Flow<Boolean> =
 		flow {
 			val newState = !repositoryInfoUI.isRepoEnabled
-			emit(updateRepositoryUseCase(repositoryInfoUI.copy(isRepoEnabled = newState)).transform {
-				successResult(newState)
+			emit(updateRepositoryUseCase(repositoryInfoUI.copy(isRepoEnabled = newState)).let {
+				newState
 			})
-		}.asIOLiveData()
+		}
 
 	override fun updateRepositories() {
 		startRepositoryUpdateManagerUseCase()

@@ -11,10 +11,8 @@ import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AUpdateSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.domain.repositories.base.getIntOrDefault
-import app.shosetsu.common.dto.HResult
 import com.github.doomsdayrs.apps.shosetsu.R
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.combine
 
 /*
  * This file is part of shosetsu.
@@ -55,7 +53,7 @@ class UpdateSettingsViewModel(
 			titleRes = R.string.settings_update_novel_frequency_title
 			descRes = R.string.settings_update_novel_frequency_desc
 			range { 0F to 6F }
-			progressValue = when (settingsRepo.getIntOrDefault(NovelUpdateCycle)) {
+			progressValue = when (settingsRepo.getInt(NovelUpdateCycle)) {
 				1 -> 0F
 				2 -> 1F
 				4 -> 2F
@@ -189,11 +187,7 @@ class UpdateSettingsViewModel(
 		// next 16
 	)
 
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-	}
-
-
-	fun restartNovelUpdater() {
+	private fun restartNovelUpdater() {
 		logI("Restarting novel updaters")
 		// If the update manager was enqueued, kill it.
 		if (novelUpdateManager.count != 0 && novelUpdateManager.getWorkerState() == WorkInfo.State.ENQUEUED)
@@ -203,7 +197,7 @@ class UpdateSettingsViewModel(
 		novelUpdateCycleManager.start()
 	}
 
-	fun restartRepoUpdater() {
+	private fun restartRepoUpdater() {
 		logI("Restarting repo updater")
 
 		repoUpdateManager.stop()

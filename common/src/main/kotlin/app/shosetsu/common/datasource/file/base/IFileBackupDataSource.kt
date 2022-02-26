@@ -1,7 +1,8 @@
 package app.shosetsu.common.datasource.file.base
 
+import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.domain.model.local.BackupEntity
-import app.shosetsu.common.dto.HResult
+import java.io.IOException
 
 /*
  * This file is part of Shosetsu.
@@ -25,9 +26,10 @@ import app.shosetsu.common.dto.HResult
  */
 interface IFileBackupDataSource {
 
-	suspend fun loadBackup(backupName: String, isExternal: Boolean): HResult<BackupEntity>
+	suspend fun loadBackup(backupName: String, isExternal: Boolean): BackupEntity
 
-	suspend fun saveBackup(backupEntity: BackupEntity): HResult<String>
+	@Throws(FilePermissionException::class, IOException::class)
+	suspend fun saveBackup(backupEntity: BackupEntity): String
 
-	suspend fun loadBackups(): HResult<List<String>>
+	suspend fun loadBackups(): List<String>
 }

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.viewbinding.ViewBinding
 import app.shosetsu.android.common.ext.logI
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -80,8 +79,5 @@ abstract class ViewedController<VB : ViewBinding> : ShosetsuController {
 	 */
 	abstract fun bindView(inflater: LayoutInflater): VB
 
-	/**
-	 * Show an error on screen
-	 */
-	abstract fun handleErrorResult(e: HResult.Error)
+
 }

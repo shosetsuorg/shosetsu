@@ -1,7 +1,7 @@
 package app.shosetsu.common.domain.repositories.base
 
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.NovelSettingEntity
-import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -32,14 +32,9 @@ interface INovelSettingsRepository {
 	/**
 	 * Loads up the settings for a novel
 	 * Should generate settings if none present
-	 * @return
-	 * [HResult.Success] when settings are either found or created
-	 *
-	 * [HResult.Error] Something went wrong
-	 *
-	 * [HResult.Empty] If no novel settings were found
 	 */
-	suspend fun get(novelID: Int): HResult<NovelSettingEntity>
+	@Throws(GenericSQLiteException::class)
+	suspend fun get(novelID: Int): NovelSettingEntity?
 
 
 	/**
@@ -47,16 +42,18 @@ interface INovelSettingsRepository {
 	 *
 	 * @see get
 	 */
-	fun getFlow(novelID: Int): Flow<HResult<NovelSettingEntity>>
+	fun getFlow(novelID: Int): Flow<NovelSettingEntity?>
 
 
 	/**
 	 * Updates the settings for novels
 	 */
-	suspend fun update(novelSettingEntity: NovelSettingEntity): HResult<*>
+	@Throws(GenericSQLiteException::class)
+	suspend fun update(novelSettingEntity: NovelSettingEntity)
 
 	/**
 	 * Inserts a new setting
 	 */
-	suspend fun insert(novelSettingEntity: NovelSettingEntity): HResult<*>
+	@Throws(GenericSQLiteException::class)
+	suspend fun insert(novelSettingEntity: NovelSettingEntity): Long
 }

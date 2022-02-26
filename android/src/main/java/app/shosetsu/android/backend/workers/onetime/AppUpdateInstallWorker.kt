@@ -17,15 +17,15 @@ import app.shosetsu.android.common.consts.Notifications.CHANNEL_APP_UPDATE
 import app.shosetsu.android.common.consts.Notifications.ID_APP_UPDATE_INSTALL
 import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_INSTALL_WORK_ID
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
-import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
+import org.acra.ACRA
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
 import java.io.File
+import java.util.concurrent.ExecutionException
 
 /*
  * This file is part of Shosetsu.
@@ -62,8 +62,6 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 
 	override val defaultNotificationID: Int = ID_APP_UPDATE_INSTALL
 
-	private val reportExceptionUseCase by instance<ReportExceptionUseCase>()
-
 	override val baseNotificationBuilder: NotificationCompat.Builder
 		get() = notificationBuilder(applicationContext, CHANNEL_APP_UPDATE)
 			.setSubText(applicationContext.getString(R.string.notification_app_update_install_title))
@@ -77,65 +75,59 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 		}
 
 		// Load up the app update from repo
-		updateRepo.loadAppUpdate().handle(
-			onError = {
-				notify("Exception occurred\n ${it.message}") {
-					setNotOngoing()
-					removeProgress()
-				}
-				reportExceptionUseCase(it)
-				return Result.failure()
-			},
-			onEmpty = {
-				notify("Empty result, Recieved empty return, Was there even an update?") {
-					setNotOngoing()
-					removeProgress()
-				}
-				return Result.failure()
+		val update = try {
+			updateRepo.loadAppUpdate()
+		} catch (e: Exception) { // TODO specific
+			notify("Exception occurred\n ${e.message}") {
+				setNotOngoing()
+				removeProgress()
 			}
-		) { update ->
-
-			notify(R.string.notification_app_update_downloading)
-
-			// download the app update and get the path to the installed file
-			updateRepo.downloadAppUpdate(update).handle(
-				onError = {
-					reportExceptionUseCase(it)
-
-					notify("Exception occurred \n ${it.message} ") {
-						setOngoing(false)
-						setProgress(0, 0, false)
-					}
-
-					return Result.failure()
-				},
-				onEmpty = {
-
-					notify("Empty result, Received empty return, Did the download fail?") {
-						setNotOngoing()
-						removeProgress()
-					}
-					return Result.failure()
-				}
-			) { path ->
-				val uri = File(path).getUriCompat(applicationContext)
-				notify(R.string.notification_app_update_install) {
-					setNotOngoing()
-					removeProgress()
-					addAction(
-						actionBuilder(
-							IconCompat.createWithResource(
-								applicationContext,
-								R.drawable.app_update
-							),
-							applicationContext.getString(R.string.install),
-							installApkPendingActivity(applicationContext, uri)
-						).build()
-					)
-				}
-
-			}
+			ACRA.errorReporter.handleException(e)
+			return Result.failure()
 		}
+
+		if (update == null) {
+			notify("Empty result, Recieved empty return, Was there even an update?") {
+				setNotOngoing()
+				removeProgress()
+			}
+			return Result.failure()
+		}
+
+
+		notify(R.string.notification_app_update_downloading)
+
+		// download the app update and get the path to the installed file
+		val path = try {
+			updateRepo.downloadAppUpdate(update)
+		} catch (e: Exception) {// TODO specific
+			notify("Exception occurred \n ${e.message} ") {
+				setOngoing(false)
+				setProgress(0, 0, false)
+			}
+
+			ACRA.errorReporter.handleException(e)
+
+			return Result.failure()
+		};
+
+		val uri = File(path).getUriCompat(applicationContext)
+
+		notify(R.string.notification_app_update_install) {
+			setNotOngoing()
+			removeProgress()
+			addAction(
+				actionBuilder(
+					IconCompat.createWithResource(
+						applicationContext,
+						R.drawable.app_update
+					),
+					applicationContext.getString(R.string.install),
+					installApkPendingActivity(applicationContext, uri)
+				).build()
+			)
+		}
+
 		return Result.success()
 	}
 
@@ -159,12 +151,14 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 	}
 
 	class Manager(context: Context) : CoroutineWorkerManager(context) {
+		@Throws(InterruptedException::class, ExecutionException::class)
 		override fun isRunning(): Boolean = try {
 			getWorkerState() == WorkInfo.State.RUNNING
 		} catch (e: Exception) {
 			false
 		}
 
+		@Throws(InterruptedException::class, ExecutionException::class)
 		override fun getWorkerState(index: Int): WorkInfo.State =
 			workerManager.getWorkInfosForUniqueWork(APP_UPDATE_INSTALL_WORK_ID).get()[index].state
 

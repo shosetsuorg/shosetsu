@@ -2,8 +2,7 @@ package app.shosetsu.common.domain.repositories.base
 
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.ChapterHistoryEntity
-import app.shosetsu.common.dto.HListFlow
-import app.shosetsu.common.dto.HResult
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -47,10 +46,10 @@ interface IChapterHistoryRepository {
 	 *
 	 * @return a chapter is found, empty if nothing is there
 	 */
-	fun getLastRead(novelId: Int): HResult<ChapterHistoryEntity>
+	fun getLastRead(novelId: Int): ChapterHistoryEntity?
 
 	/**
 	 * Live view of the history
 	 */
-	val history: HListFlow<ChapterHistoryEntity>
+	val history: Flow<List<ChapterHistoryEntity>>
 }

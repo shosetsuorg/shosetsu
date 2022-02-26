@@ -1,7 +1,6 @@
 package app.shosetsu.android.datasource.remote.base
 
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -27,13 +26,13 @@ import app.shosetsu.common.dto.HResult
  * A class to see if there is an app update ava
  */
 interface IRemoteAppUpdateDataSource {
-	suspend fun loadAppUpdate(): HResult<AppUpdateEntity>
+	suspend fun loadAppUpdate(): AppUpdateEntity
 
 
 	/**
 	 * Specifies that this [IRemoteAppUpdateDataSource] can download the app update itself
 	 */
 	interface Downloadable : IRemoteAppUpdateDataSource {
-		suspend fun downloadAppUpdate(update: AppUpdateEntity): HResult<ByteArray>
+		suspend fun downloadAppUpdate(update: AppUpdateEntity): ByteArray
 	}
 }

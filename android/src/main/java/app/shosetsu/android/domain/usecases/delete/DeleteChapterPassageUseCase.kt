@@ -1,10 +1,10 @@
 package app.shosetsu.android.domain.usecases.delete
 
 import app.shosetsu.android.view.uimodels.model.ChapterUI
+import app.shosetsu.common.NoSuchExtensionException
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.dto.handle
 
 /*
  * This file is part of shosetsu.
@@ -36,8 +36,12 @@ class DeleteChapterPassageUseCase(
 	}
 
 	suspend operator fun invoke(chapterUI: ChapterEntity) {
-		iExtensionsRepository.getExtension(chapterUI.extensionID).handle {
-			iChaptersRepository.deleteChapterPassage(chapterUI, it.chapterType)
-		}
+		val ext = iExtensionsRepository.getInstalledExtension(chapterUI.extensionID!!)
+			?: throw NoSuchExtensionException(chapterUI.extensionID.toString())
+
+		iChaptersRepository.deleteChapterPassage(
+			chapterUI,
+			ext.chapterType
+		)
 	}
 }

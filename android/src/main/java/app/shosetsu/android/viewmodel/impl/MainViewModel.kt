@@ -1,6 +1,5 @@
 package app.shosetsu.android.viewmodel.impl
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.enums.NavigationStyle
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logV
@@ -16,11 +15,10 @@ import app.shosetsu.android.domain.usecases.start.StartAppUpdateInstallWorkerUse
 import app.shosetsu.android.viewmodel.abstracted.AMainViewModel
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
+import app.shosetsu.common.domain.repositories.base.IBackupRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.AppThemes
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
 
@@ -76,26 +74,26 @@ class MainViewModel(
 		}
 	}
 
-	override fun startAppUpdateCheck(): LiveData<HResult<AppUpdateEntity>> =
-		loadAppUpdateFlowLiveUseCase().asIOLiveData()
+	override fun startAppUpdateCheck(): Flow<AppUpdateEntity?> =
+		loadAppUpdateFlowLiveUseCase()
 
 	override val navigationStyle: NavigationStyle
 		get() = _navigationStyle
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
 
-	override val appThemeLiveData: LiveData<AppThemes>
-		get() = loadLiveAppThemeUseCase().asIOLiveData()
+	override val appThemeLiveData: Flow<AppThemes>
+		get() = loadLiveAppThemeUseCase()
 
-	override fun handleAppUpdate(): LiveData<HResult<AppUpdateAction>> =
+	override fun handleAppUpdate(): Flow<AppUpdateAction?> =
 		flow {
 			emit(
-				canAppSelfUpdateUseCase().transform { canSelfUpdate ->
+				canAppSelfUpdateUseCase().let { canSelfUpdate ->
 					if (canSelfUpdate) {
 						startInstallWorker()
-						successResult(AppUpdateAction.SelfUpdate)
+						AppUpdateAction.SelfUpdate
 					} else {
-						loadAppUpdateUseCase().transformToSuccess {
+						loadAppUpdateUseCase()?.let {
 							AppUpdateAction.UserUpdate(
 								it.version,
 								it.url
@@ -104,10 +102,10 @@ class MainViewModel(
 					}
 				}
 			)
-		}.asIOLiveData()
+		}
 
-	override val backupProgressState: LiveData<HResult<Unit>> by lazy {
-		loadBackupProgress().asIOLiveData()
+	override val backupProgressState: Flow<IBackupRepository.BackupProgress> by lazy {
+		loadBackupProgress()
 	}
 
 	private var showIntro = SettingKey.FirstTime.default
@@ -122,8 +120,7 @@ class MainViewModel(
 	}
 
 	override suspend fun showIntro(): Boolean =
-		settingsRepository.getBoolean(SettingKey.FirstTime).unwrap() ?: SettingKey.FirstTime.default
-
+		settingsRepository.getBoolean(SettingKey.FirstTime)
 
 	override fun toggleShowIntro() {
 		launchIO {

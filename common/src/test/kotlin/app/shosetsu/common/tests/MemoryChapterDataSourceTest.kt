@@ -4,9 +4,6 @@ import app.shosetsu.common.consts.MEMORY_EXPIRE_CHAPTER_TIME
 import app.shosetsu.common.consts.MEMORY_MAX_CHAPTERS
 import app.shosetsu.common.datasource.memory.base.IMemChaptersDataSource
 import app.shosetsu.common.datasource.memory.impl.GenericMemChaptersDataSource
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.unwrap
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -68,14 +65,15 @@ class MemoryChapterDataSourceTest {
 
 				println("Saving #$CHAPTER_ID, to ensure it is deleted")
 				// Saving this chapter
-				memorySource.saveChapterInCache(CHAPTER_ID, CHAPTER_CONTENT)
+				memorySource.saveChapterInCache(CHAPTER_ID, CHAPTER_CONTENT.toByteArray())
 
 				println("Saving chapters")
 				for (i in 1 until MEMORY_MAX_CHAPTERS + 2)
-					memorySource.saveChapterInCache(i.toInt(), "$i")
+					memorySource.saveChapterInCache(i.toInt(), "$i".toByteArray())
 
 				println("Checking if chapter is present")
-				require(memorySource.loadChapterFromCache(CHAPTER_ID) == HResult.Empty) { "Chapter still present" }
+				require(memorySource.loadChapterFromCache(CHAPTER_ID) != null)
+				{ "Chapter still present" }
 				println("Chapter is not present, Success")
 			}
 			measureTimeMillis {
@@ -90,16 +88,18 @@ class MemoryChapterDataSourceTest {
 			println("Testing expire time")
 			val job = GlobalScope.launch {
 				println("Save and load test")
-				memorySource.saveChapterInCache(CHAPTER_ID, CHAPTER_CONTENT)
-				memorySource.loadChapterFromCache(CHAPTER_ID).handle {
+				memorySource.saveChapterInCache(CHAPTER_ID, CHAPTER_CONTENT.toByteArray())
+				memorySource.loadChapterFromCache(CHAPTER_ID).let {
 					println("We have $CHAPTER_CONTENT, ensuring they are the same")
-					assert(CHAPTER_CONTENT == it) { "They are not the same" }
+					assert(
+						CHAPTER_CONTENT.toByteArray().contentEquals(it)
+					) { "They are not the same" }
 					println("They match up")
 				}
 				println("Delaying until time is sufficient for it to be deleted")
 
 				delay(expireTime + 1000)
-				assertNull(memorySource.loadChapterFromCache(CHAPTER_ID).unwrap(), "Did not delete")
+				assertNull(memorySource.loadChapterFromCache(CHAPTER_ID), "Did not delete")
 				println("Test completed properly")
 			}
 			measureTimeMillis {

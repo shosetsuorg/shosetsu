@@ -5,9 +5,6 @@ import app.shosetsu.android.common.ext.set
 import app.shosetsu.common.consts.MEMORY_EXPIRE_EXTENSION_TIME
 import app.shosetsu.common.consts.MEMORY_MAX_EXT_LIBS
 import app.shosetsu.common.datasource.memory.base.IMemExtLibDataSource
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.emptyResult
-import app.shosetsu.common.dto.successResult
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
 import java.util.concurrent.TimeUnit.HOURS
@@ -40,18 +37,17 @@ class GuavaMemExtLibDataSource : IMemExtLibDataSource {
 		.expireAfterWrite(MEMORY_EXPIRE_EXTENSION_TIME, HOURS)
 		.build()
 
-	override fun loadLibrary(name: String): HResult<String> {
-		val result = libraries[name]
+	override fun loadLibrary(name: String): String? {
 		//logV("Loading $name from memory (success?: ${result != null})")
-		return result?.let { successResult(it) } ?: emptyResult()
+		return libraries[name]
 	}
 
-	override fun setLibrary(name: String, data: String): HResult<*> {
+	override fun setLibrary(name: String, data: String) {
 		//logV("Putting $name into memory")
 		libraries[name] = data
-		return successResult("")
 	}
 
-	override fun removeLibrary(name: String): HResult<*> =
-		successResult(libraries.invalidate(name))
+	override fun removeLibrary(name: String) {
+		libraries.invalidate(name)
+	}
 }

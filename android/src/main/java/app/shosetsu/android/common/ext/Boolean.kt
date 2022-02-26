@@ -27,4 +27,5 @@ package app.shosetsu.android.common.ext
 
 fun Boolean.toInt(): Int = if (this) 1 else 0
 
+@Deprecated("Why?", ReplaceWith("if (this) { action } else { null }"))
 infix fun <T> Boolean.ifSo(action: T): T? = if (this) action else null

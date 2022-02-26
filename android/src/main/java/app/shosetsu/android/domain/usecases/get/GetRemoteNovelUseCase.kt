@@ -7,9 +7,6 @@ import app.shosetsu.common.domain.model.local.UpdateEntity
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.IUpdatesRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
 
 /*
  * This file is part of shosetsu.
@@ -50,12 +47,13 @@ class GetRemoteNovelUseCase(
 	private suspend fun main(
 		novel: NovelEntity,
 		loadChapters: Boolean = true,
-	): HResult<UpdatedNovelInfo> {
+	): UpdatedNovelInfo? {
 		logI("Loading novel data from internet for ${novel.id}")
 		if (loadChapters) logI("And loading chapters for ${novel.id}")
 		else logI("and not loading chapters for ${novel.id}")
-		return getExt(novel.extensionID).transform { ext ->
-			nR.retrieveNovelInfo(ext, novel, loadChapters).transform { page ->
+		if (novel.extensionID == null) return null
+		return getExt(novel.extensionID!!)?.let { ext ->
+			nR.retrieveNovelInfo(ext, novel, loadChapters).let { page ->
 				val hadNovelBeenLoaded: Boolean = novel.loaded
 
 				// Fills the novel with new data
@@ -68,28 +66,28 @@ class GetRemoteNovelUseCase(
 						logI("Novel has never been loaded, just inserting the chapters")
 						cR.handleChapters(
 							novelID = novel.id!!,
-							extensionID = novel.extensionID,
+							extensionID = novel.extensionID!!,
 							list = page.chapters
-						).transform {
-							successResult(UpdatedNovelInfo())
+						).let {
+							UpdatedNovelInfo()
 						}
 					} else {
 						// If the novel has been loaded, handle the chapters and set them as updates
 						logI("Novel has been loaded, sending update")
 						cR.handleChaptersReturn(
 							novelID = novel.id!!,
-							extensionID = novel.extensionID,
+							extensionID = novel.extensionID!!,
 							list = page.chapters
-						).transform { chapters ->
+						).let { chapters ->
 							uR.addUpdates(chapters.map {
 								UpdateEntity(it.id!!, novel.id!!, System.currentTimeMillis())
-							}).transform {
-								successResult(UpdatedNovelInfo(chapters))
+							}).let {
+								UpdatedNovelInfo(chapters)
 							}
 						}
 					}
 				} else {
-					successResult(UpdatedNovelInfo())
+					UpdatedNovelInfo()
 				}
 			}
 		}
@@ -98,7 +96,7 @@ class GetRemoteNovelUseCase(
 	suspend operator fun invoke(
 		novel: NovelEntity,
 		loadChapters: Boolean = true,
-	): HResult<UpdatedNovelInfo> = main(
+	): UpdatedNovelInfo? = main(
 		novel = novel,
 		loadChapters = loadChapters
 	)
@@ -106,7 +104,7 @@ class GetRemoteNovelUseCase(
 	suspend operator fun invoke(
 		novelID: Int,
 		loadChapters: Boolean = true,
-	): HResult<UpdatedNovelInfo> = nR.getNovel(novelID).transform { novel ->
+	): UpdatedNovelInfo? = nR.getNovel(novelID)?.let { novel ->
 		main(
 			novel = novel,
 			loadChapters = loadChapters

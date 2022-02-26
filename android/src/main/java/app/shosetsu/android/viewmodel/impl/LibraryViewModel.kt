@@ -19,7 +19,6 @@ package app.shosetsu.android.viewmodel.impl
 
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.load.LoadLibraryUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUIColumnsHUseCase
@@ -32,14 +31,16 @@ import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
 import app.shosetsu.common.consts.settings.SettingKey.ChapterColumnsInLandscape
 import app.shosetsu.common.consts.settings.SettingKey.ChapterColumnsInPortait
-import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.InclusionState
 import app.shosetsu.common.enums.InclusionState.EXCLUDE
 import app.shosetsu.common.enums.InclusionState.INCLUDE
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.common.enums.NovelSortType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.mapLatest
 import java.util.Locale.getDefault as LGD
 
 /**
@@ -53,7 +54,6 @@ class LibraryViewModel(
 	private val updateBookmarkedNovelUseCase: UpdateBookmarkedNovelUseCase,
 	private val isOnlineUseCase: IsOnlineUseCase,
 	private var startUpdateWorkerUseCase: StartUpdateWorkerUseCase,
-	private val reportExceptionUseCase: ReportExceptionUseCase,
 	private val loadNovelUITypeUseCase: LoadNovelUITypeUseCase,
 	private val loadNovelUIColumnsH: LoadNovelUIColumnsHUseCase,
 	private val loadNovelUIColumnsP: LoadNovelUIColumnsPUseCase,
@@ -79,7 +79,7 @@ class LibraryViewModel(
 		}
 	}
 
-	private val librarySourceFlow: Flow<HResult<List<ABookmarkedNovelUI>>> by lazy { libraryAsCardsUseCase() }
+	private val librarySourceFlow: Flow<List<ABookmarkedNovelUI>> by lazy { libraryAsCardsUseCase() }
 
 	override val genresLiveData: LiveData<List<String>> by lazy {
 		stripOutList { it.genres }
@@ -140,7 +140,7 @@ class LibraryViewModel(
 	 *
 	 * This also connects all the filtering as well
 	 */
-	override val liveData: LiveData<HResult<List<ABookmarkedNovelUI>>> by lazy {
+	override val liveData: Flow<List<ABookmarkedNovelUI>> by lazy {
 		librarySourceFlow
 			.combineArtistFilter()
 			.combineAuthorFilter()
@@ -149,7 +149,6 @@ class LibraryViewModel(
 			.combineUnreadStatus()
 			.combineSortType()
 			.combineSortReverse()
-			.asIOLiveData()
 	}
 
 	override val columnsInH
@@ -161,12 +160,12 @@ class LibraryViewModel(
 	/**
 	 * Removes the list for filtering from the [ABookmarkedNovelUI] with the flow
 	 */
-	@ExperimentalCoroutinesApi
+	@OptIn(ExperimentalCoroutinesApi::class)
 	private fun stripOutList(
 		strip: (ABookmarkedNovelUI) -> List<String>
 	): LiveData<List<String>> = librarySourceFlow.mapLatest { result ->
 		ArrayList<String>().apply {
-			result.handle { list ->
+			result.let { list ->
 				list.forEach { ui ->
 					strip(ui).forEach { key ->
 						if (!contains(key.replaceFirstChar { if (it.isLowerCase()) it.titlecase(LGD()) else it.toString() }) && key.isNotBlank()) {
@@ -182,71 +181,69 @@ class LibraryViewModel(
 	 * @param flow What [Flow] to merge in updates from
 	 * @param against Return a [List] of [String] to compare against
 	 */
-	private fun Flow<HResult<List<ABookmarkedNovelUI>>>.applyFilterList(
+	private fun Flow<List<ABookmarkedNovelUI>>.applyFilterList(
 		flow: Flow<HashMap<String, InclusionState>>,
 		against: (ABookmarkedNovelUI) -> List<String>
 	) = combine(flow) { novelResult, filters ->
-		novelResult.transform { list ->
-			successResult(
-				if (filters.isNotEmpty()) {
-					var result = list
-					filters.forEach { (s, inclusionState) ->
-						result = when (inclusionState) {
-							INCLUDE ->
-								result.filter { novelUI ->
-									against(novelUI).any { g ->
-										g.replaceFirstChar {
-											if (it.isLowerCase()) it.titlecase(
-												LGD()
-											) else it.toString()
-										} == s
-									}
+		novelResult.let { list ->
+			if (filters.isNotEmpty()) {
+				var result = list
+				filters.forEach { (s, inclusionState) ->
+					result = when (inclusionState) {
+						INCLUDE ->
+							result.filter { novelUI ->
+								against(novelUI).any { g ->
+									g.replaceFirstChar {
+										if (it.isLowerCase()) it.titlecase(
+											LGD()
+										) else it.toString()
+									} == s
 								}
-							EXCLUDE ->
-								result.filterNot { novelUI ->
-									against(novelUI).any { g ->
-										g.replaceFirstChar {
-											if (it.isLowerCase()) it.titlecase(
-												LGD()
-											) else it.toString()
-										} == s
-									}
+							}
+						EXCLUDE ->
+							result.filterNot { novelUI ->
+								against(novelUI).any { g ->
+									g.replaceFirstChar {
+										if (it.isLowerCase()) it.titlecase(
+											LGD()
+										) else it.toString()
+									} == s
 								}
-						}
+							}
 					}
-					result
-				} else {
-					list
 				}
-			)
+				result
+			} else {
+				list
+			}
 		}
 	}
 
-	private fun Flow<HResult<List<ABookmarkedNovelUI>>>.combineGenreFilter() =
+	private fun Flow<List<ABookmarkedNovelUI>>.combineGenreFilter() =
 		applyFilterList(genreFilterFlow) { it.genres }
 
-	private fun Flow<HResult<List<ABookmarkedNovelUI>>>.combineTagsFilter() =
+	private fun Flow<List<ABookmarkedNovelUI>>.combineTagsFilter() =
 		applyFilterList(tagFilterFlow) { it.tags }
 
-	private fun Flow<HResult<List<ABookmarkedNovelUI>>>.combineAuthorFilter() =
+	private fun Flow<List<ABookmarkedNovelUI>>.combineAuthorFilter() =
 		applyFilterList(authorFilterFlow) { it.authors }
 
-	private fun Flow<HResult<List<ABookmarkedNovelUI>>>.combineArtistFilter() =
+	private fun Flow<List<ABookmarkedNovelUI>>.combineArtistFilter() =
 		applyFilterList(artistFilterFlow) { it.artists }
 
 
-	private fun Flow<HResult<List<ABookmarkedNovelUI>>>.combineSortReverse() =
+	private fun Flow<List<ABookmarkedNovelUI>>.combineSortReverse() =
 		combine(areNovelsReversedFlow) { novelResult, reversed ->
-			novelResult.transformToSuccess { list ->
+			novelResult.let { list ->
 				if (reversed)
 					list.reversed()
 				else list
 			}
 		}
 
-	private fun Flow<HResult<List<ABookmarkedNovelUI>>>.combineSortType() =
+	private fun Flow<List<ABookmarkedNovelUI>>.combineSortType() =
 		combine(novelSortTypeFlow) { novelResult, sortType ->
-			novelResult.transformToSuccess { list ->
+			novelResult.let { list ->
 				when (sortType) {
 					NovelSortType.BY_TITLE -> list.sortedBy { it.title }
 					NovelSortType.BY_UNREAD_COUNT -> list.sortedBy { it.unread }
@@ -255,9 +252,9 @@ class LibraryViewModel(
 			}
 		}
 
-	private fun Flow<HResult<List<ABookmarkedNovelUI>>>.combineUnreadStatus() =
+	private fun Flow<List<ABookmarkedNovelUI>>.combineUnreadStatus() =
 		combine(unreadStatusFlow) { novelResult, sortType ->
-			novelResult.transformToSuccess { list ->
+			novelResult.let { list ->
 				sortType?.let {
 					when (sortType) {
 						INCLUDE -> list.filter { it.unread > 0 }
@@ -266,11 +263,6 @@ class LibraryViewModel(
 				} ?: list
 			}
 		}
-
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-		reportExceptionUseCase(error)
-	}
-
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
 

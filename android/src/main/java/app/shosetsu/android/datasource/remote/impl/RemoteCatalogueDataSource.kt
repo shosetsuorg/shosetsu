@@ -1,11 +1,7 @@
 package app.shosetsu.android.datasource.remote.impl
 
 import app.shosetsu.android.common.ext.logD
-import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.common.datasource.remote.base.IRemoteCatalogueDataSource
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.emptyResult
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.PAGE_INDEX
@@ -35,39 +31,31 @@ import app.shosetsu.lib.QUERY_INDEX
  */
 class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 
-
 	override suspend fun search(
 		ext: IExtension,
 		query: String,
 		data: Map<Int, Any>,
-	): HResult<List<Novel.Listing>> {
-		return try {
-			if (ext.hasSearch) {
-				val l = ext.search(HashMap(data).apply {
-					this[QUERY_INDEX] = query
-				}).toList()
+	): List<Novel.Listing> =
+		if (ext.hasSearch) {
+			val l = ext.search(HashMap(data).apply {
+				this[QUERY_INDEX] = query
+			}).toList()
 
-				if (l.isEmpty()) emptyResult() else successResult(l)
-			} else emptyResult()
-		} catch (e: Exception) {
-			e.toHError()
-		}
-	}
+			l
+		} else emptyList()
 
 	override suspend fun loadListing(
 		ext: IExtension,
 		listingIndex: Int,
 		data: Map<Int, Any>,
-	): HResult<List<Novel.Listing>> {
-		return try {
-			val listing = ext.listings[listingIndex]
-			logD(data.toString())
-			if (!listing.isIncrementing && (data[PAGE_INDEX] as Int) > 1) {
-				emptyResult()
-			} else successResult(listing.getListing(data).toList())
-		} catch (e: Exception) {
-			e.toHError()
-		}
+	): List<Novel.Listing> {
+		val listing = ext.listings[listingIndex]
+
+		logD(data.toString())
+
+		return if (!listing.isIncrementing && (data[PAGE_INDEX] as Int) > 1) {
+			emptyList()
+		} else listing.getListing(data).toList()
 	}
 }
 

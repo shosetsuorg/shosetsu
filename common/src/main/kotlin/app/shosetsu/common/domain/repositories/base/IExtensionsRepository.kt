@@ -1,11 +1,13 @@
 package app.shosetsu.common.domain.repositories.base
 
-import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.common.domain.model.local.BrowseExtensionEntity
+import app.shosetsu.common.domain.model.local.GenericExtensionEntity
+import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
-import app.shosetsu.common.domain.model.local.StrippedExtensionEntity
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
+import app.shosetsu.lib.exceptions.HTTPException
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -33,66 +35,38 @@ import kotlinx.coroutines.flow.Flow
  */
 interface IExtensionsRepository {
 
-	/**
-	 * [Flow] of all [ExtensionEntity] that the app knows of
-	 *
-	 * @return
-	 * [HResult.Success] When properly emits
-	 *
-	 * [HResult.Error] If anything went wrong in the stream
-	 *
-	 * [HResult.Loading] Initial value emitted
-	 *
-	 * [HResult.Empty] Should never occur?
-	 */
-	fun loadExtensionsFLow(): Flow<HResult<List<ExtensionEntity>>>
+	fun loadBrowseExtensions(): Flow<List<BrowseExtensionEntity>>
 
 	/**
-	 * [Flow] of the [ExtensionEntity] with an [ExtensionEntity.id] matching [id]
-	 *
-	 * @return
-	 * [HResult.Success] When properly emits
-	 *
-	 * [HResult.Error] If anything went wrong in the stream
-	 *
-	 * [HResult.Loading] Initial value emitted
-	 *
-	 * [HResult.Empty] If no [ExtensionEntity] matches [id]
+	 * [Flow] of all [GenericExtensionEntity] that the app knows of
 	 */
-	fun getExtensionFlow(id: Int): Flow<HResult<ExtensionEntity>>
+	fun loadExtensionsFLow(): Flow<List<InstalledExtensionEntity>>
 
 	/**
-	 * Gets the [ExtensionEntity] that has an [ExtensionEntity.id] matching [id]
-	 *
-	 * @return
-	 * [HResult.Success] If the extension is found
-	 *
-	 * [HResult.Error] If something went wrong retrieving the result
-	 *
-	 * [HResult.Empty] If nothing was found
-	 *
-	 * [HResult.Loading] never
+	 * Retrieves repository extensions with an id matching [id]
 	 */
-	suspend fun getExtension(id: Int): HResult<ExtensionEntity>
+	fun getInstalledExtensionFlow(id: Int): Flow<InstalledExtensionEntity?>
 
 	/**
-	 * Loads all [ExtensionEntity] with an [ExtensionEntity.repoID] matching [repoID]
-	 *
-	 * @return
-	 * [HResult.Success]
-	 *
-	 * [HResult.Error]
-	 *
-	 * [HResult.Empty]
-	 *
-	 * [HResult.Loading]
+	 * Gets the [GenericExtensionEntity] that has an [GenericExtensionEntity.id] matching the id
 	 */
-	suspend fun getExtensions(repoID: Int): HResult<List<ExtensionEntity>>
+	@Throws(GenericSQLiteException::class)
+	suspend fun getExtension(repoId: Int, extId: Int): GenericExtensionEntity?
+
+	@Throws(GenericSQLiteException::class)
+	suspend fun getInstalledExtension(id: Int): InstalledExtensionEntity?
 
 	/**
-	 * Loads all [ExtensionEntity] present
+	 * Loads all [GenericExtensionEntity] with an [GenericExtensionEntity.repoID] matching [repoID]
 	 */
-	suspend fun loadExtensions(): HResult<List<ExtensionEntity>>
+	@Throws(GenericSQLiteException::class)
+	suspend fun getRepositoryExtensions(repoID: Int): List<GenericExtensionEntity>
+
+	/**
+	 * Loads all [GenericExtensionEntity] present
+	 */
+	@Throws(GenericSQLiteException::class)
+	suspend fun loadRepositoryExtensions(): List<GenericExtensionEntity>
 
 	/**
 	 * Flags returned after installing an extension
@@ -109,67 +83,46 @@ interface IExtensionsRepository {
 	/**
 	 * Updates the db that the [extensionEntity] is not installed
 	 *
-	 * @return
-	 * [HResult.Success] Updated
-	 *
-	 * [HResult.Error] Error
-	 *
-	 * [HResult.Empty] never
-	 *
-	 * [HResult.Loading] never
 	 */
-	suspend fun uninstall(extensionEntity: ExtensionEntity): HResult<*>
+	@Throws(GenericSQLiteException::class)
+	suspend fun uninstall(extensionEntity: InstalledExtensionEntity)
 
 	/**
-	 * Updates an [extensionEntity]
-	 *
-	 * @return
-	 * [HResult.Success] if the operation completed properly
-	 *
-	 * [HResult.Error] if anything went wrong
-	 *
-	 * [HResult.Empty] never
-	 *
-	 * [HResult.Loading] never
+	 * Updates an [GenericExtensionEntity]
 	 */
-	suspend fun update(extensionEntity: ExtensionEntity): HResult<*>
+	@Throws(GenericSQLiteException::class)
+	suspend fun updateRepositoryExtension(extensionEntity: GenericExtensionEntity)
 
 	/**
-	 * Gets enabled [ExtensionEntity] but as [StrippedExtensionEntity]
-	 *
-	 * This method is more IO efficient, as it should not be loading extra data it does not need
-	 * as compared to calling for all the [ExtensionEntity]s and just mapping them
-	 *
-	 * @return
-	 * [HResult.Success] Successfully loaded
-	 *
-	 * [HResult.Error] Error occurred loading
-	 *
-	 * [HResult.Empty] No extensions
-	 *
-	 * [HResult.Loading] Initial value
+	 * Updates an [InstalledExtensionEntity]
 	 */
-	fun loadStrippedExtensionFlow(): Flow<HResult<List<StrippedExtensionEntity>>>
-
+	@Throws(GenericSQLiteException::class)
+	suspend fun updateInstalledExtension(extensionEntity: InstalledExtensionEntity)
 
 	/**
-	 * This removes the extension from db
-	 *
-	 * @return
-	 * [HResult.Success] [extensionEntity] removed
-	 *
-	 * [HResult.Error] Error removing [extensionEntity]
-	 *
-	 * [HResult.Empty] never
-	 *
-	 * [HResult.Loading] never
+	 * This removes the extension completely from the application
 	 */
-	suspend fun delete(extensionEntity: ExtensionEntity): HResult<*>
+	@Throws(GenericSQLiteException::class)
+	suspend fun delete(extensionEntity: GenericExtensionEntity)
 
-	suspend fun insert(extensionEntity: ExtensionEntity): HResult<*>
+	/**
+	 * Insert a new extension
+	 */
+	@Throws(GenericSQLiteException::class)
+	suspend fun insert(extensionEntity: GenericExtensionEntity): Long
 
+	@Throws(GenericSQLiteException::class)
+	suspend fun insert(extensionEntity: InstalledExtensionEntity): Long
+
+	@Throws(HTTPException::class)
 	suspend fun downloadExtension(
 		repositoryEntity: RepositoryEntity,
-		extension: ExtensionEntity
-	): HResult<ByteArray>
+		extension: GenericExtensionEntity
+	): ByteArray
+
+	/**
+	 * Check if a given extension is installed
+	 */
+	@Throws(GenericSQLiteException::class)
+	suspend fun isExtensionInstalled(extensionEntity: GenericExtensionEntity): Boolean
 }

@@ -1,8 +1,9 @@
 package app.shosetsu.common.datasource.file.base
 
-import app.shosetsu.common.domain.model.local.ExtensionEntity
-import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.FilePermissionException
+import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.lib.IExtension
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -27,9 +28,10 @@ import app.shosetsu.lib.IExtension
  */
 interface IFileExtensionDataSource {
 	/** Loads the formatter from file system */
-	suspend fun loadExtension(entity: ExtensionEntity): HResult<IExtension>
+	suspend fun loadExtension(entity: GenericExtensionEntity): IExtension
 
-	suspend fun writeExtension(entity: ExtensionEntity, data: ByteArray): HResult<*>
+	@Throws(FilePermissionException::class, IOException::class)
+	suspend fun writeExtension(entity: GenericExtensionEntity, data: ByteArray)
 
-	suspend fun deleteExtension(entity: ExtensionEntity): HResult<*>
+	suspend fun deleteExtension(entity: GenericExtensionEntity)
 }

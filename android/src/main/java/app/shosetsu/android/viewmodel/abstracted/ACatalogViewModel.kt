@@ -1,13 +1,12 @@
 package app.shosetsu.android.viewmodel.abstracted
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.utils.ColumnCalculator
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -38,27 +37,37 @@ abstract class ACatalogViewModel :
 	/**
 	 * What is currently being displayed to the user
 	 */
-	abstract val itemsLive: LiveData<HResult<List<ACatalogNovelUI>>>
+	abstract val itemsLive: Flow<List<ACatalogNovelUI>>
 
 	/**
 	 * The list of items that will be presented as the filter menu
 	 */
-	abstract val filterItemsLive: LiveData<HResult<List<Filter<*>>>>
+	abstract val filterItemsLive: Flow<List<Filter<*>>>
 
 	/**
 	 * enable or disable searching
 	 */
-	abstract val hasSearchLive: LiveData<Boolean>
+	abstract val hasSearchLive: Flow<Boolean>
+
+	/**
+	 * Only set if [hasSearchLive] has been collected at least once
+	 */
+	abstract val hasSearch: Boolean
 
 	/**
 	 * Name of the extension that is used for its catalogue
 	 */
-	abstract val extensionName: LiveData<HResult<String>>
+	abstract val extensionName: Flow<String>
 
 	/**
 	 * What type of card to display
 	 */
-	abstract val novelCardTypeLive: LiveData<NovelCardType>
+	abstract val novelCardTypeLive: Flow<NovelCardType>
+
+	/**
+	 * Only set if [novelCardTypeLive] has been collected at least once
+	 */
+	abstract val novelCardType: NovelCardType
 
 	/**
 	 * Sets the [IExtension]
@@ -90,7 +99,9 @@ abstract class ACatalogViewModel :
 	 * Bookmarks and loads the specific novel in the background
 	 * @param novelID ID of novel to load
 	 */
-	abstract fun backgroundNovelAdd(novelID: Int): LiveData<HResult<*>>
+	abstract fun backgroundNovelAdd(novelID: Int): Flow<BackgroundNovelAddProgress>
+
+	enum class BackgroundNovelAddProgress { ADDING, ADDED }
 
 	/**
 	 * Apply filters
@@ -114,20 +125,20 @@ abstract class ACatalogViewModel :
 	abstract fun destroy()
 
 
-	abstract fun getFilterStringState(id: Filter<String>): LiveData<String>
+	abstract fun getFilterStringState(id: Filter<String>): Flow<String>
 	abstract fun setFilterStringState(id: Filter<String>, value: String)
 
-	abstract fun getFilterBooleanState(id: Filter<Boolean>): LiveData<Boolean>
+	abstract fun getFilterBooleanState(id: Filter<Boolean>): Flow<Boolean>
 	abstract fun setFilterBooleanState(id: Filter<Boolean>, value: Boolean)
 
 
-	abstract fun getFilterIntState(id: Filter<Int>): LiveData<Int>
+	abstract fun getFilterIntState(id: Filter<Int>): Flow<Int>
 	abstract fun setFilterIntState(id: Filter<Int>, value: Int)
 
 
 	/**
 	 * Get the URL to open web view for the extension
 	 */
-	abstract fun getBaseURL(): LiveData<HResult<String>>
+	abstract fun getBaseURL(): Flow<String>
 
 }

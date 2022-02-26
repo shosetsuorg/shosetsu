@@ -1,12 +1,10 @@
 package app.shosetsu.android.viewmodel.abstracted
 
-import androidx.lifecycle.LiveData
-import app.shosetsu.android.view.uimodels.model.ExtensionUI
-import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
-import app.shosetsu.android.viewmodel.base.SubscribeHandleViewModel
+import app.shosetsu.android.viewmodel.base.SubscribeViewModel
 import app.shosetsu.common.domain.model.local.FilterEntity
-import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -34,10 +32,10 @@ import app.shosetsu.common.dto.HResult
  * [liveData] is of the formatter object itself
  */
 abstract class AExtensionConfigureViewModel
-	: ShosetsuViewModel(), SubscribeHandleViewModel<ExtensionUI>, ErrorReportingViewModel {
+	: ShosetsuViewModel(), SubscribeViewModel<InstalledExtensionEntity?> {
 
-	abstract val extensionListing: LiveData<HResult<ListingSelectionData>>
-	abstract val extensionSettings: LiveData<HResult<List<FilterEntity>>>
+	abstract val extensionListing: Flow<ListingSelectionData>
+	abstract val extensionSettings: Flow<List<FilterEntity>>
 
 	data class ListingSelectionData(
 		val choices: List<String>,
@@ -51,7 +49,7 @@ abstract class AExtensionConfigureViewModel
 	/**
 	 * Uninstall this extension
 	 */
-	abstract fun uninstall(extension: ExtensionUI)
+	abstract fun uninstall(extension: InstalledExtensionEntity)
 
 	/**
 	 * Destroy this controller
@@ -63,5 +61,4 @@ abstract class AExtensionConfigureViewModel
 	abstract fun saveSetting(id: Int, value: Int)
 
 	abstract fun setSelectedListing(value: Int)
-
 }

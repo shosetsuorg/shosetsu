@@ -1,7 +1,7 @@
 package app.shosetsu.common.domain.repositories.base
 
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.RepositoryEntity
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.json.RepoIndex
 import kotlinx.coroutines.flow.Flow
 
@@ -44,7 +44,7 @@ interface IExtensionRepoRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun getRepoData(entity: RepositoryEntity): HResult<RepoIndex>
+	suspend fun getRepoData(entity: RepositoryEntity): RepoIndex
 
 	/**
 	 * Loads all repositories present
@@ -58,7 +58,7 @@ interface IExtensionRepoRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun loadRepositories(): HResult<List<RepositoryEntity>>
+	suspend fun loadRepositories(): List<RepositoryEntity>
 
 
 	/**
@@ -66,7 +66,7 @@ interface IExtensionRepoRepository {
 	 *  where [RepositoryEntity.isEnabled]=false
 	 * @see loadRepositories
 	 */
-	suspend fun loadEnabledRepos(): HResult<List<RepositoryEntity>>
+	suspend fun loadEnabledRepos(): List<RepositoryEntity>
 
 	/**
 	 * Loads all repositories present
@@ -80,15 +80,16 @@ interface IExtensionRepoRepository {
 	 *
 	 * [HResult.Loading] Initial value
 	 */
-	fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>>
+	fun loadRepositoriesLive(): Flow<List<RepositoryEntity>>
 
-	suspend fun addRepository(entity: RepositoryEntity): HResult<*>
+	suspend fun addRepository(url: String, name: String): Long
 
-	suspend fun remove(entity: RepositoryEntity): HResult<*>
+	@Throws(GenericSQLiteException::class)
+	suspend fun remove(entity: RepositoryEntity)
 
-	suspend fun update(entity: RepositoryEntity): HResult<*>
+	suspend fun update(entity: RepositoryEntity)
 
-	suspend fun insert(entity: RepositoryEntity): HResult<*>
+	suspend fun insert(entity: RepositoryEntity): Long
 
-	suspend fun getRepo(id: Int): HResult<RepositoryEntity>
+	suspend fun getRepo(id: Int): RepositoryEntity?
 }

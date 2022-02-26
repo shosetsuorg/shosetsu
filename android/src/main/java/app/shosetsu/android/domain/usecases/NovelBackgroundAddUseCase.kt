@@ -3,8 +3,6 @@ package app.shosetsu.android.domain.usecases
 import app.shosetsu.android.domain.usecases.get.GetRemoteNovelUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.transform
 
 /*
  * This file is part of shosetsu.
@@ -36,9 +34,9 @@ class NovelBackgroundAddUseCase(
 	private val updateNovelEntityUseCase: UpdateNovelUseCase,
 	private val novelsRepository: INovelsRepository
 ) {
-	suspend operator fun invoke(novelID: Int): HResult<*> {
-		return loadRemoteNovelUseCase(novelID, false).transform {
-			novelsRepository.getNovel(novelID).transform { entity ->
+	suspend operator fun invoke(novelID: Int) {
+		return loadRemoteNovelUseCase(novelID, false).let {
+			novelsRepository.getNovel(novelID)?.let { entity ->
 				updateNovelEntityUseCase(entity.copy(bookmarked = true))
 			}
 		}

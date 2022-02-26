@@ -1,7 +1,5 @@
 package app.shosetsu.common.datasource.memory.base
 
-import app.shosetsu.common.dto.HResult
-
 /*
  * This file is part of shosetsu.
  *
@@ -25,13 +23,13 @@ import app.shosetsu.common.dto.HResult
  */
 interface IMemExtLibDataSource {
     /** Load Library from memory */
-    fun loadLibrary(name: String): HResult<String>
+	fun loadLibrary(name: String): String?
 
 
 	/** Put Library in memory */
-	fun setLibrary(name: String, data: String): HResult<*>
+	fun setLibrary(name: String, data: String)
 
 
 	/** Remove Library by ID from cache*/
-	fun removeLibrary(name: String): HResult<*>
+	fun removeLibrary(name: String)
 }

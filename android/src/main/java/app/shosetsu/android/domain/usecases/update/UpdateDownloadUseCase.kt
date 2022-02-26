@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.usecases.update
 
 import app.shosetsu.android.view.uimodels.model.DownloadUI
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -28,6 +28,8 @@ import app.shosetsu.common.dto.HResult
 class UpdateDownloadUseCase(
 	private val downloadsRepository: IDownloadsRepository,
 ) {
-	suspend operator fun invoke(downloadUI: DownloadUI): HResult<*> =
+	@Throws(GenericSQLiteException::class)
+	suspend operator fun invoke(downloadUI: DownloadUI) {
 		downloadsRepository.update(downloadUI.convertTo())
+	}
 }

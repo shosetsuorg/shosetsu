@@ -1,7 +1,7 @@
 package app.shosetsu.common.datasource.database.base
 
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.RepositoryEntity
-import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -27,17 +27,25 @@ import kotlinx.coroutines.flow.Flow
  */
 interface IDBExtRepoDataSource {
 	/** Loads LiveData of the repositories */
-	fun loadRepositoriesLive(): Flow<HResult<List<RepositoryEntity>>>
+	fun loadRepositoriesLive(): Flow<List<RepositoryEntity>>
 
 	/** Loads a list of the repositories */
-	suspend fun loadRepositories(): HResult<List<RepositoryEntity>>
+	@Throws(GenericSQLiteException::class)
+	suspend fun loadRepositories(): List<RepositoryEntity>
 
 	/** Loads a [RepositoryEntity] by its [repoID] */
-	suspend fun loadRepository(repoID: Int): HResult<RepositoryEntity>
+	@Throws(GenericSQLiteException::class)
+	suspend fun loadRepository(repoID: Int): RepositoryEntity?
 
-	suspend fun addRepository(repositoryEntity: RepositoryEntity): HResult<*>
+	@Throws(GenericSQLiteException::class)
+	suspend fun addRepository(url: String, name: String): Long
 
-	suspend fun remove(entity: RepositoryEntity): HResult<*>
-	suspend fun update(entity: RepositoryEntity): HResult<*>
-	suspend fun insert(entity: RepositoryEntity):HResult<*>
+	@Throws(GenericSQLiteException::class)
+	suspend fun remove(entity: RepositoryEntity)
+
+	@Throws(GenericSQLiteException::class)
+	suspend fun update(entity: RepositoryEntity)
+
+	@Throws(GenericSQLiteException::class)
+	suspend fun insert(entity: RepositoryEntity): Long
 }

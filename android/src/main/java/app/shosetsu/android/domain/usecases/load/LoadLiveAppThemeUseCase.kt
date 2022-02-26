@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.mapLatest
 class LoadLiveAppThemeUseCase(
 	private val iSettingsRepository: ISettingsRepository
 ) {
-	@ExperimentalCoroutinesApi
+	@OptIn(ExperimentalCoroutinesApi::class)
 	operator fun invoke(): Flow<AppThemes> =
 		iSettingsRepository.getIntFlow(SettingKey.AppTheme).mapLatest {
 			AppThemes.fromKey(it)

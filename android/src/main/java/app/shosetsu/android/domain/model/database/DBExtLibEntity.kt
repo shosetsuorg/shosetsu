@@ -1,8 +1,6 @@
 package app.shosetsu.android.domain.model.database
 
 import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import app.shosetsu.common.domain.model.local.ExtLibEntity
 import app.shosetsu.common.dto.Convertible
@@ -31,15 +29,6 @@ import app.shosetsu.lib.Version
  */
 @Entity(
 	tableName = "libs",
-	foreignKeys = [
-		ForeignKey(
-			entity = DBRepositoryEntity::class,
-			parentColumns = ["id"],
-			childColumns = ["repoID"],
-			onDelete = ForeignKey.NO_ACTION
-		)
-	],
-	indices = [Index("repoID")]
 )
 data class DBExtLibEntity(
 	@PrimaryKey

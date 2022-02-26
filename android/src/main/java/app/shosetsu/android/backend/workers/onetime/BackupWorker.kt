@@ -15,13 +15,12 @@ import app.shosetsu.android.common.consts.WorkerTags.BACKUP_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.backupJSON
 import app.shosetsu.android.domain.model.local.backup.*
-import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.BackupEntity
 import app.shosetsu.common.domain.model.local.ExtensionEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.repositories.base.*
-import app.shosetsu.common.dto.*
+import app.shosetsu.common.domain.repositories.base.IBackupRepository.BackupProgress
 import app.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.delay
@@ -86,13 +85,13 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 	override val defaultNotificationID: Int = Notifications.ID_BACKUP
 
 	private suspend fun backupChapters() =
-		iSettingsRepository.getBooleanOrDefault(ShouldBackupChapters)
+		iSettingsRepository.getBoolean(ShouldBackupChapters)
 
 	private suspend fun backupSettings() =
-		iSettingsRepository.getBooleanOrDefault(ShouldBackupSettings)
+		iSettingsRepository.getBoolean(ShouldBackupSettings)
 
 	private suspend fun backupOnlyModified() =
-		iSettingsRepository.getBooleanOrDefault(BackupOnlyModifiedChapters)
+		iSettingsRepository.getBoolean(BackupOnlyModifiedChapters)
 
 	@Throws(IOException::class)
 	fun gzip(content: String): ByteArray {
@@ -103,7 +102,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 
 	private suspend fun getBackupChapters(novelID: Int): List<BackupChapterEntity> {
 		if (backupChapters())
-			chaptersRepository.getChapters(novelID).handle { list ->
+			chaptersRepository.getChapters(novelID).let { list ->
 				return list.filter {
 					if (backupOnlyModified()) {
 						it.bookmarked || it.readingStatus != ReadingStatus.UNREAD || it.readingPosition != 0.0
@@ -127,7 +126,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 		// Load novels
 		logV(LogConstants.SERVICE_EXECUTE)
 		notify("Starting...")
-		backupRepository.updateProgress(loading)
+		backupRepository.updateProgress(BackupProgress.IN_PROGRESS)
 		val backupSettings = backupSettings()
 
 
@@ -138,7 +137,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 		Run to isolate the variable 'novels' so it can be trashed, hopefully saving memory
 		 */
 		val success = run {
-			val novels = novelRepository.loadBookmarkedNovelEntities().unwrap() ?: return@run false
+			val novels = novelRepository.loadBookmarkedNovelEntities()?: return@run false
 
 			logI("Loaded ${novels.size} novel(s)")
 			notify("Loaded ${novels.size} novel(s)")
@@ -152,8 +151,10 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 			notify("Loading extensions required")
 			// Extensions each novel requires
 			// Distinct, with no duplicates
-			extensions = novels.map {
-				extensionsRepository.getExtension(it.extensionID).unwrap()!!
+			val extensions = novels.mapNotNull {
+				if (it.extensionID != null)
+					extensionsRepository.getInstalledExtension(it.extensionID!!)!!
+				else null
 			}.distinct()
 
 			true
@@ -166,7 +167,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 			// All the repos required for backup
 			// Contains only the repos that are used
 			val repositoriesRequired =
-				extensionRepoRepository.loadRepositories().unwrap()!!
+				extensionRepoRepository.loadRepositories()
 					.filter { repositoryEntity ->
 						extensions.any { extensionEntity ->
 							extensionEntity.repoID == repositoryEntity.id
@@ -240,7 +241,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 					base64Bytes
 				)
 			)
-			pathResult.handle {
+			pathResult.let {
 				notify(R.string.worker_backup_complete) {
 					setOngoing(false)
 				}
@@ -248,12 +249,12 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 				// Call GC to clean up the bulky resources
 				System.gc()
 				delay(500)
-				backupRepository.updateProgress(successResult(Unit))
+				backupRepository.updateProgress(BackupProgress.COMPLETE)
 				return Result.success()
 			}
 		}
 
-		backupRepository.updateProgress(errorResult(ErrorKeys.ERROR_GENERAL, "Failure"))
+		backupRepository.updateProgress(BackupProgress.FAILURE)
 		return Result.failure()
 	}
 
@@ -264,13 +265,13 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 		private val iSettingsRepository: ISettingsRepository by instance()
 
 		private suspend fun requiresBackupOnIdle(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(BackupOnlyWhenIdle)
+			iSettingsRepository.getBoolean(BackupOnlyWhenIdle)
 
 		private suspend fun allowsBackupOnLowStorage(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(BackupOnLowStorage)
+			iSettingsRepository.getBoolean(BackupOnLowStorage)
 
 		private suspend fun allowsBackupOnLowBattery(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(BackupOnLowBattery)
+			iSettingsRepository.getBoolean(BackupOnLowBattery)
 
 		/**
 		 * Returns the status of the service.

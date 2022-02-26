@@ -32,7 +32,7 @@ package app.shosetsu.common.domain.model.local
  *  Might be disabled due to error or user choice.
  */
 data class RepositoryEntity(
-	val id: Int? = null,
+	val id: Int,
 	val url: String,
 	var name: String,
 	var isEnabled: Boolean

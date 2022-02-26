@@ -1,6 +1,5 @@
 package app.shosetsu.common.datasource.remote.base
 
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.lib.json.RepoIndex
 
@@ -29,5 +28,5 @@ interface IRemoteExtRepoDataSource {
     /**
      * Download the current repository data
      */
-    suspend fun downloadRepoData(repo: RepositoryEntity): HResult<RepoIndex>
+    suspend fun downloadRepoData(repo: RepositoryEntity): RepoIndex
 }

@@ -3,13 +3,11 @@ package app.shosetsu.android.domain.usecases.get
 import app.shosetsu.android.common.ext.convertTo
 import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
+import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.common.IncompatibleExtensionException
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
-import app.shosetsu.common.dto.transmogrify
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 
@@ -40,29 +38,30 @@ class GetCatalogueQueryDataUseCase(
 	private val convertNCToCNUIUseCase: ConvertNCToCNUIUseCase,
 	private val iSettingsRepository: ISettingsRepository
 ) {
+	@Throws(GenericSQLiteException::class, IncompatibleExtensionException::class)
 	suspend operator fun invoke(
 		extID: Int,
 		query: String,
 		filters: Map<Int, Any>
-	) = getExt(extID).transform {
+	): List<ACatalogNovelUI> = getExt(extID)?.let {
 		invoke(it, query, filters)
-	}
+	} ?: emptyList()
 
 	suspend operator fun invoke(
 		ext: IExtension,
 		query: String,
 		filters: Map<Int, Any>
-	): HResult<List<ACatalogNovelUI>> = novelsRepository.getCatalogueSearch(
+	): List<ACatalogNovelUI> = novelsRepository.getCatalogueSearch(
 		ext,
 		query,
 		filters
-	).transform {
+	).let {
 		val data: List<Novel.Listing> = it
-		iSettingsRepository.getInt(SettingKey.SelectedNovelCardType).transform { cardType ->
-			successResult(data.map { novelListing ->
+		iSettingsRepository.getInt(SettingKey.SelectedNovelCardType).let { cardType ->
+			(data.map { novelListing ->
 				novelListing.convertTo(ext)
 			}.mapNotNull { ne ->
-				novelsRepository.insertReturnStripped(ne).transmogrify { card ->
+				novelsRepository.insertReturnStripped(ne)?.let { card ->
 					convertNCToCNUIUseCase(card, cardType)
 				}
 			})

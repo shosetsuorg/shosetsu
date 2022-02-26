@@ -1,9 +1,9 @@
 package app.shosetsu.common.datasource.database.base
 
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.LibraryNovelEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.StrippedNovelEntity
-import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -32,34 +32,42 @@ import kotlinx.coroutines.flow.Flow
  */
 interface IDBNovelsDataSource {
 	/** Loads a [List] of [NovelEntity]s present */
-	fun loadNovels(): HResult<List<NovelEntity>>
+	@Throws(GenericSQLiteException::class)
+	fun loadNovels(): List<NovelEntity>
 
 	/** Load a [List] of [NovelEntity]s that are bookmarked */
-	suspend fun loadBookmarkedNovels(): HResult<List<NovelEntity>>
+	@Throws(GenericSQLiteException::class)
+	suspend fun loadBookmarkedNovels(): List<NovelEntity>
 
 	/** Loads a [List] okf [LibraryNovelEntity] */
-	fun loadBookmarkedNovelsFlow(): Flow<HResult<List<LibraryNovelEntity>>>
+	fun loadBookmarkedNovelsFlow(): Flow<List<LibraryNovelEntity>>
 
 	/** Loads a [NovelEntity] by its [novelID] */
-	suspend fun getNovel(novelID: Int): HResult<NovelEntity>
+	@Throws(GenericSQLiteException::class)
+	suspend fun getNovel(novelID: Int): NovelEntity?
 
 	/** Loads a [Flow] of a [NovelEntity] by its [novelID] */
-	suspend fun getNovelFlow(novelID: Int): Flow<HResult<NovelEntity>>
+	suspend fun getNovelFlow(novelID: Int): Flow<NovelEntity?>
 
 	/** Updates a [NovelEntity] */
-	suspend fun update(novelEntity: NovelEntity): HResult<*>
+	@Throws(GenericSQLiteException::class)
+	suspend fun update(novelEntity: NovelEntity)
 
 	/** Updates a list of [LibraryNovelEntity] */
-	suspend fun update(list: List<LibraryNovelEntity>): HResult<*>
+	@Throws(GenericSQLiteException::class)
+	suspend fun update(list: List<LibraryNovelEntity>)
 
 	/** Inserts a [NovelEntity] then returns its [StrippedNovelEntity] */
-	suspend fun insertReturnStripped(novelEntity: NovelEntity): HResult<StrippedNovelEntity>
+	@Throws(GenericSQLiteException::class)
+	suspend fun insertReturnStripped(novelEntity: NovelEntity): StrippedNovelEntity?
 
 	/** Inserts a [NovelEntity] */
-	suspend fun insert(novelEntity: NovelEntity): HResult<*>
+	@Throws(GenericSQLiteException::class)
+	suspend fun insert(novelEntity: NovelEntity): Long
 
 	/**
 	 * Clears out novels that have not been bookmarked
 	 */
-	suspend fun clearUnBookmarkedNovels(): HResult<*>
+	@Throws(GenericSQLiteException::class)
+	suspend fun clearUnBookmarkedNovels()
 }

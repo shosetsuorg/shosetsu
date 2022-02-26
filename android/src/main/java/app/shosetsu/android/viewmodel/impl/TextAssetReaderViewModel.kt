@@ -1,13 +1,13 @@
 package app.shosetsu.android.viewmodel.impl
 
 import android.app.Application
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.enums.TextAsset
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.readAsset
 import app.shosetsu.android.viewmodel.abstracted.ATextAssetReaderViewModel
-import app.shosetsu.common.dto.*
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -33,24 +33,29 @@ import kotlinx.coroutines.flow.MutableStateFlow
  * @author Doomsdayrs
  */
 class TextAssetReaderViewModel(val application: Application) : ATextAssetReaderViewModel() {
-	override val liveData: LiveData<HResult<String>>
-		get() = targetFlow.mapResult { successResult(application.readAsset(it.assetName+".txt")) }
-			.asIOLiveData()
+	override val liveData: Flow<String?>
+		get() = targetFlow.mapLatest {
+			if (it != null) {
+				application.readAsset(it.assetName + ".txt")
+			} else {
+				null
+			}
+		}
 
-	private val targetFlow = MutableStateFlow<HResult<TextAsset>>(empty)
+	private val targetFlow = MutableStateFlow<TextAsset?>(null)
 
-	override val targetLiveData: LiveData<HResult<TextAsset>>
-		get() = targetFlow.asIOLiveData()
+	override val targetLiveData: Flow<TextAsset?>
+		get() = targetFlow
 
 	override fun setTarget(targetOrdinal: Int) {
 		logI("Opening up asset via ordinal $targetOrdinal")
 		// If target is empty, emit
-		if (targetFlow.value is HResult.Success) {
+		if (targetFlow.value != null) {
 			// If the targets are the same, ignore and return
-			if ((targetFlow.value as? HResult.Success)?.data?.ordinal == targetOrdinal)
+			if (targetFlow.value!!.ordinal == targetOrdinal)
 				return
 		}
-		targetFlow.tryEmit(loading)
-		targetFlow.tryEmit(successResult(TextAsset.values()[targetOrdinal]))
+		targetFlow.tryEmit(null)
+		targetFlow.tryEmit(TextAsset.values()[targetOrdinal])
 	}
 }

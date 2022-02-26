@@ -1,8 +1,10 @@
 package app.shosetsu.android.datasource.local.file.base
 
+import app.shosetsu.common.FileNotFoundException
+import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
-import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -29,20 +31,23 @@ interface IFileCachedAppUpdateDataSource {
 	/**
 	 * Live data of the current update
 	 */
-	val updateAvaLive: Flow<HResult<AppUpdateEntity>>
+	val updateAvaLive: Flow<AppUpdateEntity?>
 
 	/**
 	 * Accessor method to read the current cached update
 	 */
-	suspend fun loadCachedAppUpdate(): HResult<AppUpdateEntity>
+	@Throws(FileNotFoundException::class)
+	suspend fun loadCachedAppUpdate(): AppUpdateEntity
 
 	/** Puts an update into cache */
-	suspend fun putAppUpdateInCache(appUpdate: AppUpdateEntity, isUpdate: Boolean): HResult<*>
+	@Throws(FilePermissionException::class, IOException::class)
+	suspend fun putAppUpdateInCache(appUpdate: AppUpdateEntity, isUpdate: Boolean)
 
 	/**
 	 * Saves the APK bytes to the filesystem
 	 *
 	 * @return the path to the APK
 	 */
-	fun saveAPK(appUpdate: AppUpdateEntity, bytes: ByteArray): HResult<String>
+	@Throws(IOException::class, FilePermissionException::class, FileNotFoundException::class)
+	fun saveAPK(appUpdate: AppUpdateEntity, bytes: ByteArray): String
 }

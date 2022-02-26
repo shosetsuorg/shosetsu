@@ -3,7 +3,6 @@ package app.shosetsu.android.domain.usecases.update
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -29,9 +28,9 @@ import app.shosetsu.common.dto.HResult
 class UpdateNovelUseCase(
 	private val chaptersRepository: INovelsRepository,
 ) {
-	suspend operator fun invoke(novelUI: NovelUI): HResult<*> =
+	suspend operator fun invoke(novelUI: NovelUI) =
 		this(novelUI.convertTo())
 
-	suspend operator fun invoke(novelEntity: NovelEntity): HResult<*> =
+	suspend operator fun invoke(novelEntity: NovelEntity) =
 		chaptersRepository.update(novelEntity)
 }

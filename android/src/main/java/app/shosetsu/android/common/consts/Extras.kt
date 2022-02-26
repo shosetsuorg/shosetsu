@@ -21,3 +21,4 @@ package app.shosetsu.android.common.consts
  */
 
 const val EXTRA_UPDATE_EXTENSION_ID = "update_extension_id"
+const val EXTRA_UPDATE_REPO_ID = "update_extension_repo_id"

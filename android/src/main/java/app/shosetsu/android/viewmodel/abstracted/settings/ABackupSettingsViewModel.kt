@@ -3,7 +3,6 @@ package app.shosetsu.android.viewmodel.abstracted.settings
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -31,7 +30,7 @@ abstract class ABackupSettingsViewModel(iSettingsRepository: ISettingsRepository
 
 	/** Order the app to create a new backup now */
 	abstract fun startBackup()
-	abstract fun loadInternalOptions(): LiveData<HResult<List<String>>>
+	abstract fun loadInternalOptions(): LiveData<List<String>>
 
 	/**
 	 * Load backup via a path
@@ -55,12 +54,12 @@ abstract class ABackupSettingsViewModel(iSettingsRepository: ISettingsRepository
 	/**
 	 * @return the backup file to export
 	 */
-	abstract fun getBackupToExport(): HResult<String>
+	abstract fun getBackupToExport(): String?
 
 	/**
 	 * Cancel export process
 	 */
 	abstract fun clearExport()
 
-	abstract fun exportBackup(it: Uri)
+	abstract fun exportBackup(uri: Uri)
 }

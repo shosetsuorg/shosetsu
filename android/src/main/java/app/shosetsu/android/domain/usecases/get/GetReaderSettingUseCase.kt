@@ -1,16 +1,16 @@
 package app.shosetsu.android.domain.usecases.get
 
+import app.shosetsu.android.common.ext.logE
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.common.domain.repositories.base.INovelReaderSettingsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.domain.repositories.base.getFloatOrDefault
-import app.shosetsu.common.domain.repositories.base.getIntOrDefault
-import app.shosetsu.common.dto.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.transformLatest
 
 /*
  * This file is part of Shosetsu.
@@ -37,22 +37,22 @@ class GetReaderSettingUseCase(
 	private val settingsRepo: ISettingsRepository,
 ) {
 	@ExperimentalCoroutinesApi
-	operator fun invoke(novelID: Int): HFlow<NovelReaderSettingEntity> = flow {
-		emit(loading)
-		emitAll(readerRepo.getFlow(novelID).mapLatest { result ->
-			result.transform(
-				onEmpty = {
+	operator fun invoke(novelID: Int): Flow<NovelReaderSettingEntity> = flow {
+		emitAll(readerRepo.getFlow(novelID).transformLatest { result ->
+			if (result != null) {
+				emit(result)
+			} else {
+				try {
 					readerRepo.insert(
 						NovelReaderSettingEntity(
 							novelID,
-							settingsRepo.getIntOrDefault(SettingKey.ReaderIndentSize),
-							settingsRepo.getFloatOrDefault(SettingKey.ReaderParagraphSpacing),
+							settingsRepo.getInt(SettingKey.ReaderIndentSize),
+							settingsRepo.getFloat(SettingKey.ReaderParagraphSpacing),
 						)
 					)
-					emptyResult()
+				} catch (e: GenericSQLiteException) {
+					logE("Failed to insert reader settings, already inserted?", e)
 				}
-			) {
-				successResult(it)
 			}
 		})
 	}

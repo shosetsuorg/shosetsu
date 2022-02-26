@@ -1,11 +1,10 @@
 package app.shosetsu.android.domain.repository.impl
 
+import app.shosetsu.android.common.MissingFeatureException
 import app.shosetsu.android.datasource.local.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
-import app.shosetsu.common.consts.ErrorKeys
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
-import app.shosetsu.common.dto.*
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import kotlinx.coroutines.flow.Flow
 
@@ -35,10 +34,10 @@ class AppUpdatesRepository(
 	private val iFileAppUpdateDataSource: IFileCachedAppUpdateDataSource,
 ) : IAppUpdatesRepository {
 
-	override fun loadAppUpdateFlow(): Flow<HResult<AppUpdateEntity>> =
+	override fun loadAppUpdateFlow(): Flow<AppUpdateEntity?> =
 		iFileAppUpdateDataSource.updateAvaLive
 
-	private fun compareVersion(newVersion: AppUpdateEntity): HResult<AppUpdateEntity> {
+	private fun compareVersion(newVersion: AppUpdateEntity): Int {
 		val currentV: Int
 		val remoteV: Int
 
@@ -54,43 +53,48 @@ class AppUpdatesRepository(
 		return when {
 			remoteV < currentV -> {
 				//println("This a future release compared to $newVersion")
-				emptyResult()
+				-1
 			}
 			remoteV > currentV -> {
 				//println("Update found compared to $newVersion")
-				successResult(newVersion)
+				1
 			}
 			remoteV == currentV -> {
 				//println("This the current release compared to $newVersion")
-				emptyResult()
+				0
 			}
-			else -> emptyResult()
+			else -> 0
 		}
 	}
 
-	override suspend fun loadRemoteUpdate(): HResult<AppUpdateEntity> =
-		iRemoteAppUpdateDataSource.loadAppUpdate().transform { appUpdateEntity ->
-			compareVersion(appUpdateEntity).also {
+	override suspend fun loadRemoteUpdate(): AppUpdateEntity? =
+		iRemoteAppUpdateDataSource.loadAppUpdate().let { appUpdateEntity ->
+			val compared = compareVersion(appUpdateEntity)
+
+			if (compared > 0) {
 				iFileAppUpdateDataSource.putAppUpdateInCache(
 					appUpdateEntity,
-					it is HResult.Success
+					true
 				)
 			}
+
+			appUpdateEntity
 		}
 
-	override suspend fun loadAppUpdate(): HResult<AppUpdateEntity> =
+	override suspend fun loadAppUpdate(): AppUpdateEntity =
 		iFileAppUpdateDataSource.loadCachedAppUpdate()
 
-	override fun canSelfUpdate(): HResult<Boolean> =
-		successResult(iRemoteAppUpdateDataSource is IRemoteAppUpdateDataSource.Downloadable)
+	override fun canSelfUpdate(): Boolean =
+		iRemoteAppUpdateDataSource is IRemoteAppUpdateDataSource.Downloadable
 
-	override suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): HResult<String> =
+	override suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): String =
 		if (iRemoteAppUpdateDataSource is IRemoteAppUpdateDataSource.Downloadable)
-			iRemoteAppUpdateDataSource.downloadAppUpdate(appUpdateEntity).transform { response ->
+			iRemoteAppUpdateDataSource.downloadAppUpdate(appUpdateEntity).let { response ->
 				iFileAppUpdateDataSource.saveAPK(appUpdateEntity, response).also {
 					// Call GC to clean up the chunky objects
 					System.gc()
 				}
+
 			}
-		else errorResult(ErrorKeys.ERROR_INVALID_FEATURE, "This flavor cannot self update")
+		else throw MissingFeatureException("self update")
 }

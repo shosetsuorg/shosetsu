@@ -36,17 +36,17 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerNovelChapterBindi
  * @author github.com/doomsdayrs
  */
 data class ChapterUI(
-		val id: Int,
-		val novelID: Int,
-		val link: String,
-		val extensionID: Int,
-		var title: String,
-		var releaseDate: String,
-		var order: Double,
-		var readingPosition: Double,
-		var readingStatus: ReadingStatus,
-		var bookmarked: Boolean,
-		var isSaved: Boolean,
+	val id: Int,
+	val novelID: Int,
+	val link: String,
+	val extensionID: Int,
+	var title: String,
+	var releaseDate: String,
+	var order: Double,
+	var readingPosition: Double,
+	var readingStatus: ReadingStatus,
+	var bookmarked: Boolean,
+	var isSaved: Boolean,
 ) : BaseRecyclerItem<ChapterUI.ViewHolder>(), Convertible<ChapterEntity> {
 	override val layoutRes: Int = R.layout.recycler_novel_chapter
 

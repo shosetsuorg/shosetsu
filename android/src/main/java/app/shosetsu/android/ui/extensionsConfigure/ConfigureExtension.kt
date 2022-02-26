@@ -11,8 +11,8 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -28,11 +28,9 @@ import app.shosetsu.android.view.compose.setting.StringSettingContent
 import app.shosetsu.android.view.compose.setting.SwitchSettingContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
-import app.shosetsu.android.view.uimodels.model.ExtensionUI
 import app.shosetsu.android.viewmodel.abstracted.AExtensionConfigureViewModel
 import app.shosetsu.common.domain.model.local.FilterEntity
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.loading
+import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.common.enums.TriStateState
 import app.shosetsu.lib.ExtensionType
 import app.shosetsu.lib.Novel
@@ -99,9 +97,9 @@ fun ConfigureExtensionContent(
 	viewModel: AExtensionConfigureViewModel,
 	onExit: () -> Unit
 ) {
-	val extensionUIResult by viewModel.liveData.observeAsState(loading)
-	val extensionListingResult by viewModel.extensionListing.observeAsState(loading)
-	val extensionSettingsResult by viewModel.extensionSettings.observeAsState(loading)
+	val extensionUIResult by viewModel.liveData.collectAsState(null)
+	val extensionListingResult by viewModel.extensionListing.collectAsState(null)
+	val extensionSettingsResult by viewModel.extensionSettings.collectAsState(emptyList())
 
 
 	LazyColumn(
@@ -110,21 +108,21 @@ fun ConfigureExtensionContent(
 		contentPadding = PaddingValues(bottom = 8.dp)
 	) {
 		stickyHeader(1000000) {
-			extensionUIResult.handle {
-				ConfigureExtensionHeaderContent(it) {
-					viewModel.uninstall(it)
+			if (extensionUIResult != null) {
+				ConfigureExtensionHeaderContent(extensionUIResult!!) {
+					viewModel.uninstall(extensionUIResult!!)
 					onExit()
 				}
 			}
 		}
 
-		extensionListingResult.handle { itemData ->
+		if (extensionListingResult != null) {
 			item {
 				DropdownSettingContent(
 					title = stringResource(R.string.listings),
 					description = stringResource(R.string.controller_configure_extension_listing_desc),
-					choices = itemData.choices.toTypedArray(),
-					selection = itemData.selection.takeIf { it != -1 } ?: 0,
+					choices = extensionListingResult!!.choices.toTypedArray(),
+					selection = extensionListingResult!!.selection.takeIf { it != -1 } ?: 0,
 					onSelection = { index ->
 						viewModel.setSelectedListing(index)
 					},
@@ -134,9 +132,7 @@ fun ConfigureExtensionContent(
 			}
 		}
 
-		extensionSettingsResult.handle {
-			SettingsItemAsCompose(this, viewModel, it)
-		}
+		SettingsItemAsCompose(this, viewModel, extensionSettingsResult)
 	}
 }
 
@@ -271,20 +267,18 @@ fun SettingsItemAsCompose(
 @Composable
 fun PreviewConfigureExtensionHeaderContent() {
 	ConfigureExtensionHeaderContent(
-		ExtensionUI(
+		InstalledExtensionEntity(
 			1,
 			1,
 			"This is an extension",
 			"fileName",
 			"",
 			"en",
-			true,
-			true,
-			installedVersion = Version(1, 0, 0),
-			Version(1, 0, 0),
-			Novel.ChapterType.HTML,
-			"",
-			ExtensionType.LuaScript
+			version = Version(1, 0, 0),
+			md5 = "",
+			type = ExtensionType.LuaScript,
+			enabled = true,
+			chapterType = Novel.ChapterType.HTML
 		)
 	) {
 
@@ -293,7 +287,7 @@ fun PreviewConfigureExtensionHeaderContent() {
 
 @Composable
 fun ConfigureExtensionHeaderContent(
-	extension: ExtensionUI,
+	extension: InstalledExtensionEntity,
 	onUninstall: () -> Unit
 ) {
 	Card {

@@ -35,19 +35,11 @@ import app.shosetsu.common.enums.ReadingStatus
 			parentColumns = ["id"],
 			childColumns = ["novelID"],
 			onDelete = ForeignKey.CASCADE
-		),
-		ForeignKey(
-			entity = DBExtensionEntity::class,
-			parentColumns = ["id"],
-			childColumns = ["formatterID"],
-			onDelete = ForeignKey.SET_NULL,
-			onUpdate = ForeignKey.CASCADE
 		)
 	],
 	indices = [
 		Index("novelID"),
 		Index(value = ["url", "formatterID"], unique = true),
-		Index("formatterID")
 	]
 )
 data class DBChapterEntity(

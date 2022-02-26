@@ -6,6 +6,7 @@ import android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 import android.view.*
 import android.widget.NumberPicker
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import app.shosetsu.android.activity.MainActivity
@@ -18,8 +19,6 @@ import app.shosetsu.android.view.controller.base.syncFABWithRecyclerView
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
-import app.shosetsu.common.consts.ErrorKeys
-import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.id
@@ -34,6 +33,9 @@ import com.mikepenz.fastadapter.items.AbstractItem
 import com.mikepenz.fastadapter.select.getSelectExtension
 import com.mikepenz.fastadapter.select.selectExtension
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+import org.acra.ACRA
 import javax.security.auth.DestroyFailedException
 
 /*
@@ -112,21 +114,13 @@ class NovelController(bundle: Bundle) :
 	/** Refreshes the novel */
 	private fun refresh() {
 		logI("Refreshing the novel data")
-		viewModel.refresh().observe { refreshResult ->
-			refreshResult.handle(
-				onLoading = {
-					binding.progressBar.isVisible = true
-				},
-				onEmpty = {
-					makeSnackBar(R.string.controller_novel_snackbar_refresh_empty_result)?.show()
-				},
-				onError = {
-					logE("Failed refreshing the novel data", it.exception)
-					makeSnackBar(it.message)?.show()
-				}
-			) {
-				logI("Successfully reloaded novel")
+		viewModel.refresh().observe(
+			catch = {
+				logE("Failed refreshing the novel data", it)
+				makeSnackBar(it.message ?: "Unknown exception")?.show()
 			}
+		) {
+			logI("Successfully reloaded novel")
 		}
 	}
 
@@ -147,26 +141,18 @@ class NovelController(bundle: Bundle) :
 	override fun manipulateFAB(fab: FloatingActionButton) {
 		resume = fab
 		fab.setOnClickListener {
-			viewModel.openLastRead(getChapters()).observe(this, { result ->
-				when (result) {
-					is HResult.Error -> {
-						logE("Loading last read hit an error")
-					}
-					is HResult.Empty -> {
-						makeSnackBar(R.string.controller_novel_snackbar_finished_reading)?.show()
-					}
-					is HResult.Success -> {
-						val chapterIndex = result.data
-						if (chapterIndex != -1) {
-							recyclerView.scrollToPosition(itemAdapter.getAdapterPosition(getChapters()[chapterIndex].identifier))
-							activity?.openChapter(getChapters()[chapterIndex])
-						}
-					}
-					is HResult.Loading -> {
-						// Ignore the loading
-					}
+			viewModel.openLastRead(getChapters()).observe(catch = {
+				logE("Loading last read hit an error")
+			}) { result ->
+				val chapterIndex = result
+
+				if (chapterIndex != -1) {
+					recyclerView.scrollToPosition(itemAdapter.getAdapterPosition(getChapters()[chapterIndex].identifier))
+					activity?.openChapter(getChapters()[chapterIndex])
+				} else {
+					makeSnackBar(R.string.controller_novel_snackbar_finished_reading)?.show()
 				}
-			})
+			}
 		}
 		fab.setImageResource(R.drawable.play_arrow)
 	}
@@ -176,6 +162,7 @@ class NovelController(bundle: Bundle) :
 			this.recyclerView = it.recyclerView
 		}
 
+	@ExperimentalMaterialApi
 	@Suppress("unused")
 	fun migrateOpen() {
 		parentController?.router?.pushController(
@@ -201,8 +188,13 @@ class NovelController(bundle: Bundle) :
 			true
 		}
 		id.share -> {
-			viewModel.getShareInfo().handleObserve {
-				activity?.share(it.novelURL, it.novelTitle)
+			viewModel.getShareInfo().observe(
+				catch = {
+					TODO("Handle")
+				}
+			) {
+				if (it != null)
+					activity?.share(it.novelURL, it.novelTitle)
 			}
 			true
 		}
@@ -348,7 +340,10 @@ class NovelController(bundle: Bundle) :
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_novel, menu)
-		menu.findItem(id.source_migrate).isVisible = viewModel.isBookmarked()
+
+		runBlocking {
+			menu.findItem(id.source_migrate).isVisible = viewModel.isBookmarked().first()
+		}
 	}
 
 	override fun onViewCreated(view: View) {
@@ -473,8 +468,13 @@ class NovelController(bundle: Bundle) :
 	}
 
 	private fun openWebView() {
-		viewModel.getNovelURL().handleObserve {
-			activity?.openInWebView(it)
+		viewModel.getNovelURL().observe(
+			catch = {
+				TODO("Handle")
+			}
+		) {
+			if (it != null)
+				activity?.openInWebView(it)
 		}
 	}
 
@@ -492,23 +492,27 @@ class NovelController(bundle: Bundle) :
 		try {
 			viewModel.destroy()
 		} catch (e: DestroyFailedException) {
-			viewModel.reportError(errorResult(ErrorKeys.ERROR_IMPOSSIBLE, e))
+			ACRA.errorReporter.handleException(e)
 		}
 		actionMode?.finish()
 		super.onDestroy()
 	}
 
 	private fun setObserver() {
-		viewModel.novelLive.observe { result ->
-			result.handle(onError = { handleErrorResult(it) }) {
-				activity?.invalidateOptionsMenu()
-				// If the data is not present, loads it
-				if (!it.loaded) {
-					if (viewModel.isOnline()) {
-						refresh()
-					} else {
-						displayOfflineSnackBar(R.string.controller_novel_snackbar_cannot_inital_load_offline)
-					}
+		viewModel.novelLive.observe(
+			catch = {
+				handleRecyclerException(it)
+			}
+		) { result ->
+			if (result == null) return@observe
+
+			activity?.invalidateOptionsMenu()
+			// If the data is not present, loads it
+			if (!result.loaded) {
+				if (viewModel.isOnline()) {
+					refresh()
+				} else {
+					displayOfflineSnackBar(R.string.controller_novel_snackbar_cannot_inital_load_offline)
 				}
 			}
 
@@ -516,15 +520,23 @@ class NovelController(bundle: Bundle) :
 				novelUIAdapter,
 				{ showEmpty() },
 				{ hideEmpty() },
-				result.transform { successResult(listOf(it)) }
+				listOf(result)
 			)
 		}
 
-		viewModel.chaptersLive.observe(this) {
-			handleRecyclerUpdate(chapterUIAdapter, { showEmpty() }, { hideEmpty() }, it)
-			it.handle {
-				binding.progressBar.isVisible = false
+		viewModel.isRefreshing.observe(
+			catch = {
+				logWTF("What", it)
 			}
+		) {
+			binding.progressBar.isVisible = it
+		}
+
+		viewModel.chaptersLive.observe(catch = {
+			TODO("HANDLE")
+		}) {
+			handleRecyclerUpdate(chapterUIAdapter, { showEmpty() }, { hideEmpty() }, it)
+			binding.progressBar.isVisible = false
 		}
 	}
 
@@ -532,8 +544,8 @@ class NovelController(bundle: Bundle) :
 		binding.progressBar.isVisible = true
 	}
 
-	override fun handleErrorResult(e: HResult.Error) {
-		viewModel.reportError(e)
+	override fun handleRecyclerException(e: Throwable) {
+		TODO("HANDLE")
 	}
 
 	private val selectedChapters: List<ChapterUI>
@@ -597,7 +609,11 @@ class NovelController(bundle: Bundle) :
 
 			mode.menuInflater.inflate(R.menu.toolbar_novel_chapters_selected, menu)
 
-			viewModel.getIfAllowTrueDelete().observe {
+			viewModel.getIfAllowTrueDelete().observe(
+				catch = {
+					TODO("Handle")
+				}
+			) {
 				menu.findItem(id.true_delete).isVisible = it
 			}
 

@@ -1,8 +1,9 @@
 package app.shosetsu.android.viewmodel.impl
 
-import androidx.lifecycle.LiveData
-import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.domain.ReportExceptionUseCase
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logD
+import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerAfterUpdateUseCase
@@ -18,7 +19,6 @@ import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
-import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.ChapterSortType
 import app.shosetsu.common.enums.ChapterSortType.SOURCE
 import app.shosetsu.common.enums.ReadingStatus
@@ -49,10 +49,10 @@ import kotlinx.coroutines.flow.*
  *
  * @author github.com/doomsdayrs
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class NovelViewModel(
 	private val getChapterUIsUseCase: GetChapterUIsUseCase,
 	private val loadNovelUIUseCase: GetNovelUIUseCase,
-	private val reportExceptionUseCase: ReportExceptionUseCase,
 	private val updateNovelUseCase: UpdateNovelUseCase,
 	private val getContentURL: GetURLUseCase,
 	private val loadRemoteNovel: GetRemoteNovelUseCase,
@@ -70,22 +70,16 @@ class NovelViewModel(
 	private val getTrueDelete: GetTrueDeleteChapterUseCase,
 	private val trueDeleteChapter: TrueDeleteChapterUseCase
 ) : ANovelViewModel() {
-	@ExperimentalCoroutinesApi
-	@get:Synchronized
-	private val chapters: ArrayList<ChapterUI>
-		get() = chaptersLive.value?.transmogrify { ArrayList((it)) } ?: arrayListOf()
 
-	override val chaptersLive: LiveData<HResult<List<ChapterUI>>> by lazy {
-		chaptersFlow.asIOLiveData()
+	override val chaptersLive: Flow<List<ChapterUI>> by lazy {
+		chaptersFlow.onIO()
 	}
 
-	@ExperimentalCoroutinesApi
-	private val chaptersFlow: Flow<HResult<List<ChapterUI>>> by lazy {
+	private val chaptersFlow: Flow<List<ChapterUI>> by lazy {
 		novelIDLive.transformLatest { id: Int ->
 			emitAll(
 				getChapterUIsUseCase(id)
 					.transform {
-						emit(loading)
 						emit(it)
 					}
 					.combineBookmarked()
@@ -94,119 +88,106 @@ class NovelViewModel(
 					.combineSort()
 					.combineReverse()
 			)
+			_isRefreshing.emit(false)
 		}
 	}
 
-	override val novelSettingFlow: LiveData<HResult<NovelSettingUI>> by lazy {
-		novelSettingsFlow.asIOLiveData()
+	override val novelSettingFlow: Flow<NovelSettingUI?> by lazy {
+		novelSettingsFlow.onIO()
 	}
 
-	override fun getIfAllowTrueDelete(): LiveData<Boolean> =
+	override fun getIfAllowTrueDelete(): Flow<Boolean> =
 		flow {
-			emit(getTrueDelete().unwrap() ?: false)
-		}.asIOLiveData()
+			emit(getTrueDelete())
+		}.onIO()
 
-	private val novelFlow by lazy {
+	private val novelFlow: Flow<NovelUI?> by lazy {
 		novelIDLive.transformLatest {
+			_isRefreshing.emit(true)
 			emitAll(loadNovelUIUseCase(it))
 		}
 	}
 
-	override val novelLive: LiveData<HResult<NovelUI>> by lazy {
-		novelFlow.asIOLiveData()
+	override val novelLive: Flow<NovelUI?> by lazy {
+		novelFlow.onIO()
 	}
 
-	@ExperimentalCoroutinesApi
-	private val novelSettingsFlow: Flow<HResult<NovelSettingUI>> by lazy {
+	private val _isRefreshing by lazy {
+		MutableStateFlow(false)
+	}
+
+	override val isRefreshing: Flow<Boolean> = _isRefreshing.onIO()
+
+	private val novelSettingsFlow: Flow<NovelSettingUI?> by lazy {
 		novelIDLive.transformLatest { emitAll(getNovelSettingFlowUseCase(it)) }
 	}
 
 	private val novelIDLive: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
 
 
-	@ExperimentalCoroutinesApi
 	private val _showOnlyStatusOfFlow: Flow<ReadingStatus?> =
-		novelSettingsFlow.mapLatest { it.transmogrify { ui -> ui.showOnlyReadingStatusOf } }
+		novelSettingsFlow.mapLatest { it?.showOnlyReadingStatusOf }
 
-	@ExperimentalCoroutinesApi
 	private val _onlyDownloadedFlow: Flow<Boolean> =
-		novelSettingsFlow.mapLatest { it.transmogrify { ui -> ui.showOnlyDownloaded } ?: false }
+		novelSettingsFlow.mapLatest { it?.showOnlyDownloaded ?: false }
 
-	@ExperimentalCoroutinesApi
 	private val _onlyBookmarkedFlow: Flow<Boolean> =
-		novelSettingsFlow.mapLatest { it.transmogrify { ui -> ui.showOnlyBookmarked } ?: false }
+		novelSettingsFlow.mapLatest { it?.showOnlyBookmarked ?: false }
 
-	@ExperimentalCoroutinesApi
 	private val _sortTypeFlow: Flow<ChapterSortType> =
-		novelSettingsFlow.mapLatest { it.transmogrify { ui -> ui.sortType } ?: SOURCE }
+		novelSettingsFlow.mapLatest { it?.sortType ?: SOURCE }
 
-	@ExperimentalCoroutinesApi
 	private val _reversedSortFlow: Flow<Boolean> =
-		novelSettingsFlow.mapLatest { it.transmogrify { ui -> ui.reverseOrder } ?: false }
+		novelSettingsFlow.mapLatest { it?.reverseOrder ?: false }
 
-	@ExperimentalCoroutinesApi
-	private fun Flow<HResult<List<ChapterUI>>>.combineBookmarked(): Flow<HResult<List<ChapterUI>>> =
+	private fun Flow<List<ChapterUI>>.combineBookmarked(): Flow<List<ChapterUI>> =
 		combine(_onlyBookmarkedFlow) { result, onlyBookmarked ->
 			if (onlyBookmarked)
-				result.transform { chapters ->
-					successResult(chapters.filter { ui -> ui.bookmarked })
-				}
+				result.filter { ui -> ui.bookmarked }
 			else result
 		}
 
-	@ExperimentalCoroutinesApi
-	private fun Flow<HResult<List<ChapterUI>>>.combineDownloaded(): Flow<HResult<List<ChapterUI>>> =
+	private fun Flow<List<ChapterUI>>.combineDownloaded(): Flow<List<ChapterUI>> =
 		combine(_onlyDownloadedFlow) { result, onlyDownloaded ->
 			if (onlyDownloaded)
-				result.transform { chapters ->
-					successResult(chapters.filter { it.isSaved })
-				}
+				result.filter { it.isSaved }
 			else result
 		}
 
 	@ExperimentalCoroutinesApi
-	private fun Flow<HResult<List<ChapterUI>>>.combineStatus(): Flow<HResult<List<ChapterUI>>> =
+	private fun Flow<List<ChapterUI>>.combineStatus(): Flow<List<ChapterUI>> =
 		combine(_showOnlyStatusOfFlow) { result, readingStatusOf ->
 			readingStatusOf?.let { status ->
-				result.transform { chapters ->
-					successResult(
-						if (status != ReadingStatus.UNREAD)
-							chapters.filter { it.readingStatus == status }
-						else chapters.filter {
-							it.readingStatus == status || it.readingStatus == ReadingStatus.READING
-						}
-					)
+				if (status != ReadingStatus.UNREAD)
+					result.filter { it.readingStatus == status }
+				else result.filter {
+					it.readingStatus == status || it.readingStatus == ReadingStatus.READING
 				}
 
 			} ?: result
 		}
 
 	@ExperimentalCoroutinesApi
-	private fun Flow<HResult<List<ChapterUI>>>.combineSort(): Flow<HResult<List<ChapterUI>>> =
-		combine(_sortTypeFlow) { result, sortType ->
-			result.transform { chapters ->
-				successResult(when (sortType) {
-					SOURCE -> {
-						chapters.sortedBy { it.order }
-					}
-					ChapterSortType.UPLOAD -> {
-						chapters.sortedBy { it.releaseDate }
-					}
-				})
+	private fun Flow<List<ChapterUI>>.combineSort(): Flow<List<ChapterUI>> =
+		combine(_sortTypeFlow) { chapters, sortType ->
+			when (sortType) {
+				SOURCE -> {
+					chapters.sortedBy { it.order }
+				}
+				ChapterSortType.UPLOAD -> {
+					chapters.sortedBy { it.releaseDate }
+				}
 			}
 		}
 
 	@ExperimentalCoroutinesApi
-	private fun Flow<HResult<List<ChapterUI>>>.combineReverse(): Flow<HResult<List<ChapterUI>>> =
+	private fun Flow<List<ChapterUI>>.combineReverse(): Flow<List<ChapterUI>> =
 		combine(_reversedSortFlow) { result, reverse ->
 			if (reverse)
-				result.transform { chapters -> successResult(chapters.reversed()) }
+				result.reversed()
 			else result
 		}
 
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-		reportExceptionUseCase(error)
-	}
 
 	override fun delete(vararg chapterUI: ChapterUI) {
 		launchIO {
@@ -219,21 +200,17 @@ class NovelViewModel(
 	override fun deletePrevious() {
 		logI("Deleting previous chapters")
 		launchIO {
-			loadDeletePreviousChapterUseCase().handle { chaptersBackToDelete ->
+			loadDeletePreviousChapterUseCase().let { chaptersBackToDelete ->
 				if (chaptersBackToDelete != -1) {
-					val lastUnreadResult =
-						getLastReadChapter(novelFlow.first { it is HResult.Success }.unwrap()!!.id)
+					val lastUnread =
+						getLastReadChapter(novelFlow.first { it != null }!!.id)
 
-					if (lastUnreadResult is HResult.Empty) {
+					if (lastUnread == null) {
 						logE("Received empty when trying to get lastUnreadResult")
 						return@launchIO
 					}
 
-					val lastUnread = (lastUnreadResult as HResult.Success).data
-
-					val chapters =
-						chaptersFlow.first { it is HResult.Success }.unwrap()?.sortedBy { it.order }
-							?: return@launchIO
+					val chapters = chaptersFlow.first().sortedBy { it.order }
 
 					val indexOfLast = chapters.indexOfFirst { it.id == lastUnread.chapterId }
 
@@ -280,52 +257,51 @@ class NovelViewModel(
 		}
 	}
 
-	override fun openLastRead(array: List<ChapterUI>): LiveData<HResult<Int>> =
+	override fun openLastRead(array: List<ChapterUI>): Flow<Int> =
 		flow {
-			emit(loading())
 			val sortedArray = array.sortedBy { it.order }
 			val result = isChaptersResumeFirstUnread()
-			val index: Int = if (result is HResult.Success && !result.data)
+			val index: Int = if (!result)
 				sortedArray.indexOfFirst { it.readingStatus != ReadingStatus.READ }
 			else sortedArray.indexOfFirst { it.readingStatus == ReadingStatus.UNREAD }
 
 			emit(
-				if (index == -1) emptyResult() else {
+				if (index == -1) {
+					index
+				} else {
 					// Find the original index
 					val chapter = sortedArray[index]
-					successResult(array.indexOf(chapter))
+					array.indexOf(chapter)
 				}
 			)
-		}.asIOLiveData()
+		}.onIO()
 
-	override fun getNovelURL(): LiveData<HResult<String>> =
+	override fun getNovelURL(): Flow<String?> =
 		flow {
-			emit(novelFlow.first { it is HResult.Success }.transform { getContentURL(it) })
-		}.asIOLiveData()
+			emit(getContentURL(novelFlow.first { it != null }!!))
+		}.onIO()
 
-	override fun getShareInfo(): LiveData<HResult<NovelShareInfo>> =
+	override fun getShareInfo(): Flow<NovelShareInfo?> =
 		flow {
-			emit(novelFlow.first { it is HResult.Success }.transform {
-				getContentURL(it).transformToSuccess { url ->
+			emit(novelFlow.first { it != null }!!.let {
+				getContentURL(it)?.let { url ->
 					NovelShareInfo(it.title, url)
 				}
 			})
-		}.asIOLiveData()
+		}.onIO()
 
-	override fun getChapterURL(chapterUI: ChapterUI): LiveData<HResult<String>> =
+	override fun getChapterURL(chapterUI: ChapterUI): Flow<String?> =
 		flow {
 			emit(getContentURL(chapterUI))
-		}.asIOLiveData()
+		}.onIO()
 
-	override fun refresh(): LiveData<HResult<*>> =
+	override fun refresh(): Flow<Unit> =
 		flow {
-			emit(loading())
-			emit(
-				loadRemoteNovel(novelIDLive.value, true).transform {
-					startDownloadWorkerAfterUpdateUseCase(it.updatedChapters)
-				}
-			)
-		}.asIOLiveData()
+			loadRemoteNovel(novelIDLive.value, true)?.let {
+				startDownloadWorkerAfterUpdateUseCase(it.updatedChapters)
+			}
+			emit(Unit)
+		}.onIO()
 
 	override fun setNovelID(novelID: Int) {
 		when {
@@ -341,12 +317,14 @@ class NovelViewModel(
 
 	override fun toggleNovelBookmark() {
 		launchIO {
-			novelLive.value?.handle { updateNovelUseCase(it.copy(bookmarked = !it.bookmarked)) }
+			val novel = novelFlow.first { it != null }!!
+			updateNovelUseCase(novel.copy(bookmarked = !novel.bookmarked))
 		}
 	}
 
-	override fun isBookmarked(): Boolean = novelLive.value?.transmogrify { it.bookmarked }
-		?: false
+	override fun isBookmarked(): Flow<Boolean> = flow {
+		emit(novelFlow.first()?.bookmarked ?: false)
+	}.onIO()
 
 	override fun markChapterAsRead(chapterUI: ChapterUI) {
 		launchIO {
@@ -390,7 +368,7 @@ class NovelViewModel(
 
 	override fun downloadNextChapter() {
 		launchIO {
-			val array = chapters.sortedBy { it.order }
+			val array = chaptersFlow.first().sortedBy { it.order }
 			val r = array.indexOfFirst { it.readingStatus != ReadingStatus.READ }
 			if (r != -1) downloadChapter(array[r])
 			startDownloadWorkerUseCase()
@@ -399,7 +377,7 @@ class NovelViewModel(
 
 	override fun downloadNextCustomChapters(max: Int) {
 		launchIO {
-			val array = chapters.sortedBy { it.order }
+			val array = chaptersFlow.first().sortedBy { it.order }
 			val r = array.indexOfFirst { it.readingStatus != ReadingStatus.READ }
 			if (r != -1) {
 				val list = arrayListOf<ChapterUI>()
@@ -421,15 +399,16 @@ class NovelViewModel(
 
 	override fun downloadAllUnreadChapters() {
 		launchIO {
-			downloadChapter(*chapters.filter { it.readingStatus == ReadingStatus.UNREAD }
-				.toTypedArray())
+			downloadChapter(
+				*chaptersFlow.first().filter { it.readingStatus == ReadingStatus.UNREAD }
+					.toTypedArray())
 			startDownloadWorkerUseCase()
 		}
 	}
 
 	override fun downloadAllChapters() {
 		launchIO {
-			downloadChapter(*chapters.toTypedArray())
+			downloadChapter(*chaptersFlow.first().toTypedArray())
 			startDownloadWorkerUseCase()
 		}
 	}

@@ -1,15 +1,16 @@
 package app.shosetsu.common.domain.repositories.impl
 
-import app.shosetsu.common.consts.ErrorKeys
+import app.shosetsu.common.FilePermissionException
+import app.shosetsu.common.IncompatibleExtensionException
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.datasource.file.base.IFileExtensionDataSource
 import app.shosetsu.common.datasource.file.base.IFileSettingsDataSource
 import app.shosetsu.common.datasource.memory.base.IMemExtensionsDataSource
-import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
-import app.shosetsu.common.dto.*
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -39,47 +40,55 @@ class ExtensionEntitiesRepository(
 	private val fileSource: IFileExtensionDataSource,
 	private val settingsSource: IFileSettingsDataSource
 ) : IExtensionEntitiesRepository {
-	override suspend fun get(extensionEntity: ExtensionEntity): HResult<IExtension> =
-		memorySource.loadExtensionFromMemory(extensionEntity.id).catch {
-			fileSource.loadExtension(extensionEntity).transform {
-				if (!it.exMetaData.libVersion.isCompatible())
-					return errorResult(ErrorKeys.ERROR_EXT_INCOMPATIBLE)
-				setSettings(it, it.settingsModel)
-				memorySource.putExtensionInMemory(it)
-				successResult(it)
-			}
+
+	override suspend fun get(extensionEntity: GenericExtensionEntity): IExtension {
+		return try {
+			memorySource.loadExtensionFromMemory(extensionEntity.id)!!
+		} catch (e: Exception) {
+			val it = fileSource.loadExtension(extensionEntity)
+			if (!it.exMetaData.libVersion.isCompatible())
+				throw IncompatibleExtensionException(extensionEntity, it.exMetaData.libVersion)
+
+			setSettings(it, it.settingsModel)
+			memorySource.putExtensionInMemory(it)
+			it
 		}
 
-	override suspend fun uninstall(extensionEntity: ExtensionEntity): HResult<*> =
-		memorySource.removeExtensionFromMemory(extensionEntity.id) ifSo {
-			fileSource.deleteExtension(extensionEntity)
-		}
 
+	}
 
+	override suspend fun uninstall(extensionEntity: GenericExtensionEntity) {
+		memorySource.removeExtensionFromMemory(extensionEntity.id)
+		fileSource.deleteExtension(extensionEntity)
+	}
+
+	@Throws(FilePermissionException::class, IOException::class)
 	override suspend fun save(
-		extensionEntity: ExtensionEntity,
+		extensionEntity: GenericExtensionEntity,
 		iExt: IExtension,
 		extensionContent: ByteArray
-	): HResult<*> =
+	) {
 		memorySource.putExtensionInMemory(iExt)
-			.thenAlso(fileSource.writeExtension(extensionEntity, extensionContent))
+
+		fileSource.writeExtension(extensionEntity, extensionContent)
+	}
 
 
-	suspend fun getInt(extensionID: Int, settingID: Int, default: Int): HResult<Int> =
+	suspend fun getInt(extensionID: Int, settingID: Int, default: Int): Int =
 		settingsSource.getInt("$extensionID", SettingKey.CustomInt("$settingID", default))
 
 	suspend fun getString(
 		extensionID: Int,
 		settingID: Int,
 		default: String
-	): HResult<String> =
+	): String =
 		settingsSource.getString("$extensionID", SettingKey.CustomString("$settingID", default))
 
 	suspend fun getBoolean(
 		extensionID: Int,
 		settingID: Int,
 		default: Boolean
-	): HResult<Boolean> =
+	): Boolean =
 		settingsSource.getBoolean(
 			"$extensionID",
 			SettingKey.CustomBoolean("$settingID", default)
@@ -89,7 +98,7 @@ class ExtensionEntitiesRepository(
 		extensionID: Int,
 		settingID: Int,
 		default: Float
-	): HResult<Float> =
+	): Float =
 		settingsSource.getFloat("$extensionID", SettingKey.CustomFloat("$settingID", default))
 
 	private suspend fun setSettings(extension: IExtension, filters: Array<out Filter<out Any?>>) {

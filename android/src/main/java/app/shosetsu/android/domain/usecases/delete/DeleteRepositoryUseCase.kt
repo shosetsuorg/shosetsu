@@ -1,9 +1,9 @@
 package app.shosetsu.android.domain.usecases.delete
 
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of Shosetsu.
@@ -28,8 +28,10 @@ import app.shosetsu.common.dto.HResult
 class DeleteRepositoryUseCase(
 	private val iExtensionRepoRepository: IExtensionRepoRepository
 ) {
-	suspend operator fun invoke(repositoryEntity: RepositoryEntity): HResult<*> =
+	@Throws(GenericSQLiteException::class)
+	suspend operator fun invoke(repositoryEntity: RepositoryEntity) =
 		iExtensionRepoRepository.remove(repositoryEntity)
 
+	@Throws(GenericSQLiteException::class)
 	suspend operator fun invoke(repositoryUI: RepositoryUI) = invoke(repositoryUI.convertTo())
 }

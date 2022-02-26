@@ -1,13 +1,12 @@
 package app.shosetsu.android.datasource.local.database.impl
 
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.ext.toDB
-import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.providers.database.dao.ExtensionLibraryDao
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.datasource.database.base.IDBExtLibDataSource
 import app.shosetsu.common.domain.model.local.ExtLibEntity
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.dto.convertList
-import app.shosetsu.common.dto.successResult
 
 /*
  * This file is part of shosetsu.
@@ -33,23 +32,26 @@ import app.shosetsu.common.dto.successResult
 class DBExtLibDataSource(
 	private val extensionLibraryDao: ExtensionLibraryDao,
 ) : IDBExtLibDataSource {
-	override suspend fun updateExtension(extLibEntity: ExtLibEntity): HResult<*> = try {
-		successResult(extensionLibraryDao.update(extLibEntity.toDB()))
-	} catch (e: Exception) {
-		e.toHError()
+	@Throws(GenericSQLiteException::class)
+	override suspend fun updateExtension(extLibEntity: ExtLibEntity): Unit = try {
+		(extensionLibraryDao.update(extLibEntity.toDB()))
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
 	}
 
-	override suspend fun updateOrInsert(extLibEntity: ExtLibEntity): HResult<*> = try {
-		successResult(extensionLibraryDao.insertOrUpdateScriptLib(extLibEntity.toDB()))
+	@Throws(GenericSQLiteException::class)
+	override suspend fun updateOrInsert(extLibEntity: ExtLibEntity): Unit = try {
+		(extensionLibraryDao.insertOrUpdateScriptLib(extLibEntity.toDB()))
 	} catch (e: Exception) {
-		e.toHError()
+		throw GenericSQLiteException(e)
 	}
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun loadExtLibByRepo(
 		repoID: Int,
-	): HResult<List<ExtLibEntity>> = try {
-		successResult(extensionLibraryDao.loadLibByRepoID(repoID).convertList())
+	): List<ExtLibEntity> = try {
+		(extensionLibraryDao.loadLibByRepoID(repoID).convertList())
 	} catch (e: Exception) {
-		e.toHError()
+		throw GenericSQLiteException(e)
 	}
 }

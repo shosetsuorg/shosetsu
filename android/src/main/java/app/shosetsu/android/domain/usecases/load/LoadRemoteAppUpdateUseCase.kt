@@ -2,7 +2,6 @@ package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -28,6 +27,6 @@ import app.shosetsu.common.dto.HResult
 class LoadRemoteAppUpdateUseCase(
 	private val iAppUpdatesRepository: IAppUpdatesRepository
 ) {
-	suspend operator fun invoke(): HResult<AppUpdateEntity> =
+	suspend operator fun invoke(): AppUpdateEntity? =
 		iAppUpdatesRepository.loadRemoteUpdate()
 }

@@ -31,7 +31,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
  */
 object ShortCuts {
 
-
 	fun createShortcuts(context: Context) {
 		ShortcutManagerCompat.addDynamicShortcuts(
 			context, listOf(

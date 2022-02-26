@@ -3,13 +3,9 @@ package app.shosetsu.common.domain.repositories.impl
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.ChapterHistoryEntity
 import app.shosetsu.common.domain.repositories.base.IChapterHistoryRepository
-import app.shosetsu.common.dto.HListFlow
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.empty
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.common.enums.ReadingStatus
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
 
 /*
  * This file is part of shosetsu.
@@ -57,19 +53,17 @@ class TempChapterHistoryRepository : IChapterHistoryRepository {
 		)
 	}
 
-	override fun getLastRead(novelId: Int): HResult<ChapterHistoryEntity> {
+	override fun getLastRead(novelId: Int): ChapterHistoryEntity? {
 		val chapters: List<ChapterHistoryEntity.StatusUpdate> =
 			chapterHistory.value.filter { it.novelId == novelId }
 				.filterIsInstance<ChapterHistoryEntity.StatusUpdate>()
 
-		if (chapters.isEmpty()) return empty
+		if (chapters.isEmpty()) return null
 
-		val last = chapters.lastOrNull { it.status == ReadingStatus.READ } ?: return empty
-
-		return successResult(last)
+		return chapters.lastOrNull { it.status == ReadingStatus.READ }
 	}
 
-	override val history: HListFlow<ChapterHistoryEntity> by lazy {
-		chapterHistory.map { successResult(it) }
+	override val history: Flow<List<ChapterHistoryEntity>> by lazy {
+		chapterHistory
 	}
 }

@@ -17,20 +17,24 @@ package app.shosetsu.android.viewmodel.impl.extension
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import androidx.lifecycle.LiveData
-import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.domain.ReportExceptionUseCase
-import app.shosetsu.android.domain.usecases.UninstallExtensionUIUseCase
-import app.shosetsu.android.domain.usecases.get.*
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.logV
+import app.shosetsu.android.domain.usecases.UninstallExtensionUseCase
+import app.shosetsu.android.domain.usecases.get.GetExtListingNamesUseCase
+import app.shosetsu.android.domain.usecases.get.GetExtSelectedListingFlowUseCase
+import app.shosetsu.android.domain.usecases.get.GetExtensionSettingsUseCase
+import app.shosetsu.android.domain.usecases.get.GetExtensionUIUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateExtSelectedListing
 import app.shosetsu.android.domain.usecases.update.UpdateExtensionSettingUseCase
-import app.shosetsu.android.view.uimodels.model.ExtensionUI
-import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.AExtensionConfigureViewModel
 import app.shosetsu.common.domain.model.local.FilterEntity
-import app.shosetsu.common.dto.*
+import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.transformLatest
 
 /**
  * shosetsu
@@ -38,11 +42,11 @@ import kotlinx.coroutines.flow.*
  *
  * @author github.com/doomsdayrs
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class ExtensionConfigureViewModel(
 	private val loadExtensionUI: GetExtensionUIUseCase,
-	private val uninstallExtensionUI: UninstallExtensionUIUseCase,
+	private val uninstallExtensionUI: UninstallExtensionUseCase,
 	private val getExtensionSettings: GetExtensionSettingsUseCase,
-	private val reportException: ReportExceptionUseCase,
 	private val getExtListNames: GetExtListingNamesUseCase,
 	private val updateExtSelectedListing: UpdateExtSelectedListing,
 	private val getExtSelectedListingFlow: GetExtSelectedListingFlowUseCase,
@@ -50,46 +54,36 @@ class ExtensionConfigureViewModel(
 ) : AExtensionConfigureViewModel() {
 	private val extensionIdFlow: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
 
-	override val liveData: LiveData<HResult<ExtensionUI>> by lazy {
+	override val liveData: Flow<InstalledExtensionEntity?> by lazy {
 		extensionIdFlow.transformLatest { id ->
 			emitAll(loadExtensionUI(id))
-		}.asIOLiveData()
+		}.onIO()
 	}
 
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-		reportException(error)
-	}
-
-	@ExperimentalCoroutinesApi
-	private val extListNamesFlow: Flow<HResult<ListingSelectionData>> by lazy {
+	private val extListNamesFlow: Flow<ListingSelectionData> by lazy {
 		extensionIdFlow.transformLatest { extensionID ->
-			emit(loading)
-			val listingNames: List<String> = getExtListNames(extensionID).unwrap() ?: listOf()
+			val listingNames: List<String> = getExtListNames(extensionID)
 
 			emitAll(
 				getExtSelectedListingFlow(extensionID).transformLatest { hResult ->
-					emit(loading)
-					emit(hResult.transformToSuccess {
-						ListingSelectionData(listingNames, it)
-					})
+					emit(ListingSelectionData(listingNames, hResult))
 				}
 			)
 		}
 	}
 
-	@ExperimentalCoroutinesApi
-	private val extensionSettingsFlow: Flow<HResult<List<FilterEntity>>> by lazy {
+	private val extensionSettingsFlow: Flow<List<FilterEntity>> by lazy {
 		extensionIdFlow.transformLatest { extensionID ->
 			emitAll(getExtensionSettings(extensionID))
 		}
 	}
 
-	override val extensionSettings: LiveData<HResult<List<FilterEntity>>> by lazy {
-		extensionSettingsFlow.asIOLiveData()
+	override val extensionSettings: Flow<List<FilterEntity>> by lazy {
+		extensionSettingsFlow.onIO()
 	}
 
-	override val extensionListing: LiveData<HResult<ListingSelectionData>> by lazy {
-		extListNamesFlow.asIOLiveData()
+	override val extensionListing: Flow<ListingSelectionData> by lazy {
+		extListNamesFlow.onIO()
 	}
 
 	override fun setExtensionID(id: Int) {
@@ -112,7 +106,7 @@ class ExtensionConfigureViewModel(
 		}
 	}
 
-	override fun uninstall(extension: ExtensionUI) {
+	override fun uninstall(extension: InstalledExtensionEntity) {
 		launchIO {
 			uninstallExtensionUI(extension)
 		}

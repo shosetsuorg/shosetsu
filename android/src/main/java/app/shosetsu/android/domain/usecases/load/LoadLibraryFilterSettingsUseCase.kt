@@ -3,8 +3,6 @@ package app.shosetsu.android.domain.usecases.load
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.LibrarySortFilterEntity
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.transformToSuccess
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
@@ -31,11 +29,11 @@ import kotlinx.serialization.json.Json
 class LoadLibraryFilterSettingsUseCase(
 	private val iSettingsRepository: ISettingsRepository
 ) {
-	suspend operator fun invoke(): HResult<LibrarySortFilterEntity> {
+	suspend operator fun invoke(): LibrarySortFilterEntity {
 		return iSettingsRepository.getString(
 			SettingKey.LibraryFilter
-		).transformToSuccess {
-			Json { }.decodeFromString(it)
+		).let {
+			Json.decodeFromString(it)
 		}
 	}
 }

@@ -1,13 +1,15 @@
 package app.shosetsu.common.domain.repositories.impl
 
-import app.shosetsu.common.datasource.database.base.IDBExtensionsDataSource
+import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.common.datasource.database.base.IDBExtRepoDataSource
+import app.shosetsu.common.datasource.database.base.IDBInstalledExtensionsDataSource
+import app.shosetsu.common.datasource.database.base.IDBRepositoryExtensionsDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteExtensionDataSource
-import app.shosetsu.common.domain.model.local.ExtensionEntity
-import app.shosetsu.common.domain.model.local.RepositoryEntity
-import app.shosetsu.common.domain.model.local.StrippedExtensionEntity
+import app.shosetsu.common.domain.model.local.*
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.dto.HResult
-import kotlinx.coroutines.flow.Flow
+import app.shosetsu.lib.exceptions.HTTPException
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 
 /*
  * This file is part of shosetsu.
@@ -33,49 +35,120 @@ import kotlinx.coroutines.flow.Flow
  * @author github.com/doomsdayrs
  */
 class ExtensionsRepository(
-	private val dbSource: IDBExtensionsDataSource,
+	private val installedDBSource: IDBInstalledExtensionsDataSource,
+	private val repoDBSource: IDBRepositoryExtensionsDataSource,
 	private val remoteSource: IRemoteExtensionDataSource,
+	private val _repoDBSource: IDBExtRepoDataSource
 ) : IExtensionsRepository {
+	@OptIn(ExperimentalCoroutinesApi::class)
+	override fun loadBrowseExtensions(): Flow<List<BrowseExtensionEntity>> {
+		return repoDBSource.loadExtensionsFlow().transformLatest { list ->
 
-	override fun loadExtensionsFLow(): Flow<HResult<List<ExtensionEntity>>> =
-		dbSource.loadExtensionsFlow()
+			val browseExtensions = list.groupBy { it.id }.map { (extId, matchingExtensions) ->
+				installedDBSource.loadExtensionLive(extId).map { installedExt ->
+					val firstExt = matchingExtensions.first()
 
-	override fun getExtensionFlow(id: Int): Flow<HResult<ExtensionEntity>> =
-		dbSource.loadExtensionLive(id)
+					BrowseExtensionEntity(
+						id = extId,
+						name = installedExt?.name ?: firstExt.name,
+						imageURL = installedExt?.imageURL ?: firstExt.imageURL,
+						lang = installedExt?.lang ?: firstExt.lang,
+						installOptions = if (installedExt == null) {
+							matchingExtensions.mapNotNull { genericExt ->
+								val repo = _repoDBSource.loadRepository(genericExt.repoID)
 
-	override suspend fun getExtension(id: Int): HResult<ExtensionEntity> =
-		dbSource.loadExtension(id)
+								if (repo != null && repo.isEnabled)
+									ExtensionInstallOptionEntity(
+										genericExt.repoID,
+										repo.name,
+										genericExt.version
+									)
+								else null
+							}.sortedBy { it.repoId }.sortedBy { it.version }
+						} else null,
+						isInstalled = installedExt != null,
+						installedVersion = installedExt?.version,
+						installedRepo = installedExt?.repoID ?: -1,
+						isUpdateAvailable = if (installedExt != null) {
+							val repoVersion =
+								matchingExtensions.find { it.repoID == installedExt.repoID }?.version
 
-	override suspend fun getExtensions(repoID: Int): HResult<List<ExtensionEntity>> =
-		dbSource.getExtensions(repoID)
+							if (repoVersion != null) {
+								installedExt.version > repoVersion
+							} else false
+						} else false,
+						updateVersion = matchingExtensions.find { it.repoID == installedExt?.repoID }?.version,
+						isInstalling = false, // We can ignore this, another layer will set it
+					)
+				}
+			}
 
-	override suspend fun loadExtensions(): HResult<List<ExtensionEntity>> =
-		dbSource.loadExtensions()
+			emitAll(combine(browseExtensions) { it.toList() })
+		}
 
-	override suspend fun uninstall(extensionEntity: ExtensionEntity): HResult<*> =
-		dbSource.updateExtension(
-			extensionEntity.copy(
-				enabled = false,
-				installed = false,
-				installedVersion = null
-			)
-		)
+	}
 
-	override suspend fun update(extensionEntity: ExtensionEntity): HResult<*> =
-		dbSource.updateExtension(extensionEntity)
+	override fun loadExtensionsFLow(): Flow<List<InstalledExtensionEntity>> =
+		installedDBSource.loadExtensionsFlow()
 
-	override fun loadStrippedExtensionFlow(): Flow<HResult<List<StrippedExtensionEntity>>> =
-		dbSource.loadPoweredExtensionsCards()
+	override fun getInstalledExtensionFlow(id: Int): Flow<InstalledExtensionEntity?> =
+		installedDBSource.loadExtensionLive(id)
 
-	override suspend fun delete(extensionEntity: ExtensionEntity): HResult<*> =
-		dbSource.deleteExtension(extensionEntity)
+	@Throws(GenericSQLiteException::class)
+	override suspend fun getExtension(repoId: Int, extId: Int): GenericExtensionEntity? =
+		repoDBSource.loadExtension(repoId, extId)
 
-	override suspend fun insert(extensionEntity: ExtensionEntity): HResult<*> =
-		dbSource.insert(extensionEntity)
+	@Throws(GenericSQLiteException::class)
+	override suspend fun getInstalledExtension(id: Int): InstalledExtensionEntity? =
+		installedDBSource.loadExtension(id)
 
+	@Throws(GenericSQLiteException::class)
+	override suspend fun getRepositoryExtensions(repoID: Int): List<GenericExtensionEntity> =
+		repoDBSource.getExtensions(repoID)
+
+	@Throws(GenericSQLiteException::class)
+	override suspend fun loadRepositoryExtensions(): List<GenericExtensionEntity> =
+		repoDBSource.loadExtensions()
+
+	@Throws(GenericSQLiteException::class)
+	override suspend fun uninstall(extensionEntity: InstalledExtensionEntity) {
+		installedDBSource.deleteExtension(extensionEntity)
+	}
+
+	@Throws(GenericSQLiteException::class)
+	override suspend fun updateRepositoryExtension(extensionEntity: GenericExtensionEntity): Unit =
+		repoDBSource.updateExtension(extensionEntity)
+
+	@Throws(GenericSQLiteException::class)
+	override suspend fun updateInstalledExtension(extensionEntity: InstalledExtensionEntity) {
+		installedDBSource.updateExtension(extensionEntity)
+	}
+
+	@Throws(GenericSQLiteException::class)
+	override suspend fun delete(extensionEntity: GenericExtensionEntity) {
+		installedDBSource.loadExtension(extensionEntity.id)?.let {
+			installedDBSource.deleteExtension(it)
+		}
+
+		repoDBSource.deleteExtension(extensionEntity)
+	}
+
+	@Throws(GenericSQLiteException::class)
+	override suspend fun insert(extensionEntity: GenericExtensionEntity): Long =
+		repoDBSource.insert(extensionEntity)
+
+	@Throws(GenericSQLiteException::class)
+	override suspend fun insert(extensionEntity: InstalledExtensionEntity): Long =
+		installedDBSource.insert(extensionEntity)
+
+	@Throws(HTTPException::class)
 	override suspend fun downloadExtension(
 		repositoryEntity: RepositoryEntity,
-		extension: ExtensionEntity
-	): HResult<ByteArray> =
+		extension: GenericExtensionEntity
+	): ByteArray =
 		remoteSource.downloadExtension(repositoryEntity, extension)
+
+	@Throws(GenericSQLiteException::class)
+	override suspend fun isExtensionInstalled(extensionEntity: GenericExtensionEntity): Boolean =
+		installedDBSource.loadExtension(extensionEntity.id) != null
 }

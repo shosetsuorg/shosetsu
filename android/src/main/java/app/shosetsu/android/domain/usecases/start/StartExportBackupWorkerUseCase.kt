@@ -4,8 +4,6 @@ import android.net.Uri
 import androidx.work.Data
 import app.shosetsu.android.backend.workers.onetime.ExportBackupWorker
 import app.shosetsu.android.domain.repository.base.IBackupUriRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
 
 /*
  * This file is part of shosetsu.
@@ -35,14 +33,12 @@ class StartExportBackupWorkerUseCase(
 	private val backupUri: IBackupUriRepository
 ) {
 
-	operator fun invoke(backupToExport: String, uri: Uri): HResult<*> {
+	operator fun invoke(backupToExport: String, uri: Uri) {
 
 		backupUri.give(uri)
 
 		manager.start(data = Data.Builder().apply {
 			putString(ExportBackupWorker.KEY_EXPORT_NAME, backupToExport)
 		}.build())
-
-		return successResult()
 	}
 }

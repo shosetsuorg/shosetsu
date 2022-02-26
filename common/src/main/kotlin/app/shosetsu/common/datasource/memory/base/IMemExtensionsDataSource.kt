@@ -1,6 +1,5 @@
 package app.shosetsu.common.datasource.memory.base
 
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.IExtension
 
 /*
@@ -26,11 +25,11 @@ import app.shosetsu.lib.IExtension
  */
 interface IMemExtensionsDataSource {
     /** Load formatter from memory */
-    fun loadExtensionFromMemory(extensionID: Int): HResult<IExtension>
+	fun loadExtensionFromMemory(extensionID: Int): IExtension?
 
 	/** Put formatter in memory */
-	fun putExtensionInMemory(iExtension: IExtension): HResult<*>
+	fun putExtensionInMemory(iExtension: IExtension)
 
 	/** Remove formatter by ID from cache*/
-	fun removeExtensionFromMemory(extensionID: Int): HResult<*>
+	fun removeExtensionFromMemory(extensionID: Int): Boolean
 }

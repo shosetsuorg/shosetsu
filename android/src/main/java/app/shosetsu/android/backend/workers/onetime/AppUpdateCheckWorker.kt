@@ -18,14 +18,12 @@ import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.Notifications.ID_APP_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_WORK_ID
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.load.LoadRemoteAppUpdateUseCase
 import app.shosetsu.common.consts.settings.SettingKey.AppUpdateOnMeteredConnection
 import app.shosetsu.common.consts.settings.SettingKey.AppUpdateOnlyWhenIdle
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
-import app.shosetsu.common.dto.handle
 import com.github.doomsdayrs.apps.shosetsu.R
+import org.acra.ACRA
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -59,6 +57,7 @@ class AppUpdateCheckWorker(
 	params: WorkerParameters
 ) : CoroutineWorker(appContext, params), DIAware, NotificationCapable {
 	override val di: DI by closestDI(applicationContext)
+
 	private val openAppForUpdateIntent: Intent
 		get() = Intent(applicationContext, MainActivity::class.java).apply {
 			action = ACTION_OPEN_APP_UPDATE
@@ -67,7 +66,6 @@ class AppUpdateCheckWorker(
 
 	private val loadRemoteAppUpdateUseCase by instance<LoadRemoteAppUpdateUseCase>()
 	override val notificationManager: NotificationManagerCompat by notificationManager()
-	private val reportExceptionUseCase by instance<ReportExceptionUseCase>()
 
 	override val baseNotificationBuilder: NotificationCompat.Builder
 		get() = notificationBuilder(applicationContext, Notifications.CHANNEL_APP_UPDATE)
@@ -81,40 +79,42 @@ class AppUpdateCheckWorker(
 
 
 	override suspend fun doWork(): Result {
-		try {
-			notify("Starting")
-			loadRemoteAppUpdateUseCase().handle(onEmpty = {
-				notificationManager.cancel(defaultNotificationID)
-			}, onError = {
-				logE("Error!", it.exception)
-				notify("Error! ${it.code} | ${it.message}") {
-					setOngoing(false)
-				}
-			}) {
-				notify(
-					applicationContext.getString(
-						R.string.notification_app_update_available_version,
-						it.version
-					)
-				) {
-					setOngoing(false)
-					addAction(
-						R.drawable.app_update,
-						"",
-						PendingIntent.getActivity(
-							applicationContext,
-							0,
-							openAppForUpdateIntent,
-							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
-						)
-					)
-				}
+		notify("Starting")
+		val entity = try {
+			loadRemoteAppUpdateUseCase()
+		} catch (e: Exception) { // TODO specify
+			logE("Error!", e)
+			notify("Error! ${e.message}") {
+				setOngoing(false)
 			}
-			return Result.success()
-		} catch (e: Exception) {
-			reportExceptionUseCase(e.toHError())
+			ACRA.errorReporter.handleException(e)
+			return Result.failure()
 		}
-		return Result.failure()
+
+		if (entity == null) {
+			notificationManager.cancel(defaultNotificationID)
+			return Result.failure()
+		}
+
+		notify(
+			applicationContext.getString(
+				R.string.notification_app_update_available_version,
+				entity.version
+			)
+		) {
+			setOngoing(false)
+			addAction(
+				R.drawable.app_update,
+				"",
+				PendingIntent.getActivity(
+					applicationContext,
+					0,
+					openAppForUpdateIntent,
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
+				)
+			)
+		}
+		return Result.success()
 	}
 
 	/**
@@ -124,11 +124,11 @@ class AppUpdateCheckWorker(
 		private val iSettingsRepository: ISettingsRepository by instance()
 
 		private suspend fun appUpdateOnMetered(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(AppUpdateOnMeteredConnection)
+			iSettingsRepository.getBoolean(AppUpdateOnMeteredConnection)
 
 
 		private suspend fun appUpdateOnlyIdle(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(AppUpdateOnlyWhenIdle)
+			iSettingsRepository.getBoolean(AppUpdateOnlyWhenIdle)
 
 		override fun getWorkerState(index: Int): WorkInfo.State =
 			workerManager.getWorkInfosForUniqueWork(APP_UPDATE_WORK_ID).get()[index].state

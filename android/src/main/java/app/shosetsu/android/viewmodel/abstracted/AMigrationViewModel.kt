@@ -1,12 +1,11 @@
 package app.shosetsu.android.viewmodel.abstracted
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.view.uimodels.model.MigrationExtensionUI
 import app.shosetsu.android.view.uimodels.model.MigrationNovelUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.common.domain.model.local.StrippedBookmarkedNovelEntity
-import app.shosetsu.common.dto.HResult
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -36,22 +35,22 @@ abstract class AMigrationViewModel : ShosetsuViewModel() {
 	/**
 	 * The query that is being used for the current novel to be searched for
 	 */
-	abstract val currentQuery: LiveData<HResult<String>>
+	abstract val currentQuery: Flow<String>
 
 	/**
 	 * The extensions to select from
 	 */
-	abstract val extensions: LiveData<HResult<List<MigrationExtensionUI>>>
+	abstract val extensions: Flow<List<MigrationExtensionUI>>
 
 	/**
 	 * Novels that will be transfered
 	 */
-	abstract val novels: LiveData<HResult<List<MigrationNovelUI>>>
+	abstract val novels: Flow<List<MigrationNovelUI>>
 
 	/**
 	 * Which novel is currently being worked on
 	 */
-	abstract val which: LiveData<Int>
+	abstract val which: Flow<Int>
 
 	/**
 	 * Set which novel is being worked on
@@ -61,7 +60,7 @@ abstract class AMigrationViewModel : ShosetsuViewModel() {
 	/**
 	 * Provides the results found for a novel
 	 */
-	abstract fun getResults(novelUI: NovelUI): LiveData<HResult<StrippedBookmarkedNovelEntity>>
+	abstract fun getResults(novelUI: NovelUI): Flow<StrippedBookmarkedNovelEntity>
 
 	/**
 	 * Set the novels to work with

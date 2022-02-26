@@ -1,6 +1,5 @@
 package app.shosetsu.common.datasource.remote.base
 
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.IExtension
 
 /*
@@ -30,5 +29,5 @@ interface IRemoteChaptersDataSource {
 	 * Loads the chapter passage from network
 	 * @return chapter content
 	 */
-	suspend fun loadChapterPassage(formatter: IExtension, chapterURL: String): HResult<ByteArray>
+	suspend fun loadChapterPassage(formatter: IExtension, chapterURL: String): ByteArray
 }

@@ -1,5 +1,6 @@
 package app.shosetsu.android.ui.settings.sub
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -82,6 +83,7 @@ class ComposeViewSettings : ShosetsuController() {
 fun ViewSettingsContent(viewModel: AViewSettingsViewModel, finishActivity: () -> Unit) {
 	var showUIAlert by remember { mutableStateOf(false) }
 
+	@SuppressLint("FlowOperatorInvokedInComposition")
 	val navStyle by viewModel.settingsRepo.getIntFlow(NavStyle).map { it == 1 }
 		.collectAsState(NavStyle.default == 1)
 

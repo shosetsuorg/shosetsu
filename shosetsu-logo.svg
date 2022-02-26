@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="200" height="200" viewBox="0 0 100 100" version="1.1" id="svg6"
+    sodipodi:docname="shosetsu-logo.svg" inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+    inkscape:export-filename="/home/doomsdayrs/Downloads/shosetsu-logo.png"
+    inkscape:export-xdpi="122.88" inkscape:export-ydpi="122.88"
+    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+    xmlns="http://www.w3.org/2000/svg">
+  <defs id="defs10" />
+  <sodipodi:namedview id="namedview8" pagecolor="#505050" bordercolor="#eeeeee" borderopacity="1"
+      inkscape:pageshadow="0" inkscape:pageopacity="0" inkscape:pagecheckerboard="0"
+      showgrid="false" inkscape:zoom="2.9380287" inkscape:cx="105.51293" inkscape:cy="114.70276"
+      inkscape:window-width="1920" inkscape:window-height="1010" inkscape:window-x="1920"
+      inkscape:window-y="34" inkscape:window-maximized="1" inkscape:current-layer="svg6"
+      inkscape:snap-global="true" inkscape:snap-bbox="true" inkscape:bbox-paths="true"
+      inkscape:bbox-nodes="true" />
+  <rect style="fill:#a80000;fill-opacity:1;stroke:none;stroke-width:0.486224" id="rect952"
+      width="100" height="100" x="0" y="0" inkscape:label="background" />
+  <path fill="#ffffff"
+      d="M 75,33.910891 C 72.624435,31.875687 67.929864,28.685369 64.366515,26.485148 l -2.488687,2.69527 c 3.619909,2.310231 8.257919,5.665566 10.520362,7.810781 z M 49.321267,38.366337 H 62.386878 V 49.092409 H 49.321267 Z m 17.19457,10.726072 V 34.405941 H 49.321267 V 25 h -4.185521 v 9.405941 H 28.733031 v 3.960396 H 45.135746 V 49.092409 H 25 v 3.90539 H 45.135746 V 75 h 4.185521 V 52.997799 h 20.87104 c -0.678733,7.975798 -1.470588,11.441145 -2.545248,12.376238 -0.622173,0.49505 -1.244344,0.550055 -2.375565,0.550055 -1.357467,0 -4.920815,0 -8.484163,-0.330033 0.735294,1.10011 1.300905,2.69527 1.357465,3.905391 3.506788,0.165016 6.900453,0.220022 8.597286,0.110011 1.923077,-0.110011 3.223982,-0.49505 4.411764,-1.650166 1.640272,-1.650164 2.488688,-5.995599 3.337104,-16.941694 0.113122,-0.60506 0.169684,-1.925192 0.169684,-1.925192 z"
+      stroke-width="4.18335" id="path4" inkscape:label="word" />
+</svg>

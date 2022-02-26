@@ -603,11 +603,18 @@
     <string name="settings_advanced_true_chapter_delete_desc">Expose an option to truely remove a chapter from Shosetsu.\nUseful when a chapter is bugging</string>
     <string name="toast_error_log_failed">Failed to create logfile, No logs will be stored</string>
     <string name="worker_backup_complete">Backup Complete</string>
+    <string name="controller_browse_ext_icon_desc">Icon of the extension</string>
     <string name="backup_restore_print_chapters_title">Print chapter names during restore</string>
     <string name="backup_restore_print_chapters_desc">Print chapter names to log during restore.\nUseful for debugging, not useful otherwise.\nMust be set before restoring</string>
     <string name="restore_notification_content_novel_fail_parse_host">Failed to find website: %s</string>
     <string name="backup_only_modified_title">Backup only modified</string>
     <string name="backup_only_modified_desc">Backup only modified chapters, this saves on memory and file size</string>
+    <string name="controller_backup_error_unselected">No backup has been selected to export</string>
+    <string name="export_backup_notification_missing_uri">URI not provided to export backup to</string>
+    <string name="export_backup_notification_invalid_backup">No such backup exists</string>
+    <string name="settings_advanced_log_title">Log to file</string>
+    <string name="settings_advanced_log_desc">Enabling logs to a file, but may cause slow downs.\nRequires a restart</string>
+    <string name="update_to">Update: %s</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

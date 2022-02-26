@@ -24,7 +24,6 @@ import app.shosetsu.android.view.controller.BottomMenuBasicFastAdapterRecyclerCo
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.ADownloadsViewModel
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.enums.DownloadStatus.*
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -144,7 +143,7 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 	}
 
 	override fun onViewCreated(view: View) {
-		viewModel.liveData.observe(this) { handleRecyclerUpdate(it) }
+		viewModel.liveData.observe(catch = {}) { handleRecyclerUpdate(it) }
 		viewModel.isDownloadPaused.observe(this) {
 			fab?.setText(
 				if (it)
@@ -159,8 +158,8 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 		}
 	}
 
-	override fun handleErrorResult(e: HResult.Error) {
-		viewModel.reportError(e)
+	override fun handleRecyclerException(e: Throwable) {
+		TODO("HANDLE")
 	}
 
 	override fun setupRecyclerView() {

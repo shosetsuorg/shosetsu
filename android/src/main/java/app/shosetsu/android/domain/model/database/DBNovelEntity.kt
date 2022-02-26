@@ -1,7 +1,10 @@
 package app.shosetsu.android.domain.model.database
 
 import androidx.annotation.NonNull
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.dto.Convertible
 import app.shosetsu.lib.Novel
@@ -29,17 +32,7 @@ import app.shosetsu.lib.Novel
  */
 @Entity(
 	tableName = "novels",
-	foreignKeys = [
-		ForeignKey(
-			entity = DBExtensionEntity::class,
-			parentColumns = ["id"],
-			childColumns = ["formatterID"],
-			onDelete = ForeignKey.SET_NULL,
-			onUpdate = ForeignKey.CASCADE
-		)
-	],
 	indices = [
-		Index("formatterID"),
 		Index(value = ["url", "formatterID"], unique = true)
 	]
 )

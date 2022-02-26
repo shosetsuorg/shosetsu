@@ -1,17 +1,13 @@
 package app.shosetsu.android.viewmodel.impl.settings
 
-import android.app.Application
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.backend.workers.perodic.AppUpdateCheckCycleWorker
 import app.shosetsu.android.backend.workers.perodic.BackupCycleWorker
 import app.shosetsu.android.backend.workers.perodic.NovelUpdateCycleWorker
-import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.PurgeNovelCacheUseCase
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 /*
@@ -37,36 +33,29 @@ import kotlinx.coroutines.flow.flow
  */
 class AdvancedSettingsViewModel(
 	iSettingsRepository: ISettingsRepository,
-	private val context: Application,
-	private val reportExceptionUseCase: ReportExceptionUseCase,
 	private val purgeNovelCacheUseCase: PurgeNovelCacheUseCase,
 	private val backupCycleManager: BackupCycleWorker.Manager,
 	private val appUpdateCycleManager: AppUpdateCheckCycleWorker.Manager,
 	private val novelUpdateCycleManager: NovelUpdateCycleWorker.Manager
 ) : AAdvancedSettingsViewModel(iSettingsRepository) {
-	override fun purgeUselessData(): LiveData<HResult<*>> =
+	override fun purgeUselessData(): Flow<Unit> =
 		flow {
 			emit(purgeNovelCacheUseCase())
-		}.asIOLiveData()
+		}
 
 	override suspend fun settings(): List<SettingsItemData> = listOf(
 
 	)
 
-	override fun killCycleWorkers(): HResult<*> {
+	override fun killCycleWorkers() {
 		backupCycleManager.stop()
 		appUpdateCycleManager.stop()
 		novelUpdateCycleManager.stop()
-		return successResult()
 	}
 
-	override fun startCycleWorkers(): HResult<*> {
+	override fun startCycleWorkers() {
 		backupCycleManager.start()
 		appUpdateCycleManager.start()
 		novelUpdateCycleManager.start()
-		return successResult()
 	}
-
-	override fun reportError(error: HResult.Error, isSilent: Boolean) =
-		reportExceptionUseCase(error, isSilent)
 }

@@ -1,7 +1,7 @@
 package app.shosetsu.common.datasource.database.base
 
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.ExtLibEntity
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of shosetsu.
@@ -29,11 +29,14 @@ import app.shosetsu.common.dto.HResult
  */
 interface IDBExtLibDataSource {
 	/** Updates an [extLibEntity] */
-	suspend fun updateExtension(extLibEntity: ExtLibEntity): HResult<*>
+	@Throws(GenericSQLiteException::class)
+	suspend fun updateExtension(extLibEntity: ExtLibEntity)
 
 	/** Update or insert an [extLibEntity] */
-	suspend fun updateOrInsert(extLibEntity: ExtLibEntity): HResult<*>
+	@Throws(GenericSQLiteException::class)
+	suspend fun updateOrInsert(extLibEntity: ExtLibEntity)
 
 	/** Loads a [List] of [ExtLibEntity] by its [repoID] */
-	suspend fun loadExtLibByRepo(repoID: Int): HResult<List<ExtLibEntity>>
+	@Throws(GenericSQLiteException::class)
+	suspend fun loadExtLibByRepo(repoID: Int): List<ExtLibEntity>
 }

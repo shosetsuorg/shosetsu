@@ -1,10 +1,10 @@
 package app.shosetsu.common.domain.repositories.impl
 
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.datasource.database.base.IDBNovelReaderSettingsDataSource
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.common.domain.repositories.base.INovelReaderSettingsRepository
-import app.shosetsu.common.dto.HFlow
-import app.shosetsu.common.dto.HResult
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of Shosetsu.
@@ -30,15 +30,18 @@ class NovelReaderSettingsRepository(
 	private val database: IDBNovelReaderSettingsDataSource
 ) : INovelReaderSettingsRepository {
 
-	override suspend fun get(novelID: Int): HResult<NovelReaderSettingEntity> =
+	@Throws(GenericSQLiteException::class)
+	override suspend fun get(novelID: Int): NovelReaderSettingEntity? =
 		database.get(novelID)
 
-	override fun getFlow(novelID: Int): HFlow<NovelReaderSettingEntity> =
+	override fun getFlow(novelID: Int): Flow<NovelReaderSettingEntity?> =
 		database.getFlow(novelID)
 
-	override suspend fun insert(novelReaderSettingEntity: NovelReaderSettingEntity): HResult<*> =
+	@Throws(GenericSQLiteException::class)
+	override suspend fun insert(novelReaderSettingEntity: NovelReaderSettingEntity): Long =
 		database.insert(novelReaderSettingEntity)
 
-	override suspend fun update(novelReaderSettingEntity: NovelReaderSettingEntity): HResult<*> =
+	@Throws(GenericSQLiteException::class)
+	override suspend fun update(novelReaderSettingEntity: NovelReaderSettingEntity): Unit =
 		database.update(novelReaderSettingEntity)
 }

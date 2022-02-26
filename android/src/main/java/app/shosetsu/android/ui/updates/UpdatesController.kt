@@ -14,8 +14,8 @@ import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.RectangleShape
@@ -26,22 +26,21 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.common.ext.displayOfflineSnackBar
+import app.shosetsu.android.common.ext.openChapter
+import app.shosetsu.android.common.ext.trimDate
+import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.compose.EmptyDataContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
-import app.shosetsu.android.view.uimodels.model.UpdateUI
 import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.AUpdatesViewModel
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.empty
-import app.shosetsu.common.dto.handle
+import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import coil.compose.rememberImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.composethemeadapter.MdcTheme
-import org.acra.ACRA
 import org.joda.time.DateTime
 import java.util.*
 
@@ -75,6 +74,10 @@ class ComposeUpdatesController : CollapsedToolBarController, ShosetsuController(
 
 	override fun onViewCreated(view: View) {}
 
+	@OptIn(
+		ExperimentalMaterialApi::class,
+		ExperimentalFoundationApi::class
+	)
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup,
@@ -107,51 +110,42 @@ fun UpdatesContent(
 	parent: ComposeUpdatesController,
 	viewModel: AUpdatesViewModel,
 	onRefresh: () -> Unit,
-	openChapter: (UpdateUI) -> Unit
+	openChapter: (UpdateCompleteEntity) -> Unit
 ) {
-	val result: HResult<Map<DateTime, List<UpdateUI>>> by viewModel.items.observeAsState(empty)
+	val result: Map<DateTime, List<UpdateCompleteEntity>> by viewModel.items.collectAsState(emptyMap())
+	val isRefreshing by viewModel.isRefreshing.collectAsState(false)
 
-	val isRefreshing = SwipeRefreshState(false)
+	// 		parent.logE("Error on handling result in updates", it.exception)
+	//
+	//				ACRA.errorReporter.handleException(it.exception, false)
+	//
 
 	SwipeRefresh(
-		state = isRefreshing,
+		state = SwipeRefreshState(isRefreshing),
 		onRefresh = onRefresh
 	) {
-		result.handle(
-			onEmpty = {
-				isRefreshing.isRefreshing = false
-				Column {
-					EmptyDataContent(
-						R.string.empty_updates_message,
-						EmptyDataView.Action(R.string.empty_updates_refresh_action) {
-							onRefresh()
-						}
-					)
-				}
-			},
-			onError = {
-				parent.logE("Error on handling result in updates", it.exception)
-
-				ACRA.errorReporter.handleException(it.exception, false)
-			},
-			onLoading = {
-				isRefreshing.isRefreshing = true
-			}
-		) { groupedItems ->
-			isRefreshing.isRefreshing = false
-
-			LazyColumn(
-				contentPadding = PaddingValues(bottom = 112.dp)
-			) {
-				groupedItems.forEach { (header, updateItems) ->
-					stickyHeader {
-						UpdateHeaderItemContent(header)
+		if (result.isEmpty()) {
+			Column {
+				EmptyDataContent(
+					R.string.empty_updates_message,
+					EmptyDataView.Action(R.string.empty_updates_refresh_action) {
+						onRefresh()
 					}
+				)
+			}
+		}
 
-					items(updateItems, key = { it.chapterID }) {
-						UpdateItemContent(it) {
-							openChapter(it)
-						}
+		LazyColumn(
+			contentPadding = PaddingValues(bottom = 112.dp)
+		) {
+			result.forEach { (header, updateItems) ->
+				stickyHeader {
+					UpdateHeaderItemContent(header)
+				}
+
+				items(updateItems, key = { it.chapterID }) {
+					UpdateItemContent(it) {
+						openChapter(it)
 					}
 				}
 			}
@@ -170,7 +164,7 @@ fun PreviewUpdateHeaderItemContent() {
 @Composable
 fun PreviewUpdateItemContent() {
 	UpdateItemContent(
-		UpdateUI(
+		UpdateCompleteEntity(
 			1,
 			1,
 			System.currentTimeMillis(),
@@ -185,7 +179,7 @@ fun PreviewUpdateItemContent() {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun UpdateItemContent(updateUI: UpdateUI, onClick: () -> Unit) {
+fun UpdateItemContent(updateUI: UpdateCompleteEntity, onClick: () -> Unit) {
 	Card(
 		modifier = Modifier.fillMaxWidth().height(72.dp),
 		shape = RectangleShape,

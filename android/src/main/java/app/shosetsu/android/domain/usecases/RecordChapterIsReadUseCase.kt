@@ -6,7 +6,6 @@ import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.ReaderChapterEntity
 import app.shosetsu.common.domain.repositories.base.IChapterHistoryRepository
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
-import app.shosetsu.common.dto.transformToSuccess
 
 /*
  * This file is part of shosetsu.
@@ -40,7 +39,7 @@ class RecordChapterIsReadUseCase(
 	}
 
 	suspend operator fun invoke(readerChapter: ReaderChapterEntity) =
-		iChapterRepository.getChapter(readerChapter.id).transformToSuccess { invoke(it) }
+		iChapterRepository.getChapter(readerChapter.id)?.let { invoke(it) }
 
 	operator fun invoke(chapter: ChapterUI) {
 		invoke(chapter.convertTo())

@@ -1,17 +1,18 @@
 package app.shosetsu.android.viewmodel.impl
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.trimDate
-import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.load.LoadUpdatesUseCase
 import app.shosetsu.android.domain.usecases.start.StartUpdateWorkerUseCase
-import app.shosetsu.android.view.uimodels.model.UpdateUI
+import app.shosetsu.android.domain.usecases.update.UpdateChapterUseCase
 import app.shosetsu.android.viewmodel.abstracted.AUpdatesViewModel
-import app.shosetsu.common.dto.*
+import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.common.enums.ReadingStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.transformLatest
 import org.joda.time.DateTime
 
 /*
@@ -38,47 +39,43 @@ import org.joda.time.DateTime
  *
  * @author github.com/doomsdayrs
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class UpdatesViewModel(
 	private val getUpdatesUseCase: LoadUpdatesUseCase,
-	private val reportExceptionUseCase: ReportExceptionUseCase,
 	private val startUpdateWorkerUseCase: StartUpdateWorkerUseCase,
-	private val isOnlineUseCase: IsOnlineUseCase
+	private val isOnlineUseCase: IsOnlineUseCase,
+	private val updateChapterUseCase: UpdateChapterUseCase
 ) : AUpdatesViewModel() {
 	private val updatesFlow by lazy {
-		getUpdatesUseCase()
-			.mapLatestResult { list ->
-				successResult(list.sortedByDescending { it.time })
-			}
-			.mapLatest { hResult ->
-				hResult.transform {
-					if (it.isEmpty()) emptyResult()
-					else successResult(it)
-				}
-			}
+		getUpdatesUseCase().transformLatest {
+			isRefreshing.emit(true)
+			emit(it.ifEmpty { emptyList() }.sortedByDescending { it.time })
+			isRefreshing.emit(false)
+		}
 	}
 
-	override val liveData: LiveData<HResult<List<UpdateUI>>> by lazy {
-		updatesFlow.asIOLiveData()
-	}
-
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-		reportExceptionUseCase(error)
+	override val liveData: Flow<List<UpdateCompleteEntity>> by lazy {
+		updatesFlow
 	}
 
 	override fun startUpdateManager() = startUpdateWorkerUseCase()
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
 
-	override val items: LiveData<HResult<Map<DateTime, List<UpdateUI>>>> by lazy {
+	override val isRefreshing: MutableStateFlow<Boolean> by lazy { MutableStateFlow(false) }
+
+	override val items: Flow<Map<DateTime, List<UpdateCompleteEntity>>> by lazy {
 		updatesFlow.mapLatest { result ->
-			result.transformToSuccess { list ->
-				list.groupBy {
-					DateTime(it.time).trimDate()
-				}
+			result.groupBy {
+				DateTime(it.time).trimDate()
 			}
-		}.asIOLiveData()
+		}
 	}
 
-	override suspend fun updateChapter(updateUI: UpdateUI, readingStatus: ReadingStatus) {
+	override suspend fun updateChapter(
+		updateUI: UpdateCompleteEntity,
+		readingStatus: ReadingStatus
+	) {
+		TODO("Not yet implemented")
 	}
 }

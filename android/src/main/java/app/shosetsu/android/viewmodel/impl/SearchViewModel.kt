@@ -1,10 +1,7 @@
 package app.shosetsu.android.viewmodel.impl
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import app.shosetsu.android.common.ext.logD
+import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.domain.ReportExceptionUseCase
 import app.shosetsu.android.domain.usecases.SearchBookMarkedNovelsUseCase
 import app.shosetsu.android.domain.usecases.get.GetCatalogueQueryDataUseCase
 import app.shosetsu.android.domain.usecases.load.LoadSearchRowUIUseCase
@@ -12,14 +9,9 @@ import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ASearchViewModel
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.loading
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
+import app.shosetsu.common.GenericSQLiteException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.transformLatest
+import kotlinx.coroutines.flow.*
 
 /*
  * This file is part of shosetsu.
@@ -46,38 +38,66 @@ class SearchViewModel(
 	private val searchBookMarkedNovelsUseCase: SearchBookMarkedNovelsUseCase,
 	private val loadSearchRowUIUseCase: LoadSearchRowUIUseCase,
 	private val loadCatalogueQueryDataUseCase: GetCatalogueQueryDataUseCase,
-	private val reportExceptionUseCase: ReportExceptionUseCase
 ) : ASearchViewModel() {
 	private val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
 
 	private val searchFlows =
-		HashMap<Int, Flow<HResult<List<ACatalogNovelUI>>>>()
+		HashMap<Int, Flow<List<ACatalogNovelUI>>>()
 
-	override val listings: LiveData<HResult<List<SearchRowUI>>> by lazy {
-		liveData {
-			emit(loading())
-			emitSource(loadSearchRowUIUseCase().asIOLiveData())
-		}
-	}
+	private val refreshFlows =
+		HashMap<Int, MutableStateFlow<Int>>()
 
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-		reportExceptionUseCase(error)
+	private val exceptionFlows =
+		HashMap<Int, MutableStateFlow<Throwable?>>()
+
+	private val loadingFlows = HashMap<Int, Flow<Boolean>>()
+
+	override val query: Flow<String>
+		get() = queryFlow.onIO()
+
+	override val listings: Flow<List<SearchRowUI>> by lazy {
+		loadSearchRowUIUseCase().onIO()
 	}
 
 	override fun setQuery(query: String) {
 		this.queryFlow.value = query
 	}
 
-	override fun searchLibrary(): LiveData<HResult<List<ACatalogNovelUI>>> =
+	override fun searchLibrary(): Flow<List<ACatalogNovelUI>> =
 		searchFlows.getOrPut(-1) {
 			libraryResultFlow
-		}.asIOLiveData()
+		}
 
-	override fun searchExtension(extensionId: Int): LiveData<HResult<List<ACatalogNovelUI>>> =
+	override fun searchExtension(extensionId: Int): Flow<List<ACatalogNovelUI>> =
 		searchFlows.getOrPut(extensionId) {
-			logD("Creating new flow for extension")
 			loadExtension(extensionId)
-		}.asIOLiveData()
+		}
+
+	override fun getIsLoading(id: Int): Flow<Boolean> =
+		loadingFlows.getOrPut(id) {
+			MutableStateFlow(true)
+		}
+
+	override fun getException(id: Int): Flow<Throwable?> =
+		exceptionFlows.getOrPut(id) {
+			MutableStateFlow(null)
+		}
+
+	override fun refresh() {
+		launchIO {
+			refreshFlows.values.forEach {
+				it.emit(it.value++)
+			}
+		}
+	}
+
+	override fun refresh(id: Int) {
+		logI("$id")
+		launchIO {
+			val flow = getRefreshFlow(id)
+			flow.emit(flow.value++)
+		}
+	}
 
 	/**
 	 * Clears out all the data
@@ -87,38 +107,82 @@ class SearchViewModel(
 		searchFlows.clear()
 	}
 
+	private fun getRefreshFlow(id: Int) =
+		refreshFlows.getOrPut(id) {
+			MutableStateFlow(0)
+		}
+
+	private fun getExceptionFlow(id: Int) =
+		exceptionFlows.getOrPut(id) {
+			MutableStateFlow(null)
+		}
+
 	/**
 	 * Creates a flow for a library query
 	 */
-	@ExperimentalCoroutinesApi
-	private val libraryResultFlow: Flow<HResult<List<ACatalogNovelUI>>> by lazy {
-		queryFlow.transformLatest { query ->
-			emit(successResult(listOf()))
-			emit(loading)
+	@OptIn(ExperimentalCoroutinesApi::class)
+	private val libraryResultFlow: Flow<List<ACatalogNovelUI>> by lazy {
+		val flow = MutableStateFlow<List<ACatalogNovelUI>>(listOf())
 
-			emit(searchBookMarkedNovelsUseCase(query).transform {
-				successResult(it.map { (id, title, imageURL) ->
-					FullCatalogNovelUI(id, title, imageURL, false)
-				})
-			})
+		launchIO {
+			flow.emitAll(
+				queryFlow.combine(getRefreshFlow(-1)) { query, _ -> query }
+					.transformLatest<String, List<ACatalogNovelUI>> { query ->
+
+						(getIsLoading(-1) as MutableStateFlow).emit(true)
+						getExceptionFlow(-1).emit(null)
+
+						try {
+							emit(searchBookMarkedNovelsUseCase(query).let {
+								it.map { (id, title, imageURL) ->
+									FullCatalogNovelUI(id, title, imageURL, false)
+								}
+							})
+						} catch (e: GenericSQLiteException) {
+							getExceptionFlow(-1).emit(e)
+						}
+
+
+						(getIsLoading(-1) as MutableStateFlow).emit(false)
+					}
+			)
+
 		}
+
+		flow.onIO()
 	}
 
 	/**
 	 * Creates a flow for an extension query
 	 */
-	@ExperimentalCoroutinesApi
-	private fun loadExtension(extensionID: Int): Flow<HResult<List<ACatalogNovelUI>>> =
-		queryFlow.transformLatest { query ->
-			emit(successResult(listOf()))
-			emit(loading)
+	@OptIn(ExperimentalCoroutinesApi::class)
+	private fun loadExtension(extensionID: Int): Flow<List<ACatalogNovelUI>> {
+		val flow = MutableStateFlow<List<ACatalogNovelUI>>(listOf())
 
-			emit(
-				loadCatalogueQueryDataUseCase(
-					extensionID,
-					query,
-					mapOf()
-				)
-			)
+		launchIO {
+			flow.emitAll(
+				queryFlow.combine(getRefreshFlow(extensionID)) { query, _ -> query }
+					.transformLatest { query ->
+
+						(getIsLoading(extensionID) as MutableStateFlow).emit(true)
+						getExceptionFlow(extensionID).emit(null)
+
+						try {
+							emit(
+								loadCatalogueQueryDataUseCase(
+									extensionID,
+									query,
+									mapOf()
+								)
+							)
+						} catch (e: Exception) {
+							getExceptionFlow(extensionID).emit(e)
+						}
+
+						(getIsLoading(extensionID) as MutableStateFlow).emit(false)
+					})
 		}
+
+		return flow.onIO()
+	}
 }

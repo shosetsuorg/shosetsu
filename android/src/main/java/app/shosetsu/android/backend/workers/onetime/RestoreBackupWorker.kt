@@ -10,6 +10,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.work.*
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
+import app.shosetsu.android.common.NullContentResolverException
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.Notifications.ID_RESTORE
@@ -22,9 +23,11 @@ import app.shosetsu.android.domain.repository.base.IBackupUriRepository
 import app.shosetsu.android.domain.usecases.InstallExtensionUseCase
 import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.domain.model.local.*
+import app.shosetsu.common.domain.model.local.BackupEntity
+import app.shosetsu.common.domain.model.local.ChapterEntity
+import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.common.domain.model.local.NovelSettingEntity
 import app.shosetsu.common.domain.repositories.base.*
-import app.shosetsu.common.dto.*
 import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Version
@@ -34,14 +37,15 @@ import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.decodeFromStream
 import org.acra.ACRA
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
 import org.luaj.vm2.LuaError
-import java.io.*
+import java.io.BufferedInputStream
+import java.io.IOException
 import java.net.UnknownHostException
 import java.util.zip.GZIPInputStream
 
@@ -99,13 +103,14 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 	/**
 	 * Loads a backup via the [Uri] provided by Androids file selection
 	 */
-	private fun loadBackupFromUri(uri: Uri): HResult<BackupEntity> {
-		val contentResolver = applicationContext.contentResolver ?: return errorResult(
-			NullPointerException("Null contentResolver")
-		)
+	@Throws(NullContentResolverException::class)
+	private fun loadBackupFromUri(uri: Uri): BackupEntity {
+		val contentResolver =
+			applicationContext.contentResolver ?: throw NullContentResolverException()
+
 		val inputStream = contentResolver.openInputStream(uri)
 		val bis = BufferedInputStream(inputStream)
-		return successResult(BackupEntity(bis.readBytes()))
+		return BackupEntity(bis.readBytes())
 	}
 
 	@Throws(IOException::class)
@@ -120,98 +125,94 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		}
 
 		notify(R.string.restore_notification_content_starting)
-		(if (isExternal)
-			backupUriRepo.take().transform { loadBackupFromUri(it) }
-		else backupRepo.loadBackup(backupName!!)).handle(
-			onEmpty = {
-				logE("Received empty, impossible")
-				notify(R.string.restore_notification_content_unexpected_empty) {
-					setNotOngoing()
-				}
-				return Result.failure()
-			},
-			onLoading = {
-				logE("Received loading, impossible")
-				notify(R.string.restore_notification_content_impossible_loading) {
-					setNotOngoing()
-				}
-				return Result.failure()
-			},
-			onError = { (code, message, exception) ->
-				logE("$code $message", exception)
-				ACRA.errorReporter.handleException(exception)
-				notify("$code $message $exception") {
-					setNotOngoing()
-				}
-				return Result.failure()
+		val backupEntity = try {
+			if (isExternal) {
+				backupUriRepo.take()?.let { loadBackupFromUri(it) }
+			} else {
+				backupRepo.loadBackup(backupName!!)
 			}
-		) { backupEntity ->
-			// Decode encrypted string to bytes via Base64
-			notify(R.string.restore_notification_content_decoding_string)
-			val decodedBytes: ByteArray = Base64.decode(backupEntity.content, Base64.DEFAULT)
-
-			// Unzip bytes to a string via gzip
-			notify(R.string.restore_notification_content_unzipping_bytes)
-
-			// Verifies the version is compatible and then parses it to a backup object
-
-			unGZip(decodedBytes).use { stream ->
-				val metaInfo = backupJSON.decodeFromStream<MetaBackupEntity>(stream)
-
-				// Reads the version line from the json, if it does not exist the process fails
-
-				val metaVersion: String =
-					metaInfo.version ?: return Result.failure()
-						.also {
-							logE(MESSAGE_LOG_JSON_MISSING).also {
-								notify(R.string.restore_notification_content_missing_key) { setNotOngoing() }
-							}
-						}
-
-				// Checks if the version is compatible
-				logV("Version in backup: $metaVersion")
-
-				if (!Version(metaVersion).isCompatible(Version(VERSION_BACKUP))) {
-					logE(MESSAGE_LOG_JSON_OUTDATED)
-					notify(R.string.restore_notification_content_text_outdated) { setNotOngoing() }
-					return Result.failure()
+		} catch (e: Exception) {//TODO specify
+			with(e) {
+				logE(" $message", e)
+				ACRA.errorReporter.handleException(e)
+				notify("$message $e") {
+					setNotOngoing()
 				}
-			}
-
-			unGZip(decodedBytes).use { stream ->
-				val backup = backupJSON.decodeFromStream<FleshedBackupEntity>(stream)
-
-				notify("Adding repositories")
-				// Adds the repositories
-				backup.repos.forEach { (url, name) ->
-					notify("") {
-						setContentTitle(getString(R.string.restore_notification_title_adding_repos))
-						setContentText("$name\n$url")
-					}
-					extensionsRepoRepo.addRepository(
-						RepositoryEntity(
-							url = url,
-							name = name,
-							isEnabled = true
-						)
-					)
-				}
-
-				notify("Loading repository data")
-				// Load the data from the repositories
-				initializeExtensionsUseCase()
-
-				// Install the extensions
-				val repoNovels: List<NovelEntity> = novelsRepo.loadNovels().unwrap()!!
-
-				backup.extensions.forEach { restoreExtension(repoNovels, it) }
+				return Result.failure()
 			}
 		}
+		if (backupEntity == null) {
+			logE("Received empty, impossible")
+			notify(R.string.restore_notification_content_unexpected_empty) {
+				setNotOngoing()
+			}
+			return Result.failure()
+		}
+
+
+		// Decode encrypted string to bytes via Base64
+		notify(R.string.restore_notification_content_decoding_string)
+		val decodedBytes: ByteArray = Base64.decode(backupEntity.content, Base64.DEFAULT)
+
+		// Unzip bytes to a string via gzip
+		notify(R.string.restore_notification_content_unzipping_bytes)
+
+
+		unGZip(decodedBytes).use { stream ->
+			val metaInfo = backupJSON.decodeFromStream<MetaBackupEntity>(stream)
+
+			// Reads the version line from the json, if it does not exist the process fails
+
+			val metaVersion: String =
+				metaInfo.version ?: return Result.failure()
+					.also {
+						logE(MESSAGE_LOG_JSON_MISSING)
+						notify(R.string.restore_notification_content_missing_key) { setNotOngoing() }
+					}
+
+
+			// Checks if the version is compatible
+			logV("Version in backup: $metaVersion")
+
+			if (!Version(metaVersion).isCompatible(Version(VERSION_BACKUP))) {
+				logE(MESSAGE_LOG_JSON_OUTDATED)
+				notify(R.string.restore_notification_content_text_outdated) { setNotOngoing() }
+				return Result.failure()
+			}
+		}
+
+		unGZip(decodedBytes).use { stream ->
+			val backup = backupJSON.decodeFromStream<FleshedBackupEntity>(stream)
+
+			notify("Adding repositories")
+			// Adds the repositories
+			backup.repos.forEach { (url, name) ->
+				notify("") {
+					setContentTitle(getString(R.string.restore_notification_title_adding_repos))
+					setContentText("$name\n$url")
+				}
+				extensionsRepoRepo.addRepository(
+					url,
+					name,
+				)
+			}
+
+			notify("Loading repository data")
+			// Load the data from the repositories
+			initializeExtensionsUseCase()
+
+			// Install the extensions
+			val repoNovels: List<NovelEntity> = novelsRepo.loadNovels()
+
+			backup.extensions.forEach { restoreExtension(repoNovels, it) }
+		}
+
 
 		System.gc() // Politely ask for a garbage collection
 		delay(5000) // Wait for gc to occur (maybe), also helps with the next notification
 
-		notify(R.string.restore_notification_content_completed) {
+		notify(R.string.restore_notification_content_completed)
+		{
 			setNotOngoing()
 		}
 		logI("Completed restore")
@@ -225,14 +226,14 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		val extensionID = backupExtensionEntity.id
 		val backupNovels = backupExtensionEntity.novels
 		logI("$extensionID")
-
-		extensionsRepo.getExtension(extensionID).handle { extensionEntity ->
+		// TODO Critical, Rework extensions to enable the below to work properly. DO NOT RELEASE.
+		extensionsRepo.getExtension(2, extensionID)?.let { extensionEntity ->
 			// Install the extension
-			if (!extensionEntity.installed) {
+			if (!extensionsRepo.isExtensionInstalled(extensionEntity)) {
 				notify(getString(R.string.installing) + " ${extensionEntity.id} | ${extensionEntity.name}")
 				installExtension(extensionEntity)
 			}
-			val iExt = extensionEntitiesRepo.get(extensionEntity).unwrap()!!
+			val iExt = extensionEntitiesRepo.get(extensionEntity)!!
 
 			backupNovels.forEach novelLoop@{ novelEntity ->
 				try {
@@ -372,7 +373,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 				).copy(
 					bookmarked = true
 				)
-			).handle { (id) ->
+			)?.let { (id) ->
 				targetNovelID = id
 			}
 
@@ -380,18 +381,17 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 				setContentTitle(name)
 				setLargeIcon(bitmap)
 			}
-			chaptersRepo.handleChapters(
-				novelID = targetNovelID,
-				extensionID = extensionID,
-				list = siteNovel.chapters.distinctBy { it.link }
-			).handle(
-				onError = {
-					logE("Failed to handle chapters", it.exception)
-					ACRA.errorReporter.handleSilentException(it.exception)
-				}
-			) {
-				logI("Inserted new chapters")
+			try {
+				chaptersRepo.handleChapters(
+					novelID = targetNovelID,
+					extensionID = extensionID,
+					list = siteNovel.chapters.distinctBy { it.link }
+				)
+			} catch (e: Exception) {//TODO Specify
+				logE("Failed to handle chapters", e)
+				ACRA.errorReporter.handleSilentException(e)
 			}
+			logI("Inserted new chapters")
 		} else {
 			// Get the novelID from the present novels, or just end this update
 			repoNovels.find { it.extensionID == extensionID && it.url == bNovelURL }?.id?.let { it ->
@@ -414,8 +414,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 			setLargeIcon(bitmap)
 		}
 		// get the chapters
-		val repoChapters =
-			chaptersRepo.getChapters(targetNovelID).unwrap() ?: listOf()
+		val repoChapters = chaptersRepo.getChapters(targetNovelID)
 
 		// Go through the chapters updating them
 		for (index in bChapters.indices) {
@@ -435,27 +434,29 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 			removeProgress()
 		}
 
-		novelsSettingsRepo.get(targetNovelID).handle(
-			onEmpty = {
-				logI("Inserting novel settings")
-				novelsSettingsRepo.insert(
-					NovelSettingEntity(
-						targetNovelID,
-						sortType = bSettings.sortType,
-						showOnlyReadingStatusOf = bSettings.showOnlyReadingStatusOf,
-						showOnlyBookmarked = bSettings.showOnlyBookmarked,
-						showOnlyDownloaded = bSettings.showOnlyDownloaded,
-						reverseOrder = bSettings.reverseOrder,
-					)
+		val settingEntity = try {
+			novelsSettingsRepo.get(targetNovelID)
+		} catch (e: Exception) {// TODO specify
+			logE("Failed to load novel settings")
+			ACRA.errorReporter.handleSilentException(e)
+			return
+		}
+
+		if (settingEntity == null) {
+			logI("Inserting novel settings")
+			novelsSettingsRepo.insert(
+				NovelSettingEntity(
+					targetNovelID,
+					sortType = bSettings.sortType,
+					showOnlyReadingStatusOf = bSettings.showOnlyReadingStatusOf,
+					showOnlyBookmarked = bSettings.showOnlyBookmarked,
+					showOnlyDownloaded = bSettings.showOnlyDownloaded,
+					reverseOrder = bSettings.reverseOrder,
 				)
-			},
-			onError = {
-				logE("Failed to load novel settings")
-				ACRA.errorReporter.handleSilentException(it.exception)
-			}
-		) {
+			)
+		} else {
 			novelsSettingsRepo.update(
-				it.copy(
+				settingEntity.copy(
 					sortType = bSettings.sortType,
 					showOnlyReadingStatusOf = bSettings.showOnlyReadingStatusOf,
 					showOnlyBookmarked = bSettings.showOnlyBookmarked,
@@ -476,7 +477,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 	private val settings: ISettingsRepository by instance()
 	private val printChapter: Boolean
 		get() = runBlocking {
-			settings.getBooleanOrDefault(SettingKey.RestorePrintChapters)
+			settings.getBoolean(SettingKey.RestorePrintChapters)
 		}
 
 	private suspend fun restoreChapter(

@@ -2,14 +2,13 @@ package app.shosetsu.android.datasource.local.database.impl
 
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.ext.toDB
-import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.providers.database.dao.NovelsDao
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.datasource.database.base.IDBNovelsDataSource
 import app.shosetsu.common.domain.model.local.LibraryNovelEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.StrippedNovelEntity
-import app.shosetsu.common.dto.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import app.shosetsu.common.dto.convertList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -39,79 +38,72 @@ import kotlinx.coroutines.flow.map
 class DBNovelsDataSource(
 	private val novelsDao: NovelsDao,
 ) : IDBNovelsDataSource {
-	override suspend fun loadBookmarkedNovels(): HResult<List<NovelEntity>> = try {
-		successResult(novelsDao.loadBookmarkedNovels().convertList())
-	} catch (e: Exception) {
-		e.toHError()
+	override suspend fun loadBookmarkedNovels(): List<NovelEntity> = try {
+		(novelsDao.loadBookmarkedNovels().convertList())
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
 	}
 
 	override fun loadBookmarkedNovelsFlow(
-	): Flow<HResult<List<LibraryNovelEntity>>> = flow {
-		emit(loading())
+	): Flow<List<LibraryNovelEntity>> = flow {
 		try {
-			emitAll(novelsDao.loadBookmarkedNovelsFlow().mapLatestToSuccess())
-		} catch (e: Exception) {
-			emit(e.toHError())
+			emitAll(novelsDao.loadBookmarkedNovelsFlow())
+		} catch (e: SQLiteException) {
+			throw GenericSQLiteException(e)
 		}
 	}
 
-	override suspend fun getNovel(novelID: Int): HResult<NovelEntity> = try {
-		novelsDao.getNovel(novelID)?.let { successResult(it.convertTo()) } ?: emptyResult()
-	} catch (e: Exception) {
-		e.toHError()
+	override suspend fun getNovel(novelID: Int): NovelEntity? = try {
+		novelsDao.getNovel(novelID)?.convertTo()
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
 	}
 
-	override suspend fun getNovelFlow(novelID: Int): Flow<HResult<NovelEntity>> = flow {
+	override suspend fun getNovelFlow(novelID: Int): Flow<NovelEntity?> = flow {
 		try {
-			emitAll(
-				novelsDao.getNovelFlow(novelID).map {
-					it?.let { successResult(it.convertTo()) } ?: emptyResult()
-				}
-			)
-		} catch (e: Exception) {
-			emit(e.toHError())
+			emitAll(novelsDao.getNovelFlow(novelID).map { it?.convertTo() })
+		} catch (e: SQLiteException) {
+			throw GenericSQLiteException(e)
 		}
 	}
 
-	override suspend fun update(novelEntity: NovelEntity): HResult<*> = try {
-		successResult(novelsDao.update(novelEntity.toDB()))
-	} catch (e: Exception) {
-		e.toHError()
+	override suspend fun update(novelEntity: NovelEntity): Unit = try {
+		(novelsDao.update(novelEntity.toDB()))
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
 	}
 
 	override suspend fun update(
 		list: List<LibraryNovelEntity>
-	): HResult<*> = try {
-		successResult(novelsDao.update(list))
-	} catch (e: Exception) {
-		e.toHError()
+	): Unit = try {
+		(novelsDao.update(list))
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
 	}
 
 	override suspend fun insertReturnStripped(
 		novelEntity: NovelEntity,
-	): HResult<StrippedNovelEntity> = try {
-		novelsDao.insertReturnStripped(novelEntity.toDB())?.let {
-			successResult(it.convertTo())
-		} ?: emptyResult()
-	} catch (e: Exception) {
-		e.toHError()
-	}
-
-	override suspend fun insert(novelEntity: NovelEntity): HResult<*> = try {
-		successResult(novelsDao.insertAbort(novelEntity.toDB()))
-	} catch (e: Exception) {
-		e.toHError()
-	}
-
-	override suspend fun clearUnBookmarkedNovels(): HResult<*> = try {
-		successResult(novelsDao.clearUnBookmarkedNovels())
+	): StrippedNovelEntity? = try {
+		novelsDao.insertReturnStripped(novelEntity.toDB())?.convertTo()
 	} catch (e: SQLiteException) {
-		e.toHError()
+		throw GenericSQLiteException(e)
 	}
 
-	override fun loadNovels(): HResult<List<NovelEntity>> = try {
-		successResult(novelsDao.loadNovels().convertList())
+	override suspend fun insert(novelEntity: NovelEntity): Long = try {
+		(novelsDao.insertAbort(novelEntity.toDB()))
 	} catch (e: SQLiteException) {
-		e.toHError()
+		throw GenericSQLiteException(e)
+	}
+
+	override suspend fun clearUnBookmarkedNovels(): Unit = try {
+		(novelsDao.clearUnBookmarkedNovels())
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
+	}
+
+	override fun loadNovels(): List<NovelEntity> = try {
+		(novelsDao.loadNovels().convertList())
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
 	}
 }

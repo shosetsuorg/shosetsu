@@ -4,13 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.loading
-import app.shosetsu.common.dto.successResult
 import kotlinx.coroutines.Dispatchers.IO
 
 /*
@@ -36,12 +32,11 @@ import kotlinx.coroutines.Dispatchers.IO
  */
 abstract class ASubSettingsViewModel(
 	override val settingsRepo: ISettingsRepository
-) : ShosetsuViewModel(), ErrorReportingViewModel, ExposedSettingsRepoViewModel {
+) : ShosetsuViewModel(), ExposedSettingsRepoViewModel {
 	abstract suspend fun settings(): List<SettingsItemData>
 
-	fun getSettings(): LiveData<HResult<List<SettingsItemData>>> =
+	fun getSettings(): LiveData<List<SettingsItemData>> =
 		liveData(context = viewModelScope.coroutineContext + IO) {
-			emit(loading())
-			emit(successResult(settings()))
+			emit((settings()))
 		}
 }

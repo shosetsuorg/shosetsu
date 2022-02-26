@@ -50,7 +50,7 @@ data class DBRepositoryEntity(
 	var isEnabled: Boolean
 ) : Convertible<RepositoryEntity> {
 	override fun convertTo(): RepositoryEntity = RepositoryEntity(
-		id,
+		id!!,
 		url,
 		name,
 		isEnabled

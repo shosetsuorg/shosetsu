@@ -2,8 +2,6 @@ package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.transformToSuccess
 import app.shosetsu.common.enums.MarkingType
 
 /*
@@ -32,8 +30,7 @@ import app.shosetsu.common.enums.MarkingType
 class GetReadingMarkingTypeUseCase(
 	private val settingsRepository: ISettingsRepository
 ) {
-	suspend operator fun invoke(): HResult<MarkingType> =
-		settingsRepository.getString(SettingKey.ReadingMarkingType)
-			.transformToSuccess { MarkingType.valueOf(it) }
+	suspend operator fun invoke(): MarkingType =
+		MarkingType.valueOf(settingsRepository.getString(SettingKey.ReadingMarkingType))
 
 }

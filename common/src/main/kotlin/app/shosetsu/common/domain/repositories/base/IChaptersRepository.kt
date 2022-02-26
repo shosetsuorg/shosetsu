@@ -2,7 +2,6 @@ package app.shosetsu.common.domain.repositories.base
 
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.ReaderChapterEntity
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
@@ -51,7 +50,7 @@ interface IChaptersRepository {
 	suspend fun getChapterPassage(
 		formatter: IExtension,
 		entity: ChapterEntity,
-	): HResult<ByteArray>
+	): ByteArray
 
 	/**
 	 * Save the [ChapterEntity] [passage] to storage
@@ -71,7 +70,7 @@ interface IChaptersRepository {
 		entity: ChapterEntity,
 		chapterType: Novel.ChapterType,
 		passage: ByteArray
-	): HResult<*>
+	)
 
 	/**
 	 * Handles chapters for ze novel
@@ -89,7 +88,7 @@ interface IChaptersRepository {
 		novelID: Int,
 		extensionID: Int,
 		list: List<Novel.Chapter>
-	): HResult<*>
+	)
 
 	/**
 	 * Handles chapters return, but returns the chapters that are new
@@ -107,7 +106,7 @@ interface IChaptersRepository {
 		novelID: Int,
 		extensionID: Int,
 		list: List<Novel.Chapter>,
-	): HResult<List<ChapterEntity>>
+	): List<ChapterEntity>
 
 	/**
 	 * Loads [ChapterEntity]s matching [novelID] in a [Flow] of [HResult]
@@ -122,11 +121,11 @@ interface IChaptersRepository {
 	 *
 	 * [HResult.Loading] Initial
 	 */
-	suspend fun getChaptersLive(novelID: Int): Flow<HResult<List<ChapterEntity>>>
+	suspend fun getChaptersLive(novelID: Int): Flow<List<ChapterEntity>>
 
-	suspend fun getChapters(novelID: Int): HResult<List<ChapterEntity>>
+	suspend fun getChapters(novelID: Int): List<ChapterEntity>
 
-	suspend fun getChaptersByExtension(extensionId: Int): HResult<List<ChapterEntity>>
+	suspend fun getChaptersByExtension(extensionId: Int): List<ChapterEntity>
 
 	/**
 	 * Loads a [ChapterEntity] by its [chapterID]
@@ -140,7 +139,7 @@ interface IChaptersRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun getChapter(chapterID: Int): HResult<ChapterEntity>
+	suspend fun getChapter(chapterID: Int): ChapterEntity?
 
 	/**
 	 * Update [chapterEntity] in database
@@ -154,7 +153,7 @@ interface IChaptersRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun updateChapter(chapterEntity: ChapterEntity): HResult<*>
+	suspend fun updateChapter(chapterEntity: ChapterEntity)
 
 	/**
 	 * Loads [ReaderChapterEntity]s by it's [novelID]
@@ -168,7 +167,7 @@ interface IChaptersRepository {
 	 *
 	 * [HResult.Loading] Initial value
 	 */
-	suspend fun getReaderChaptersFlow(novelID: Int): Flow<HResult<List<ReaderChapterEntity>>>
+	suspend fun getReaderChaptersFlow(novelID: Int): Flow<List<ReaderChapterEntity>>
 
 	/**
 	 * Update [readerChapterEntity] in database
@@ -182,7 +181,7 @@ interface IChaptersRepository {
 	 *
 	 * [HResult.Loading] never
 	 */
-	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): HResult<*>
+	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity)
 
 	/**
 	 * Delete the chapter passage from storage
@@ -200,7 +199,7 @@ interface IChaptersRepository {
 	suspend fun deleteChapterPassage(
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType
-	): HResult<*>
+	)
 
-	suspend fun delete(chapterUI: ChapterEntity): HResult<*>
+	suspend fun delete(chapterUI: ChapterEntity)
 }

@@ -13,8 +13,6 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.domain.repositories.base.getBooleanOrDefault
-import app.shosetsu.common.domain.repositories.base.getIntOrDefault
 import org.kodein.di.instance
 import java.util.concurrent.TimeUnit
 
@@ -81,13 +79,13 @@ class AppUpdateCheckCycleWorker(
 		private val iSettingsRepository: ISettingsRepository by instance()
 
 		private suspend fun appUpdateCycle(): Long =
-			iSettingsRepository.getIntOrDefault(AppUpdateCycle).toLong()
+			iSettingsRepository.getInt(AppUpdateCycle).toLong()
 
 		private suspend fun appUpdateOnMetered(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(AppUpdateOnMeteredConnection)
+			iSettingsRepository.getBoolean(AppUpdateOnMeteredConnection)
 
 		private suspend fun appUpdateOnlyIdle(): Boolean =
-			iSettingsRepository.getBooleanOrDefault(AppUpdateOnlyWhenIdle)
+			iSettingsRepository.getBoolean(AppUpdateOnlyWhenIdle)
 
 		/**
 		 * Returns the status of the service.

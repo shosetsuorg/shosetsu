@@ -1,8 +1,8 @@
 package app.shosetsu.common.datasource.remote.base
 
-import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
-import app.shosetsu.common.dto.HResult
+import app.shosetsu.lib.exceptions.HTTPException
 
 /*
  * This file is part of shosetsu.
@@ -31,8 +31,9 @@ interface IRemoteExtensionDataSource {
 	 * Downloads an extension
 	 * @return extension content
 	 */
+	@Throws(HTTPException::class)
 	suspend fun downloadExtension(
 		repositoryEntity: RepositoryEntity,
-		extensionEntity: ExtensionEntity,
-	): HResult<ByteArray>
+		extensionEntity: GenericExtensionEntity,
+	): ByteArray
 }

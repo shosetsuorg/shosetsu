@@ -1,10 +1,10 @@
 package app.shosetsu.android.domain.usecases.get
 
+import app.shosetsu.android.common.ext.generify
+import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.common.IncompatibleExtensionException
 import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.empty
-import app.shosetsu.common.dto.transform
 import app.shosetsu.lib.IExtension
 
 /*
@@ -42,12 +42,13 @@ class GetExtensionUseCase(
 	private val extRepo: IExtensionsRepository,
 	private val extEntitiesRepo: IExtensionEntitiesRepository
 ) {
-	suspend operator fun invoke(extensionId: Int): HResult<IExtension> {
+	@Throws(GenericSQLiteException::class, IncompatibleExtensionException::class)
+	suspend operator fun invoke(extensionId: Int): IExtension? {
 		if (extensionId == -1)
-			return empty
+			return null
 
-		return extRepo.getExtension(extensionId).transform {
-			extEntitiesRepo.get(it)
+		return extRepo.getInstalledExtension(extensionId)?.let {
+			extEntitiesRepo.get(it.generify())
 		}
 	}
 }

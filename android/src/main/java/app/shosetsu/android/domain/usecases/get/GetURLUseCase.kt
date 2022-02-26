@@ -2,7 +2,6 @@ package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
-import app.shosetsu.common.dto.transformToSuccess
 import app.shosetsu.lib.IExtension.Companion.KEY_CHAPTER_URL
 import app.shosetsu.lib.IExtension.Companion.KEY_NOVEL_URL
 
@@ -31,12 +30,12 @@ import app.shosetsu.lib.IExtension.Companion.KEY_NOVEL_URL
  *  Get the URL of a novel / chapter
  */
 class GetURLUseCase(private val getExt: GetExtensionUseCase) {
-	suspend operator fun invoke(url: String, formatterID: Int, type: Int) =
-		getExt(formatterID).transformToSuccess { it.expandURL(url, type) }
+	suspend operator fun invoke(url: String, formatterID: Int, type: Int): String? =
+		getExt(formatterID)?.expandURL(url, type)
 
-	suspend operator fun invoke(novelUI: NovelUI) =
+	suspend operator fun invoke(novelUI: NovelUI): String? =
 		this(novelUI.novelURL, novelUI.extID, KEY_NOVEL_URL)
 
-	suspend operator fun invoke(chapterUI: ChapterUI) =
-		this(chapterUI.link, chapterUI.extensionID, KEY_CHAPTER_URL)
+	suspend operator fun invoke(chapterUI: ChapterUI): String? =
+		this(chapterUI.link, chapterUI.extensionID!!, KEY_CHAPTER_URL)
 }

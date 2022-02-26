@@ -1,7 +1,6 @@
 package app.shosetsu.android.viewmodel.base
 
-import androidx.lifecycle.LiveData
-import app.shosetsu.common.dto.HResult
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -32,11 +31,5 @@ interface SubscribeViewModel<T> {
 	/**
 	 * LiveData of this class
 	 */
-	val liveData: LiveData<T>
+	val liveData: Flow<T>
 }
-
-/**
- * Child of [SubscribeViewModel]
- * Passed [T] as an [HResult] of [T]
- */
-interface SubscribeHandleViewModel<T : Any> : SubscribeViewModel<HResult<T>>

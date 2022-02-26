@@ -1,19 +1,17 @@
 package app.shosetsu.android.datasource.local.database.impl
 
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.ext.toDB
-import app.shosetsu.android.common.ext.toHError
 import app.shosetsu.android.providers.database.dao.UpdatesDao
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.datasource.database.base.IDBUpdatesDataSource
 import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.common.domain.model.local.UpdateEntity
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.mapLatestListTo
-import app.shosetsu.common.dto.mapLatestToSuccess
-import app.shosetsu.common.dto.successResult
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import app.shosetsu.common.dto.convertList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 /*
  * This file is part of shosetsu.
@@ -39,26 +37,26 @@ import kotlinx.coroutines.flow.flow
 class DBUpdatesDataSource(
 	private val updatesDao: UpdatesDao,
 ) : IDBUpdatesDataSource {
-	override suspend fun getUpdates(): Flow<HResult<List<UpdateEntity>>> = flow {
+	override suspend fun getUpdates(): Flow<List<UpdateEntity>> = flow {
 		try {
-			emitAll(updatesDao.loadUpdates().mapLatestListTo().mapLatestToSuccess())
-		} catch (e: Exception) {
-			emit(e.toHError())
+			emitAll(updatesDao.loadUpdates().map { it.convertList() })
+		} catch (e: SQLiteException) {
+			throw GenericSQLiteException(e)
 		}
 	}
 
-	override suspend fun insertUpdates(list: List<UpdateEntity>): HResult<Array<Long>> = try {
-		successResult(updatesDao.insertAllReplace(list.toDB()))
-	} catch (e: Exception) {
-		e.toHError()
+	override suspend fun insertUpdates(list: List<UpdateEntity>): Array<Long> = try {
+		(updatesDao.insertAllReplace(list.toDB()))
+	} catch (e: SQLiteException) {
+		throw GenericSQLiteException(e)
 	}
 
 	override suspend fun getCompleteUpdates(
-	): Flow<HResult<List<UpdateCompleteEntity>>> = flow {
+	): Flow<List<UpdateCompleteEntity>> = flow {
 		try {
-			emitAll(updatesDao.loadCompleteUpdates().mapLatestToSuccess())
-		} catch (e: Exception) {
-			emit(e.toHError())
+			emitAll(updatesDao.loadCompleteUpdates())
+		} catch (e: SQLiteException) {
+			throw GenericSQLiteException(e)
 		}
 	}
 }

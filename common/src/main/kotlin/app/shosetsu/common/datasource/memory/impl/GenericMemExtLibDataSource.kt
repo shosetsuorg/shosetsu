@@ -3,7 +3,6 @@ package app.shosetsu.common.datasource.memory.impl
 import app.shosetsu.common.consts.MEMORY_EXPIRE_EXT_LIB_TIME
 import app.shosetsu.common.consts.MEMORY_MAX_EXT_LIBS
 import app.shosetsu.common.datasource.memory.base.IMemExtLibDataSource
-import app.shosetsu.common.dto.HResult
 
 /*
  * This file is part of Shosetsu.
@@ -32,11 +31,13 @@ class GenericMemExtLibDataSource : IMemExtLibDataSource,
 	override val maxSize = MEMORY_MAX_EXT_LIBS
 	override val expireTime = MEMORY_EXPIRE_EXT_LIB_TIME * 1000 * 60
 
-	override fun loadLibrary(name: String): HResult<String> = get(name)
+	override fun loadLibrary(name: String): String? =
+		get(name)
 
-	override fun setLibrary(name: String, data: String): HResult<*> =
+	override fun setLibrary(name: String, data: String) =
 		put(name, data)
 
-	override fun removeLibrary(name: String): HResult<*> =
+	override fun removeLibrary(name: String) {
 		remove(name)
+	}
 }

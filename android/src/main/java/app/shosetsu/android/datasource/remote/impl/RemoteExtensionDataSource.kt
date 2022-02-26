@@ -2,14 +2,9 @@ package app.shosetsu.android.datasource.remote.impl
 
 import app.shosetsu.android.common.consts.REPO_SOURCE_DIR
 import app.shosetsu.android.common.ext.quickie
-import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.common.consts.ErrorKeys.ERROR_HTTP_ERROR
 import app.shosetsu.common.datasource.remote.base.IRemoteExtensionDataSource
-import app.shosetsu.common.domain.model.local.ExtensionEntity
+import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.errorResult
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.lib.exceptions.HTTPException
 import okhttp3.OkHttpClient
 
@@ -38,25 +33,23 @@ class RemoteExtensionDataSource(
 	private val client: OkHttpClient,
 ) : IRemoteExtensionDataSource {
 
-	private fun makeExtensionURL(repo: RepositoryEntity, fe: ExtensionEntity): String =
+	private fun makeExtensionURL(repo: RepositoryEntity, fe: GenericExtensionEntity): String =
 		"${repo.url}$REPO_SOURCE_DIR/${fe.lang}/${fe.fileName}.lua"
 
 	override suspend fun downloadExtension(
 		repositoryEntity: RepositoryEntity,
-		extensionEntity: ExtensionEntity,
-	): HResult<ByteArray> =
-		try {
-			@Suppress("BlockingMethodInNonBlockingContext")
-			val response = client.quickie(
-				makeExtensionURL(
-					repositoryEntity,
-					extensionEntity
-				)
+		extensionEntity: GenericExtensionEntity,
+	): ByteArray {
+		@Suppress("BlockingMethodInNonBlockingContext")
+		val response = client.quickie(
+			makeExtensionURL(
+				repositoryEntity,
+				extensionEntity
 			)
-			if (response.code == 200)
-				successResult(response.body!!.bytes())
-			else errorResult(ERROR_HTTP_ERROR, HTTPException(response.code))
-		} catch (e: Exception) {
-			e.toHError()
-		}
+		)
+		if (response.isSuccessful)
+			return response.body!!.bytes()
+		else throw HTTPException(response.code)
+	}
+
 }

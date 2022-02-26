@@ -1,7 +1,6 @@
 package app.shosetsu.common.datasource.file.base
 
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -43,34 +42,34 @@ interface IFileSettingsDataSource {
 
 	// Get
 
-	suspend fun getLong(name: String, key: SettingKey<Long>): HResult<Long>
+	suspend fun getLong(name: String, key: SettingKey<Long>): Long
 
-	suspend fun getString(name: String, key: SettingKey<String>): HResult<String>
+	suspend fun getString(name: String, key: SettingKey<String>): String
 
-	suspend fun getInt(name: String, key: SettingKey<Int>): HResult<Int>
+	suspend fun getInt(name: String, key: SettingKey<Int>): Int
 
-	suspend fun getBoolean(name: String, key: SettingKey<Boolean>): HResult<Boolean>
+	suspend fun getBoolean(name: String, key: SettingKey<Boolean>): Boolean
 
-	suspend fun getStringSet(name: String, key: SettingKey<Set<String>>): HResult<Set<String>>
+	suspend fun getStringSet(name: String, key: SettingKey<Set<String>>): Set<String>
 
-	suspend fun getFloat(name: String, key: SettingKey<Float>): HResult<Float>
+	suspend fun getFloat(name: String, key: SettingKey<Float>): Float
 
 	// Set
 
-	suspend fun setLong(name: String, key: SettingKey<Long>, value: Long): HResult<*>
+	suspend fun setLong(name: String, key: SettingKey<Long>, value: Long)
 
-	suspend fun setString(name: String, key: SettingKey<String>, value: String): HResult<*>
+	suspend fun setString(name: String, key: SettingKey<String>, value: String)
 
-	suspend fun setInt(name: String, key: SettingKey<Int>, value: Int): HResult<*>
+	suspend fun setInt(name: String, key: SettingKey<Int>, value: Int)
 
-	suspend fun setBoolean(name: String, key: SettingKey<Boolean>, value: Boolean): HResult<*>
+	suspend fun setBoolean(name: String, key: SettingKey<Boolean>, value: Boolean)
 
 	suspend fun setStringSet(
 		name: String,
 		key: SettingKey<Set<String>>,
 		value: Set<String>,
-	): HResult<*>
+	)
 
-	suspend fun setFloat(name: String, key: SettingKey<Float>, value: Float): HResult<*>
+	suspend fun setFloat(name: String, key: SettingKey<Float>, value: Float)
 
 }

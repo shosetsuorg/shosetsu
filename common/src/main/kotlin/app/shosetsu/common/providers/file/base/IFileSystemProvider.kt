@@ -1,8 +1,10 @@
 package app.shosetsu.common.providers.file.base
 
-import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.FileNotFoundException
+import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.enums.ExternalFileDir
 import app.shosetsu.common.enums.InternalFileDir
+import java.io.IOException
 
 /*
  * This file is part of Shosetsu.
@@ -31,12 +33,12 @@ import app.shosetsu.common.enums.InternalFileDir
  */
 interface IFileSystemProvider {
 
-	fun listFiles(internalFileDir: InternalFileDir, path: String): HResult<List<String>>
-	fun listFiles(externalFileDir: ExternalFileDir, path: String): HResult<List<String>>
+	fun listFiles(internalFileDir: InternalFileDir, path: String): List<String>
+	fun listFiles(externalFileDir: ExternalFileDir, path: String): List<String>
 
-	fun doesFileExist(internalFileDir: InternalFileDir, path: String): HResult<Boolean>
+	fun doesFileExist(internalFileDir: InternalFileDir, path: String): Boolean
 
-	fun doesFileExist(externalFileDir: ExternalFileDir, path: String): HResult<Boolean>
+	fun doesFileExist(externalFileDir: ExternalFileDir, path: String): Boolean
 
 
 	/**
@@ -45,14 +47,16 @@ interface IFileSystemProvider {
 	 *
 	 * @return file content
 	 */
-	fun readFile(internalFileDir: InternalFileDir, path: String): HResult<ByteArray>
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
+	fun readFile(internalFileDir: InternalFileDir, path: String): ByteArray
 
 	/**
 	 * Loads a file from the user directories (Pictures, Downloads, Etc)
 	 *
 	 * @return file content
 	 */
-	fun readFile(externalFileDir: ExternalFileDir, path: String): HResult<ByteArray>
+	@Throws(FilePermissionException::class, FileNotFoundException::class)
+	fun readFile(externalFileDir: ExternalFileDir, path: String): ByteArray
 
 
 	/**
@@ -61,53 +65,63 @@ interface IFileSystemProvider {
 	 * @param path Absolute path to a file
 	 * @return file content
 	 */
-	fun readFile(path: String): HResult<ByteArray>
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
+	fun readFile(path: String): ByteArray
 
-	fun deleteFile(internalFileDir: InternalFileDir, path: String): HResult<*>
+	@Throws(FilePermissionException::class)
+	fun deleteFile(internalFileDir: InternalFileDir, path: String): Boolean
 
-	fun deleteFile(externalFileDir: ExternalFileDir, path: String): HResult<*>
+	@Throws(FilePermissionException::class)
+	fun deleteFile(externalFileDir: ExternalFileDir, path: String): Boolean
 
 
 	/**
 	 * Writes a file to the internal file directory
 	 */
+	@Throws(FilePermissionException::class, IOException::class)
 	fun writeFile(
 		internalFileDir: InternalFileDir,
 		path: String,
 		content: ByteArray
-	): HResult<*>
+	)
 
 	/**
 	 * Writes a file to the external file directory
 	 */
+	@Throws(FilePermissionException::class, IOException::class)
 	fun writeFile(
 		externalFileDir: ExternalFileDir,
 		path: String,
 		content: ByteArray
-	): HResult<*>
+	)
 
 
-	fun createFile(internalFileDir: InternalFileDir, path: String): HResult<*>
-	fun createFile(externalFileDir: ExternalFileDir, path: String): HResult<*>
+	@Throws(IOException::class)
+	fun createFile(internalFileDir: InternalFileDir, path: String): Boolean
+
+	@Throws(IOException::class)
+	fun createFile(externalFileDir: ExternalFileDir, path: String): Boolean
 
 	/**
 	 * Creates an internal directory, will avoid if not present
 	 */
-	fun createDirectory(internalFileDir: InternalFileDir, path: String): HResult<*>
+	fun createDirectory(internalFileDir: InternalFileDir, path: String): Boolean
 
 	/**
 	 * Creates an external directory, will avoid if not present
 	 */
-	fun createDirectory(externalFileDir: ExternalFileDir, path: String): HResult<*>
+	fun createDirectory(externalFileDir: ExternalFileDir, path: String): Boolean
 
 	/**
 	 * Get filesystem path to a file
 	 */
-	fun retrievePath(internalFileDir: InternalFileDir, path: String): HResult<String>
+	@Throws(FileNotFoundException::class)
+	fun retrievePath(internalFileDir: InternalFileDir, path: String): String
 
 	/**
 	 * Get filesystem path to a file
 	 */
-	fun retrievePath(externalFileDir: ExternalFileDir, path: String): HResult<String>
+	@Throws(FileNotFoundException::class)
+	fun retrievePath(externalFileDir: ExternalFileDir, path: String): String
 
 }

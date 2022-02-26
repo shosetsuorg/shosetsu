@@ -2,7 +2,6 @@ package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
-import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -29,6 +28,6 @@ import kotlinx.coroutines.flow.Flow
 class LoadAppUpdateFlowLiveUseCase(
 	private val iAppUpdatesRepository: IAppUpdatesRepository
 ) {
-	operator fun invoke(): Flow<HResult<AppUpdateEntity>> =
+	operator fun invoke(): Flow<AppUpdateEntity?> =
 		iAppUpdatesRepository.loadAppUpdateFlow()
 }

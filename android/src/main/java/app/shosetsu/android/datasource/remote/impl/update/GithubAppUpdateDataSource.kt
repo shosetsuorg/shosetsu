@@ -1,15 +1,11 @@
 package app.shosetsu.android.datasource.remote.impl.update
 
+import app.shosetsu.android.common.EmptyResponseBodyException
 import app.shosetsu.android.common.ext.ifSo
 import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.android.domain.model.remote.AppUpdateDTO
-import app.shosetsu.common.consts.ErrorKeys.ERROR_HTTP_ERROR
-import app.shosetsu.common.consts.ErrorKeys.ERROR_NETWORK
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.errorResult
-import app.shosetsu.common.dto.successResult
 import app.shosetsu.lib.exceptions.HTTPException
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig.DEBUG
 import kotlinx.serialization.decodeFromString
@@ -52,28 +48,25 @@ class GithubAppUpdateDataSource(
 		}"
 	}
 
-	override suspend fun loadAppUpdate(): HResult<AppUpdateEntity> {
+	override suspend fun loadAppUpdate(): AppUpdateEntity {
 		okHttpClient.quickie(SHOSETSU_GIT_UPDATE_URL)
 			.use { gitResponse ->
-				gitResponse.takeIf { it.code == 200 }?.use {
+				if (gitResponse.isSuccessful) {
 					return gitResponse.body?.use { responseBody ->
-						successResult(
-							Json.decodeFromString<AppUpdateDTO>(responseBody.string()).convertTo()
-						)
-					} ?: errorResult(ERROR_NETWORK, "Response body null")
+						Json.decodeFromString<AppUpdateDTO>(responseBody.string()).convertTo()
+					} ?: throw EmptyResponseBodyException(SHOSETSU_GIT_UPDATE_URL)
 				}
-				return errorResult(ERROR_HTTP_ERROR, HTTPException(gitResponse.code))
+				throw HTTPException(gitResponse.code)
 			}
 	}
 
-	override suspend fun downloadAppUpdate(update: AppUpdateEntity): HResult<ByteArray> =
+	override suspend fun downloadAppUpdate(update: AppUpdateEntity): ByteArray =
 		okHttpClient.quickie(update.url).let { response ->
 			if (response.isSuccessful) {
-				response.body?.let { body ->
-					// TODO One day have kotlin IO to handle this right here
-					return successResult(body.bytes())
-				} ?: errorResult(ERROR_NETWORK, "Empty response body")
-			} else errorResult(ERROR_NETWORK, "Failed to download")
+				// TODO One day have kotlin IO to handle this right here
+				response.body?.bytes() ?: throw EmptyResponseBodyException(update.url)
+			}
+			throw HTTPException(response.code)
 		}
 
 

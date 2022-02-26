@@ -3,14 +3,9 @@ package app.shosetsu.android.providers.file.impl
 import android.content.Context
 import android.os.Environment.DIRECTORY_DOCUMENTS
 import android.os.Environment.DIRECTORY_DOWNLOADS
-import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.common.ext.toHError
-import app.shosetsu.common.consts.ErrorKeys.ERROR_IO
-import app.shosetsu.common.consts.ErrorKeys.ERROR_LACK_PERM
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.emptyResult
-import app.shosetsu.common.dto.errorResult
-import app.shosetsu.common.dto.successResult
+import app.shosetsu.common.FileNotFoundException
+import app.shosetsu.common.FilePermissionException
+import app.shosetsu.common.FilePermissionException.PermissionType
 import app.shosetsu.common.enums.ExternalFileDir
 import app.shosetsu.common.enums.InternalFileDir
 import app.shosetsu.common.providers.file.base.IFileSystemProvider
@@ -72,186 +67,174 @@ class AndroidFileSystemProvider(
 	override fun listFiles(
 		internalFileDir: InternalFileDir,
 		path: String
-	): HResult<List<String>> =
-		successResult(File(internalFileDir.path() + path).list()?.toList().orEmpty())
+	): List<String> =
+		File(internalFileDir.path() + path).list()?.toList().orEmpty()
 
 	override fun listFiles(
 		externalFileDir: ExternalFileDir,
 		path: String
-	): HResult<List<String>> =
-		successResult(File(externalFileDir.path() + path).list()?.toList().orEmpty())
+	): List<String> =
+		File(externalFileDir.path() + path).list()?.toList().orEmpty()
 
 	override fun doesFileExist(
 		internalFileDir: InternalFileDir,
 		path: String
-	): HResult<Boolean> = if (!File(internalFileDir.path() + path).exists())
-		successResult(false) else successResult(true)
+	): Boolean = File(internalFileDir.path() + path).exists()
 
 	override fun doesFileExist(
 		externalFileDir: ExternalFileDir,
 		path: String
-	): HResult<Boolean> = if (!File(externalFileDir.path() + path).exists())
-		successResult(false) else successResult(true)
+	): Boolean = if (!File(externalFileDir.path() + path).exists())
+		(false) else (true)
 
-	override fun readFile(internalFileDir: InternalFileDir, path: String): HResult<ByteArray> {
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
+	override fun readFile(internalFileDir: InternalFileDir, path: String): ByteArray {
 		val file = File(internalFileDir.path() + path)
 
 		//logV("Reading $path in ${internalFileDir.path()} to $file")
 
-		if (!file.exists()) return emptyResult()
-		if (!file.canRead()) return errorResult(ERROR_LACK_PERM, "Cannot read file: $file")
-		return successResult(file.readBytes())
+		if (!file.exists()) throw FileNotFoundException("$path does not exist")
+		if (!file.canRead()) throw FilePermissionException(file.path, PermissionType.READ)
+
+		return file.readBytes()
 	}
 
-	override fun readFile(externalFileDir: ExternalFileDir, path: String): HResult<ByteArray> {
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
+	override fun readFile(externalFileDir: ExternalFileDir, path: String): ByteArray {
 		val file = File(externalFileDir.path() + path)
 
 		//logV("Reading $path in ${externalFileDir.path()} to $file")
 
-		if (!file.exists()) return emptyResult()
-		if (!file.canRead()) return errorResult(ERROR_LACK_PERM, "Cannot read file: $file")
-		return successResult(file.readBytes())
+		if (!file.exists()) throw FileNotFoundException("$path does not exist")
+		if (!file.canRead()) throw FilePermissionException(file.path, PermissionType.READ)
+		return file.readBytes()
 	}
 
-	override fun readFile(path: String): HResult<ByteArray> {
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
+	override fun readFile(path: String): ByteArray {
 		val file = File(path)
 
 		//	logV("Reading $path to $file")
 
-		if (!file.exists()) return emptyResult()
-		if (!file.canRead()) return errorResult(ERROR_LACK_PERM, "Cannot read file: $file")
-		return successResult(file.readBytes())
+		if (!file.exists()) throw FileNotFoundException("File not found: `$path`")
+		if (!file.canRead()) throw FilePermissionException(path, PermissionType.READ)
+		return file.readBytes()
 	}
 
-	override fun deleteFile(internalFileDir: InternalFileDir, path: String): HResult<*> {
+	@Throws(FilePermissionException::class)
+	override fun deleteFile(internalFileDir: InternalFileDir, path: String): Boolean {
 		val file = File(internalFileDir.path() + path)
 //		logV("Deleting $path in ${internalFileDir.path()} to $file")
 
-		if (!file.canWrite() && file.exists()) return errorResult(
-			ERROR_LACK_PERM,
-			"Cannot delete file: $file"
-		)
-		return successResult(file.delete())
+		if (!file.canWrite() && file.exists())
+			throw FilePermissionException(file.path, PermissionType.WRITE)
+
+		return file.delete()
 	}
 
-	override fun deleteFile(externalFileDir: ExternalFileDir, path: String): HResult<*> {
+	@Throws(FilePermissionException::class)
+	override fun deleteFile(externalFileDir: ExternalFileDir, path: String): Boolean {
 		val file = File(externalFileDir.path() + path)
 		//	logV("Deleting $path in ${externalFileDir.path()} to $file")
 
-		if (!file.canWrite() && file.exists()) return errorResult(
-			ERROR_LACK_PERM,
-			"Cannot delete file: $file"
-		)
-		return successResult(file.delete())
+		if (!file.canWrite())
+			throw FilePermissionException(file.path, PermissionType.WRITE)
+
+		return file.delete()
 	}
 
+	@Throws(FilePermissionException::class, IOException::class)
 	override fun writeFile(
 		internalFileDir: InternalFileDir,
 		path: String,
 		content: ByteArray
-	): HResult<*> {
+	) {
 		val file = File(internalFileDir.path() + path)
 
 		//	logV("Writing $path in ${internalFileDir.path()} to $file")
 		if (!file.canWrite() && file.exists())
-			return errorResult(ERROR_LACK_PERM, "Cannot write file: $file")
+			throw FilePermissionException(file.path, PermissionType.WRITE)
 
-		try {
-			if (!file.exists()) file.createNewFile()
-		} catch (e: IOException) {
-			logE("IOException on attempt to create new file: $file", e)
-			return errorResult(ERROR_IO, e)
-		}
-		return successResult(file.writeBytes(content))
+		if (!file.exists()) file.createNewFile()
+
+		return file.writeBytes(content)
 	}
 
+	@Throws(FilePermissionException::class, IOException::class)
 	override fun writeFile(
 		externalFileDir: ExternalFileDir,
 		path: String,
 		content: ByteArray
-	): HResult<*> {
+	) {
 		val file = File(externalFileDir.path() + path)
 
 		//	logV("Writing $path in ${externalFileDir.path()} to $file")
 
 		if (!file.canWrite() && file.exists())
-			return errorResult(ERROR_LACK_PERM, "Cannot write file: $file")
+			throw FilePermissionException(file.path, PermissionType.WRITE)
 
-		try {
-			if (!file.exists()) file.createNewFile()
-		} catch (e: IOException) {
+		if (!file.exists()) file.createNewFile()
 
-			logE("IOException on attempt to create new file: $file", e)
-
-			return errorResult(ERROR_IO, e)
-		}
-
-		return successResult(file.writeBytes(content))
+		return file.writeBytes(content)
 	}
 
 	override fun createDirectory(
 		internalFileDir: InternalFileDir,
 		path: String
-	): HResult<*> {
+	): Boolean {
 		val file = File(internalFileDir.path() + path)
 
 //		logV("Creating $path in ${internalFileDir.path()}")
 
 		// if (!file.canWrite()) return errorResult(ERROR_LACK_PERM, "Cannot write file: $file")
-		return successResult(file.mkdirs())
+		return file.mkdirs()
 	}
 
 	override fun createDirectory(
 		externalFileDir: ExternalFileDir,
 		path: String
-	): HResult<*> {
+	): Boolean {
 		val file = File(externalFileDir.path() + path)
 
 		//	logV("Creating $path in ${externalFileDir.path()}")
 
 		// if (!file.canWrite()) return errorResult(ERROR_LACK_PERM, "Cannot write file: $file")
-		return successResult(file.mkdirs())
+		return file.mkdirs()
 	}
 
+	@Throws(FileNotFoundException::class)
 	override fun retrievePath(
 		internalFileDir: InternalFileDir,
 		path: String
-	): HResult<String> {
+	): String {
 		val file = File(internalFileDir.path() + path)
 
-		if (!file.exists()) return emptyResult()
+		if (!file.exists()) throw FileNotFoundException("$path does not exist")
 
-		return successResult(file.absolutePath)
+		return file.absolutePath
 	}
 
+	@Throws(FileNotFoundException::class)
 	override fun retrievePath(
 		externalFileDir: ExternalFileDir,
 		path: String
-	): HResult<String> {
+	): String {
 		val file = File(externalFileDir.path() + path)
 
-		if (!file.exists()) return emptyResult()
+		if (!file.exists()) throw FileNotFoundException("$path does not exist")
 
-		return successResult(file.absolutePath)
+		return file.absolutePath
 	}
 
-	override fun createFile(internalFileDir: InternalFileDir, path: String): HResult<*> {
+	@Throws(IOException::class)
+	override fun createFile(internalFileDir: InternalFileDir, path: String): Boolean {
 		val file = File(internalFileDir.path() + path)
-		return try {
-			val t = file.createNewFile()
-			if (t) successResult(t) else emptyResult()
-		} catch (e: IOException) {
-			e.toHError()
-		}
+		return file.createNewFile()
 	}
 
-	override fun createFile(externalFileDir: ExternalFileDir, path: String): HResult<*> {
+	@Throws(IOException::class)
+	override fun createFile(externalFileDir: ExternalFileDir, path: String): Boolean {
 		val file = File(externalFileDir.path() + path)
-		return try {
-			val t = file.createNewFile()
-			if (t) successResult(t) else emptyResult()
-		} catch (e: IOException) {
-			e.toHError()
-		}
+		return file.createNewFile()
 	}
 }

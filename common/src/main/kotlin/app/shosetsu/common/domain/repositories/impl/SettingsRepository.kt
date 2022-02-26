@@ -3,7 +3,6 @@ package app.shosetsu.common.domain.repositories.impl
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.datasource.file.base.IFileSettingsDataSource
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.HResult
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -49,43 +48,43 @@ class SettingsRepository(
 	override fun getFloatFlow(key: SettingKey<Float>): Flow<Float> =
 		iLocalSettingsDataSource.observeFloat(DEFAULT_NAME, key)
 
-	override suspend fun getLong(key: SettingKey<Long>): HResult<Long> =
+	override suspend fun getLong(key: SettingKey<Long>): Long =
 		iLocalSettingsDataSource.getLong(DEFAULT_NAME, key)
 
-	override suspend fun getString(key: SettingKey<String>): HResult<String> =
+	override suspend fun getString(key: SettingKey<String>): String =
 		iLocalSettingsDataSource.getString(DEFAULT_NAME, key)
 
-	override suspend fun getInt(key: SettingKey<Int>): HResult<Int> =
+	override suspend fun getInt(key: SettingKey<Int>): Int =
 		iLocalSettingsDataSource.getInt(DEFAULT_NAME, key)
 
-	override suspend fun getBoolean(key: SettingKey<Boolean>): HResult<Boolean> =
+	override suspend fun getBoolean(key: SettingKey<Boolean>): Boolean =
 		iLocalSettingsDataSource.getBoolean(DEFAULT_NAME, key)
 
-	override suspend fun getStringSet(key: SettingKey<Set<String>>): HResult<Set<String>> =
+	override suspend fun getStringSet(key: SettingKey<Set<String>>): Set<String> =
 		iLocalSettingsDataSource.getStringSet(DEFAULT_NAME, key)
 
 	override suspend fun getFloat(key: SettingKey<Float>) =
 		iLocalSettingsDataSource.getFloat(DEFAULT_NAME, key)
 
-	override suspend fun setLong(key: SettingKey<Long>, value: Long): HResult<*> =
+	override suspend fun setLong(key: SettingKey<Long>, value: Long): Unit =
 		iLocalSettingsDataSource.setLong(DEFAULT_NAME, key, value)
 
-	override suspend fun setString(key: SettingKey<String>, value: String): HResult<*> =
+	override suspend fun setString(key: SettingKey<String>, value: String): Unit =
 		iLocalSettingsDataSource.setString(DEFAULT_NAME, key, value)
 
-	override suspend fun setInt(key: SettingKey<Int>, value: Int): HResult<*> =
+	override suspend fun setInt(key: SettingKey<Int>, value: Int): Unit =
 		iLocalSettingsDataSource.setInt(DEFAULT_NAME, key, value)
 
-	override suspend fun setBoolean(key: SettingKey<Boolean>, value: Boolean): HResult<*> =
+	override suspend fun setBoolean(key: SettingKey<Boolean>, value: Boolean): Unit =
 		iLocalSettingsDataSource.setBoolean(DEFAULT_NAME, key, value)
 
 	override suspend fun setStringSet(
 		key: SettingKey<Set<String>>,
 		value: Set<String>
-	): HResult<*> =
+	): Unit =
 		iLocalSettingsDataSource.setStringSet(DEFAULT_NAME, key, value)
 
-	override suspend fun setFloat(key: SettingKey<Float>, value: Float): HResult<*> =
+	override suspend fun setFloat(key: SettingKey<Float>, value: Float): Unit =
 		iLocalSettingsDataSource.setFloat(DEFAULT_NAME, key, value)
 
 	companion object {

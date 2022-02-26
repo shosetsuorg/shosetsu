@@ -1,7 +1,7 @@
 package app.shosetsu.common.datasource.database.base
 
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.common.domain.model.local.UpdateEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -32,11 +32,12 @@ import kotlinx.coroutines.flow.Flow
 interface IDBUpdatesDataSource {
 
 	/** Loads [Flow] of a [List] of [UpdateEntity] */
-	suspend fun getUpdates(): Flow<HResult<List<UpdateEntity>>>
+	suspend fun getUpdates(): Flow<List<UpdateEntity>>
 
 	/** Insert a [List] of [UpdateEntity] and returns an [HResult] of [Array] of [Long] */
-	suspend fun insertUpdates(list: List<UpdateEntity>): HResult<Array<Long>>
+	@Throws(GenericSQLiteException::class)
+	suspend fun insertUpdates(list: List<UpdateEntity>): Array<Long>
 
 	/** Loads [Flow] of a [List] of [UpdateCompleteEntity] */
-	suspend fun getCompleteUpdates(): Flow<HResult<List<UpdateCompleteEntity>>>
+	suspend fun getCompleteUpdates(): Flow<List<UpdateCompleteEntity>>
 }

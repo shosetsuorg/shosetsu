@@ -3,18 +3,16 @@ package app.shosetsu.android.datasource.local.file.impl
 import app.shosetsu.android.common.consts.FILE_SCRIPT_DIR
 import app.shosetsu.android.common.consts.FILE_SOURCE_DIR
 import app.shosetsu.android.common.ext.logV
-import app.shosetsu.android.common.ext.toHError
+import app.shosetsu.common.FileNotFoundException
+import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.datasource.file.base.IFileExtensionDataSource
-import app.shosetsu.common.domain.model.local.ExtensionEntity
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
+import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.enums.InternalFileDir.FILES
 import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import app.shosetsu.common.utils.asIEntity
 import app.shosetsu.common.utils.fileExtension
 import app.shosetsu.lib.IExtension
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -42,30 +40,24 @@ class FileExtensionDataSource(
 ) : IFileExtensionDataSource {
 	init {
 		logV("Creating required directories")
-		iFileSystemProvider.createDirectory(FILES, "$FILE_SOURCE_DIR$FILE_SCRIPT_DIR").handle(
-			onError = {
-				logV("Error on creation of directories $it")
-			},
-			onSuccess = {
-				logV("Created required directories")
-			}
-		)
+		try {
+			iFileSystemProvider.createDirectory(FILES, MERGED_DIR)
+			logV("Created required directories")
+		} catch (e: Exception) {
+			logV("Error on creation of directories `$MERGED_DIR`", e)
+		}
 	}
 
-	private fun makeExtensionFileURL(entity: ExtensionEntity): String =
-		"$FILE_SOURCE_DIR$FILE_SCRIPT_DIR${entity.fileName}.${entity.type.fileExtension}"
+	private fun makeExtensionFileURL(entity: GenericExtensionEntity): String =
+		"$MERGED_DIR${entity.fileName}.${entity.type.fileExtension}"
 
 
-	override suspend fun loadExtension(entity: ExtensionEntity): HResult<IExtension> =
-		iFileSystemProvider.readFile(FILES, makeExtensionFileURL(entity)).transform {
-			try {
-				successResult(entity.asIEntity(it))
-			} catch (e: Exception) {
-				e.toHError()
-			}
-		}
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
+	override suspend fun loadExtension(entity: GenericExtensionEntity): IExtension =
+		entity.asIEntity(iFileSystemProvider.readFile(FILES, makeExtensionFileURL(entity)))
 
-	override suspend fun writeExtension(entity: ExtensionEntity, data: ByteArray): HResult<*> =
+	@Throws(FilePermissionException::class, IOException::class)
+	override suspend fun writeExtension(entity: GenericExtensionEntity, data: ByteArray) =
 		iFileSystemProvider.writeFile(
 			FILES,
 			makeExtensionFileURL(entity),
@@ -73,7 +65,12 @@ class FileExtensionDataSource(
 		)
 
 
-	override suspend fun deleteExtension(entity: ExtensionEntity): HResult<*> =
+	@Throws(FilePermissionException::class)
+	override suspend fun deleteExtension(entity: GenericExtensionEntity) {
 		iFileSystemProvider.deleteFile(FILES, makeExtensionFileURL(entity))
+	}
 
+	companion object {
+		const val MERGED_DIR = "$FILE_SOURCE_DIR$FILE_SCRIPT_DIR"
+	}
 }

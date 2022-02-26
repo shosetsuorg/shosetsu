@@ -33,9 +33,9 @@ fun getCommitCount(): String = "git rev-list --count HEAD".execute().getText().t
 val acraPropertiesFile = rootProject.file("acra.properties")
 val acraProperties = Properties()
 android {
-    lint {
-        abortOnError = false
-    }
+	lint {
+		abortOnError = false
+	}
 }
 
 if (acraPropertiesFile.exists())
@@ -142,6 +142,7 @@ android.applicationVariants.forEach { variant ->
 
 dependencies {
 	implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+	implementation(project(mapOf("path" to ":common")))
 
 	// Google view things
 	implementation("com.google.android.material:material:1.5.0")
@@ -162,15 +163,19 @@ dependencies {
 	implementation("androidx.cardview:cardview:1.0.0")
 	implementation("androidx.browser:browser:1.4.0")
 	implementation("androidx.core:core-ktx:1.7.0")
-	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
-	implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.1")
+
+
+
 	implementation("androidx.room:room-ktx:2.4.1")
 	implementation("androidx.collection:collection-ktx:1.2.0")
 	implementation("androidx.core:core-splashscreen:1.0.0-beta01")
 
 	// - Life Cycle
+	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
+	implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1")
+	implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
+	implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.1")
 	implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
-	implementation(project(mapOf("path" to ":common")))
 
 	// Test classes
 	testImplementation("junit:junit:4.13.2")
@@ -188,7 +193,7 @@ dependencies {
 
 
 	// Image loading
-	implementation("io.coil-kt:coil-compose:1.3.1")
+	implementation("io.coil-kt:coil-compose:1.4.0")
 
 	//TODO GITHUB sign in to save backup data to cloud
 	//implementation "com.github.kohsuke:github-api:github-api-1.95"
@@ -197,7 +202,7 @@ dependencies {
 	//implementation("us.feras.mdv:markdownview:1.1.0")
 
 	// Time control
-	implementation("joda-time:joda-time:2.10.10")
+	implementation("joda-time:joda-time:2.10.13")
 
 
 	// TODO Implement readerview provided by Mozilla
@@ -208,7 +213,7 @@ dependencies {
 	//implementation("com.zhkrb.cloudflare-scrape-android:scrape-webview:0.0.3")
 
 	// Network
-	implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.2")
+	implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.4")
 
 	// Kotlin libraries
 	implementation(kotlin("stdlib-jdk8"))
@@ -297,7 +302,7 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.0")
 
 	// KTX - Serialization
-	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
 	// Roomigrant
 	val enableRoomigrant = false
@@ -321,6 +326,9 @@ dependencies {
 	implementation("androidx.compose.ui:ui-tooling:1.1.0")
 	//- Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
 	implementation("androidx.compose.foundation:foundation:1.1.0")
+	implementation("androidx.compose.animation:animation:1.1.0")
+	implementation("androidx.compose.animation:animation-graphics:1.1.0")
+	implementation("androidx.compose.animation:animation-core:1.1.0")
 
 	// - Material
 	implementation("androidx.compose.material:material:1.1.0")
@@ -345,6 +353,6 @@ dependencies {
 	implementation("androidx.activity:activity-ktx:1.4.0")
 	implementation("androidx.activity:activity-compose:1.4.0")
 
-	implementation("com.chargemap.compose:numberpicker:0.0.10")
+	implementation("com.chargemap.compose:numberpicker:0.0.11")
 
 }

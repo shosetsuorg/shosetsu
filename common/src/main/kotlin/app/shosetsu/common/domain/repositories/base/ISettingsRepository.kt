@@ -1,8 +1,6 @@
 package app.shosetsu.common.domain.repositories.base
 
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.unwrap
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -41,70 +39,28 @@ interface ISettingsRepository {
 	fun getStringSetFlow(key: SettingKey<Set<String>>): Flow<Set<String>>
 
 
-	suspend fun getLong(key: SettingKey<Long>): HResult<Long>
+	suspend fun getLong(key: SettingKey<Long>): Long
 
-	suspend fun getString(key: SettingKey<String>): HResult<String>
+	suspend fun getString(key: SettingKey<String>): String
 
-	suspend fun getInt(key: SettingKey<Int>): HResult<Int>
+	suspend fun getInt(key: SettingKey<Int>): Int
 
-	suspend fun getBoolean(key: SettingKey<Boolean>): HResult<Boolean>
+	suspend fun getBoolean(key: SettingKey<Boolean>): Boolean
 
-	suspend fun getStringSet(key: SettingKey<Set<String>>): HResult<Set<String>>
+	suspend fun getStringSet(key: SettingKey<Set<String>>): Set<String>
 
-	suspend fun getFloat(key: SettingKey<Float>): HResult<Float>
+	suspend fun getFloat(key: SettingKey<Float>): Float
 
 
-	suspend fun setLong(key: SettingKey<Long>, value: Long): HResult<*>
+	suspend fun setLong(key: SettingKey<Long>, value: Long)
 
-	suspend fun setString(key: SettingKey<String>, value: String): HResult<*>
+	suspend fun setString(key: SettingKey<String>, value: String)
 
-	suspend fun setInt(key: SettingKey<Int>, value: Int): HResult<*>
+	suspend fun setInt(key: SettingKey<Int>, value: Int)
 
-	suspend fun setBoolean(key: SettingKey<Boolean>, value: Boolean): HResult<*>
+	suspend fun setBoolean(key: SettingKey<Boolean>, value: Boolean)
 
-	suspend fun setStringSet(key: SettingKey<Set<String>>, value: Set<String>): HResult<*>
+	suspend fun setStringSet(key: SettingKey<Set<String>>, value: Set<String>)
 
-	suspend fun setFloat(key: SettingKey<Float>, value: Float): HResult<*>
+	suspend fun setFloat(key: SettingKey<Float>, value: Float)
 }
-
-/**
- * Integrates with [unwrap] for an [HResult]
- * If [unwrap] returns a null, will return to the [key]s [SettingKey.default]
- */
-suspend fun ISettingsRepository.getLongOrDefault(key: SettingKey<Long>) =
-	getLong(key).unwrap() ?: key.default
-
-/**
- * Integrates with [unwrap] for an [HResult]
- * If [unwrap] returns a null, will return to the [key]s [SettingKey.default]
- */
-suspend fun ISettingsRepository.getStringOrDefault(key: SettingKey<String>) =
-	getString(key).unwrap() ?: key.default
-
-/**
- * Integrates with [unwrap] for an [HResult]
- * If [unwrap] returns a null, will return to the [key]s [SettingKey.default]
- */
-suspend fun ISettingsRepository.getIntOrDefault(key: SettingKey<Int>) =
-	getInt(key).unwrap() ?: key.default
-
-/**
- * Integrates with [unwrap] for an [HResult]
- * If [unwrap] returns a null, will return to the [key]s [SettingKey.default]
- */
-suspend fun ISettingsRepository.getBooleanOrDefault(key: SettingKey<Boolean>) =
-	getBoolean(key).unwrap() ?: key.default
-
-/**
- * Integrates with [unwrap] for an [HResult]
- * If [unwrap] returns a null, will return to the [key]s [SettingKey.default]
- */
-suspend fun ISettingsRepository.getStringSetOrDefault(key: SettingKey<Set<String>>) =
-	getStringSet(key).unwrap() ?: key.default
-
-/**
- * Integrates with [unwrap] for an [HResult]
- * If [unwrap] returns a null, will return to the [key]s [SettingKey.default]
- */
-suspend fun ISettingsRepository.getFloatOrDefault(key: SettingKey<Float>) =
-	getFloat(key).unwrap() ?: key.default

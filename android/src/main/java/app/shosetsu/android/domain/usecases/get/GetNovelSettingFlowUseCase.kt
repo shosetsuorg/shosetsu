@@ -1,18 +1,15 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.utils.uifactory.NovelSettingConversionFactory
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.NovelSettingEntity
 import app.shosetsu.common.domain.repositories.base.INovelSettingsRepository
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.emptyResult
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
 import app.shosetsu.common.view.uimodel.NovelSettingUI
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.transform
 
 /*
  * This file is part of Shosetsu.
@@ -41,17 +38,16 @@ class GetNovelSettingFlowUseCase(
 	private val iSettingsRepository: ISettingsRepository,
 	private val iNovelsRepository: INovelsRepository
 ) {
-	operator fun invoke(novelID: Int): Flow<HResult<NovelSettingUI>> =
-		novelSettingsRepository.getFlow(novelID).map { settingsResult ->
-			settingsResult.transform(
-				onEmpty = {
-					launchIO {
-						novelSettingsRepository.insert(NovelSettingEntity(novelID))
-					}
-					emptyResult()
+	operator fun invoke(novelID: Int): Flow<NovelSettingUI?> =
+		novelSettingsRepository.getFlow(novelID).transform { settings ->
+			settings?.let {
+				emit(NovelSettingConversionFactory(it).convertTo())
+			} ?: run {
+				try {
+					novelSettingsRepository.insert(NovelSettingEntity(novelID))
+				} catch (e: GenericSQLiteException) {
+					logE("Cannot insert, Already inserted?", e)
 				}
-			) {
-				successResult(NovelSettingConversionFactory(it).convertTo())
 			}
 		}
 }

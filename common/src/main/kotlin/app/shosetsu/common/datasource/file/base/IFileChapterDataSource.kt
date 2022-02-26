@@ -1,8 +1,10 @@
 package app.shosetsu.common.datasource.file.base
 
+import app.shosetsu.common.FileNotFoundException
+import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.domain.model.local.ChapterEntity
-import app.shosetsu.common.dto.HResult
 import app.shosetsu.lib.Novel
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -29,24 +31,27 @@ interface IFileChapterDataSource {
 	/**
 	 * Save the chapter passage to storage
 	 */
+	@Throws(FilePermissionException::class, IOException::class)
 	suspend fun save(
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType,
 		passage: ByteArray
-	): HResult<*>
+	)
 
 	/**
 	 * Gets chapter passage via it's ID
 	 * @return [HResult.Empty] if passage not found, [HResult.Success] if found
 	 */
+	@Throws(FilePermissionException::class, FileNotFoundException::class)
 	suspend fun load(
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType
-	): HResult<ByteArray>
+	): ByteArray
 
 	/** Deletes a chapter from the filesystem */
+	@Throws(FilePermissionException::class)
 	suspend fun delete(
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType
-	): HResult<*>
+	)
 }

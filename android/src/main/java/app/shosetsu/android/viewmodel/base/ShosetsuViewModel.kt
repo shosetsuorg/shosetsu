@@ -1,10 +1,12 @@
 package app.shosetsu.android.viewmodel.base
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 
 /*
  * This file is part of Shosetsu.
@@ -28,6 +30,12 @@ import kotlinx.coroutines.flow.Flow
  * 30 / 10 / 2020
  */
 abstract class ShosetsuViewModel : ViewModel() {
-	fun <T> Flow<T>.asIOLiveData() =
+	fun <T> Flow<T>.asIOLiveData(): LiveData<T> =
 		asLiveData(viewModelScope.coroutineContext + Dispatchers.IO)
+
+	/**
+	 * TODO Figure out why this wont add with coroutine context of viewmodel
+	 */
+	fun <T> Flow<T>.onIO(): Flow<T> =
+		flowOn(Dispatchers.IO)
 }

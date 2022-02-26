@@ -3,9 +3,6 @@ package app.shosetsu.android.datasource.local.file.impl
 import app.shosetsu.android.providers.prefrences.SharedPreferenceProvider
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.datasource.file.base.IFileSettingsDataSource
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -51,55 +48,54 @@ class FileSharedPreferencesSettingsDataSource(
 	override fun observeFloat(name: String, key: SettingKey<Float>): Flow<Float> =
 		provider.observeFloat(name, key)
 
-	override suspend fun getLong(name: String, key: SettingKey<Long>): HResult<Long> =
-		successResult(provider.getLong(name, key))
+	override suspend fun getLong(name: String, key: SettingKey<Long>): Long =
+		(provider.getLong(name, key))
 
-	override suspend fun getString(name: String, key: SettingKey<String>): HResult<String> =
-		successResult(provider.getString(name, key))
+	override suspend fun getString(name: String, key: SettingKey<String>): String =
+		(provider.getString(name, key))
 
-	override suspend fun getInt(name: String, key: SettingKey<Int>): HResult<Int> =
-		successResult(provider.getInt(name, key))
+	override suspend fun getInt(name: String, key: SettingKey<Int>): Int =
+		(provider.getInt(name, key))
 
-	override suspend fun getBoolean(name: String, key: SettingKey<Boolean>): HResult<Boolean> =
-		successResult(provider.getBoolean(name, key))
+	override suspend fun getBoolean(name: String, key: SettingKey<Boolean>): Boolean =
+		(provider.getBoolean(name, key))
 
 	override suspend fun getStringSet(
 		name: String,
 		key: SettingKey<Set<String>>
-	): HResult<Set<String>> =
-		successResult(provider.getStringSet(name, key))
+	): Set<String> =
+		(provider.getStringSet(name, key))
 
 	override suspend fun getFloat(name: String, key: SettingKey<Float>) =
-		successResult(provider.getFloat(name, key))
+		(provider.getFloat(name, key))
 
-	override suspend fun setLong(name: String, key: SettingKey<Long>, value: Long): HResult<*> =
-		successResult(provider.setLong(name, key, value))
+	override suspend fun setLong(name: String, key: SettingKey<Long>, value: Long): Unit =
+		(provider.setLong(name, key, value))
 
 	override suspend fun setString(
 		name: String,
 		key: SettingKey<String>,
 		value: String
-	): HResult<*> =
-		successResult(provider.setString(name, key, value))
+	): Unit =
+		(provider.setString(name, key, value))
 
-	override suspend fun setInt(name: String, key: SettingKey<Int>, value: Int): HResult<*> =
-		successResult(provider.setInt(name, key, value))
+	override suspend fun setInt(name: String, key: SettingKey<Int>, value: Int): Unit =
+		(provider.setInt(name, key, value))
 
 	override suspend fun setBoolean(
 		name: String,
 		key: SettingKey<Boolean>,
 		value: Boolean
-	): HResult<*> =
-		successResult(provider.setBoolean(name, key, value))
+	): Unit =
+		(provider.setBoolean(name, key, value))
 
 	override suspend fun setStringSet(
 		name: String,
 		key: SettingKey<Set<String>>,
 		value: Set<String>
-	): HResult<*> =
-		successResult(provider.setStringSet(name, key, value))
+	): Unit =
+		(provider.setStringSet(name, key, value))
 
-	override suspend fun setFloat(name: String, key: SettingKey<Float>, value: Float): HResult<*> =
-		successResult(provider.setFloat(name, key, value))
-
+	override suspend fun setFloat(name: String, key: SettingKey<Float>, value: Float): Unit =
+		(provider.setFloat(name, key, value))
 }

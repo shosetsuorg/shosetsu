@@ -1,17 +1,15 @@
 package app.shosetsu.android.viewmodel.impl
 
 import android.app.Application
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.viewmodel.abstracted.ACSSEditorViewModel
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.StyleEntity
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.*
 import com.github.doomsdayrs.apps.shosetsu.R
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.util.*
@@ -50,11 +48,9 @@ class CSSEditorViewModel(
 
 	private val styleFlow by lazy {
 		cssIDFlow.map { id ->
-			successResult(
-				StyleEntity(
-					id,
-					app.resources.getString(R.string.default_reader)
-				)
+			StyleEntity(
+				id,
+				app.resources.getString(R.string.default_reader)
 			)
 		}
 	}
@@ -113,26 +109,27 @@ class CSSEditorViewModel(
 		cssContentFlow.tryEmit(combined)
 	}
 
-	override fun setCSSId(int: Int): LiveData<HResult<*>> =
+	override fun setCSSId(int: Int): Flow<Unit> =
 		flow {
 			when {
-				int == cssIDFlow.value -> emit(successResult(Unit))
+				int == cssIDFlow.value -> emit(Unit)
 				int != cssIDFlow.value -> {
 					undoStack.clear()
 					redoStack.clear()
 					cssContentFlow.emit("")
 					cssIDFlow.emit(int)
-					emit(successResult(Unit))
+					emit(Unit)
 				}
-				else -> emit(emptyResult())
+				else -> {
+				}
 			}
-		}.asIOLiveData()
+		}
 
 	init {
 		launchIO {
 			styleFlow.collect { result ->
-				result.handle {
-					settingsRepo.getString(SettingKey.ReaderHtmlCss).handle {
+				result.let {
+					settingsRepo.getString(SettingKey.ReaderHtmlCss).let {
 						cssContentFlow.emit(it)
 					}
 				}
@@ -140,28 +137,15 @@ class CSSEditorViewModel(
 		}
 	}
 
+	override val cssContent: Flow<String> by lazy { cssContentFlow.map { it } }
 
-	override val cssContent: LiveData<HResult<String>> by lazy {
-		cssContentFlow.map { successResult(it) }.asIOLiveData()
-	}
+	override val cssTitle: Flow<String> by lazy { styleFlow.map { it.title } }
 
-	override val cssTitle: LiveData<HResult<String>> by lazy {
-		styleFlow.mapResult { successResult(it.title) }.asIOLiveData()
-	}
+	override val isCSSValid: Flow<Boolean> by lazy { flow { emit(true) } }
 
-	override val isCSSValid: LiveData<Boolean> by lazy {
-		flow { emit(true) }.asIOLiveData()
-	}
+	override val cssInvalidReason: Flow<String?> by lazy { flow { emit(null) } }
 
-	override val cssInvalidReason: LiveData<String?> by lazy {
-		flow { emit(null) }.asIOLiveData()
-	}
+	override val canRedo: Flow<Boolean> by lazy { canRedoFlow }
 
-	override val canRedo: LiveData<Boolean> by lazy {
-		canRedoFlow.asIOLiveData()
-	}
-
-	override val canUndo: LiveData<Boolean> by lazy {
-		canUndoFlow.asIOLiveData()
-	}
+	override val canUndo: Flow<Boolean> by lazy { canUndoFlow }
 }

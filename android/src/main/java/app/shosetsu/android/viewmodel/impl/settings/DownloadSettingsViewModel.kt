@@ -8,9 +8,8 @@ import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.ADownloadSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.dto.*
 import com.github.doomsdayrs.apps.shosetsu.R
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.combine
 
 /*
  * This file is part of shosetsu.
@@ -40,12 +39,12 @@ class DownloadSettingsViewModel(
 
 	override suspend fun settings(): List<SettingsItemData> = listOf(
 		seekBarSettingData(6) {
-			title { "Download thread pool size" }
-			description { "How many simultaneous downloads occur at once" }
+			titleText = "Download thread pool size"
+			descText = "How many simultaneous downloads occur at once"
 			range { 1F to 6F }
-			settingsRepo.getInt(DownloadThreadPool).handle {
-				progressValue = it.toFloat()
-			}
+
+			progressValue = settingsRepo.getInt(DownloadThreadPool).toFloat()
+
 			showSectionMark = true
 			showSectionText = true
 
@@ -73,12 +72,12 @@ class DownloadSettingsViewModel(
 		},
 
 		seekBarSettingData(6) {
-			title { "Download threads per Extension" }
-			description { "How many simultaneous downloads per extension that can occur at once" }
+			titleText = "Download threads per Extension"
+			descText = "How many simultaneous downloads per extension that can occur at once"
 			range { 1F to 6F }
-			settingsRepo.getInt(DownloadExtThreads).handle {
-				progressValue = it.toFloat()
-			}
+
+			progressValue = settingsRepo.getInt(DownloadExtThreads).toFloat()
+
 			showSectionMark = true
 			showSectionText = true
 
@@ -106,29 +105,29 @@ class DownloadSettingsViewModel(
 		},
 		// TODO Figure out how to change download directory
 		switchSettingData(3) {
-			title { R.string.download_chapter_updates }
+			titleRes = R.string.download_chapter_updates
 			checkSettingValue(DownloadNewNovelChapters)
 		},
 		switchSettingData(2) {
-			title { "Allow downloading on metered connection" }
+			titleText = "Allow downloading on metered connection"
 			checkSettingValue(DownloadOnMeteredConnection)
 		},
 		switchSettingData(3) {
-			title { "Download on low battery" }
+			titleText = "Download on low battery"
 			checkSettingValue(DownloadOnLowBattery)
 		},
 		switchSettingData(4) {
-			title { "Download on low storage" }
+			titleText = "Download on low storage"
 			checkSettingValue(DownloadOnLowStorage)
 		},
 		switchSettingData(5) {
-			title { "Download only when idle" }
+			titleText = "Download only when idle"
 			requiredVersion { android.os.Build.VERSION_CODES.M }
 			checkSettingValue(DownloadOnlyWhenIdle)
 		},
 		switchSettingData(6) {
-			title { "Bookmarked novel on download" }
-			description { "If a novel is not bookmarked when a chapter is downloaded, this will" }
+			titleText = "Bookmarked novel on download"
+			descText = "If a novel is not bookmarked when a chapter is downloaded, this will"
 		},
 		switchSettingData(7) {
 			titleRes = R.string.settings_download_notify_extension_install_title
@@ -139,9 +138,9 @@ class DownloadSettingsViewModel(
 			titleRes = R.string.settings_download_delete_on_read_title
 			descRes = R.string.settings_download_delete_on_read_desc
 			range { 0F to 5F }
-			settingsRepo.getInt(DeleteReadChapter).handle {
-				progressValue = it.toFloat() + 1
-			}
+
+			progressValue = settingsRepo.getInt(DeleteReadChapter).toFloat() + 1
+
 			showSectionMark = true
 			showSectionText = true
 
@@ -173,9 +172,6 @@ class DownloadSettingsViewModel(
 		},
 
 		)
-
-	override fun reportError(error: HResult.Error, isSilent: Boolean) {
-	}
 
 	override var downloadWorkerSettingsChanged: Boolean = false
 

@@ -4,12 +4,8 @@ import app.shosetsu.android.common.utils.uifactory.NovelConversionFactory
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
-import app.shosetsu.common.dto.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.*
 
 /*
  * This file is part of shosetsu.
@@ -36,21 +32,21 @@ class GetNovelUIUseCase(
 	private val novelsRepository: INovelsRepository,
 	private val extensionRepository: IExtensionsRepository
 ) {
-	@ExperimentalCoroutinesApi
-	operator fun invoke(novelID: Int): Flow<HResult<NovelUI>> = flow {
-		emit(loading())
+	@OptIn(ExperimentalCoroutinesApi::class)
+	operator fun invoke(novelID: Int): Flow<NovelUI?> = flow {
 		if (novelID != -1)
 			emitAll(novelsRepository.getNovelFlow(novelID).mapLatest {
-				it.transform { novelEntity ->
-					successResult(NovelConversionFactory(novelEntity))
+				it?.let { novelEntity ->
+					(NovelConversionFactory(novelEntity).convertTo())
 				}
-			}.mapLatestResultTo().mapLatestResult { novelUI ->
-				extensionRepository.getExtension(novelUI.extID).transform { ext ->
-					successResult(novelUI.apply {
-						extName = ext.name
-					})
-				}
+			}.map { novelUI ->
+				if (novelUI != null)
+					extensionRepository.getInstalledExtension(novelUI.extID)?.let { ext ->
+						novelUI.apply {
+							extName = ext.name
+						}
+					} ?: novelUI
+				else null
 			})
-
 	}
 }

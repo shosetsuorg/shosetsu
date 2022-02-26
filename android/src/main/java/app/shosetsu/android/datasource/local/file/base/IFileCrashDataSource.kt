@@ -1,7 +1,5 @@
 package app.shosetsu.android.datasource.local.file.base
 
-import app.shosetsu.common.dto.HResult
-
 /*
  * This file is part of shosetsu.
  *
@@ -27,5 +25,5 @@ import app.shosetsu.common.dto.HResult
  */
 interface IFileCrashDataSource {
 
-	fun writeCrash(log: String): HResult<*>
+	fun writeCrash(log: String)
 }

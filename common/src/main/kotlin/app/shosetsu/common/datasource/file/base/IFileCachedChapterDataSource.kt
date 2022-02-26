@@ -1,6 +1,6 @@
 package app.shosetsu.common.datasource.file.base
 
-import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.FileNotFoundException
 import app.shosetsu.lib.Novel
 
 /*
@@ -39,15 +39,16 @@ interface IFileCachedChapterDataSource {
 		chapterID: Int,
 		chapterType: Novel.ChapterType,
 		passage: ByteArray
-	): HResult<*>
+	)
 
 	/**
 	 * Gets chapter passage via it's ID
 	 *
 	 * @return [HResult.Empty] if passage not found, [HResult.Success] if found
 	 */
+	@Throws(FileNotFoundException::class)
 	suspend fun loadChapterPassage(
 		chapterID: Int,
 		chapterType: Novel.ChapterType
-	): HResult<ByteArray>
+	): ByteArray
 }

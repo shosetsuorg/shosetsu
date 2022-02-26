@@ -11,17 +11,22 @@ import androidx.work.Configuration
 import app.shosetsu.android.backend.database.DBHelper
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.ShortCuts
-import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.common.ext.fileOut
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.toast
 import app.shosetsu.android.di.*
 import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.android.viewmodel.factory.ViewModelFactory
+import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.IExtensionLibrariesRepository
-import app.shosetsu.common.dto.HResult
+import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.lib.ShosetsuSharedLib
 import app.shosetsu.lib.lua.ShosetsuLuaLib
 import app.shosetsu.lib.lua.shosetsuGlobals
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import org.acra.config.dialog
 import org.acra.config.httpSender
@@ -63,6 +68,8 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, DIAware,
 	private val extLibRepository by instance<IExtensionLibrariesRepository>()
 	private val okHttpClient by instance<OkHttpClient>()
 	private val startRepositoryUpdateManagerUseCase: StartRepositoryUpdateManagerUseCase by instance()
+	private val settingsRepo: ISettingsRepository by instance()
+
 
 	override val di: DI by DI.lazy {
 		bind<ViewModelFactory>() with singleton { ViewModelFactory(applicationContext) }
@@ -149,7 +156,11 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, DIAware,
 	}
 
 	override fun onCreate() {
-		setupDualOutput()
+
+		runBlocking {
+			settingsRepo.getBoolean(SettingKey.LogToFile)
+			setupDualOutput()
+		}
 
 		setupCoreLib()
 
@@ -173,20 +184,17 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, DIAware,
 
 		ShosetsuLuaLib.libLoader = libLoader@{ name ->
 			Log.i("LuaLibLoader", "Loading ($name)")
-			return@libLoader when (val result = extLibRepository.blockingLoadExtLibrary(name)) {
-				is HResult.Success -> {
-					val l = try {
-						shosetsuGlobals().load(result.data, "lib($name)")
-					} catch (e: Error) {
-						throw e
-					}
-					l.call()
+			try {
+				val result = extLibRepository.blockingLoadExtLibrary(name)
+				val l = try {
+					shosetsuGlobals().load(result, "lib($name)")
+				} catch (e: Error) {
+					throw e
 				}
-				else -> {
-					if (result is HResult.Error)
-						logE("[${result.code}]\t${result.message}", result.exception)
-					null
-				}
+				l.call()
+			} catch (e: Exception) {
+				logE("${e.message}", e)
+				null
 			}
 		}
 	}

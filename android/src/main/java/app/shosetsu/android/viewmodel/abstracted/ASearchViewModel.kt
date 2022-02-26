@@ -1,11 +1,9 @@
 package app.shosetsu.android.viewmodel.abstracted
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
-import app.shosetsu.android.viewmodel.base.ErrorReportingViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
-import app.shosetsu.common.dto.HResult
+import kotlinx.coroutines.flow.Flow
 import javax.security.auth.Destroyable
 
 /*
@@ -32,10 +30,38 @@ import javax.security.auth.Destroyable
  * shosetsu
  * 01 / 05 / 2020
  */
-abstract class ASearchViewModel : ShosetsuViewModel(), ErrorReportingViewModel, Destroyable {
-	abstract val listings: LiveData<HResult<List<SearchRowUI>>>
+abstract class ASearchViewModel : ShosetsuViewModel(), Destroyable {
+
+	abstract val query: Flow<String>
+
+	abstract val listings: Flow<List<SearchRowUI>>
 
 	abstract fun setQuery(query: String)
-	abstract fun searchLibrary(): LiveData<HResult<List<ACatalogNovelUI>>>
-	abstract fun searchExtension(extensionId: Int): LiveData<HResult<List<ACatalogNovelUI>>>
+
+	abstract fun searchLibrary(): Flow<List<ACatalogNovelUI>>
+
+	/**
+	 * Gets the search flow of an extension
+	 */
+	abstract fun searchExtension(extensionId: Int): Flow<List<ACatalogNovelUI>>
+
+	/**
+	 * Refresh all rows
+	 */
+	abstract fun refresh()
+
+	/**
+	 * Refresh a specific row
+	 */
+	abstract fun refresh(id: Int)
+
+	/**
+	 * Get if a certain row is loading or not
+	 */
+	abstract fun getIsLoading(id: Int): Flow<Boolean>
+
+	/**
+	 * Get the exception that occurred in a certain row
+	 */
+	abstract fun getException(id: Int): Flow<Throwable?>
 }

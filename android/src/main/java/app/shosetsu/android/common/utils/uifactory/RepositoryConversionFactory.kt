@@ -2,9 +2,6 @@ package app.shosetsu.android.common.utils.uifactory
 
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.common.domain.model.local.RepositoryEntity
-import app.shosetsu.common.dto.HResult
-import app.shosetsu.common.dto.successResult
-import app.shosetsu.common.dto.transform
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
@@ -43,9 +40,6 @@ class RepositoryConversionFactory(data: RepositoryEntity) :
 fun List<RepositoryEntity>.mapToFactory() =
 	map { RepositoryConversionFactory(it) }
 
-fun HResult<List<RepositoryEntity>>.mapResultWithFactory() =
-	transform { successResult(it.mapToFactory()) }
-
 @ExperimentalCoroutinesApi
-fun Flow<HResult<List<RepositoryEntity>>>.mapLatestToResultFlowWithFactory() =
-	mapLatest { it.mapResultWithFactory() }
+fun Flow<List<RepositoryEntity>>.mapLatestToResultFlowWithFactory() =
+	mapLatest { it.mapToFactory() }
