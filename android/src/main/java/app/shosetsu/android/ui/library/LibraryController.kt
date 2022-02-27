@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -184,6 +185,9 @@ class LibraryController
 
 	private fun startObservation() {
 		viewModel.liveData.observeRecyclerUpdates()
+		viewModel.liveData.collectLA(this, catch = {}) {
+			fab?.isVisible = it.isNotEmpty()
+		}
 		viewModel.novelCardTypeLiveData.observe(this) {
 			updateLayoutManager(it.manager)
 		}
@@ -208,6 +212,13 @@ class LibraryController
 		searchView = (menu.findItem(R.id.library_search)?.actionView as? SearchView)
 		searchView?.apply {
 			setOnQueryTextListener(LibrarySearchQuery(this@LibraryController))
+		}
+		viewModel.liveData.collectLA(this, catch = {}) {
+			val visible = it.isNotEmpty()
+
+			menu.findItem(R.id.library_search)?.isVisible = visible
+			menu.findItem(R.id.view_type)?.isVisible = visible
+			menu.findItem(R.id.updater_now)?.isVisible = visible
 		}
 		configureViewTypeMenu(menu)
 	}
