@@ -15,6 +15,7 @@ import app.shosetsu.android.common.consts.WorkerTags.BACKUP_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.backupJSON
 import app.shosetsu.android.domain.model.local.backup.*
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.BackupEntity
 import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
@@ -25,6 +26,7 @@ import app.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.delay
 import kotlinx.serialization.encodeToString
+import org.acra.ACRA
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -100,6 +102,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 		return bos.toByteArray()
 	}
 
+	@Throws(GenericSQLiteException::class)
 	private suspend fun getBackupChapters(novelID: Int): List<BackupChapterEntity> {
 		if (backupChapters())
 			chaptersRepository.getChapters(novelID).let { list ->
@@ -137,7 +140,13 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 		Run to isolate the variable 'novels' so it can be trashed, hopefully saving memory
 		 */
 		val success = run {
-			val novels = novelRepository.loadBookmarkedNovelEntities() ?: return@run false
+			val novels = try {
+				novelRepository.loadBookmarkedNovelEntities()
+			} catch (e: GenericSQLiteException) {
+				ACRA.errorReporter.handleSilentException(e)
+				e.printStackTrace()
+				return@run false
+			}
 
 			logI("Loaded ${novels.size} novel(s)")
 			notify("Loaded ${novels.size} novel(s)")
@@ -151,10 +160,14 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 			notify("Loading extensions required")
 			// Extensions each novel requires
 			// Distinct, with no duplicates
-			val extensions = novels.mapNotNull {
-				if (it.extensionID != null)
-					extensionsRepository.getInstalledExtension(it.extensionID!!)!!
-				else null
+			extensions = novels.mapNotNull {
+				try {
+					extensionsRepository.getInstalledExtension(it.extensionID)
+				} catch (e: GenericSQLiteException) {
+					ACRA.errorReporter.handleSilentException(e)
+					e.printStackTrace()
+					null
+				}
 			}.distinct()
 
 			true

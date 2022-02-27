@@ -425,7 +425,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 					launchUI { it.show() }
 				}
 		}
-		viewModel.backupProgressState.collectLA(this, catch = {
+		viewModel.backupProgressState.collectLatestLA(this, catch = {
 			logE("Backup failed", it)
 			ACRA.errorReporter.handleException(it)
 			binding.backupWarning.isVisible = false
@@ -438,6 +438,9 @@ class MainActivity : AppCompatActivity(), DIAware,
 					binding.backupWarning.isVisible = false
 				}
 				IBackupRepository.BackupProgress.COMPLETE -> {
+					binding.backupWarning.isVisible = false
+				}
+				IBackupRepository.BackupProgress.FAILURE -> {
 					binding.backupWarning.isVisible = false
 				}
 			}
