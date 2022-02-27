@@ -9,6 +9,8 @@
     <string name="github_url" translatable="false">https://github.com/shosetsuorg/shosetsu</string>
     <string name="extensions_url" translatable="false">https://github.com/shosetsuorg/extensions</string>
 
+    <string name="matrix" translatable="false">Matrix</string>
+    <string name="matrix_url" translatable="false">https://matrix.to/#/#shosetsu:matrix.org</string>
     <string name="discord" translatable="false">Discord</string>
     <string name="discord_url" translatable="false">https://discord.gg/ttSX7gB</string>
 

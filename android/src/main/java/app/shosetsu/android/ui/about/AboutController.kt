@@ -85,7 +85,8 @@ class AboutController : ShosetsuController() {
 					onOpenDiscord = ::openDiscord,
 					onOpenPatreon = ::openPatreon,
 					onOpenLicense = ::onClickLicense,
-					onOpenDisclaimer = ::onClickDisclaimer
+					onOpenDisclaimer = ::onClickDisclaimer,
+					onOpenMatrix = ::openMatrix
 				)
 			}
 		}
@@ -107,7 +108,11 @@ class AboutController : ShosetsuController() {
 	private fun openExtensions() =
 		openSite(URL_GITHUB_EXTENSIONS)
 
+
 	private fun openDiscord() =
+		openSite(URL_DISCORD)
+
+	private fun openMatrix() =
 		openSite(URL_DISCORD)
 
 	private fun openPatreon() =
@@ -131,7 +136,8 @@ fun PreviewAboutContent() {
 			onOpenDiscord = {},
 			onOpenPatreon = {},
 			onOpenLicense = {},
-			onOpenDisclaimer = {}
+			onOpenDisclaimer = {},
+			onOpenMatrix = {}
 		)
 	}
 }
@@ -156,7 +162,7 @@ fun AboutItem(
 			modifier = Modifier.padding(16.dp)
 		) {
 			if (iconRes != null)
-				Image(painterResource(iconRes), null)
+				Image(painterResource(iconRes), null, modifier = Modifier.padding(end = 8.dp))
 
 			Column(
 				verticalArrangement = Arrangement.Center,
@@ -193,7 +199,8 @@ fun AboutContent(
 	onOpenDiscord: () -> Unit,
 	onOpenPatreon: () -> Unit,
 	onOpenLicense: () -> Unit,
-	onOpenDisclaimer: () -> Unit
+	onOpenDisclaimer: () -> Unit,
+	onOpenMatrix: () -> Unit
 ) {
 	Column(
 		modifier = Modifier.fillMaxSize()
@@ -221,6 +228,11 @@ fun AboutContent(
 			R.string.extensions,
 			R.string.extensions_url,
 			onClick = onOpenExtensions
+		)
+		AboutItem(
+			R.string.matrix,
+			R.string.matrix_url,
+			onClick = onOpenMatrix
 		)
 		AboutItem(
 			R.string.discord,
