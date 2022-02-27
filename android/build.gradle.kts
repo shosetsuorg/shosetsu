@@ -1,4 +1,4 @@
-import com.android.build.gradle.api.BaseVariantOutput
+
 import org.jetbrains.kotlin.konan.properties.Properties
 import java.io.BufferedReader
 import java.io.FileInputStream
@@ -119,26 +119,26 @@ android {
 	buildToolsVersion = "30.0.3"
 }
 
-android.applicationVariants.forEach { variant ->
-	variant.outputs.all {
-		//TODO Fix this mess
-		val v: BaseVariantOutput = this
-		val appName = "shosetsu"
-		val versionName = variant.versionName
-		//def versionCode = variant.versionCode
-		val flavorName = variant.flavorName
-		val buildType = variant.buildType.name
-		//def variantName = variant.name
-		val gitCount = getCommitCount()
+//TODO Fix application variant naming
+//android.applicationVariants.forEach { variant ->
+//	variant.outputs.all {
+//val v: BaseVariantOutput = this
+//val appName = "shosetsu"
+//val versionName = variant.versionName
+//def versionCode = variant.versionCode
+//val flavorName = variant.flavorName
+//val buildType = variant.buildType.name
+//def variantName = variant.name
+//val gitCount = getCommitCount()
 
-		if (buildType == "debug" && flavorName.toString() == "standard") {
-			//outputFileName = "${appName}-${gitCount}.apk"
-		} else {
-			//outputFileName = "${appName}-${versionName}.apk"
-		}
-	}
+//if (buildType == "debug" && flavorName.toString() == "standard") {
+//outputFileName = "${appName}-${gitCount}.apk"
+//} else {
+//outputFileName = "${appName}-${versionName}.apk"
+//}
+//	}
 
-}
+//}
 
 dependencies {
 	implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
@@ -187,7 +187,7 @@ dependencies {
 	implementation("org.jetbrains:annotations:23.0.0")
 
 	// Core libraries
-	val shosetsuLibVersion: String by extra
+	//val shosetsuLibVersion: String by extra
 	implementation("org.luaj:luaj-jse:3.0.1")
 	implementation("com.github.shosetsuorg:kotlin-lib:v1.0.0-rc62")
 
@@ -204,16 +204,11 @@ dependencies {
 	// Time control
 	implementation("joda-time:joda-time:2.10.13")
 
-
-	// TODO Implement readerview provided by Mozilla
-	//implementation "org.mozilla.components:feature-readerview:1.0.0"
-	//implementation "org.mozilla.components:support-base:1.0.0"
-
 	// Cloud flare calculator
 	//implementation("com.zhkrb.cloudflare-scrape-android:scrape-webview:0.0.3")
 
 	// Network
-	implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.4")
+	implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.5")
 
 	// Kotlin libraries
 	implementation(kotlin("stdlib-jdk8"))
@@ -268,7 +263,7 @@ dependencies {
 	kapt("androidx.room:room-compiler:2.4.1")
 
 	// Fast Adapter
-	val latestFastAdapterRelease = "5.4.1"
+	val latestFastAdapterRelease = "5.6.0"
 	fun fastadapter(module: String, version: String = latestFastAdapterRelease) =
 		"com.mikepenz:$module:$version"
 
@@ -284,7 +279,7 @@ dependencies {
 	implementation(fastadapter("fastadapter-extensions-utils"))
 
 	// Guava cache
-	implementation("com.google.guava:guava:30.1.1-android")
+	implementation("com.google.guava:guava:31.0.1-android")
 
 	// kode-in
 	val kodeinVersion = "7.6.0"
@@ -318,7 +313,7 @@ dependencies {
 
 
 	// Compose
-	implementation("androidx.compose.ui:ui:1.1.0")
+	implementation("androidx.compose.ui:ui:1.1.1")
 
 	implementation("androidx.compose.compiler:compiler:1.1.0")
 
@@ -326,9 +321,9 @@ dependencies {
 	implementation("androidx.compose.ui:ui-tooling:1.1.0")
 	//- Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
 	implementation("androidx.compose.foundation:foundation:1.1.0")
-	implementation("androidx.compose.animation:animation:1.1.0")
-	implementation("androidx.compose.animation:animation-graphics:1.1.0")
-	implementation("androidx.compose.animation:animation-core:1.1.0")
+	implementation("androidx.compose.animation:animation:1.1.1")
+	implementation("androidx.compose.animation:animation-graphics:1.1.1")
+	implementation("androidx.compose.animation:animation-core:1.1.1")
 
 	// - Material
 	implementation("androidx.compose.material:material:1.1.0")
