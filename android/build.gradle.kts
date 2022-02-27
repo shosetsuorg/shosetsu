@@ -148,20 +148,19 @@ dependencies {
 	implementation("com.google.android.material:material:1.5.0")
 
 	// Androidx
-	implementation("androidx.constraintlayout:constraintlayout:2.1.3")
+	//implementation("androidx.constraintlayout:constraintlayout:2.1.3")
 	implementation("androidx.work:work-runtime:2.7.1")
 	implementation("androidx.work:work-runtime-ktx:2.7.1")
 	implementation("androidx.gridlayout:gridlayout:1.0.0")
-	implementation("androidx.preference:preference-ktx:1.2.0")
-	implementation("androidx.recyclerview:recyclerview:1.2.1")
-	implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
+	//implementation("androidx.preference:preference-ktx:1.2.0")
+	//implementation("androidx.recyclerview:recyclerview:1.2.1")
+	//implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
 	implementation("androidx.appcompat:appcompat:1.4.1")
-	implementation("androidx.multidex:multidex:2.0.1")
+	//implementation("androidx.multidex:multidex:2.0.1")
 	//implementation("androidx.biometric:biometric:1.1.0") TODO biometric unlocking
 	implementation("androidx.annotation:annotation:1.3.0")
-	implementation("androidx.appcompat:appcompat:1.4.1")
-	implementation("androidx.cardview:cardview:1.0.0")
-	implementation("androidx.browser:browser:1.4.0")
+	//implementation("androidx.cardview:cardview:1.0.0")
+	//implementation("androidx.browser:browser:1.4.0")
 	implementation("androidx.core:core-ktx:1.7.0")
 
 
@@ -236,7 +235,7 @@ dependencies {
 	//compileOnly("com.google.auto.service:auto-service-annotations:1.0")
 
 	// Conductor
-	val conductorVersion = "3.1.1"
+	val conductorVersion = "3.1.4"
 	fun conductor(module: String, version: String = conductorVersion) =
 		"com.bluelinelabs:$module:$version"
 
@@ -246,7 +245,7 @@ dependencies {
 	implementation(conductor("conductor-archlifecycle"))
 
 	// FastScroll
-	implementation("com.github.turing-tech:MaterialScrollBar:13.3.4")
+	//implementation("com.github.turing-tech:MaterialScrollBar:13.3.4")
 
 	// Material Intro https://github.com/heinrichreimer/material-intro#standard-slide-simpleslide
 	implementation("com.heinrichreimersoftware:material-intro:2.0.0")
