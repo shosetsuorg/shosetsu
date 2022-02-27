@@ -600,6 +600,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 		container: ViewGroup,
 		handler: ControllerChangeHandler,
 	) {
+		binding.elevatedAppBarLayout.setExpanded(true)
 		syncActivityViewWithController(to, from)
 	}
 
