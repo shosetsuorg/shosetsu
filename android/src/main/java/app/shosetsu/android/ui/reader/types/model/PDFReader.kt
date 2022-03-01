@@ -1,5 +1,6 @@
 package app.shosetsu.android.ui.reader.types.model
 
+import android.speech.tts.TextToSpeech
 import android.view.View
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
@@ -75,6 +76,10 @@ class PDFReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	}
 
 	override fun depleteScroll() {
+		TODO("Not yet implemented")
+	}
+
+	override fun playTTS(tts: TextToSpeech) {
 		TODO("Not yet implemented")
 	}
 

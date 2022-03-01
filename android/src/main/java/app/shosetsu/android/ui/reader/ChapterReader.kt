@@ -3,6 +3,7 @@ package app.shosetsu.android.ui.reader
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
@@ -11,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.*
@@ -40,6 +40,7 @@ import kotlinx.coroutines.delay
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
+import java.util.*
 
 
 /*
@@ -68,6 +69,31 @@ class ChapterReader
 	override val di: DI by closestDI()
 	internal val viewModel: AChapterReaderViewModel by viewModel()
 	private lateinit var binding: ActivityReaderBinding
+
+	private val ttsInitListener: TextToSpeech.OnInitListener by lazy {
+		TextToSpeech.OnInitListener {
+			when (it) {
+				TextToSpeech.SUCCESS -> {
+					val result = tts.setLanguage(Locale.getDefault())
+
+					if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+						logE("Language not supported for TTS")
+						binding.chapterReaderBottom.ttsPlay.isEnabled = false
+					} else {
+						binding.chapterReaderBottom.ttsPlay.isEnabled = true
+					}
+				}
+				else -> {
+					logE("TTS Initialization failed")
+					binding.chapterReaderBottom.ttsPlay.isEnabled = false
+				}
+			}
+		}
+	}
+
+	private val tts: TextToSpeech by lazy {
+		TextToSpeech(this, ttsInitListener)
+	}
 
 	private val toolbar: MaterialToolbar
 		get() = binding.toolbar
@@ -168,6 +194,8 @@ class ChapterReader
 	override fun onDestroy() {
 		logV("")
 		viewpager.unregisterOnPageChangeCallback(pageChangeCallback)
+		tts.stop()
+		tts.shutdown()
 		super.onDestroy()
 	}
 
@@ -347,6 +375,17 @@ class ChapterReader
 			}
 		}
 
+		binding.chapterReaderBottom.ttsPlay.setOnClickListener {
+			applyToChapterViews(true) {
+				this.playTTS(tts)
+				binding.stopTts.isVisible = true
+			}
+		}
+		binding.stopTts.setOnClickListener {
+			stopTTS()
+		}
+
+
 		binding.chapterReaderBottom.drawerToggleVisibility.setOnClickListener {
 			focusListener()
 		}
@@ -437,8 +476,10 @@ class ChapterReader
 		}
 	}
 
-	private fun <T> LiveData<T>.observe(observer: (T) -> Unit) =
-		observe(this@ChapterReader, observer)
+	private fun stopTTS() {
+		binding.stopTts.isVisible = false
+		tts.stop()
+	}
 
 	inner class ChapterReaderPageChange : OnPageChangeCallback() {
 		override fun onPageSelected(position: Int) {
@@ -447,6 +488,7 @@ class ChapterReader
 
 		private fun onPageSelected(position: Int, retry: Boolean) {
 			logV("New position: $position")
+			stopTTS()
 			when (val item = itemAdapter.getAdapterItem(position)) {
 				is ReaderChapterUI -> {
 					logV("New is a Chapter")

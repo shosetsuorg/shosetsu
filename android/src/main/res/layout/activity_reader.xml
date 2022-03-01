@@ -40,26 +40,45 @@
         android:id="@+id/progress_percentage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textIsSelectable="false"
         android:layout_gravity="bottom"
+        android:textIsSelectable="false"
         app:layout_anchorGravity="end"
         tools:text="20%"
         tools:visibility="visible" />
 
-    <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/toggle_visibility"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:alpha="0.5"
-        android:elevation="1dp"
-        android:backgroundTint="@android:color/black"
-        android:src="@drawable/ic_baseline_visibility_24"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/stop_tts"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:alpha="0.5"
+            android:elevation="1dp"
+            android:backgroundTint="@android:color/black"
+            android:src="@drawable/ic_baseline_stop_circle_24"
+            android:visibility="gone"
+            android:layout_marginBottom="8dp"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/toggle_visibility"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:alpha="0.5"
+            android:backgroundTint="@android:color/black"
+            android:elevation="1dp"
+            android:src="@drawable/ic_baseline_visibility_24"
+            android:visibility="gone"
+            tools:visibility="visible" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
 
     <include
-        tools:visibility="gone"
         android:id="@+id/chapter_reader_bottom"
-        layout="@layout/chapter_reader_bottom" />
+        layout="@layout/chapter_reader_bottom"
+        tools:visibility="gone" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

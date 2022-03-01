@@ -1,5 +1,6 @@
 package app.shosetsu.android.ui.reader.types.base
 
+import android.speech.tts.TextToSpeech
 import android.view.View
 import androidx.annotation.CallSuper
 import app.shosetsu.android.ui.reader.ChapterReader
@@ -80,4 +81,9 @@ abstract class ReaderChapterViewHolder(
 	abstract fun incrementScroll()
 
 	abstract fun depleteScroll()
+
+	/**
+	 * Perform TTS with the current data
+	 */
+	abstract fun playTTS(tts: TextToSpeech)
 }

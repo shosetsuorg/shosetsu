@@ -3,6 +3,7 @@ package app.shosetsu.android.ui.reader.types.model
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.net.Uri
+import android.speech.tts.TextToSpeech
 import android.util.Base64
 import android.view.View
 import android.webkit.JavascriptInterface
@@ -194,9 +195,10 @@ class HTMLReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 		)
 	}
 
+	var content: String = ""
 	override fun setData(data: ByteArray) {
 		syncStylesWithViewModel()
-		var content: String = data.decodeToString()
+		content = data.decodeToString()
 
 		// Convert string to html if the chapter is a string chapter
 		if (chapter.chapterType == Novel.ChapterType.STRING && chapter.convertStringToHtml)
@@ -262,6 +264,15 @@ class HTMLReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 		webView.evaluateJavascript("window.scroll(0,-50)", null)
 	}
 
+	override fun playTTS(tts: TextToSpeech) {
+		tts.speak(
+			content,
+			TextToSpeech.QUEUE_FLUSH,
+			null,
+			content.hashCode().toString()
+		)
+	}
+
 	override fun bindView(item: ReaderChapterUI, payloads: List<Any>) {
 		super.bindView(item, payloads)
 		syncStylesWithViewModel()
@@ -272,6 +283,7 @@ class HTMLReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	}
 
 	override fun unbindView(item: ReaderChapterUI) {
+		content = ""
 	}
 
 	companion object {

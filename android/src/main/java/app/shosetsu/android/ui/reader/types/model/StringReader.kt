@@ -1,6 +1,7 @@
 package app.shosetsu.android.ui.reader.types.model
 
 import android.os.Build
+import android.speech.tts.TextToSpeech
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -186,6 +187,15 @@ class StringReader(
 		if (currentY > scrollStep)
 			scrollView.smoothScrollBy(0, -1 * scrollStep, scrollDuration)
 		else scrollView.smoothScrollTo(0, 0)
+	}
+
+	override fun playTTS(tts: TextToSpeech) {
+		tts.speak(
+			unformattedText,
+			TextToSpeech.QUEUE_FLUSH,
+			null,
+			unformattedText.hashCode().toString()
+		)
 	}
 
 	override fun bindView(item: ReaderChapterUI, payloads: List<Any>) {
