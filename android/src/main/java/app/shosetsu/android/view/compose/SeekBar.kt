@@ -1,11 +1,8 @@
 package app.shosetsu.android.view.compose
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Slider
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,8 +10,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 
 @Preview
@@ -26,12 +23,16 @@ fun PreviewSeekBar() {
 			.fillMaxSize()
 			.padding(16.dp)
 	) {
-		DiscreteSlider(range = 1..5, indexName = {
-			"$it"
-		}, value = value, onValueChange = {
-			value = it
-		},
-			showAllIndices = true
+		DiscreteSlider(
+			range = 1..5,
+			indexName = {
+				"$it"
+			},
+			value = value,
+			onValueChange = {
+				value = it
+			},
+			showAllIndices = true,
 		)
 	}
 }
@@ -44,7 +45,8 @@ fun DiscreteSlider(
 	onValueChange: (Int) -> Unit,
 	showAllIndices: Boolean = false,
 	showIndex: ((Int) -> Boolean)? = null,
-	textStyle: TextStyle = LocalTextStyle.current
+	fontSize: TextUnit? = null,
+	textColor: Color? = null
 ) {
 	if (!showAllIndices)
 		requireNotNull(showIndex)
@@ -54,12 +56,10 @@ fun DiscreteSlider(
 	val lineHeightDp = 10.dp
 	val lineHeightPx = with(LocalDensity.current) { lineHeightDp.toPx() }
 	val canvasHeight = 50.dp
-	val textSize = textStyle.fontSize.value
-	println(textSize)
 	val textPaint = android.graphics.Paint().apply {
-		color = textStyle.color.value.toInt()
+		color = textColor?.value?.toInt() ?: Color.Gray.value.toInt()
 		textAlign = android.graphics.Paint.Align.CENTER
-		this.textSize = textSize * 2
+		this.textSize = (fontSize?.value ?: 14f)
 	}
 	Box(contentAlignment = Alignment.Center) {
 		Canvas(
@@ -84,7 +84,7 @@ fun DiscreteSlider(
 					this.drawContext.canvas.nativeCanvas.drawText(
 						indexName(step),
 						drawPadding + index.times(distance),
-						textSize,
+						textPaint.textSize,
 						textPaint
 					)
 				}
