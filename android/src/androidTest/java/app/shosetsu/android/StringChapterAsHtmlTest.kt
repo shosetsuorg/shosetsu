@@ -6,15 +6,12 @@ import app.shosetsu.common.utils.asHtml
 import app.shosetsu.android.domain.usecases.get.GetChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.get.GetReaderChaptersUseCase
 import app.shosetsu.android.domain.usecases.load.LoadLibraryUseCase
-import app.shosetsu.common.dto.handle
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.future.future
 import org.junit.Test
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.*
+import org.kodein.di.android.closestDI
 
 /*
  * This file is part of Shosetsu.
@@ -36,13 +33,13 @@ import org.kodein.di.generic.instance
 /**
  * 19 / 02 / 2021
  */
-class StringChapterAsHtmlTest : KodeinAware {
+class StringChapterAsHtmlTest : DIAware {
 
 	private val context: Context by lazy {
 		InstrumentationRegistry.getInstrumentation().targetContext
 	}
 
-	override val kodein: Kodein by closestKodein(context)
+	override val di: DI by closestDI(context)
 
 	private val getReaderChapterUseCase: GetReaderChaptersUseCase by instance()
 
@@ -52,14 +49,10 @@ class StringChapterAsHtmlTest : KodeinAware {
 	@Test
 	fun main() {
 		GlobalScope.future {
-			getBookMarkedNovelsUseCase().collectLatest { novelResult ->
-				novelResult.handle { novelList ->
-					getReaderChapterUseCase(novelList.first().id).collectLatest { chapterResult ->
-						chapterResult.handle { chapterList ->
-							getChapterPassageUseCase(chapterList.first()).handle {
-								println(asHtml(it, title = chapterList.first().title))
-							}
-						}
+			getBookMarkedNovelsUseCase().collectLatest { novelList ->
+				getReaderChapterUseCase(novelList.first().id).collectLatest { chapterList ->
+					getChapterPassageUseCase(chapterList.first()).let {
+						println(asHtml(it.toString(), title = chapterList.first().title))
 					}
 				}
 			}

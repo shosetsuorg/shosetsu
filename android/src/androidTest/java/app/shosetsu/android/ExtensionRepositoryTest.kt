@@ -3,10 +3,9 @@ package app.shosetsu.android
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import app.shosetsu.android.common.ext.logD
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
-import app.shosetsu.common.dto.handle
-import app.shosetsu.common.dto.unwrap
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.future.future
 import org.junit.Test
@@ -44,24 +43,12 @@ class ExtensionRepositoryTest : DIAware {
 	private val repo: IExtensionRepoRepository by instance()
 
 	private suspend fun print() {
-		repo.loadRepositories().handle(
-			onLoading = {
-				logD("Loading")
-			},
-			onError = {
-				logD(it.toString())
-				it.exception?.printStackTrace()
-			},
-			onEmpty = {
-				logD("Empty")
-			},
-			onSuccess = { list ->
-				logD("========================")
-				list.forEach {
-					logD(it.toString())
-				}
-				logD("========================")
-			})
+		val list = repo.loadRepositories()
+		logD("========================")
+		list.forEach {
+			logD(it.toString())
+		}
+		logD("========================")
 	}
 
 	@Test
@@ -71,50 +58,41 @@ class ExtensionRepositoryTest : DIAware {
 			print()
 
 			// Create the temp entity
-			val tempRepoValue = RepositoryEntity(
-				url = "Build test",
-				name = "Temporary test",
-				isEnabled = true
-			)
+			val url = "Build test"
+			val name = "Temporary test"
+
 
 			// Add the temp entity
-			val result = repo.addRepository(tempRepoValue, name, true)
-			result.handle(
-				onError = {
-					it.exception?.printStackTrace()
-				}
-			) {
-				logD<ExtensionRepositoryTest>("Added successfully")
-			}
-			requireNotNull(result.unwrap()) { "Failed to add" }
+			val result = repo.addRepository(
+				url = "Build test",
+				name = "Temporary test",
+			)
+			result
+			logD<ExtensionRepositoryTest>("Added successfully")
+			requireNotNull(result) { "Failed to add" }
 			print()
 
 
 			// Getting the entity from repo
 			logD<ExtensionRepositoryTest>("Attempting to retrieve entity")
-			val handle = repo.loadRepositories().unwrap()?.find { it.url == tempRepoValue.url }
+			val handle = repo.loadRepositories().find { it.url == url }
 			requireNotNull(handle) { "Failed to retrieve" }
 
 
 			// Duplicate injection
 			logD<ExtensionRepositoryTest>("Attempting database duplicate injection")
-			require(
-				repo.addRepository(handle, name, true).unwrap() == null
-			) { "Did not properly reject" }
-			logD<ExtensionRepositoryTest>("Properly rejected")
+			try {
+				repo.addRepository(handle.url, name)
+			} catch (e: Exception) {
+				logD<ExtensionRepositoryTest>("Properly rejected")
+			}
+			logE("Failed to reject")
 
 			print()
 
 			// Clean up
-			repo.remove(handle).handle(
-				onError = { error ->
-					error.exception?.let {
-						throw it
-					}
-				}
-			) {
-				logD<ExtensionRepositoryTest>("Successfully removed!")
-			}
+			repo.remove(handle)
+			logD<ExtensionRepositoryTest>("Successfully removed!")
 
 			print()
 		}.join()

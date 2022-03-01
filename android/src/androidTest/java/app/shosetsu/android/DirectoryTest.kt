@@ -6,10 +6,10 @@ import app.shosetsu.common.enums.ExternalFileDir
 import app.shosetsu.common.enums.InternalFileDir
 import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import org.junit.Test
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 
 /*
  * This file is part of shosetsu.
@@ -32,12 +32,12 @@ import org.kodein.di.generic.instance
  * shosetsu
  * 05 / 09 / 2020
  */
-class DirectoryTest : KodeinAware {
+class DirectoryTest : DIAware {
 	private val context: Context by lazy {
 		InstrumentationRegistry.getInstrumentation().targetContext
 	}
 
-	override val kodein: Kodein by closestKodein(context)
+	override val di: DI by closestDI(context)
 	private val iFileSystemProvider by instance<IFileSystemProvider>()
 
 	@Test

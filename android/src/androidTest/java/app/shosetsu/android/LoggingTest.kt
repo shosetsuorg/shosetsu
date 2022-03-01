@@ -1,7 +1,7 @@
 package app.shosetsu.android
 
 import android.util.Log
-import app.shosetsu.android.common.ext.enclosingName
+//import app.shosetsu.android.common.ext.enclosingName
 import org.junit.Test
 
 /*
@@ -41,8 +41,9 @@ class LoggingTest {
 		advancedLogV("This is a log")
 	}
 
-	inline fun <reified T> T.advancedLogV(message: String?): Int {
-		return Log.w(T::class.java.simpleName, "${enclosingName()}:\t$message", null)
+	inline fun <reified T> T.advancedLogV(message: String?) {
+		// TODO Fix enclosing name
+//		return Log.w(T::class.java.simpleName, "${enclosingName()}:\t$message", null)
 	}
 
 }

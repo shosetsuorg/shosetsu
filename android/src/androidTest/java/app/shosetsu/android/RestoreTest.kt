@@ -6,10 +6,10 @@ import app.shosetsu.common.domain.repositories.base.IBackupRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.future.future
 import org.junit.Test
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 
 /*
  * This file is part of Shosetsu.
@@ -31,22 +31,22 @@ import org.kodein.di.generic.instance
 /**
  * 13 / 02 / 2021
  */
-class RestoreTest : KodeinAware {
+class RestoreTest : DIAware {
 
 	private val context: Context by lazy {
 		InstrumentationRegistry.getInstrumentation().targetContext
 	}
 
-	override val kodein: Kodein by closestKodein(context)
+	override val di: DI by closestDI(context)
 
 	private val backupRepository by instance<IBackupRepository>()
 
 	@Test
 	fun test() {
 		GlobalScope.future {
-			backupRepository.loadBackups().handle {
-				println("Ava backups: $it")
-			}
+			val it = backupRepository.loadBackups()
+			println("Ava backups: $it")
+
 		}.join()
 	}
 }

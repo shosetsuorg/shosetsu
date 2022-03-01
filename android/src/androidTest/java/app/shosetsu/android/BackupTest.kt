@@ -7,12 +7,10 @@ import app.shosetsu.android.common.utils.backupJSON
 import app.shosetsu.android.domain.model.local.backup.*
 import app.shosetsu.common.domain.model.local.BackupEntity
 import app.shosetsu.common.domain.repositories.base.IBackupRepository
-import app.shosetsu.common.dto.unwrap
 import app.shosetsu.common.enums.ReadingStatus
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.future.future
 import kotlinx.serialization.encodeToString
-import okhttp3.internal.toHexString
 import org.junit.Test
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -65,7 +63,7 @@ class BackupTest : DIAware {
 		get() = Random.nextLong() % 10000
 
 	private val randomString
-		get() = randomLong.toHexString()
+		get() = randomLong.toString()
 
 	private fun randomRepositories() = ArrayList<BackupRepositoryEntity>().apply {
 		for (i in 0 until randomInt) {
@@ -183,7 +181,7 @@ class BackupTest : DIAware {
 						BackupEntity(
 							base64Bytes
 						)
-					).unwrap()
+					)
 				)
 			}.let {
 				println("Saved in ${it}ms")
