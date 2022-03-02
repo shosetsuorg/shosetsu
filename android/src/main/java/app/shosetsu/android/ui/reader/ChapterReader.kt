@@ -377,6 +377,8 @@ class ChapterReader
 
 		binding.chapterReaderBottom.ttsPlay.setOnClickListener {
 			applyToChapterViews(true) {
+				tts.setPitch(viewModel.ttsPitch)
+				tts.setSpeechRate(viewModel.ttsSpeed)
 				this.playTTS(tts)
 				binding.stopTts.isVisible = true
 			}

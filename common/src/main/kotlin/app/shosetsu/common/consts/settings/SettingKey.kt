@@ -137,6 +137,10 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 		false
 	)
 
+	object ReaderPitch : FloatKey("reader_pitch", 1f)
+
+	object ReaderSpeed : FloatKey("reader_speed", 1f)
+
 	// Download options
 	object IsDownloadPaused : BooleanKey("isDownloadPaused", false)
 

@@ -35,6 +35,9 @@ abstract class AChapterReaderViewModel :
 	ShosetsuViewModel(),
 	ExposedSettingsRepoViewModel {
 
+	abstract val ttsSpeed: Float
+	abstract val ttsPitch: Float
+
 	/**
 	 * User CSS to store for repeat use from reader
 	 */

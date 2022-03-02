@@ -34,6 +34,7 @@ import app.shosetsu.common.enums.ReadingStatus.READING
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.runBlocking
 
 /*
  * This file is part of shosetsu.
@@ -75,6 +76,16 @@ class ChapterReaderViewModel(
 	private val isHorizontalPageSwapping by lazy {
 		settingsRepo.getBooleanFlow(ReaderHorizontalPageSwap)
 	}
+
+	override val ttsPitch: Float
+		get() = runBlocking {
+			settingsRepo.getFloat(ReaderPitch)
+		}
+
+	override val ttsSpeed: Float
+		get() = runBlocking {
+			settingsRepo.getFloat(ReaderSpeed)
+		}
 
 	/**
 	 * TODO Memory management here
