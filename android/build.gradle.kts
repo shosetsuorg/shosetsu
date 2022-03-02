@@ -212,7 +212,7 @@ dependencies {
 
 	// Kotlin libraries
 	implementation(kotlin("stdlib-jdk8"))
-	implementation(kotlin("reflect"))
+	//implementation(kotlin("reflect"))
 
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
 
