@@ -66,3 +66,33 @@ fun DiscreteSlider(
 		)
 	}
 }
+
+/**
+ * This creates a sudo discrete slider
+ *
+ * @param value Value to set [Slider] to
+ * @param parsedValue [value] parsed to be displayed as a string
+ * @param updateValue Called when [Slider] updates its value
+ * @param valueRange An integer range of possible values
+ */
+@Composable
+fun DiscreteSlider(
+	value: Float,
+	parsedValue: String,
+	updateValue: (Float) -> Unit,
+	valueRange: IntRange
+) {
+	Row(
+		verticalAlignment = Alignment.CenterVertically
+	) {
+		Text(parsedValue, modifier = Modifier.padding(end = 8.dp))
+		Slider(
+			value,
+			{
+				updateValue(it)
+			},
+			valueRange = valueRange.first.toFloat()..valueRange.last.toFloat(),
+			steps = valueRange.count() - 2
+		)
+	}
+}
