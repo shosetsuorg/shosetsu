@@ -166,7 +166,7 @@ dependencies {
 
 
 
-	implementation("androidx.room:room-ktx:2.4.1")
+	implementation("androidx.room:room-ktx:2.4.2")
 	implementation("androidx.collection:collection-ktx:1.2.0")
 	implementation("androidx.core:core-splashscreen:1.0.0-beta01")
 
@@ -259,8 +259,8 @@ dependencies {
 	implementation("com.github.shosetsuorg:Bubbleseekbar:2dae010baf")
 
 	// Room
-	implementation("androidx.room:room-runtime:2.4.1")
-	kapt("androidx.room:room-compiler:2.4.1")
+	implementation("androidx.room:room-runtime:2.4.2")
+	kapt("androidx.room:room-compiler:2.4.2")
 
 	// Fast Adapter
 	val latestFastAdapterRelease = "5.6.0"
@@ -315,18 +315,18 @@ dependencies {
 	// Compose
 	implementation("androidx.compose.ui:ui:1.1.1")
 
-	implementation("androidx.compose.compiler:compiler:1.1.0")
+	implementation("androidx.compose.compiler:compiler:1.1.1")
 
 	//- Tooling support (Previews, etc.)
-	implementation("androidx.compose.ui:ui-tooling:1.1.0")
+	implementation("androidx.compose.ui:ui-tooling:1.1.1")
 	//- Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-	implementation("androidx.compose.foundation:foundation:1.1.0")
+	implementation("androidx.compose.foundation:foundation:1.1.1")
 	implementation("androidx.compose.animation:animation:1.1.1")
 	implementation("androidx.compose.animation:animation-graphics:1.1.1")
 	implementation("androidx.compose.animation:animation-core:1.1.1")
 
 	// - Material
-	implementation("androidx.compose.material:material:1.1.0")
+	implementation("androidx.compose.material:material:1.1.1")
 	//implementation("androidx.compose.material:material-ripple:1.0.2")
 
 	//- Material design icons
@@ -334,13 +334,13 @@ dependencies {
 	//implementation("androidx.compose.material:material-icons-extended:1.0.2")
 
 	//- Integration with observables
-	implementation("androidx.compose.runtime:runtime-livedata:1.1.0")
+	implementation("androidx.compose.runtime:runtime-livedata:1.1.1")
 
 	//- UI Tests
 	//androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.2")
 
 	// MDC Adapter
-	implementation("com.google.android.material:compose-theme-adapter:1.1.4")
+	implementation("com.google.android.material:compose-theme-adapter:1.1.5")
 	implementation("com.google.accompanist:accompanist-appcompat-theme:0.15.0")
 	implementation("com.google.accompanist:accompanist-swiperefresh:0.19.0")
 
