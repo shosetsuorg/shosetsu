@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -73,7 +74,9 @@ class ComposeReaderSettings : ShosetsuController() {
 
 @Composable
 fun ReaderSettingsContent(viewModel: AReaderSettingsViewModel) {
-	LazyColumn(modifier = Modifier.padding(16.dp)) {
+	LazyColumn(
+		contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 64.dp)
+	) {
 		//TODO Text Preview at top
 
 		// TODO FloatInput 4 paragraph spacing

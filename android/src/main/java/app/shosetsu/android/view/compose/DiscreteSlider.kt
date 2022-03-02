@@ -1,16 +1,18 @@
 package app.shosetsu.android.view.compose
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Slider
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.google.android.material.composethemeadapter.MdcTheme
 import kotlin.math.roundToInt
 
@@ -31,6 +33,7 @@ fun PreviewSeekBar() {
 					value = it
 				},
 				0..10,
+				allowUserInput = true
 			)
 		}
 	}
@@ -50,12 +53,58 @@ fun DiscreteSlider(
 	value: Int,
 	parsedValue: String,
 	updateValue: (Int) -> Unit,
-	valueRange: IntRange
+	valueRange: IntRange,
+	allowUserInput: Boolean = false
 ) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically
 	) {
-		Text(parsedValue, modifier = Modifier.padding(end = 8.dp))
+		var showDialog by remember { mutableStateOf(false) }
+
+		if (showDialog) {
+			var newValue by remember { mutableStateOf(value) }
+
+			Dialog(
+				onDismissRequest = {
+					showDialog = false
+				}
+			) {
+				Card {
+					Column {
+						var isTextError by remember { mutableStateOf(false) }
+						TextField(
+							value = "$newValue", onValueChange = {
+								val value = it.toIntOrNull() ?: if (it.isEmpty()) 0 else null
+
+								if (value != null) {
+									newValue = value
+									isTextError = false
+								} else {
+									isTextError = true
+								}
+							}, singleLine = true, keyboardOptions = KeyboardOptions(
+								keyboardType = KeyboardType.Number
+							)
+						)
+
+						TextButton(onClick = {
+							updateValue(newValue)
+							showDialog = false
+						}) {
+							Text(stringResource(android.R.string.ok))
+						}
+					}
+				}
+			}
+		}
+
+		TextButton(onClick = {
+			if (allowUserInput) {
+				showDialog = true
+			}
+		}) {
+			Text(text = parsedValue)
+		}
 		Slider(
 			value.toFloat(),
 			{
@@ -80,7 +129,8 @@ fun DiscreteSlider(
 	value: Float,
 	parsedValue: String,
 	updateValue: (Float) -> Unit,
-	valueRange: IntRange
+	valueRange: IntRange,
+	allowUserInput: Boolean = false
 ) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically

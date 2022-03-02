@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.usecases.load.LoadReaderThemes
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
+import app.shosetsu.android.view.uimodels.settings.DoubleNumberSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AReaderSettingsViewModel
@@ -122,70 +123,82 @@ class ReaderSettingsViewModel(
 
 }
 
-suspend fun ExposedSettingsRepoViewModel.stringAsHtmlOption(id: Int) =
-	switchSettingData(id) {
+suspend fun ExposedSettingsRepoViewModel.stringAsHtmlOption(id: Int): SettingsItemData {
+	return switchSettingData(id) {
 		titleRes = R.string.settings_reader_title_string_to_html
 		descRes = R.string.settings_reader_desc_string_to_html
 		checkSettingValue(ReaderStringToHtml)
 	}
+}
 
-suspend fun ExposedSettingsRepoViewModel.horizontalSwitchOption(id: Int) =
-	switchSettingData(id) {
+suspend fun ExposedSettingsRepoViewModel.horizontalSwitchOption(id: Int): SettingsItemData {
+	return switchSettingData(id) {
 		titleRes = R.string.settings_reader_title_horizontal_option
 		descRes = R.string.settings_reader_desc_horizontal_option
 		checkSettingValue(ReaderHorizontalPageSwap)
 	}
+}
 
-suspend fun ExposedSettingsRepoViewModel.invertChapterSwipeOption(id: Int) =
-	switchSettingData(id) {
+suspend fun ExposedSettingsRepoViewModel.invertChapterSwipeOption(id: Int): SettingsItemData {
+	return switchSettingData(id) {
 		titleRes = R.string.settings_reader_inverted_swipe_title
 		descRes = R.string.settings_reader_inverted_swipe_desc
 		checkSettingValue(ReaderIsInvertedSwipe)
 	}
+}
 
-suspend fun ExposedSettingsRepoViewModel.showReaderDivider(id: Int) =
-	switchSettingData(id) {
+suspend fun ExposedSettingsRepoViewModel.showReaderDivider(id: Int): SettingsItemData {
+	return switchSettingData(id) {
 		titleRes = R.string.settings_reader_show_divider
 		descRes = R.string.settings_reader_show_divider_desc
 		checkSettingValue(ReaderShowChapterDivider)
 	}
+}
 
-suspend fun ExposedSettingsRepoViewModel.continuousScrollOption(id: Int) =
-	switchSettingData(id) {
+suspend fun ExposedSettingsRepoViewModel.continuousScrollOption(id: Int): SettingsItemData {
+	return switchSettingData(id) {
 		titleRes = R.string.settings_reader_title_continous_scroll
 		descRes = R.string.settings_reader_desc_continous_scroll
 		checkSettingValue(ReaderContinuousScroll)
 	}
+}
 
-suspend fun ExposedSettingsRepoViewModel.tapToScrollOption(id: Int) =
-	switchSettingData(id) {
+suspend fun ExposedSettingsRepoViewModel.tapToScrollOption(id: Int): SettingsItemData {
+	return switchSettingData(id) {
 		titleRes = R.string.settings_reader_tap_to_scroll_title
 		checkSettingValue(ReaderIsTapToScroll)
 	}
+}
 
-suspend fun ExposedSettingsRepoViewModel.readerKeepScreenOnOption(id: Int) =
-	switchSettingData(id) {
+suspend fun ExposedSettingsRepoViewModel.readerKeepScreenOnOption(id: Int): SettingsItemData {
+	return switchSettingData(id) {
 		titleRes = R.string.settings_reader_keep_screen_on
 		descRes = R.string.settings_reader_keep_screen_on_desc
 		checkSettingValue(ReaderKeepScreenOn)
 	}
+}
 
-suspend fun ExposedSettingsRepoViewModel.volumeScrollingOption(id: Int) =
-	switchSettingData(id) {
+suspend fun ExposedSettingsRepoViewModel.volumeScrollingOption(id: Int): SettingsItemData {
+	return switchSettingData(id) {
 		titleRes = R.string.settings_reader_volume_scroll_title
 		checkSettingValue(ReaderVolumeScroll)
 	}
+}
 
-suspend fun ExposedSettingsRepoViewModel.textSizeOption(id: Int) =
-	floatButtonSettingData(id) {
+suspend fun ExposedSettingsRepoViewModel.textSizeOption(id: Int): DoubleNumberSettingData {
+	return floatButtonSettingData(id) {
 		titleRes = R.string.text_size
 		minWhole = 7
 		maxWhole = 50
 		settingValue(ReaderTextSize)
 	}
+}
 
-suspend fun ExposedSettingsRepoViewModel.paragraphIndentOption(id: Int, context: Context) =
-	spinnerSettingData(id) {
+suspend fun ExposedSettingsRepoViewModel.paragraphIndentOption(
+	id: Int,
+	context: Context
+): SettingsItemData {
+	return spinnerSettingData(id) {
 		titleRes = R.string.paragraph_indent
 		@Suppress("CheckedExceptionsKotlin") // Resource might not exist
 		arrayAdapter = ArrayAdapter(
@@ -195,11 +208,13 @@ suspend fun ExposedSettingsRepoViewModel.paragraphIndentOption(id: Int, context:
 		)
 		spinnerSettingValue(ReaderIndentSize)
 	}
+}
 
-suspend fun ExposedSettingsRepoViewModel.paragraphSpacingOption(id: Int) =
-	floatButtonSettingData(id) {
+suspend fun ExposedSettingsRepoViewModel.paragraphSpacingOption(id: Int): DoubleNumberSettingData {
+	return floatButtonSettingData(id) {
 		titleRes = R.string.paragraph_spacing
 		minWhole = 0
 
 		settingValue(ReaderParagraphSpacing)
 	}
+}
