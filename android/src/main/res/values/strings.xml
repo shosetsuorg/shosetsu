@@ -617,6 +617,7 @@
     <string name="settings_advanced_log_title">Log to file</string>
     <string name="settings_advanced_log_desc">Enabling logs to a file, but may cause slow downs.\nRequires a restart</string>
     <string name="update_to">Update: %s</string>
+    <string name="download_chapter_updates_desc">Download chapters that have been recently added to Updates</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

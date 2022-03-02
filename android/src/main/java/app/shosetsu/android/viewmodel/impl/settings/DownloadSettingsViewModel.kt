@@ -4,11 +4,9 @@ import androidx.work.WorkInfo
 import app.shosetsu.android.backend.workers.onetime.DownloadWorker
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.ADownloadSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.flow.combine
 
 /*
@@ -38,138 +36,6 @@ class DownloadSettingsViewModel(
 ) : ADownloadSettingsViewModel(iSettingsRepository) {
 
 	override suspend fun settings(): List<SettingsItemData> = listOf(
-		seekBarSettingData(6) {
-			titleText = "Download thread pool size"
-			descText = "How many simultaneous downloads occur at once"
-			range { 1F to 6F }
-
-			progressValue = settingsRepo.getInt(DownloadThreadPool).toFloat()
-
-			showSectionMark = true
-			showSectionText = true
-
-			seekBySection = true
-			seekByStepSection = true
-			autoAdjustSectionMark = true
-			touchToSeek = true
-			hideBubble = true
-
-			sectionC = 5
-			array.apply {
-				put(0, "1")
-				put(1, "2")
-				put(2, "3")
-				put(3, "4")
-				put(4, "5")
-				put(5, "6")
-
-			}
-			onProgressChanged { _, progress, _, fromUser ->
-				if (fromUser) launchIO {
-					settingsRepo.setInt(DownloadThreadPool, progress)
-				}
-			}
-		},
-
-		seekBarSettingData(6) {
-			titleText = "Download threads per Extension"
-			descText = "How many simultaneous downloads per extension that can occur at once"
-			range { 1F to 6F }
-
-			progressValue = settingsRepo.getInt(DownloadExtThreads).toFloat()
-
-			showSectionMark = true
-			showSectionText = true
-
-			seekBySection = true
-			seekByStepSection = true
-			autoAdjustSectionMark = true
-			touchToSeek = true
-			hideBubble = true
-
-			sectionC = 5
-			array.apply {
-				put(0, "1")
-				put(1, "2")
-				put(2, "3")
-				put(3, "4")
-				put(4, "5")
-				put(5, "6")
-
-			}
-			onProgressChanged { _, progress, _, fromUser ->
-				if (fromUser) launchIO {
-					settingsRepo.setInt(DownloadExtThreads, progress)
-				}
-			}
-		},
-		// TODO Figure out how to change download directory
-		switchSettingData(3) {
-			titleRes = R.string.download_chapter_updates
-			checkSettingValue(DownloadNewNovelChapters)
-		},
-		switchSettingData(2) {
-			titleText = "Allow downloading on metered connection"
-			checkSettingValue(DownloadOnMeteredConnection)
-		},
-		switchSettingData(3) {
-			titleText = "Download on low battery"
-			checkSettingValue(DownloadOnLowBattery)
-		},
-		switchSettingData(4) {
-			titleText = "Download on low storage"
-			checkSettingValue(DownloadOnLowStorage)
-		},
-		switchSettingData(5) {
-			titleText = "Download only when idle"
-			requiredVersion { android.os.Build.VERSION_CODES.M }
-			checkSettingValue(DownloadOnlyWhenIdle)
-		},
-		switchSettingData(6) {
-			titleText = "Bookmarked novel on download"
-			descText = "If a novel is not bookmarked when a chapter is downloaded, this will"
-		},
-		switchSettingData(7) {
-			titleRes = R.string.settings_download_notify_extension_install_title
-			descRes = R.string.settings_download_notify_extension_install_desc
-			checkSettingValue(NotifyExtensionDownload)
-		},
-		seekBarSettingData(9) {
-			titleRes = R.string.settings_download_delete_on_read_title
-			descRes = R.string.settings_download_delete_on_read_desc
-			range { 0F to 5F }
-
-			progressValue = settingsRepo.getInt(DeleteReadChapter).toFloat() + 1
-
-			showSectionMark = true
-			showSectionText = true
-
-			seekBySection = true
-			seekByStepSection = true
-			autoAdjustSectionMark = true
-			touchToSeek = true
-			hideBubble = true
-
-			sectionC = 4
-			array.apply {
-				put(0, "Disabled")
-				put(1, "Delete current")
-				put(2, "Previous")
-				put(3, "2nd to last")
-				put(4, "3rd to last")
-
-			}
-			onProgressChanged { _, progress, _, fromUser ->
-				if (fromUser) launchIO {
-					settingsRepo.setInt(DeleteReadChapter, progress - 1)
-				}
-			}
-		},
-		switchSettingData(10) {
-			titleText = "Unique chapter notification"
-			descText = "Create a notification for each chapters status when downloading"
-			checkSettingValue(DownloadNotifyChapters)
-		},
 
 		)
 
