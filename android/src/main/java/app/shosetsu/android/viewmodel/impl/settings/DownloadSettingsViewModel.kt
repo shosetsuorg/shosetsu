@@ -3,7 +3,6 @@ package app.shosetsu.android.viewmodel.impl.settings
 import androidx.work.WorkInfo
 import app.shosetsu.android.backend.workers.onetime.DownloadWorker
 import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.settings.ADownloadSettingsViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
@@ -35,9 +34,6 @@ class DownloadSettingsViewModel(
 	private val manager: DownloadWorker.Manager
 ) : ADownloadSettingsViewModel(iSettingsRepository) {
 
-	override suspend fun settings(): List<SettingsItemData> = listOf(
-
-		)
 
 	override var downloadWorkerSettingsChanged: Boolean = false
 

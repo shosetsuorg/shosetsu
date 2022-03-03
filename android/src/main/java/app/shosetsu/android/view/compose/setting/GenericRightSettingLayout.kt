@@ -12,6 +12,20 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.sp
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.google.android.material.composethemeadapter.MdcTheme
+
+
+@Composable
+fun PreviewGenericRightSetting() {
+	MdcTheme {
+		GenericRightSettingLayout(
+			"Test",
+			"Description",
+		) {
+
+		}
+	}
+}
 
 @Composable
 fun GenericRightSettingLayout(

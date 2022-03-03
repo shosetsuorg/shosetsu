@@ -4,9 +4,25 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.google.android.material.composethemeadapter.MdcTheme
+
+@Preview
+@Composable
+fun PreviewGenericBottomSetting() {
+	MdcTheme {
+		GenericBottomSettingLayout(
+			"Test",
+			"Description"
+		) {
+
+		}
+	}
+}
 
 @Composable
 fun GenericBottomSettingLayout(
@@ -20,7 +36,11 @@ fun GenericBottomSettingLayout(
 	) {
 		Column {
 			Text(title)
-			Text(description, fontSize = dimensionResource(R.dimen.sub_text_size).value.sp)
+			Text(
+				description,
+				fontSize = dimensionResource(R.dimen.sub_text_size).value.sp,
+				modifier = Modifier.alpha(0.7f)
+			)
 		}
 		bottom()
 	}

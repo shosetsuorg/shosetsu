@@ -136,7 +136,7 @@ fun ReaderSettingsContent(viewModel: AReaderSettingsViewModel, openHTMLEditor: (
 				val themes by viewModel.getReaderThemes().collectAsState(listOf())
 
 				LazyRow(
-					contentPadding = PaddingValues(8.dp)
+					contentPadding = PaddingValues(16.dp)
 				) {
 					items(themes, key = { it.id }) { themeItem ->
 						Card(

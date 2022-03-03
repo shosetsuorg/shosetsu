@@ -1,20 +1,15 @@
 package app.shosetsu.android.viewmodel.impl.settings
 
 import android.net.Uri
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.usecases.load.LoadInternalBackupNamesUseCase
 import app.shosetsu.android.domain.usecases.start.StartBackupWorkerUseCase
 import app.shosetsu.android.domain.usecases.start.StartExportBackupWorkerUseCase
 import app.shosetsu.android.domain.usecases.start.StartRestoreWorkerUseCase
-import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.buttonSettingData
-import app.shosetsu.android.view.uimodels.settings.dsl.switchSettingData
 import app.shosetsu.android.viewmodel.abstracted.settings.ABackupSettingsViewModel
-import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import com.github.doomsdayrs.apps.shosetsu.R
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 /*
@@ -52,9 +47,9 @@ class BackupSettingsViewModel(
 		startBackupWorkerUseCase()
 	}
 
-	override fun loadInternalOptions(): LiveData<List<String>> = flow {
-		emit(loadInternalBackupNamesUseCase())
-	}.asIOLiveData()
+	override fun loadInternalOptions(): Flow<List<String>> = flow {
+		emit(loadInternalBackupNamesUseCase().sorted())
+	}.onIO()
 
 	override fun restore(path: String) {
 		logV("Restoring: $path ")
@@ -84,40 +79,4 @@ class BackupSettingsViewModel(
 
 		startExportWorker(backupToExport!!, uri)
 	}
-
-	override suspend fun settings(): List<SettingsItemData> = listOf(
-		switchSettingData(0) {
-			titleRes = R.string.backup_chapters_option
-			descRes = R.string.backup_chapters_option_description
-			checkSettingValue(SettingKey.ShouldBackupChapters)
-		},
-		switchSettingData(1) {
-			titleRes = R.string.backup_settings_option
-			descRes = R.string.backup_settings_option_desc
-			checkSettingValue(SettingKey.ShouldBackupSettings)
-		},
-		switchSettingData(7) {
-			titleRes = R.string.backup_only_modified_title
-			descRes = R.string.backup_only_modified_desc
-			checkSettingValue(SettingKey.BackupOnlyModifiedChapters)
-		},
-		switchSettingData(6) {
-			titleRes = R.string.backup_restore_print_chapters_title
-			descRes = R.string.backup_restore_print_chapters_desc
-
-			checkSettingValue(SettingKey.RestorePrintChapters)
-		},
-		buttonSettingData(3) {
-			titleRes = R.string.backup_now
-			textRes = R.string.backup_now
-		},
-		buttonSettingData(4) {
-			titleRes = R.string.restore_now
-			textRes = R.string.restore_now
-		},
-		buttonSettingData(5) {
-			titleRes = R.string.settings_backup_export
-			textRes = R.string.settings_backup_export
-		}
-	)
 }

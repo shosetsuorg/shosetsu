@@ -2,21 +2,35 @@ package app.shosetsu.android.ui.backup
 
 import android.content.Context
 import android.net.Uri
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.ui.settings.SettingsSubController
-import app.shosetsu.android.view.uimodels.settings.ButtonSettingData
-import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.onButtonClicked
+import app.shosetsu.android.view.compose.setting.ButtonSettingContent
+import app.shosetsu.android.view.compose.setting.SwitchSettingContent
+import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.settings.ABackupSettingsViewModel
 import app.shosetsu.common.consts.BACKUP_FILE_EXTENSION
+import app.shosetsu.common.consts.settings.SettingKey
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.google.android.material.composethemeadapter.MdcTheme
 
 /*
  * This file is part of Shosetsu.
@@ -39,67 +53,40 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * Shosetsu
  * 13 / 07 / 2019
  */
-class BackupSettings : SettingsSubController() {
+class BackupSettings : ShosetsuController() {
 	override val viewTitleRes: Int = R.string.controller_backup_title
 
-	override val viewModel: ABackupSettingsViewModel by viewModel()
+	val viewModel: ABackupSettingsViewModel by viewModel()
 
-
-	private fun openBackupSelection(onBackupSelected: (String) -> Unit) {
-		viewModel.loadInternalOptions().observe { list ->
-			AlertDialog.Builder(recyclerView.context!!).apply {
-				setTitle(R.string.settings_backup_alert_internal_title)
-				setItems(
-					list.map {
-						it
-							.removePrefix("shosetsu-backup-")
-							.removeSuffix(".$BACKUP_FILE_EXTENSION")
-						// TODO Map dates with proper localization
-					}
-						.sorted()
-						.toTypedArray()
-				) { d, w ->
-					onBackupSelected(list[w])
-					d.dismiss()
-				}
-				setNegativeButton(android.R.string.cancel) { d, i ->
-					d.cancel()
-				}
-			}.show()
-		}
+	override fun onViewCreated(view: View) {
 	}
 
-	override val adjustments: List<SettingsItemData>.() -> Unit = {
-		find<ButtonSettingData>(3)?.onButtonClicked {
-			// Stops novel updates while backup is taking place
-			// Starts backing up data
-			viewModel.startBackup()
-		}
-		find<ButtonSettingData>(4)?.onButtonClicked {
-			AlertDialog.Builder(recyclerView.context!!).apply {
-				setTitle(R.string.settings_backup_alert_select_location_title)
-				setItems(R.array.settings_backup_alert_location_array) { d, i ->
-					when (i) {
-						0 -> {
-							// Open file selector
-							performFileSelection()
-							d.dismiss()
-						}
-						1 -> {
-							// Open internal list
-							openBackupSelection {
-								viewModel.restore(it)
-							}
-						}
+	override fun onCreateView(
+		inflater: LayoutInflater,
+		container: ViewGroup,
+		savedViewState: Bundle?
+	): View = ComposeView(container.context).apply {
+		setViewTitle()
+		setContent {
+			MdcTheme {
+				BackupSettingsContent(
+					viewModel,
+					backupNow = {
+						// Stops novel updates while backup is taking place
+						// Starts backing up data
+						viewModel.startBackup()
+					},
+					restore = {
+						viewModel.restore(it)
+					},
+					export = {
+						viewModel.holdBackupToExport(it)
+						performExportSelection()
+					},
+					performFileSelection = {
+						performFileSelection()
 					}
-				}
-			}.show()
-		}
-		find<ButtonSettingData>(5)?.onButtonClicked {
-			// Open internal list
-			openBackupSelection { backupToExport ->
-				viewModel.holdBackupToExport(backupToExport)
-				performExportSelection()
+				)
 			}
 		}
 	}
@@ -152,7 +139,9 @@ class BackupSettings : SettingsSubController() {
 		}
 	}
 
-	val observer by lazy { Observer((activity as AppCompatActivity).activityResultRegistry) }
+	private val observer by lazy {
+		Observer((activity as AppCompatActivity).activityResultRegistry)
+	}
 
 	override fun onContextAvailable(context: Context) {
 		lifecycle.addObserver(observer)
@@ -176,5 +165,194 @@ class BackupSettings : SettingsSubController() {
 		observer.selectBackupToRestoreLauncher.launch(arrayOf("application/octet-stream"))
 	}
 
-	private fun setLocationToSave() {}
+}
+
+@Composable
+fun BackupSelectionDialog(
+	viewModel: ABackupSettingsViewModel,
+	dismiss: () -> Unit,
+	optionSelected: (String) -> Unit,
+) {
+	val options by viewModel.loadInternalOptions().collectAsState(listOf())
+	Dialog(
+		onDismissRequest = {
+			dismiss()
+		}
+	) {
+		Card(
+			modifier = Modifier.fillMaxHeight(.6f)
+		) {
+			Column(
+				modifier = Modifier.padding(8.dp),
+			) {
+				Text(
+					stringResource(R.string.settings_backup_alert_select_location_title),
+					style = MaterialTheme.typography.h6,
+					modifier = Modifier.padding(
+						bottom = 16.dp,
+						top = 8.dp,
+						start = 24.dp,
+						end = 24.dp
+					)
+				)
+
+				LazyColumn(
+					modifier = Modifier.padding(bottom = 8.dp, start = 24.dp, end = 24.dp)
+						.fillMaxWidth()
+				) {
+					items(options) { option ->
+						TextButton(onClick = {
+							optionSelected(option)
+							dismiss()
+						}) {
+							Text(
+								option.removePrefix("shosetsu-backup-")
+									.removeSuffix(".$BACKUP_FILE_EXTENSION")
+							)
+						}
+					}
+				}
+
+				Row(
+					horizontalArrangement = Arrangement.End,
+					modifier = Modifier.fillMaxWidth()
+				) {
+					TextButton(
+						onClick = dismiss,
+					) {
+						Text(stringResource(android.R.string.cancel))
+					}
+				}
+			}
+		}
+	}
+}
+
+@Composable
+fun BackupSettingsContent(
+	viewModel: ABackupSettingsViewModel,
+	backupNow: () -> Unit,
+	performFileSelection: () -> Unit,
+	restore: (String) -> Unit,
+	export: (String) -> Unit
+) {
+	LazyColumn(
+		contentPadding = PaddingValues(16.dp)
+	) {
+
+		item {
+			SwitchSettingContent(
+				stringResource(R.string.backup_chapters_option),
+				stringResource(R.string.backup_chapters_option_description),
+				viewModel.settingsRepo,
+				SettingKey.ShouldBackupChapters,
+				modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth()
+			)
+		}
+
+		item {
+			SwitchSettingContent(
+				stringResource(R.string.backup_settings_option),
+				stringResource(R.string.backup_settings_option_desc),
+				viewModel.settingsRepo,
+				SettingKey.ShouldBackupSettings,
+				modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth()
+			)
+		}
+
+		item {
+			SwitchSettingContent(
+				stringResource(R.string.backup_only_modified_title),
+				stringResource(R.string.backup_only_modified_desc),
+				viewModel.settingsRepo,
+				SettingKey.BackupOnlyModifiedChapters,
+				modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth()
+			)
+		}
+
+		item {
+			SwitchSettingContent(
+				stringResource(R.string.backup_restore_print_chapters_title),
+				stringResource(R.string.backup_restore_print_chapters_desc),
+				viewModel.settingsRepo,
+				SettingKey.RestorePrintChapters,
+				modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth()
+			)
+		}
+
+		item {
+			ButtonSettingContent(
+				stringResource(R.string.backup_now),
+				"",
+				stringResource(R.string.backup_now),
+				onClick = backupNow, modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth()
+			)
+		}
+
+		item {
+			var isDialogShowing: Boolean by remember { mutableStateOf(false) }
+			var isRestoreDialogShowing: Boolean by remember { mutableStateOf(false) }
+
+			ButtonSettingContent(
+				stringResource(R.string.restore_now),
+				"",
+				stringResource(R.string.restore_now),
+				modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth()
+			) {
+				isDialogShowing = true
+			}
+			if (isRestoreDialogShowing)
+				BackupSelectionDialog(viewModel, { isRestoreDialogShowing = false }) {
+					restore(it)
+				}
+
+			if (isDialogShowing)
+				AlertDialog(
+					onDismissRequest = {
+						isDialogShowing = false
+					},
+					buttons = {
+						Row {
+							TextButton(onClick = {
+								// Open file selector
+								performFileSelection()
+								isDialogShowing = false
+							}) {
+								Text(stringResource(R.string.settings_backup_alert_location_external))
+							}
+
+							TextButton(onClick = {
+								isDialogShowing = false
+								isRestoreDialogShowing = true
+							}) {
+								Text(stringResource(R.string.settings_backup_alert_location_internal))
+							}
+						}
+					},
+					title = {
+						Text(stringResource(R.string.settings_backup_alert_select_location_title))
+					}
+				)
+		}
+		item {
+			var isExportShowing: Boolean by remember { mutableStateOf(false) }
+
+			if (isExportShowing) {
+				BackupSelectionDialog(viewModel, { isExportShowing = false }) {
+					export(it)
+				}
+			}
+
+			ButtonSettingContent(
+				stringResource(R.string.settings_backup_export),
+				"",
+				stringResource(R.string.settings_backup_export),
+				onClick = {
+					isExportShowing = true
+				},
+				modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth()
+			)
+		}
+
+	}
 }

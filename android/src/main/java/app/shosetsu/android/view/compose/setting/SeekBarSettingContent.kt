@@ -18,6 +18,7 @@ fun SliderSettingContent(
 	repo: ISettingsRepository,
 	key: SettingKey<Int>,
 	modifier: Modifier = Modifier,
+	haveSteps: Boolean = true,
 ) {
 	val choice by repo.getIntFlow(key).collectAsState(key.default)
 
@@ -32,7 +33,8 @@ fun SliderSettingContent(
 			{
 				launchIO { repo.setInt(key, it) }
 			},
-			valueRange
+			valueRange,
+			haveSteps = haveSteps,
 		)
 	}
 }

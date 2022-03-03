@@ -1,13 +1,8 @@
 package app.shosetsu.android.viewmodel.abstracted.settings
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
-import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import kotlinx.coroutines.Dispatchers.IO
 
 /*
  * This file is part of shosetsu.
@@ -32,11 +27,4 @@ import kotlinx.coroutines.Dispatchers.IO
  */
 abstract class ASubSettingsViewModel(
 	override val settingsRepo: ISettingsRepository
-) : ShosetsuViewModel(), ExposedSettingsRepoViewModel {
-	abstract suspend fun settings(): List<SettingsItemData>
-
-	fun getSettings(): LiveData<List<SettingsItemData>> =
-		liveData(context = viewModelScope.coroutineContext + IO) {
-			emit((settings()))
-		}
-}
+) : ShosetsuViewModel(), ExposedSettingsRepoViewModel

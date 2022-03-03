@@ -1,8 +1,8 @@
 package app.shosetsu.android.viewmodel.abstracted.settings
 
 import android.net.Uri
-import androidx.lifecycle.LiveData
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -30,7 +30,7 @@ abstract class ABackupSettingsViewModel(iSettingsRepository: ISettingsRepository
 
 	/** Order the app to create a new backup now */
 	abstract fun startBackup()
-	abstract fun loadInternalOptions(): LiveData<List<String>>
+	abstract fun loadInternalOptions(): Flow<List<String>>
 
 	/**
 	 * Load backup via a path

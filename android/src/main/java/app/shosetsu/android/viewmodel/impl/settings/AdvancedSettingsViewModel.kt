@@ -4,7 +4,6 @@ import app.shosetsu.android.backend.workers.perodic.AppUpdateCheckCycleWorker
 import app.shosetsu.android.backend.workers.perodic.BackupCycleWorker
 import app.shosetsu.android.backend.workers.perodic.NovelUpdateCycleWorker
 import app.shosetsu.android.domain.usecases.PurgeNovelCacheUseCase
-import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import kotlinx.coroutines.flow.Flow
@@ -42,10 +41,6 @@ class AdvancedSettingsViewModel(
 		flow {
 			emit(purgeNovelCacheUseCase())
 		}
-
-	override suspend fun settings(): List<SettingsItemData> = listOf(
-
-	)
 
 	override fun killCycleWorkers() {
 		backupCycleManager.stop()

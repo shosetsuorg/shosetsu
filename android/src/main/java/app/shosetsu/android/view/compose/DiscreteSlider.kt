@@ -52,6 +52,7 @@ fun DiscreteSlider(
 	parsedValue: String,
 	updateValue: (Int) -> Unit,
 	valueRange: IntRange,
+	haveSteps: Boolean = true
 ) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically
@@ -162,7 +163,7 @@ fun DiscreteSlider(
 				updateValue(it.roundToInt())
 			},
 			valueRange = valueRange.first.toFloat()..valueRange.last.toFloat(),
-			steps = valueRange.count() - 2
+			steps = if (haveSteps) valueRange.count() - 2 else 0
 		)
 	}
 }

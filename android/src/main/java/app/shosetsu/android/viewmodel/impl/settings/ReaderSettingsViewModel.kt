@@ -1,7 +1,6 @@
 package app.shosetsu.android.viewmodel.impl.settings
 
 import android.app.Application
-import android.content.res.Resources.NotFoundException
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -11,7 +10,6 @@ import app.shosetsu.android.view.compose.setting.FloatSliderSettingContent
 import app.shosetsu.android.view.compose.setting.SliderSettingContent
 import app.shosetsu.android.view.compose.setting.SwitchSettingContent
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
-import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.settings.AReaderSettingsViewModel
 import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
@@ -51,10 +49,6 @@ class ReaderSettingsViewModel(
 		loadReaderThemes().combine(settingsRepo.getIntFlow(ReaderTheme)) { a, b ->
 			a.map { if (it.id == b.toLong()) it.copy(isSelected = true) else it }
 		}.onIO()
-
-	@Throws(NotFoundException::class)
-	override suspend fun settings(): List<SettingsItemData> = listOf(
-	)
 
 }
 
