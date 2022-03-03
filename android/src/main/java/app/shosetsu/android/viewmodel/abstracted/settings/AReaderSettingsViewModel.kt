@@ -1,8 +1,8 @@
 package app.shosetsu.android.viewmodel.abstracted.settings
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -27,5 +27,5 @@ import app.shosetsu.common.domain.repositories.base.ISettingsRepository
  */
 abstract class AReaderSettingsViewModel(iSettingsRepository: ISettingsRepository) :
 	ASubSettingsViewModel(iSettingsRepository) {
-	abstract fun getReaderThemes(): LiveData<List<ColorChoiceUI>>
+	abstract fun getReaderThemes(): Flow<List<ColorChoiceUI>>
 }

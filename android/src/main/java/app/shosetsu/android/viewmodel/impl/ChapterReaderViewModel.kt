@@ -2,7 +2,6 @@ package app.shosetsu.android.viewmodel.impl
 
 import android.app.Application
 import android.graphics.Color
-import android.widget.ArrayAdapter
 import androidx.annotation.WorkerThread
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logD
@@ -19,10 +18,7 @@ import app.shosetsu.android.domain.usecases.update.UpdateReaderSettingUseCase
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
-import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
-import app.shosetsu.android.viewmodel.impl.settings.*
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
@@ -31,7 +27,6 @@ import app.shosetsu.common.enums.MarkingType.ONSCROLL
 import app.shosetsu.common.enums.MarkingType.ONVIEW
 import app.shosetsu.common.enums.ReadingStatus.READ
 import app.shosetsu.common.enums.ReadingStatus.READING
-import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
@@ -356,70 +351,14 @@ class ChapterReaderViewModel(
 		settingsRepo.getStringFlow(ReaderHtmlCss)
 
 
-	override fun getSettings(): Flow<List<SettingsItemData>> =
-		flow {
-			// First build the universal setting interface
-			emit(settings())
-		}.combine(readerSettingsFlow) { settingsList, settingEntity ->
-			/*
-			 * Combining the universal setting flow and the readerSettingFlow
-			 * Handle both results together, then transform the result, adding UI for reader specific settings
-			 */
+	override fun updateSetting(novelReaderSettingEntity: NovelReaderSettingEntity) {
+		launchIO {
+			updateReaderSettingUseCase(novelReaderSettingEntity)
+		}
+	}
 
-			ArrayList(settingsList).apply {
-				add(floatButtonSettingData(1) {
-					titleRes = R.string.paragraph_spacing
-					minWhole = 0
-
-					settingEntity.paragraphSpacingSize.let { settingValue ->
-						initialWhole =
-							wholeSteps.indexOfFirst { it == settingValue.toInt() }.orZero()
-						val decimal: Int = ((settingValue % 1) * 100).toInt()
-						initialDecimal = decimalSteps.indexOfFirst { it == decimal }.orZero()
-					}
-
-					onValueSelected { selected ->
-						launchIO {
-
-							updateReaderSettingUseCase(
-								settingEntity.copy(
-									paragraphSpacingSize = selected.toFloat()
-								)
-							)
-						}
-					}
-				})
-				add(spinnerSettingData(2) {
-					val context = application.applicationContext
-					titleRes = R.string.paragraph_indent
-					@Suppress("CheckedExceptionsKotlin")
-					arrayAdapter = ArrayAdapter(
-						context,
-						android.R.layout.simple_spinner_dropdown_item,
-						context.resources!!.getStringArray(R.array.sizes_with_none)
-					)
-
-					spinnerValue { settingEntity.paragraphIndentSize }
-					var first = true
-					onSpinnerItemSelected { _, _, position, _ ->
-						launchIO {
-							if (first) {
-								first = false
-								return@launchIO
-							}
-							updateReaderSettingUseCase(
-								settingEntity.copy(
-									paragraphIndentSize = position
-								)
-							)
-						}
-					}
-				})
-
-				// Sort so the result will be ordered properly
-				sortBy { it.id }
-			}
-		}.onIO()
+	override fun getSettings(): Flow<NovelReaderSettingEntity> =
+		readerSettingsFlow.onIO()
 
 	private val isScreenRotationLockedFlow = MutableStateFlow(false)
 
@@ -452,21 +391,5 @@ class ChapterReaderViewModel(
 		isScreenRotationLockedFlow.value = !isScreenRotationLockedFlow.value
 	}
 
-	suspend fun settings(): List<SettingsItemData> = listOf(
-		// Quick settings
-		textSizeOption(0),
-		//==paragraph indent and spacing here
 
-		// Minor Behavior settings, these wont effect the UI too much
-		tapToScrollOption(3),
-		volumeScrollingOption(4),
-		horizontalSwitchOption(5),
-		continuousScrollOption(6),
-		invertChapterSwipeOption(8),
-		readerKeepScreenOnOption(9),
-		showReaderDivider(10),
-
-		// Major changes
-		stringAsHtmlOption(7),
-	)
 }

@@ -1,25 +1,48 @@
 package app.shosetsu.android.ui.settings.sub
 
-import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
-import androidx.core.content.getSystemService
-import androidx.recyclerview.widget.RecyclerView
-import app.shosetsu.android.common.ext.*
+import android.view.View
+import android.view.ViewGroup
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.css.CSSEditorActivity
-import app.shosetsu.android.ui.settings.SettingsSubController
-import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
-import app.shosetsu.android.view.uimodels.settings.ButtonSettingData
-import app.shosetsu.android.view.uimodels.settings.CustomBottomSettingData
-import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.customView
-import app.shosetsu.android.view.uimodels.settings.dsl.onButtonClicked
+import app.shosetsu.android.view.compose.setting.ButtonSettingContent
+import app.shosetsu.android.view.compose.setting.DropdownSettingContent
+import app.shosetsu.android.view.compose.setting.GenericBottomSettingLayout
+import app.shosetsu.android.view.compose.setting.SwitchSettingContent
+import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.settings.AReaderSettingsViewModel
-import app.shosetsu.common.consts.settings.SettingKey
+import app.shosetsu.android.viewmodel.impl.settings.*
+import app.shosetsu.common.consts.settings.SettingKey.*
+import app.shosetsu.common.enums.MarkingType
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.adapters.ItemAdapter
-import com.mikepenz.fastadapter.select.selectExtension
+import com.google.android.material.composethemeadapter.MdcTheme
 
 /*
  * This file is part of shosetsu.
@@ -39,124 +62,215 @@ import com.mikepenz.fastadapter.select.selectExtension
  */
 
 /**
- * shosetsu
- * 28 / 03 / 2020
+ * Shosetsu
  *
- * @author github.com/doomsdayrs
+ * @since 04 / 10 / 2021
+ * @author Doomsdayrs
  */
-@SuppressLint("LogConditional")
-class ReaderSettings : SettingsSubController() {
-	override val viewTitleRes: Int = R.string.settings_reader
-	override val viewModel: AReaderSettingsViewModel by viewModel()
+class ReaderSettings : ShosetsuController() {
+	private val viewModel: AReaderSettingsViewModel by viewModel()
 
-	override val adjustments: List<SettingsItemData>.() -> Unit = {
-		find<ButtonSettingData>(10)?.onButtonClicked {
-			startActivity(
-				Intent(activity, CSSEditorActivity::class.java).apply {
-					putExtra(CSSEditorActivity.CSS_ID, -1)
+	override val viewTitleRes: Int = R.string.settings_reader
+
+	override fun onViewCreated(view: View) {}
+
+	override fun onCreateView(
+		inflater: LayoutInflater,
+		container: ViewGroup,
+		savedViewState: Bundle?
+	): View = ComposeView(container.context).apply {
+		setViewTitle()
+		setContent {
+			MdcTheme {
+				ReaderSettingsContent(
+					viewModel,
+					openHTMLEditor = {
+						startActivity(
+							Intent(activity, CSSEditorActivity::class.java).apply {
+								putExtra(CSSEditorActivity.CSS_ID, -1)
+							}
+						)
+					}
+				)
+			}
+		}
+	}
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun ReaderSettingsContent(viewModel: AReaderSettingsViewModel, openHTMLEditor: () -> Unit) {
+	LazyColumn(
+		contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 64.dp)
+	) {
+		//TODO Text Preview at top
+
+		item {
+			viewModel.paragraphSpacingOption()
+		}
+
+		item {
+			DropdownSettingContent(
+				title = stringResource(R.string.settings_reader_text_alignment_title),
+				description = stringResource(R.string.settings_reader_text_alignment_desc),
+				choices = stringArrayResource(R.array.text_alignments),
+				modifier = Modifier.fillMaxWidth(),
+				repo = viewModel.settingsRepo,
+				ReaderTextAlignment
+			)
+		}
+
+		item {
+			viewModel.textSizeOption()
+		}
+
+		item {
+			viewModel.paragraphIndentOption()
+		}
+
+		item {
+			GenericBottomSettingLayout(
+				stringResource(R.string.theme),
+				""
+			) {
+				val themes by viewModel.getReaderThemes().collectAsState(listOf())
+
+				LazyRow(
+					contentPadding = PaddingValues(8.dp)
+				) {
+					items(themes, key = { it.id }) { themeItem ->
+						Card(
+							modifier = Modifier.padding(8.dp),
+							border = if (themeItem.isSelected) BorderStroke(
+								SELECTED_STROKE_WIDTH.dp,
+								colorResource(R.color.colorAccent)
+							) else null,
+							onClick = {
+								launchIO {
+									viewModel.settingsRepo.setInt(
+										ReaderTheme,
+										themeItem.id.toInt()
+									)
+								}
+							}
+						) {
+							Box(
+								modifier = Modifier.background(Color(themeItem.backgroundColor)),
+								contentAlignment = Alignment.Center
+							) {
+								Text(
+									"T",
+									color = Color(themeItem.textColor),
+									modifier = Modifier.size(64.dp).padding(8.dp),
+									textAlign = TextAlign.Center,
+									fontSize = 32.sp
+								)
+							}
+						}
+					}
+				}
+			}
+		}
+
+
+		item {
+			viewModel.invertChapterSwipeOption()
+		}
+
+		item {
+			viewModel.tapToScrollOption()
+		}
+
+		item {
+			viewModel.volumeScrollingOption()
+		}
+
+		item {
+			SwitchSettingContent(
+				stringResource(R.string.settings_reader_title_mark_read_as_reading),
+				stringResource(R.string.settings_reader_desc_mark_read_as_reading),
+				viewModel.settingsRepo,
+				ReaderMarkReadAsReading,
+				modifier = Modifier.fillMaxWidth()
+			)
+		}
+
+		item {
+			viewModel.horizontalSwitchOption()
+		}
+
+		item {
+			ButtonSettingContent(
+				stringResource(R.string.settings_reader_title_html_css),
+				stringResource(R.string.settings_reader_desc_html_css),
+				stringResource(R.string.open_in),
+				onClick = openHTMLEditor
+			)
+		}
+
+		item {
+			viewModel.stringAsHtmlOption()
+		}
+
+		item {
+			SwitchSettingContent(
+				stringResource(R.string.settings_reader_title_continous_scroll),
+				stringResource(R.string.settings_reader_desc_continous_scroll),
+				viewModel.settingsRepo,
+				ReaderContinuousScroll,
+				modifier = Modifier.fillMaxWidth()
+			)
+		}
+
+		item {
+			DropdownSettingContent(
+				stringResource(R.string.marking_mode),
+				stringResource(R.string.settings_reader_marking_mode_desc),
+				choices = stringArrayResource(R.array.marking_names),
+				repo = viewModel.settingsRepo,
+				key = ReadingMarkingType,
+				stringToInt = {
+					when (MarkingType.valueOf(it)) {
+						MarkingType.ONSCROLL -> 1
+						MarkingType.ONVIEW -> 0
+					}
+				},
+				intToString = {
+					when (it) {
+						0 -> MarkingType.ONVIEW.name
+						1 -> MarkingType.ONSCROLL.name
+						else -> {
+							Log.e("MarkingMode", "UnknownType, defaulting")
+							MarkingType.ONVIEW.name
+						}
+					}
 				}
 			)
 		}
-		find<CustomBottomSettingData>(5)?.customView { root ->
-			root.context.getSystemService<LayoutInflater>()!!.inflate(
-				R.layout.reader_theme_selection,
-				root,
-				false
-			).apply {
-				val recycler = findViewById<RecyclerView>(R.id.color_picker_options)
-				val itemAdapter = ItemAdapter<ColorChoiceUI>()
-				val fastAdapter = FastAdapter.with(itemAdapter)
-				fastAdapter.selectExtension {
-					isSelectable = true
-					setSelectionListener { item, _ ->
-						fastAdapter.notifyItemChanged(fastAdapter.getPosition(item))
-					}
-				}
-				recycler.adapter = fastAdapter
-				fastAdapter.setOnClickListener { _, _, item, _ ->
-					launchIO {
-						viewModel.settingsRepo.setInt(
-							SettingKey.ReaderTheme,
-							item.identifier.toInt()
-						)
-					}
-					item.isSelected = true
 
-					run {
-						val count = fastAdapter.itemCount
-						for (i in 0 until count)
-							fastAdapter.getItem(i)?.takeIf {
-								it.identifier != item.identifier
-							}?.isSelected = false
-					}
-
-					fastAdapter.notifyDataSetChanged()
-					true
-				}
-
-				viewModel.getReaderThemes().observe(this@ReaderSettings) { list ->
-					itemAdapter.clear()
-					launchIO {
-						val v = viewModel.settingsRepo.getInt(SettingKey.ReaderTheme)
-						list.find {
-							it.identifier == v.toLong()
-						}?.isSelected = true
-
-						launchUI { itemAdapter.add(list) }
-					}
-				}
-			}
-		}
-		/*
-		find<CustomBottomSettingData>(1)?.customView {
-			it.context.getSystemService<LayoutInflater>()!!.inflate(
-				R.layout.reader_theme_example,
-				null,
-				false
-			).apply {
-				findViewById<AppCompatTextView>(R.id.textView).apply textView@{
-					val exampleText =
-						"Because there are so many lines. I had lost sense of time. Plz help" +
-								"me escape this horror called" +
-								"\nThis is some sample text. With lots of testing. Lots of paragraph," +
-								"Lots of lines. Plenty to read"
-
-					val function = { textView: AppCompatTextView ->
-						val replaceSpacing = StringBuilder("\n")
-						//for (x in 0 until shosetsuSettings.readerParagraphSpacing)
-						//	replaceSpacing.append("\n")
-						//for (x in 0 until shosetsuSettings.readerIndentSize)
-						//	replaceSpacing.append("\t")
-						//textView.textSize = shosetsuSettings.readerTextSize
-
-						//val r = shosetsuSettings.selectedReaderTheme.toLong()
-						//val b = shosetsuSettings.getReaderBackgroundColor(r)
-						//val t = shosetsuSettings.getReaderTextColor(r)
-						//textView.setTextColor(t)
-						//textView.setBackgroundColor(b)
-						textView.text =
-							exampleText.replace("\n".toRegex(), replaceSpacing.toString())
-					}
-					postDelayed(500) {
-						//shosetsuSettings.apply {
-						//	readerTextSizeLive.observe(this@ReaderSettings) {
-						//		textSize = shosetsuSettings.readerTextSize
-						//	}
-						//	readerIndentSizeLive.observe(this@ReaderSettings) {
-						//		function(this@textView)
-						//	}
-						//	readerParagraphSpacingLive.observe(this@ReaderSettings) {
-						//		function(this@textView)
-						//	}
-						//	readerUserThemeSelectionLive.observe(this@ReaderSettings) {
-						//		function(this@textView)
-						//	}
-						//}
-					}
-				}
-			}
+		item {
+			SwitchSettingContent(
+				stringResource(R.string.settings_reader_resume_behavior_title),
+				stringResource(R.string.settings_reader_resume_behavior_desc),
+				viewModel.settingsRepo,
+				ChaptersResumeFirstUnread,
+				modifier = Modifier.fillMaxWidth()
+			)
 		}
 
-		*/
+		item {
+			SwitchSettingContent(
+				stringResource(R.string.settings_reader_keep_screen_on),
+				stringResource(R.string.settings_reader_keep_screen_on_desc),
+				viewModel.settingsRepo,
+				ReaderKeepScreenOn,
+				modifier = Modifier.fillMaxWidth()
+			)
+		}
+
+		item {
+			viewModel.showReaderDivider()
+		}
+
 	}
 }

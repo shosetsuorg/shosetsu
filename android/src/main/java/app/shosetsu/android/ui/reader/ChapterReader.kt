@@ -11,6 +11,10 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.Toolbar
+import androidx.compose.foundation.layout.Column
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -20,16 +24,20 @@ import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.consts.READER_BAR_ALPHA
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
+import app.shosetsu.android.view.compose.DiscreteSlider
+import app.shosetsu.android.view.compose.setting.GenericBottomSettingLayout
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
-import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
+import app.shosetsu.android.viewmodel.impl.settings.*
+import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityReaderBinding
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
+import com.google.android.material.composethemeadapter.MdcTheme
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.IItemVHFactory
 import com.mikepenz.fastadapter.adapters.ItemAdapter
@@ -106,9 +114,6 @@ class ChapterReader
 
 	private val drawerToggle: AppCompatImageButton
 		get() = binding.chapterReaderBottom.drawerToggle
-
-	private val bottomMenuRecycler: RecyclerView
-		get() = binding.chapterReaderBottom.recyclerView
 
 
 	private val pageChangeCallback: OnPageChangeCallback by lazy { ChapterReaderPageChange() }
@@ -367,11 +372,49 @@ class ChapterReader
 			}
 		}
 
-		bottomMenuRecycler.apply {
-			val itemAdapter = ItemAdapter<SettingsItemData>()
-			adapter = FastAdapter.with(itemAdapter)
-			viewModel.getSettings().collectLA(this@ChapterReader, catch = {}) { newList ->
-				FastAdapterDiffUtil[itemAdapter] = calculateDiff(itemAdapter, newList)
+		binding.chapterReaderBottom.recyclerView.setContent {
+			val settings by viewModel.getSettings().collectAsState(
+				NovelReaderSettingEntity(0, 0, 0f)
+			)
+
+			MdcTheme {
+				Column {
+					GenericBottomSettingLayout(
+						stringResource(R.string.paragraph_spacing),
+						"",
+					) {
+						DiscreteSlider(
+							settings.paragraphSpacingSize,
+							"${settings.paragraphSpacingSize}",
+							{
+								viewModel.updateSetting(settings.copy(paragraphSpacingSize = it))
+							},
+							0..10,
+						)
+					}
+					GenericBottomSettingLayout(
+						stringResource(R.string.paragraph_indent),
+						"",
+					) {
+						DiscreteSlider(
+							settings.paragraphIndentSize,
+							"${settings.paragraphIndentSize}",
+							{
+								viewModel.updateSetting(settings.copy(paragraphIndentSize = it))
+							},
+							0..10,
+						)
+					}
+					viewModel.textSizeOption()
+					viewModel.tapToScrollOption()
+					viewModel.volumeScrollingOption()
+					viewModel.horizontalSwitchOption()
+					viewModel.continuousScrollOption()
+					viewModel.invertChapterSwipeOption()
+					viewModel.readerKeepScreenOnOption()
+					viewModel.showReaderDivider()
+					viewModel.stringAsHtmlOption()
+				}
 			}
 		}
 

@@ -3,10 +3,10 @@ package app.shosetsu.android.viewmodel.abstracted
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
-import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
 import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeViewModel
+import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -157,7 +157,9 @@ abstract class AChapterReaderViewModel :
 	/**
 	 * Loads the settings list for the bottom bar
 	 */
-	abstract fun getSettings(): Flow<List<SettingsItemData>>
+	abstract fun getSettings(): Flow<NovelReaderSettingEntity>
+
+	abstract fun updateSetting(novelReaderSettingEntity: NovelReaderSettingEntity)
 
 
 	/**

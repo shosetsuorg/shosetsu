@@ -34,7 +34,8 @@ class ColorChoiceConversionFactory(
 		identifier,
 		name,
 		textColor,
-		backgroundColor
+		backgroundColor,
+		false
 	)
 
 }

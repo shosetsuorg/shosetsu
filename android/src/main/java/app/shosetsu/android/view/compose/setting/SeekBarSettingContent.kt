@@ -46,7 +46,10 @@ fun FloatSliderSettingContent(
 	repo: ISettingsRepository,
 	key: SettingKey<Float>,
 	modifier: Modifier = Modifier,
+	haveSteps: Boolean = true,
+	flip: Boolean = false
 ) {
+	var flipped: Boolean = false
 	val choice by repo.getFloatFlow(key).collectAsState(key.default)
 
 	GenericBottomSettingLayout(
@@ -58,9 +61,19 @@ fun FloatSliderSettingContent(
 			choice,
 			parseValue(choice),
 			{
-				launchIO { repo.setFloat(key, it) }
+				launchIO {
+					if (flip && flipped) {
+						flipped = !flipped
+						return@launchIO
+					}
+
+					repo.setFloat(key, it)
+
+					flipped = !flipped
+				}
 			},
-			valueRange
+			valueRange,
+			haveSteps
 		)
 	}
 }

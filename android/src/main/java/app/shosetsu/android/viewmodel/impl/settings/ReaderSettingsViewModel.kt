@@ -1,23 +1,24 @@
 package app.shosetsu.android.viewmodel.impl.settings
 
 import android.app.Application
-import android.content.Context
 import android.content.res.Resources.NotFoundException
-import android.util.Log
-import android.widget.ArrayAdapter
-import androidx.lifecycle.LiveData
-import app.shosetsu.android.common.ext.launchIO
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import app.shosetsu.android.domain.usecases.load.LoadReaderThemes
+import app.shosetsu.android.view.compose.setting.FloatSliderSettingContent
+import app.shosetsu.android.view.compose.setting.SliderSettingContent
+import app.shosetsu.android.view.compose.setting.SwitchSettingContent
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
-import app.shosetsu.android.view.uimodels.settings.DoubleNumberSettingData
 import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.android.viewmodel.abstracted.settings.AReaderSettingsViewModel
 import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.enums.MarkingType
 import com.github.doomsdayrs.apps.shosetsu.R
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 
 /*
  * This file is part of shosetsu.
@@ -46,175 +47,131 @@ class ReaderSettingsViewModel(
 	val loadReaderThemes: LoadReaderThemes
 ) : AReaderSettingsViewModel(iSettingsRepository) {
 
-	override fun getReaderThemes(): LiveData<List<ColorChoiceUI>> =
-		loadReaderThemes().asIOLiveData()
+	override fun getReaderThemes(): Flow<List<ColorChoiceUI>> =
+		loadReaderThemes().combine(settingsRepo.getIntFlow(ReaderTheme)) { a, b ->
+			a.map { if (it.id == b.toLong()) it.copy(isSelected = true) else it }
+		}.onIO()
 
 	@Throws(NotFoundException::class)
 	override suspend fun settings(): List<SettingsItemData> = listOf(
-		customSettingData(1) {
-			titleText = ""
-		},
-		paragraphSpacingOption(2),
-		spinnerSettingData(9) {
-			titleText = "Text Alignment"
-			arrayAdapter = ArrayAdapter(
-				app.applicationContext,
-				android.R.layout.simple_spinner_dropdown_item,
-				app.applicationContext.resources!!.getStringArray(R.array.text_alignments)
-			)
-			spinnerSettingValue(ReaderTextAlignment)
-		},
-		textSizeOption(3),
-		paragraphIndentOption(4, app.applicationContext),
-		customBottomSettingData(5) {
-			titleRes = R.string.reader_theme
-		},
-		invertChapterSwipeOption(6),
-		tapToScrollOption(7),
-		volumeScrollingOption(13),
-		switchSettingData(8) {
-			titleRes = R.string.settings_reader_title_mark_read_as_reading
-			descRes = R.string.settings_reader_desc_mark_read_as_reading
-			checkSettingValue(ReaderMarkReadAsReading)
-		},
-		horizontalSwitchOption(9),
-		buttonSettingData(10) {
-			titleRes = R.string.settings_reader_title_html_css
-			descRes = R.string.settings_reader_desc_html_css
-			textRes = R.string.open_in
-		},
-		stringAsHtmlOption(11),
-		continuousScrollOption(12),
-		spinnerSettingData(0) {
-			titleRes = R.string.marking_mode
-			arrayAdapter = ArrayAdapter(
-				app.applicationContext,
-				android.R.layout.simple_spinner_dropdown_item,
-				app.applicationContext.resources!!.getStringArray(R.array.marking_names)
-			)
-			spinnerValue {
-				when (MarkingType.valueOf(settingsRepo.getString(ReadingMarkingType))) {
-					MarkingType.ONSCROLL -> 1
-					MarkingType.ONVIEW -> 0
-				}
-			}
-			onSpinnerItemSelected { _, _, position, _ ->
-				launchIO {
-					when (position) {
-						0 -> settingsRepo.setString(ReadingMarkingType, MarkingType.ONVIEW.name)
-						1 -> settingsRepo.setString(ReadingMarkingType, MarkingType.ONSCROLL.name)
-						else -> Log.e("MarkingMode", "UnknownType")
-					}
-				}
-			}
-		},
-
-		switchSettingData(8) {
-			titleText = "Resume first unread"
-			descText =
-				"Instead of resuming the first chapter reading/unread, " +
-						"the app will open the first unread chapter"
-
-			checkSettingValue(ChaptersResumeFirstUnread)
-		},
-		readerKeepScreenOnOption(14),
-		showReaderDivider(15),
 	)
 
 }
 
-suspend fun ExposedSettingsRepoViewModel.stringAsHtmlOption(id: Int): SettingsItemData {
-	return switchSettingData(id) {
-		titleRes = R.string.settings_reader_title_string_to_html
-		descRes = R.string.settings_reader_desc_string_to_html
-		checkSettingValue(ReaderStringToHtml)
-	}
+@Composable
+fun ExposedSettingsRepoViewModel.stringAsHtmlOption() {
+	SwitchSettingContent(
+		stringResource(R.string.settings_reader_title_string_to_html),
+		stringResource(R.string.settings_reader_desc_string_to_html),
+		settingsRepo,
+		ReaderStringToHtml, modifier = Modifier.fillMaxWidth()
+	)
 }
 
-suspend fun ExposedSettingsRepoViewModel.horizontalSwitchOption(id: Int): SettingsItemData {
-	return switchSettingData(id) {
-		titleRes = R.string.settings_reader_title_horizontal_option
-		descRes = R.string.settings_reader_desc_horizontal_option
-		checkSettingValue(ReaderHorizontalPageSwap)
-	}
+@Composable
+fun ExposedSettingsRepoViewModel.horizontalSwitchOption() {
+	SwitchSettingContent(
+		stringResource(R.string.settings_reader_title_horizontal_option),
+		stringResource(R.string.settings_reader_desc_horizontal_option),
+		settingsRepo,
+		ReaderHorizontalPageSwap, modifier = Modifier.fillMaxWidth()
+	)
 }
 
-suspend fun ExposedSettingsRepoViewModel.invertChapterSwipeOption(id: Int): SettingsItemData {
-	return switchSettingData(id) {
-		titleRes = R.string.settings_reader_inverted_swipe_title
-		descRes = R.string.settings_reader_inverted_swipe_desc
-		checkSettingValue(ReaderIsInvertedSwipe)
-	}
+@Composable
+fun ExposedSettingsRepoViewModel.invertChapterSwipeOption() {
+	SwitchSettingContent(
+		stringResource(R.string.settings_reader_inverted_swipe_title),
+		stringResource(R.string.settings_reader_inverted_swipe_desc),
+		settingsRepo,
+		ReaderIsInvertedSwipe, modifier = Modifier.fillMaxWidth()
+	)
 }
 
-suspend fun ExposedSettingsRepoViewModel.showReaderDivider(id: Int): SettingsItemData {
-	return switchSettingData(id) {
-		titleRes = R.string.settings_reader_show_divider
-		descRes = R.string.settings_reader_show_divider_desc
-		checkSettingValue(ReaderShowChapterDivider)
-	}
+@Composable
+fun ExposedSettingsRepoViewModel.showReaderDivider() {
+	SwitchSettingContent(
+		stringResource(R.string.settings_reader_show_divider),
+		stringResource(R.string.settings_reader_show_divider_desc),
+		settingsRepo,
+		ReaderShowChapterDivider, modifier = Modifier.fillMaxWidth()
+	)
 }
 
-suspend fun ExposedSettingsRepoViewModel.continuousScrollOption(id: Int): SettingsItemData {
-	return switchSettingData(id) {
-		titleRes = R.string.settings_reader_title_continous_scroll
-		descRes = R.string.settings_reader_desc_continous_scroll
-		checkSettingValue(ReaderContinuousScroll)
-	}
+@Composable
+fun ExposedSettingsRepoViewModel.continuousScrollOption() {
+	SwitchSettingContent(
+		stringResource(R.string.settings_reader_title_continous_scroll),
+		stringResource(R.string.settings_reader_desc_continous_scroll),
+		settingsRepo,
+		ReaderContinuousScroll, modifier = Modifier.fillMaxWidth()
+	)
 }
 
-suspend fun ExposedSettingsRepoViewModel.tapToScrollOption(id: Int): SettingsItemData {
-	return switchSettingData(id) {
-		titleRes = R.string.settings_reader_tap_to_scroll_title
-		checkSettingValue(ReaderIsTapToScroll)
-	}
+@Composable
+fun ExposedSettingsRepoViewModel.tapToScrollOption() {
+	SwitchSettingContent(
+		stringResource(R.string.settings_reader_tap_to_scroll_title),
+		"",
+		settingsRepo,
+		ReaderIsTapToScroll, modifier = Modifier.fillMaxWidth()
+	)
 }
 
-suspend fun ExposedSettingsRepoViewModel.readerKeepScreenOnOption(id: Int): SettingsItemData {
-	return switchSettingData(id) {
-		titleRes = R.string.settings_reader_keep_screen_on
-		descRes = R.string.settings_reader_keep_screen_on_desc
-		checkSettingValue(ReaderKeepScreenOn)
-	}
+@Composable
+fun ExposedSettingsRepoViewModel.readerKeepScreenOnOption() {
+	SwitchSettingContent(
+		stringResource(R.string.settings_reader_keep_screen_on),
+		stringResource(R.string.settings_reader_keep_screen_on_desc),
+		settingsRepo,
+		ReaderKeepScreenOn, modifier = Modifier.fillMaxWidth()
+	)
 }
 
-suspend fun ExposedSettingsRepoViewModel.volumeScrollingOption(id: Int): SettingsItemData {
-	return switchSettingData(id) {
-		titleRes = R.string.settings_reader_volume_scroll_title
-		checkSettingValue(ReaderVolumeScroll)
-	}
+@Composable
+fun ExposedSettingsRepoViewModel.volumeScrollingOption() {
+	SwitchSettingContent(
+		stringResource(R.string.settings_reader_volume_scroll_title),
+		"",
+		settingsRepo,
+		ReaderVolumeScroll, modifier = Modifier.fillMaxWidth()
+	)
 }
 
-suspend fun ExposedSettingsRepoViewModel.textSizeOption(id: Int): DoubleNumberSettingData {
-	return floatButtonSettingData(id) {
-		titleRes = R.string.text_size
-		minWhole = 7
-		maxWhole = 50
-		settingValue(ReaderTextSize)
-	}
+@Composable
+fun ExposedSettingsRepoViewModel.textSizeOption() {
+	FloatSliderSettingContent(
+		stringResource(R.string.text_size),
+		"",
+		7..50,
+		parseValue = { "$it" },
+		settingsRepo,
+		ReaderTextSize,
+		haveSteps = false,
+		flip = true, modifier = Modifier.fillMaxWidth()
+	)
 }
 
-suspend fun ExposedSettingsRepoViewModel.paragraphIndentOption(
-	id: Int,
-	context: Context
-): SettingsItemData {
-	return spinnerSettingData(id) {
-		titleRes = R.string.paragraph_indent
-		@Suppress("CheckedExceptionsKotlin") // Resource might not exist
-		arrayAdapter = ArrayAdapter(
-			context,
-			android.R.layout.simple_spinner_dropdown_item,
-			context.resources!!.getStringArray(R.array.sizes_with_none)
-		)
-		spinnerSettingValue(ReaderIndentSize)
-	}
+@Composable
+fun ExposedSettingsRepoViewModel.paragraphIndentOption() {
+	SliderSettingContent(
+		stringResource(R.string.paragraph_indent),
+		"",
+		0..10,
+		{ "$it" },
+		settingsRepo,
+		ReaderIndentSize, modifier = Modifier.fillMaxWidth()
+	)
 }
 
-suspend fun ExposedSettingsRepoViewModel.paragraphSpacingOption(id: Int): DoubleNumberSettingData {
-	return floatButtonSettingData(id) {
-		titleRes = R.string.paragraph_spacing
-		minWhole = 0
-
-		settingValue(ReaderParagraphSpacing)
-	}
+@Composable
+fun ExposedSettingsRepoViewModel.paragraphSpacingOption() {
+	FloatSliderSettingContent(
+		stringResource(R.string.paragraph_spacing),
+		"",
+		0..10,
+		{ "$it" },
+		settingsRepo,
+		ReaderParagraphSpacing, modifier = Modifier.fillMaxWidth()
+	)
 }
