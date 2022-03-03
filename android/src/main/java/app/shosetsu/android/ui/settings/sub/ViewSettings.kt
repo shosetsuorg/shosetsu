@@ -1,69 +1,180 @@
 package app.shosetsu.android.ui.settings.sub
 
-import androidx.appcompat.app.AlertDialog
+import android.annotation.SuppressLint
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.common.ext.viewModel
-import app.shosetsu.android.ui.settings.SettingsSubController
-import app.shosetsu.android.view.uimodels.settings.SwitchSettingData
-import app.shosetsu.android.view.uimodels.settings.base.SettingsItemData
-import app.shosetsu.android.view.uimodels.settings.dsl.onChecked
+import app.shosetsu.android.view.compose.setting.DropdownSettingContent
+import app.shosetsu.android.view.compose.setting.NumberPickerSettingContent
+import app.shosetsu.android.view.compose.setting.SwitchSettingContent
+import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.settings.AViewSettingsViewModel
-import app.shosetsu.common.consts.settings.SettingKey.NavStyle
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.consts.settings.SettingKey.*
 import com.github.doomsdayrs.apps.shosetsu.R
-import org.kodein.di.instance
+import com.google.android.material.composethemeadapter.MdcTheme
+import kotlinx.coroutines.flow.map
 
 /*
- * This file is part of Shosetsu.
+ * This file is part of shosetsu.
  *
- * Shosetsu is free software: you can redistribute it and/or modify
+ * shosetsu is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Shosetsu is distributed in the hope that it will be useful,
+ * shosetsu is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
+ * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /**
  * Shosetsu
- * 13 / 07 / 2019
+ *
+ * @since 02 / 10 / 2021
+ * @author Doomsdayrs
  */
-class ViewSettings : SettingsSubController() {
-	override val viewModel: AViewSettingsViewModel by viewModel()
-	private val iSettingsRepository: ISettingsRepository by instance()
+class ComposeViewSettings : ShosetsuController() {
+	private val viewModel: AViewSettingsViewModel by viewModel()
+
 	override val viewTitleRes: Int = R.string.settings_view
 
-	override val adjustments: List<SettingsItemData>.() -> Unit = {
-		var state = false
-		find<SwitchSettingData>(4)?.onChecked { cb, isChecked ->
-			if (state) {
-				state = false
-				return@onChecked
-			}
-			AlertDialog.Builder(this@ViewSettings.activity!!).apply {
-				this.setMessage(R.string.need_restart)
-				setPositiveButton(R.string.restart) { d, _ ->
-					launchIO {
-						iSettingsRepository.setInt(NavStyle, if (isChecked) 1 else 0)
-						launchUI {
-							d.dismiss()
-							this@ViewSettings.activity?.finish()
-						}
+	override fun onViewCreated(view: View) {}
+
+	override fun onCreateView(
+		inflater: LayoutInflater,
+		container: ViewGroup,
+		savedViewState: Bundle?
+	): View = ComposeView(container.context).apply {
+		setViewTitle()
+		setContent {
+			MdcTheme {
+				ViewSettingsContent(
+					viewModel,
+					finishActivity = {
+						activity?.finish()
 					}
-				}
-				setNegativeButton(R.string.never_mind) { d, _ ->
-					d.dismiss()
-					state = true
-					cb?.isChecked = !isChecked
-				}
-			}.show()
+				)
+			}
 		}
 	}
 }
+
+@Composable
+fun ViewSettingsContent(viewModel: AViewSettingsViewModel, finishActivity: () -> Unit) {
+	var showUIAlert by remember { mutableStateOf(false) }
+
+	@SuppressLint("FlowOperatorInvokedInComposition")
+	val navStyle by viewModel.settingsRepo.getIntFlow(NavStyle).map { it == 1 }
+		.collectAsState(NavStyle.default == 1)
+
+	LazyColumn(modifier = Modifier.padding(16.dp)) {
+
+		item {
+			NumberPickerSettingContent(
+				title = stringResource(R.string.columns_of_novel_listing_p),
+				description = stringResource(R.string.columns_zero_automatic),
+				range = 0..10,
+				repo = viewModel.settingsRepo,
+				key = ChapterColumnsInPortait,
+				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+			)
+		}
+
+		item {
+			NumberPickerSettingContent(
+				title = stringResource(R.string.columns_of_novel_listing_h),
+				description = stringResource(R.string.columns_zero_automatic),
+				range = 0..10,
+				repo = viewModel.settingsRepo,
+				key = ChapterColumnsInLandscape,
+				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+			)
+		}
+
+		item {
+			DropdownSettingContent(
+				title = stringResource(R.string.novel_card_type_selector_title),
+				description = stringResource(R.string.novel_card_type_selector_desc),
+				choices = stringArrayResource(R.array.novel_card_types),
+				repo = viewModel.settingsRepo,
+				key = SelectedNovelCardType,
+				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+			)
+		}
+
+		item {
+			SwitchSettingContent(
+				title = stringResource(R.string.settings_view_legacy_nav_title),
+				description = stringResource(R.string.settings_view_legacy_nav_desc),
+				isChecked = navStyle,
+				modifier = Modifier.fillMaxWidth()
+			) {
+				showUIAlert = true
+			}
+		}
+	}
+
+	if (showUIAlert)
+		AlertDialog(
+			onDismissRequest = {
+				showUIAlert = false
+			},
+			confirmButton = {
+				TextButton(
+					onClick = {
+						launchIO {
+							viewModel.settingsRepo.setInt(NavStyle, if (navStyle) 0 else 1)
+							launchUI {
+								showUIAlert = false
+								finishActivity()
+							}
+						}
+					}
+				) {
+					Text(stringResource(R.string.restart))
+				}
+			},
+			dismissButton = {
+				TextButton(
+					onClick = {
+						showUIAlert = false
+					}
+				) {
+					Text(stringResource(R.string.never_mind))
+				}
+			},
+			title = {
+				Text(stringResource(R.string.need_restart))
+			}
+		)
+}
+
+
+
+
+
+
+
+
+
+
