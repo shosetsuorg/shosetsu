@@ -1,8 +1,6 @@
 package app.shosetsu.android.view.compose
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -13,6 +11,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.composethemeadapter.MdcTheme
 import kotlin.math.roundToInt
 
@@ -33,7 +32,6 @@ fun PreviewSeekBar() {
 					value = it
 				},
 				0..10,
-				allowUserInput = true
 			)
 		}
 	}
@@ -54,7 +52,6 @@ fun DiscreteSlider(
 	parsedValue: String,
 	updateValue: (Int) -> Unit,
 	valueRange: IntRange,
-	allowUserInput: Boolean = false
 ) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically
@@ -62,7 +59,7 @@ fun DiscreteSlider(
 		var showDialog by remember { mutableStateOf(false) }
 
 		if (showDialog) {
-			var newValue by remember { mutableStateOf(value) }
+			var newValue: Int? by remember { mutableStateOf(value) }
 
 			Dialog(
 				onDismissRequest = {
@@ -70,38 +67,92 @@ fun DiscreteSlider(
 				}
 			) {
 				Card {
-					Column {
+					Column(
+						modifier = Modifier.padding(8.dp),
+					) {
 						var isTextError by remember { mutableStateOf(false) }
-						TextField(
-							value = "$newValue", onValueChange = {
-								val value = it.toIntOrNull() ?: if (it.isEmpty()) 0 else null
 
-								if (value != null) {
-									newValue = value
-									isTextError = false
-								} else {
-									isTextError = true
-								}
-							}, singleLine = true, keyboardOptions = KeyboardOptions(
-								keyboardType = KeyboardType.Number
+						Text(
+							stringResource(R.string.input_float),
+							style = MaterialTheme.typography.h6,
+							modifier = Modifier.padding(
+								bottom = 16.dp,
+								top = 8.dp,
+								start = 24.dp,
+								end = 24.dp
 							)
 						)
 
-						TextButton(onClick = {
-							updateValue(newValue)
-							showDialog = false
-						}) {
-							Text(stringResource(android.R.string.ok))
+						Text(
+							stringResource(
+								R.string.input_int_range_desc,
+								valueRange.first,
+								valueRange.last
+							),
+							style = MaterialTheme.typography.body1,
+							modifier = Modifier.padding(
+								bottom = 16.dp,
+								start = 24.dp,
+								end = 24.dp
+							)
+						)
+
+						TextField(
+							value = if (newValue != null) "$newValue" else "",
+							onValueChange = {
+								val value = it.toIntOrNull()
+
+								if (value != null) {
+									if (value in valueRange) {
+										newValue = value
+										isTextError = false
+										return@TextField
+									}
+								} else if (it.isEmpty()) {
+									newValue = null
+								}
+
+								isTextError = true
+							},
+							singleLine = true,
+							keyboardOptions = KeyboardOptions(
+								keyboardType = KeyboardType.Number
+							),
+							modifier = Modifier.padding(bottom = 8.dp, start = 24.dp, end = 24.dp)
+								.fillMaxWidth()
+						)
+
+						Row(
+							horizontalArrangement = Arrangement.End,
+							modifier = Modifier.fillMaxWidth()
+
+						) {
+							TextButton(
+								onClick = {
+									showDialog = false
+								},
+							) {
+								Text(stringResource(android.R.string.cancel))
+							}
+
+							TextButton(
+								onClick = {
+									updateValue(newValue!!)
+									showDialog = false
+								},
+								enabled = !isTextError
+							) {
+								Text(stringResource(R.string.apply))
+							}
 						}
+
 					}
 				}
 			}
 		}
 
 		TextButton(onClick = {
-			if (allowUserInput) {
 				showDialog = true
-			}
 		}) {
 			Text(text = parsedValue)
 		}
@@ -130,12 +181,110 @@ fun DiscreteSlider(
 	parsedValue: String,
 	updateValue: (Float) -> Unit,
 	valueRange: IntRange,
-	allowUserInput: Boolean = false
 ) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically
 	) {
-		Text(parsedValue, modifier = Modifier.padding(end = 8.dp))
+		var showDialog by remember { mutableStateOf(false) }
+
+		if (showDialog) {
+			var newValue: Float? by remember { mutableStateOf(value) }
+
+			Dialog(
+				onDismissRequest = {
+					showDialog = false
+				}
+			) {
+				Card {
+					Column(
+						modifier = Modifier.padding(8.dp),
+					) {
+						var isTextError by remember { mutableStateOf(false) }
+
+						Text(
+							stringResource(R.string.input_float),
+							style = MaterialTheme.typography.h6,
+							modifier = Modifier.padding(
+								bottom = 16.dp,
+								top = 8.dp,
+								start = 24.dp,
+								end = 24.dp
+							)
+						)
+
+						Text(
+							stringResource(
+								R.string.input_float_range_desc,
+								valueRange.first,
+								valueRange.last
+							),
+							style = MaterialTheme.typography.body1,
+							modifier = Modifier.padding(
+								bottom = 16.dp,
+								start = 24.dp,
+								end = 24.dp
+							)
+						)
+
+						TextField(
+							value = if (newValue != null) "$newValue" else "",
+							onValueChange = {
+								val value = it.toFloatOrNull()
+
+								if (value != null) {
+									if (valueRange.first <= value || value <= valueRange.last) {
+										newValue = value
+										isTextError = false
+										return@TextField
+									}
+								} else if (it.isEmpty()) {
+									newValue = null
+								}
+
+								isTextError = true
+							},
+							singleLine = true,
+							keyboardOptions = KeyboardOptions(
+								keyboardType = KeyboardType.Number
+							),
+							modifier = Modifier.padding(bottom = 8.dp, start = 24.dp, end = 24.dp)
+								.fillMaxWidth()
+						)
+
+						Row(
+							horizontalArrangement = Arrangement.End,
+							modifier = Modifier.fillMaxWidth()
+
+						) {
+							TextButton(
+								onClick = {
+									showDialog = false
+								},
+							) {
+								Text(stringResource(android.R.string.cancel))
+							}
+
+							TextButton(
+								onClick = {
+									updateValue(newValue!!)
+									showDialog = false
+								},
+								enabled = !isTextError
+							) {
+								Text(stringResource(R.string.apply))
+							}
+						}
+
+					}
+				}
+			}
+		}
+
+		TextButton(onClick = {
+			showDialog = true
+		}) {
+			Text(text = parsedValue)
+		}
 		Slider(
 			value,
 			{

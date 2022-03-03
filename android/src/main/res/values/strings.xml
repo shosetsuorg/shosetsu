@@ -618,6 +618,11 @@
     <string name="settings_advanced_log_desc">Enabling logs to a file, but may cause slow downs.\nRequires a restart</string>
     <string name="update_to">Update: %s</string>
     <string name="download_chapter_updates_desc">Download chapters that have been recently added to Updates</string>
+    <string name="input_int">Input Integer</string>
+    <string name="input_int_range_desc">Please input an integer between a range of %d and %d (inclusive)</string>
+
+    <string name="input_float">Input Integer</string>
+    <string name="input_float_range_desc">Please input an float between a range of %d and %d (inclusive)</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>
