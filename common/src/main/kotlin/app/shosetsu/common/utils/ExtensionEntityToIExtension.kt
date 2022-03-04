@@ -2,7 +2,7 @@ package app.shosetsu.common.utils
 
 import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.lib.ExtensionType
-import app.shosetsu.lib.kts.KtsExtension
+import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.lua.LuaExtension
 
 /*
@@ -22,8 +22,8 @@ import app.shosetsu.lib.lua.LuaExtension
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-fun GenericExtensionEntity.asIEntity(data: ByteArray) =
+fun GenericExtensionEntity.asIEntity(data: ByteArray): IExtension =
 	when (type) {
 		ExtensionType.LuaScript -> LuaExtension(data.decodeToString(), fileName)
-		ExtensionType.KotlinScript -> KtsExtension(data.decodeToString())
+		ExtensionType.KotlinScript -> throw Exception("Stud")
 	}
