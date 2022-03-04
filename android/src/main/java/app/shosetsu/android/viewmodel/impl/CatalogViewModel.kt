@@ -179,17 +179,18 @@ class CatalogViewModel(
 
 			private var _canLoadMore = true
 
-			init {
-				itemsFlow.tryEmit(emptyList())
-				// TODO LOADING
-			}
-
 			/**
 			 * The current max page loaded.
 			 *
 			 * if 2, then the current page that has been appended is 2
 			 */
-			private var currentMaxPage: Int = 0
+			private var currentMaxPage: Int = 1
+
+			init {
+				itemsFlow.tryEmit(emptyList())
+				// TODO LOADING
+				currentMaxPage = ext?.startIndex ?: 1
+			}
 
 			private var values = arrayListOf<ACatalogNovelUI>()
 
