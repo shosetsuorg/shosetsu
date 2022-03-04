@@ -1,5 +1,6 @@
 package app.shosetsu.common.domain.repositories.impl
 
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.datasource.database.base.IDBNovelSettingsDataSource
 import app.shosetsu.common.domain.model.local.NovelSettingEntity
 import app.shosetsu.common.domain.repositories.base.INovelSettingsRepository
@@ -28,15 +29,18 @@ import kotlinx.coroutines.flow.Flow
 class NovelSettingsRepository(
 	private val database: IDBNovelSettingsDataSource
 ) : INovelSettingsRepository {
+	@Throws(GenericSQLiteException::class)
 	override suspend fun get(novelID: Int): NovelSettingEntity? =
 		database.get(novelID)
 
 	override fun getFlow(novelID: Int): Flow<NovelSettingEntity?> =
 		database.getFlow(novelID)
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun update(novelSettingEntity: NovelSettingEntity): Unit =
 		database.update(novelSettingEntity)
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun insert(novelSettingEntity: NovelSettingEntity): Long =
 		database.insert(novelSettingEntity)
 }

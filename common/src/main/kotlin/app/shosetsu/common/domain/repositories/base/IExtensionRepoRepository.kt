@@ -34,30 +34,13 @@ import kotlinx.coroutines.flow.Flow
 interface IExtensionRepoRepository {
 	/**
 	 * Loads repository data
-	 *
-	 * @return
-	 * [HResult.Success] Loaded
-	 *
-	 * [HResult.Error] Error Loading
-	 *
-	 * [HResult.Empty] No data found
-	 *
-	 * [HResult.Loading] never
 	 */
 	suspend fun getRepoData(entity: RepositoryEntity): RepoIndex
 
 	/**
 	 * Loads all repositories present
-	 *
-	 * @return
-	 * [HResult.Success] Loaded entities
-	 *
-	 * [HResult.Error] Something went wrong loading entities
-	 *
-	 * [HResult.Empty] Should never happen
-	 *
-	 * [HResult.Loading] never
 	 */
+	@Throws(GenericSQLiteException::class)
 	suspend fun loadRepositories(): List<RepositoryEntity>
 
 
@@ -66,30 +49,26 @@ interface IExtensionRepoRepository {
 	 *  where [RepositoryEntity.isEnabled]=false
 	 * @see loadRepositories
 	 */
+	@Throws(GenericSQLiteException::class)
 	suspend fun loadEnabledRepos(): List<RepositoryEntity>
 
 	/**
 	 * Loads all repositories present
-	 *
-	 * @return
-	 * [HResult.Success] Successfully loaded entities
-	 *
-	 * [HResult.Error] Something went wrong loading
-	 *
-	 * [HResult.Empty] Should never happen
-	 *
-	 * [HResult.Loading] Initial value
 	 */
 	fun loadRepositoriesLive(): Flow<List<RepositoryEntity>>
 
+	@Throws(GenericSQLiteException::class)
 	suspend fun addRepository(url: String, name: String): Long
 
 	@Throws(GenericSQLiteException::class)
 	suspend fun remove(entity: RepositoryEntity)
 
+	@Throws(GenericSQLiteException::class)
 	suspend fun update(entity: RepositoryEntity)
 
+	@Throws(GenericSQLiteException::class)
 	suspend fun insert(entity: RepositoryEntity): Long
 
+	@Throws(GenericSQLiteException::class)
 	suspend fun getRepo(id: Int): RepositoryEntity?
 }

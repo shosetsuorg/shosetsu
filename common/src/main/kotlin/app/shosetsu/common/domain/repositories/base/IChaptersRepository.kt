@@ -128,5 +128,5 @@ interface IChaptersRepository {
 	)
 
 	@Throws(GenericSQLiteException::class)
-	suspend fun delete(chapterUI: ChapterEntity)
+	suspend fun delete(entity: ChapterEntity)
 }

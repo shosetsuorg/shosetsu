@@ -35,6 +35,7 @@ import kotlinx.coroutines.flow.Flow
  */
 interface IExtensionsRepository {
 
+	@Throws(GenericSQLiteException::class)
 	fun loadBrowseExtensions(): Flow<List<BrowseExtensionEntity>>
 
 	/**

@@ -48,16 +48,19 @@ class NovelsRepository(
 	override suspend fun loadBookmarkedNovelEntities(): List<NovelEntity> =
 		database.loadBookmarkedNovels()
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun loadNovels(): List<NovelEntity> =
 		database.loadNovels()
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun update(novelEntity: NovelEntity): Unit =
 		database.update(novelEntity)
 
-
+	@Throws(GenericSQLiteException::class)
 	override suspend fun insertReturnStripped(novelEntity: NovelEntity): StrippedNovelEntity? =
 		database.insertReturnStripped(novelEntity)
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun insert(novelEntity: NovelEntity): Long =
 		database.insert(novelEntity)
 
@@ -78,12 +81,14 @@ class NovelsRepository(
 		}
 
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun getNovel(novelID: Int): NovelEntity? =
 		database.getNovel(novelID)
 
 	override suspend fun getNovelFlow(novelID: Int): Flow<NovelEntity?> =
 		database.getNovelFlow(novelID)
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun updateNovelData(
 		novelEntity: NovelEntity,
 		novelInfo: Novel.Info
@@ -103,6 +108,7 @@ class NovelsRepository(
 			)
 		)
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun updateLibraryNovelEntity(list: List<LibraryNovelEntity>): Unit =
 		database.update(list)
 
@@ -118,6 +124,7 @@ class NovelsRepository(
 				)
 			}
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun clearUnBookmarkedNovels(): Unit =
 		database.clearUnBookmarkedNovels()
 

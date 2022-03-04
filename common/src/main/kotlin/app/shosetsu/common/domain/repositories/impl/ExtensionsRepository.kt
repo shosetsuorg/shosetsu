@@ -40,6 +40,7 @@ class ExtensionsRepository(
 	private val remoteSource: IRemoteExtensionDataSource,
 	private val _repoDBSource: IDBExtRepoDataSource
 ) : IExtensionsRepository {
+	@Throws(GenericSQLiteException::class)
 	@OptIn(ExperimentalCoroutinesApi::class)
 	override fun loadBrowseExtensions(): Flow<List<BrowseExtensionEntity>> {
 		return repoDBSource.loadExtensionsFlow().transformLatest { list ->

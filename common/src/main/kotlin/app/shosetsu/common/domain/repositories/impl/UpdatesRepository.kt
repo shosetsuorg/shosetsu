@@ -1,5 +1,6 @@
 package app.shosetsu.common.domain.repositories.impl
 
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.datasource.database.base.IDBUpdatesDataSource
 import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.common.domain.model.local.UpdateEntity
@@ -34,6 +35,7 @@ class UpdatesRepository(
 	private val IDBUpdatesDataSource: IDBUpdatesDataSource,
 ) : IUpdatesRepository {
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun addUpdates(list: List<UpdateEntity>): Array<Long> =
 		IDBUpdatesDataSource.insertUpdates(list)
 

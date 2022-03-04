@@ -15,6 +15,7 @@ package app.shosetsu.common.domain.repositories.base
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.common.domain.model.local.UpdateEntity
 import kotlinx.coroutines.flow.Flow
@@ -29,43 +30,17 @@ import kotlinx.coroutines.flow.Flow
 interface IUpdatesRepository {
 	/**
 	 * Adds updates
-	 *
-	 * @return
-	 * [HResult.Success] Added, returning rowIDs
-	 *
-	 * [HResult.Error] Something went wrong adding
-	 *
-	 * [HResult.Empty] never
-	 *
-	 * [HResult.Loading] never
 	 */
+	@Throws(GenericSQLiteException::class)
 	suspend fun addUpdates(list: List<UpdateEntity>): Array<Long>
 
 	/**
-	 * [HResult] [Flow] of [List] of [UpdateEntity] of all entities present
-	 *
-	 * @return
-	 * [HResult.Success] Successfully retrieved updates
-	 *
-	 * [HResult.Error] Something went wrong getting the updates
-	 *
-	 * [HResult.Empty] No updates
-	 *
-	 * [HResult.Loading] Initial value
+	 * [Flow] of [List] of [UpdateEntity] of all entities present
 	 */
 	suspend fun getUpdatesFlow(): Flow<List<UpdateEntity>>
 
 	/**
-	 * [HResult] [Flow] of [List] of [UpdateCompleteEntity] of all entities present
-	 *
-	 * @return
-	 * [HResult.Success] Successfully retrieved fleshed out updates
-	 *
-	 * [HResult.Error] Something went wrong getting the updates
-	 *
-	 * [HResult.Empty] No updates
-	 *
-	 * [HResult.Loading] Initial value
+	 * [Flow] of [List] of [UpdateCompleteEntity] of all entities present
 	 */
 	suspend fun getCompleteUpdatesFlow(): Flow<List<UpdateCompleteEntity>>
 }

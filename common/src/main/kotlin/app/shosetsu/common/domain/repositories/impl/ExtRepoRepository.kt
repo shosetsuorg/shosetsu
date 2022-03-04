@@ -36,18 +36,21 @@ class ExtRepoRepository(
 	override suspend fun getRepoData(entity: RepositoryEntity): RepoIndex =
 		remoteSource.downloadRepoData(entity)
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun loadRepositories(): List<RepositoryEntity> =
 		databaseSource.loadRepositories()
 
 	/**
 	 * TODO Create a direct to database call that cuts out the kotlin filtering
 	 */
+	@Throws(GenericSQLiteException::class)
 	override suspend fun loadEnabledRepos(): List<RepositoryEntity> =
 		loadRepositories().filter { it.isEnabled }
 
 	override fun loadRepositoriesLive(): Flow<List<RepositoryEntity>> =
 		databaseSource.loadRepositoriesLive()
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun addRepository(url: String, name: String): Long =
 		databaseSource.addRepository(url, name)
 
@@ -55,12 +58,15 @@ class ExtRepoRepository(
 	override suspend fun remove(entity: RepositoryEntity): Unit =
 		databaseSource.remove(entity)
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun update(entity: RepositoryEntity): Unit =
 		databaseSource.update(entity)
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun insert(entity: RepositoryEntity): Long =
 		databaseSource.insert(entity)
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun getRepo(id: Int): RepositoryEntity? =
 		databaseSource.loadRepository(id)
 }

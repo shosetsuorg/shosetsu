@@ -34,163 +34,71 @@ import kotlinx.coroutines.flow.Flow
 interface INovelsRepository {
 	/**
 	 * Loads all [NovelEntity]s that are bookmarked in a flow
-	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Loading] Initial Value
 	 */
+	@Throws(GenericSQLiteException::class)
 	fun loadLibraryNovelEntities(): Flow<List<LibraryNovelEntity>>
 
 	/**
 	 * Loads all [NovelEntity]s that are bookmarked
-	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Loading] never
 	 */
 	@Throws(GenericSQLiteException::class)
 	suspend fun loadBookmarkedNovelEntities(): List<NovelEntity>
 
 	/**
 	 * Loads all [NovelEntity]s that are in the repository
-	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Loading] never
 	 */
 	suspend fun loadNovels(): List<NovelEntity>
 
 	/**
 	 * Searches the bookmarked novels and returns a live data of them
-	 *
 	 */
 	@Throws(GenericSQLiteException::class)
 	suspend fun searchBookmarked(string: String): List<StrippedBookmarkedNovelEntity>
 
 	/**
 	 * Loads the [NovelEntity] by its [novelID]
-	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Loading] never
 	 */
+	@Throws(GenericSQLiteException::class)
 	suspend fun getNovel(novelID: Int): NovelEntity?
 
 	/**
 	 * Loads live data of the [NovelEntity] by its [novelID]
-	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Loading] Initial value
 	 */
+	@Throws(GenericSQLiteException::class)
 	suspend fun getNovelFlow(novelID: Int): Flow<NovelEntity?>
 
 	/**
 	 * Inserts the [novelEntity] and returns a UI version of it
-	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Loading] never
 	 */
+	@Throws(GenericSQLiteException::class)
 	suspend fun insertReturnStripped(novelEntity: NovelEntity): StrippedNovelEntity?
 
 	/**
 	 * Inserts the [novelEntity]
-	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] never
-	 *
-	 * [HResult.Loading] never
 	 */
+	@Throws(GenericSQLiteException::class)
 	suspend fun insert(novelEntity: NovelEntity): Long
 
 	/**
 	 * Updates the [novelEntity]
-	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] never
-	 *
-	 * [HResult.Loading] never
 	 */
+	@Throws(GenericSQLiteException::class)
 	suspend fun update(novelEntity: NovelEntity)
 
 	/**
 	 * Updates a novel entity with new data
-	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] never
-	 *
-	 * [HResult.Loading] never
 	 */
+	@Throws(GenericSQLiteException::class)
 	suspend fun updateNovelData(novelEntity: NovelEntity, novelInfo: Novel.Info)
 
 	/**
 	 * Updates a list of bookmarked novels
-	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] never
-	 *
-	 * [HResult.Loading] never
 	 */
+	@Throws(GenericSQLiteException::class)
 	suspend fun updateLibraryNovelEntity(list: List<LibraryNovelEntity>)
 
 	/**
 	 * Retrieves NovelInfo from it's source
-	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Loading] never
 	 */
 	suspend fun retrieveNovelInfo(
 		extension: IExtension,
@@ -203,20 +111,12 @@ interface INovelsRepository {
 	 *  Removes all novels that are not bookmarked
 	 *  This should cascade and delete all their chapters as well
 	 */
+	@Throws(GenericSQLiteException::class)
 	suspend fun clearUnBookmarkedNovels()
 
 
 	/**
 	 * Queries the [IExtension] for a search result
-	 *
-	 * @return
-	 * [HResult.Success] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Error] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Empty] TODO RETURN DESCRIPTION
-	 *
-	 * [HResult.Loading] never
 	 */
 	suspend fun getCatalogueSearch(
 		ext: IExtension,
@@ -226,15 +126,6 @@ interface INovelsRepository {
 
 	/**
 	 * Loads catalogue data of an [IExtension]
-	 *
-	 * @return
-	 * [HResult.Success] Data successfully loaded
-	 *
-	 * [HResult.Error] Error loading data
-	 *
-	 * [HResult.Empty] ?
-	 *
-	 * [HResult.Loading] never
 	 */
 	suspend fun getCatalogueData(
 		ext: IExtension,
