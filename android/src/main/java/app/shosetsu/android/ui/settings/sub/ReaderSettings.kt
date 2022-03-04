@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -30,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.makeSnackBar
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.css.CSSEditorActivity
 import app.shosetsu.android.view.compose.setting.ButtonSettingContent
@@ -90,6 +93,9 @@ class ReaderSettings : ShosetsuController() {
 								putExtra(CSSEditorActivity.CSS_ID, -1)
 							}
 						)
+					},
+					showStyleAddSnackBar = {
+						makeSnackBar(R.string.style_wait)?.show()
 					}
 				)
 			}
@@ -99,7 +105,12 @@ class ReaderSettings : ShosetsuController() {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ReaderSettingsContent(viewModel: AReaderSettingsViewModel, openHTMLEditor: () -> Unit) {
+fun ReaderSettingsContent(
+	viewModel: AReaderSettingsViewModel,
+	openHTMLEditor: () -> Unit,
+	showStyleAddSnackBar: () -> Unit
+) {
+
 	LazyColumn(
 		contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 64.dp)
 	) {
@@ -166,6 +177,26 @@ fun ReaderSettingsContent(viewModel: AReaderSettingsViewModel, openHTMLEditor: (
 									fontSize = 32.sp
 								)
 							}
+						}
+					}
+
+					item {
+						Card(
+							modifier = Modifier.padding(8.dp),
+							onClick = {
+								showStyleAddSnackBar()
+							}
+						) {
+							Box(
+								contentAlignment = Alignment.Center
+							) {
+								Image(
+									painterResource(R.drawable.add_circle_outline),
+									stringResource(R.string.style_add),
+									modifier = Modifier.size(64.dp).padding(8.dp)
+								)
+							}
+
 						}
 					}
 				}
@@ -273,4 +304,5 @@ fun ReaderSettingsContent(viewModel: AReaderSettingsViewModel, openHTMLEditor: (
 		}
 
 	}
+
 }

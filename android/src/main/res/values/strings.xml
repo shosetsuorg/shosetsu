@@ -623,6 +623,8 @@
 
     <string name="input_float">Input Integer</string>
     <string name="input_float_range_desc">Please input an float between a range of %d and %d (inclusive)</string>
+    <string name="style_add">Add Style to Shosetsu</string>
+    <string name="style_wait">Style sheets coming soon</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>
