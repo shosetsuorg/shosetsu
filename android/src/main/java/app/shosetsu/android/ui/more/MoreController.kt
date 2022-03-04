@@ -76,6 +76,9 @@ class ComposeMoreController
 				MoreContent(
 					{
 						makeSnackBar(R.string.style_wait)?.show()
+					},
+					{
+						makeSnackBar(R.string.qr_code_wait)?.show()
 					}
 				) {
 					router.shosetsuPush(it)
@@ -118,13 +121,17 @@ fun MoreItemContent(
 @Preview
 @Composable
 fun PreviewMoreContent() {
-	MoreContent({}) { }
+	MoreContent({}, {}) { }
 }
 
 @Composable
-fun MoreContent(showStyleBar: () -> Unit, pushController: (Controller) -> Unit) {
+fun MoreContent(
+	showStyleBar: () -> Unit,
+	showQRCode: () -> Unit,
+	pushController: (Controller) -> Unit
+) {
 	Column(
-		modifier = Modifier.fillMaxWidth().scrollable(rememberScrollState(), Orientation.Vertical)
+		modifier = Modifier.fillMaxSize().scrollable(rememberScrollState(), Orientation.Vertical)
 	) {
 		Card(
 			elevation = 0.dp,
@@ -137,7 +144,9 @@ fun MoreContent(showStyleBar: () -> Unit, pushController: (Controller) -> Unit) 
 			)
 		}
 		Divider()
-		Column {
+		Column(
+			modifier = Modifier.fillMaxSize()
+		) {
 			MoreItemContent(R.string.downloads, R.drawable.download) {
 				pushController(DownloadsController())
 			}
@@ -152,6 +161,10 @@ fun MoreContent(showStyleBar: () -> Unit, pushController: (Controller) -> Unit) 
 
 			MoreItemContent(R.string.styles, R.drawable.ic_baseline_style_24) {
 				showStyleBar()
+			}
+
+			MoreItemContent(R.string.qr_code_scan, R.drawable.ic_baseline_qr_code_scanner_24) {
+				showQRCode()
 			}
 
 			MoreItemContent(R.string.settings, R.drawable.settings) {

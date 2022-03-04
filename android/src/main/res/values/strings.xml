@@ -626,6 +626,8 @@
     <string name="style_add">Add Style to Shosetsu</string>
     <string name="style_wait">Style sheets coming soon</string>
     <string name="styles">Styles</string>
+    <string name="qr_code_scan">Scan QR Code</string>
+    <string name="qr_code_wait">Share feature coming soon</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>
