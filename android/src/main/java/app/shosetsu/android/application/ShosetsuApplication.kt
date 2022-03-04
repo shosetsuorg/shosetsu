@@ -197,6 +197,10 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, DIAware,
 				null
 			}
 		}
+
+		ShosetsuSharedLib.shosetsuHeaders = arrayOf(
+			"User-Agent" to "Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:97.0) Gecko/20100101 Firefox/97.0"
+		)
 	}
 
 	private fun setupACRA() {
