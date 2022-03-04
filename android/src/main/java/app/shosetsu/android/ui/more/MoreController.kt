@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.shosetsu.android.common.ext.makeSnackBar
 import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.ui.about.AboutController
 import app.shosetsu.android.ui.backup.BackupSettings
@@ -72,7 +73,11 @@ class ComposeMoreController
 		setViewTitle()
 		setContent {
 			MdcTheme {
-				MoreContent {
+				MoreContent(
+					{
+						makeSnackBar(R.string.style_wait)?.show()
+					}
+				) {
 					router.shosetsuPush(it)
 				}
 			}
@@ -113,11 +118,11 @@ fun MoreItemContent(
 @Preview
 @Composable
 fun PreviewMoreContent() {
-	MoreContent { }
+	MoreContent({}) { }
 }
 
 @Composable
-fun MoreContent(pushController: (Controller) -> Unit) {
+fun MoreContent(showStyleBar: () -> Unit, pushController: (Controller) -> Unit) {
 	Column(
 		modifier = Modifier.fillMaxWidth().scrollable(rememberScrollState(), Orientation.Vertical)
 	) {
@@ -143,6 +148,10 @@ fun MoreContent(pushController: (Controller) -> Unit) {
 
 			MoreItemContent(R.string.repositories, R.drawable.add_shopping_cart) {
 				pushController(RepositoryController())
+			}
+
+			MoreItemContent(R.string.styles, R.drawable.ic_baseline_style_24) {
+				showStyleBar()
 			}
 
 			MoreItemContent(R.string.settings, R.drawable.settings) {
