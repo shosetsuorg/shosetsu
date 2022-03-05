@@ -1,8 +1,13 @@
 package app.shosetsu.android.view.controller
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.ActivityResultRegistry
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.ext.*
 import com.bluelinelabs.conductor.Controller
@@ -113,5 +118,24 @@ abstract class ShosetsuController : LifecycleController, DIAware {
 	) =
 		collectLatestLA(this@ShosetsuController, catch, onCollect)
 
+
+	open fun onLifecycleCreate(owner: LifecycleOwner, registry: ActivityResultRegistry) {}
+
+	inner class Observer(private val registry: ActivityResultRegistry) :
+		DefaultLifecycleObserver {
+
+
+		override fun onCreate(owner: LifecycleOwner) {
+			onLifecycleCreate(owner, registry)
+		}
+	}
+
+	private val observer by lazy {
+		Observer((activity as AppCompatActivity).activityResultRegistry)
+	}
+
+	override fun onContextAvailable(context: Context) {
+		lifecycle.addObserver(observer)
+	}
 
 }

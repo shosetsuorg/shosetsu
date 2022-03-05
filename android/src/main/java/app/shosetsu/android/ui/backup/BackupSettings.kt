@@ -1,6 +1,5 @@
 package app.shosetsu.android.ui.backup
 
-import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +8,6 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,7 +18,6 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.compose.setting.ButtonSettingContent
@@ -98,54 +95,43 @@ class BackupSettings : ShosetsuController() {
 	 * > Via external
 	 * >> Open file explorer and select file
 	 */
+	lateinit var selectBackupToRestoreLauncher: ActivityResultLauncher<Array<String>>
+	lateinit var selectLocationToExportLauncher: ActivityResultLauncher<String>
 
-
-	inner class Observer(private val registry: ActivityResultRegistry) :
-		DefaultLifecycleObserver {
-		lateinit var selectBackupToRestoreLauncher: ActivityResultLauncher<Array<String>>
-		lateinit var selectLocationToExportLauncher: ActivityResultLauncher<String>
-
-		override fun onCreate(owner: LifecycleOwner) {
-			selectBackupToRestoreLauncher = registry.register(
-				"backup_settings_load_backup_rq#",
-				owner,
-				ActivityResultContracts.OpenDocument()
-			) { uri: Uri? ->
-				if (uri == null) {
-					logE("Cancelled")
-					return@register
-				}
-
-				// TODO Possibly add popup verification to make sure that an invalid file ext is oki
-
-				context?.toast("Restoring now...")
-				viewModel.restore(uri)
+	override fun onLifecycleCreate(owner: LifecycleOwner, registry: ActivityResultRegistry) {
+		selectBackupToRestoreLauncher = registry.register(
+			"backup_settings_load_backup_rq#",
+			owner,
+			ActivityResultContracts.OpenDocument()
+		) { uri: Uri? ->
+			if (uri == null) {
+				logE("Cancelled")
+				return@register
 			}
 
-			selectLocationToExportLauncher = registry.register(
-				"backup_settings_point_export_rq#",
-				owner,
-				ActivityResultContracts.CreateDocument()
-			) { uri: Uri? ->
-				if (uri == null) {
-					logE("Cancelled")
-					viewModel.clearExport()
-					return@register
-				}
+			// TODO Possibly add popup verification to make sure that an invalid file ext is oki
 
-				context?.toast("Exporting now")
-				viewModel.exportBackup(uri)
+			context?.toast("Restoring now...")
+			viewModel.restore(uri)
+		}
+
+		selectLocationToExportLauncher = registry.register(
+			"backup_settings_point_export_rq#",
+			owner,
+			ActivityResultContracts.CreateDocument()
+		) { uri: Uri? ->
+			if (uri == null) {
+				logE("Cancelled")
+				viewModel.clearExport()
+				return@register
 			}
+
+			context?.toast("Exporting now")
+			viewModel.exportBackup(uri)
 		}
 	}
 
-	private val observer by lazy {
-		Observer((activity as AppCompatActivity).activityResultRegistry)
-	}
 
-	override fun onContextAvailable(context: Context) {
-		lifecycle.addObserver(observer)
-	}
 
 	private fun performExportSelection() {
 		val backupFileName = viewModel.getBackupToExport()
@@ -158,11 +144,11 @@ class BackupSettings : ShosetsuController() {
 			return
 		}
 
-		observer.selectLocationToExportLauncher.launch(backupFileName)
+		selectLocationToExportLauncher.launch(backupFileName)
 	}
 
 	private fun performFileSelection() {
-		observer.selectBackupToRestoreLauncher.launch(arrayOf("application/octet-stream"))
+		selectBackupToRestoreLauncher.launch(arrayOf("application/octet-stream"))
 	}
 
 }

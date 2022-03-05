@@ -65,6 +65,32 @@ class ComposeMoreController
 
 	override fun onViewCreated(view: View) {}
 
+	/*
+	lateinit var scanQrCode: ActivityResultLauncher<Nothing?>
+
+	fun handleResult(result: QRResult) {
+		when (result) {
+			is QRResult.QRSuccess -> {
+
+			}
+			QRResult.QRUserCanceled -> {
+
+			}
+			QRResult.QRMissingPermission -> {
+
+			}
+			is QRResult.QRError -> {
+				logE("Failed to scan qr code", result.exception)
+			}
+		}
+	}
+
+	override fun onLifecycleCreate(owner: LifecycleOwner, registry: ActivityResultRegistry) {
+		super.onLifecycleCreate(owner, registry)
+		scanQrCode = registry.register("controller_more_qr_code", ScanQRCode(), ::handleResult)
+	}
+	 */
+
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup,
@@ -78,6 +104,7 @@ class ComposeMoreController
 						makeSnackBar(R.string.style_wait)?.show()
 					},
 					{
+						//scanQrCode.launch(null)
 						makeSnackBar(R.string.qr_code_wait)?.show()
 					}
 				) {

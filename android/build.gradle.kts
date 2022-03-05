@@ -350,4 +350,6 @@ dependencies {
 
 	implementation("com.chargemap.compose:numberpicker:0.0.11")
 
+	// QR Code
+	//implementation("io.github.g00fy2.quickie:quickie-bundled:1.4.0")
 }
