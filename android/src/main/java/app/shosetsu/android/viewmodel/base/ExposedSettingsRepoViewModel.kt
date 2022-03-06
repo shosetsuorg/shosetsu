@@ -1,17 +1,5 @@
 package app.shosetsu.android.viewmodel.base
 
-import android.text.Editable
-import android.view.View
-import android.widget.AdapterView
-import android.widget.CompoundButton
-import android.widget.NumberPicker
-import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.view.uimodels.settings.DoubleNumberSettingData
-import app.shosetsu.android.view.uimodels.settings.NumberPickerSettingData
-import app.shosetsu.android.view.uimodels.settings.SpinnerSettingData
-import app.shosetsu.android.view.uimodels.settings.TextInputSettingData
-import app.shosetsu.android.view.uimodels.settings.base.ToggleableStateSettingData
-import app.shosetsu.android.view.uimodels.settings.dsl.*
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 
@@ -40,77 +28,5 @@ import app.shosetsu.common.domain.repositories.base.ISettingsRepository
  */
 interface ExposedSettingsRepoViewModel {
 	val settingsRepo: ISettingsRepository
-
-	@SettingsItemDSL
-	suspend fun NumberPickerSettingData.settingValue(key: SettingKey<Int>) {
-		initalValue { settingsRepo.getInt(key) }
-		onValueSelected { _: NumberPicker?, _: Int, newVal: Int ->
-			launchIO { settingsRepo.setInt(key, newVal) }
-		}
-	}
-
-	/**
-	 * Generic function for [SpinnerSettingData]
-	 */
-	@SettingsItemDSL
-	suspend fun SpinnerSettingData.spinnerSettingValue(key: SettingKey<Int>) {
-		spinnerValue { settingsRepo.getInt(key) }
-		var first = true
-		onSpinnerItemSelected { _: AdapterView<*>?, _: View?, position: Int, _: Long ->
-			launchIO {
-				if (first) {
-					first = false
-					return@launchIO
-				}
-				settingsRepo.setInt(key, position)
-			}
-		}
-	}
-
-	/**
-	 * Generic function for [ToggleableStateSettingData]
-	 */
-	@SettingsItemDSL
-	suspend fun ToggleableStateSettingData.checkSettingValue(key: SettingKey<Boolean>) {
-		isChecked = settingsRepo.getBoolean(key)
-		onChecked { _: CompoundButton?, isChecked: Boolean ->
-			launchIO {
-				settingsRepo.setBoolean(key, isChecked)
-			}
-		}
-	}
-
-	@SettingsItemDSL
-	suspend fun TextInputSettingData.textSettingValue(key: SettingKey<String>) {
-		initialText = settingsRepo.getString(key)
-		doAfterTextChanged { editable: Editable ->
-			launchIO {
-				settingsRepo.setString(key, editable.toString())
-			}
-		}
-	}
-
-
-	/**
-	 * I don't know what this does
-	 */
-	fun Int.orZero(): Int = if (this == -1) 0 else this
-
-	/**
-	 * Set min and max before hand
-	 */
-	@SettingsItemDSL
-	suspend fun DoubleNumberSettingData.settingValue(key: SettingKey<Float>) {
-		settingsRepo.getFloat(key).let { settingValue: Float ->
-			initialWhole = wholeSteps.indexOfFirst { it == settingValue.toInt() }.orZero()
-			val decimal: Int = ((settingValue % 1) * 100).toInt()
-			initialDecimal = decimalSteps.indexOfFirst { it == decimal }.orZero()
-		}
-		onValueSelected { value: Double ->
-			launchIO {
-				settingsRepo.setFloat(key, value.toFloat())
-			}
-		}
-	}
 }
 
