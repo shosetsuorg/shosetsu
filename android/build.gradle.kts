@@ -189,7 +189,7 @@ dependencies {
 	// Core libraries
 	//val shosetsuLibVersion: String by extra
 	implementation("org.luaj:luaj-jse:3.0.1")
-	implementation("com.github.shosetsuorg:kotlin-lib:v1.0.0-rc63")
+	implementation("com.github.shosetsuorg:kotlin-lib:e91ea4e")
 
 
 	// Image loading
