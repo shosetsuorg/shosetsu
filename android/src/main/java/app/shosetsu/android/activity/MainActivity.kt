@@ -470,7 +470,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 					makeSnackBar(R.string.activity_main_app_update_download)
 				}
 				is AMainViewModel.AppUpdateAction.UserUpdate -> {
-					share(it.updateURL, it.updateTitle)
+					openShare(it.updateURL, it.updateTitle)
 				}
 			}
 		}

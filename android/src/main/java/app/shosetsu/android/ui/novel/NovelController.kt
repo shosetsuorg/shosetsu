@@ -16,6 +16,7 @@ import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_B
 import app.shosetsu.android.view.controller.FastAdapterRecyclerController
 import app.shosetsu.android.view.controller.base.FABController
 import app.shosetsu.android.view.controller.base.syncFABWithRecyclerView
+import app.shosetsu.android.view.createQRCodeDialog
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
@@ -177,6 +178,20 @@ class NovelController(bundle: Bundle) :
 		)
 	}
 
+	@OptIn(ExperimentalMaterialApi::class)
+	private fun openShare() {
+		viewModel.getShareInfo().observe(
+			catch = {
+				TODO("Handle")
+			}
+		) { info ->
+			if (info != null) {
+				createQRCodeDialog(binding.root.context, activity as MainActivity, info.novelURL)
+					.show()
+			}
+		}
+	}
+
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
 		id.source_migrate -> {
 			// migrateOpen()
@@ -188,14 +203,7 @@ class NovelController(bundle: Bundle) :
 			true
 		}
 		id.share -> {
-			viewModel.getShareInfo().observe(
-				catch = {
-					TODO("Handle")
-				}
-			) {
-				if (it != null)
-					activity?.share(it.novelURL, it.novelTitle)
-			}
+			openShare()
 			true
 		}
 		id.option_chapter_jump -> {

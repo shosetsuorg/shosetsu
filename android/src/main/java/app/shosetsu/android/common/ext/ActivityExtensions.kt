@@ -50,7 +50,7 @@ fun Activity.openInWebView(url: String) {
 	})
 }
 
-fun Activity.share(url: String, title: String) {
+fun Activity.openShare(url: String, title: String) {
 	logI("Sharing URL ($title):($url)")
 	application.startActivity(
 		Intent.createChooser(Intent().apply {
