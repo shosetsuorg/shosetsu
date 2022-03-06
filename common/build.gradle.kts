@@ -21,7 +21,7 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
 	// Core library
-	implementation("com.github.shosetsuorg:kotlin-lib:e91ea4e")
+	implementation("com.github.shosetsuorg:kotlin-lib:2e27ebb")
 
 	// Testing
 	testImplementation(kotlin("test"))

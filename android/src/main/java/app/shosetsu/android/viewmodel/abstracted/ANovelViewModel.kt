@@ -1,5 +1,6 @@
 package app.shosetsu.android.viewmodel.abstracted
 
+import androidx.compose.ui.graphics.ImageBitmap
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
@@ -143,4 +144,6 @@ abstract class ANovelViewModel
 
 
 	abstract fun getIfAllowTrueDelete(): Flow<Boolean>
+
+	abstract fun getQRCode(): Flow<ImageBitmap?>
 }

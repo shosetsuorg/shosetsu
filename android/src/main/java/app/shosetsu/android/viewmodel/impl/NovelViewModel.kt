@@ -1,9 +1,14 @@
 package app.shosetsu.android.viewmodel.impl
 
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.utils.share.toURL
 import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerAfterUpdateUseCase
@@ -16,6 +21,7 @@ import app.shosetsu.android.domain.usecases.start.StartDownloadWorkerUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateChapterUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateNovelSettingUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
+import app.shosetsu.android.view.AndroidQRCodeDrawable
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
@@ -23,6 +29,11 @@ import app.shosetsu.common.enums.ChapterSortType
 import app.shosetsu.common.enums.ChapterSortType.SOURCE
 import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.common.view.uimodel.NovelSettingUI
+import app.shosetsu.lib.share.ExtensionLink
+import app.shosetsu.lib.share.NovelLink
+import app.shosetsu.lib.share.RepositoryLink
+import io.github.g0dkar.qrcode.QRCode
+import io.github.g0dkar.qrcode.render.QRCodeCanvasFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
@@ -68,7 +79,9 @@ class NovelViewModel(
 	private val startDownloadWorkerAfterUpdateUseCase: StartDownloadWorkerAfterUpdateUseCase,
 	private val getLastReadChapter: GetLastReadChapterUseCase,
 	private val getTrueDelete: GetTrueDeleteChapterUseCase,
-	private val trueDeleteChapter: TrueDeleteChapterUseCase
+	private val trueDeleteChapter: TrueDeleteChapterUseCase,
+	private val getInstalledExtensionUseCase: GetInstalledExtensionUseCase,
+	private val getRepositoryUseCase: GetRepositoryUseCase
 ) : ANovelViewModel() {
 
 	override val chaptersLive: Flow<List<ChapterUI>> by lazy {
@@ -99,6 +112,66 @@ class NovelViewModel(
 	override fun getIfAllowTrueDelete(): Flow<Boolean> =
 		flow {
 			emit(getTrueDelete())
+		}.onIO()
+
+	override fun getQRCode(): Flow<ImageBitmap?> =
+		flow {
+			emitAll(novelFlow.transformLatest { novel ->
+				if (novel != null) {
+					emitAll(getNovelURL().transformLatest { novelURL ->
+						if (novelURL != null) {
+							emitAll(getInstalledExtensionUseCase(novel.extID).transformLatest { ext ->
+								if (ext != null) {
+									val repo = getRepositoryUseCase(ext.repoID)
+									if (repo != null) {
+										val url = NovelLink(
+											novel.title,
+											novel.imageURL,
+											novelURL,
+											ExtensionLink(
+												novel.extID,
+												ext.name,
+												ext.imageURL,
+												RepositoryLink(
+													repo.name,
+													repo.url
+												)
+											)
+										).toURL()
+										val code = QRCode(url)
+										val encoding = code.encode()
+
+										QRCodeCanvasFactory.AVAILABLE_IMPLEMENTATIONS["android.graphics.Bitmap"] =
+											{ width, height ->
+												AndroidQRCodeDrawable(
+													width,
+													height
+												)
+											}
+
+										val size = code.computeImageSize(
+											QRCode.DEFAULT_CELL_SIZE,
+											QRCode.DEFAULT_MARGIN,
+										)
+										val bytes = code.render(
+											qrCodeCanvas = AndroidQRCodeDrawable(size, size),
+											rawData = encoding,
+											brightColor = Color.WHITE,
+											darkColor = Color.BLACK,
+											marginColor = Color.WHITE
+										).toByteArray()
+
+										emit(
+											BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+												.asImageBitmap()
+										)
+									} else emit(null)
+								} else emit(null)
+							})
+						} else emit(null)
+					})
+				} else emit(null)
+			})
 		}.onIO()
 
 	private val novelFlow: Flow<NovelUI?> by lazy {

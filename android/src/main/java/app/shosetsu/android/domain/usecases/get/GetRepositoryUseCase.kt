@@ -1,8 +1,7 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import kotlinx.coroutines.flow.Flow
+import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
 
 /*
  * This file is part of shosetsu.
@@ -22,12 +21,14 @@ import kotlinx.coroutines.flow.Flow
  */
 
 /**
- * shosetsu
- * 04 / 07 / 2020
+ * Shosetsu
+ *
+ * @since 06 / 03 / 2022
+ * @author Doomsdayrs
  */
-class GetExtensionUIUseCase(
-	private val iExtensionsRepository: IExtensionsRepository,
+class GetRepositoryUseCase(
+	private val repo: IExtensionRepoRepository
 ) {
-	operator fun invoke(id: Int): Flow<InstalledExtensionEntity?> =
-		iExtensionsRepository.getInstalledExtensionFlow(id)
+	@Throws(GenericSQLiteException::class)
+	suspend operator fun invoke(id: Int) = repo.getRepo(id)
 }

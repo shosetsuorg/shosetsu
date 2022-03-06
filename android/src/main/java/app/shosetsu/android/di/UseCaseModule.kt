@@ -168,7 +168,8 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 			instance(),
 		)
 	}
-	bind<GetExtensionUIUseCase>() with provider { GetExtensionUIUseCase(instance()) }
+	bind<GetInstalledExtensionUseCase>() with provider { GetInstalledExtensionUseCase(instance()) }
+	bind<GetRepositoryUseCase>() with provider { GetRepositoryUseCase(instance()) }
 	bind<LoadRepositoriesUseCase>() with provider { LoadRepositoriesUseCase(instance()) }
 	bind<LoadReaderThemes>() with provider {
 		LoadReaderThemes(instance(), instance())

@@ -628,6 +628,8 @@
     <string name="styles">Styles</string>
     <string name="qr_code_scan">Scan QR Code</string>
     <string name="qr_code_wait">Share feature coming soon</string>
+    <string name="menu_share_url">Basic URL</string>
+    <string name="menu_share_qr">QR Code</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

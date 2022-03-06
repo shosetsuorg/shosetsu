@@ -1,8 +1,6 @@
 package app.shosetsu.android.view
 
 import android.content.Context
-import android.graphics.BitmapFactory
-import android.graphics.Color
 import androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi
 import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
@@ -19,18 +17,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleOwner
 import androidx.savedstate.SavedStateRegistryOwner
-import app.shosetsu.android.common.ext.launchIO
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.composethemeadapter.MdcTheme
-import io.github.g0dkar.qrcode.QRCode
-import io.github.g0dkar.qrcode.render.QRCodeCanvasFactory
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -58,12 +53,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 
 @OptIn(ExperimentalAnimationGraphicsApi::class)
-fun createQRCodeDialog(
+fun openQRCodeShareDialog(
 	context: Context,
-	owner: SavedStateRegistryOwner,
-	content: String
-): ComposeDialog =
-	ComposeDialog(context, owner).apply {
+	owner: LifecycleOwner,
+	stateOwner: SavedStateRegistryOwner,
+	flow: Flow<ImageBitmap?>
+) {
+	ComposeDialog(context, owner, stateOwner).apply {
 		setContentView(ComposeView(context).apply {
 
 
@@ -71,30 +67,6 @@ fun createQRCodeDialog(
 				ViewCompositionStrategy.DisposeOnLifecycleDestroyed(owner)
 			)
 
-			val flow: MutableStateFlow<ImageBitmap?> = MutableStateFlow(null)
-
-			launchIO {
-				val code = QRCode(content)
-				val encoding = code.encode()
-				QRCodeCanvasFactory.AVAILABLE_IMPLEMENTATIONS["android.graphics.Bitmap"] =
-					{ width, height -> AndroidQRCodeDrawable(width, height) }
-
-				val size = code.computeImageSize(
-					QRCode.DEFAULT_CELL_SIZE,
-					QRCode.DEFAULT_MARGIN,
-				)
-				val bytes = code.render(
-					qrCodeCanvas = AndroidQRCodeDrawable(size, size),
-					rawData = encoding,
-					brightColor = Color.WHITE,
-					darkColor = Color.BLACK,
-					marginColor = Color.WHITE
-				).toByteArray()
-
-				val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-
-				flow.emit(bitmap.asImageBitmap())
-			}
 
 			setContent {
 				MdcTheme {
@@ -130,4 +102,5 @@ fun createQRCodeDialog(
 			}
 		})
 
-	}
+	}.show()
+}

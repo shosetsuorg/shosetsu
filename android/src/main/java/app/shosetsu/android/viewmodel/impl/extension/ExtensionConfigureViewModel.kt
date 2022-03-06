@@ -24,7 +24,7 @@ import app.shosetsu.android.domain.usecases.UninstallExtensionUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtListingNamesUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtSelectedListingFlowUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtensionSettingsUseCase
-import app.shosetsu.android.domain.usecases.get.GetExtensionUIUseCase
+import app.shosetsu.android.domain.usecases.get.GetInstalledExtensionUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateExtSelectedListing
 import app.shosetsu.android.domain.usecases.update.UpdateExtensionSettingUseCase
 import app.shosetsu.android.viewmodel.abstracted.AExtensionConfigureViewModel
@@ -44,7 +44,7 @@ import kotlinx.coroutines.flow.transformLatest
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class ExtensionConfigureViewModel(
-	private val loadExtensionUI: GetExtensionUIUseCase,
+	private val loadInstalledExtension: GetInstalledExtensionUseCase,
 	private val uninstallExtensionUI: UninstallExtensionUseCase,
 	private val getExtensionSettings: GetExtensionSettingsUseCase,
 	private val getExtListNames: GetExtListingNamesUseCase,
@@ -56,7 +56,7 @@ class ExtensionConfigureViewModel(
 
 	override val liveData: Flow<InstalledExtensionEntity?> by lazy {
 		extensionIdFlow.transformLatest { id ->
-			emitAll(loadExtensionUI(id))
+			emitAll(loadInstalledExtension(id))
 		}.onIO()
 	}
 

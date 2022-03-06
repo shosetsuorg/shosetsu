@@ -158,7 +158,9 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			getContentURL = instance(),
 			getLastReadChapter = instance(),
 			getTrueDelete = instance(),
-			trueDeleteChapter = instance()
+			trueDeleteChapter = instance(),
+			getInstalledExtensionUseCase = instance(),
+			getRepositoryUseCase = instance()
 		)
 	}
 
