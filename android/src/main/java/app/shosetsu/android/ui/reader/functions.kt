@@ -1,7 +1,5 @@
 package app.shosetsu.android.ui.reader
 
-import app.shosetsu.libs.bubbleseekbar.BubbleSeekBar
-
 
 /*
  * This file is part of shosetsu.
@@ -26,38 +24,3 @@ import app.shosetsu.libs.bubbleseekbar.BubbleSeekBar
  *
  * @author github.com/doomsdayrs
  */
-
-fun BubbleSeekBar.setBubbleOnProgressChanged(
-	onProgressChangedFun: (
-		@ParameterName("bubbleSeekBar") BubbleSeekBar?,
-		@ParameterName("progress") Int,
-		@ParameterName("progressFloat") Float,
-		@ParameterName("fromUser") Boolean,
-	) -> Unit,
-) {
-	this.onProgressChangedListener = object : BubbleSeekBar.OnProgressChangedListener {
-		override fun onProgressChanged(
-			bubbleSeekBar: BubbleSeekBar?,
-			progress: Int,
-			progressFloat: Float,
-			fromUser: Boolean,
-		) {
-			onProgressChangedFun(bubbleSeekBar, progress, progressFloat, fromUser)
-		}
-
-		override fun getProgressOnActionUp(
-			bubbleSeekBar: BubbleSeekBar?,
-			progress: Int,
-			progressFloat: Float,
-		) {
-		}
-
-		override fun getProgressOnFinally(
-			bubbleSeekBar: BubbleSeekBar?,
-			progress: Int,
-			progressFloat: Float,
-			fromUser: Boolean,
-		) {
-		}
-	}
-}

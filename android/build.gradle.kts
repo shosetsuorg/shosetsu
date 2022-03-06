@@ -256,7 +256,7 @@ dependencies {
 
 	// Seek bar
 //	implementation(project(mapOf("path" to ":bubbleseekbar")))
-	implementation("com.github.shosetsuorg:Bubbleseekbar:2dae010baf")
+//	implementation("com.github.shosetsuorg:Bubbleseekbar:2dae010baf")
 
 	// Room
 	implementation("androidx.room:room-runtime:2.4.2")
