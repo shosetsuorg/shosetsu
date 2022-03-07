@@ -630,6 +630,15 @@
     <string name="qr_code_wait">Share feature coming soon</string>
     <string name="menu_share_url">Basic URL</string>
     <string name="menu_share_qr">QR Code</string>
+    <string name="controller_add_following">The following will be added</string>
+    <string name="controller_add_extension">Extension</string>
+    <string name="controller_add_repository">Repository</string>
+    <string name="controller_add_novel">Novel</string>
+    <string name="controller_add_invalid">Invalid QR code</string>
+    <string name="controller_add_present_novel">This novel is already present: %s</string>
+    <string name="controller_add_present_style">This style is already present: %s</string>
+    <string name="controller_add_present_ext">This extension is already present: %s</string>
+    <string name="controller_add_present_repo">This repository is already present: %s</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

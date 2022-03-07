@@ -1,6 +1,7 @@
 package app.shosetsu.android.viewmodel.impl
 
 import app.shosetsu.android.backend.workers.onetime.AppUpdateCheckWorker
+import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.viewmodel.abstracted.AAboutViewModel
 
 /*
@@ -29,7 +30,9 @@ class AboutViewModel(
 ) : AAboutViewModel() {
 
 	override fun appUpdateCheck() {
-		if (!manager.isRunning())
-			manager.start()
+		launchIO {
+			if (!manager.isRunning())
+				manager.start()
+		}
 	}
 }

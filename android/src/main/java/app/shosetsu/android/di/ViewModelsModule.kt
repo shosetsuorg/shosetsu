@@ -99,6 +99,19 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 		)
 	}
 
+	bind<AAddShareViewModel>() with provider {
+		AddShareViewModel(
+			instance(),
+			instance(),
+			instance(),
+			instance(),
+			instance(),
+			instance(),
+			instance(),
+			instance()
+		)
+	}
+
 	// Catalog(s)
 	bind<ACatalogViewModel>() with provider {
 		CatalogViewModel(

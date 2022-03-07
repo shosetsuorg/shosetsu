@@ -24,7 +24,7 @@ import java.net.URLEncoder
  */
 val BASE_SHARE_URL: String = "https://share.shosetsu.app"
 
-fun String.urlEncode(): String? {
+fun String.urlEncode(): String {
 	@Suppress("CheckedExceptionsKotlin") // utf-8 likely wont be deprecated
 	return URLEncoder.encode(this, "utf-8")
 }
@@ -32,10 +32,10 @@ fun String.urlEncode(): String? {
 fun NovelLink.toURL(): String =
 	"$BASE_SHARE_URL/novel" +
 			"?name=${name.urlEncode()}" +
-			"&url=${("$url/").urlEncode()}" +
-			"&imageURL=${("$imageURL/").urlEncode()}" +
+			"&url=${url.urlEncode()}" +
+			"&imageURL=${imageURL.urlEncode()}" +
 			"&extID=${extensionQRCode.id}" +
-			"&extURL=${(extensionQRCode.imageURL + "/").urlEncode()}" +
+			"&extURL=${extensionQRCode.imageURL.urlEncode()}" +
 			"&extName=${extensionQRCode.name.urlEncode()}" +
 			"&repoName=${extensionQRCode.repo.name.urlEncode()}" +
-			"&repoURL=${(extensionQRCode.repo.url + "/").urlEncode()}".urlEncode()
+			"&repoURL=${extensionQRCode.repo.url.urlEncode()}"

@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.ActivityResultRegistry
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -24,11 +22,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LifecycleOwner
-import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.makeSnackBar
 import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.ui.about.AboutController
+import app.shosetsu.android.ui.add.AddShareController
 import app.shosetsu.android.ui.backup.BackupSettings
 import app.shosetsu.android.ui.downloads.DownloadsController
 import app.shosetsu.android.ui.repository.RepositoryController
@@ -38,8 +35,6 @@ import app.shosetsu.android.view.controller.base.CollapsedToolBarController
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.composethemeadapter.MdcTheme
-import io.github.g00fy2.quickie.QRResult
-import io.github.g00fy2.quickie.ScanQRCode
 
 /*
  * This file is part of Shosetsu.
@@ -71,29 +66,7 @@ class ComposeMoreController
 
 	override fun onViewCreated(view: View) {}
 
-	lateinit var scanQrCode: ActivityResultLauncher<Nothing?>
 
-	fun handleResult(result: QRResult) {
-		when (result) {
-			is QRResult.QRSuccess -> {
-
-			}
-			QRResult.QRUserCanceled -> {
-
-			}
-			QRResult.QRMissingPermission -> {
-
-			}
-			is QRResult.QRError -> {
-				logE("Failed to scan qr code", result.exception)
-			}
-		}
-	}
-
-	override fun onLifecycleCreate(owner: LifecycleOwner, registry: ActivityResultRegistry) {
-		super.onLifecycleCreate(owner, registry)
-		scanQrCode = registry.register("controller_more_qr_code", ScanQRCode(), ::handleResult)
-	}
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -106,9 +79,6 @@ class ComposeMoreController
 				MoreContent(
 					{
 						makeSnackBar(R.string.style_wait)?.show()
-					},
-					{
-						scanQrCode.launch(null)
 					}
 				) {
 					router.shosetsuPush(it)
@@ -151,13 +121,12 @@ fun MoreItemContent(
 @Preview
 @Composable
 fun PreviewMoreContent() {
-	MoreContent({}, {}) { }
+	MoreContent({}) { }
 }
 
 @Composable
 fun MoreContent(
 	showStyleBar: () -> Unit,
-	showQRCode: () -> Unit,
 	pushController: (Controller) -> Unit
 ) {
 	Column(
@@ -194,7 +163,7 @@ fun MoreContent(
 			}
 
 			MoreItemContent(R.string.qr_code_scan, R.drawable.ic_baseline_qr_code_scanner_24) {
-				showQRCode()
+				pushController(AddShareController())
 			}
 
 			MoreItemContent(R.string.settings, R.drawable.settings) {
