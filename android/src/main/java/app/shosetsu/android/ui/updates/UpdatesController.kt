@@ -30,7 +30,7 @@ import app.shosetsu.android.common.ext.displayOfflineSnackBar
 import app.shosetsu.android.common.ext.openChapter
 import app.shosetsu.android.common.ext.trimDate
 import app.shosetsu.android.common.ext.viewModel
-import app.shosetsu.android.view.compose.EmptyDataContent
+import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
 import app.shosetsu.android.view.widget.EmptyDataView
@@ -126,7 +126,7 @@ fun UpdatesContent(
 	) {
 		if (result.isEmpty()) {
 			Column {
-				EmptyDataContent(
+				ErrorContent(
 					R.string.empty_updates_message,
 					EmptyDataView.Action(R.string.empty_updates_refresh_action) {
 						onRefresh()

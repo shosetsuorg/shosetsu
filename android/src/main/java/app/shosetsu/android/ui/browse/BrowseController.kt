@@ -58,7 +58,7 @@ import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.catalogue.CatalogController
 import app.shosetsu.android.ui.extensionsConfigure.ConfigureExtension
-import app.shosetsu.android.view.compose.EmptyDataContent
+import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.widget.EmptyDataView
@@ -312,7 +312,7 @@ fun BrowseContent(
 				}
 			}
 		} else {
-			EmptyDataContent(
+			ErrorContent(
 				R.string.empty_browse_message,
 				EmptyDataView.Action(R.string.empty_browse_refresh_action) {
 					refresh()

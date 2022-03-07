@@ -1,9 +1,7 @@
 package app.shosetsu.android.view.compose
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
@@ -14,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.shosetsu.android.view.widget.EmptyDataView
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -37,21 +36,37 @@ import com.github.doomsdayrs.apps.shosetsu.R
 
 @Preview
 @Composable
-fun PreviewEmptyDataContent() {
-	EmptyDataContent(R.string.todo, EmptyDataView.Action(R.string.todo) {})
+fun PreviewErrorContent() {
+	ErrorContent(R.string.todo, EmptyDataView.Action(R.string.todo) {})
 }
 
 @Composable
-fun EmptyDataContent(@StringRes textRes: Int, vararg actions: EmptyDataView.Action) {
+fun ErrorContent(@StringRes messageRes: Int, vararg actions: EmptyDataView.Action) =
+	ErrorContent(stringResource(messageRes), *actions)
+
+@Composable
+fun ErrorContent(message: String, vararg actions: EmptyDataView.Action) {
 	Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 		Column(
 			horizontalAlignment = Alignment.CenterHorizontally,
 		) {
-			Text(EmptyDataView.getRandomErrorFace(), fontSize = 48.sp)
-			Text(stringResource(textRes), fontSize = 16.sp, textAlign = TextAlign.Center)
+			Text(
+				EmptyDataView.getRandomErrorFace(),
+				fontSize = 48.sp,
+				modifier = Modifier.padding(bottom = 16.dp)
+			)
+			Text(
+				message,
+				fontSize = 16.sp,
+				textAlign = TextAlign.Center,
+				modifier = Modifier.padding(bottom = 8.dp)
+			)
 			LazyRow {
 				items(actions) {
-					TextButton(onClick = { it.listener.onClick(null) }) {
+					TextButton(
+						onClick = { it.listener.onClick(null) },
+						contentPadding = PaddingValues(16.dp)
+					) {
 						Text(stringResource(it.resId))
 					}
 				}
