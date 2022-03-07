@@ -406,7 +406,7 @@
 
     <!-- Notification channel names -->
     <string name="notification_channel_name_novel_update">Novel Updates</string>
-    <string name="notification_channel_name_download">Chapter Download</string>
+    <string name="notification_channel_name_download">Download</string>
     <string name="notification_channel_name_app_update">App Update</string>
     <string name="notification_channel_name_backup">Backup and Restore</string>
     <string name="notification_channel_name_repository_update">Repository Update</string>
