@@ -45,11 +45,13 @@ abstract class CoroutineWorkerManager(
 	/**
 	 * Count of workers that match the ID
 	 */
-	abstract val count: Int
+	abstract suspend fun getCount(): Int
 
-	abstract fun getWorkerState(index: Int = 0): WorkInfo.State
+	abstract suspend fun getWorkerState(index: Int = 0): WorkInfo.State
 
-	open fun isRunning(): Boolean =
+	abstract suspend fun getWorkerInfoList(): List<WorkInfo>
+
+	open suspend fun isRunning(): Boolean =
 		getWorkerState() == WorkInfo.State.RUNNING
 
 	abstract fun start(data: Data = Data.EMPTY)

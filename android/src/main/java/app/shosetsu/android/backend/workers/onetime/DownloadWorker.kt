@@ -346,18 +346,21 @@ class DownloadWorker(
 		private suspend fun downloadOnlyIdle(): Boolean =
 			iSettingsRepository.getBoolean(DownloadOnlyWhenIdle)
 
-		override fun getWorkerState(index: Int) =
-			workerManager.getWorkInfosForUniqueWork(DOWNLOAD_WORK_ID).get()[index].state
+		override suspend fun getWorkerState(index: Int) =
+			getWorkerInfoList()[index].state
 
-		override val count: Int
-			get() = workerManager.getWorkInfosForUniqueWork(DOWNLOAD_WORK_ID).get().size
+		override suspend fun getWorkerInfoList(): List<WorkInfo> =
+			workerManager.getWorkInfosForUniqueWork(DOWNLOAD_WORK_ID).await()
+
+		override suspend fun getCount(): Int =
+			getWorkerInfoList().size
 
 		/**
 		 * Returns the status of the service.
 		 *
 		 * @return true if the service is running, false otherwise.
 		 */
-		override fun isRunning(): Boolean = try {
+		override suspend fun isRunning(): Boolean = try {
 			getWorkerState() == WorkInfo.State.RUNNING
 		} catch (e: Exception) {
 			false

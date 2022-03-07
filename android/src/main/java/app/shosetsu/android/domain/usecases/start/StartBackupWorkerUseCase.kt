@@ -2,6 +2,7 @@ package app.shosetsu.android.domain.usecases.start
 
 import app.shosetsu.android.backend.workers.onetime.BackupWorker
 import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker
+import app.shosetsu.android.common.ext.launchIO
 
 /*
  * This file is part of Shosetsu.
@@ -28,13 +29,15 @@ class StartBackupWorkerUseCase(
 	private val updateWorkerManager: NovelUpdateWorker.Manager
 ) {
 	operator fun invoke() {
-		if (!manager.isRunning()) {
-			// Stops the update worker to prevent it from interfering
-			if (updateWorkerManager.isRunning())
-				updateWorkerManager.stop()
+		launchIO {
+			if (!manager.isRunning()) {
+				// Stops the update worker to prevent it from interfering
+				if (updateWorkerManager.isRunning())
+					updateWorkerManager.stop()
 
-			manager.start()
+				manager.start()
 
+			}
 		}
 	}
 }

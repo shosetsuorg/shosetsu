@@ -50,7 +50,7 @@ class DownloadSettingsViewModel(
 						return@collect
 					}
 
-					if (manager.count != 0 && manager.getWorkerState() == WorkInfo.State.ENQUEUED)
+					if (manager.getCount() != 0 && manager.getWorkerState() == WorkInfo.State.ENQUEUED)
 						downloadWorkerSettingsChanged = true
 				}
 		}

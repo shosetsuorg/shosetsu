@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.usecases
 
 import app.shosetsu.android.backend.workers.onetime.RepositoryUpdateWorker
+import app.shosetsu.android.common.ext.launchIO
 
 /*
  * This file is part of shosetsu.
@@ -30,8 +31,10 @@ class StartRepositoryUpdateManagerUseCase(
 	private val manager: RepositoryUpdateWorker.Manager
 ) {
 	operator fun invoke() {
-		if (!manager.isRunning())
-			manager.start()
+		launchIO {
+			if (!manager.isRunning())
+				manager.start()
+		}
 	}
 
 }

@@ -92,17 +92,20 @@ class BackupCycleWorker(
 		 *
 		 * @return true if the service is running, false otherwise.
 		 */
-		override fun isRunning(): Boolean = try {
+		override suspend fun isRunning(): Boolean = try {
 			getWorkerState() == WorkInfo.State.RUNNING
 		} catch (e: Exception) {
 			false
 		}
 
-		override fun getWorkerState(index: Int): WorkInfo.State =
-			workerManager.getWorkInfosForUniqueWork(BACKUP_CYCLE_WORK_ID).get()[index].state
+		override suspend fun getWorkerState(index: Int): WorkInfo.State =
+			getWorkerInfoList()[index].state
 
-		override val count: Int
-			get() = workerManager.getWorkInfosForUniqueWork(BACKUP_CYCLE_WORK_ID).get().size
+		override suspend fun getWorkerInfoList(): List<WorkInfo> =
+			workerManager.getWorkInfosForUniqueWork(BACKUP_CYCLE_WORK_ID).await()
+
+		override suspend fun getCount(): Int =
+			getWorkerInfoList().size
 
 		/**
 		 * Starts the service. It will be started only if there isn't another instance already

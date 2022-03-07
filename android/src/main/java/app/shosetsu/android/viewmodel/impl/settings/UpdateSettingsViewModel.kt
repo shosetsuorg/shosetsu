@@ -39,13 +39,15 @@ class UpdateSettingsViewModel(
 	private val repoUpdateManager: RepositoryUpdateWorker.Manager,
 ) : AUpdateSettingsViewModel(iSettingsRepository) {
 	private fun restartNovelUpdater() {
-		logI("Restarting novel updaters")
-		// If the update manager was enqueued, kill it.
-		if (novelUpdateManager.count != 0 && novelUpdateManager.getWorkerState() == WorkInfo.State.ENQUEUED)
-			novelUpdateManager.stop()
+		launchIO {
+			logI("Restarting novel updaters")
+			// If the update manager was enqueued, kill it.
+			if (novelUpdateManager.getCount() != 0 && novelUpdateManager.getWorkerState() == WorkInfo.State.ENQUEUED)
+				novelUpdateManager.stop()
 
-		novelUpdateCycleManager.stop()
-		novelUpdateCycleManager.start()
+			novelUpdateCycleManager.stop()
+			novelUpdateCycleManager.start()
+		}
 	}
 
 	private fun restartRepoUpdater() {

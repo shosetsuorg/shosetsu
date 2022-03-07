@@ -344,17 +344,20 @@ class RepositoryUpdateWorker(
 		 *
 		 * @return true if the service is running, false otherwise.
 		 */
-		override fun isRunning(): Boolean = try {
+		override suspend fun isRunning(): Boolean = try {
 			getWorkerState() == WorkInfo.State.RUNNING
 		} catch (e: Exception) {
 			false
 		}
 
-		override fun getWorkerState(index: Int): WorkInfo.State =
-			workerManager.getWorkInfosForUniqueWork(REPOSITORY_UPDATE_TAG).get()[index].state
+		override suspend fun getWorkerState(index: Int): WorkInfo.State =
+			getWorkerInfoList()[index].state
 
-		override val count: Int
-			get() = workerManager.getWorkInfosForUniqueWork(REPOSITORY_UPDATE_TAG).get().size
+		override suspend fun getWorkerInfoList(): List<WorkInfo> =
+			workerManager.getWorkInfosForUniqueWork(REPOSITORY_UPDATE_TAG).await()
+
+		override suspend fun getCount(): Int =
+			getWorkerInfoList().size
 
 		/**
 		 * Starts the service. It will be started only if there isn't another instance already

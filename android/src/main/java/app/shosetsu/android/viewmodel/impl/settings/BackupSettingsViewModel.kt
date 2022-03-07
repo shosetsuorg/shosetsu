@@ -2,6 +2,7 @@ package app.shosetsu.android.viewmodel.impl.settings
 
 import android.net.Uri
 import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker
+import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.usecases.load.LoadInternalBackupNamesUseCase
 import app.shosetsu.android.domain.usecases.start.StartBackupWorkerUseCase
@@ -43,8 +44,10 @@ class BackupSettingsViewModel(
 ) : ABackupSettingsViewModel(iSettingsRepository) {
 
 	override fun startBackup() {
-		if (manager.isRunning()) manager.stop()
-		startBackupWorkerUseCase()
+		launchIO {
+			if (manager.isRunning()) manager.stop()
+			startBackupWorkerUseCase()
+		}
 	}
 
 	override fun loadInternalOptions(): Flow<List<String>> = flow {

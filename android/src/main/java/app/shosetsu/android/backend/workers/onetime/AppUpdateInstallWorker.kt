@@ -25,7 +25,6 @@ import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
 import java.io.File
-import java.util.concurrent.ExecutionException
 
 /*
  * This file is part of Shosetsu.
@@ -151,19 +150,20 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 	}
 
 	class Manager(context: Context) : CoroutineWorkerManager(context) {
-		@Throws(InterruptedException::class, ExecutionException::class)
-		override fun isRunning(): Boolean = try {
+		override suspend fun isRunning(): Boolean = try {
 			getWorkerState() == WorkInfo.State.RUNNING
 		} catch (e: Exception) {
 			false
 		}
 
-		@Throws(InterruptedException::class, ExecutionException::class)
-		override fun getWorkerState(index: Int): WorkInfo.State =
-			workerManager.getWorkInfosForUniqueWork(APP_UPDATE_INSTALL_WORK_ID).get()[index].state
+		override suspend fun getWorkerState(index: Int): WorkInfo.State =
+			getWorkerInfoList()[index].state
 
-		override val count: Int
-			get() = workerManager.getWorkInfosForUniqueWork(APP_UPDATE_INSTALL_WORK_ID).get().size
+		override suspend fun getWorkerInfoList(): List<WorkInfo> =
+			workerManager.getWorkInfosForUniqueWork(APP_UPDATE_INSTALL_WORK_ID).await()
+
+		override suspend fun getCount(): Int =
+			getWorkerInfoList().size
 
 		override fun start(data: Data) {
 			launchIO {

@@ -140,15 +140,15 @@ class ExportBackupWorker(appContext: Context, params: WorkerParameters) : Corout
 	 */
 	class Manager(context: Context) : CoroutineWorkerManager(context) {
 
-		override val count: Int
-			get() = workerManager.getWorkInfosForUniqueWork(EXPORT_BACKUP_WORK_ID).get().size
+		override suspend fun getCount(): Int =
+			getWorkerInfoList().size
 
 		/**
 		 * Returns the status of the service.
 		 *
 		 * @return true if the service is running, false otherwise.
 		 */
-		override fun isRunning(): Boolean = try {
+		override suspend fun isRunning(): Boolean = try {
 			// Is this running
 			val a = (getWorkerState() == WorkInfo.State.RUNNING)
 
@@ -159,8 +159,11 @@ class ExportBackupWorker(appContext: Context, params: WorkerParameters) : Corout
 			false
 		}
 
-		override fun getWorkerState(index: Int): WorkInfo.State =
-			workerManager.getWorkInfosForUniqueWork(EXPORT_BACKUP_WORK_ID).get()[index].state
+		override suspend fun getWorkerState(index: Int): WorkInfo.State =
+			getWorkerInfoList()[index].state
+
+		override suspend fun getWorkerInfoList(): List<WorkInfo> =
+			workerManager.getWorkInfosForUniqueWork(EXPORT_BACKUP_WORK_ID).await()
 
 		/**
 		 * Starts the service. It will be started only if there isn't another instance already

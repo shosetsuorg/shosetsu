@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.usecases.start
 
 import app.shosetsu.android.backend.workers.onetime.AppUpdateInstallWorker
+import app.shosetsu.android.common.ext.launchIO
 
 /*
  * This file is part of Shosetsu.
@@ -27,8 +28,10 @@ class StartAppUpdateInstallWorkerUseCase(
 	private val manager: AppUpdateInstallWorker.Manager
 ) {
 	operator fun invoke() {
-		if (!manager.isRunning()) {
-			manager.start()
+		launchIO {
+			if (!manager.isRunning()) {
+				manager.start()
+			}
 		}
 	}
 }

@@ -5,6 +5,7 @@ import androidx.work.Data
 import app.shosetsu.android.backend.workers.onetime.RestoreBackupWorker
 import app.shosetsu.android.backend.workers.onetime.RestoreBackupWorker.Companion.BACKUP_DATA_KEY
 import app.shosetsu.android.backend.workers.onetime.RestoreBackupWorker.Companion.BACKUP_DIR_KEY
+import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.repository.base.IBackupUriRepository
 
 /*
@@ -32,23 +33,27 @@ class StartRestoreWorkerUseCase(
 	private val backupRepository: IBackupUriRepository
 ) {
 	operator fun invoke(path: String) {
-		if (!manager.isRunning())
-			manager.start(
-				Data.Builder().apply {
-					putString(BACKUP_DATA_KEY, path)
-					putBoolean(BACKUP_DIR_KEY, false)
-				}.build()
-			)
+		launchIO {
+			if (!manager.isRunning())
+				manager.start(
+					Data.Builder().apply {
+						putString(BACKUP_DATA_KEY, path)
+						putBoolean(BACKUP_DIR_KEY, false)
+					}.build()
+				)
+		}
 	}
 
 	operator fun invoke(path: Uri) {
-		if (!manager.isRunning()) {
-			backupRepository.give(path)
-			manager.start(
-				Data.Builder().apply {
-					putBoolean(BACKUP_DIR_KEY, true)
-				}.build()
-			)
+		launchIO {
+			if (!manager.isRunning()) {
+				backupRepository.give(path)
+				manager.start(
+					Data.Builder().apply {
+						putBoolean(BACKUP_DIR_KEY, true)
+					}.build()
+				)
+			}
 		}
 	}
 }
