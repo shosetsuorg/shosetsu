@@ -1,4 +1,3 @@
-
 import org.jetbrains.kotlin.konan.properties.Properties
 import java.io.BufferedReader
 import java.io.FileInputStream
@@ -56,6 +55,7 @@ android {
 		buildConfigField("String", "acraUsername", acraProperties["username"]?.toString() ?: "\"\"")
 		buildConfigField("String", "acraPassword", acraProperties["password"]?.toString() ?: "\"\"")
 
+		setProperty("archivesBaseName", rootProject.name)
 	}
 
 	buildFeatures {
