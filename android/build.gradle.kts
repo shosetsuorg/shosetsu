@@ -32,11 +32,6 @@ fun getCommitCount(): String = "git rev-list --count HEAD".execute().getText().t
 
 val acraPropertiesFile = rootProject.file("acra.properties")
 val acraProperties = Properties()
-android {
-	lint {
-		abortOnError = false
-	}
-}
 
 if (acraPropertiesFile.exists())
 	acraProperties.load(FileInputStream(acraPropertiesFile))
@@ -72,6 +67,15 @@ android {
 	composeOptions {
 		kotlinCompilerExtensionVersion = "1.1.0"
 	}
+
+	splits {
+		abi {
+			isEnable = true
+
+			isUniversalApk = true
+		}
+	}
+
 
 	buildTypes {
 		named("release") {
@@ -118,6 +122,10 @@ android {
 		jvmTarget = "1.8"
 	}
 	buildToolsVersion = "30.0.3"
+
+	lint {
+		abortOnError = false
+	}
 }
 
 //TODO Fix application variant naming
