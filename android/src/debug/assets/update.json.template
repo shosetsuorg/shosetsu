@@ -1,0 +1,30 @@
+// The below is a template for update json past commit 1898
+{
+  // Version code as provided by build.gradle.kts
+  "versionCode": "3",
+
+  // Version name
+  "latestVersion": "1731"
+
+  // commit number of the version
+  "commit": 1731,
+
+  // Universal APK URL
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1731/shosetsu-r1731.apk",
+
+  // URLs for specific architectures
+  "archURLs": {
+    "armeabi-v7a": "",
+    "arm64-v8a": "",
+    "x86": "",
+    "x86_64": "",
+  }
+
+  // Notes about the release
+  "releaseNotes": [
+    "- Optimize BackupWorker to be more memory efficient",
+    "- BackupOnlyModified added, default is true, will only backup chapters that have been modified",
+    "- Allow delete selection & pause selection in Downloads to effect all items",
+    "- Fix 'delete all' and 'set all pending' in Downloads worker"
+  ]
+}

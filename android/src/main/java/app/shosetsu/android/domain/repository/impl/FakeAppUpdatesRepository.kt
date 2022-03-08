@@ -45,8 +45,9 @@ class FakeAppUpdatesRepository(
 		val entity = AppUpdateEntity(
 			"v3.0.0",
 			999,
+			9999,
 			"https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1136/shosetsu-r1136.apk",
-			listOf("This is a fake update")
+			notes = listOf("This is a fake update")
 		)
 
 		_appUpdateFlow.emit(entity)

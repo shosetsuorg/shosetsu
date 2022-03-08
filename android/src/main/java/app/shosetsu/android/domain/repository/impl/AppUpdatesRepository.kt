@@ -1,12 +1,15 @@
 package app.shosetsu.android.domain.repository.impl
 
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.datasource.local.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
+import app.shosetsu.common.EmptyResponseBodyException
 import app.shosetsu.common.FileNotFoundException
 import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.MissingFeatureException
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
+import app.shosetsu.lib.exceptions.HTTPException
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import kotlinx.coroutines.flow.Flow
 import java.io.IOException
@@ -47,7 +50,7 @@ class AppUpdatesRepository(
 		// Assuming update will return a dev update for debug
 		if (BuildConfig.DEBUG) {
 			currentV = BuildConfig.VERSION_NAME.substringAfter("-").toInt()
-			remoteV = newVersion.version.toInt()
+			remoteV = newVersion.commit.takeIf { it != -1 } ?: newVersion.version.toInt()
 		} else {
 			currentV = BuildConfig.VERSION_CODE
 			remoteV = newVersion.versionCode
@@ -70,20 +73,27 @@ class AppUpdatesRepository(
 		}
 	}
 
-	@Throws(FilePermissionException::class, IOException::class)
-	override suspend fun loadRemoteUpdate(): AppUpdateEntity =
-		iRemoteAppUpdateDataSource.loadAppUpdate().let { appUpdateEntity ->
-			val compared = compareVersion(appUpdateEntity)
-
-			if (compared > 0) {
-				iFileAppUpdateDataSource.putAppUpdateInCache(
-					appUpdateEntity,
-					true
-				)
-			}
-
-			appUpdateEntity
+	@Throws(FilePermissionException::class, IOException::class, HTTPException::class)
+	override suspend fun loadRemoteUpdate(): AppUpdateEntity? {
+		val appUpdateEntity = try {
+			iRemoteAppUpdateDataSource.loadAppUpdate()
+		} catch (e: EmptyResponseBodyException) {
+			logE(e.message!!, e)
+			return null
 		}
+
+		val compared = compareVersion(appUpdateEntity)
+
+		if (compared > 0) {
+			iFileAppUpdateDataSource.putAppUpdateInCache(
+				appUpdateEntity,
+				true
+			)
+			return appUpdateEntity
+		}
+
+		return null
+	}
 
 	@Throws(FileNotFoundException::class)
 	override suspend fun loadAppUpdate(): AppUpdateEntity =
@@ -96,7 +106,9 @@ class AppUpdatesRepository(
 		IOException::class,
 		FilePermissionException::class,
 		FileNotFoundException::class,
-		MissingFeatureException::class
+		MissingFeatureException::class,
+		EmptyResponseBodyException::class,
+		HTTPException::class
 	)
 	override suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): String =
 		if (iRemoteAppUpdateDataSource is IRemoteAppUpdateDataSource.Downloadable)

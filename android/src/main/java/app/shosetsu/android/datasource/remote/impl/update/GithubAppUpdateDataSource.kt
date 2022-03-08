@@ -1,10 +1,9 @@
 package app.shosetsu.android.datasource.remote.impl.update
 
-import app.shosetsu.android.common.EmptyResponseBodyException
-import app.shosetsu.android.common.ext.ifSo
 import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.android.domain.model.remote.AppUpdateDTO
+import app.shosetsu.common.EmptyResponseBodyException
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.lib.exceptions.HTTPException
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig.DEBUG
@@ -40,34 +39,53 @@ class GithubAppUpdateDataSource(
 ) : IRemoteAppUpdateDataSource, IRemoteAppUpdateDataSource.Downloadable {
 	private val SHOSETSU_GIT_UPDATE_URL: String by lazy {
 		"https://raw.githubusercontent.com/shosetsuorg/shosetsu/${
-			DEBUG ifSo "development" ?: "master"
+			if (DEBUG) "development" else "master"
 		}/android/src/${
-			DEBUG ifSo "debug" ?: "master"
-		}/assets/update.${
-			DEBUG ifSo "json" ?: "xml"
-		}"
+			if (DEBUG) "debug" else "master"
+		}/assets/update.json"
 	}
 
+	private val json by lazy {
+		Json {
+			ignoreUnknownKeys = true
+		}
+	}
+
+	@Throws(EmptyResponseBodyException::class, HTTPException::class)
 	override suspend fun loadAppUpdate(): AppUpdateEntity {
 		okHttpClient.quickie(SHOSETSU_GIT_UPDATE_URL)
 			.use { gitResponse ->
 				if (gitResponse.isSuccessful) {
 					return gitResponse.body?.use { responseBody ->
-						Json.decodeFromString<AppUpdateDTO>(responseBody.string()).convertTo()
+						json.decodeFromString<AppUpdateDTO>(responseBody.string()).convertTo()
 					} ?: throw EmptyResponseBodyException(SHOSETSU_GIT_UPDATE_URL)
 				}
 				throw HTTPException(gitResponse.code)
 			}
 	}
 
-	override suspend fun downloadAppUpdate(update: AppUpdateEntity): ByteArray =
-		okHttpClient.quickie(update.url).let { response ->
+	@Throws(EmptyResponseBodyException::class, HTTPException::class)
+	override suspend fun downloadAppUpdate(update: AppUpdateEntity): ByteArray {
+		/**
+		 * Attempts to figure out the correct download URL to use
+		 */
+		val url = if (update.archURLs != null) {
+			when (System.getProperty("os.arch")) {
+				"armeabi-v7a" -> update.archURLs!!.`armeabi-v7a`
+				"arm64-v8a" -> update.archURLs!!.`arm64-v8a`
+				"x86" -> update.archURLs!!.x86
+				"x86_64" -> update.archURLs!!.x86_64
+				else -> update.url // default to using the universal APK
+			}
+		} else update.url
+		okHttpClient.quickie(url).let { response ->
 			if (response.isSuccessful) {
 				// TODO One day have kotlin IO to handle this right here
 				response.body?.bytes() ?: throw EmptyResponseBodyException(update.url)
 			}
 			throw HTTPException(response.code)
 		}
+	}
 
 
 }

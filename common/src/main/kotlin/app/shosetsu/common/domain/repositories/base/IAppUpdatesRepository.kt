@@ -1,9 +1,11 @@
 package app.shosetsu.common.domain.repositories.base
 
+import app.shosetsu.common.EmptyResponseBodyException
 import app.shosetsu.common.FileNotFoundException
 import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.MissingFeatureException
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
+import app.shosetsu.lib.exceptions.HTTPException
 import kotlinx.coroutines.flow.Flow
 import java.io.IOException
 
@@ -39,7 +41,7 @@ interface IAppUpdatesRepository {
 	/**
 	 * Load an app update if present
 	 */
-	@Throws(FilePermissionException::class, IOException::class)
+	@Throws(FilePermissionException::class, IOException::class, HTTPException::class)
 	suspend fun loadRemoteUpdate(): AppUpdateEntity?
 
 	/**
@@ -62,7 +64,9 @@ interface IAppUpdatesRepository {
 		IOException::class,
 		FilePermissionException::class,
 		FileNotFoundException::class,
-		MissingFeatureException::class
+		MissingFeatureException::class,
+		EmptyResponseBodyException::class,
+		HTTPException::class
 	)
 	suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): String
 }

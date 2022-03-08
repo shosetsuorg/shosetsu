@@ -93,26 +93,25 @@ class AppUpdateCheckWorker(
 
 		if (entity == null) {
 			notificationManager.cancel(defaultNotificationID)
-			return Result.failure()
-		}
-
-		notify(
-			applicationContext.getString(
-				R.string.notification_app_update_available_version,
-				entity.version
-			)
-		) {
-			setOngoing(false)
-			addAction(
-				R.drawable.app_update,
-				"",
-				PendingIntent.getActivity(
-					applicationContext,
-					0,
-					openAppForUpdateIntent,
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
+		} else {
+			notify(
+				applicationContext.getString(
+					R.string.notification_app_update_available_version,
+					entity.version
 				)
-			)
+			) {
+				setOngoing(false)
+				addAction(
+					R.drawable.app_update,
+					"",
+					PendingIntent.getActivity(
+						applicationContext,
+						0,
+						openAppForUpdateIntent,
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
+					)
+				)
+			}
 		}
 		return Result.success()
 	}

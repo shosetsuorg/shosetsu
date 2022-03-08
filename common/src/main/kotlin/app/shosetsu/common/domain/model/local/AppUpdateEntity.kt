@@ -24,6 +24,15 @@ package app.shosetsu.common.domain.model.local
 data class AppUpdateEntity(
 	val version: String,
 	val versionCode: Int = -1,
+	val commit: Int = -1,
 	val url: String,
+	val archURLs: ArchitectureURLs? = null,
 	val notes: List<String>,
+)
+
+data class ArchitectureURLs(
+	val `armeabi-v7a`: String,
+	val `arm64-v8a`: String,
+	val x86: String,
+	val x86_64: String,
 )

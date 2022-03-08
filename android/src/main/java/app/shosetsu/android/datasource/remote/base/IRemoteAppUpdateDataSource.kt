@@ -1,6 +1,8 @@
 package app.shosetsu.android.datasource.remote.base
 
+import app.shosetsu.common.EmptyResponseBodyException
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
+import app.shosetsu.lib.exceptions.HTTPException
 
 /*
  * This file is part of shosetsu.
@@ -26,6 +28,8 @@ import app.shosetsu.common.domain.model.local.AppUpdateEntity
  * A class to see if there is an app update ava
  */
 interface IRemoteAppUpdateDataSource {
+
+	@Throws(EmptyResponseBodyException::class, HTTPException::class)
 	suspend fun loadAppUpdate(): AppUpdateEntity
 
 
@@ -33,6 +37,7 @@ interface IRemoteAppUpdateDataSource {
 	 * Specifies that this [IRemoteAppUpdateDataSource] can download the app update itself
 	 */
 	interface Downloadable : IRemoteAppUpdateDataSource {
+		@Throws(EmptyResponseBodyException::class, HTTPException::class)
 		suspend fun downloadAppUpdate(update: AppUpdateEntity): ByteArray
 	}
 }

@@ -1,6 +1,8 @@
 package app.shosetsu.android.domain.model.remote
 
+import app.shosetsu.android.domain.model.remote.ArchitectureURLsDTO.Companion.toEntity
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
+import app.shosetsu.common.domain.model.local.ArchitectureURLs
 import app.shosetsu.common.dto.Convertible
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -30,23 +32,66 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class AppUpdateDTO(
-	@SerialName("latestVersion")
-	val version: String,
 	@SerialName("versionCode")
 	val versionCode: Int = -1,
+
+	@SerialName("latestVersion")
+	val version: String,
+
+	@SerialName("commit")
+	val commit: Int = -1,
+
 	@SerialName("url")
 	val url: String,
+
+	@SerialName("archURLs")
+	val archURLs: ArchitectureURLsDTO? = null,
+
 	@SerialName("releaseNotes")
 	val notes: List<String>,
 ) : Convertible<AppUpdateEntity> {
-	override fun convertTo() = AppUpdateEntity(version, versionCode, url, notes)
+	override fun convertTo() = AppUpdateEntity(
+		version = version,
+		versionCode = versionCode,
+		commit = commit,
+		url = url,
+		archURLs = archURLs?.convertTo(),
+		notes = notes
+	)
 
 	companion object {
-		fun fromEntity(appUpdateEntity: AppUpdateEntity) = AppUpdateDTO(
-			appUpdateEntity.version,
-			appUpdateEntity.versionCode,
-			appUpdateEntity.url,
-			appUpdateEntity.notes
-		)
+		fun fromEntity(appUpdateEntity: AppUpdateEntity): AppUpdateDTO {
+			return appUpdateEntity.let { (version, versionCode, commit, url, archURLs, notes) ->
+				AppUpdateDTO(
+					versionCode,
+					version,
+					commit,
+					url,
+					archURLs?.toEntity(),
+					notes
+				)
+			}
+		}
+	}
+}
+
+@Serializable
+data class ArchitectureURLsDTO(
+	val `armeabi-v7a`: String,
+	val `arm64-v8a`: String,
+	val x86: String,
+	val x86_64: String,
+) : Convertible<ArchitectureURLs> {
+	override fun convertTo(): ArchitectureURLs =
+		ArchitectureURLs(`armeabi-v7a`, `arm64-v8a`, x86, x86_64)
+
+	companion object {
+		fun ArchitectureURLs.toEntity() =
+			ArchitectureURLsDTO(
+				`armeabi-v7a`,
+				`arm64-v8a`,
+				x86,
+				x86_64
+			)
 	}
 }
