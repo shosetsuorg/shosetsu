@@ -19,10 +19,14 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.os.bundleOf
 import androidx.lifecycle.LifecycleOwner
+import app.shosetsu.android.common.consts.BundleKeys
 import app.shosetsu.android.common.ext.collectLatestLA
 import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
@@ -88,8 +92,9 @@ class AddShareController : ShosetsuController(), CollapsedToolBarController {
 			MdcTheme {
 				val isProcessing by viewModel.isProcessing.collectAsState(true)
 				val isQRCodeValid by viewModel.isQRCodeValid.collectAsState(true)
-				val isAdding by viewModel.isAdding.collectAsState(true)
-				val isComplete by viewModel.isComplete.collectAsState(true)
+				val isAdding by viewModel.isAdding.collectAsState(false)
+				val isComplete by viewModel.isComplete.collectAsState(false)
+				val isNovelOpenable by viewModel.isNovelOpenable.collectAsState(false)
 
 				val isNovelAlreadyPresent by viewModel.isNovelAlreadyPresent.collectAsState(false)
 				val isStyleAlreadyPresent by viewModel.isStyleAlreadyPresent.collectAsState(false)
@@ -121,7 +126,20 @@ class AddShareController : ShosetsuController(), CollapsedToolBarController {
 					isStyleAlreadyPresent = isStyleAlreadyPresent,
 					isExtAlreadyPresent = isExtAlreadyPresent,
 					isRepoAlreadyPresent = isRepoAlreadyPresent,
-					isComplete = isComplete
+					isComplete = isComplete,
+					openNovel = {
+						val entity = viewModel.getNovel()
+
+						activity?.onBackPressed()
+
+						if (entity != null)
+							router.shosetsuPush(
+								NovelController(
+									bundleOf(BundleKeys.BUNDLE_NOVEL_ID to entity.id)
+								)
+							)
+					},
+					isNovelOpenable = isNovelOpenable
 				)
 			}
 		}
@@ -202,7 +220,8 @@ fun PreviewAboutContent() {
 			isNovelAlreadyPresent = false,
 			isStyleAlreadyPresent = true,
 			isExtAlreadyPresent = true,
-			isRepoAlreadyPresent = true
+			isRepoAlreadyPresent = true,
+			openNovel = {}
 		)
 	}
 }
@@ -218,12 +237,14 @@ fun AddShareContent(
 	repositoryLink: RepositoryLink? = null,
 	add: () -> Unit,
 	reject: () -> Unit,
+	openNovel: () -> Unit,
 	retry: () -> Unit,
 	isNovelAlreadyPresent: Boolean = false,
 	isStyleAlreadyPresent: Boolean = false,
 	isExtAlreadyPresent: Boolean = false,
 	isRepoAlreadyPresent: Boolean = false,
-	isComplete: Boolean = false
+	isComplete: Boolean = false,
+	isNovelOpenable: Boolean = false,
 ) {
 	if (isComplete) {
 		Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -232,6 +253,11 @@ fun AddShareContent(
 				TextButton(onClick = reject) {
 					Text(stringResource(android.R.string.ok))
 				}
+
+				if (isNovelOpenable)
+					TextButton(onClick = openNovel) {
+						Text(stringResource(R.string.controller_add_open_novel))
+					}
 			}
 		}
 	} else if (isProcessing) {
@@ -254,7 +280,12 @@ fun AddShareContent(
 				android.R.string.ok,
 			) {
 				reject()
-			}
+			},
+			EmptyDataView.Action(
+				R.string.controller_add_open_novel,
+			) {
+				openNovel()
+			},
 		)
 	} else if (isStyleAlreadyPresent && styleLink != null) {
 		ErrorContent(

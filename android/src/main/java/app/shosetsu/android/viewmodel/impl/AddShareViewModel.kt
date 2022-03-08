@@ -3,6 +3,7 @@ package app.shosetsu.android.viewmodel.impl
 import androidx.work.WorkInfo
 import app.shosetsu.android.backend.workers.onetime.ExtensionInstallWorker
 import app.shosetsu.android.backend.workers.onetime.RepositoryUpdateWorker
+import app.shosetsu.android.common.ext.generify
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
@@ -11,12 +12,13 @@ import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.android.domain.usecases.get.GetURLUseCase
 import app.shosetsu.android.viewmodel.abstracted.AAddShareViewModel
 import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.common.IncompatibleExtensionException
+import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
-import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.domain.repositories.base.INovelsRepository
+import app.shosetsu.common.domain.repositories.base.*
+import app.shosetsu.lib.IExtension.Companion.KEY_NOVEL_URL
 import app.shosetsu.lib.share.ExtensionLink
 import app.shosetsu.lib.share.NovelLink
 import app.shosetsu.lib.share.RepositoryLink
@@ -59,11 +61,13 @@ class AddShareViewModel(
 	private val installExtension: RequestInstallExtensionUseCase,
 	private val startRepositoryUpdateWorker: StartRepositoryUpdateManagerUseCase,
 	private val installManager: ExtensionInstallWorker.Manager,
-	private val updateManager: RepositoryUpdateWorker.Manager
-
+	private val updateManager: RepositoryUpdateWorker.Manager,
+	private val settingRepo: ISettingsRepository,
+	private val iExtRepo: IExtensionEntitiesRepository
 ) : AAddShareViewModel() {
 	override val isAdding: MutableStateFlow<Boolean> = MutableStateFlow(false)
 	override val isComplete: MutableStateFlow<Boolean> = MutableStateFlow(false)
+	override val isNovelOpenable: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
 	override val isNovelAlreadyPresent: MutableStateFlow<Boolean> = MutableStateFlow(false)
 	override val isStyleAlreadyPresent: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -83,6 +87,10 @@ class AddShareViewModel(
 
 	override val hasData: Flow<Boolean> =
 		data.map { it != null }
+
+	private var repoEntity: RepositoryEntity? = null
+	private var extEntity: InstalledExtensionEntity? = null
+	private var novelEntity: NovelEntity? = null
 
 	init {
 		launchIO {
@@ -146,7 +154,7 @@ class AddShareViewModel(
 									ext
 								)
 
-								val repoEntity: RepositoryEntity? = try {
+								repoEntity = try {
 									repoRepo.loadRepositories().find {
 										val entityUrl = it.url.toHttpUrl().toUri().normalize()
 										val repoLinkUrl = repo.url.toHttpUrl().toUri()
@@ -160,23 +168,22 @@ class AddShareViewModel(
 									null
 								}
 
-								val extEntity: InstalledExtensionEntity? = try {
+								extEntity = try {
 									extRepo.getInstalledExtension(ext.id)
 								} catch (e: GenericSQLiteException) {
 									null
 								}
 
-								val novelEntity: NovelEntity? =
-									novelRepo.loadNovels().find {
-										val contentUrl =
-											getContentURL(it)?.toHttpUrl()?.toUri()?.normalize()
-										val novelLinkUrl = novel.url.toHttpUrl().toUri().normalize()
+								novelEntity = novelRepo.loadNovels().find {
+									val contentUrl =
+										getContentURL(it)?.toHttpUrl()?.toUri()?.normalize()
+									val novelLinkUrl = novel.url.toHttpUrl().toUri().normalize()
 
-										logV(contentUrl.toString())
-										logV(novelLinkUrl.toString())
+									logV(contentUrl.toString())
+									logV(novelLinkUrl.toString())
 
-										contentUrl == novelLinkUrl
-									}?.takeIf { it.bookmarked }
+									contentUrl == novelLinkUrl
+								}?.takeIf { it.bookmarked }
 
 								repoLink.emit(repo)
 								extLink.emit(ext)
@@ -239,7 +246,7 @@ class AddShareViewModel(
 				}
 				startRepositoryUpdateWorker()
 
-				delay(100)
+				delay(1000)
 
 				while (updateManager.getWorkerState().let {
 						it == WorkInfo.State.ENQUEUED || it == WorkInfo.State.RUNNING || it == WorkInfo.State.BLOCKED
@@ -253,21 +260,22 @@ class AddShareViewModel(
 			if (!isExtAlreadyPresent.value) {
 				val link = extLink.value!!
 
-				val repo = try {
-					repoRepo.loadRepositories().first { it.url == link.repo.url }
-				} catch (e: GenericSQLiteException) {
-					exception.emit(e)
-					return@launchIO
-				} catch (e: NoSuchElementException) {
-					exception.emit(e)
-					return@launchIO
-				}
+				if (repoEntity == null)
+					repoEntity = try {
+						repoRepo.loadRepositories().first { it.url == link.repo.url }
+					} catch (e: GenericSQLiteException) {
+						exception.emit(e)
+						return@launchIO
+					} catch (e: NoSuchElementException) {
+						exception.emit(e)
+						return@launchIO
+					}
 
 
 
-				installExtension(link.id, repo.id)
+				installExtension(link.id, repoEntity!!.id)
 
-				delay(100)
+				delay(1000)
 
 				while (installManager.getWorkerState().let {
 						it == WorkInfo.State.ENQUEUED || it == WorkInfo.State.RUNNING || it == WorkInfo.State.BLOCKED
@@ -278,6 +286,7 @@ class AddShareViewModel(
 			}
 
 			// Add style if not present
+			@Suppress("ControlFlowWithEmptyBody")
 			if (!isStyleAlreadyPresent.value) {
 				// TODO Style
 			}
@@ -286,26 +295,53 @@ class AddShareViewModel(
 			if (!isNovelAlreadyPresent.value) {
 				val link = novelLink.value!!
 
-				val novel = novelRepo.loadNovels().find {
-					getContentURL(it)?.toHttpUrl()?.toUri()?.normalize() ==
-							link.url.toHttpUrl().toUri().normalize()
+				if (novelEntity == null)
+					novelEntity = novelRepo.loadNovels().find {
+						getContentURL(it)?.toHttpUrl()?.toUri()?.normalize() ==
+								link.url.toHttpUrl().toUri().normalize()
+					}
+
+				try {
+					if (extEntity == null)
+						extEntity = extRepo.getInstalledExtension(link.extensionQRCode.id)
+				} catch (e: GenericSQLiteException) {
+					exception.emit(e)
+					return@launchIO
+				}
+
+				val iExt = try {
+					iExtRepo.get(extEntity!!.generify())
+				} catch (e: IncompatibleExtensionException) {
+					exception.emit(e)
+					return@launchIO
 				}
 
 				try {
-					if (novel == null) {
-						novelRepo.insert(
+					val autoBookmark = settingRepo.getBoolean(SettingKey.AutoBookmarkFromQR)
+
+					if (novelEntity == null) {
+						val stripped = novelRepo.insertReturnStripped(
 							NovelEntity(
-								url = link.url,
+								url = iExt.shrinkURL(link.url, KEY_NOVEL_URL),
 								imageURL = link.imageURL,
 								title = link.name,
 								extensionID = link.extensionQRCode.id,
-								bookmarked = true
+								bookmarked = autoBookmark
 							)
 						)
 
+						if (stripped != null)
+							novelEntity = novelRepo.getNovel(stripped.id)!!
 					} else {
-						novelRepo.update(novel.copy(bookmarked = true))
+						if (autoBookmark)
+							novelRepo.update(
+								novelEntity!!.copy(
+									bookmarked = true
+								)
+							)
 					}
+
+					isNovelOpenable.emit(true)
 				} catch (e: GenericSQLiteException) {
 					exception.emit(e)
 					return@launchIO
@@ -321,6 +357,7 @@ class AddShareViewModel(
 		launchIO {
 			isAdding.emit(false)
 			isComplete.emit(false)
+			isNovelOpenable.emit(false)
 
 			isNovelAlreadyPresent.emit(false)
 			isStyleAlreadyPresent.emit(false)
@@ -336,6 +373,9 @@ class AddShareViewModel(
 			data.emit(null)
 
 			exception.emit(null)
+			repoEntity = null
+			extEntity = null
+			novelEntity = null
 		}
 	}
 
@@ -345,4 +385,6 @@ class AddShareViewModel(
 		isQRCodeValid.tryEmit(false)
 	}
 
+	override fun getNovel(): NovelEntity? =
+		novelEntity
 }

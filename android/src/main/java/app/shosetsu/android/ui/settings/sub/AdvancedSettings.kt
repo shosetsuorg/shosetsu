@@ -232,5 +232,15 @@ fun AdvancedSettingsContent(
 				key = SettingKey.LogToFile
 			)
 		}
+
+		item {
+			SwitchSettingContent(
+				title = stringResource(R.string.settings_advanced_auto_bookmark_title),
+				description = stringResource(R.string.settings_advanced_auto_bookmark_desc),
+				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				repo = viewModel.settingsRepo,
+				key = SettingKey.AutoBookmarkFromQR
+			)
+		}
 	}
 }

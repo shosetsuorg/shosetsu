@@ -40,7 +40,7 @@ class AdvancedSettingsViewModel(
 	override fun purgeUselessData(): Flow<Unit> =
 		flow {
 			emit(purgeNovelCacheUseCase())
-		}
+		}.onIO()
 
 	override fun killCycleWorkers() {
 		backupCycleManager.stop()

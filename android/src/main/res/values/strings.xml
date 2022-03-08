@@ -639,6 +639,9 @@
     <string name="controller_add_present_style">This style is already present: %s</string>
     <string name="controller_add_present_ext">This extension is already present: %s</string>
     <string name="controller_add_present_repo">This repository is already present: %s</string>
+    <string name="controller_add_open_novel">Open Novel</string>
+    <string name="settings_advanced_auto_bookmark_title">Bookmark from QR</string>
+    <string name="settings_advanced_auto_bookmark_desc">Automatically bookmark novels that are scanned via QR code.</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

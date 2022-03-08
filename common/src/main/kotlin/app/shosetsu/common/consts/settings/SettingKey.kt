@@ -240,6 +240,11 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 
 	// Advanced settings
+	/**
+	 * Automatically bookmark a novel when scanned via a QR code
+	 */
+	object AutoBookmarkFromQR : BooleanKey("bookmark_from_qr", false)
+
 	object AppTheme : IntKey("selectedAppTheme", 0)
 
 	/** Verify if the check sum of the extension matches or not */

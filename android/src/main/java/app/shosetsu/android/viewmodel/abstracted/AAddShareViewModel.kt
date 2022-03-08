@@ -1,6 +1,7 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
+import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.lib.share.ExtensionLink
 import app.shosetsu.lib.share.NovelLink
 import app.shosetsu.lib.share.RepositoryLink
@@ -33,6 +34,11 @@ abstract class AAddShareViewModel : ShosetsuViewModel(), Destroyable {
 	abstract val isAdding: Flow<Boolean>
 	abstract val isComplete: Flow<Boolean>
 
+	/**
+	 * Prompts UI to allow user to open novel
+	 */
+	abstract val isNovelOpenable: Flow<Boolean>
+
 	abstract val isNovelAlreadyPresent: Flow<Boolean>
 	abstract val isStyleAlreadyPresent: Flow<Boolean>
 	abstract val isExtAlreadyPresent: Flow<Boolean>
@@ -64,4 +70,5 @@ abstract class AAddShareViewModel : ShosetsuViewModel(), Destroyable {
 
 	abstract fun retry()
 
+	abstract fun getNovel(): NovelEntity?
 }
