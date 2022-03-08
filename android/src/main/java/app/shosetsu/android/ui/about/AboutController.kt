@@ -113,7 +113,7 @@ class AboutController : ShosetsuController() {
 		openSite(URL_DISCORD)
 
 	private fun openMatrix() =
-		openSite(URL_DISCORD)
+		openSite(URL_MATRIX)
 
 	private fun openPatreon() =
 		openSite(URL_PATREON)
@@ -146,8 +146,8 @@ fun PreviewAboutContent() {
 @Composable
 fun AboutItem(
 	@StringRes titleRes: Int,
-	@StringRes descriptionRes: Int? = null,
 	description: String? = null,
+	@StringRes descriptionRes: Int? = null,
 	@DrawableRes iconRes: Int? = null,
 	onClick: () -> Unit = {}
 ) {
@@ -216,32 +216,32 @@ fun AboutContent(
 		Divider()
 		AboutItem(
 			R.string.website,
-			R.string.website_url,
+			URL_WEBSITE,
 			onClick = onOpenWebsite
 		)
 		AboutItem(
 			R.string.github,
-			R.string.github_url,
+			URL_GITHUB_APP,
 			onClick = onOpenSource
 		)
 		AboutItem(
 			R.string.extensions,
-			R.string.extensions_url,
+			URL_GITHUB_EXTENSIONS,
 			onClick = onOpenExtensions
 		)
 		AboutItem(
 			R.string.matrix,
-			R.string.matrix_url,
+			URL_MATRIX,
 			onClick = onOpenMatrix
 		)
 		AboutItem(
 			R.string.discord,
-			R.string.discord_url,
+			URL_DISCORD,
 			onClick = onOpenDiscord
 		)
 		AboutItem(
 			R.string.patreon,
-			R.string.patreon_url,
+			URL_PATREON,
 			onClick = onOpenPatreon
 		)
 		AboutItem(

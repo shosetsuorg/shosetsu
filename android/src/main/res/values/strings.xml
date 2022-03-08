@@ -3,19 +3,13 @@
     <string name="catalogue">Catalogue</string>
 
     <string name="website">Website</string>
-    <string name="website_url" translatable="false">https://shosetsu.app</string>
 
     <string name="github" translatable="false">Github</string>
-    <string name="github_url" translatable="false">https://github.com/shosetsuorg/shosetsu</string>
-    <string name="extensions_url" translatable="false">https://github.com/shosetsuorg/extensions</string>
 
     <string name="matrix" translatable="false">Matrix</string>
-    <string name="matrix_url" translatable="false">https://matrix.to/#/#shosetsu:matrix.org</string>
     <string name="discord" translatable="false">Discord</string>
-    <string name="discord_url" translatable="false">https://discord.gg/ttSX7gB</string>
 
     <string name="patreon" translatable="false">Support the dev on Patreon</string>
-    <string name="patreon_url" translatable="false">https://www.patreon.com/doomsdayrs</string>
 
     <string name="report_bug_link" translatable="false">https://github.com/Doomsdayrs/shosetsu/issues</string>
     <string name="author_github" translatable="false">https://github.com/Doomsdayrs</string>

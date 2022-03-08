@@ -28,3 +28,4 @@ const val URL_GITHUB_EXTENSIONS = "https://github.com/shosetsuorg/extensions"
 const val URL_PATREON = "https://www.patreon.com/doomsdayrs"
 
 const val URL_DISCORD = "https://discord.gg/ttSX7gB"
+const val URL_MATRIX = "https://matrix.to/#/#shosetsu:matrix.org"
