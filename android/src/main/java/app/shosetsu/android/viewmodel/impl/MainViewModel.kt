@@ -18,6 +18,7 @@ import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.domain.repositories.base.IBackupRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.enums.AppThemes
+import app.shosetsu.common.utils.archURL
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
@@ -96,7 +97,7 @@ class MainViewModel(
 						loadAppUpdateUseCase()?.let {
 							AppUpdateAction.UserUpdate(
 								it.version,
-								it.url
+								it.archURL()
 							)
 						}
 					}

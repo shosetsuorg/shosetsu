@@ -5,6 +5,7 @@ import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.android.domain.model.remote.AppUpdateDTO
 import app.shosetsu.common.EmptyResponseBodyException
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
+import app.shosetsu.common.utils.archURL
 import app.shosetsu.lib.exceptions.HTTPException
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig.DEBUG
 import kotlinx.serialization.decodeFromString
@@ -66,22 +67,10 @@ class GithubAppUpdateDataSource(
 
 	@Throws(EmptyResponseBodyException::class, HTTPException::class)
 	override suspend fun downloadAppUpdate(update: AppUpdateEntity): ByteArray {
-		/**
-		 * Attempts to figure out the correct download URL to use
-		 */
-		val url = if (update.archURLs != null) {
-			when (System.getProperty("os.arch")) {
-				"armeabi-v7a" -> update.archURLs!!.`armeabi-v7a`
-				"arm64-v8a" -> update.archURLs!!.`arm64-v8a`
-				"x86" -> update.archURLs!!.x86
-				"x86_64" -> update.archURLs!!.x86_64
-				else -> update.url // default to using the universal APK
-			}
-		} else update.url
-		okHttpClient.quickie(url).let { response ->
+		okHttpClient.quickie(update.archURL()).let { response ->
 			if (response.isSuccessful) {
 				// TODO One day have kotlin IO to handle this right here
-				response.body?.bytes() ?: throw EmptyResponseBodyException(update.url)
+				response.body?.bytes() ?: throw EmptyResponseBodyException(update.archURL())
 			}
 			throw HTTPException(response.code)
 		}
