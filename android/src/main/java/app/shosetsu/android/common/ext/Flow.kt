@@ -37,8 +37,7 @@ fun <T> Flow<T>.collectLA(
 ) =
 	owner.lifecycleScope.launch {
 		owner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-			catch(catch)
-			collect(onCollect)
+			catch(catch).collect(onCollect)
 		}
 	}
 
@@ -49,8 +48,7 @@ fun <T> Flow<T>.collectLatestLA(
 ) = owner.lifecycleScope.launch {
 	owner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 		collectLatest {
-			catch(catch)
-			collect(onCollect)
+			catch(catch).collect(onCollect)
 		}
 	}
 }
