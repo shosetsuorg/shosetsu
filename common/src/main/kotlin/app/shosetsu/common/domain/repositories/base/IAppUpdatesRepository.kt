@@ -1,7 +1,11 @@
 package app.shosetsu.common.domain.repositories.base
 
+import app.shosetsu.common.FileNotFoundException
+import app.shosetsu.common.FilePermissionException
+import app.shosetsu.common.MissingFeatureException
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import kotlinx.coroutines.flow.Flow
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -35,11 +39,13 @@ interface IAppUpdatesRepository {
 	/**
 	 * Load an app update if present
 	 */
+	@Throws(FilePermissionException::class, IOException::class)
 	suspend fun loadRemoteUpdate(): AppUpdateEntity?
 
 	/**
 	 * Load an app update if present
 	 */
+	@Throws(FileNotFoundException::class)
 	suspend fun loadAppUpdate(): AppUpdateEntity?
 
 	/**
@@ -52,5 +58,11 @@ interface IAppUpdatesRepository {
 	 *
 	 * @return Path of the apk file, this is messy but it must be done so the intent can work
 	 */
+	@Throws(
+		IOException::class,
+		FilePermissionException::class,
+		FileNotFoundException::class,
+		MissingFeatureException::class
+	)
 	suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): String
 }

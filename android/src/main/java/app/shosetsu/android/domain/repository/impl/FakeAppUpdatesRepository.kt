@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.repository.impl
 
-import app.shosetsu.android.common.MissingFeatureException
 import app.shosetsu.android.datasource.local.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
+import app.shosetsu.common.MissingFeatureException
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
 import kotlinx.coroutines.flow.Flow

@@ -1,12 +1,15 @@
 package app.shosetsu.android.domain.repository.impl
 
-import app.shosetsu.android.common.MissingFeatureException
 import app.shosetsu.android.datasource.local.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
+import app.shosetsu.common.FileNotFoundException
+import app.shosetsu.common.FilePermissionException
+import app.shosetsu.common.MissingFeatureException
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import kotlinx.coroutines.flow.Flow
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -67,7 +70,8 @@ class AppUpdatesRepository(
 		}
 	}
 
-	override suspend fun loadRemoteUpdate(): AppUpdateEntity? =
+	@Throws(FilePermissionException::class, IOException::class)
+	override suspend fun loadRemoteUpdate(): AppUpdateEntity =
 		iRemoteAppUpdateDataSource.loadAppUpdate().let { appUpdateEntity ->
 			val compared = compareVersion(appUpdateEntity)
 
@@ -81,12 +85,19 @@ class AppUpdatesRepository(
 			appUpdateEntity
 		}
 
+	@Throws(FileNotFoundException::class)
 	override suspend fun loadAppUpdate(): AppUpdateEntity =
 		iFileAppUpdateDataSource.loadCachedAppUpdate()
 
 	override fun canSelfUpdate(): Boolean =
 		iRemoteAppUpdateDataSource is IRemoteAppUpdateDataSource.Downloadable
 
+	@Throws(
+		IOException::class,
+		FilePermissionException::class,
+		FileNotFoundException::class,
+		MissingFeatureException::class
+	)
 	override suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): String =
 		if (iRemoteAppUpdateDataSource is IRemoteAppUpdateDataSource.Downloadable)
 			iRemoteAppUpdateDataSource.downloadAppUpdate(appUpdateEntity).let { response ->

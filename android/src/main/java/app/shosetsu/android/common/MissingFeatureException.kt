@@ -23,5 +23,3 @@ package app.shosetsu.android.common
  * @since 15 / 02 / 2022
  * @author Doomsdayrs
  */
-class MissingFeatureException(feature: String) :
-	Exception("This flavour does not have the feature: $feature")
