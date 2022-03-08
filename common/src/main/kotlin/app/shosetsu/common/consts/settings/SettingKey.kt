@@ -251,7 +251,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object VerifyCheckSum : BooleanKey("verifyCheckSum", false)
 
 	object LibraryFilter :
-		StringKey("libraryFilter", Json { }.encodeToString(LibrarySortFilterEntity()))
+		StringKey("libraryFilter", Json.encodeToString(LibrarySortFilterEntity()))
 
 	object RequireDoubleBackToExit : BooleanKey("requireDoubleBackToExit", false)
 
