@@ -8,6 +8,7 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.view.compose.DiscreteSlider
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import kotlin.math.roundToInt
 
 @Composable
 fun SliderSettingContent(
@@ -51,7 +52,6 @@ fun FloatSliderSettingContent(
 	haveSteps: Boolean = true,
 	flip: Boolean = false
 ) {
-	var flipped: Boolean = false
 	val choice by repo.getFloatFlow(key).collectAsState(key.default)
 
 	GenericBottomSettingLayout(
@@ -62,16 +62,14 @@ fun FloatSliderSettingContent(
 		DiscreteSlider(
 			choice,
 			parseValue(choice),
-			{
+			{ newValue, fromDialog ->
 				launchIO {
-					if (flip && flipped) {
-						flipped = !flipped
-						return@launchIO
-					}
-
-					repo.setFloat(key, it)
-
-					flipped = !flipped
+					repo.setFloat(
+						key,
+						if (flip && !fromDialog)
+							newValue.roundToInt().toFloat()
+						else newValue
+					)
 				}
 			},
 			valueRange,

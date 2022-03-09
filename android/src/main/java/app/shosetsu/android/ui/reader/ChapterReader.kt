@@ -49,6 +49,7 @@ import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import java.util.*
+import kotlin.math.roundToInt
 
 
 /*
@@ -386,8 +387,14 @@ class ChapterReader
 						DiscreteSlider(
 							settings.paragraphSpacingSize,
 							"${settings.paragraphSpacingSize}",
-							{
-								viewModel.updateSetting(settings.copy(paragraphSpacingSize = it))
+							{ it, a ->
+								viewModel.updateSetting(
+									settings.copy(
+										paragraphSpacingSize = if (!a)
+											it.roundToInt().toFloat()
+										else it
+									)
+								)
 							},
 							0..10,
 						)

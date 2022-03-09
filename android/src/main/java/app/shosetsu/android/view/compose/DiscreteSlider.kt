@@ -180,7 +180,7 @@ fun DiscreteSlider(
 fun DiscreteSlider(
 	value: Float,
 	parsedValue: String,
-	updateValue: (Float) -> Unit,
+	updateValue: (Float, fromDialog: Boolean) -> Unit,
 	valueRange: IntRange,
 	haveSteps: Boolean = true
 ) {
@@ -268,7 +268,7 @@ fun DiscreteSlider(
 
 							TextButton(
 								onClick = {
-									updateValue(newValue!!)
+									updateValue(newValue!!, true)
 									showDialog = false
 								},
 								enabled = !isTextError
@@ -290,7 +290,7 @@ fun DiscreteSlider(
 		Slider(
 			value,
 			{
-				updateValue(it)
+				updateValue(it, false)
 			},
 			valueRange = valueRange.first.toFloat()..valueRange.last.toFloat(),
 			steps = if (haveSteps) valueRange.count() - 2 else 0

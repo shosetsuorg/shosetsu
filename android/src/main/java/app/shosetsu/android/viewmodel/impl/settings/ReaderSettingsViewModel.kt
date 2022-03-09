@@ -144,7 +144,8 @@ fun ExposedSettingsRepoViewModel.textSizeOption() {
 		settingsRepo,
 		ReaderTextSize,
 		haveSteps = false,
-		flip = true, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+		flip = true,
+		modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
 	)
 }
 
@@ -168,6 +169,8 @@ fun ExposedSettingsRepoViewModel.paragraphSpacingOption() {
 		0..10,
 		{ "$it" },
 		settingsRepo,
-		ReaderParagraphSpacing, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+		ReaderParagraphSpacing,
+		flip = true,
+		modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
 	)
 }
