@@ -1,10 +1,11 @@
 package app.shosetsu.android.ui.catalogue
 
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.os.Bundle
 import android.view.*
 import android.widget.SearchView
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -17,7 +18,6 @@ import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
-import app.shosetsu.android.common.consts.MAX_BOTTOM_SHEET_FRACTION
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.listeners.CatalogueSearchQuery
 import app.shosetsu.android.ui.novel.NovelController
@@ -365,8 +365,6 @@ class CatalogController(
 				bsg = BottomSheetDialog(this.view!!.context)
 			if (bsg?.isShowing == false) {
 				bsg?.apply {
-					behavior.maxHeight =
-						(Resources.getSystem().displayMetrics.heightPixels * MAX_BOTTOM_SHEET_FRACTION).toInt()
 					val binding = ComposeViewBinding.inflate(
 						this@CatalogController.activity!!.layoutInflater,
 						null,
@@ -384,7 +382,18 @@ class CatalogController(
 						)
 						setContent {
 							MdcTheme(view!!.context) {
-								CatalogFilterMenu(viewModel)
+								val items by viewModel.filterItemsLive.collectAsState(emptyList())
+								CatalogFilterMenu(
+									items,
+									viewModel::getFilterBooleanState,
+									viewModel::setFilterBooleanState,
+									viewModel::getFilterIntState,
+									viewModel::setFilterIntState,
+									viewModel::getFilterStringState,
+									viewModel::setFilterStringState,
+									viewModel::applyFilter,
+									viewModel::resetFilter
+								)
 							}
 						}
 					}
