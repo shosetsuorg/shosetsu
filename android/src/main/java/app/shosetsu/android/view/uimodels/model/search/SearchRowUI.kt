@@ -1,15 +1,5 @@
 package app.shosetsu.android.view.uimodels.model.search
 
-import android.view.View
-import androidx.core.view.isVisible
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
-import app.shosetsu.android.common.ext.shosetsuLoad
-import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
-import app.shosetsu.android.view.uimodels.base.BindViewHolder
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerSearchRowBinding
-
 /*
  * This file is part of shosetsu.
  *
@@ -36,29 +26,4 @@ data class SearchRowUI(
 	val extensionID: Int,
 	val name: String,
 	val imageURL: String?
-) : BaseRecyclerItem<SearchRowUI.ViewHolder>() {
-	override val layoutRes: Int = R.layout.recycler_search_row
-	override val type: Int = R.layout.recycler_search_row
-
-	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
-
-	/***/
-	class ViewHolder(itemView: View) :
-		BindViewHolder<SearchRowUI, RecyclerSearchRowBinding>(itemView) {
-		override val binding = RecyclerSearchRowBinding.bind(view)
-
-		override fun RecyclerSearchRowBinding.bindView(item: SearchRowUI, payloads: List<Any>) {
-			title.text = item.name
-			recyclerView.layoutManager =
-				LinearLayoutManager(recyclerView.context, HORIZONTAL, false)
-			recyclerView.setHasFixedSize(false)
-			if (!item.imageURL.isNullOrEmpty()) imageView.shosetsuLoad(item.imageURL)
-		}
-
-		override fun RecyclerSearchRowBinding.unbindView(item: SearchRowUI) {
-			title.text = null
-			imageView.setImageResource(R.drawable.library)
-			progressBar.isVisible = false
-		}
-	}
-}
+)
