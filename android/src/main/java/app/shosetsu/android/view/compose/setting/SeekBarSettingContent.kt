@@ -20,6 +20,7 @@ fun SliderSettingContent(
 	key: SettingKey<Int>,
 	modifier: Modifier = Modifier,
 	haveSteps: Boolean = true,
+	manipulateUpdate: ((Int) -> Int)? = null,
 ) {
 	val choice by repo.getIntFlow(key).collectAsState(key.default)
 
@@ -31,8 +32,13 @@ fun SliderSettingContent(
 		DiscreteSlider(
 			choice,
 			parseValue(choice),
-			{
-				launchIO { repo.setInt(key, it) }
+			{ it, a ->
+				launchIO {
+					if (manipulateUpdate != null && !a)
+						repo.setInt(key, manipulateUpdate(it))
+					else
+						repo.setInt(key, it)
+				}
 			},
 			valueRange,
 			haveSteps = haveSteps,

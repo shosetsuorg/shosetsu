@@ -28,7 +28,7 @@ fun PreviewSeekBar() {
 			DiscreteSlider(
 				value,
 				"${value}h",
-				{
+				{ it, _ ->
 					value = it
 				},
 				0..10,
@@ -50,7 +50,7 @@ fun PreviewSeekBar() {
 fun DiscreteSlider(
 	value: Int,
 	parsedValue: String,
-	updateValue: (Int) -> Unit,
+	updateValue: (Int, fromDialog: Boolean) -> Unit,
 	valueRange: IntRange,
 	haveSteps: Boolean = true
 ) {
@@ -138,7 +138,7 @@ fun DiscreteSlider(
 
 							TextButton(
 								onClick = {
-									updateValue(newValue!!)
+									updateValue(newValue!!, true)
 									showDialog = false
 								},
 								enabled = !isTextError
@@ -160,7 +160,7 @@ fun DiscreteSlider(
 		Slider(
 			value.toFloat(),
 			{
-				updateValue(it.roundToInt())
+				updateValue(it.roundToInt(), false)
 			},
 			valueRange = valueRange.first.toFloat()..valueRange.last.toFloat(),
 			steps = if (haveSteps) valueRange.count() - 2 else 0

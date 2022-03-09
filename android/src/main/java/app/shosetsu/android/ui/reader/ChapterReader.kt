@@ -406,7 +406,7 @@ class ChapterReader
 						DiscreteSlider(
 							settings.paragraphIndentSize,
 							"${settings.paragraphIndentSize}",
-							{
+							{ it, _ ->
 								viewModel.updateSetting(settings.copy(paragraphIndentSize = it))
 							},
 							0..10,
