@@ -29,7 +29,7 @@ import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.uimodels.model.MigrationExtensionUI
 import app.shosetsu.android.view.uimodels.model.MigrationNovelUI
 import app.shosetsu.android.viewmodel.abstracted.AMigrationViewModel
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.composethemeadapter.MdcTheme
 
@@ -210,7 +210,7 @@ fun MigrationExtensionItemContent(
 		) {
 			Image(
 				painter = if (item.imageURL.isNotEmpty()) {
-					rememberImagePainter(item.imageURL)
+					rememberAsyncImagePainter(item.imageURL)
 				} else {
 					painterResource(R.drawable.broken_image)
 				},
@@ -314,7 +314,7 @@ fun MigrationNovelItemContent(item: MigrationNovelUI, onClick: (MigrationNovelUI
 		Box {
 			Image(
 				painter = if (item.imageURL.isNotEmpty()) {
-					rememberImagePainter(item.imageURL)
+					rememberAsyncImagePainter(item.imageURL)
 				} else {
 					painterResource(R.drawable.broken_image)
 				},

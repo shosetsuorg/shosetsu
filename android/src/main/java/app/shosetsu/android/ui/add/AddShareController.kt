@@ -36,7 +36,7 @@ import app.shosetsu.lib.share.ExtensionLink
 import app.shosetsu.lib.share.NovelLink
 import app.shosetsu.lib.share.RepositoryLink
 import app.shosetsu.lib.share.StyleLink
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.composethemeadapter.MdcTheme
 import io.github.g00fy2.quickie.QRResult
@@ -351,7 +351,7 @@ fun AddShareContent(
 										verticalAlignment = Alignment.CenterVertically
 									) {
 										Image(
-											rememberImagePainter(novelLink.imageURL),
+											rememberAsyncImagePainter(novelLink.imageURL),
 											"",
 											modifier = Modifier.heightIn(max = 128.dp)
 												.aspectRatio(.75f)
@@ -396,7 +396,7 @@ fun AddShareContent(
 										verticalAlignment = Alignment.CenterVertically
 									) {
 										Icon(
-											rememberImagePainter(extensionLink.imageURL),
+											rememberAsyncImagePainter(extensionLink.imageURL),
 											"",
 											modifier = Modifier.size(64.dp)
 										)

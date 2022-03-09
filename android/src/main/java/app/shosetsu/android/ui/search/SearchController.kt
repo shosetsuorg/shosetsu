@@ -3,6 +3,9 @@ package app.shosetsu.android.ui.search
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.compose.animation.graphics.res.animatedVectorResource
+import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
+import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -18,7 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -37,7 +42,9 @@ import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ASearchViewModel
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -192,7 +199,7 @@ fun SearchContent(
 	) {
 		LazyColumn(
 			modifier = Modifier.fillMaxSize(),
-			contentPadding = PaddingValues(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 64.dp)
+			contentPadding = PaddingValues(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 64.dp)
 		) {
 
 			items(rows, key = { it.extensionID }) { row ->
@@ -249,10 +256,12 @@ fun SearchRowContent(
 			modifier = Modifier.padding(8.dp),
 			verticalAlignment = Alignment.CenterVertically
 		) {
-			Icon(
-				if (!row.imageURL.isNullOrEmpty())
-					rememberImagePainter(row.imageURL)
-				else painterResource(R.drawable.library),
+			Image(
+				if (!row.imageURL.isNullOrEmpty()) {
+					rememberAsyncImagePainter(row.imageURL)
+				} else {
+					painterResource(R.drawable.library)
+				},
 				contentDescription = row.name,
 				modifier = Modifier.size(32.dp)
 			)
@@ -290,7 +299,10 @@ fun SearchRowContent(
 	}
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(
+	ExperimentalMaterialApi::class,
+	androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi::class
+)
 @Composable
 fun SearchResultContent(item: ACatalogNovelUI, onClick: (ACatalogNovelUI) -> Unit) {
 	Card(
@@ -301,16 +313,22 @@ fun SearchResultContent(item: ACatalogNovelUI, onClick: (ACatalogNovelUI) -> Uni
 		} else {
 			null
 		},
-		modifier = Modifier.aspectRatio(.70f).width(124.dp)
+		modifier = Modifier.aspectRatio(.70f).width(124.dp).padding(8.dp)
 	) {
 		val blackTrans = colorResource(id = R.color.black_trans)
 		Box {
-			Image(
-				painter = if (item.imageURL.isNotEmpty()) {
-					rememberImagePainter(item.imageURL)
-				} else {
-					painterResource(R.drawable.broken_image)
-				},
+
+			AsyncImage(
+				model = ImageRequest.Builder(LocalContext.current)
+					.data(item.imageURL)
+					.error(R.drawable.broken_image)
+					.build(),
+				placeholder = rememberAnimatedVectorPainter(
+					AnimatedImageVector.animatedVectorResource(
+						R.drawable.animated_refresh
+					),
+					false
+				),
 				contentDescription = null,
 				modifier = Modifier
 					.fillMaxSize()
@@ -326,6 +344,7 @@ fun SearchResultContent(item: ACatalogNovelUI, onClick: (ACatalogNovelUI) -> Uni
 							)
 						)
 					},
+				contentScale = ContentScale.Crop
 			)
 
 			Text(

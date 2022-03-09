@@ -67,7 +67,7 @@ import app.shosetsu.common.consts.REPOSITORY_HELP_URL
 import app.shosetsu.common.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.common.domain.model.local.ExtensionInstallOptionEntity
 import app.shosetsu.lib.Version
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ComposeViewBinding
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -380,7 +380,7 @@ fun BrowseExtensionContent(
 				) {
 					Image(
 						painter = if (item.imageURL.isNotEmpty()) {
-							rememberImagePainter(item.imageURL)
+							rememberAsyncImagePainter(item.imageURL)
 						} else {
 							painterResource(R.drawable.broken_image)
 						},

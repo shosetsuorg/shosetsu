@@ -36,7 +36,7 @@ import app.shosetsu.android.view.controller.base.CollapsedToolBarController
 import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.AUpdatesViewModel
 import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
@@ -188,7 +188,7 @@ fun UpdateItemContent(updateUI: UpdateCompleteEntity, onClick: () -> Unit) {
 		Row {
 			Image(
 				if (updateUI.novelImageURL.isNotEmpty()) {
-					rememberImagePainter(updateUI.novelImageURL)
+					rememberAsyncImagePainter(updateUI.novelImageURL)
 				} else {
 					painterResource(R.drawable.broken_image)
 				},

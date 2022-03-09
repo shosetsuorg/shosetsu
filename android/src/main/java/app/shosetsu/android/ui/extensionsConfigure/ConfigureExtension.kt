@@ -35,7 +35,7 @@ import app.shosetsu.common.enums.TriStateState
 import app.shosetsu.lib.ExtensionType
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.Version
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.composethemeadapter.MdcTheme
 import kotlin.random.Random
@@ -301,7 +301,7 @@ fun ConfigureExtensionHeaderContent(
 			) {
 				Icon(
 					painter = if (!extension.imageURL.isNullOrEmpty()) {
-						rememberImagePainter(extension.imageURL)
+						rememberAsyncImagePainter(extension.imageURL)
 					} else {
 						painterResource(R.drawable.broken_image)
 					},

@@ -201,7 +201,7 @@ dependencies {
 
 
 	// Image loading
-	implementation("io.coil-kt:coil-compose:1.4.0")
+	implementation("io.coil-kt:coil-compose:2.0.0-rc01")
 
 	//TODO GITHUB sign in to save backup data to cloud
 	//implementation "com.github.kohsuke:github-api:github-api-1.95"
