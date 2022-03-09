@@ -120,7 +120,8 @@ fun UpdateSettingsContent(viewModel: AUpdateSettingsViewModel) {
 						in 157..168 -> 168
 						else -> it
 					}
-				}
+				},
+				maxHeaderSize = 80.dp
 			)
 		}
 

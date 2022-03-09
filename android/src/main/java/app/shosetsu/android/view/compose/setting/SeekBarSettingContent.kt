@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.view.compose.DiscreteSlider
 import app.shosetsu.common.consts.settings.SettingKey
@@ -21,6 +22,7 @@ fun SliderSettingContent(
 	modifier: Modifier = Modifier,
 	haveSteps: Boolean = true,
 	manipulateUpdate: ((Int) -> Int)? = null,
+	maxHeaderSize: Dp? = null
 ) {
 	val choice by repo.getIntFlow(key).collectAsState(key.default)
 
@@ -42,6 +44,7 @@ fun SliderSettingContent(
 			},
 			valueRange,
 			haveSteps = haveSteps,
+			maxHeaderSize
 		)
 	}
 }
@@ -56,7 +59,8 @@ fun FloatSliderSettingContent(
 	key: SettingKey<Float>,
 	modifier: Modifier = Modifier,
 	haveSteps: Boolean = true,
-	flip: Boolean = false
+	flip: Boolean = false,
+	maxHeaderSize: Dp? = null
 ) {
 	val choice by repo.getFloatFlow(key).collectAsState(key.default)
 
@@ -79,7 +83,8 @@ fun FloatSliderSettingContent(
 				}
 			},
 			valueRange,
-			haveSteps
+			haveSteps,
+			maxHeaderSize
 		)
 	}
 }

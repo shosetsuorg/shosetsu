@@ -241,7 +241,8 @@ fun DownloadSettingsContent(
 				},
 				viewModel.settingsRepo,
 				SettingKey.DeleteReadChapter,
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				maxHeaderSize = 80.dp
 			)
 		}
 
