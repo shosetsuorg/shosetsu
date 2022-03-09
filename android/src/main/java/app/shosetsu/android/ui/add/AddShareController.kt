@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
-import androidx.compose.foundation.Image
+import androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,7 +37,8 @@ import app.shosetsu.lib.share.ExtensionLink
 import app.shosetsu.lib.share.NovelLink
 import app.shosetsu.lib.share.RepositoryLink
 import app.shosetsu.lib.share.StyleLink
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.composethemeadapter.MdcTheme
 import io.github.g00fy2.quickie.QRResult
@@ -226,6 +228,7 @@ fun PreviewAboutContent() {
 	}
 }
 
+@OptIn(ExperimentalAnimationGraphicsApi::class)
 @Composable
 fun AddShareContent(
 	isProcessing: Boolean,
@@ -350,9 +353,14 @@ fun AddShareContent(
 									Row(
 										verticalAlignment = Alignment.CenterVertically
 									) {
-										Image(
-											rememberAsyncImagePainter(novelLink.imageURL),
-											"",
+
+										AsyncImage(
+											model = ImageRequest.Builder(LocalContext.current)
+												.data(novelLink.imageURL)
+												.error(R.drawable.broken_image)
+												.placeholder(R.drawable.animated_refresh)
+												.build(),
+											contentDescription = null,
 											modifier = Modifier.heightIn(max = 128.dp)
 												.aspectRatio(.75f)
 										)
@@ -395,8 +403,12 @@ fun AddShareContent(
 									Row(
 										verticalAlignment = Alignment.CenterVertically
 									) {
-										Icon(
-											rememberAsyncImagePainter(extensionLink.imageURL),
+										AsyncImage(
+											ImageRequest.Builder(LocalContext.current)
+												.data(extensionLink.imageURL)
+												.placeholder(R.drawable.animated_refresh)
+												.error(R.drawable.broken_image)
+												.build(),
 											"",
 											modifier = Modifier.size(64.dp)
 										)

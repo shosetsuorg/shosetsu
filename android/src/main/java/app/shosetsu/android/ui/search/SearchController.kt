@@ -3,9 +3,6 @@ package app.shosetsu.android.ui.search
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
-import androidx.compose.animation.graphics.res.animatedVectorResource
-import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
-import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -322,13 +319,8 @@ fun SearchResultContent(item: ACatalogNovelUI, onClick: (ACatalogNovelUI) -> Uni
 				model = ImageRequest.Builder(LocalContext.current)
 					.data(item.imageURL)
 					.error(R.drawable.broken_image)
+					.placeholder(R.drawable.animated_refresh)
 					.build(),
-				placeholder = rememberAnimatedVectorPainter(
-					AnimatedImageVector.animatedVectorResource(
-						R.drawable.animated_refresh
-					),
-					false
-				),
 				contentDescription = null,
 				modifier = Modifier
 					.fillMaxSize()
