@@ -1,11 +1,8 @@
 package app.shosetsu.android.common.ext
 
 import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
 import android.provider.Settings
 import androidx.annotation.StringRes
-import androidx.core.content.ContextCompat
 import app.shosetsu.android.activity.MainActivity
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.Router
@@ -22,22 +19,6 @@ fun Router.popControllerWithTag(tag: String): Boolean {
 		return true
 	}
 	return false
-}
-
-fun Controller.requestPermissionsSafe(permissions: Array<String>, requestCode: Int) {
-	activity?.let {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			permissions.forEach { permission ->
-				if (ContextCompat.checkSelfPermission(
-						it,
-						permission
-					) != PackageManager.PERMISSION_GRANTED
-				) {
-					requestPermissions(arrayOf(permission), requestCode)
-				}
-			}
-		}
-	} ?: return
 }
 
 fun Controller.makeSnackBar(
