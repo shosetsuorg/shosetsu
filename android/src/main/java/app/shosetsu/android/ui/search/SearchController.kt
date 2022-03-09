@@ -345,7 +345,8 @@ fun SearchResultContent(item: ACatalogNovelUI, onClick: (ACatalogNovelUI) -> Uni
 					.align(Alignment.BottomCenter)
 					.padding(8.dp),
 				fontWeight = FontWeight.Bold,
-				textAlign = TextAlign.Center
+				textAlign = TextAlign.Center,
+				maxLines = 3
 			)
 		}
 	}
