@@ -65,7 +65,6 @@ abstract class FastAdapterRecyclerController<VB, ITEM> :
 	 */
 	open fun FastAdapter<ITEM>.setupFastAdapter() {}
 
-	/** @param result [HResult], if [HResult.Success] then updates UI */
 	fun <T : GenericItem> handleRecyclerUpdate(
 		itemAdapter: ItemAdapter<T>,
 		showEmpty: () -> Unit,

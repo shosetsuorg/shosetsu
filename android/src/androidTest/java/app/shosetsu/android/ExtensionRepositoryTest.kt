@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logE
-import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.future.future
@@ -69,7 +68,6 @@ class ExtensionRepositoryTest : DIAware {
 			)
 			result
 			logD<ExtensionRepositoryTest>("Added successfully")
-			requireNotNull(result) { "Failed to add" }
 			print()
 
 

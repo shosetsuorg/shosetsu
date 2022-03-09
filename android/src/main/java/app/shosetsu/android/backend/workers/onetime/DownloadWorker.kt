@@ -127,7 +127,7 @@ class DownloadWorker(
 
 	private suspend fun download(downloadEntity: DownloadEntity) =
 		chapRepo.getChapter(downloadEntity.chapterID)!!.let { chapterEntity ->
-			getExt(chapterEntity.extensionID!!)!!.let { iExtension ->
+			getExt(chapterEntity.extensionID)!!.let { iExtension ->
 				chapRepo.getChapterPassage(iExtension, chapterEntity).let { passage ->
 					chapRepo.saveChapterPassageToStorage(
 						chapterEntity,

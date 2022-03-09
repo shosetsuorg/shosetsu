@@ -73,7 +73,7 @@ class InstallExtensionUseCase(
 
 		if (oldInstalledExt != null)
 			extensionRepository.updateInstalledExtension(
-				oldInstalledExt?.copy(
+				oldInstalledExt.copy(
 					repoID = extToInstall.repoID,
 					name = extToInstall.fileName,
 					fileName = extToInstall.fileName,

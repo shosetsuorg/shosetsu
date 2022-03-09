@@ -152,9 +152,9 @@ class NovelUpdateCycleWorker(
 					)
 						.build()
 				)
-				workerManager.getWorkInfosForUniqueWork(UPDATE_CYCLE_WORK_ID).await()[0].let {
-					logD("State ${it.state}")
-				}
+				val info = workerManager.getWorkInfosForUniqueWork(UPDATE_CYCLE_WORK_ID).await()[0]
+				logD("State ${info.state}")
+
 			}
 		}
 

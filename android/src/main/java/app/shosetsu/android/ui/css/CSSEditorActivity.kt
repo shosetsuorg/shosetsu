@@ -17,6 +17,7 @@ package app.shosetsu.android.ui.css
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import android.annotation.SuppressLint
 import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
 import android.content.ClipboardManager
 import android.os.Bundle
@@ -321,6 +322,7 @@ fun CSSEditorContent(
 			AndroidView(
 				factory = { context ->
 					WebView(context).apply {
+						@SuppressLint("SetJavaScriptEnabled")
 						settings.javaScriptEnabled = true
 						loadData(
 							context.getString(R.string.activity_css_example),
@@ -348,12 +350,15 @@ fun CSSEditorContent(
 						null
 					)
 				},
-				modifier = Modifier.fillMaxWidth().fillMaxHeight(0.25f)
+				modifier = Modifier
+					.fillMaxWidth()
+					.fillMaxHeight(0.25f)
 			)
 			TextField(
 				cssContent,
 				onNewText,
-				modifier = Modifier.fillMaxSize()
+				modifier = Modifier
+					.fillMaxSize()
 					.verticalScroll(rememberScrollState())
 					.padding(bottom = 92.dp),
 				shape = RectangleShape,

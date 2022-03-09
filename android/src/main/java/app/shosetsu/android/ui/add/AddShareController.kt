@@ -319,7 +319,9 @@ fun AddShareContent(
 		)
 	} else {
 		Column(
-			modifier = Modifier.fillMaxSize().padding(bottom = 56.dp),
+			modifier = Modifier
+				.fillMaxSize()
+				.padding(bottom = 56.dp),
 			horizontalAlignment = Alignment.CenterHorizontally,
 			verticalArrangement = Arrangement.SpaceBetween
 		) {
@@ -344,7 +346,9 @@ fun AddShareContent(
 							)
 
 							Card(
-								modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+								modifier = Modifier
+									.fillMaxWidth()
+									.padding(bottom = 16.dp)
 							) {
 								Column(
 									modifier = Modifier.padding(16.dp)
@@ -361,7 +365,8 @@ fun AddShareContent(
 												.placeholder(R.drawable.animated_refresh)
 												.build(),
 											contentDescription = null,
-											modifier = Modifier.heightIn(max = 128.dp)
+											modifier = Modifier
+												.heightIn(max = 128.dp)
 												.aspectRatio(.75f)
 										)
 										Column(
@@ -382,9 +387,9 @@ fun AddShareContent(
 						}
 					}
 				}
-				if (styleLink != null) {
-					// TODO Style
-				}
+				//if (styleLink != null) {
+				//	// TODO Style
+				//}
 				if (extensionLink != null && !isExtAlreadyPresent) {
 					item {
 						Column {
@@ -394,7 +399,9 @@ fun AddShareContent(
 								modifier = Modifier.padding(bottom = 8.dp)
 							)
 							Card(
-								modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth()
+								modifier = Modifier
+									.padding(bottom = 16.dp)
+									.fillMaxWidth()
 							) {
 								Column(
 									modifier = Modifier.padding(16.dp),
@@ -459,7 +466,9 @@ fun AddShareContent(
 				CircularProgressIndicator()
 
 			Card(
-				modifier = Modifier.fillMaxWidth().padding(16.dp)
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(16.dp)
 			) {
 				Row(
 					horizontalArrangement = Arrangement.SpaceEvenly,

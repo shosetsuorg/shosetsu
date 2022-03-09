@@ -78,7 +78,6 @@ abstract class RecyclerController<AD, IT, VB> : ViewedController<VB>
 		return binding.root
 	}
 
-	/** @param result [HResult], if [HResult.Success] then updates UI */
 	open fun handleRecyclerUpdate(result: List<IT>) {
 		if (result.isEmpty()) {
 			showEmpty()
@@ -127,9 +126,6 @@ abstract class RecyclerController<AD, IT, VB> : ViewedController<VB>
 		recyclerView.adapter = adapter
 	}
 
-	/**
-	 * Called when the [HResult] for the data is empty
-	 */
 	open fun showEmpty() {}
 
 	/**

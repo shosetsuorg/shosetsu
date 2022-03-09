@@ -38,7 +38,7 @@ import okhttp3.OkHttpClient
 class GithubAppUpdateDataSource(
 	private val okHttpClient: OkHttpClient
 ) : IRemoteAppUpdateDataSource, IRemoteAppUpdateDataSource.Downloadable {
-	private val SHOSETSU_GIT_UPDATE_URL: String by lazy {
+	private val shosetsuGitUpdateURL: String by lazy {
 		"https://raw.githubusercontent.com/shosetsuorg/shosetsu/${
 			if (DEBUG) "development" else "master"
 		}/android/src/${
@@ -54,12 +54,12 @@ class GithubAppUpdateDataSource(
 
 	@Throws(EmptyResponseBodyException::class, HTTPException::class)
 	override suspend fun loadAppUpdate(): AppUpdateEntity {
-		okHttpClient.quickie(SHOSETSU_GIT_UPDATE_URL)
+		okHttpClient.quickie(shosetsuGitUpdateURL)
 			.use { gitResponse ->
 				if (gitResponse.isSuccessful) {
 					return gitResponse.body?.use { responseBody ->
 						json.decodeFromString<AppUpdateDTO>(responseBody.string()).convertTo()
-					} ?: throw EmptyResponseBodyException(SHOSETSU_GIT_UPDATE_URL)
+					} ?: throw EmptyResponseBodyException(shosetsuGitUpdateURL)
 				}
 				throw HTTPException(gitResponse.code)
 			}

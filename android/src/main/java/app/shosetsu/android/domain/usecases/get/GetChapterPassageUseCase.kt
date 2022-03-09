@@ -31,7 +31,7 @@ class GetChapterPassageUseCase(
 	suspend operator fun invoke(readerChapterUI: ReaderChapterUI): ByteArray? =
 		iChaptersRepository.getChapter(readerChapterUI.id)?.let { chapterEntity ->
 			if (chapterEntity.extensionID != null) {
-				getExt(chapterEntity.extensionID!!)?.let { iExtension ->
+				getExt(chapterEntity.extensionID)?.let { iExtension ->
 					iChaptersRepository.getChapterPassage(iExtension, chapterEntity)
 				}
 			} else {

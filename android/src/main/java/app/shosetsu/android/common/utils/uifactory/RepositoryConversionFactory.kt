@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.mapLatest
 class RepositoryConversionFactory(data: RepositoryEntity) :
 	UIConversionFactory<RepositoryEntity, RepositoryUI>(data) {
 	override fun RepositoryEntity.convertTo(): RepositoryUI = RepositoryUI(
-		id ?: -1,
+		id,
 		url,
 		name,
 		isEnabled

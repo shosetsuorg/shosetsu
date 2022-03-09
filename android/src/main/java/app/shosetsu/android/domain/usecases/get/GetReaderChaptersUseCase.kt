@@ -48,7 +48,7 @@ class GetReaderChaptersUseCase(
 					.combine(settingsRepo.getBooleanFlow(ReaderStringToHtml)) { (novel, list), convertToHtml ->
 						if (novel != null) {
 							val extensionEntity =
-								extRepo.getInstalledExtension(novel.extensionID!!)
+								extRepo.getInstalledExtension(novel.extensionID)
 
 							if (extensionEntity != null) {
 								list.map { (id, url, title, readingPosition, readingStatus, bookmarked) ->

@@ -233,7 +233,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 				notify(getString(R.string.installing) + " ${extensionEntity.id} | ${extensionEntity.name}")
 				installExtension(extensionEntity)
 			}
-			val iExt = extensionEntitiesRepo.get(extensionEntity)!!
+			val iExt = extensionEntitiesRepo.get(extensionEntity)
 
 			backupNovels.forEach novelLoop@{ novelEntity ->
 				try {

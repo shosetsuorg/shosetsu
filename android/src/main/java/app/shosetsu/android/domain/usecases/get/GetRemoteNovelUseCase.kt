@@ -52,7 +52,7 @@ class GetRemoteNovelUseCase(
 		if (loadChapters) logI("And loading chapters for ${novel.id}")
 		else logI("and not loading chapters for ${novel.id}")
 		if (novel.extensionID == null) return null
-		return getExt(novel.extensionID!!)?.let { ext ->
+		return getExt(novel.extensionID)?.let { ext ->
 			nR.retrieveNovelInfo(ext, novel, loadChapters).let { page ->
 				val hadNovelBeenLoaded: Boolean = novel.loaded
 
@@ -66,7 +66,7 @@ class GetRemoteNovelUseCase(
 						logI("Novel has never been loaded, just inserting the chapters")
 						cR.handleChapters(
 							novelID = novel.id!!,
-							extensionID = novel.extensionID!!,
+							extensionID = novel.extensionID,
 							list = page.chapters
 						).let {
 							UpdatedNovelInfo()
@@ -76,7 +76,7 @@ class GetRemoteNovelUseCase(
 						logI("Novel has been loaded, sending update")
 						cR.handleChaptersReturn(
 							novelID = novel.id!!,
-							extensionID = novel.extensionID!!,
+							extensionID = novel.extensionID,
 							list = page.chapters
 						).let { chapters ->
 							uR.addUpdates(chapters.map {

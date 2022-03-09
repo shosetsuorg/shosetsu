@@ -47,7 +47,7 @@ class DownloadChapterPassageUseCase(
 					chapterUI.url,
 					chapterUI.title,
 					novel.title,
-					chapterUI.extensionID!!
+					chapterUI.extensionID
 				)
 			)
 

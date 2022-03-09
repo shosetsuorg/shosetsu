@@ -55,8 +55,10 @@ data class ReaderDividerUI(
 				nextChapterCont.isVisible = false
 				return
 			}
-			previousChapter.text = item.prev
-			nextChapter.text = item.next
+			previousChapter.text =
+				binding.root.context.getString(R.string.reader_last_chapter, item.prev)
+			nextChapter.text =
+				binding.root.context.getString(R.string.reader_next_chapter, item.next)
 		}
 
 		override fun ChapterDividerBinding.unbindView(item: ReaderDividerUI) {
