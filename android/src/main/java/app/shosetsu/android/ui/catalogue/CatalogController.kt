@@ -1,6 +1,7 @@
 package app.shosetsu.android.ui.catalogue
 
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.*
 import android.widget.SearchView
@@ -16,6 +17,7 @@ import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
+import app.shosetsu.android.common.consts.MAX_BOTTOM_SHEET_FRACTION
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.listeners.CatalogueSearchQuery
 import app.shosetsu.android.ui.novel.NovelController
@@ -363,6 +365,8 @@ class CatalogController(
 				bsg = BottomSheetDialog(this.view!!.context)
 			if (bsg?.isShowing == false) {
 				bsg?.apply {
+					behavior.maxHeight =
+						(Resources.getSystem().displayMetrics.heightPixels * MAX_BOTTOM_SHEET_FRACTION).toInt()
 					val binding = ComposeViewBinding.inflate(
 						this@CatalogController.activity!!.layoutInflater,
 						null,

@@ -1,5 +1,6 @@
 package app.shosetsu.android.ui.novel
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
 import android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
@@ -10,6 +11,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import app.shosetsu.android.activity.MainActivity
+import app.shosetsu.android.common.consts.MAX_BOTTOM_SHEET_FRACTION
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
@@ -500,6 +502,8 @@ class NovelController(bundle: Bundle) :
 
 	private fun openFilterMenu() {
 		BottomSheetDialog(binding.root.context).apply {
+			behavior.maxHeight =
+				(Resources.getSystem().displayMetrics.heightPixels * MAX_BOTTOM_SHEET_FRACTION).toInt()
 			setContentView(bottomMenuView)
 		}.show()
 	}

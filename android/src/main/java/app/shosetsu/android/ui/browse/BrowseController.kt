@@ -19,6 +19,7 @@ package app.shosetsu.android.ui.browse
 
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
@@ -52,6 +53,7 @@ import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
+import app.shosetsu.android.common.consts.MAX_BOTTOM_SHEET_FRACTION
 import app.shosetsu.android.common.ext.displayOfflineSnackBar
 import app.shosetsu.android.common.ext.makeSnackBar
 import app.shosetsu.android.common.ext.shosetsuPush
@@ -209,6 +211,8 @@ class BrowseController : ShosetsuController(),
 				bsg = BottomSheetDialog(this.view!!.context)
 			if (bsg?.isShowing == false) {
 				bsg?.apply {
+					behavior.maxHeight =
+						(Resources.getSystem().displayMetrics.heightPixels * MAX_BOTTOM_SHEET_FRACTION).toInt()
 					val binding = ComposeViewBinding.inflate(
 						this@BrowseController.activity!!.layoutInflater,
 						null,
@@ -371,7 +375,9 @@ fun BrowseExtensionContent(
 	) {
 		Column {
 			Row(
-				modifier = Modifier.fillMaxWidth().padding(end = 8.dp),
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(end = 8.dp),
 				horizontalArrangement = Arrangement.SpaceBetween,
 				verticalAlignment = Alignment.CenterVertically
 			) {
@@ -503,13 +509,16 @@ fun BrowseExtensionContent(
 			if (item.isUpdateAvailable && item.updateVersion != null) {
 				if (item.updateVersion == Version(-9, -9, -9)) {
 					Box(
-						modifier = Modifier.background(colorResource(R.color.colorAccent))
+						modifier = Modifier
+							.background(colorResource(R.color.colorAccent))
 							.fillMaxWidth()
 					) {
 						Text(
 							stringResource(R.string.obsolete_extension),
 							color = colorResource(R.color.design_default_color_on_primary),
-							modifier = Modifier.padding(8.dp).align(Alignment.Center)
+							modifier = Modifier
+								.padding(8.dp)
+								.align(Alignment.Center)
 						)
 					}
 				}
