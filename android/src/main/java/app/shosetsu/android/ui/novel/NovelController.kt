@@ -145,8 +145,7 @@ class NovelController(bundle: Bundle) :
 		fab.setOnClickListener {
 			viewModel.openLastRead(getChapters()).observe(catch = {
 				logE("Loading last read hit an error")
-			}) { result ->
-				val chapterIndex = result
+			}) { chapterIndex ->
 
 				if (chapterIndex != -1) {
 					recyclerView.scrollToPosition(itemAdapter.getAdapterPosition(getChapters()[chapterIndex].identifier))
@@ -402,13 +401,12 @@ class NovelController(bundle: Bundle) :
 			chaptersSelected.any { !it.isSaved }
 
 		// If any are unread, show read option
-		if (chaptersSelected.any { it.readingStatus == ReadingStatus.UNREAD }) {
-			binding.bottomMenu.findItem(id.mark_unread)?.isEnabled = false
-			binding.bottomMenu.findItem(id.mark_read)?.isEnabled = true
-		} else {
-			binding.bottomMenu.findItem(id.mark_unread)?.isEnabled = true
-			binding.bottomMenu.findItem(id.mark_read)?.isEnabled = false
-		}
+		binding.bottomMenu.findItem(id.mark_read)?.isEnabled =
+			chaptersSelected.any { it.readingStatus != ReadingStatus.READ }
+
+		// If any are read, show unread option
+		binding.bottomMenu.findItem(id.mark_unread)?.isEnabled =
+			chaptersSelected.any { it.readingStatus != ReadingStatus.UNREAD }
 	}
 
 	override fun FastAdapter<AbstractItem<*>>.setupFastAdapter() {
