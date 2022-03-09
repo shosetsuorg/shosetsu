@@ -1,8 +1,10 @@
 package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.android.common.ext.generify
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
-import app.shosetsu.common.domain.model.local.GenericExtensionEntity
+import app.shosetsu.common.IncompatibleExtensionException
+import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import kotlinx.coroutines.flow.Flow
@@ -18,12 +20,16 @@ class LoadSearchRowUIUseCase(
 			.transformLatest { result ->
 				emit(
 					result.let { list ->
-						val arrayList = arrayListOf<GenericExtensionEntity>()
+						val arrayList = arrayListOf<InstalledExtensionEntity>()
 						list.forEach { extension ->
-							extEntitiesRepo.get(extension.generify()).let { entity ->
-								if (entity.hasSearch) {
-									arrayList.add(extension.generify())
+							try {
+								extEntitiesRepo.get(extension.generify()).let { entity ->
+									if (entity.hasSearch) {
+										arrayList.add(extension)
+									}
 								}
+							} catch (e: IncompatibleExtensionException) {
+								logE("Incompatible extension, ignoring", e)
 							}
 						}
 						arrayList.map {

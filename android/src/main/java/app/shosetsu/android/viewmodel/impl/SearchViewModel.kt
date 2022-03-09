@@ -50,13 +50,27 @@ class SearchViewModel(
 	private val exceptionFlows =
 		HashMap<Int, MutableStateFlow<Throwable?>>()
 
-	private val loadingFlows = HashMap<Int, Flow<Boolean>>()
+	private val loadingFlows = HashMap<Int, MutableStateFlow<Boolean>>()
 
 	override val query: Flow<String>
 		get() = queryFlow.onIO()
 
 	override val listings: Flow<List<SearchRowUI>> by lazy {
-		loadSearchRowUIUseCase().onIO()
+		loadSearchRowUIUseCase().transformLatest { ogList ->
+			emitAll(
+				combine(ogList.map { rowUI ->
+					getExceptionFlow(rowUI.extensionID).map {
+						if (it != null)
+							rowUI.copy(hasError = true)
+						else rowUI
+					}
+				}) {
+					it.toList()
+				}
+			)
+		}.map { list ->
+			list.sortedBy { it.name }.sortedBy { it.extensionID != -1 }.sortedBy { it.hasError }
+		}.onIO()
 	}
 
 	override fun setQuery(query: String) {
@@ -71,17 +85,21 @@ class SearchViewModel(
 	override fun searchExtension(extensionId: Int): Flow<List<ACatalogNovelUI>> =
 		searchFlows.getOrPut(extensionId) {
 			loadExtension(extensionId)
+		}.map { list ->
+			list.distinctBy { it.id }
 		}
 
 	override fun getIsLoading(id: Int): Flow<Boolean> =
+		getIsLoadingFlow(id)
+
+	private fun getIsLoadingFlow(id: Int): MutableStateFlow<Boolean> =
 		loadingFlows.getOrPut(id) {
 			MutableStateFlow(true)
 		}
 
+
 	override fun getException(id: Int): Flow<Throwable?> =
-		exceptionFlows.getOrPut(id) {
-			MutableStateFlow(null)
-		}
+		getExceptionFlow(id)
 
 	override fun refresh() {
 		launchIO {
@@ -129,8 +147,11 @@ class SearchViewModel(
 				queryFlow.combine(getRefreshFlow(-1)) { query, _ -> query }
 					.transformLatest<String, List<ACatalogNovelUI>> { query ->
 
-						(getIsLoading(-1) as MutableStateFlow).emit(true)
-						getExceptionFlow(-1).emit(null)
+						val loadingFlow = getIsLoadingFlow(-1)
+						val exceptionFlow = getExceptionFlow(-1)
+
+						loadingFlow.emit(true)
+						exceptionFlow.emit(null)
 
 						try {
 							emit(searchBookMarkedNovelsUseCase(query).let {
@@ -139,11 +160,11 @@ class SearchViewModel(
 								}
 							})
 						} catch (e: GenericSQLiteException) {
-							getExceptionFlow(-1).emit(e)
+							exceptionFlow.emit(e)
 						}
 
 
-						(getIsLoading(-1) as MutableStateFlow).emit(false)
+						loadingFlow.emit(false)
 					}
 			)
 
@@ -164,8 +185,11 @@ class SearchViewModel(
 				queryFlow.combine(getRefreshFlow(extensionID)) { query, _ -> query }
 					.transformLatest { query ->
 
-						(getIsLoading(extensionID) as MutableStateFlow).emit(true)
-						getExceptionFlow(extensionID).emit(null)
+						val loadingFlow = getIsLoadingFlow(extensionID)
+						val exceptionFlow = getExceptionFlow(extensionID)
+
+						loadingFlow.emit(true)
+						exceptionFlow.emit(null)
 
 						try {
 							emit(
@@ -176,10 +200,10 @@ class SearchViewModel(
 								)
 							)
 						} catch (e: Exception) {
-							getExceptionFlow(extensionID).emit(e)
+							exceptionFlow.emit(e)
 						}
 
-						(getIsLoading(extensionID) as MutableStateFlow).emit(false)
+						loadingFlow.emit(false)
 					})
 		}
 

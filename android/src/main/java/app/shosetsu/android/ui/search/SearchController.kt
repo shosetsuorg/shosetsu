@@ -191,7 +191,8 @@ fun SearchContent(
 		onRefresh = onRefreshAll
 	) {
 		LazyColumn(
-			modifier = Modifier.fillMaxSize()
+			modifier = Modifier.fillMaxSize(),
+			contentPadding = PaddingValues(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 64.dp)
 		) {
 
 			items(rows, key = { it.extensionID }) { row ->
@@ -255,7 +256,7 @@ fun SearchRowContent(
 				contentDescription = row.name,
 				modifier = Modifier.size(32.dp)
 			)
-			Text(row.name)
+			Text(row.name, modifier = Modifier.padding(start = 8.dp))
 		}
 		if (isLoading) {
 			LinearProgressIndicator(

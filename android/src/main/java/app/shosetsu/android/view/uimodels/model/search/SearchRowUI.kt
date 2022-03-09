@@ -25,5 +25,6 @@ package app.shosetsu.android.view.uimodels.model.search
 data class SearchRowUI(
 	val extensionID: Int,
 	val name: String,
-	val imageURL: String?
+	val imageURL: String?,
+	var hasError: Boolean = false
 )
