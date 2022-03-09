@@ -10,6 +10,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
@@ -202,55 +203,78 @@ fun AboutContent(
 	onOpenDisclaimer: () -> Unit,
 	onOpenMatrix: () -> Unit
 ) {
-	Column(
-		modifier = Modifier.fillMaxSize()
+	LazyColumn(
+		modifier = Modifier.fillMaxSize(),
+		contentPadding = PaddingValues(bottom = 128.dp)
 	) {
-		AboutItem(
-			R.string.version,
-			description = currentVersion
-		)
-		AboutItem(
-			R.string.check_for_app_update,
-			onClick = onCheckForAppUpdate
-		)
-		Divider()
-		AboutItem(
-			R.string.website,
-			URL_WEBSITE,
-			onClick = onOpenWebsite
-		)
-		AboutItem(
-			R.string.github,
-			URL_GITHUB_APP,
-			onClick = onOpenSource
-		)
-		AboutItem(
-			R.string.extensions,
-			URL_GITHUB_EXTENSIONS,
-			onClick = onOpenExtensions
-		)
-		AboutItem(
-			R.string.matrix,
-			URL_MATRIX,
-			onClick = onOpenMatrix
-		)
-		AboutItem(
-			R.string.discord,
-			URL_DISCORD,
-			onClick = onOpenDiscord
-		)
-		AboutItem(
-			R.string.patreon,
-			URL_PATREON,
-			onClick = onOpenPatreon
-		)
-		AboutItem(
-			R.string.source_licenses,
-			onClick = onOpenLicense
-		)
-		AboutItem(
-			R.string.disclaimer,
-			onClick = onOpenDisclaimer
-		)
+		item {
+			AboutItem(
+				R.string.version,
+				description = currentVersion
+			)
+		}
+		item {
+			AboutItem(
+				R.string.check_for_app_update,
+				onClick = onCheckForAppUpdate
+			)
+		}
+		item {
+			Divider()
+		}
+		item {
+			AboutItem(
+				R.string.website,
+				URL_WEBSITE,
+				onClick = onOpenWebsite
+			)
+		}
+		item {
+			AboutItem(
+				R.string.github,
+				URL_GITHUB_APP,
+				onClick = onOpenSource
+			)
+		}
+		item {
+			AboutItem(
+				R.string.extensions,
+				URL_GITHUB_EXTENSIONS,
+				onClick = onOpenExtensions
+			)
+		}
+		item {
+			AboutItem(
+				R.string.matrix,
+				URL_MATRIX,
+				onClick = onOpenMatrix
+			)
+		}
+		item {
+			AboutItem(
+				R.string.discord,
+				URL_DISCORD,
+				onClick = onOpenDiscord
+			)
+		}
+		item {
+			AboutItem(
+				R.string.patreon,
+				URL_PATREON,
+				onClick = onOpenPatreon
+			)
+		}
+		item {
+			AboutItem(
+				R.string.source_licenses,
+				onClick = onOpenLicense
+			)
+		}
+		item {
+			AboutItem(
+				R.string.disclaimer,
+				onClick = onOpenDisclaimer
+			)
+		}
 	}
 }
