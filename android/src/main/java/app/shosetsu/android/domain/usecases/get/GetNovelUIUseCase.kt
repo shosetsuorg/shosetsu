@@ -2,6 +2,7 @@ package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.common.utils.uifactory.NovelConversionFactory
 import app.shosetsu.android.view.uimodels.model.NovelUI
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,6 +33,7 @@ class GetNovelUIUseCase(
 	private val novelsRepository: INovelsRepository,
 	private val extensionRepository: IExtensionsRepository
 ) {
+	@Throws(GenericSQLiteException::class)
 	@OptIn(ExperimentalCoroutinesApi::class)
 	operator fun invoke(novelID: Int): Flow<NovelUI?> = flow {
 		if (novelID != -1)

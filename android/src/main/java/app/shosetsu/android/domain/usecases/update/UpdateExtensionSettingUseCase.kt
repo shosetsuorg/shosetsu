@@ -2,6 +2,8 @@ package app.shosetsu.android.domain.usecases.update
 
 import app.shosetsu.android.common.ext.generify
 import app.shosetsu.android.common.ext.logI
+import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.common.IncompatibleExtensionException
 import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
@@ -34,6 +36,7 @@ class UpdateExtensionSettingUseCase(
 	private val extEntitiesRepo: IExtensionEntitiesRepository,
 	private val extSettingsRepo: IExtensionSettingsRepository
 ) {
+	@Throws(GenericSQLiteException::class, IncompatibleExtensionException::class)
 	private suspend fun update(extensionId: Int, settingId: Int, value: Any?) =
 		extRepo.getInstalledExtension(extensionId)?.let { entity ->
 			extEntitiesRepo.get(entity.generify()).let {
@@ -41,6 +44,7 @@ class UpdateExtensionSettingUseCase(
 			}
 		}
 
+	@Throws(GenericSQLiteException::class, IncompatibleExtensionException::class)
 	suspend operator fun invoke(extensionId: Int, settingId: Int, value: Int) {
 		logI("Updating setting($settingId) for extension($extensionId) with value $value")
 		return extSettingsRepo.setInt(extensionId, settingId, value).let {
@@ -48,6 +52,7 @@ class UpdateExtensionSettingUseCase(
 		}
 	}
 
+	@Throws(GenericSQLiteException::class, IncompatibleExtensionException::class)
 	suspend operator fun invoke(extensionId: Int, settingId: Int, value: String) {
 		logI("Updating setting($settingId) for extension($extensionId) with value $value")
 		return extSettingsRepo.setString(extensionId, settingId, value).let {

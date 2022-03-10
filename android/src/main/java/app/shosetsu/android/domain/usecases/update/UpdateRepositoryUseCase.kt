@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.usecases.update
 
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
 
@@ -27,8 +28,11 @@ import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
 class UpdateRepositoryUseCase(
 	private val iExtensionRepoRepository: IExtensionRepoRepository
 ) {
+	@Throws(GenericSQLiteException::class)
 	suspend operator fun invoke(repositoryEntity: RepositoryEntity) =
 		iExtensionRepoRepository.update(repositoryEntity)
 
-	suspend operator fun invoke(repositoryUI: RepositoryUI) = invoke(repositoryUI.convertTo())
+	@Throws(GenericSQLiteException::class)
+	suspend operator fun invoke(repositoryUI: RepositoryUI) =
+		invoke(repositoryUI.convertTo())
 }

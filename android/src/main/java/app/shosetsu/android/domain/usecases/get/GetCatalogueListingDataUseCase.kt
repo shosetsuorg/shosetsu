@@ -1,8 +1,10 @@
 package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.common.ext.convertTo
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
@@ -55,8 +57,13 @@ class GetCatalogueListingDataUseCase(
 						}.mapNotNull { ne ->
 							// For each, insert and return a stripped card
 							// This operation is to pre-cache URL and ID so loading occurs smoothly
-							novelsRepository.insertReturnStripped(ne)?.let { result ->
-								convertNCToCNUIUseCase(result, cardType)
+							try {
+								novelsRepository.insertReturnStripped(ne)?.let { result ->
+									convertNCToCNUIUseCase(result, cardType)
+								}
+							} catch (e: GenericSQLiteException) {
+								logE("Failed to load parse novel", e)
+								null
 							}
 						}
 					}

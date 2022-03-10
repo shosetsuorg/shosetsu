@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.usecases.update
 
 import app.shosetsu.android.view.uimodels.model.NovelUI
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 
@@ -31,6 +32,7 @@ class UpdateNovelUseCase(
 	suspend operator fun invoke(novelUI: NovelUI) =
 		this(novelUI.convertTo())
 
+	@Throws(GenericSQLiteException::class)
 	suspend operator fun invoke(novelEntity: NovelEntity) =
 		chaptersRepository.update(novelEntity)
 }

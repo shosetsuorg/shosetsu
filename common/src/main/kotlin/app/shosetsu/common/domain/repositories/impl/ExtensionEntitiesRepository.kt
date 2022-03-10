@@ -41,6 +41,7 @@ class ExtensionEntitiesRepository(
 	private val settingsSource: IFileSettingsDataSource
 ) : IExtensionEntitiesRepository {
 
+	@Throws(IncompatibleExtensionException::class)
 	override suspend fun get(extensionEntity: GenericExtensionEntity): IExtension {
 		return try {
 			memorySource.loadExtensionFromMemory(extensionEntity.id)!!

@@ -1,5 +1,6 @@
 package app.shosetsu.android.domain.usecases.load
 
+import app.shosetsu.common.FileNotFoundException
 import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
 
 /*
@@ -27,5 +28,6 @@ import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
 class LoadAppUpdateUseCase(
 	private val repo: IAppUpdatesRepository
 ) {
+	@Throws(FileNotFoundException::class)
 	suspend operator fun invoke() = repo.loadAppUpdate()
 }

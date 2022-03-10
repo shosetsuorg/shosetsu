@@ -1,8 +1,10 @@
 package app.shosetsu.common.domain.repositories.base
 
+import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.IncompatibleExtensionException
 import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.lib.IExtension
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -32,22 +34,13 @@ import app.shosetsu.lib.IExtension
 interface IExtensionEntitiesRepository {
 	/**
 	 * Gets an [IExtension] via it's [extensionEntity]
-	 *
-	 * @return
-	 * [HResult.Empty]  if no extension was found
-	 *
-	 * [HResult.Error]  if an issue occluded when creating the extension
-	 * or any other portion of the loading code
-	 *
-	 * [HResult.Success] if the extension was properly loaded
-	 *
-	 * [HResult.Loading] will never be thrown
 	 */
 	@Throws(IncompatibleExtensionException::class)
 	suspend fun get(extensionEntity: GenericExtensionEntity): IExtension
 
 	suspend fun uninstall(extensionEntity: GenericExtensionEntity)
 
+	@Throws(FilePermissionException::class, IOException::class)
 	suspend fun save(
 		extensionEntity: GenericExtensionEntity,
 		iExt: IExtension,

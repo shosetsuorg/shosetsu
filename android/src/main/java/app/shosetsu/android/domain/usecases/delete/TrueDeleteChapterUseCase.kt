@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.usecases.delete
 
 import app.shosetsu.android.view.uimodels.model.ChapterUI
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 
@@ -35,6 +36,7 @@ class TrueDeleteChapterUseCase(
 		this(chapterUI.convertTo())
 	}
 
+	@Throws(GenericSQLiteException::class)
 	suspend operator fun invoke(chapterUI: ChapterEntity) {
 		deleteChapter(chapterUI)
 		repo.delete(chapterUI)

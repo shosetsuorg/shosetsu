@@ -1,6 +1,9 @@
 package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
+import app.shosetsu.common.FileNotFoundException
+import app.shosetsu.common.FilePermissionException
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 
 /*
@@ -28,14 +31,15 @@ class GetChapterPassageUseCase(
 	private val iChaptersRepository: IChaptersRepository,
 	private val getExt: GetExtensionUseCase,
 ) {
+	@Throws(
+		GenericSQLiteException::class,
+		FilePermissionException::class,
+		FileNotFoundException::class
+	)
 	suspend operator fun invoke(readerChapterUI: ReaderChapterUI): ByteArray? =
 		iChaptersRepository.getChapter(readerChapterUI.id)?.let { chapterEntity ->
-			if (chapterEntity.extensionID != null) {
-				getExt(chapterEntity.extensionID)?.let { iExtension ->
-					iChaptersRepository.getChapterPassage(iExtension, chapterEntity)
-				}
-			} else {
-				null
+			getExt(chapterEntity.extensionID)?.let { iExtension ->
+				iChaptersRepository.getChapterPassage(iExtension, chapterEntity)
 			}
 		}
 }

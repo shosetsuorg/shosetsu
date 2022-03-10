@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.usecases.update
 
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 
 /*
@@ -27,6 +28,7 @@ import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 class UpdateReaderChapterUseCase(
 	private val chapterRepository: IChaptersRepository,
 ) {
+	@Throws(GenericSQLiteException::class)
 	suspend operator fun invoke(chapter: ReaderChapterUI) {
 		chapterRepository.updateReaderChapter(chapter.convertTo())
 	}

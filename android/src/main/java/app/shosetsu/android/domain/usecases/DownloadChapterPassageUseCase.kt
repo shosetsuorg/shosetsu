@@ -2,6 +2,7 @@ package app.shosetsu.android.domain.usecases
 
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.view.uimodels.model.ChapterUI
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.DownloadEntity
@@ -38,6 +39,7 @@ class DownloadChapterPassageUseCase(
 	private val downloadsRepository: IDownloadsRepository,
 	private var iSettingsRepository: ISettingsRepository
 ) {
+	@Throws(GenericSQLiteException::class)
 	suspend operator fun invoke(chapterUI: ChapterEntity) {
 		novelRepo.getNovel(chapterUI.novelID)?.let { novel ->
 			downloadsRepository.addDownload(
@@ -62,8 +64,10 @@ class DownloadChapterPassageUseCase(
 		}
 	}
 
+	@Throws(GenericSQLiteException::class)
 	suspend operator fun invoke(chapterUI: ChapterUI) = invoke(chapterUI.convertTo())
 
+	@Throws(GenericSQLiteException::class)
 	operator fun invoke(vararg chapterUI: ChapterUI) {
 		launchIO {
 			chapterUI.forEach {

@@ -66,7 +66,7 @@ interface IAppUpdatesRepository {
 		FileNotFoundException::class,
 		MissingFeatureException::class,
 		EmptyResponseBodyException::class,
-		HTTPException::class
+		HTTPException::class,
 	)
 	suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): String
 }

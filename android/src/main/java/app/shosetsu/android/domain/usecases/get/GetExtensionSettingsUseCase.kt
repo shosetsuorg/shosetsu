@@ -3,6 +3,7 @@ package app.shosetsu.android.domain.usecases.get
 import app.shosetsu.common.domain.model.local.FilterEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
 import app.shosetsu.common.enums.TriStateState
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
 /*
@@ -32,6 +33,7 @@ class GetExtensionSettingsUseCase(
 	private val extSettingsRepository: IExtensionSettingsRepository,
 	private val getExt: GetExtensionUseCase
 ) {
+	@OptIn(ExperimentalCoroutinesApi::class)
 	private fun asSettingItem(
 		extensionID: Int,
 		filter: FilterEntity.Switch
@@ -44,6 +46,7 @@ class GetExtensionSettingsUseCase(
 			filter.copy(state = state)
 		}
 
+	@OptIn(ExperimentalCoroutinesApi::class)
 	private fun asSettingItem(
 		extensionID: Int,
 		filter: FilterEntity.Checkbox
@@ -59,6 +62,7 @@ class GetExtensionSettingsUseCase(
 	/**
 	 * Converts a [List] of [FilterEntity] into a [List] of [Flow]s of [FilterEntity]s
 	 */
+	@OptIn(ExperimentalCoroutinesApi::class)
 	private suspend fun List<FilterEntity>.convert(extensionID: Int): List<Flow<FilterEntity>> =
 		map { filter ->
 			when (filter) {

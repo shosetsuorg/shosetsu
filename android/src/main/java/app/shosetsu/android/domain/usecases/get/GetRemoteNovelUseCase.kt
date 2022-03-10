@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.common.ext.logI
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.UpdateEntity
@@ -44,6 +45,7 @@ class GetRemoteNovelUseCase(
 		val updatedChapters: List<ChapterEntity> = listOf()
 	)
 
+	@Throws(GenericSQLiteException::class, IndexOutOfBoundsException::class)
 	private suspend fun main(
 		novel: NovelEntity,
 		loadChapters: Boolean = true,
@@ -51,7 +53,6 @@ class GetRemoteNovelUseCase(
 		logI("Loading novel data from internet for ${novel.id}")
 		if (loadChapters) logI("And loading chapters for ${novel.id}")
 		else logI("and not loading chapters for ${novel.id}")
-		if (novel.extensionID == null) return null
 		return getExt(novel.extensionID)?.let { ext ->
 			nR.retrieveNovelInfo(ext, novel, loadChapters).let { page ->
 				val hadNovelBeenLoaded: Boolean = novel.loaded

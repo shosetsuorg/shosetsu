@@ -37,6 +37,7 @@ interface IExtensionLibrariesRepository {
 	/**
 	 * Installs an extension library by its repository
 	 */
+	@Throws(GenericSQLiteException::class)
 	suspend fun installExtLibrary(
 		repoURL: String,
 		extLibEntity: ExtLibEntity,

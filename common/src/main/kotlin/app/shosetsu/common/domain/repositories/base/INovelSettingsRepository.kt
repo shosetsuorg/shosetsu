@@ -39,8 +39,6 @@ interface INovelSettingsRepository {
 
 	/**
 	 * Gets the settings for a novel, but in a flow that will be updated with any changes
-	 *
-	 * @see get
 	 */
 	fun getFlow(novelID: Int): Flow<NovelSettingEntity?>
 

@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.usecases
 
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
 
 /*
@@ -28,6 +29,8 @@ import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
 class ForceInsertRepositoryUseCase(
 	private val repository: IExtensionRepoRepository
 ) {
-	suspend operator fun invoke(item: RepositoryUI) = repository.insert(item.convertTo())
+	@Throws(GenericSQLiteException::class)
+	suspend operator fun invoke(item: RepositoryUI) =
+		repository.insert(item.convertTo())
 
 }

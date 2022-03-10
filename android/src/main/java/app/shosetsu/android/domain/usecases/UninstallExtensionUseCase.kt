@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.usecases
 
 import app.shosetsu.android.common.ext.generify
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
@@ -30,6 +31,7 @@ class UninstallExtensionUseCase(
 	private val extensionRepository: IExtensionsRepository,
 	private val extensionEntitiesRepository: IExtensionEntitiesRepository
 ) {
+	@Throws(GenericSQLiteException::class)
 	suspend operator fun invoke(extensionEntity: InstalledExtensionEntity) {
 		extensionEntitiesRepository.uninstall(extensionEntity.generify())
 		extensionRepository.uninstall(extensionEntity)

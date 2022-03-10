@@ -1,7 +1,10 @@
 package app.shosetsu.android.domain.usecases.load
 
+import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
+import app.shosetsu.lib.exceptions.HTTPException
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -27,6 +30,7 @@ import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
 class LoadRemoteAppUpdateUseCase(
 	private val iAppUpdatesRepository: IAppUpdatesRepository
 ) {
+	@Throws(FilePermissionException::class, IOException::class, HTTPException::class)
 	suspend operator fun invoke(): AppUpdateEntity? =
 		iAppUpdatesRepository.loadRemoteUpdate()
 }

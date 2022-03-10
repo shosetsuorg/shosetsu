@@ -2,6 +2,7 @@ package app.shosetsu.android.domain.usecases
 
 import app.shosetsu.android.domain.usecases.get.GetRemoteNovelUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 
 /*
@@ -34,6 +35,7 @@ class NovelBackgroundAddUseCase(
 	private val updateNovelEntityUseCase: UpdateNovelUseCase,
 	private val novelsRepository: INovelsRepository
 ) {
+	@Throws(GenericSQLiteException::class)
 	suspend operator fun invoke(novelID: Int) {
 		return loadRemoteNovelUseCase(novelID, false).let {
 			novelsRepository.getNovel(novelID)?.let { entity ->
