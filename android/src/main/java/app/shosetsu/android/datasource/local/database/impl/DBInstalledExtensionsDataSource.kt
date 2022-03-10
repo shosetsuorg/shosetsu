@@ -45,18 +45,21 @@ class DBInstalledExtensionsDataSource(
 		emitAll(extensionsDao.getExtensionFlow(formatterID).map { it?.convertTo() })
 	}
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun updateExtension(extensionEntity: InstalledExtensionEntity): Unit = try {
 		extensionsDao.update(extensionEntity.toDB())
 	} catch (e: SQLiteException) {
 		throw GenericSQLiteException(e)
 	}
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun deleteExtension(extensionEntity: InstalledExtensionEntity): Unit = try {
 		extensionsDao.delete(extensionEntity.toDB())
 	} catch (e: SQLiteException) {
 		throw GenericSQLiteException(e)
 	}
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun loadExtension(formatterID: Int): InstalledExtensionEntity? = try {
 		extensionsDao.getExtension(formatterID)?.convertTo()
 	} catch (e: SQLiteException) {
@@ -66,6 +69,7 @@ class DBInstalledExtensionsDataSource(
 	override suspend fun getExtensions(repoID: Int): List<InstalledExtensionEntity> =
 		extensionsDao.getExtensions(repoID).convertList()
 
+	@Throws(GenericSQLiteException::class)
 	override suspend fun loadExtensions(): List<InstalledExtensionEntity> = try {
 		extensionsDao.loadExtensions().convertList()
 	} catch (e: SQLiteException) {

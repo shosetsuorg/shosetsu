@@ -13,7 +13,6 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import com.github.doomsdayrs.apps.shosetsu.R
-import kotlinx.coroutines.flow.map
 
 @Composable
 fun DropdownSettingContent(
@@ -43,11 +42,10 @@ fun DropdownSettingContent(
 	stringToInt: (value: String) -> Int,
 	intToString: (value: Int) -> String
 ) {
-	val choice: Int by repo.getStringFlow(key)
-		.map { stringToInt(it) }
-		.collectAsState(stringToInt(key.default))
+	val choice by repo.getStringFlow(key)
+		.collectAsState(key.default)
 
-	DropdownSettingContent(title, description, choice, choices, modifier) {
+	DropdownSettingContent(title, description, stringToInt(choice), choices, modifier) {
 		launchIO { repo.setString(key, intToString(it)) }
 	}
 

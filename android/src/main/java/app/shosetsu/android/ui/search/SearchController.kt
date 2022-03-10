@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import app.shosetsu.android.common.consts.BundleKeys
 import app.shosetsu.android.common.ext.collectLA
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.novel.NovelController
@@ -48,6 +49,8 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.acra.ACRA
+import javax.security.auth.DestroyFailedException
 
 /*
  * This file is part of Shosetsu.
@@ -109,7 +112,12 @@ class SearchController(bundle: Bundle) : ShosetsuController(bundle) {
 
 	override fun onDestroy() {
 		super.onDestroy()
-		viewModel.destroy()
+		try {
+			viewModel.destroy()
+		} catch (e: DestroyFailedException) {
+			logE("Failed to destroy", e)
+			ACRA.errorReporter.handleSilentException(e)
+		}
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -1,5 +1,6 @@
 package app.shosetsu.android.application
 
+import java.io.IOException
 import java.io.OutputStream
 
 /*
@@ -29,6 +30,7 @@ class MultipleOutputStream(private vararg val outputStreams: OutputStream) : Out
 	/**
 	 * Iterates between each [OutputStream] in [outputStreams] and writes
 	 */
+	@Throws(IOException::class)
 	override fun write(p0: Int) {
 		outputStreams.forEach {
 			it.write(p0)

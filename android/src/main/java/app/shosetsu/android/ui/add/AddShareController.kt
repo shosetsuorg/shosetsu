@@ -44,6 +44,8 @@ import com.google.android.material.composethemeadapter.MdcTheme
 import io.github.g00fy2.quickie.QRResult
 import io.github.g00fy2.quickie.ScanQRCode
 import io.github.g00fy2.quickie.content.QRContent
+import org.acra.ACRA
+import javax.security.auth.DestroyFailedException
 
 /*
  * This file is part of shosetsu.
@@ -181,7 +183,12 @@ class AddShareController : ShosetsuController(), CollapsedToolBarController {
 	}
 
 	override fun onDestroy() {
-		viewModel.destroy()
+		try {
+			viewModel.destroy()
+		} catch (e: DestroyFailedException) {
+			logE("Failed to destroy viewmodel", e)
+			ACRA.errorReporter.handleSilentException(e)
+		}
 	}
 }
 
