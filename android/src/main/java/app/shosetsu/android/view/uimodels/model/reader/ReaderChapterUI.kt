@@ -4,6 +4,7 @@ import android.view.View
 import app.shosetsu.android.common.ext.collectLA
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.ui.reader.types.model.HTMLReader
@@ -93,6 +94,7 @@ data class ReaderChapterUI(
 
 				holder.setData(data)
 				holder.itemView.post {
+					logV("Going to ${this}")
 					holder.setProgress(this.readingPosition)
 				}
 			}

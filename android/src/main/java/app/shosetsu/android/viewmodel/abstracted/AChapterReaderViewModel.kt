@@ -124,7 +124,6 @@ abstract class AChapterReaderViewModel :
 	 */
 	abstract val defaultVolumeScroll: Boolean
 
-
 	/** Set the novelID */
 	abstract fun setNovelID(novelID: Int)
 
@@ -161,10 +160,8 @@ abstract class AChapterReaderViewModel :
 
 	abstract fun updateSetting(novelReaderSettingEntity: NovelReaderSettingEntity)
 
-
 	/**
 	 * Toggle the screen lock state
 	 */
 	abstract fun toggleScreenRotationLock()
-
 }

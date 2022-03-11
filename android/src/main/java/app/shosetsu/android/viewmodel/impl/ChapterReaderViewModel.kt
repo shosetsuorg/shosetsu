@@ -323,17 +323,16 @@ class ChapterReaderViewModel(
 			 */
 			if (!markReadAsReading && chapterUI.readingStatus == READ) return@launchIO
 
-			updateReaderChapterUseCase(
-				chapterUI.copy(
-					readingStatus = if (getReadingMarkingType() == markingType) {
-						launchIO {
-							recordChapterIsReading(chapterUI)
-						}
-						READING
-					} else chapterUI.readingStatus,
-					readingPosition = readingPosition
-				)
-			)
+			chapterUI.readingStatus = if (getReadingMarkingType() == markingType) {
+				launchIO {
+					recordChapterIsReading(chapterUI)
+				}
+				READING
+			} else chapterUI.readingStatus
+
+			chapterUI.readingPosition = readingPosition
+
+			updateReaderChapterUseCase(chapterUI)
 		}
 	}
 
