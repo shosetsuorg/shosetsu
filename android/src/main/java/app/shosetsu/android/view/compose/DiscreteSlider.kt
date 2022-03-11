@@ -200,7 +200,7 @@ fun DiscreteSlider(
 		var showDialog by remember { mutableStateOf(false) }
 
 		if (showDialog) {
-			var newValue: Float? by remember { mutableStateOf(value) }
+			var fieldContent: String by remember { mutableStateOf("$value") }
 
 			Dialog(
 				onDismissRequest = {
@@ -239,21 +239,18 @@ fun DiscreteSlider(
 						)
 
 						TextField(
-							value = if (newValue != null) "$newValue" else "",
-							onValueChange = {
-								val value = it.toFloatOrNull()
+							value = fieldContent,
+							onValueChange = { newString ->
+								val newFloat = newString.toFloatOrNull()
 
-								if (value != null) {
-									if (valueRange.first <= value || value <= valueRange.last) {
-										newValue = value
-										isTextError = false
-										return@TextField
-									}
-								} else if (it.isEmpty()) {
-									newValue = null
+								// Set text as error if the value is invalid
+								isTextError = if (newFloat != null) {
+									!(valueRange.first <= newFloat || newFloat <= valueRange.last)
+								} else {
+									true
 								}
 
-								isTextError = true
+								fieldContent = newString
 							},
 							singleLine = true,
 							keyboardOptions = KeyboardOptions(
@@ -278,7 +275,10 @@ fun DiscreteSlider(
 
 							TextButton(
 								onClick = {
-									updateValue(newValue!!, true)
+									updateValue(
+										fieldContent.toFloatOrNull() ?: value,
+										true
+									)
 									showDialog = false
 								},
 								enabled = !isTextError
