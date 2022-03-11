@@ -320,8 +320,8 @@
     <string name="restart">Restart</string>
     <string name="need_restart">Activity needs to restart</string>
     <string name="never_mind">Nevermind</string>
-    <string name="in_library">In library</string>
-    <string name="add_to_library">Add to library</string>
+    <string name="controller_novel_in_library">In library</string>
+    <string name="controller_novel_add_to_library">Add to library</string>
     <string name="obsolete_extension">Obsolete extension! Please uninstall.</string>
     <string name="ext_not_installed">Extension not installed</string>
     <string name="id_label">ID:</string>
@@ -642,6 +642,8 @@
     <string name="controller_library_menu_tri_by_id">By novel ID</string>
     <string name="controller_library_menu_tri_by_source">By source</string>
     <string name="controller_library_menu_tri_by_date">By date</string>
+    <string name="controller_novel_info_image">Image of the novel</string>
+    <string name="controller_novel_info_open_web">Open in webview</string>
     <string name="reader_leave_error">Please exit the reader and rejoin due to error</string>
     <string name="reader_first_focus">Click the content to unfocus.</string>
     <string name="reader_first_focus_dismiss">Dismiss</string>

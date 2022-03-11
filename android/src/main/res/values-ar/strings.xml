@@ -255,8 +255,8 @@
     <string name="restart">أعد التشغيل</string>
     <string name="need_restart">يحتاج النشاط لإعادة التشغيل</string>
     <string name="never_mind">لا يهم</string>
-    <string name="in_library">موجود في المكتبة</string>
-    <string name="add_to_library">أضف للمكتبة</string>
+    <string name="controller_novel_in_library">موجود في المكتبة</string>
+    <string name="controller_novel_add_to_library">أضف للمكتبة</string>
     <string name="obsolete_extension">إضافة ميتة!</string>
     <string name="ext_not_installed">لم تثبت الإضافة</string>
     <string name="id_label">المعرف:</string>

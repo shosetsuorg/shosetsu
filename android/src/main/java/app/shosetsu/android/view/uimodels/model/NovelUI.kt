@@ -142,16 +142,16 @@ data class NovelUI(
 
 			if (item.bookmarked) {
 				inLibrary.setChipIconResource(R.drawable.ic_heart_svg_filled)
-				inLibrary.setText(R.string.in_library)
+				inLibrary.setText(R.string.controller_novel_in_library)
 			} else {
 				inLibrary.setChipIconResource(R.drawable.ic_heart_svg)
-				inLibrary.setText(R.string.add_to_library)
+				inLibrary.setText(R.string.controller_novel_add_to_library)
 			}
 		}
 
 		override fun ControllerNovelInfoHeaderBinding.unbindView(item: NovelUI) {
 			inLibrary.setChipIconResource(R.drawable.ic_heart_svg)
-			inLibrary.setText(R.string.add_to_library)
+			inLibrary.setText(R.string.controller_novel_add_to_library)
 			listOf(novelImage, novelImageBackground).forEach { iV: ImageView? ->
 				iV?.setImageResource(R.drawable.broken_image)
 			}
