@@ -19,6 +19,8 @@ import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_DOWNLOAD
 import app.shosetsu.android.common.consts.WorkerTags.DOWNLOAD_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.usecases.get.GetExtensionUseCase
+import app.shosetsu.common.FileNotFoundException
+import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.DownloadEntity
@@ -33,6 +35,7 @@ import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -125,9 +128,15 @@ class DownloadWorker(
 	private suspend fun getDownloadCount(): Int =
 		downloadsRepo.loadDownloadCount()
 
+	@Throws(
+		IOException::class,
+		GenericSQLiteException::class,
+		FilePermissionException::class,
+		FileNotFoundException::class
+	)
 	private suspend fun download(downloadEntity: DownloadEntity) =
 		chapRepo.getChapter(downloadEntity.chapterID)!!.let { chapterEntity ->
-			getExt(chapterEntity.extensionID!!)!!.let { iExtension ->
+			getExt(chapterEntity.extensionID)!!.let { iExtension ->
 				chapRepo.getChapterPassage(iExtension, chapterEntity).let { passage ->
 					chapRepo.saveChapterPassageToStorage(
 						chapterEntity,

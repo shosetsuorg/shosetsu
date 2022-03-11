@@ -1,5 +1,6 @@
 package app.shosetsu.android.domain.usecases.update
 
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.common.domain.repositories.base.INovelReaderSettingsRepository
 
@@ -27,6 +28,7 @@ class UpdateReaderSettingUseCase(
 	private val repo: INovelReaderSettingsRepository
 ) {
 
+	@Throws(GenericSQLiteException::class)
 	suspend operator fun invoke(entity: NovelReaderSettingEntity) =
 		repo.update(entity)
 }

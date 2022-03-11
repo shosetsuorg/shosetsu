@@ -126,7 +126,8 @@ fun ConfigureExtensionContent(
 					onSelection = { index ->
 						viewModel.setSelectedListing(index)
 					},
-					modifier = Modifier.fillMaxWidth()
+					modifier = Modifier
+						.fillMaxWidth()
 						.padding(top = 8.dp, start = 16.dp, end = 16.dp)
 				)
 			}
@@ -136,6 +137,7 @@ fun ConfigureExtensionContent(
 	}
 }
 
+@Suppress("FunctionName")
 fun SettingsItemAsCompose(
 	column: LazyListScope,
 	viewModel: AExtensionConfigureViewModel,
@@ -146,7 +148,9 @@ fun SettingsItemAsCompose(
 			is FilterEntity.Header -> {
 				column.item(Random.nextInt() + 1000000) {
 					Row(
-						modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)
+						modifier = Modifier
+							.fillMaxWidth()
+							.padding(start = 16.dp, end = 16.dp)
 					) {
 						Text(data.name)
 						Divider()
@@ -167,7 +171,9 @@ fun SettingsItemAsCompose(
 						onValueChanged = { value ->
 							viewModel.saveSetting(data.id, value)
 						},
-						modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)
+						modifier = Modifier
+							.fillMaxWidth()
+							.padding(start = 16.dp, end = 16.dp)
 					)
 				}
 			}
@@ -180,14 +186,18 @@ fun SettingsItemAsCompose(
 						onCheckChange = { newValue ->
 							viewModel.saveSetting(data.id, newValue)
 						},
-						modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)
+						modifier = Modifier
+							.fillMaxWidth()
+							.padding(start = 16.dp, end = 16.dp)
 					)
 				}
 			}
 			is FilterEntity.TriState -> {
 				column.item(data.id) {
 					Row(
-						modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp),
+						modifier = Modifier
+							.fillMaxWidth()
+							.padding(start = 16.dp, end = 16.dp),
 						horizontalArrangement = Arrangement.SpaceBetween
 					) {
 						Text(text = data.name)
@@ -214,14 +224,18 @@ fun SettingsItemAsCompose(
 						onSelection = { index ->
 							viewModel.saveSetting(data.id, index)
 						},
-						modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)
+						modifier = Modifier
+							.fillMaxWidth()
+							.padding(start = 16.dp, end = 16.dp)
 					)
 				}
 			}
 			is FilterEntity.FList -> {
 				column.item(Random.nextInt() + 1000000) {
 					Row(
-						modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)
+						modifier = Modifier
+							.fillMaxWidth()
+							.padding(start = 16.dp, end = 16.dp)
 					) {
 						Text(data.name)
 						Divider()
@@ -241,7 +255,9 @@ fun SettingsItemAsCompose(
 						onCheckChange = { newValue ->
 							viewModel.saveSetting(data.id, newValue)
 						},
-						modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)
+						modifier = Modifier
+							.fillMaxWidth()
+							.padding(start = 16.dp, end = 16.dp)
 					)
 				}
 			}
@@ -255,7 +271,9 @@ fun SettingsItemAsCompose(
 						onSelection = { index ->
 							viewModel.saveSetting(data.id, index)
 						},
-						modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)
+						modifier = Modifier
+							.fillMaxWidth()
+							.padding(start = 16.dp, end = 16.dp)
 					)
 				}
 			}
@@ -300,7 +318,7 @@ fun ConfigureExtensionHeaderContent(
 				verticalAlignment = Alignment.CenterVertically
 			) {
 				Icon(
-					painter = if (!extension.imageURL.isNullOrEmpty()) {
+					painter = if (extension.imageURL.isNotEmpty()) {
 						rememberAsyncImagePainter(extension.imageURL)
 					} else {
 						painterResource(R.drawable.broken_image)

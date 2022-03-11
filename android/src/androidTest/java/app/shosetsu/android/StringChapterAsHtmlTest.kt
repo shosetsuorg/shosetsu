@@ -2,16 +2,18 @@ package app.shosetsu.android
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
-import app.shosetsu.common.utils.asHtml
 import app.shosetsu.android.domain.usecases.get.GetChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.get.GetReaderChaptersUseCase
 import app.shosetsu.android.domain.usecases.load.LoadLibraryUseCase
+import app.shosetsu.common.utils.asHtml
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.future.future
 import org.junit.Test
-import org.kodein.di.*
+import org.kodein.di.DI
+import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 
 /*
  * This file is part of Shosetsu.
@@ -51,9 +53,8 @@ class StringChapterAsHtmlTest : DIAware {
 		GlobalScope.future {
 			getBookMarkedNovelsUseCase().collectLatest { novelList ->
 				getReaderChapterUseCase(novelList.first().id).collectLatest { chapterList ->
-					getChapterPassageUseCase(chapterList.first()).let {
-						println(asHtml(it.toString(), title = chapterList.first().title))
-					}
+					val bytes = getChapterPassageUseCase(chapterList.first())
+					println(asHtml(bytes.toString(), title = chapterList.first().title))
 				}
 			}
 		}.join()

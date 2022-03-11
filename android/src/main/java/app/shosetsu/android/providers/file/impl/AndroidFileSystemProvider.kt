@@ -137,6 +137,9 @@ class AndroidFileSystemProvider(
 		val file = File(externalFileDir.path() + path)
 		//	logV("Deleting $path in ${externalFileDir.path()} to $file")
 
+		if (!file.exists())
+			return false
+
 		if (!file.canWrite())
 			throw FilePermissionException(file.path, PermissionType.WRITE)
 

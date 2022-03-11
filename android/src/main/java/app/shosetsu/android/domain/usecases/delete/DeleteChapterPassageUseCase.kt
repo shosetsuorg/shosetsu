@@ -1,6 +1,8 @@
 package app.shosetsu.android.domain.usecases.delete
 
 import app.shosetsu.android.view.uimodels.model.ChapterUI
+import app.shosetsu.common.FilePermissionException
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.NoSuchExtensionException
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
@@ -35,8 +37,13 @@ class DeleteChapterPassageUseCase(
 		this(chapterUI.convertTo())
 	}
 
+	@Throws(
+		GenericSQLiteException::class,
+		NoSuchExtensionException::class,
+		FilePermissionException::class
+	)
 	suspend operator fun invoke(chapterUI: ChapterEntity) {
-		val ext = iExtensionsRepository.getInstalledExtension(chapterUI.extensionID!!)
+		val ext = iExtensionsRepository.getInstalledExtension(chapterUI.extensionID)
 			?: throw NoSuchExtensionException(chapterUI.extensionID.toString())
 
 		iChaptersRepository.deleteChapterPassage(

@@ -17,7 +17,12 @@ import app.shosetsu.android.common.consts.Notifications.CHANNEL_APP_UPDATE
 import app.shosetsu.android.common.consts.Notifications.ID_APP_UPDATE_INSTALL
 import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_INSTALL_WORK_ID
 import app.shosetsu.android.common.ext.*
+import app.shosetsu.common.EmptyResponseBodyException
+import app.shosetsu.common.FileNotFoundException
+import app.shosetsu.common.FilePermissionException
+import app.shosetsu.common.MissingFeatureException
 import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
+import app.shosetsu.lib.exceptions.HTTPException
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.acra.ACRA
 import org.kodein.di.DI
@@ -25,6 +30,7 @@ import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
 import java.io.File
+import java.io.IOException
 
 /*
  * This file is part of Shosetsu.
@@ -76,6 +82,13 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 		// Load up the app update from repo
 		val update = try {
 			updateRepo.loadAppUpdate()
+		} catch (e: FileNotFoundException) {
+			notify("Update file is missing\n ${e.message}") {
+				setNotOngoing()
+				removeProgress()
+			}
+			ACRA.errorReporter.handleSilentException(e)
+			return Result.failure()
 		} catch (e: Exception) { // TODO specific
 			notify("Exception occurred\n ${e.message}") {
 				setNotOngoing()
@@ -99,10 +112,52 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 		// download the app update and get the path to the installed file
 		val path = try {
 			updateRepo.downloadAppUpdate(update)
-		} catch (e: Exception) {// TODO specific
+		} catch (e: IOException) {
+			notify("IO exception occurred \n ${e.message} ") {
+				setNotOngoing()
+				removeProgress()
+			}
+
+			ACRA.errorReporter.handleSilentException(e)
+			return Result.failure()
+		} catch (e: FilePermissionException) {
+			notify("How does the app lack the ability to download its apk\n ${e.message} ") {
+				setNotOngoing()
+				removeProgress()
+			}
+
+			ACRA.errorReporter.handleSilentException(e)
+			return Result.failure()
+		} catch (e: FileNotFoundException) {
+			notify("How does the app lack the ability to download its apk\n ${e.message} ") {
+				setNotOngoing()
+				removeProgress()
+			}
+
+			ACRA.errorReporter.handleSilentException(e)
+			return Result.failure()
+		} catch (e: MissingFeatureException) {
+			notify("This version of the app cannot self update") {
+				setNotOngoing()
+				removeProgress()
+			}
+			return Result.failure()
+		} catch (e: EmptyResponseBodyException) {
+			notify("Failed to get update content from the internet") {
+				setNotOngoing()
+				removeProgress()
+			}
+			return Result.failure()
+		} catch (e: HTTPException) {
+			notify("Failed due to HTTP code :${e.code}") {
+				setNotOngoing()
+				removeProgress()
+			}
+			return Result.failure()
+		} catch (e: Exception) {
 			notify("Exception occurred \n ${e.message} ") {
-				setOngoing(false)
-				setProgress(0, 0, false)
+				setNotOngoing()
+				removeProgress()
 			}
 
 			ACRA.errorReporter.handleException(e)

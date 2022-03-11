@@ -64,7 +64,6 @@ interface INovelsRepository {
 	/**
 	 * Loads live data of the [NovelEntity] by its [novelID]
 	 */
-	@Throws(GenericSQLiteException::class)
 	suspend fun getNovelFlow(novelID: Int): Flow<NovelEntity?>
 
 	/**

@@ -5,8 +5,6 @@ import app.shosetsu.android.common.utils.uifactory.NovelSettingConversionFactory
 import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.NovelSettingEntity
 import app.shosetsu.common.domain.repositories.base.INovelSettingsRepository
-import app.shosetsu.common.domain.repositories.base.INovelsRepository
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.view.uimodel.NovelSettingUI
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
@@ -35,8 +33,6 @@ import kotlinx.coroutines.flow.transform
  */
 class GetNovelSettingFlowUseCase(
 	private val novelSettingsRepository: INovelSettingsRepository,
-	private val iSettingsRepository: ISettingsRepository,
-	private val iNovelsRepository: INovelsRepository
 ) {
 	operator fun invoke(novelID: Int): Flow<NovelSettingUI?> =
 		novelSettingsRepository.getFlow(novelID).transform { settings ->

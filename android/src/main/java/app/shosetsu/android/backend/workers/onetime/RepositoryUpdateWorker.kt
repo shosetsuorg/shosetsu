@@ -85,7 +85,7 @@ class RepositoryUpdateWorker(
 		repository: RepositoryEntity,
 	) {
 		val databaseLibs = try {
-			extensionLibrariesRepo.loadExtLibByRepo(repository.id!!)
+			extensionLibrariesRepo.loadExtLibByRepo(repository.id)
 		} catch (e: Exception) {
 			with(e) {
 				notify("Failed to load ext libs of repo: : $message")
@@ -123,7 +123,7 @@ class RepositoryUpdateWorker(
 					logI("$repoLibName has update $repoVersion available, updating")
 					install = true
 				} else {
-					extRepoRepo.getRepo(repository.id!!)?.let { repo ->
+					extRepoRepo.getRepo(repository.id)?.let { repo ->
 						if (!repo.isEnabled) {
 							logI("${repo.name} is disabled, downgrading $repoLibName")
 							install = true
@@ -140,7 +140,7 @@ class RepositoryUpdateWorker(
 					extensionLibraryEntity ?: ExtLibEntity(
 						scriptName = repoLibName,
 						version = repoVersion,
-						repoID = repository.id!!
+						repoID = repository.id
 					)
 				)
 		}
@@ -277,7 +277,7 @@ class RepositoryUpdateWorker(
 				} catch (e: Exception) {//TODO specify
 					notify(
 						": ${e.message}",
-						notificationId = ID_REPOSITORY_UPDATE + 1 + (repo.id ?: 0)
+						notificationId = ID_REPOSITORY_UPDATE + 1 + repo.id
 					) {
 						removeProgress()
 						setContentTitle("${repo.name} failed to load")

@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.common.ext.convertTo
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.common.GenericSQLiteException
@@ -61,8 +62,13 @@ class GetCatalogueQueryDataUseCase(
 			(data.map { novelListing ->
 				novelListing.convertTo(ext)
 			}.mapNotNull { ne ->
-				novelsRepository.insertReturnStripped(ne)?.let { card ->
-					convertNCToCNUIUseCase(card, cardType)
+				try {
+					novelsRepository.insertReturnStripped(ne)?.let { card ->
+						convertNCToCNUIUseCase(card, cardType)
+					}
+				} catch (e: GenericSQLiteException) {
+					logE("Failed to load parse novel", e)
+					null
 				}
 			})
 		}

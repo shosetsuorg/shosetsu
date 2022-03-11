@@ -1,5 +1,6 @@
 package app.shosetsu.android.view.uimodels.model
 
+import android.annotation.SuppressLint
 import android.view.View
 import androidx.core.view.isVisible
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
@@ -109,6 +110,7 @@ data class ChapterUI(
 					logV("Item is reading $item")
 					readTag.isVisible = true
 					readProgressValue.isVisible = true
+					@SuppressLint("SetTextI18n")
 					readProgressValue.text = ("%2.1f%%".format(item.readingPosition))
 				}
 				ReadingStatus.UNREAD -> {

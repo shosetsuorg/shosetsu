@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.usecases
 
 import app.shosetsu.android.common.ext.logI
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 
 /*
@@ -28,6 +29,7 @@ import app.shosetsu.common.domain.repositories.base.INovelsRepository
 class PurgeNovelCacheUseCase(
 	private val iNovelsRepository: INovelsRepository
 ) {
+	@Throws(GenericSQLiteException::class)
 	suspend operator fun invoke() {
 		logI("Purging novel cache")
 		return iNovelsRepository.clearUnBookmarkedNovels()

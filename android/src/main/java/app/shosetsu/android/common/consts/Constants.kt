@@ -55,8 +55,3 @@ const val APK_MIME = "application/vnd.android.package-archive"
  * The version of backups this build of shosetsu supports
  */
 const val VERSION_BACKUP: String = "1.0.0"
-
-/**
- * How much of the screen is used by the bottom sheet dialog
- */
-const val MAX_BOTTOM_SHEET_FRACTION = 0.6

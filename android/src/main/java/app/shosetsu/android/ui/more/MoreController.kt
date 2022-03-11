@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -65,7 +66,6 @@ class ComposeMoreController
 	override val viewTitleRes: Int = R.string.more
 
 	override fun onViewCreated(view: View) {}
-
 
 
 	override fun onCreateView(
@@ -130,7 +130,9 @@ fun MoreContent(
 	pushController: (Controller) -> Unit
 ) {
 	Column(
-		modifier = Modifier.fillMaxSize().scrollable(rememberScrollState(), Orientation.Vertical)
+		modifier = Modifier
+			.fillMaxSize()
+			.scrollable(rememberScrollState(), Orientation.Vertical)
 	) {
 		Card(
 			elevation = 0.dp,
@@ -139,39 +141,56 @@ fun MoreContent(
 			Image(
 				painterResource(R.drawable.shou_icon_thick),
 				stringResource(R.string.app_name),
-				modifier = Modifier.fillMaxWidth()
+				modifier = Modifier
+					.fillMaxWidth()
+					.fillMaxHeight(0.15f)
 			)
 		}
 		Divider()
-		Column(
-			modifier = Modifier.fillMaxSize()
+		LazyColumn(
+			modifier = Modifier.fillMaxSize(),
+			contentPadding = PaddingValues(bottom = 128.dp)
 		) {
-			MoreItemContent(R.string.downloads, R.drawable.download) {
-				pushController(DownloadsController())
+			item {
+				MoreItemContent(R.string.downloads, R.drawable.download) {
+					pushController(DownloadsController())
+				}
 			}
 
-			MoreItemContent(R.string.backup, R.drawable.restore) {
-				pushController(BackupSettings())
+			item {
+				MoreItemContent(R.string.backup, R.drawable.restore) {
+					pushController(BackupSettings())
+				}
 			}
 
-			MoreItemContent(R.string.repositories, R.drawable.add_shopping_cart) {
-				pushController(RepositoryController())
+			item {
+				MoreItemContent(R.string.repositories, R.drawable.add_shopping_cart) {
+					pushController(RepositoryController())
+				}
 			}
 
-			MoreItemContent(R.string.styles, R.drawable.ic_baseline_style_24) {
-				showStyleBar()
+			item {
+				MoreItemContent(R.string.styles, R.drawable.ic_baseline_style_24) {
+					showStyleBar()
+				}
 			}
 
-			MoreItemContent(R.string.qr_code_scan, R.drawable.ic_baseline_qr_code_scanner_24) {
-				pushController(AddShareController())
+			item {
+				MoreItemContent(R.string.qr_code_scan, R.drawable.ic_baseline_qr_code_scanner_24) {
+					pushController(AddShareController())
+				}
 			}
 
-			MoreItemContent(R.string.settings, R.drawable.settings) {
-				pushController(ComposeSettingsController())
+			item {
+				MoreItemContent(R.string.settings, R.drawable.settings) {
+					pushController(ComposeSettingsController())
+				}
 			}
 
-			MoreItemContent(R.string.about, R.drawable.info_outline) {
-				pushController(AboutController())
+			item {
+				MoreItemContent(R.string.about, R.drawable.info_outline) {
+					pushController(AboutController())
+				}
 			}
 
 		}

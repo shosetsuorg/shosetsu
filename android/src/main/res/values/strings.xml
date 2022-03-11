@@ -596,7 +596,7 @@
     <string name="controller_downloads_delete_all_title">Delete All</string>
     <string name="controller_novel_true_delete">True Delete</string>
     <string name="settings_advanced_true_chapter_delete_title">Show True Chapter Delete</string>
-    <string name="settings_advanced_true_chapter_delete_desc">Expose an option to truely remove a chapter from Shosetsu.\nUseful when a chapter is bugging</string>
+    <string name="settings_advanced_true_chapter_delete_desc">Expose an option to truly remove a chapter from Shosetsu.\nUseful when a chapter is bugging</string>
     <string name="toast_error_log_failed">Failed to create logfile, No logs will be stored</string>
     <string name="worker_backup_complete">Backup Complete</string>
     <string name="controller_browse_ext_icon_desc">Icon of the extension</string>
@@ -636,6 +636,13 @@
     <string name="controller_add_open_novel">Open Novel</string>
     <string name="settings_advanced_auto_bookmark_title">Bookmark from QR</string>
     <string name="settings_advanced_auto_bookmark_desc">Automatically bookmark novels that are scanned via QR code.</string>
+    <string name="reader_last_chapter">Last chapter: %s</string>
+    <string name="reader_next_chapter">Next chapter: %s</string>
+    <string name="controller_library_menu_tri_by_title">By title</string>
+    <string name="controller_library_menu_tri_by_unread">By unread chapter count</string>
+    <string name="controller_library_menu_tri_by_id">By novel ID</string>
+    <string name="controller_library_menu_tri_by_source">By source</string>
+    <string name="controller_library_menu_tri_by_date">By date</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

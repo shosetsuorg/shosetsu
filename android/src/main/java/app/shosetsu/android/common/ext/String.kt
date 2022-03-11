@@ -7,7 +7,6 @@ import java.io.IOException
 import java.io.ObjectInputStream
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
-import java.util.*
 
 /*
  * This file is part of shosetsu.
@@ -24,23 +23,11 @@ import java.util.*
  *
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- * ====================================================================
- */
-
-/**
- * shosetsu
+ *
  * 04 / 03 / 2020
  *
  * @author github.com/doomsdayrs
  */
-
-/**
- * Cleans a string
- * @return string without specials
- */
-fun String.clean(): String {
-	return replace("[^A-Za-z0-9]".toRegex(), "_")
-}
 
 
 /**
@@ -96,7 +83,3 @@ fun String.md5(): String {
 	}
 	return ""
 }
-
-
-fun String.toLowerCaseR(): String = this.lowercase(Locale.ROOT)
-fun String.toLowerCaseD(): String = this.lowercase(Locale.getDefault())

@@ -1,10 +1,16 @@
 {
-  "latestVersion": "1731",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1731/shosetsu-r1731.apk",
+  "latestVersion": "1924",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1924/shosetsu-r1924-universal.apk",
   "releaseNotes": [
-    "- Optimize BackupWorker to be more memory efficient",
-    "- BackupOnlyModified added, default is true, will only backup chapters that have been modified",
-    "- Allow delete selection & pause selection in Downloads to effect all items",
-    "- Fix 'delete all' and 'set all pending' in Downloads worker"
+    "- Made it optional to log to file (Advanced Settings)",
+    "- Added Matrix to About section",
+    "- Global search is now written in compose, should run much better now",
+    "- Added experimental TTS",
+    "- Add QR Code sharing & Scanning",
+    "- Updated Updater, Now can select proper APKs (not tested).",
+    "- Normalize Extensions database",
+    "- Removed `HResult` from codebase",
+    "- Removed `LiveData` for `Flow`",
+    "- All setting views are in compose"
   ]
 }

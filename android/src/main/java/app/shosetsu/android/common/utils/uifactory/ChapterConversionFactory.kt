@@ -47,6 +47,6 @@ class ChapterConversionFactory(data: ChapterEntity) :
 fun List<ChapterEntity>.mapToFactory() =
 	map { ChapterConversionFactory(it) }
 
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 fun Flow<List<ChapterEntity>>.mapLatestToResultFlowWithFactory() =
 	mapLatest { it.mapToFactory() }

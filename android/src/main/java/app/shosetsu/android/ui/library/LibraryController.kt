@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.consts.BundleKeys
-import app.shosetsu.android.common.consts.MAX_BOTTOM_SHEET_FRACTION
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.library.listener.LibrarySearchQuery
 import app.shosetsu.android.ui.migration.MigrationController
@@ -344,8 +343,6 @@ class LibraryController
 				bsg = BottomSheetDialog(binding.root.context)
 			if (bsg?.isShowing == false) {
 				bsg?.apply {
-					behavior.maxHeight =
-						(Resources.getSystem().displayMetrics.heightPixels * MAX_BOTTOM_SHEET_FRACTION).toInt()
 					setContentView(getBottomMenuView())
 				}?.show()
 			}

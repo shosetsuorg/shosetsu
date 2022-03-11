@@ -264,7 +264,7 @@ class NovelViewModel(
 
 	override fun delete(vararg chapterUI: ChapterUI) {
 		launchIO {
-			chapterUI.forEach {
+			chapterUI.filter { it.isSaved }.forEach {
 				deleteChapterPassageUseCase(it)
 			}
 		}

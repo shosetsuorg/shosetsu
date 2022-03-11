@@ -1,6 +1,5 @@
 package app.shosetsu.android.ui.catalogue
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,20 +9,18 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
-import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
-import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.lib.Filter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /*
  * This file is part of shosetsu.
@@ -44,181 +41,118 @@ import kotlinx.coroutines.flow.flow
  * @since 02 / 08 / 2021
  */
 
-
-private val dummyViewModel = @SuppressLint("StaticFieldLeak")
-object : ACatalogViewModel() {
-	override val itemsLive: Flow<List<ACatalogNovelUI>>
-		get() = TODO("Not yet implemented")
-	override val filterItemsLive: Flow<List<Filter<*>>> by lazy {
-		flow {
-			emit(
-				listOf(
-					Filter.Header("This is a header"),
-					Filter.Separator(),
-					Filter.Text(1, "Text input"),
-					Filter.Switch(2, "Switch"),
-					Filter.Checkbox(3, "Checkbox"),
-					Filter.TriState(4, "Tri state"),
-					Filter.Dropdown(5, "Drop down", arrayOf("A", "B", "C")),
-					Filter.RadioGroup(6, "Radio group", arrayOf("A", "B", "C")),
-					Filter.List(
-						"List", arrayOf(
-							Filter.Switch(7, "Switch"),
-							Filter.Checkbox(8, "Checkbox"),
-							Filter.TriState(9, "Tri state"),
-						)
-					),
-					Filter.Group(
-						"Group", arrayOf(
-							Filter.Switch(10, "Switch"),
-							Filter.Switch(11, "Switch"),
-							Filter.Switch(12, "Switch"),
-						)
-					)
-				)
-			)
-		}
-	}
-	override val hasSearchLive: Flow<Boolean>
-		get() = TODO("Not yet implemented")
-	override val hasSearch: Boolean
-		get() = TODO("Not yet implemented")
-	override val extensionName: Flow<String>
-		get() = TODO("Not yet implemented")
-	override val novelCardTypeLive: Flow<NovelCardType>
-		get() = TODO("Not yet implemented")
-	override val novelCardType: NovelCardType
-		get() = TODO("Not yet implemented")
-
-	override fun setExtensionID(extensionID: Int) {
-		TODO("Not yet implemented")
-	}
-
-	override fun applyQuery(newQuery: String) {
-		TODO("Not yet implemented")
-	}
-
-	override fun loadMore() {
-		TODO("Not yet implemented")
-	}
-
-	override fun resetView() {
-		TODO("Not yet implemented")
-	}
-
-	override fun backgroundNovelAdd(novelID: Int): Flow<BackgroundNovelAddProgress> {
-		TODO("Not yet implemented")
-	}
-
-	override fun applyFilter() {
-		TODO("Not yet implemented")
-	}
-
-	override fun resetFilter() {
-		TODO("Not yet implemented")
-	}
-
-	override fun setViewType(cardType: NovelCardType) {
-		TODO("Not yet implemented")
-	}
-
-	override fun destroy() {
-		TODO("Not yet implemented")
-	}
-
-	override fun getFilterStringState(id: Filter<String>): Flow<String> =
-		flow { emit(id.state) }
-
-	override fun setFilterStringState(id: Filter<String>, value: String) {
-		TODO("Not yet implemented")
-	}
-
-	override fun getFilterBooleanState(id: Filter<Boolean>): Flow<Boolean> =
-		flow { emit(id.state) }
-
-	override fun setFilterBooleanState(id: Filter<Boolean>, value: Boolean) {
-		TODO("Not yet implemented")
-	}
-
-	override fun getFilterIntState(id: Filter<Int>): Flow<Int> =
-		flow { emit(id.state) }
-
-	override fun setFilterIntState(id: Filter<Int>, value: Int) {
-		TODO("Not yet implemented")
-	}
-
-	override fun getBaseURL(): Flow<String> {
-		TODO("Not yet implemented")
-	}
-
-
-	override val columnsInH: Int
-		get() = TODO("Not yet implemented")
-
-	override val columnsInP: Int
-		get() = TODO("Not yet implemented")
-}
-
-
 @Preview
 @Composable
-fun CatalogFilterMenuPreview() = MdcTheme { CatalogFilterMenu(viewModel = dummyViewModel) }
-
-@Composable
-fun CatalogFilterMenu(viewModel: ACatalogViewModel) {
-	Column(
-		modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)
-	) {
-		CatalogFilterMenuMainContent(viewModel = viewModel)
-
-		CatalogFilterMenuControlContent(viewModel = viewModel)
-	}
+fun CatalogFilterMenuPreview() = MdcTheme {
+	CatalogFilterMenu(
+		listOf(
+			Filter.Header("This is a header"),
+			Filter.Separator(),
+			Filter.Text(1, "Text input"),
+			Filter.Switch(2, "Switch"),
+			Filter.Checkbox(3, "Checkbox"),
+			Filter.TriState(4, "Tri state"),
+			Filter.Dropdown(5, "Drop down", arrayOf("A", "B", "C")),
+			Filter.RadioGroup(6, "Radio group", arrayOf("A", "B", "C")),
+			Filter.List(
+				"List", arrayOf(
+					Filter.Switch(7, "Switch"),
+					Filter.Checkbox(8, "Checkbox"),
+					Filter.TriState(9, "Tri state"),
+				)
+			),
+			Filter.Group(
+				"Group", arrayOf(
+					Filter.Switch(10, "Switch"),
+					Filter.Switch(11, "Switch"),
+					Filter.Switch(12, "Switch"),
+				)
+			)
+		),
+		getBoolean = { MutableStateFlow(false) },
+		setBoolean = { _, _ -> },
+		getInt = { MutableStateFlow(1) },
+		setInt = { _, _ -> },
+		getString = { MutableStateFlow("") },
+		setString = { _, _ -> },
+		applyFilter = {},
+		resetFilter = {}
+	)
 }
 
 @Composable
-fun CatalogFilterMenuMainContent(viewModel: ACatalogViewModel) {
-	val items by viewModel.filterItemsLive.collectAsState(initial = emptyList())
+fun CatalogFilterMenu(
+	items: List<Filter<*>>,
+	getBoolean: (Filter<Boolean>) -> Flow<Boolean>,
+	setBoolean: (Filter<Boolean>, Boolean) -> Unit,
+	getInt: (Filter<Int>) -> Flow<Int>,
+	setInt: (Filter<Int>, Int) -> Unit,
+	getString: (Filter<String>) -> Flow<String>,
+	setString: (Filter<String>, String) -> Unit,
+	applyFilter: () -> Unit,
+	resetFilter: () -> Unit
+) {
+	Column(
+		modifier = Modifier,
+		verticalArrangement = Arrangement.Bottom
+	) {
+		CatalogFilterMenuControlContent(resetFilter, applyFilter)
 
-	Column(modifier = Modifier.fillMaxWidth()) {
-		CatalogFilterMenuFilterListContent(viewModel, items)
+		CatalogFilterMenuFilterListContent(
+			items,
+			getBoolean,
+			setBoolean,
+			getInt,
+			setInt,
+			getString,
+			setString
+		)
+
 	}
 }
 
 @Composable
 fun CatalogFilterMenuFilterListContent(
-	viewModel: ACatalogViewModel,
 	list: List<Filter<*>>,
+	getBoolean: (Filter<Boolean>) -> Flow<Boolean>,
+	setBoolean: (Filter<Boolean>, Boolean) -> Unit,
+	getInt: (Filter<Int>) -> Flow<Int>,
+	setInt: (Filter<Int>, Int) -> Unit,
+	getString: (Filter<String>) -> Flow<String>,
+	setString: (Filter<String>, String) -> Unit
 ) {
 
 	LazyColumn(
-		modifier = Modifier.fillMaxWidth(),
+		modifier = Modifier
+			.fillMaxWidth(),
+		contentPadding = PaddingValues(16.dp),
+		verticalArrangement = Arrangement.Bottom
 	) {
-
-
 		items(list) { filter ->
 			when (filter) {
 				is Filter.Header -> Column {
 					Divider()
 				}
 				is Filter.Separator -> Divider()
-				is Filter.Text -> CatalogFilterMenuTextContent(viewModel, filter)
-				is Filter.Switch -> CatalogFilterMenuSwitchContent(viewModel, filter)
-				is Filter.Checkbox -> CatalogFilterMenuCheckboxContent(viewModel, filter)
-				is Filter.TriState -> CatalogFilterMenuTriStateContent(viewModel, filter)
-				is Filter.Dropdown -> CatalogFilterMenuDropDownContent(viewModel, filter)
-				is Filter.RadioGroup -> CatalogFilterMenuRadioGroupContent(viewModel, filter)
+				is Filter.Text -> CatalogFilterMenuTextContent(filter, getString, setString)
+				is Filter.Switch -> CatalogFilterMenuSwitchContent(filter, getBoolean, setBoolean)
+				is Filter.Checkbox ->
+					CatalogFilterMenuCheckboxContent(filter, getBoolean, setBoolean)
+				is Filter.TriState -> CatalogFilterMenuTriStateContent(filter, getInt, setInt)
+				is Filter.Dropdown -> CatalogFilterMenuDropDownContent(filter, getInt, setInt)
+				is Filter.RadioGroup -> CatalogFilterMenuRadioGroupContent(filter, getInt, setInt)
 				is Filter.List -> {
 					CatalogFilterMenuFilterListContent(
-						viewModel,
 						filter.filters.toList(),
-						filter.name
+						filter.name,
+						getBoolean, setBoolean, getInt, setInt, getString, setString
 					)
 				}
 				is Filter.Group<*> -> {
 					CatalogFilterMenuFilterListContent(
-						viewModel,
 						filter.filters.toList(),
-						filter.name
+						filter.name,
+						getBoolean, setBoolean, getInt, setInt, getString, setString
 					)
 				}
 			}
@@ -230,19 +164,31 @@ fun CatalogFilterMenuFilterListContent(
 @Composable
 fun PreviewCatalogFilterMenuFilterListContent() = MdcTheme {
 	CatalogFilterMenuFilterListContent(
-		dummyViewModel, listOf(
+		list = listOf(
 			Filter.Switch(7, "Switch"),
 			Filter.Checkbox(8, "Checkbox"),
 			Filter.TriState(9, "Tri state"),
-		), "A list"
+		),
+		name = "A list",
+		getBoolean = { MutableStateFlow(false) },
+		setBoolean = { _, _ -> },
+		getInt = { MutableStateFlow(1) },
+		setInt = { _, _ -> },
+		getString = { MutableStateFlow("") },
+		setString = { _, _ -> }
 	)
 }
 
 @Composable
 fun CatalogFilterMenuFilterListContent(
-	viewModel: ACatalogViewModel,
 	list: List<Filter<*>>,
 	name: String,
+	getBoolean: (Filter<Boolean>) -> Flow<Boolean>,
+	setBoolean: (Filter<Boolean>, Boolean) -> Unit,
+	getInt: (Filter<Int>) -> Flow<Int>,
+	setInt: (Filter<Int>, Int) -> Unit,
+	getString: (Filter<String>) -> Flow<String>,
+	setString: (Filter<String>, String) -> Unit
 ) {
 	var collapsed by remember { mutableStateOf(true) }
 	Column(
@@ -279,14 +225,31 @@ fun CatalogFilterMenuFilterListContent(
 							Divider()
 						}
 						is Filter.Separator -> Divider()
-						is Filter.Text -> CatalogFilterMenuTextContent(viewModel, filter)
-						is Filter.Switch -> CatalogFilterMenuSwitchContent(viewModel, filter)
-						is Filter.Checkbox -> CatalogFilterMenuCheckboxContent(viewModel, filter)
-						is Filter.TriState -> CatalogFilterMenuTriStateContent(viewModel, filter)
-						is Filter.Dropdown -> CatalogFilterMenuDropDownContent(viewModel, filter)
+						is Filter.Text -> CatalogFilterMenuTextContent(filter, getString, setString)
+						is Filter.Switch -> CatalogFilterMenuSwitchContent(
+							filter,
+							getBoolean,
+							setBoolean
+						)
+						is Filter.Checkbox -> CatalogFilterMenuCheckboxContent(
+							filter,
+							getBoolean,
+							setBoolean
+						)
+						is Filter.TriState -> CatalogFilterMenuTriStateContent(
+							filter,
+							getInt,
+							setInt
+						)
+						is Filter.Dropdown -> CatalogFilterMenuDropDownContent(
+							filter,
+							getInt,
+							setInt
+						)
 						is Filter.RadioGroup -> CatalogFilterMenuRadioGroupContent(
-							viewModel,
-							filter
+							filter,
+							getInt,
+							setInt
 						)
 						is Filter.List -> {
 							Log.e(
@@ -294,9 +257,14 @@ fun CatalogFilterMenuFilterListContent(
 								"CatalogFilterMenuFilterListContent: Please avoid usage of lists in sub lists"
 							)
 							CatalogFilterMenuFilterListContent(
-								viewModel,
 								filter.filters.toList(),
-								filter.name
+								filter.name,
+								getBoolean,
+								setBoolean,
+								getInt,
+								setInt,
+								getString,
+								setString
 							)
 						}
 						is Filter.Group<*> -> {
@@ -305,9 +273,14 @@ fun CatalogFilterMenuFilterListContent(
 								"CatalogFilterMenuFilterListContent: Please avoid usage of lists in sub lists"
 							)
 							CatalogFilterMenuFilterListContent(
-								viewModel,
 								filter.filters.toList(),
-								filter.name
+								filter.name,
+								getBoolean,
+								setBoolean,
+								getInt,
+								setInt,
+								getString,
+								setString
 							)
 						}
 					}
@@ -323,20 +296,27 @@ fun CatalogFilterMenuFilterListContent(
 fun PreviewCatalogFilterMenuTextContent() =
 	MdcTheme {
 		CatalogFilterMenuTextContent(
-			viewModel = dummyViewModel,
-			filter = Filter.Text(0, "This is a text input")
+			filter = Filter.Text(0, "This is a text input"),
+			{ MutableStateFlow("") },
+			{ _, _ -> }
 		)
 	}
 
 @Composable
-fun CatalogFilterMenuTextContent(viewModel: ACatalogViewModel, filter: Filter.Text) {
-	val text by viewModel.getFilterStringState(filter)
+fun CatalogFilterMenuTextContent(
+	filter: Filter.Text,
+	getString: (Filter<String>) -> Flow<String>,
+	setString: (Filter<String>, String) -> Unit
+) {
+	val text by getString(filter)
 		.collectAsState(initial = "")
 
 	TextField(
-		modifier = Modifier.fillMaxWidth(),
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(bottom = 8.dp),
 		value = text,
-		onValueChange = { viewModel.setFilterStringState(filter, it) },
+		onValueChange = { setString(filter, it) },
 		label = {
 			Text(text = filter.name)
 		}
@@ -347,13 +327,19 @@ fun CatalogFilterMenuTextContent(viewModel: ACatalogViewModel, filter: Filter.Te
 @Composable
 fun PreviewCatalogFilterMenuSwitchContent() = MdcTheme {
 	CatalogFilterMenuSwitchContent(
-		dummyViewModel, Filter.Switch(0, "Switch")
+		Filter.Switch(0, "Switch"),
+		{ MutableStateFlow(false) },
+		{ _, _ -> }
 	)
 }
 
 @Composable
-fun CatalogFilterMenuSwitchContent(viewModel: ACatalogViewModel, filter: Filter.Switch) {
-	val state by viewModel.getFilterBooleanState(filter)
+fun CatalogFilterMenuSwitchContent(
+	filter: Filter.Switch,
+	getBoolean: (Filter<Boolean>) -> Flow<Boolean>,
+	setBoolean: (Filter<Boolean>, Boolean) -> Unit
+) {
+	val state by getBoolean(filter)
 		.collectAsState(initial = false)
 
 	Row(
@@ -363,7 +349,7 @@ fun CatalogFilterMenuSwitchContent(viewModel: ACatalogViewModel, filter: Filter.
 		Text(text = filter.name)
 		Switch(
 			checked = state,
-			onCheckedChange = { viewModel.setFilterBooleanState(filter, it) }
+			onCheckedChange = { setBoolean(filter, it) }
 		)
 	}
 }
@@ -371,12 +357,18 @@ fun CatalogFilterMenuSwitchContent(viewModel: ACatalogViewModel, filter: Filter.
 @Preview
 @Composable
 fun PreviewCatalogFilterMenuCheckboxContent() = MdcTheme {
-	CatalogFilterMenuCheckboxContent(dummyViewModel, Filter.Checkbox(0, "Checkbox"))
+	CatalogFilterMenuCheckboxContent(Filter.Checkbox(0, "Checkbox"),
+		{ MutableStateFlow(false) },
+		{ _, _ -> })
 }
 
 @Composable
-fun CatalogFilterMenuCheckboxContent(viewModel: ACatalogViewModel, filter: Filter.Checkbox) {
-	val state by viewModel.getFilterBooleanState(filter)
+fun CatalogFilterMenuCheckboxContent(
+	filter: Filter.Checkbox,
+	getBoolean: (Filter<Boolean>) -> Flow<Boolean>,
+	setBoolean: (Filter<Boolean>, Boolean) -> Unit
+) {
+	val state by getBoolean(filter)
 		.collectAsState(initial = false)
 
 	Row(
@@ -386,7 +378,7 @@ fun CatalogFilterMenuCheckboxContent(viewModel: ACatalogViewModel, filter: Filte
 		Text(text = filter.name)
 		Checkbox(
 			checked = state,
-			onCheckedChange = { viewModel.setFilterBooleanState(filter, it) }
+			onCheckedChange = { setBoolean(filter, it) }
 		)
 	}
 }
@@ -394,12 +386,18 @@ fun CatalogFilterMenuCheckboxContent(viewModel: ACatalogViewModel, filter: Filte
 @Preview
 @Composable
 fun PreviewCatalogFilterMenuTriStateContent() = MdcTheme {
-	CatalogFilterMenuTriStateContent(dummyViewModel, Filter.TriState(0, "Tristate"))
+	CatalogFilterMenuTriStateContent(Filter.TriState(0, "Tristate"),
+		{ MutableStateFlow(1) },
+		{ _, _ -> })
 }
 
 @Composable
-fun CatalogFilterMenuTriStateContent(viewModel: ACatalogViewModel, filter: Filter.TriState) {
-	val triState by viewModel.getFilterIntState(filter)
+fun CatalogFilterMenuTriStateContent(
+	filter: Filter.TriState,
+	getInt: (Filter<Int>) -> Flow<Int>,
+	setInt: (Filter<Int>, Int) -> Unit
+) {
+	val triState by getInt(filter)
 		.collectAsState(initial = ToggleableState.Off)
 	val convertedState = when (triState) {
 		Filter.TriState.STATE_IGNORED -> ToggleableState.Indeterminate
@@ -415,7 +413,7 @@ fun CatalogFilterMenuTriStateContent(viewModel: ACatalogViewModel, filter: Filte
 		TriStateCheckbox(
 			state = convertedState,
 			onClick = {
-				viewModel.setFilterIntState(
+				setInt(
 					filter,
 					when (convertedState) {
 						ToggleableState.On -> Filter.TriState.STATE_EXCLUDE
@@ -432,14 +430,19 @@ fun CatalogFilterMenuTriStateContent(viewModel: ACatalogViewModel, filter: Filte
 @Composable
 fun PreviewCatalogFilterMenuDropDownContent() = MdcTheme {
 	CatalogFilterMenuDropDownContent(
-		dummyViewModel,
-		Filter.Dropdown(0, "Dropdown", arrayOf("A", "B", "C"))
+		Filter.Dropdown(0, "Dropdown", arrayOf("A", "B", "C")),
+		{ MutableStateFlow(1) },
+		{ _, _ -> }
 	)
 }
 
 @Composable
-fun CatalogFilterMenuDropDownContent(viewModel: ACatalogViewModel, filter: Filter.Dropdown) {
-	val selection by viewModel.getFilterIntState(filter)
+fun CatalogFilterMenuDropDownContent(
+	filter: Filter.Dropdown,
+	getInt: (Filter<Int>) -> Flow<Int>,
+	setInt: (Filter<Int>, Int) -> Unit
+) {
+	val selection by getInt(filter)
 		.collectAsState(initial = 0)
 	var expanded by remember { mutableStateOf(false) }
 
@@ -480,7 +483,7 @@ fun CatalogFilterMenuDropDownContent(viewModel: ACatalogViewModel, filter: Filte
 				filter.choices.forEachIndexed { i, s ->
 					DropdownMenuItem(
 						onClick = {
-							viewModel.setFilterIntState(filter, i)
+							setInt(filter, i)
 							expanded = false
 						}) {
 						Text(
@@ -497,14 +500,19 @@ fun CatalogFilterMenuDropDownContent(viewModel: ACatalogViewModel, filter: Filte
 @Composable
 fun PreviewCatalogFilterMenuRadioGroupContent() = MdcTheme {
 	CatalogFilterMenuRadioGroupContent(
-		dummyViewModel,
-		Filter.RadioGroup(0, "Dropdown", arrayOf("A", "B", "C"))
+		Filter.RadioGroup(0, "Dropdown", arrayOf("A", "B", "C")),
+		{ MutableStateFlow(1) },
+		{ _, _ -> }
 	)
 }
 
 @Composable
-fun CatalogFilterMenuRadioGroupContent(viewModel: ACatalogViewModel, filter: Filter.RadioGroup) {
-	val selection by viewModel.getFilterIntState(filter)
+fun CatalogFilterMenuRadioGroupContent(
+	filter: Filter.RadioGroup,
+	getInt: (Filter<Int>) -> Flow<Int>,
+	setInt: (Filter<Int>, Int) -> Unit
+) {
+	val selection by getInt(filter)
 		.collectAsState(initial = 0)
 	var expanded by remember { mutableStateOf(true) }
 
@@ -545,7 +553,7 @@ fun CatalogFilterMenuRadioGroupContent(viewModel: ACatalogViewModel, filter: Fil
 						Text(text = s)
 						RadioButton(
 							selected = index == selection,
-							onClick = { viewModel.setFilterIntState(filter, index) }
+							onClick = { setInt(filter, index) }
 						)
 					}
 				}
@@ -555,20 +563,23 @@ fun CatalogFilterMenuRadioGroupContent(viewModel: ACatalogViewModel, filter: Fil
 }
 
 @Composable
-fun CatalogFilterMenuControlContent(viewModel: ACatalogViewModel) {
+fun CatalogFilterMenuControlContent(
+	resetFilter: () -> Unit,
+	applyFilter: () -> Unit
+) {
 	Card(
 		modifier = Modifier
-			.padding(8.dp)
-			.fillMaxWidth()
+			.fillMaxWidth(),
+		shape = RectangleShape
 	) {
 		Row(
-			horizontalArrangement = Arrangement.Center
+			horizontalArrangement = Arrangement.SpaceEvenly
 		) {
-			Button(onClick = { viewModel.resetFilter() }, modifier = Modifier.padding(8.dp)) {
+			TextButton(onClick = { resetFilter() }, contentPadding = PaddingValues(8.dp)) {
 				Text(text = stringResource(id = R.string.reset))
 			}
 
-			Button(onClick = { viewModel.applyFilter() }, modifier = Modifier.padding(8.dp)) {
+			TextButton(onClick = { applyFilter() }, contentPadding = PaddingValues(8.dp)) {
 				Text(text = stringResource(id = R.string.apply))
 			}
 		}

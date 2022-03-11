@@ -1,6 +1,8 @@
 package app.shosetsu.android.domain.usecases
 
 import app.shosetsu.android.common.ext.generify
+import app.shosetsu.common.FilePermissionException
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
@@ -10,6 +12,7 @@ import app.shosetsu.common.domain.repositories.base.IExtensionsRepository.Instal
 import app.shosetsu.common.utils.asIEntity
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.exceptions.HTTPException
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -39,7 +42,12 @@ class InstallExtensionUseCase(
 	private val extensionEntitiesRepository: IExtensionEntitiesRepository,
 	private val extensionRepoRepository: IExtensionRepoRepository
 ) {
-	@Throws(HTTPException::class)
+	@Throws(
+		HTTPException::class,
+		GenericSQLiteException::class,
+		FilePermissionException::class,
+		IOException::class
+	)
 	suspend operator fun invoke(extToInstall: GenericExtensionEntity): InstallExtensionFlags {
 		val repo = extensionRepoRepository.getRepo(extToInstall.repoID)!!
 
@@ -73,7 +81,7 @@ class InstallExtensionUseCase(
 
 		if (oldInstalledExt != null)
 			extensionRepository.updateInstalledExtension(
-				oldInstalledExt?.copy(
+				oldInstalledExt.copy(
 					repoID = extToInstall.repoID,
 					name = extToInstall.fileName,
 					fileName = extToInstall.fileName,

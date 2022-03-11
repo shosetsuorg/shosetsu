@@ -494,7 +494,7 @@ class ChapterReader
 					applyToChapterViews(true) { depleteScroll() }
 					true
 				}
-				else -> false
+				else -> super.onKeyDown(keyCode, event)
 			}
 		else super.onKeyDown(keyCode, event)
 	}

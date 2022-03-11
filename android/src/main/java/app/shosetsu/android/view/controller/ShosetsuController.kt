@@ -90,6 +90,7 @@ abstract class ShosetsuController : LifecycleController, DIAware {
 	 * What to do once the view is created
 	 * Called by the [lifecycleListeners] via [LifecycleListener.postCreateView]
 	 */
+	@Suppress("KDocUnresolvedReference")
 	abstract fun onViewCreated(view: View)
 
 	/**

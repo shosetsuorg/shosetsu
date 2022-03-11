@@ -1,6 +1,5 @@
 package app.shosetsu.android
 
-import android.util.Log
 //import app.shosetsu.android.common.ext.enclosingName
 import org.junit.Test
 

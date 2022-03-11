@@ -17,12 +17,6 @@
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Last chapter: "
-            android:textColor="@color/grey_B_40" />
-
-        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/previous_chapter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,12 +32,6 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Next chapter: "
-            android:textColor="@color/grey_B_40" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/next_chapter"

@@ -58,8 +58,6 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 
 	bind<LoadUpdatesUseCase>() with provider { LoadUpdatesUseCase(instance()) }
 
-	bind<RefreshRepositoryUseCase>() with provider { RefreshRepositoryUseCase(instance()) }
-
 	bind<StartRepositoryUpdateManagerUseCase>() with provider {
 		StartRepositoryUpdateManagerUseCase(instance())
 	}
@@ -200,7 +198,7 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 	}
 
 	bind<GetNovelSettingFlowUseCase>() with provider {
-		GetNovelSettingFlowUseCase(instance(), instance(), instance())
+		GetNovelSettingFlowUseCase(instance())
 	}
 	bind<UpdateNovelSettingUseCase>() with provider {
 		UpdateNovelSettingUseCase(instance())

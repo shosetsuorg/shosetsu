@@ -7,6 +7,7 @@ import app.shosetsu.common.IncompatibleExtensionException
 import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.transformLatest
@@ -15,6 +16,7 @@ class LoadSearchRowUIUseCase(
 	private val iExtensionsRepository: IExtensionsRepository,
 	private val extEntitiesRepo: IExtensionEntitiesRepository
 ) {
+	@OptIn(ExperimentalCoroutinesApi::class)
 	operator fun invoke(): Flow<List<SearchRowUI>> =
 		iExtensionsRepository.loadExtensionsFLow()
 			.transformLatest { result ->

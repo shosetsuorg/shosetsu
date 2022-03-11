@@ -2,24 +2,17 @@ package app.shosetsu.android.view.compose.setting
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.IconToggleButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import com.github.doomsdayrs.apps.shosetsu.R
-import kotlinx.coroutines.flow.map
 
 @Composable
 fun DropdownSettingContent(
@@ -49,11 +42,10 @@ fun DropdownSettingContent(
 	stringToInt: (value: String) -> Int,
 	intToString: (value: Int) -> String
 ) {
-	val choice: Int by repo.getStringFlow(key)
-		.map { stringToInt(it) }
-		.collectAsState(stringToInt(key.default))
+	val choice by repo.getStringFlow(key)
+		.collectAsState(key.default)
 
-	DropdownSettingContent(title, description, choice, choices, modifier) {
+	DropdownSettingContent(title, description, stringToInt(choice), choices, modifier) {
 		launchIO { repo.setString(key, intToString(it)) }
 	}
 

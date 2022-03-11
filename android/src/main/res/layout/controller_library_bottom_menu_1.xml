@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:button="@drawable/directional_box_drawable"
-            android:text="By title"
+            android:text="@string/controller_library_menu_tri_by_title"
             app:button_checked="@drawable/expand_more"
             app:button_unchecked="@drawable/expand_less"
             app:button_state="CHECKED" />
@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:button="@drawable/directional_box_drawable"
-            android:text="By unread chapter count"
+            android:text="@string/controller_library_menu_tri_by_unread"
             app:button_checked="@drawable/expand_more"
             app:button_unchecked="@drawable/expand_less" />
 
@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:button="@drawable/directional_box_drawable"
-            android:text="By novel ID"
+            android:text="@string/controller_library_menu_tri_by_id"
             app:button_checked="@drawable/expand_more"
             app:button_unchecked="@drawable/expand_less" />
     </app.shosetsu.android.view.widget.TriStateGroup>
