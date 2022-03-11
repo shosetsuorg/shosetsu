@@ -126,7 +126,9 @@ class AndroidFileSystemProvider(
 		val file = File(internalFileDir.path() + path)
 //		logV("Deleting $path in ${internalFileDir.path()} to $file")
 
-		if (!file.canWrite() && file.exists())
+		if (!file.exists()) return false
+
+		if (!file.canWrite())
 			throw FilePermissionException(file.path, PermissionType.WRITE)
 
 		return file.delete()
@@ -137,8 +139,7 @@ class AndroidFileSystemProvider(
 		val file = File(externalFileDir.path() + path)
 		//	logV("Deleting $path in ${externalFileDir.path()} to $file")
 
-		if (!file.exists())
-			return false
+		if (!file.exists()) return false
 
 		if (!file.canWrite())
 			throw FilePermissionException(file.path, PermissionType.WRITE)
@@ -155,10 +156,11 @@ class AndroidFileSystemProvider(
 		val file = File(internalFileDir.path() + path)
 
 		//	logV("Writing $path in ${internalFileDir.path()} to $file")
-		if (!file.canWrite() && file.exists())
-			throw FilePermissionException(file.path, PermissionType.WRITE)
 
 		if (!file.exists()) file.createNewFile()
+
+		if (!file.canWrite())
+			throw FilePermissionException(file.path, PermissionType.WRITE)
 
 		return file.writeBytes(content)
 	}
@@ -173,10 +175,10 @@ class AndroidFileSystemProvider(
 
 		//	logV("Writing $path in ${externalFileDir.path()} to $file")
 
-		if (!file.canWrite() && file.exists())
-			throw FilePermissionException(file.path, PermissionType.WRITE)
-
 		if (!file.exists()) file.createNewFile()
+
+		if (!file.canWrite())
+			throw FilePermissionException(file.path, PermissionType.WRITE)
 
 		return file.writeBytes(content)
 	}

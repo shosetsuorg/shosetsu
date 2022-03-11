@@ -111,7 +111,7 @@ class ChaptersRepository(
 		entity: ChapterEntity,
 		chapterType: Novel.ChapterType,
 		passage: ByteArray,
-	): Unit {
+	) {
 		saveChapterPassageToMemory(entity, chapterType, passage)
 
 		fileSource.save(entity, chapterType, passage)
