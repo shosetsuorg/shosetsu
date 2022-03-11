@@ -22,6 +22,7 @@ import app.shosetsu.android.domain.model.local.backup.*
 import app.shosetsu.android.domain.repository.base.IBackupUriRepository
 import app.shosetsu.android.domain.usecases.InstallExtensionUseCase
 import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.BackupEntity
 import app.shosetsu.common.domain.model.local.ChapterEntity
@@ -191,10 +192,15 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 					setContentTitle(getString(R.string.restore_notification_title_adding_repos))
 					setContentText("$name\n$url")
 				}
-				extensionsRepoRepo.addRepository(
-					url,
-					name,
-				)
+				try {
+					extensionsRepoRepo.addRepository(
+						url,
+						name,
+					)
+				} catch (e: GenericSQLiteException) {
+					logE("Failed to add repo", e)
+					// its likely constraint, we can ignore it
+				}
 			}
 
 			notify("Loading repository data")
