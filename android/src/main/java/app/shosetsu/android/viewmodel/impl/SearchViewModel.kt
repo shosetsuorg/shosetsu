@@ -4,12 +4,15 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.usecases.SearchBookMarkedNovelsUseCase
 import app.shosetsu.android.domain.usecases.get.GetCatalogueQueryDataUseCase
+import app.shosetsu.android.domain.usecases.get.GetExtensionUseCase
 import app.shosetsu.android.domain.usecases.load.LoadSearchRowUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ASearchViewModel
 import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.lib.PAGE_INDEX
+import app.shosetsu.lib.mapify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
@@ -38,6 +41,7 @@ class SearchViewModel(
 	private val searchBookMarkedNovelsUseCase: SearchBookMarkedNovelsUseCase,
 	private val loadSearchRowUIUseCase: LoadSearchRowUIUseCase,
 	private val loadCatalogueQueryDataUseCase: GetCatalogueQueryDataUseCase,
+	private val getExtensionUseCase: GetExtensionUseCase
 ) : ASearchViewModel() {
 	private val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
 
@@ -181,6 +185,8 @@ class SearchViewModel(
 		val flow = MutableStateFlow<List<ACatalogNovelUI>>(listOf())
 
 		launchIO {
+			val ext = getExtensionUseCase(extensionID)!!
+
 			flow.emitAll(
 				queryFlow.combine(getRefreshFlow(extensionID)) { query, _ -> query }
 					.transformLatest { query ->
@@ -196,7 +202,10 @@ class SearchViewModel(
 								loadCatalogueQueryDataUseCase(
 									extensionID,
 									query,
-									mapOf()
+									HashMap<Int, Any>().apply {
+										putAll(ext.searchFiltersModel.mapify())
+										this[PAGE_INDEX] = 1
+									}
 								)
 							)
 						} catch (e: Exception) {
