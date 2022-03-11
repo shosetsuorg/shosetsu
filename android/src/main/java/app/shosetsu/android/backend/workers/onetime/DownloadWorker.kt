@@ -280,6 +280,9 @@ class DownloadWorker(
 
 			try {
 				download(downloadEntity)
+
+				notify(downloadEntity, isComplete = true)
+				downloadsRepo.deleteEntity(downloadEntity)
 			} catch (e: Exception) {//TODO specify
 				downloadsRepo.update(
 					downloadEntity.copy(
@@ -291,14 +294,10 @@ class DownloadWorker(
 				launchUI {
 					toast { e.message ?: "Download error" }
 				}
+			} finally {
+				activeJobs-- // Drops active job count once completed task
+				activeExtensions.remove(downloadEntity.extensionID)
 			}
-
-			notify(downloadEntity, isComplete = true)
-			downloadsRepo.deleteEntity(downloadEntity)
-
-
-			activeJobs-- // Drops active job count once completed task
-			activeExtensions.remove(downloadEntity.extensionID)
 		}
 	}
 
