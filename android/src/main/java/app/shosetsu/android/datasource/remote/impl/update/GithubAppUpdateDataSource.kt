@@ -70,9 +70,8 @@ class GithubAppUpdateDataSource(
 		okHttpClient.quickie(update.archURL()).let { response ->
 			if (response.isSuccessful) {
 				// TODO One day have kotlin IO to handle this right here
-				response.body?.bytes() ?: throw EmptyResponseBodyException(update.archURL())
-			}
-			throw HTTPException(response.code)
+				return response.body?.bytes() ?: throw EmptyResponseBodyException(update.archURL())
+			} else throw HTTPException(response.code)
 		}
 	}
 
