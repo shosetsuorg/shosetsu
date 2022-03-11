@@ -204,7 +204,7 @@ class SearchViewModel(
 									query,
 									HashMap<Int, Any>().apply {
 										putAll(ext.searchFiltersModel.mapify())
-										this[PAGE_INDEX] = 1
+										this[PAGE_INDEX] = ext.startIndex
 									}
 								)
 							)
