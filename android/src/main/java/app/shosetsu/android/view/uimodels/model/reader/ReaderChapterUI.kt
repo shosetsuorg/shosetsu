@@ -1,10 +1,7 @@
 package app.shosetsu.android.view.uimodels.model.reader
 
 import android.view.View
-import app.shosetsu.android.common.ext.collectLA
-import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.common.ext.logV
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.ui.reader.types.model.HTMLReader
@@ -15,6 +12,8 @@ import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.lib.Novel.ChapterType
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.acra.ACRA
+import org.luaj.vm2.LuaError
+import java.net.SocketTimeoutException
 
 /**
  * Data class that holds each chapter and its data (not including text content)
@@ -76,16 +75,35 @@ data class ReaderChapterUI(
 		}
 	}
 
+	private fun handleLoadError(holder: ReaderChapterViewHolder, error: Throwable) {
+		// TODO("Figure out how to restart the liveData")
+		when (error) {
+			is SocketTimeoutException -> {
+				holder.setData((error.message ?: "timeout").toByteArray())
+				holder.itemView.context.toast(R.string.reader_leave_error)
+			}
+
+			is LuaError -> {
+				if (error.cause != null)
+					handleLoadError(holder, error)
+				else {
+					holder.setData((error.message ?: "lua error").toByteArray())
+				}
+			}
+			else -> ACRA.errorReporter.handleException(error)
+		}
+
+		holder.itemView.context.toast(R.string.reader_leave_error)
+	}
+
 	override fun bindView(holder: ReaderChapterViewHolder, payloads: List<Any>) {
 		logI("Binding view")
 		super.bindView(holder, payloads)
 		chapterReader?.let { reader ->
 			holder.showLoadingProgress()
 			reader.viewModel.getChapterPassage(this).collectLA(reader, catch = {
-				ACRA.errorReporter.handleException(it)
-				//	holder.setError(it.message, "Retry") {
-				//		TODO("Figure out how to restart the liveData")
-				//		}
+				holder.hideLoadingProgress()
+				handleLoadError(holder, it)
 			}) { data ->
 				if (data == null) return@collectLA
 

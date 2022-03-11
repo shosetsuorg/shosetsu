@@ -643,6 +643,7 @@
     <string name="controller_library_menu_tri_by_id">By novel ID</string>
     <string name="controller_library_menu_tri_by_source">By source</string>
     <string name="controller_library_menu_tri_by_date">By date</string>
+    <string name="reader_leave_error">Please exit the reader and rejoin due to error</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>
