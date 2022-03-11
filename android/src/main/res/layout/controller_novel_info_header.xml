@@ -189,7 +189,7 @@
             android:id="@+id/in_library"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/add_to_library"
+            android:text="@string/controller_novel_add_to_library"
             app:chipIcon="@drawable/ic_heart_svg"
             app:iconStartPadding="8dp" />
 

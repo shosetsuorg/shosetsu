@@ -6,7 +6,20 @@ import android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 import android.view.*
 import android.widget.NumberPicker
 import androidx.appcompat.app.AlertDialog
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import app.shosetsu.android.activity.MainActivity
@@ -22,12 +35,18 @@ import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
 import app.shosetsu.common.enums.ReadingStatus
+import app.shosetsu.lib.Novel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.R.id
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBinding.inflate
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelJumpDialogBinding
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
@@ -91,6 +110,16 @@ class NovelController(bundle: Bundle) :
 		}
 	}
 	private var actionMode: ActionMode? = null
+	private val selectedChapters: List<ChapterUI>
+		get() = fastAdapter.getSelectExtension().selectedItems.filterIsInstance<ChapterUI>()
+	private val selectedChapterArray: Array<ChapterUI>
+		get() = selectedChapters.toTypedArray()
+	private val bottomMenuView: View
+		get() = NovelFilterMenuBuilder(
+			this,
+			activity!!.layoutInflater,
+			viewModel
+		).build()
 
 	init {
 		setHasOptionsMenu(true)
@@ -135,7 +164,6 @@ class NovelController(bundle: Bundle) :
 	}
 
 	private fun getChapters(): List<ChapterUI> = chapterUIAdapter.itemList.items
-
 	override fun showFAB(fab: FloatingActionButton) {
 		if (actionMode == null) super.showFAB(fab)
 	}
@@ -568,12 +596,6 @@ class NovelController(bundle: Bundle) :
 		TODO("HANDLE")
 	}
 
-	private val selectedChapters: List<ChapterUI>
-		get() = fastAdapter.getSelectExtension().selectedItems.filterIsInstance<ChapterUI>()
-
-	private val selectedChapterArray: Array<ChapterUI>
-		get() = selectedChapters.toTypedArray()
-
 	private fun bookmarkSelected() {
 		viewModel.bookmarkChapters(*selectedChapterArray)
 	}
@@ -708,11 +730,197 @@ class NovelController(bundle: Bundle) :
 			fastAdapter.getSelectExtension().deselect()
 		}
 	}
+}
 
-	private val bottomMenuView: View
-		get() = NovelFilterMenuBuilder(
-			this,
-			activity!!.layoutInflater,
-			viewModel
-		).build()
+@Preview
+@Composable
+fun PreviewNovelInfoContent() {
+
+	val info = NovelUI(
+		0,
+		"",
+		1,
+		"Test",
+		false,
+		"Title",
+		"",
+		"laaaaaaaaaaaaaaaaaaaaaaaaaa\nlaaaaaaaaaaaaaaaaaaa\nklaaaaaaaaaaaaa",
+		true,
+		"eng",
+		listOf("A", "B", "C"),
+		listOf("A", "B", "C"),
+		listOf("A", "B", "C"),
+		listOf("A", "B", "C"),
+		Novel.Status.COMPLETED
+	)
+	MdcTheme {
+		NovelInfoContent(
+			novelInfo = info,
+			chapters = emptyList(),
+			isRefreshing = false,
+			onRefresh = {},
+			openWebview = {},
+			toggleBookmark = {},
+			openChapterJump = {}
+		)
+	}
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun NovelInfoContent(
+	novelInfo: NovelUI?,
+	chapters: List<ChapterUI>?,
+	isRefreshing: Boolean,
+	onRefresh: () -> Unit,
+	openWebview: () -> Unit,
+	toggleBookmark: () -> Unit,
+	openChapterJump: () -> Unit
+) {
+	SwipeRefresh(state = SwipeRefreshState(isRefreshing), onRefresh = onRefresh) {
+		LazyColumn(
+			modifier = Modifier.fillMaxWidth(),
+		) {
+			if (novelInfo != null)
+				item {
+					Column(
+						modifier = Modifier.fillMaxWidth(),
+					) {
+						Box(
+							modifier = Modifier.fillMaxWidth(),
+						) {
+
+							Column(
+								modifier = Modifier.fillMaxWidth(),
+							) {
+								Row {
+									AsyncImage(
+										ImageRequest.Builder(LocalContext.current)
+											.data(novelInfo.imageURL)
+											.placeholder(R.drawable.animated_refresh)
+											.error(R.drawable.broken_image)
+											.build(),
+										stringResource(R.string.controller_novel_info_image)
+									)
+									Column {
+										Row {
+											Text(stringResource(R.string.novel_title))
+											Text(novelInfo.title)
+										}
+										Row {
+											Text(stringResource(R.string.site))
+											Text(novelInfo.extName)
+										}
+										Row {
+											Text(stringResource(R.string.authors))
+											Text(novelInfo.authors.toString())
+										}
+										Row {
+											Text(stringResource(R.string.artists))
+											Text(novelInfo.artists.toString())
+										}
+										Row {
+											Text(stringResource(R.string.publishing_state))
+											Text(
+												when (novelInfo.status) {
+													Novel.Status.PUBLISHING -> stringResource(R.string.publishing)
+													Novel.Status.COMPLETED -> stringResource(R.string.completed)
+													Novel.Status.PAUSED -> stringResource(R.string.paused)
+													Novel.Status.UNKNOWN -> stringResource(R.string.unknown)
+												}
+											)
+										}
+									}
+								}
+
+								Row {
+									Card(
+										onClick = toggleBookmark,
+										shape = RoundedCornerShape(5.dp)
+									) {
+										Row(
+											verticalAlignment = Alignment.CenterVertically,
+											modifier = Modifier.padding(8.dp)
+										) {
+											if (novelInfo.bookmarked) {
+												Icon(
+													painterResource(R.drawable.ic_heart_svg_filled),
+													null
+												)
+												Text(stringResource(R.string.controller_novel_in_library))
+											} else {
+												Icon(
+													painterResource(R.drawable.ic_heart_svg),
+													null
+												)
+												Text(stringResource(R.string.controller_novel_add_to_library))
+											}
+										}
+									}
+									IconButton(onClick = openWebview) {
+										Icon(
+											painterResource(R.drawable.open_in_browser),
+											stringResource(R.string.controller_novel_info_open_web)
+										)
+									}
+								}
+
+								LazyRow {
+									items(novelInfo.genres) {
+										Card(
+											modifier = Modifier.padding(end = 8.dp)
+										) {
+											Text(it, modifier = Modifier.padding(8.dp))
+										}
+									}
+								}
+
+							}
+						}
+
+						Text(novelInfo.description, modifier = Modifier.fillMaxWidth())
+
+						Divider()
+
+						Row(
+							horizontalArrangement = Arrangement.SpaceBetween,
+							modifier = Modifier.fillMaxWidth(),
+							verticalAlignment = Alignment.CenterVertically
+						) {
+							Text(stringResource(R.string.chapters))
+
+							Row {
+								Card(
+									onClick = openChapterJump,
+									modifier = Modifier.padding(end = 8.dp),
+								) {
+									Text(
+										stringResource(R.string.jump_to_chapter_short),
+										modifier = Modifier.padding(8.dp),
+									)
+								}
+
+								Card(
+									onClick = openChapterJump
+								) {
+									Row(
+										verticalAlignment = Alignment.CenterVertically,
+										modifier = Modifier.padding(8.dp),
+									) {
+										Icon(painterResource(R.drawable.filter), null)
+										Text(stringResource(R.string.jump_to_chapter_short))
+									}
+								}
+							}
+						}
+
+						Divider()
+					}
+				}
+
+			item {
+
+			}
+		}
+	}
 }
