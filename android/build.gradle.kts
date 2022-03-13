@@ -321,17 +321,25 @@ dependencies {
 
 
 	// Compose
-	implementation("androidx.compose.ui:ui:1.1.1")
+	val androidxCompose = "1.1.1"
+	fun androidxCompose(
+		module: String,
+		submodule: String = module,
+		version: String = androidxCompose
+	) = "androidx.compose.$submodule:$module:$version"
 
-	implementation("androidx.compose.compiler:compiler:1.1.1")
+	implementation(androidxCompose("ui"))
+
+	implementation(androidxCompose("compiler"))
 
 	//- Tooling support (Previews, etc.)
-	implementation("androidx.compose.ui:ui-tooling:1.1.1")
+	implementation(androidxCompose("ui-tooling", "ui"))
+
 	//- Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-	implementation("androidx.compose.foundation:foundation:1.1.1")
-	implementation("androidx.compose.animation:animation:1.1.1")
-	implementation("androidx.compose.animation:animation-graphics:1.1.1")
-	implementation("androidx.compose.animation:animation-core:1.1.1")
+	implementation(androidxCompose("foundation"))
+	implementation(androidxCompose("animation"))
+	implementation(androidxCompose("animation-graphics", "animation"))
+	implementation(androidxCompose("animation-core", "animation"))
 
 	// - Material
 	implementation("androidx.compose.material:material:1.1.1")
@@ -360,10 +368,12 @@ dependencies {
 	// MDC Adapter
 	implementation("com.google.android.material:compose-theme-adapter:1.1.5")
 
-
-	implementation("androidx.activity:activity:1.4.0")
-	implementation("androidx.activity:activity-ktx:1.4.0")
-	implementation("androidx.activity:activity-compose:1.4.0")
+	val androidxActivity = "1.4.0"
+	fun androidxActivity(module: String, version: String = androidxActivity) =
+		"androidx.activity:$module:$version"
+	implementation(androidxActivity("activity"))
+	implementation(androidxActivity("activity-ktx"))
+	implementation(androidxActivity("activity-compose"))
 
 	implementation("com.chargemap.compose:numberpicker:0.0.11")
 
