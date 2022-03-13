@@ -54,7 +54,7 @@
     <string name="novel_description">Description</string>
     <string name="download">Download</string>
     <string name="download_directory">Download directory</string>
-    <string name="position">Position:</string>
+    <string name="controller_novel_chapter_position">Position:</string>
     <string name="backup_now">Backup Now</string>
     <string name="pending">Pending</string>
     <string name="downloaded">Downloaded</string>
