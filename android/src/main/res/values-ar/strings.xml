@@ -37,7 +37,7 @@
     <string name="novel_description">الوصف</string>
     <string name="download">نزّل</string>
     <string name="download_directory">دليل التنزيل</string>
-    <string name="position">الموقع:</string>
+    <string name="controller_novel_chapter_position">الموقع:</string>
     <string name="backup_now">أنشئ نسخة احتياطية</string>
     <string name="pending">معلق</string>
     <string name="downloaded">منزّل</string>

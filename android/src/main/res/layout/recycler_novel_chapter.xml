@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/titleBox"
             android:layout_toEndOf="@id/release_tag"
-            android:text="@string/position"
+            android:text="@string/controller_novel_chapter_position"
             android:textSize="12sp"
             android:visibility="gone"
             tools:visibility="visible" />

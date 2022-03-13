@@ -8,6 +8,7 @@ import android.widget.NumberPicker
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,11 +16,15 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import app.shosetsu.android.activity.MainActivity
@@ -774,31 +779,57 @@ class NovelController(bundle: Bundle) :
 fun PreviewNovelInfoContent() {
 
 	val info = NovelUI(
-		0,
-		"",
-		1,
-		"Test",
-		false,
-		"Title",
-		"",
-		"laaaaaaaaaaaaaaaaaaaaaaaaaa\nlaaaaaaaaaaaaaaaaaaa\nklaaaaaaaaaaaaa",
-		true,
-		"eng",
-		listOf("A", "B", "C"),
-		listOf("A", "B", "C"),
-		listOf("A", "B", "C"),
-		listOf("A", "B", "C"),
-		Novel.Status.COMPLETED
+		id = 0,
+		novelURL = "",
+		extID = 1,
+		extName = "Test",
+		bookmarked = false,
+		title = "Title",
+		imageURL = "",
+		description = "laaaaaaaaaaaaaaaaaaaaaaaaaa\nlaaaaaaaaaaaaaaaaaaa\nklaaaaaaaaaaaaa",
+		loaded = true,
+		language = "eng",
+		genres = listOf("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"),
+		authors = listOf("A", "B", "C"),
+		artists = listOf("A", "B", "C"),
+		tags = listOf("A", "B", "C"),
+		status = Novel.Status.COMPLETED
 	)
+
+	val chapters = List(10) {
+		ChapterUI(
+			id = it,
+			novelID = 0,
+			link = "",
+			extensionID = 0,
+			title = "Test",
+			releaseDate = "10/10/10",
+			order = it.toDouble(),
+			readingPosition = 0.95,
+			readingStatus = when {
+				it % 2 == 0 -> {
+					ReadingStatus.READING
+				}
+				else -> {
+					ReadingStatus.READ
+				}
+			},
+			bookmarked = it % 2 == 0,
+			isSaved = it % 2 != 0
+		)
+
+	}
+
 	MdcTheme {
 		NovelInfoContent(
 			novelInfo = info,
-			chapters = emptyList(),
+			chapters = chapters,
 			isRefreshing = false,
 			onRefresh = {},
 			openWebview = {},
 			toggleBookmark = {},
-			openChapterJump = {}
+			openChapterJump = {},
+			openChapter = {}
 		)
 	}
 }
@@ -812,152 +843,326 @@ fun NovelInfoContent(
 	onRefresh: () -> Unit,
 	openWebview: () -> Unit,
 	toggleBookmark: () -> Unit,
-	openChapterJump: () -> Unit
+	openChapterJump: () -> Unit,
+	openChapter: (id: Int) -> Unit
 ) {
 	SwipeRefresh(state = SwipeRefreshState(isRefreshing), onRefresh = onRefresh) {
 		LazyColumn(
-			modifier = Modifier.fillMaxWidth(),
+			modifier = Modifier.fillMaxSize(),
 		) {
 			if (novelInfo != null)
 				item {
-					Column(
-						modifier = Modifier.fillMaxWidth(),
-					) {
-						Box(
-							modifier = Modifier.fillMaxWidth(),
-						) {
+					NovelInfoHeaderContent(
+						novelInfo,
+						openWebview,
+						toggleBookmark,
+						openChapterJump
+					)
+				}
 
-							Column(
-								modifier = Modifier.fillMaxWidth(),
-							) {
-								Row {
-									AsyncImage(
-										ImageRequest.Builder(LocalContext.current)
-											.data(novelInfo.imageURL)
-											.placeholder(R.drawable.animated_refresh)
-											.error(R.drawable.broken_image)
-											.build(),
-										stringResource(R.string.controller_novel_info_image)
-									)
-									Column {
-										Row {
-											Text(stringResource(R.string.novel_title))
-											Text(novelInfo.title)
-										}
-										Row {
-											Text(stringResource(R.string.site))
-											Text(novelInfo.extName)
-										}
-										Row {
-											Text(stringResource(R.string.authors))
-											Text(novelInfo.authors.toString())
-										}
-										Row {
-											Text(stringResource(R.string.artists))
-											Text(novelInfo.artists.toString())
-										}
-										Row {
-											Text(stringResource(R.string.publishing_state))
-											Text(
-												when (novelInfo.status) {
-													Novel.Status.PUBLISHING -> stringResource(R.string.publishing)
-													Novel.Status.COMPLETED -> stringResource(R.string.completed)
-													Novel.Status.PAUSED -> stringResource(R.string.paused)
-													Novel.Status.UNKNOWN -> stringResource(R.string.unknown)
-												}
-											)
-										}
-									}
-								}
+			if (chapters != null)
+				NovelInfoChaptersContent(
+					this,
+					chapters,
+					openChapter
+				)
+		}
+	}
+}
 
-								Row {
-									Card(
-										onClick = toggleBookmark,
-										shape = RoundedCornerShape(5.dp)
-									) {
-										Row(
-											verticalAlignment = Alignment.CenterVertically,
-											modifier = Modifier.padding(8.dp)
-										) {
-											if (novelInfo.bookmarked) {
-												Icon(
-													painterResource(R.drawable.ic_heart_svg_filled),
-													null
-												)
-												Text(stringResource(R.string.controller_novel_in_library))
-											} else {
-												Icon(
-													painterResource(R.drawable.ic_heart_svg),
-													null
-												)
-												Text(stringResource(R.string.controller_novel_add_to_library))
-											}
-										}
-									}
-									IconButton(onClick = openWebview) {
-										Icon(
-											painterResource(R.drawable.open_in_browser),
-											stringResource(R.string.controller_novel_info_open_web)
-										)
-									}
-								}
+@Preview
+@Composable
+fun PreviewChapterContent() {
+	val chapter = ChapterUI(
+		id = 0,
+		novelID = 0,
+		link = "",
+		extensionID = 0,
+		title = "Test",
+		releaseDate = "10/10/10",
+		order = 0.0,
+		readingPosition = 0.95,
+		readingStatus = ReadingStatus.READING,
+		bookmarked = true,
+		isSaved = true
+	)
 
-								LazyRow {
-									items(novelInfo.genres) {
-										Card(
-											modifier = Modifier.padding(end = 8.dp)
-										) {
-											Text(it, modifier = Modifier.padding(8.dp))
-										}
-									}
-								}
+	MdcTheme {
+		NovelChapterContent(
+			chapter,
+			openChapter = {}
+		)
+	}
+}
 
-							}
+fun NovelInfoChaptersContent(
+	scope: LazyListScope,
+	chapters: List<ChapterUI>,
+	openChapter: (id: Int) -> Unit
+) {
+	chapters.forEach {
+		scope.item {
+			NovelChapterContent(
+				it,
+				openChapter
+			)
+		}
+	}
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun NovelChapterContent(
+	chapter: ChapterUI,
+	openChapter: (id: Int) -> Unit
+) {
+	Card(
+		shape = RectangleShape,
+		modifier = Modifier.let {
+			if (chapter.readingStatus == ReadingStatus.READ)
+				it.alpha(.5f)
+			else it
+		},
+		onClick = {
+			openChapter(chapter.id)
+		}
+	) {
+		Column(
+			modifier = Modifier.padding(16.dp)
+		) {
+			Text(
+				chapter.title,
+				maxLines = 1,
+				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				color = if (chapter.bookmarked) MaterialTheme.colors.primary else Color.Unspecified
+			)
+
+			Row(
+				horizontalArrangement = Arrangement.SpaceBetween,
+				modifier = Modifier.fillMaxWidth()
+			) {
+				Row {
+					Text(
+						chapter.releaseDate,
+						fontSize = 12.sp,
+						modifier = Modifier.padding(end = 8.dp)
+					)
+
+					if (chapter.readingStatus == ReadingStatus.READING)
+						Row {
+							Text(
+								stringResource(R.string.controller_novel_chapter_position),
+								fontSize = 12.sp,
+								modifier = Modifier.padding(end = 4.dp)
+							)
+							Text(
+								"%2.1f%%".format(chapter.readingPosition),
+								fontSize = 12.sp
+							)
 						}
+				}
 
-						Text(novelInfo.description, modifier = Modifier.fillMaxWidth())
+				if (chapter.isSaved)
+					Text(
+						stringResource(R.string.downloaded),
+						fontSize = 12.sp
+					)
+			}
+		}
+	}
+}
 
-						Divider()
+@Preview
+@Composable
+fun PreviewHeaderContent() {
+	val info = NovelUI(
+		id = 0,
+		novelURL = "",
+		extID = 1,
+		extName = "Test",
+		bookmarked = false,
+		title = "Title",
+		imageURL = "",
+		description = "laaaaaaaaaaaaaaaaaaaaaaaaaa\nlaaaaaaaaaaaaaaaaaaa\nklaaaaaaaaaaaaa",
+		loaded = true,
+		language = "eng",
+		genres = listOf("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"),
+		authors = listOf("A", "B", "C"),
+		artists = listOf("A", "B", "C"),
+		tags = listOf("A", "B", "C"),
+		status = Novel.Status.COMPLETED
+	)
 
+	MdcTheme {
+		NovelInfoHeaderContent(
+			info,
+			{},
+			{},
+			{}
+		)
+	}
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun NovelInfoHeaderContent(
+	novelInfo: NovelUI,
+	openWebview: () -> Unit,
+	toggleBookmark: () -> Unit,
+	openChapterJump: () -> Unit
+) {
+	Column(
+		modifier = Modifier.fillMaxWidth(),
+	) {
+		Box(
+			modifier = Modifier.fillMaxWidth(),
+		) {
+
+			Column(
+				modifier = Modifier.fillMaxWidth(),
+			) {
+				Row(
+					modifier = Modifier.fillMaxWidth(),
+				) {
+					AsyncImage(
+						ImageRequest.Builder(LocalContext.current)
+							.data(novelInfo.imageURL)
+							.placeholder(R.drawable.animated_refresh)
+							.error(R.drawable.broken_image)
+							.build(),
+						stringResource(R.string.controller_novel_info_image),
+						modifier = Modifier.fillMaxWidth(.35f).aspectRatio(.75f)
+					)
+					Column {
 						Row(
-							horizontalArrangement = Arrangement.SpaceBetween,
-							modifier = Modifier.fillMaxWidth(),
-							verticalAlignment = Alignment.CenterVertically
+							modifier = Modifier.padding(bottom = 8.dp)
 						) {
-							Text(stringResource(R.string.chapters))
-
-							Row {
-								Card(
-									onClick = openChapterJump,
-									modifier = Modifier.padding(end = 8.dp),
-								) {
-									Text(
-										stringResource(R.string.jump_to_chapter_short),
-										modifier = Modifier.padding(8.dp),
-									)
-								}
-
-								Card(
-									onClick = openChapterJump
-								) {
-									Row(
-										verticalAlignment = Alignment.CenterVertically,
-										modifier = Modifier.padding(8.dp),
-									) {
-										Icon(painterResource(R.drawable.filter), null)
-										Text(stringResource(R.string.jump_to_chapter_short))
-									}
-								}
-							}
+							Text(stringResource(R.string.novel_title))
+							Text(novelInfo.title)
 						}
-
-						Divider()
+						Row(
+							modifier = Modifier.padding(bottom = 8.dp)
+						) {
+							Text(stringResource(R.string.site))
+							Text(novelInfo.extName)
+						}
+						Row(
+							modifier = Modifier.padding(bottom = 8.dp)
+						) {
+							Text(stringResource(R.string.authors))
+							Text(novelInfo.authors.toString())
+						}
+						Row(
+							modifier = Modifier.padding(bottom = 8.dp)
+						) {
+							Text(stringResource(R.string.artists))
+							Text(novelInfo.artists.toString())
+						}
+						Row {
+							Text(stringResource(R.string.publishing_state))
+							Text(
+								when (novelInfo.status) {
+									Novel.Status.PUBLISHING -> stringResource(R.string.publishing)
+									Novel.Status.COMPLETED -> stringResource(R.string.completed)
+									Novel.Status.PAUSED -> stringResource(R.string.paused)
+									Novel.Status.UNKNOWN -> stringResource(R.string.unknown)
+								}
+							)
+						}
 					}
 				}
 
-			item {
+				Row(
+					modifier = Modifier.fillMaxWidth(),
+					horizontalArrangement = Arrangement.SpaceEvenly
+				) {
+					Card(
+						onClick = toggleBookmark,
+						shape = RoundedCornerShape(5.dp)
+					) {
+						Row(
+							verticalAlignment = Alignment.CenterVertically,
+							modifier = Modifier.padding(8.dp)
+						) {
+							if (novelInfo.bookmarked) {
+								Icon(
+									painterResource(R.drawable.ic_heart_svg_filled),
+									null
+								)
+								Text(stringResource(R.string.controller_novel_in_library))
+							} else {
+								Icon(
+									painterResource(R.drawable.ic_heart_svg),
+									null
+								)
+								Text(stringResource(R.string.controller_novel_add_to_library))
+							}
+						}
+					}
+					IconButton(onClick = openWebview) {
+						Icon(
+							painterResource(R.drawable.open_in_browser),
+							stringResource(R.string.controller_novel_info_open_web)
+						)
+					}
+				}
+
+				LazyRow(
+					modifier = Modifier.fillMaxWidth(),
+					horizontalArrangement = Arrangement.SpaceEvenly,
+					contentPadding = PaddingValues(start = 8.dp, end = 8.dp)
+				) {
+					items(novelInfo.genres) {
+						Card(
+							modifier = Modifier.padding(end = 8.dp),
+						) {
+							Text(it, modifier = Modifier.padding(8.dp))
+						}
+					}
+				}
 
 			}
 		}
+
+		Text(
+			novelInfo.description,
+			modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp)
+		)
+
+		Divider()
+
+		Row(
+			horizontalArrangement = Arrangement.SpaceBetween,
+			modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp),
+			verticalAlignment = Alignment.CenterVertically
+		) {
+			Text(stringResource(R.string.chapters))
+
+			Row {
+				Card(
+					onClick = openChapterJump,
+					modifier = Modifier.padding(end = 8.dp),
+				) {
+					Text(
+						stringResource(R.string.jump_to_chapter_short),
+						modifier = Modifier.padding(8.dp),
+					)
+				}
+
+				Card(
+					onClick = openChapterJump
+				) {
+					Row(
+						verticalAlignment = Alignment.CenterVertically,
+						modifier = Modifier.padding(8.dp),
+					) {
+						Icon(painterResource(R.drawable.filter), null)
+						Text(stringResource(R.string.jump_to_chapter_short))
+					}
+				}
+			}
+		}
+
+		Divider()
 	}
 }
