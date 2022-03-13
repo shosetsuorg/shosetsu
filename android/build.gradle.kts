@@ -341,6 +341,16 @@ dependencies {
 	//implementation("androidx.compose.material:material-icons-core:1.0.2")
 	//implementation("androidx.compose.material:material-icons-extended:1.0.2")
 
+	// - accompanist
+	val accompanistVersion = "0.23.1"
+	fun accompanist(module: String, version: String = accompanistVersion) =
+		"com.google.accompanist:$module:$version"
+
+	implementation(accompanist("accompanist-appcompat-theme"))
+	implementation(accompanist("accompanist-pager"))
+	implementation(accompanist("accompanist-swiperefresh"))
+	implementation(accompanist("accompanist-webview", "0.24.3-alpha"))
+
 	//- Integration with observables
 	implementation("androidx.compose.runtime:runtime-livedata:1.1.1")
 
@@ -349,8 +359,7 @@ dependencies {
 
 	// MDC Adapter
 	implementation("com.google.android.material:compose-theme-adapter:1.1.5")
-	implementation("com.google.accompanist:accompanist-appcompat-theme:0.15.0")
-	implementation("com.google.accompanist:accompanist-swiperefresh:0.19.0")
+
 
 	implementation("androidx.activity:activity:1.4.0")
 	implementation("androidx.activity:activity-ktx:1.4.0")
