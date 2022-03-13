@@ -1,5 +1,6 @@
 package app.shosetsu.android.ui.reader
 
+import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
@@ -11,15 +12,22 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.Toolbar
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -37,8 +45,14 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
 import app.shosetsu.android.viewmodel.impl.settings.*
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
+import app.shosetsu.lib.Novel.ChapterType
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityReaderBinding
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.VerticalPager
+import com.google.accompanist.pager.rememberPagerState
+import com.google.accompanist.web.WebView
+import com.google.accompanist.web.rememberWebViewStateWithHTMLData
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
@@ -50,6 +64,8 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.calculateDiff
 import com.mikepenz.fastadapter.listeners.OnCreateViewHolderListenerImpl
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -606,19 +622,27 @@ fun PreviewChapterReaderContent() {
 		ChapterReaderContent(
 			currentChapterTitle = "Chapter 1",
 			exit = {},
-			chapters = emptyList(),
+			items = emptyList(),
 			isHorizontal = false,
+			chapterType = ChapterType.HTML,
+			initialChapterIndex = 0,
+			getStringContent = { flow { } },
+			getHTMLContent = { flow { } }
 		)
 	}
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, com.google.accompanist.pager.ExperimentalPagerApi::class)
 @Composable
 fun ChapterReaderContent(
 	currentChapterTitle: String,
 	exit: () -> Unit,
-	chapters: List<ReaderUIItem<*, *>>,
+	items: List<ReaderUIItem<*, *>>,
 	isHorizontal: Boolean,
+	chapterType: ChapterType,
+	initialChapterIndex: Int,
+	getStringContent: (id: Int) -> Flow<String>,
+	getHTMLContent: (id: Int) -> Flow<String>
 ) {
 	BottomSheetScaffold(
 		topBar = {
@@ -637,7 +661,111 @@ fun ChapterReaderContent(
 			// TODO Fill
 		},
 	) {
+		val pagerState = rememberPagerState(initialChapterIndex)
+		val count = items.size
+
+		@Composable
+		fun createPage(page: Int) {
+			when (val item = items[page]) {
+				is ReaderChapterUI -> {
+					when (chapterType) {
+						ChapterType.STRING -> {
+
+						}
+						ChapterType.HTML -> {
+
+						}
+						else -> throw Exception("stub")
+					}
+				}
+				is ReaderDividerUI -> {
+
+					DividierPageContent(
+						item.prev,
+						item.next
+					)
+				}
+			}
+		}
+
 		if (isHorizontal) {
+			HorizontalPager(
+				count = count,
+				state = pagerState,
+				modifier = Modifier.fillMaxSize()
+			) { page ->
+				createPage(page)
+			}
+		} else {
+			VerticalPager(
+				count = count,
+				state = pagerState,
+				modifier = Modifier.fillMaxSize()
+			) { page ->
+				createPage(page)
+			}
 		}
 	}
+}
+
+@Preview
+@Composable
+fun PreviewDividerPageContent() {
+	DividierPageContent(
+		"The first",
+		"The second"
+	)
+}
+
+@Composable
+fun DividierPageContent(
+	previous: String,
+	next: String?
+) {
+	Column(
+		horizontalAlignment = Alignment.CenterHorizontally,
+		verticalArrangement = Arrangement.Center,
+		modifier = Modifier.fillMaxSize()
+	) {
+
+		if (next != null) {
+			Text(stringResource(R.string.reader_last_chapter, previous))
+			Text(stringResource(R.string.reader_next_chapter, next))
+		} else {
+			Text(stringResource(R.string.no_more_chapters))
+		}
+	}
+}
+
+@Composable
+fun StringPageContent(
+	content: String,
+	textSize: Float,
+	paragraphSpacing: Float,
+	onScroll: (perc: Double) -> Unit
+) {
+	val state = rememberScrollState()
+
+	Text(
+		content,
+		fontSize = textSize.sp,
+		lineHeight = paragraphSpacing.sp,
+		modifier = Modifier.verticalScroll(state)
+	)
+}
+
+@Composable
+fun WebViewPageContent(
+	html: String,
+	onScroll: (perc: Double) -> Unit
+) {
+	val state = rememberWebViewStateWithHTMLData(html)
+	WebView(
+		state,
+		captureBackPresses = false,
+		onCreated = {
+			@SuppressLint("SetJavaScriptEnabled")
+			it.settings.javaScriptEnabled = true
+		}
+	)
 }
