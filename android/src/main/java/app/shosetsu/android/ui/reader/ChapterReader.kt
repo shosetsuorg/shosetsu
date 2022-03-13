@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -742,30 +741,35 @@ fun StringPageContent(
 	content: String,
 	textSize: Float,
 	paragraphSpacing: Float,
-	onScroll: (perc: Double) -> Unit
+	onScroll: (perc: Double) -> Unit,
+	isHorizontal: Boolean
 ) {
 	val state = rememberScrollState()
+
 
 	Text(
 		content,
 		fontSize = textSize.sp,
 		lineHeight = paragraphSpacing.sp,
-		modifier = Modifier.verticalScroll(state)
+		modifier = Modifier.fillMaxSize()
 	)
 }
 
 @Composable
 fun WebViewPageContent(
 	html: String,
-	onScroll: (perc: Double) -> Unit
+	onScroll: (perc: Double) -> Unit,
+	isHorizontal: Boolean
 ) {
 	val state = rememberWebViewStateWithHTMLData(html)
+
 	WebView(
 		state,
 		captureBackPresses = false,
 		onCreated = {
 			@SuppressLint("SetJavaScriptEnabled")
 			it.settings.javaScriptEnabled = true
-		}
+		},
+		modifier = Modifier.fillMaxSize()
 	)
 }
