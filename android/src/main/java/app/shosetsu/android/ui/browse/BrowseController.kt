@@ -37,6 +37,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
@@ -334,10 +335,10 @@ fun PreviewBrowseExtensionContent() {
 			installOptions = listOf(
 				ExtensionInstallOptionEntity(1, "Wowa", Version(1, 1, 1))
 			),
-			isInstalled = false,
+			isInstalled = true,
 			installedVersion = Version(1, 1, 1),
 			installedRepo = 1,
-			isUpdateAvailable = false,
+			isUpdateAvailable = true,
 			updateVersion = Version(1, 2, 1),
 			isInstalling = false
 		),
@@ -464,8 +465,10 @@ fun BrowseExtensionContent(
 							onClick = update
 						) {
 							Icon(
-								painterResource(R.drawable.tinted_update),
-								stringResource(R.string.update)
+								painterResource(R.drawable.download),
+								stringResource(R.string.update),
+								modifier = Modifier.rotate(180f),
+								tint = colorResource(R.color.colorAccent)
 							)
 						}
 					}
