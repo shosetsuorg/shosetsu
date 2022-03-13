@@ -12,9 +12,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.Toolbar
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -607,3 +612,45 @@ class ChapterReader
 	}
 }
 
+@Preview
+@Composable
+fun PreviewChapterReaderContent() {
+	MdcTheme {
+		ChapterReaderContent(
+			currentChapterTitle = "Chapter 1",
+			exit = {},
+			chapters = emptyList(),
+			isHorizontal = false,
+		)
+	}
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun ChapterReaderContent(
+	currentChapterTitle: String,
+	exit: () -> Unit,
+	chapters: List<ReaderUIItem<*, *>>,
+	isHorizontal: Boolean,
+) {
+	BottomSheetScaffold(
+		topBar = {
+			TopAppBar(
+				navigationIcon = {
+					IconButton(onClick = exit) {
+						Icon(Icons.Filled.ArrowBack, null)
+					}
+				},
+				title = {
+					Text(currentChapterTitle)
+				}
+			)
+		},
+		sheetContent = {
+			// TODO Fill
+		},
+	) {
+		if (isHorizontal) {
+		}
+	}
+}
