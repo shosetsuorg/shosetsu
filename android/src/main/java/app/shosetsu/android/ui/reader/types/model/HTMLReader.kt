@@ -56,48 +56,16 @@ class HTMLReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	 * value    : style-key to value
 	 */
 	private val shosetsuStyle: HashMap<String, HashMap<String, String>> = hashMapOf()
-	private val shosetsuScript by lazy { ShosetsuScript() }
-
-	private inner class ShosetsuScript {
-		var onClickMethod: () -> Unit = {}
-
-		@Suppress("unused")
-		@JavascriptInterface
-		fun onClick() {
-			launchUI {
-				onClickMethod()
+	private val shosetsuScript by lazy {
+		ShosetsuScript(
+			webView = webView,
+			onHitBottom = {
+				viewModel.updateChapterAsRead(chapter)
+			},
+			onScroll = {
+				viewModel.markAsReadingOnScroll(chapter, it)
 			}
-		}
-
-		@Suppress("unused", "RedundantVisibilityModifier")
-		@JavascriptInterface
-		public fun onScroll() {
-			launchUI {
-				webView.evaluateJavascript("window.pageYOffset") { _yPosition ->
-					val yPosition: Double? = _yPosition.toDoubleOrNull()
-					yPosition ?: logD("Null Y position")
-					yPosition ?: return@evaluateJavascript
-
-					webView.evaluateJavascript(getMaxJson) { _scrollMaxY ->
-						val scrollMaxY: Double? = _scrollMaxY.toDoubleOrNull()
-						scrollMaxY ?: logD("Null Y max")
-						scrollMaxY ?: return@evaluateJavascript
-
-
-						val percentage = ((yPosition / scrollMaxY) * 100)
-						if (percentage < 99) {
-							if (yPosition.toInt() % 5 == 0) {
-								// Mark as reading if on scroll
-								chapterReader.viewModel.markAsReadingOnScroll(chapter, percentage)
-							}
-						} else {
-							// Hit bottom
-							chapterReader.viewModel.updateChapterAsRead(chapter)
-						}
-					}
-				}
-			}
-		}
+		)
 	}
 
 	init {
@@ -289,10 +257,58 @@ class HTMLReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 	companion object {
 
 		private const val HTML_SIZE_DIVISION = 1.25
-		private val getMaxJson = """
-					    var innerh = window.innerHeight || ebody.clientHeight, yWithScroll = 0;
-					    yWithScroll = document.body.scrollHeight;
-					    yWithScroll-innerh; 
-				""".trimIndent()
+
+	}
+}
+
+const val getMaxJson = """
+   var innerh = window.innerHeight || ebody.clientHeight, yWithScroll = 0;
+   yWithScroll = document.body.scrollHeight;
+   yWithScroll-innerh; 
+"""
+
+class ShosetsuScript(
+	private val webView: WebView,
+	private val onHitBottom: () -> Unit,
+	private val onScroll: (percentage: Double) -> Unit
+) {
+	var onClickMethod: () -> Unit = {}
+
+	@Suppress("unused")
+	@JavascriptInterface
+	fun onClick() {
+		launchUI {
+			onClickMethod()
+		}
+	}
+
+	@Suppress("unused", "RedundantVisibilityModifier")
+	@JavascriptInterface
+	public fun onScroll() {
+		launchUI {
+			webView.evaluateJavascript("window.pageYOffset") { _yPosition ->
+				val yPosition: Double? = _yPosition.toDoubleOrNull()
+				yPosition ?: logD("Null Y position")
+				yPosition ?: return@evaluateJavascript
+
+				webView.evaluateJavascript(getMaxJson) { _scrollMaxY ->
+					val scrollMaxY: Double? = _scrollMaxY.toDoubleOrNull()
+					scrollMaxY ?: logD("Null Y max")
+					scrollMaxY ?: return@evaluateJavascript
+
+
+					val percentage = ((yPosition / scrollMaxY) * 100)
+					if (percentage < 99) {
+						if (yPosition.toInt() % 5 == 0) {
+							// Mark as reading if on scroll
+							onScroll(percentage)
+						}
+					} else {
+						// Hit bottom
+						onHitBottom()
+					}
+				}
+			}
+		}
 	}
 }
