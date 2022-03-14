@@ -12,6 +12,7 @@ import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
+import javax.net.ssl.SSLException
 
 /*
  * This file is part of shosetsu.
@@ -134,6 +135,7 @@ class NovelsRepository(
 		data: Map<Int, Any>
 	): List<Novel.Listing> = remoteCatalogueDataSource.search(ext, query, data)
 
+	@Throws(SSLException::class)
 	override suspend fun getCatalogueData(
 		ext: IExtension,
 		listing: Int,

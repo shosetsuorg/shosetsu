@@ -23,6 +23,7 @@ import app.shosetsu.common.domain.model.local.StrippedNovelEntity
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
+import javax.net.ssl.SSLException
 
 
 /**
@@ -126,6 +127,7 @@ interface INovelsRepository {
 	/**
 	 * Loads catalogue data of an [IExtension]
 	 */
+	@Throws(SSLException::class)
 	suspend fun getCatalogueData(
 		ext: IExtension,
 		listing: Int,

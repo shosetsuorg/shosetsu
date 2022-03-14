@@ -6,6 +6,7 @@ import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.PAGE_INDEX
 import app.shosetsu.lib.QUERY_INDEX
+import javax.net.ssl.SSLException
 
 /*
  * This file is part of Shosetsu.
@@ -44,6 +45,7 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 			l
 		} else emptyList()
 
+	@Throws(SSLException::class)
 	override suspend fun loadListing(
 		ext: IExtension,
 		listingIndex: Int,

@@ -23,6 +23,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.*
+import javax.net.ssl.SSLException
 
 /*
  * This file is part of shosetsu.
@@ -228,6 +229,7 @@ class CatalogViewModel(
 				currentMaxPage++
 			}
 
+			@Throws(SSLException::class)
 			private suspend fun getDataLoaderAndLoad(queryFilter: QueryFilter): List<ACatalogNovelUI> {
 				return if (queryFilter.query.isEmpty()) {
 					logV("Loading listing data")

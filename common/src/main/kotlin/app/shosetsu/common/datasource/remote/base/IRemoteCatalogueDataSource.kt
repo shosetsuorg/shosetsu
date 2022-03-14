@@ -2,6 +2,7 @@ package app.shosetsu.common.datasource.remote.base
 
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
+import javax.net.ssl.SSLException
 
 /*
  * This file is part of shosetsu.
@@ -39,6 +40,7 @@ interface IRemoteCatalogueDataSource {
 	/**
 	 * Loads a listings data from an extension
 	 */
+	@Throws(SSLException::class)
 	suspend fun loadListing(
 		ext: IExtension,
 		listingIndex: Int,

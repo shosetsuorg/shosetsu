@@ -10,6 +10,7 @@ import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.lib.IExtension
+import javax.net.ssl.SSLException
 
 /*
  * This file is part of shosetsu.
@@ -38,6 +39,7 @@ class GetCatalogueListingDataUseCase(
 	private val settingsRepo: ISettingsRepository,
 	private val extSettingsRepo: IExtensionSettingsRepository
 ) {
+	@Throws(SSLException::class)
 	suspend operator fun invoke(
 		iExtension: IExtension,
 		data: Map<Int, Any>
