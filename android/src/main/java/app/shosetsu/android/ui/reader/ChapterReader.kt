@@ -8,22 +8,26 @@ import android.speech.tts.TextToSpeech
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.Toolbar
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
@@ -36,6 +40,8 @@ import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.consts.READER_BAR_ALPHA
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
+import app.shosetsu.android.ui.reader.types.model.ShosetsuScript
+import app.shosetsu.android.ui.reader.types.model.getMaxJson
 import app.shosetsu.android.view.compose.DiscreteSlider
 import app.shosetsu.android.view.compose.setting.GenericBottomSettingLayout
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
@@ -65,6 +71,7 @@ import com.mikepenz.fastadapter.listeners.OnCreateViewHolderListenerImpl
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -626,7 +633,9 @@ fun PreviewChapterReaderContent() {
 			chapterType = ChapterType.HTML,
 			initialChapterIndex = 0,
 			getStringContent = { flow { } },
-			getHTMLContent = { flow { } }
+			getHTMLContent = { flow { } },
+			onScroll = { a, b ->
+			}
 		)
 	}
 }
@@ -640,25 +649,34 @@ fun ChapterReaderContent(
 	isHorizontal: Boolean,
 	chapterType: ChapterType,
 	initialChapterIndex: Int,
-	getStringContent: (id: Int) -> Flow<String>,
-	getHTMLContent: (id: Int) -> Flow<String>
+	getStringContent: (item: ReaderChapterUI) -> Flow<String>,
+	getHTMLContent: (item: ReaderChapterUI) -> Flow<String>,
+	onScroll: (item: ReaderChapterUI, perc: Double) -> Unit
 ) {
+	var isFocused by remember { mutableStateOf(false) }
+	val scaffoldState = rememberBottomSheetScaffoldState()
+
 	BottomSheetScaffold(
 		topBar = {
-			TopAppBar(
-				navigationIcon = {
-					IconButton(onClick = exit) {
-						Icon(Icons.Filled.ArrowBack, null)
+			if (!isFocused)
+				TopAppBar(
+					navigationIcon = {
+						IconButton(onClick = exit) {
+							Icon(Icons.Filled.ArrowBack, null)
+						}
+					},
+					title = {
+						Text(currentChapterTitle)
 					}
-				},
-				title = {
-					Text(currentChapterTitle)
-				}
-			)
+				)
 		},
 		sheetContent = {
-			// TODO Fill
+			if (!isFocused) {
+				// TODO Fill
+			}
 		},
+		scaffoldState = scaffoldState,
+		sheetGesturesEnabled = !isFocused,
 	) {
 		val pagerState = rememberPagerState(initialChapterIndex)
 		val count = items.size
@@ -672,7 +690,15 @@ fun ChapterReaderContent(
 
 						}
 						ChapterType.HTML -> {
+							val page by getHTMLContent(item).collectAsState("")
+							WebViewPageContent(page, item.readingPosition, onScroll = {
+								onScroll(item, it)
+							}, onFocusToggle = {
+								isFocused = !isFocused
+							},
+								onHitBottom = {
 
+								})
 						}
 						else -> throw Exception("stub")
 					}
@@ -739,36 +765,86 @@ fun DividierPageContent(
 @Composable
 fun StringPageContent(
 	content: String,
+	progress: Double,
 	textSize: Float,
 	paragraphSpacing: Float,
 	onScroll: (perc: Double) -> Unit,
+	onFocusToggle: () -> Unit,
 	isHorizontal: Boolean
 ) {
 	val state = rememberScrollState()
 
+	if (state.isScrollInProgress)
+		DisposableEffect(Unit) {
+			onDispose {
+				onScroll((state.maxValue / state.value).toDouble())
+			}
+		}
 
 	Text(
 		content,
 		fontSize = textSize.sp,
 		lineHeight = paragraphSpacing.sp,
-		modifier = Modifier.fillMaxSize()
+		modifier = Modifier.fillMaxSize().verticalScroll(state).clickable {
+			onFocusToggle()
+		}
 	)
+
+	LaunchedEffect(Unit) {
+		launch {
+			state.scrollTo((state.maxValue * progress).toInt())
+		}
+	}
 }
 
 @Composable
 fun WebViewPageContent(
 	html: String,
+	progress: Double,
 	onScroll: (perc: Double) -> Unit,
-	isHorizontal: Boolean
+	onFocusToggle: () -> Unit,
+	onHitBottom: () -> Unit
 ) {
 	val state = rememberWebViewStateWithHTMLData(html)
 
 	WebView(
 		state,
 		captureBackPresses = false,
-		onCreated = {
+		onCreated = { webView ->
+			webView.setBackgroundColor(colorResource(android.R.color.black).toArgb())
 			@SuppressLint("SetJavaScriptEnabled")
-			it.settings.javaScriptEnabled = true
+			webView.settings.javaScriptEnabled = true
+
+			val inter = ShosetsuScript(
+				webView,
+				onHitBottom = onHitBottom,
+				onScroll = onScroll
+			)
+
+			inter.onClickMethod = onFocusToggle
+
+			webView.addJavascriptInterface(inter, "shosetsuScript")
+
+			webView.webViewClient = object : WebViewClient() {
+				override fun onPageFinished(view: WebView?, url: String?) {
+					super.onPageFinished(view, url)
+					webView.evaluateJavascript(
+						"""
+						window.addEventListener("scroll",(event)=>{ shosetsuScript.onScroll(); });
+						window.addEventListener("click",(event)=>{ shosetsuScript.onClick(); });
+					""".trimIndent(), null
+					)
+
+					webView.evaluateJavascript(getMaxJson) { maxString ->
+						maxString.toDoubleOrNull()?.let { maxY ->
+							webView.evaluateJavascript(
+								"window.scrollTo(0,${(maxY * (progress / 100)).toInt()})",
+								null
+							)
+						}
+					}
+				}
+			}
 		},
 		modifier = Modifier.fillMaxSize()
 	)
