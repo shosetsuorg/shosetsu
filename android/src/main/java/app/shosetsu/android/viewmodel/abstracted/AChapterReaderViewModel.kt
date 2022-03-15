@@ -43,7 +43,7 @@ abstract class AChapterReaderViewModel :
 	/**
 	 * Is loading up initial content
 	 */
-	abstract val isLoading: Flow<Boolean>
+	abstract val isMainLoading: Flow<Boolean>
 	abstract val chapterType: Flow<Novel.ChapterType?>
 
 	abstract val currentChapterTitle: Flow<String?>
@@ -93,7 +93,7 @@ abstract class AChapterReaderViewModel :
 	 * false    -> vertical paging
 	 * true     -> horizontal paging
 	 */
-	abstract val liveChapterDirection: Flow<Boolean>
+	abstract val isHorizontalReading: Flow<Boolean>
 
 	/**
 	 * The text size that should be used by default for newly created views
@@ -124,12 +124,6 @@ abstract class AChapterReaderViewModel :
 	 * This also is the way to easily get current color without async calls
 	 */
 	abstract val defaultBackground: Int
-
-	/**
-	 * The horizontal option that should be used by default for newly created views
-	 * This also is the way to easily get current state without async calls
-	 */
-	abstract val isHorizontalReading: Flow<Boolean>
 
 	/**
 	 * The state that should be used by default for newly created views

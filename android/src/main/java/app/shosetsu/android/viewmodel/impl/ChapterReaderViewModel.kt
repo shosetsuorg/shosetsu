@@ -1,6 +1,5 @@
 package app.shosetsu.android.viewmodel.impl
 
-import android.app.Application
 import android.graphics.Color
 import androidx.annotation.WorkerThread
 import app.shosetsu.android.common.ext.launchIO
@@ -9,10 +8,7 @@ import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.model.local.ColorChoiceData
 import app.shosetsu.android.domain.usecases.RecordChapterIsReadUseCase
 import app.shosetsu.android.domain.usecases.RecordChapterIsReadingUseCase
-import app.shosetsu.android.domain.usecases.get.GetChapterPassageUseCase
-import app.shosetsu.android.domain.usecases.get.GetReaderChaptersUseCase
-import app.shosetsu.android.domain.usecases.get.GetReaderSettingUseCase
-import app.shosetsu.android.domain.usecases.get.GetReadingMarkingTypeUseCase
+import app.shosetsu.android.domain.usecases.get.*
 import app.shosetsu.android.domain.usecases.update.UpdateReaderChapterUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateReaderSettingUseCase
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
@@ -27,6 +23,7 @@ import app.shosetsu.common.enums.MarkingType.ONSCROLL
 import app.shosetsu.common.enums.MarkingType.ONVIEW
 import app.shosetsu.common.enums.ReadingStatus.READ
 import app.shosetsu.common.enums.ReadingStatus.READING
+import app.shosetsu.lib.Novel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
@@ -56,7 +53,6 @@ import kotlinx.coroutines.runBlocking
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class ChapterReaderViewModel(
-	private val application: Application,
 	override val settingsRepo: ISettingsRepository,
 	private val loadReaderChaptersUseCase: GetReaderChaptersUseCase,
 	private val loadChapterPassageUseCase: GetChapterPassageUseCase,
@@ -65,8 +61,9 @@ class ChapterReaderViewModel(
 	private val updateReaderSettingUseCase: UpdateReaderSettingUseCase,
 	private val getReadingMarkingType: GetReadingMarkingTypeUseCase,
 	private val recordChapterIsReading: RecordChapterIsReadingUseCase,
-	private val recordChapterIsRead: RecordChapterIsReadUseCase
-
+	private val recordChapterIsRead: RecordChapterIsReadUseCase,
+	private val getNovel: GetNovelUIUseCase,
+	private val getExt: GetExtensionUseCase
 ) : AChapterReaderViewModel() {
 	private val isHorizontalPageSwapping by lazy {
 		settingsRepo.getBooleanFlow(ReaderHorizontalPageSwap)
@@ -76,6 +73,38 @@ class ChapterReaderViewModel(
 		get() = runBlocking {
 			settingsRepo.getFloat(ReaderPitch)
 		}
+
+	override fun getChapterStringPassage(item: ReaderChapterUI): Flow<String> =
+		getChapterPassage(item).map {
+			it.toString()
+		}.onIO()
+
+	override fun getChapterHTMLPassage(item: ReaderChapterUI): Flow<String> =
+		getChapterPassage(item).map {
+			// TODO modify html
+			it.toString()
+		}.onIO()
+
+	override val isMainLoading: MutableStateFlow<Boolean> = MutableStateFlow(true)
+
+	override val chapterType: Flow<Novel.ChapterType?> by lazy {
+		novelIDLive.transformLatest { id ->
+			emit(null)
+
+			getNovel(id).first()?.let { novel ->
+				emit(getExt(novel.extID)?.chapterType)
+			}
+		}.onIO()
+	}
+
+	override val currentChapterTitle: Flow<String?> by lazy {
+		currentChapterID.transformLatest { id ->
+			emit(null)
+			chaptersFlow.first().find { it.id == id }?.let {
+				emit(it.title)
+			}
+		}.onIO()
+	}
 
 	override val ttsSpeed: Float
 		get() = runBlocking {
@@ -89,12 +118,13 @@ class ChapterReaderViewModel(
 	 */
 	private val hashMap: HashMap<Int, Flow<ByteArray?>> = hashMapOf()
 
-
 	private val chaptersFlow: Flow<List<ReaderChapterUI>> by lazy {
 		novelIDLive.transformLatest { nId ->
+			isMainLoading.emit(true)
 			emitAll(
 				loadReaderChaptersUseCase(nId)
 			)
+			isMainLoading.emit(false)
 		}
 	}
 
@@ -209,7 +239,7 @@ class ChapterReaderViewModel(
 		settingsRepo.getBooleanFlow(ReaderKeepScreenOn).onIO()
 	}
 
-	override var currentChapterID: Int = -1
+	override var currentChapterID: MutableStateFlow<Int> = MutableStateFlow(-1)
 
 	private val novelIDLive: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
 
@@ -244,11 +274,7 @@ class ChapterReaderViewModel(
 	override val defaultVolumeScroll: Boolean
 		get() = _defaultVolumeScroll
 
-	override val isHorizontalReading: Boolean
-		get() = _isHorizontalReading
-
-
-	override val liveChapterDirection: Flow<Boolean> by lazy {
+	override val isHorizontalReading: Flow<Boolean> by lazy {
 		isHorizontalPageSwapping.mapLatest {
 			_isHorizontalReading = it
 			it
@@ -388,6 +414,22 @@ class ChapterReaderViewModel(
 
 	override fun toggleScreenRotationLock() {
 		isScreenRotationLockedFlow.value = !isScreenRotationLockedFlow.value
+	}
+
+	override fun setCurrentChapterID(intExtra: Int) {
+		currentChapterID.tryEmit(intExtra)
+	}
+
+	override fun incrementProgress() {
+		TODO("Not yet implemented")
+	}
+
+	override fun depleteProgress() {
+		TODO("Not yet implemented")
+	}
+
+	override fun getCurrentChapterURL(): Flow<String> {
+		TODO("Not yet implemented")
 	}
 
 
