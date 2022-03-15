@@ -11,10 +11,9 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -24,10 +23,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
@@ -136,89 +138,91 @@ class ChapterReader
 			val items by viewModel.liveData.collectAsState(emptyList())
 			val isHorizontalReading by viewModel.isHorizontalReading.collectAsState(false)
 			val chapterType by viewModel.chapterType.collectAsState(null)
-			val isLoading by viewModel.isLoading.collectAsState(true)
+			val isLoading by viewModel.isMainLoading.collectAsState(true)
 			val currentChapterID by viewModel.currentChapterID.collectAsState(-1)
 			val isTTSCapable by isTTSCapable.collectAsState(false)
 			val isTTSPlaying by isTTSPlaying.collectAsState(false)
 			val setting by viewModel.getSettings()
 				.collectAsState(NovelReaderSettingEntity(-1, 0, 0.0F))
 
-			ChapterReaderContent(
-				currentChapterTitle ?: stringResource(R.string.loading),
-				exit = {
-					finish()
-				},
-				items = items,
-				isHorizontal = isHorizontalReading,
-				chapterType = chapterType,
-				isInitalLoading = isLoading,
-				currentChapterId = currentChapterID,
-				getStringContent = viewModel::getChapterStringPassage,
-				getHTMLContent = viewModel::getChapterHTMLPassage,
-				onScroll = { item, percentage ->
-					viewModel.markAsReadingOnScroll(item, percentage)
-				},
-				onPlayTTS = {
-					if (chapterType == null) return@ChapterReaderContent
-					items
-						.filterIsInstance<ReaderChapterUI>()
-						.find { it.id == currentChapterID }
-						?.let { item ->
-							tts.setPitch(viewModel.ttsPitch)
-							tts.setSpeechRate(viewModel.ttsSpeed)
-							when (chapterType!!) {
-								ChapterType.STRING -> {
-									viewModel.getChapterStringPassage(item)
-										.collectLA(this, catch = {}) { content ->
-											tts.speak(
-												content,
-												TextToSpeech.QUEUE_FLUSH,
-												null,
-												content.hashCode().toString()
-											)
-										}
+			MdcTheme {
+				ChapterReaderContent(
+					currentChapterTitle ?: stringResource(R.string.loading),
+					exit = {
+						finish()
+					},
+					items = items,
+					isHorizontal = isHorizontalReading,
+					chapterType = chapterType,
+					isInitalLoading = isLoading,
+					currentChapterId = currentChapterID,
+					getStringContent = viewModel::getChapterStringPassage,
+					getHTMLContent = viewModel::getChapterHTMLPassage,
+					onScroll = { item, percentage ->
+						viewModel.markAsReadingOnScroll(item, percentage)
+					},
+					onPlayTTS = {
+						if (chapterType == null) return@ChapterReaderContent
+						items
+							.filterIsInstance<ReaderChapterUI>()
+							.find { it.id == currentChapterID }
+							?.let { item ->
+								tts.setPitch(viewModel.ttsPitch)
+								tts.setSpeechRate(viewModel.ttsSpeed)
+								when (chapterType!!) {
+									ChapterType.STRING -> {
+										viewModel.getChapterStringPassage(item)
+											.collectLA(this, catch = {}) { content ->
+												tts.speak(
+													content,
+													TextToSpeech.QUEUE_FLUSH,
+													null,
+													content.hashCode().toString()
+												)
+											}
 
+									}
+									ChapterType.HTML -> {
+										viewModel.getChapterStringPassage(item)
+											.collectLA(this, catch = {}) { content ->
+												tts.speak(
+													content,
+													TextToSpeech.QUEUE_FLUSH,
+													null,
+													content.hashCode().toString()
+												)
+											}
+									}
+									else -> {}
 								}
-								ChapterType.HTML -> {
-									viewModel.getChapterStringPassage(item)
-										.collectLA(this, catch = {}) { content ->
-											tts.speak(
-												content,
-												TextToSpeech.QUEUE_FLUSH,
-												null,
-												content.hashCode().toString()
-											)
-										}
-								}
-								else -> {}
 							}
-						}
-				},
-				onStopTTS = {
-					tts.stop()
-				},
-				toggleBookmark = viewModel::toggleBookmark,
-				toggleRotationLock = viewModel::toggleScreenRotationLock,
-				isTTSPlaying = isTTSPlaying,
-				isTTSCapable = isTTSCapable,
-				lowerSheet = {
-					viewModel.textSizeOption()
-					viewModel.tapToScrollOption()
-					viewModel.volumeScrollingOption()
-					viewModel.horizontalSwitchOption()
-					viewModel.continuousScrollOption()
-					viewModel.invertChapterSwipeOption()
-					viewModel.readerKeepScreenOnOption()
-					viewModel.showReaderDivider()
-					viewModel.stringAsHtmlOption()
-				},
-				setting = setting,
-				updateSetting = viewModel::updateSetting,
-				markChapterAsCurrent = {
-					viewModel.setCurrentChapterID(it.id)
-				},
-				onChapterRead = viewModel::updateChapterAsRead
-			)
+					},
+					onStopTTS = {
+						tts.stop()
+					},
+					toggleBookmark = viewModel::toggleBookmark,
+					toggleRotationLock = viewModel::toggleScreenRotationLock,
+					isTTSPlaying = isTTSPlaying,
+					isTTSCapable = isTTSCapable,
+					lowerSheet = {
+						viewModel.textSizeOption()
+						viewModel.tapToScrollOption()
+						viewModel.volumeScrollingOption()
+						viewModel.horizontalSwitchOption()
+						viewModel.continuousScrollOption()
+						viewModel.invertChapterSwipeOption()
+						viewModel.readerKeepScreenOnOption()
+						viewModel.showReaderDivider()
+						viewModel.stringAsHtmlOption()
+					},
+					setting = setting,
+					updateSetting = viewModel::updateSetting,
+					markChapterAsCurrent = {
+						viewModel.setCurrentChapterID(it.id)
+					},
+					onChapterRead = viewModel::updateChapterAsRead
+				)
+			}
 		}
 
 		// Show back button
@@ -366,16 +370,72 @@ fun ChapterReaderContent(
 						}
 					},
 					title = {
-						Text(currentChapterTitle)
+						Text(currentChapterTitle, maxLines = 2)
 					},
 					modifier = Modifier.alpha(READER_BAR_ALPHA)
 				)
 		},
 		sheetContent = {
 			if (!isFocused) {
+				Card(
+					shape = MaterialTheme.shapes.large
+				) {
+					Column(
+						modifier = Modifier.padding(16.dp)
+					) {
+						Row(
+							modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+							horizontalArrangement = Arrangement.SpaceBetween
+						) {
+							IconButton(onClick = {
+								//TODO toggle focus
+							}) {
+								Icon(
+									painterResource(R.drawable.ic_baseline_visibility_off_24),
+									null
+								)
+							}
 
-				MdcTheme {
-					Column {
+							Row {
+
+								IconButton(onClick = {
+									//TODO toggle bookmark
+								}) {
+									Icon(
+										painterResource(R.drawable.empty_bookmark),
+										null
+									)
+								}
+
+								IconButton(onClick = {
+									//TODO toggle rotation
+								}) {
+									Icon(
+										painterResource(R.drawable.ic_baseline_screen_rotation_24),
+										null
+									)
+								}
+
+								IconButton(onClick = {
+									//TODO start tts
+								}) {
+									Icon(
+										painterResource(R.drawable.ic_baseline_audiotrack_24),
+										null
+									)
+								}
+							}
+
+
+							IconButton(onClick = {
+								//TODO toggle drawer
+							}) {
+								Icon(
+									painterResource(R.drawable.expand_less),
+									null
+								)
+							}
+						}
 						GenericBottomSettingLayout(
 							stringResource(R.string.paragraph_spacing),
 							"",
@@ -425,8 +485,11 @@ fun ChapterReaderContent(
 		},
 		scaffoldState = scaffoldState,
 		sheetGesturesEnabled = !isFocused,
+		sheetPeekHeight = 82.dp
 	) {
-		val pagerState = rememberPagerState(currentChapterId)
+		val pagerState =
+			rememberPagerState(items.indexOfFirst { it.identifier == currentChapterId.toLong() }
+				.takeIf { it != -1 } ?: 0)
 		val count = items.size
 		var curChapter: ReaderChapterUI? by remember { mutableStateOf(null) }
 
@@ -454,8 +517,8 @@ fun ChapterReaderContent(
 
 						}
 						ChapterType.HTML -> {
-							val page by getHTMLContent(item).collectAsState("")
-							WebViewPageContent(page, item.readingPosition, onScroll = {
+							val html by getHTMLContent(item).collectAsState("")
+							WebViewPageContent(html, item.readingPosition, onScroll = {
 								onScroll(item, it)
 							}, onFocusToggle = {
 								isFocused = !isFocused
@@ -464,7 +527,9 @@ fun ChapterReaderContent(
 
 								})
 						}
-						else -> throw Exception("stub")
+						else -> {
+
+						}
 					}
 				}
 				is ReaderDividerUI -> {
@@ -511,17 +576,21 @@ fun DividierPageContent(
 	previous: String,
 	next: String?
 ) {
-	Column(
-		horizontalAlignment = Alignment.CenterHorizontally,
-		verticalArrangement = Arrangement.Center,
-		modifier = Modifier.fillMaxSize()
+	Box(
+		modifier = Modifier.fillMaxSize().background(Color.Black)
 	) {
+		Column(
+			horizontalAlignment = Alignment.CenterHorizontally,
+			verticalArrangement = Arrangement.Center,
+			modifier = Modifier.fillMaxSize().padding(16.dp)
+		) {
 
-		if (next != null) {
-			Text(stringResource(R.string.reader_last_chapter, previous))
-			Text(stringResource(R.string.reader_next_chapter, next))
-		} else {
-			Text(stringResource(R.string.no_more_chapters))
+			if (next != null) {
+				Text(stringResource(R.string.reader_last_chapter, previous))
+				Text(stringResource(R.string.reader_next_chapter, next))
+			} else {
+				Text(stringResource(R.string.no_more_chapters))
+			}
 		}
 	}
 }
@@ -572,45 +641,48 @@ fun WebViewPageContent(
 	val state = rememberWebViewStateWithHTMLData(html)
 	val blackColor = colorResource(android.R.color.black)
 
-	WebView(
-		state,
-		captureBackPresses = false,
-		onCreated = { webView ->
-			webView.setBackgroundColor(blackColor.toArgb())
-			@SuppressLint("SetJavaScriptEnabled")
-			webView.settings.javaScriptEnabled = true
+	Box {
+		WebView(
+			state,
+			captureBackPresses = false,
+			onCreated = { webView ->
+				webView.setBackgroundColor(blackColor.toArgb())
+				@SuppressLint("SetJavaScriptEnabled")
+				webView.settings.javaScriptEnabled = true
 
-			val inter = ShosetsuScript(
-				webView,
-				onHitBottom = onHitBottom,
-				onScroll = onScroll
-			)
+				val inter = ShosetsuScript(
+					webView,
+					onHitBottom = onHitBottom,
+					onScroll = onScroll
+				)
 
-			inter.onClickMethod = onFocusToggle
+				inter.onClickMethod = onFocusToggle
 
-			webView.addJavascriptInterface(inter, "shosetsuScript")
+				webView.addJavascriptInterface(inter, "shosetsuScript")
 
-			webView.webViewClient = object : WebViewClient() {
-				override fun onPageFinished(view: WebView?, url: String?) {
-					super.onPageFinished(view, url)
-					webView.evaluateJavascript(
-						"""
+				webView.webViewClient = object : WebViewClient() {
+					override fun onPageFinished(view: WebView?, url: String?) {
+						super.onPageFinished(view, url)
+						webView.evaluateJavascript(
+							"""
 						window.addEventListener("scroll",(event)=>{ shosetsuScript.onScroll(); });
 						window.addEventListener("click",(event)=>{ shosetsuScript.onClick(); });
 					""".trimIndent(), null
-					)
+						)
 
-					webView.evaluateJavascript(getMaxJson) { maxString ->
-						maxString.toDoubleOrNull()?.let { maxY ->
-							webView.evaluateJavascript(
-								"window.scrollTo(0,${(maxY * (progress / 100)).toInt()})",
-								null
-							)
+						webView.evaluateJavascript(getMaxJson) { maxString ->
+							maxString.toDoubleOrNull()?.let { maxY ->
+								webView.evaluateJavascript(
+									"window.scrollTo(0,${(maxY * (progress / 100)).toInt()})",
+									null
+								)
+							}
 						}
 					}
 				}
-			}
-		},
-		modifier = Modifier.fillMaxSize()
-	)
+			},
+			modifier = Modifier.fillMaxSize()
+		)
+	}
+
 }
