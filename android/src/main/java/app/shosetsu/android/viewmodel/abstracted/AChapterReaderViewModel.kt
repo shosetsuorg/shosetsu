@@ -7,6 +7,7 @@ import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeViewModel
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
+import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -35,6 +36,18 @@ abstract class AChapterReaderViewModel :
 	ShosetsuViewModel(),
 	ExposedSettingsRepoViewModel {
 
+	abstract fun getChapterStringPassage(item: ReaderChapterUI): Flow<String>
+
+	abstract fun getChapterHTMLPassage(item: ReaderChapterUI): Flow<String>
+
+	/**
+	 * Is loading up initial content
+	 */
+	abstract val isLoading: Flow<Boolean>
+	abstract val chapterType: Flow<Novel.ChapterType?>
+
+	abstract val currentChapterTitle: Flow<String?>
+
 	abstract val ttsSpeed: Float
 	abstract val ttsPitch: Float
 
@@ -61,7 +74,7 @@ abstract class AChapterReaderViewModel :
 	/**
 	 * The current chapter ID that is being read
 	 */
-	abstract var currentChapterID: Int
+	abstract val currentChapterID: Flow<Int>
 
 	/**
 	 * Pair of Text color to background color
@@ -116,7 +129,7 @@ abstract class AChapterReaderViewModel :
 	 * The horizontal option that should be used by default for newly created views
 	 * This also is the way to easily get current state without async calls
 	 */
-	abstract val isHorizontalReading: Boolean
+	abstract val isHorizontalReading: Flow<Boolean>
 
 	/**
 	 * The state that should be used by default for newly created views
@@ -164,4 +177,9 @@ abstract class AChapterReaderViewModel :
 	 * Toggle the screen lock state
 	 */
 	abstract fun toggleScreenRotationLock()
+
+	abstract fun setCurrentChapterID(intExtra: Int)
+	abstract fun incrementProgress()
+	abstract fun depleteProgress()
+	abstract fun getCurrentChapterURL(): Flow<String>
 }

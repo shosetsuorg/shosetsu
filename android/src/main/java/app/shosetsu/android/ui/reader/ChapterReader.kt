@@ -7,13 +7,10 @@ import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.view.KeyEvent
 import android.view.MenuItem
-import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.LinearLayout
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatImageButton
-import androidx.appcompat.widget.Toolbar
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,20 +23,16 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import androidx.core.view.isVisible
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
-import androidx.viewpager2.widget.ViewPager2.*
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.consts.READER_BAR_ALPHA
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.ui.reader.types.base.ReaderChapterViewHolder
 import app.shosetsu.android.ui.reader.types.model.ShosetsuScript
 import app.shosetsu.android.ui.reader.types.model.getMaxJson
 import app.shosetsu.android.view.compose.DiscreteSlider
@@ -52,24 +45,14 @@ import app.shosetsu.android.viewmodel.impl.settings.*
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.lib.Novel.ChapterType
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityReaderBinding
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewStateWithHTMLData
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import com.google.android.material.composethemeadapter.MdcTheme
-import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.IItemVHFactory
-import com.mikepenz.fastadapter.adapters.ItemAdapter
-import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
-import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.calculateDiff
-import com.mikepenz.fastadapter.listeners.OnCreateViewHolderListenerImpl
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import org.kodein.di.DI
@@ -104,7 +87,9 @@ class ChapterReader
 	: AppCompatActivity(), DIAware {
 	override val di: DI by closestDI()
 	internal val viewModel: AChapterReaderViewModel by viewModel()
-	private lateinit var binding: ActivityReaderBinding
+
+	private val isTTSCapable = MutableStateFlow(false)
+	private val isTTSPlaying = MutableStateFlow(false)
 
 	private val ttsInitListener: TextToSpeech.OnInitListener by lazy {
 		TextToSpeech.OnInitListener {
@@ -114,14 +99,14 @@ class ChapterReader
 
 					if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
 						logE("Language not supported for TTS")
-						binding.chapterReaderBottom.ttsPlay.isEnabled = false
+						isTTSCapable.tryEmit(false)
 					} else {
-						binding.chapterReaderBottom.ttsPlay.isEnabled = true
+						isTTSCapable.tryEmit(true)
 					}
 				}
 				else -> {
 					logE("TTS Initialization failed")
-					binding.chapterReaderBottom.ttsPlay.isEnabled = false
+					isTTSCapable.tryEmit(false)
 				}
 			}
 		}
@@ -129,63 +114,6 @@ class ChapterReader
 
 	private val tts: TextToSpeech by lazy {
 		TextToSpeech(this, ttsInitListener)
-	}
-
-	private val toolbar: MaterialToolbar
-		get() = binding.toolbar
-
-	private val chapterReaderBottom: LinearLayout
-		get() = binding.chapterReaderBottom.chapterReaderBottom
-
-	private val viewpager: ViewPager2
-		get() = binding.viewpager
-
-	private val drawerToggle: AppCompatImageButton
-		get() = binding.chapterReaderBottom.drawerToggle
-
-
-	private val pageChangeCallback: OnPageChangeCallback by lazy { ChapterReaderPageChange() }
-	private val itemAdapter by lazy { ItemAdapter<ReaderUIItem<*, *>>() }
-
-	private var chapterViewHolders = ArrayList<ReaderChapterViewHolder?>()
-
-	private val viewHolderListener = object : OnCreateViewHolderListenerImpl<ReaderUIItem<*, *>>() {
-		override fun onPostCreateViewHolder(
-			fastAdapter: FastAdapter<ReaderUIItem<*, *>>,
-			viewHolder: RecyclerView.ViewHolder,
-			itemVHFactory: IItemVHFactory<*>
-		): RecyclerView.ViewHolder {
-			chapterViewHolders.removeAll { it == null }
-			if (viewHolder is ReaderChapterViewHolder) chapterViewHolders.add(viewHolder)
-
-			return super.onPostCreateViewHolder(fastAdapter, viewHolder, itemVHFactory)
-		}
-	}
-	private val fastAdapter by lazy {
-		FastAdapter.with(itemAdapter).apply {
-			this.onCreateViewHolderListener = viewHolderListener
-		}
-	}
-
-	private val bookmarkButton
-		get() = binding.chapterReaderBottom.bookmark
-
-	private val rotationLockButton
-		get() = binding.chapterReaderBottom.rotationLockButton
-
-	private val themeSelectButton
-		get() = binding.chapterReaderBottom.themeSelect
-
-	/** Gets chapters from the [itemAdapter] */
-	private val chapterItems: List<ReaderChapterUI>
-		get() = itemAdapter.adapterItems.filterIsInstance<ReaderChapterUI>()
-
-	/** Gets dividers from the [itemAdapter] */
-	val dividerItems: List<ReaderDividerUI>
-		get() = itemAdapter.adapterItems.filterIsInstance<ReaderDividerUI>()
-
-	private val bottomSheetBehavior: ChapterReaderBottomBar<LinearLayout> by lazy {
-		from(chapterReaderBottom) as ChapterReaderBottomBar
 	}
 
 	override fun onResume() {
@@ -199,246 +127,81 @@ class ChapterReader
 		window.hideBar()
 		viewModel.apply {
 			setNovelID(intent.getIntExtra(BUNDLE_NOVEL_ID, -1))
-			currentChapterID = intent.getIntExtra(BUNDLE_CHAPTER_ID, -1)
+			viewModel.setCurrentChapterID(intent.getIntExtra(BUNDLE_CHAPTER_ID, -1))
 		}
 
 		super.onCreate(savedInstanceState)
-		setContentView(ActivityReaderBinding.inflate(layoutInflater).also { binding = it }.root)
-		setSupportActionBar(toolbar as Toolbar)
+		setContent {
+			val currentChapterTitle by viewModel.currentChapterTitle.collectAsState(null)
+			val items by viewModel.liveData.collectAsState(emptyList())
+			val isHorizontalReading by viewModel.isHorizontalReading.collectAsState(false)
+			val chapterType by viewModel.chapterType.collectAsState(null)
+			val isLoading by viewModel.isLoading.collectAsState(true)
+			val currentChapterID by viewModel.currentChapterID.collectAsState(-1)
+			val isTTSCapable by isTTSCapable.collectAsState(false)
+			val isTTSPlaying by isTTSPlaying.collectAsState(false)
+			val setting by viewModel.getSettings()
+				.collectAsState(NovelReaderSettingEntity(-1, 0, 0.0F))
 
-		// Show back button
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+			ChapterReaderContent(
+				currentChapterTitle ?: stringResource(R.string.loading),
+				exit = {
+					finish()
+				},
+				items = items,
+				isHorizontal = isHorizontalReading,
+				chapterType = chapterType,
+				isInitalLoading = isLoading,
+				currentChapterId = currentChapterID,
+				getStringContent = viewModel::getChapterStringPassage,
+				getHTMLContent = viewModel::getChapterHTMLPassage,
+				onScroll = { item, percentage ->
+					viewModel.markAsReadingOnScroll(item, percentage)
+				},
+				onPlayTTS = {
+					if (chapterType == null) return@ChapterReaderContent
+					items
+						.filterIsInstance<ReaderChapterUI>()
+						.find { it.id == currentChapterID }
+						?.let { item ->
+							tts.setPitch(viewModel.ttsPitch)
+							tts.setSpeechRate(viewModel.ttsSpeed)
+							when (chapterType!!) {
+								ChapterType.STRING -> {
+									viewModel.getChapterStringPassage(item)
+										.collectLA(this, catch = {}) { content ->
+											tts.speak(
+												content,
+												TextToSpeech.QUEUE_FLUSH,
+												null,
+												content.hashCode().toString()
+											)
+										}
 
-		//slidingUpPanelLayout.setGravity(Gravity.BOTTOM)
-
-		setupViewPager()
-		setupBottomMenu()
-		setObservers()
-
-		toolbar.alpha = READER_BAR_ALPHA
-		chapterReaderBottom.alpha = READER_BAR_ALPHA
-
-		binding.toggleVisibility.setOnClickListener {
-			focusListener()
-		}
-	}
-
-	/** On Destroy */
-	override fun onDestroy() {
-		logV("")
-		viewpager.unregisterOnPageChangeCallback(pageChangeCallback)
-		tts.stop()
-		tts.shutdown()
-		super.onDestroy()
-	}
-
-	private fun handleChaptersResult(list: List<ReaderUIItem<*, *>>) {
-		val oldSize = itemAdapter.itemList.size()
-
-		// Provide each entity with self
-		list.filterIsInstance<ReaderChapterUI>().forEach {
-			it.chapterReader = this
-		}
-
-		// Update the UI
-		FastAdapterDiffUtil[itemAdapter] =
-			calculateDiff(itemAdapter, list)
-
-		// Go to the current chapter
-		if (oldSize == 0)
-			viewpager.setCurrentItem(getCurrentChapterIndex(), false)
-	}
-
-	private fun setObservers() {
-		logD("Loading chapters")
-		viewModel.liveData.collectLA(this, catch = {
-			logE("Error occured while loading chapters", it)
-		}) { result ->
-			handleChaptersResult(result)
-		}
-
-		viewModel.liveTheme.collectLA(this, catch = {}) {
-			applyToChapterViews {
-				syncTextColor()
-				syncBackgroundColor()
-			}
-		}
-
-		viewModel.liveIndentSize.collectLA(this, catch = {}) {
-			applyToChapterViews {
-				syncParagraphIndent()
-			}
-		}
-
-		viewModel.liveParagraphSpacing.collectLA(this, catch = {}) {
-			logD("Updating paragraph spacing to reader UI")
-			applyToChapterViews { syncParagraphSpacing() }
-		}
-
-		viewModel.liveTextSize.collectLA(this, catch = {}) {
-			applyToChapterViews { syncTextSize() }
-		}
-
-		viewModel.liveVolumeScroll.collectLA(this, catch = {}) {
-		}
-
-		viewModel.liveChapterDirection.collectLA(this, catch = {}) {
-			viewpager.orientation = if (it) ORIENTATION_HORIZONTAL else ORIENTATION_VERTICAL
-		}
-
-		viewModel.liveKeepScreenOn.collectLA(this, catch = {}) {
-			binding.root.keepScreenOn = it
-		}
-		viewModel.liveIsScreenRotationLocked.collectLA(this, catch = {}) {
-			if (it) {
-				lockRotation()
-				rotationLockButton.setImageResource(R.drawable.ic_baseline_screen_lock_rotation_24)
-			} else {
-				unlockRotation()
-				rotationLockButton.setImageResource(R.drawable.ic_baseline_screen_rotation_24)
-			}
-		}
-	}
-
-	private fun applyToChapterViews(
-		onlyCurrent: Boolean = false,
-		action: ReaderChapterViewHolder.() -> Unit
-	) {
-		val textTypedReaders = chapterViewHolders.filterNotNull()
-		// Apply to the current chapter first
-		logD("Found ${textTypedReaders.map { it.chapter.id }}")
-		textTypedReaders.find {
-			it.chapter.id == viewModel.currentChapterID
-		}?.action() ?: logE("Did not find current chapter: ${viewModel.currentChapterID}")
-
-		// Sets other views down
-		if (!onlyCurrent)
-			textTypedReaders.filter {
-				it.chapter.id != viewModel.currentChapterID
-			}.forEach {
-				it.action()
-			}
-	}
-
-	private fun getCurrentChapter(): ReaderChapterUI? =
-		chapterItems.find {
-			it.id == viewModel.currentChapterID
-		}
-
-	private fun getCurrentChapterIndex(): Int = itemAdapter.itemList.items.indexOfFirst {
-		if (it is ReaderChapterUI)
-			it.id == viewModel.currentChapterID
-		else false
-	}
-
-	private fun setBookmarkIcon(readerChapterUI: ReaderChapterUI) {
-		bookmarkButton.setImageResource(
-			if (readerChapterUI.bookmarked)
-				R.drawable.filled_bookmark
-			else R.drawable.empty_bookmark
-		)
-	}
-
-	private fun setupBottomMenu() {
-		bookmarkButton.apply {
-			setOnClickListener {
-				getCurrentChapter()?.apply {
-					bookmarked = !bookmarked
-					viewModel.updateChapter(this)
-					setBookmarkIcon(this)
-				}
-			}
-		}
-
-		rotationLockButton.apply {
-			setOnClickListener {
-				viewModel.toggleScreenRotationLock()
-			}
-		}
-
-		themeSelectButton.apply {
-			setOnClickListener {
-				/*
-				ColorPickerDialog.Builder(context)
-					.setPositiveButton("") { _, _ ->
-						logD("Clicked")
-					}
-					.show()
-				*/
-			}
-		}
-
-		bottomSheetBehavior.apply bsb@{
-			isHideable = true
-			isDraggable = false
-			addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-				override fun onStateChanged(bottomSheet: View, newState: Int) {
-					when (newState) {
-						STATE_COLLAPSED -> {
-							drawerToggle.setImageResource(R.drawable.expand_less)
+								}
+								ChapterType.HTML -> {
+									viewModel.getChapterStringPassage(item)
+										.collectLA(this, catch = {}) { content ->
+											tts.speak(
+												content,
+												TextToSpeech.QUEUE_FLUSH,
+												null,
+												content.hashCode().toString()
+											)
+										}
+								}
+								else -> {}
+							}
 						}
-						STATE_EXPANDED -> {
-							drawerToggle.setImageResource(R.drawable.expand_more)
-						}
-						else -> {
-						}
-					}
-				}
-
-				override fun onSlide(bottomSheet: View, slideOffset: Float) {
-					drawerToggle.setImageResource(R.drawable.ic_baseline_drag_handle_24)
-				}
-
-			})
-		}
-		drawerToggle.apply {
-			setOnClickListener {
-				bottomSheetBehavior.state = when (bottomSheetBehavior.state) {
-					STATE_EXPANDED -> STATE_COLLAPSED
-					else -> STATE_EXPANDED
-				}
-			}
-		}
-
-		binding.chapterReaderBottom.recyclerView.setContent {
-			val settings by viewModel.getSettings().collectAsState(
-				NovelReaderSettingEntity(0, 0, 0f)
-			)
-
-			MdcTheme {
-				Column {
-					GenericBottomSettingLayout(
-						stringResource(R.string.paragraph_spacing),
-						"",
-					) {
-						DiscreteSlider(
-							settings.paragraphSpacingSize,
-							"${settings.paragraphSpacingSize}",
-							{ it, a ->
-								viewModel.updateSetting(
-									settings.copy(
-										paragraphSpacingSize = if (!a)
-											it.roundToInt().toFloat()
-										else it
-									)
-								)
-							},
-							0..10,
-						)
-					}
-					GenericBottomSettingLayout(
-						stringResource(R.string.paragraph_indent),
-						"",
-					) {
-						DiscreteSlider(
-							settings.paragraphIndentSize,
-							"${settings.paragraphIndentSize}",
-							{ it, _ ->
-								viewModel.updateSetting(settings.copy(paragraphIndentSize = it))
-							},
-							0..10,
-						)
-					}
+				},
+				onStopTTS = {
+					tts.stop()
+				},
+				toggleBookmark = viewModel::toggleBookmark,
+				toggleRotationLock = viewModel::toggleScreenRotationLock,
+				isTTSPlaying = isTTSPlaying,
+				isTTSCapable = isTTSCapable,
+				lowerSheet = {
 					viewModel.textSizeOption()
 					viewModel.tapToScrollOption()
 					viewModel.volumeScrollingOption()
@@ -448,37 +211,28 @@ class ChapterReader
 					viewModel.readerKeepScreenOnOption()
 					viewModel.showReaderDivider()
 					viewModel.stringAsHtmlOption()
-				}
-			}
+				},
+				setting = setting,
+				updateSetting = viewModel::updateSetting,
+				markChapterAsCurrent = {
+					viewModel.setCurrentChapterID(it.id)
+				},
+				onChapterRead = viewModel::updateChapterAsRead
+			)
 		}
 
-		binding.chapterReaderBottom.ttsPlay.setOnClickListener {
-			applyToChapterViews(true) {
-				tts.setPitch(viewModel.ttsPitch)
-				tts.setSpeechRate(viewModel.ttsSpeed)
-				this.playTTS(tts)
-				binding.stopTts.isVisible = true
-			}
-		}
-		binding.stopTts.setOnClickListener {
-			stopTTS()
-		}
+		// Show back button
+		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-
-		binding.chapterReaderBottom.drawerToggleVisibility.setOnClickListener {
-			focusListener()
-		}
+		//slidingUpPanelLayout.setGravity(Gravity.BOTTOM)
 	}
 
-	private fun setupViewPager() {
+	/** On Destroy */
+	override fun onDestroy() {
 		logV("")
-		viewpager.apply {
-			adapter = fastAdapter
-			registerOnPageChangeCallback(pageChangeCallback)
-			orientation =
-				if (viewModel.isHorizontalReading) ORIENTATION_HORIZONTAL else ORIENTATION_VERTICAL
-			isNestedScrollingEnabled = true
-		}
+		tts.stop()
+		tts.shutdown()
+		super.onDestroy()
 	}
 
 	/**
@@ -493,15 +247,17 @@ class ChapterReader
 			true
 		}
 		R.id.browser -> {
-			val url = chapterItems[viewModel.currentChapterID].link
-			if (url.isNotEmpty())
-				openInBrowser(url)
+			viewModel.getCurrentChapterURL().collectLA(this, catch = {}) { url ->
+				if (url.isNotEmpty())
+					openInBrowser(url)
+			}
 			true
 		}
 		R.id.webview -> {
-			val url = chapterItems[viewModel.currentChapterID].link
-			if (url.isNotEmpty())
-				openInWebView(url)
+			viewModel.getCurrentChapterURL().collectLA(this, catch = {}) { url ->
+				if (url.isNotEmpty())
+					openInWebView(url)
+			}
 			true
 		}
 		else -> super.onOptionsItemSelected(item)
@@ -514,96 +270,16 @@ class ChapterReader
 		return if (viewModel.defaultVolumeScroll)
 			when (keyCode) {
 				KeyEvent.KEYCODE_VOLUME_DOWN -> {
-					applyToChapterViews(true) { incrementScroll() }
+					viewModel.incrementProgress()
 					true
 				}
 				KeyEvent.KEYCODE_VOLUME_UP -> {
-					applyToChapterViews(true) { depleteScroll() }
+					viewModel.depleteProgress()
 					true
 				}
 				else -> super.onKeyDown(keyCode, event)
 			}
 		else super.onKeyDown(keyCode, event)
-	}
-
-	private fun focusListener() {
-		binding.toggleVisibility.isVisible = !binding.toggleVisibility.isVisible
-
-		toolbar.isVisible = if (toolbar.isVisible) {
-			logV("hidden")
-			chapterReaderBottom.isVisible = false
-			false
-		} else {
-			logV("shown")
-			chapterReaderBottom.isVisible = true
-			true
-		}
-
-		bottomSheetBehavior.state = when (bottomSheetBehavior.state) {
-			STATE_HIDDEN -> STATE_COLLAPSED
-			else -> STATE_HIDDEN
-		}
-	}
-
-	fun syncReader(typedReaderViewHolder: ReaderChapterViewHolder) = typedReaderViewHolder.apply {
-		syncBackgroundColor()
-		syncTextColor()
-		syncTextSize()
-		syncTextPadding()
-		getFocusTarget {
-			focusListener()
-		}
-	}
-
-	private fun stopTTS() {
-		binding.stopTts.isVisible = false
-		tts.stop()
-	}
-
-	inner class ChapterReaderPageChange : OnPageChangeCallback() {
-		override fun onPageSelected(position: Int) {
-			onPageSelected(position, false)
-		}
-
-		private fun onPageSelected(position: Int, retry: Boolean) {
-			logV("New position: $position")
-			stopTTS()
-			when (val item = itemAdapter.getAdapterItem(position)) {
-				is ReaderChapterUI -> {
-					logV("New is a Chapter")
-					viewModel.currentChapterID = item.id
-					viewModel.markAsReadingOnView(item)    // Mark read if set to onview
-					chapterViewHolders.filterNotNull().find { it.chapter.id == item.id }
-						?.let { syncReader(it) } ?: run {
-
-						if (!retry) {
-							logE("Reader is null, retry in 200ms")
-						} else {
-							logE("Reader is still null, aborting")
-							return@run
-						}
-						launchIO {
-							delay(200)
-							launchUI { onPageSelected(position, true) }
-						}
-					}
-					supportActionBar?.title = item.title
-					setBookmarkIcon(item)
-				}
-				is ReaderDividerUI -> {
-					logV("New is a Divider")
-					viewModel.currentChapterID = -1
-					supportActionBar?.setTitle(R.string.next_chapter)
-					// Marks the previous chapter as read when you hit the divider
-					// This was implemented due to performance shortcuts taken due to excessive
-					// [handleChaptersResult] operation time
-					(itemAdapter.getAdapterItem(position - 1) as? ReaderChapterUI)?.let { lastChapter ->
-						viewModel.updateChapterAsRead(lastChapter)
-					}
-
-				}
-			}
-		}
 	}
 
 	private fun lockRotation() {
@@ -631,11 +307,23 @@ fun PreviewChapterReaderContent() {
 			items = emptyList(),
 			isHorizontal = false,
 			chapterType = ChapterType.HTML,
-			initialChapterIndex = 0,
+			currentChapterId = 0,
 			getStringContent = { flow { } },
 			getHTMLContent = { flow { } },
 			onScroll = { a, b ->
-			}
+			},
+			isInitalLoading = false,
+			onStopTTS = {},
+			onPlayTTS = {},
+			isTTSCapable = false,
+			isTTSPlaying = false,
+			toggleRotationLock = {},
+			toggleBookmark = {},
+			setting = NovelReaderSettingEntity(-1, 0, 0f),
+			updateSetting = {},
+			lowerSheet = {},
+			markChapterAsCurrent = {},
+			onChapterRead = {}
 		)
 	}
 }
@@ -647,11 +335,23 @@ fun ChapterReaderContent(
 	exit: () -> Unit,
 	items: List<ReaderUIItem<*, *>>,
 	isHorizontal: Boolean,
-	chapterType: ChapterType,
-	initialChapterIndex: Int,
+	isInitalLoading: Boolean,
+	chapterType: ChapterType?,
+	currentChapterId: Int,
+	markChapterAsCurrent: (item: ReaderChapterUI) -> Unit,
+	onChapterRead: (item: ReaderChapterUI) -> Unit,
 	getStringContent: (item: ReaderChapterUI) -> Flow<String>,
 	getHTMLContent: (item: ReaderChapterUI) -> Flow<String>,
-	onScroll: (item: ReaderChapterUI, perc: Double) -> Unit
+	onScroll: (item: ReaderChapterUI, perc: Double) -> Unit,
+	onPlayTTS: () -> Unit,
+	onStopTTS: () -> Unit,
+	isTTSPlaying: Boolean,
+	isTTSCapable: Boolean,
+	toggleBookmark: (item: ReaderChapterUI) -> Unit,
+	toggleRotationLock: () -> Unit,
+	setting: NovelReaderSettingEntity,
+	updateSetting: (NovelReaderSettingEntity) -> Unit,
+	lowerSheet: @Composable () -> Unit
 ) {
 	var isFocused by remember { mutableStateOf(false) }
 	val scaffoldState = rememberBottomSheetScaffoldState()
@@ -667,19 +367,83 @@ fun ChapterReaderContent(
 					},
 					title = {
 						Text(currentChapterTitle)
-					}
+					},
+					modifier = Modifier.alpha(READER_BAR_ALPHA)
 				)
 		},
 		sheetContent = {
 			if (!isFocused) {
+
+				MdcTheme {
+					Column {
+						GenericBottomSettingLayout(
+							stringResource(R.string.paragraph_spacing),
+							"",
+						) {
+							DiscreteSlider(
+								setting.paragraphSpacingSize,
+								"${setting.paragraphSpacingSize}",
+								{ it, a ->
+									updateSetting(
+										setting.copy(
+											paragraphSpacingSize = if (!a)
+												it.roundToInt().toFloat()
+											else it
+										)
+									)
+								},
+								0..10,
+							)
+						}
+						GenericBottomSettingLayout(
+							stringResource(R.string.paragraph_indent),
+							"",
+						) {
+							DiscreteSlider(
+								setting.paragraphIndentSize,
+								"${setting.paragraphIndentSize}",
+								{ it, _ ->
+									updateSetting(setting.copy(paragraphIndentSize = it))
+								},
+								0..10,
+							)
+						}
+						lowerSheet()
+					}
+				}
 				// TODO Fill
+				// Use READER_BAR_ALPHA
+				items
+					.filterIsInstance<ReaderChapterUI>()
+					.find { it.id == currentChapterId }
+					?.let {
+						if (it.bookmarked)
+							R.drawable.filled_bookmark
+						else R.drawable.empty_bookmark
+					}
 			}
 		},
 		scaffoldState = scaffoldState,
 		sheetGesturesEnabled = !isFocused,
 	) {
-		val pagerState = rememberPagerState(initialChapterIndex)
+		val pagerState = rememberPagerState(currentChapterId)
 		val count = items.size
+		var curChapter: ReaderChapterUI? by remember { mutableStateOf(null) }
+
+		if (pagerState.isScrollInProgress)
+			DisposableEffect(Unit) {
+				onDispose {
+					onStopTTS()
+					val item = items[pagerState.currentPage]
+
+					if (item is ReaderChapterUI) {
+						markChapterAsCurrent(item)
+						curChapter = item
+					} else {
+						curChapter?.let(onChapterRead)
+					}
+				}
+			}
 
 		@Composable
 		fun createPage(page: Int) {
@@ -717,7 +481,7 @@ fun ChapterReaderContent(
 			HorizontalPager(
 				count = count,
 				state = pagerState,
-				modifier = Modifier.fillMaxSize()
+				modifier = Modifier.fillMaxSize(),
 			) { page ->
 				createPage(page)
 			}
@@ -806,12 +570,13 @@ fun WebViewPageContent(
 	onHitBottom: () -> Unit
 ) {
 	val state = rememberWebViewStateWithHTMLData(html)
+	val blackColor = colorResource(android.R.color.black)
 
 	WebView(
 		state,
 		captureBackPresses = false,
 		onCreated = { webView ->
-			webView.setBackgroundColor(colorResource(android.R.color.black).toArgb())
+			webView.setBackgroundColor(blackColor.toArgb())
 			@SuppressLint("SetJavaScriptEnabled")
 			webView.settings.javaScriptEnabled = true
 
