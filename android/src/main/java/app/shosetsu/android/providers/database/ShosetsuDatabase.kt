@@ -12,8 +12,6 @@ import app.shosetsu.android.domain.model.database.*
 import app.shosetsu.android.providers.database.converters.*
 import app.shosetsu.android.providers.database.dao.*
 import app.shosetsu.android.providers.database.migrations.RemoveMigration
-import app.shosetsu.lib.ExtensionType
-import app.shosetsu.lib.Novel
 import dev.matrix.roomigrant.GenerateRoomMigrations
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -111,32 +109,7 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 								database.execSQL("CREATE TABLE IF NOT EXISTS `${tableName}_new` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `url` TEXT NOT NULL UNIQUE, `name` TEXT NOT NULL, `isEnabled` INTEGER NOT NULL)")
 
 								// Migrate
-								val cursor = database.query("SELECT * FROM $tableName")
-								while (cursor.moveToNext()) {
-									database.insert(
-										"${tableName}_new",
-										OnConflictStrategy.ABORT,
-										ContentValues().apply {
-											val keyURL = "url"
-											val keyName = "name"
-											put(
-												keyURL,
-												cursor.getColumnIndex(keyURL).takeIf { it >= 0 }
-													?.let {
-														cursor.getString(it)
-													}
-											)
-											put(
-												keyName,
-												cursor.getColumnIndex(keyURL).takeIf { it >= 0 }
-													?.let {
-														cursor.getString(it)
-													}
-											)
-											put("isEnabled", true)
-										}
-									)
-								}
+								database.execSQL("INSERT INTO `${tableName}_new` SELECT `url`, `url` as `name`, 1 as isEnabled FROM `tableName`")
 
 								// Drop
 								database.execSQL("DROP TABLE $tableName")
@@ -197,30 +170,11 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 								database.execSQL("CREATE TABLE IF NOT EXISTS `${tableName}_new` (`id` INTEGER NOT NULL, `repoID` INTEGER NOT NULL, `name` TEXT NOT NULL, `fileName` TEXT NOT NULL, `imageURL` TEXT, `lang` TEXT NOT NULL, `enabled` INTEGER NOT NULL, `installed` INTEGER NOT NULL, `installedVersion` TEXT, `repositoryVersion` TEXT NOT NULL, `chapterType` INTEGER NOT NULL, `md5` TEXT NOT NULL, `type` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`repoID`) REFERENCES `repositories`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )\n")
 
 								// Migrate
-								val cursor = database.query("SELECT * FROM $tableName")
-								while (cursor.moveToNext()) {
-									database.insert(
-										"${tableName}_new",
-										OnConflictStrategy.ABORT,
-										ContentValues().apply {
-											this["'id'"] = cursor.getInt("id")
-											this["'repoID'"] = cursor.getInt("repoID")
-											this["'name'"] = cursor.getString("name")
-											this["'fileName'"] = cursor.getString("fileName")
-											this["'imageURL'"] = cursor.getString("imageURL")
-											this["'lang'"] = cursor.getString("lang")
-											this["'enabled'"] = cursor.getInt("enabled")
-											this["'installed'"] = cursor.getInt("installed")
-											this["'installedVersion'"] =
-												cursor.getStringOrNull("installedVersion")
-											this["'repositoryVersion'"] =
-												cursor.getString("repositoryVersion")
-											this["'chapterType'"] = 0
-											this["'md5'"] = cursor.getString("md5")
-											this["'type'"] = ExtensionType.LuaScript.ordinal
-										}
-									)
-								}
+								database.execSQL(
+									"""
+INSERT INTO `${tableName}_new` SELECT `id`, `repoID`, `name`, `imageURL`, `lang`,`enabled`,`installed`,`installedVersion`,`repositoryVersion`,0,`md5`,0 FROM `$tableName`									
+								"""
+								)
 
 								// Drop
 								database.execSQL("DROP TABLE $tableName")
@@ -253,6 +207,7 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 						}
 					},
 					object : Migration(3, 4) {
+						@Throws(SQLException::class)
 						override fun migrate(database: SupportSQLiteDatabase) {
 							// Migrate extensions
 							run {
@@ -262,39 +217,26 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 								database.execSQL("CREATE TABLE IF NOT EXISTS `${tableName}_new` (`id` INTEGER NOT NULL, `repoID` INTEGER NOT NULL, `name` TEXT NOT NULL, `fileName` TEXT NOT NULL, `imageURL` TEXT, `lang` TEXT NOT NULL, `enabled` INTEGER NOT NULL, `installed` INTEGER NOT NULL, `installedVersion` TEXT, `repositoryVersion` TEXT NOT NULL, `chapterType` INTEGER NOT NULL, `md5` TEXT NOT NULL, `type` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`repoID`) REFERENCES `repositories`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )")
 
 								// Migrate
-								val cursor = database.query("SELECT * FROM $tableName")
-								while (cursor.moveToNext()) {
-									database.insert(
-										"${tableName}_new",
-										OnConflictStrategy.ABORT,
-										ContentValues().apply {
-											this["'id'"] = cursor.getInt("id")
-											this["'repoID'"] = cursor.getInt("repoID")
-											this["'name'"] = cursor.getString("name")
-											this["'fileName'"] = cursor.getString("fileName")
-											this["'imageURL'"] = cursor.getString("imageURL")
-											this["'lang'"] = cursor.getString("lang")
-											this["'enabled'"] = cursor.getInt("enabled")
-											this["'installed'"] = cursor.getInt("installed")
-											this["'installedVersion'"] =
-												cursor.getStringOrNull("installedVersion")
-											this["'repositoryVersion'"] =
-												cursor.getString("repositoryVersion")
-											this["'chapterType'"] =
-												cursor.getColumnIndex("chapterType")
-													.takeIf { it != -1 }?.let {
-														cursor.getInt(it)
-													} ?: Novel.ChapterType.STRING.key
-											this["'md5'"] = cursor.getString("md5")
-											this["'type'"] =
-												cursor.getColumnIndex("type")
-													.takeIf { it != -1 }
-													?.let {
-														cursor.getInt(it)
-													} ?: ExtensionType.LuaScript.ordinal
-										}
-									)
-								}
+								database.execSQL(
+									"""
+INSERT INTO `${tableName}_new` 
+SELECT 
+	`id`, 
+	`repoID`, 
+	`name`, 
+	`fileName`,
+	`imageURL`, 
+	`lang`, 
+	`enabled`, 
+	`installed`, 
+	`installedVersion`,
+	`repositoryVersion`,
+	0,
+	`md5`,
+	0 
+FROM `$tableName`;
+									"""
+								)
 
 								// Drop
 								database.execSQL("DROP TABLE $tableName")
@@ -315,18 +257,7 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 								database.execSQL("CREATE TABLE IF NOT EXISTS `${tableName}_new` (`scriptName` TEXT NOT NULL, `version` TEXT NOT NULL, `repoID` INTEGER NOT NULL, PRIMARY KEY(`scriptName`), FOREIGN KEY(`repoID`) REFERENCES `repositories`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )")
 
 								// Migrate
-								val cursor = database.query("SELECT * FROM $tableName")
-								while (cursor.moveToNext()) {
-									database.insert(
-										"${tableName}_new",
-										OnConflictStrategy.ABORT,
-										ContentValues().apply {
-											this["'scriptName'"] = cursor.getString("scriptName")
-											this["'version'"] = cursor.getString("version")
-											this["'repoID'"] = cursor.getInt("repoID")
-										}
-									)
-								}
+								database.execSQL("INSERT INTO `${tableName}_new` SELECT * FROM `$tableName`")
 
 								// Drop
 								database.execSQL("DROP TABLE $tableName")
@@ -340,6 +271,7 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 						}
 					},
 					object : Migration(4, 5) {
+						@Throws(SQLException::class)
 						override fun migrate(database: SupportSQLiteDatabase) {
 							// Download migrate
 							run {
@@ -367,6 +299,7 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 					},
 					object : Migration(5, 6) {
 
+						@Throws(SQLException::class)
 						override fun migrate(database: SupportSQLiteDatabase) {
 
 							// Chapters
