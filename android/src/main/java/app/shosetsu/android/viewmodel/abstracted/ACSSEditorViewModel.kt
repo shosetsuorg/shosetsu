@@ -38,7 +38,7 @@ abstract class ACSSEditorViewModel : ShosetsuViewModel() {
 	abstract fun write(content: String)
 
 	abstract fun appendText(pasteContent: String)
-	abstract fun setCSSId(int: Int): Flow<Unit>
+	abstract fun setCSSId(int: Int)
 
 	abstract val cssContent: Flow<String>
 	abstract val cssTitle: Flow<String>

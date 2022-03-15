@@ -33,6 +33,7 @@ import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.select.getSelectExtension
 import com.mikepenz.fastadapter.select.selectExtension
 import kotlinx.coroutines.delay
+import org.acra.ACRA
 
 /*
  * This file is part of Shosetsu.
@@ -185,7 +186,9 @@ class LibraryController
 
 	private fun startObservation() {
 		viewModel.liveData.observeRecyclerUpdates()
-		viewModel.liveData.collectLA(this, catch = {}) {
+		viewModel.liveData.collectLA(this, catch = {
+			// IGNORE, main observation will handle
+		}) {
 			fab?.isVisible = it.isNotEmpty()
 		}
 		viewModel.novelCardTypeLiveData.observe(this) {
@@ -213,7 +216,9 @@ class LibraryController
 		searchView?.apply {
 			setOnQueryTextListener(LibrarySearchQuery(this@LibraryController))
 		}
-		viewModel.liveData.collectLA(this, catch = {}) {
+		viewModel.liveData.collectLA(this, catch = {
+			// IGNORE, Main observer will handle
+		}) {
 			val visible = it.isNotEmpty()
 
 			menu.findItem(R.id.library_search)?.isVisible = visible
@@ -362,8 +367,14 @@ class LibraryController
 
 	override fun handleRecyclerException(e: Throwable) {
 		logE("Error occurred", e)
-		makeSnackBar(e.message ?: "Unknown Error")?.show()
-		TODO("HANDLE")
+		makeSnackBar(
+			getString(
+				R.string.controller_library_error_recycler,
+				e.message ?: "Unknown exception"
+			)
+		)?.setAction(R.string.report) {
+			ACRA.errorReporter.handleSilentException(e)
+		}?.show()
 	}
 
 }

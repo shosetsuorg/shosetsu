@@ -144,7 +144,14 @@ class CatalogController(
 
 		viewModel.backgroundNovelAdd(item.id).observe(
 			catch = {
-				TODO("Handle")
+				makeSnackBar(
+					getString(
+						R.string.controller_catalogue_toast_background_add_fail,
+						it.message ?: "Unknown exception"
+					)
+				)?.setAction(R.string.report) { _ ->
+					ACRA.errorReporter.handleSilentException(it)
+				}?.show()
 			}
 		) { result ->
 			when (result) {
@@ -283,7 +290,14 @@ class CatalogController(
 			R.id.web_view -> {
 				viewModel.getBaseURL().observe(
 					catch = {
-						TODO("HANDLE")
+						makeSnackBar(
+							getString(
+								R.string.controller_catalogue_error_base_url,
+								it.message ?: "Unknown exception"
+							)
+						)?.setAction(R.string.report) { _ ->
+							ACRA.errorReporter.handleSilentException(it)
+						}?.show()
 					}
 				) {
 					activity?.openInWebView(it)
@@ -300,6 +314,7 @@ class CatalogController(
 	}
 
 	override fun handleRecyclerException(e: Throwable) {
+		logE("Error occurred", e)
 		binding.fragmentCatalogueProgressBottom.isVisible = false
 		binding.swipeRefreshLayout.isRefreshing = false
 		val cause = e.cause
@@ -319,7 +334,14 @@ class CatalogController(
 			}
 			else -> {
 				logE("Exception", e.cause)
-				ACRA.errorReporter.handleException(e.cause, false)
+				makeSnackBar(
+					getString(
+						R.string.controller_library_error_recycler,
+						e.message ?: "Unknown exception"
+					)
+				)?.setAction(R.string.report) {
+					ACRA.errorReporter.handleSilentException(e)
+				}?.show()
 			}
 		}
 	}
@@ -335,20 +357,41 @@ class CatalogController(
 
 		setViewTitle(getString(R.string.loading))
 		viewModel.extensionName.observe(catch = {
-			TODO("HANDLE")
+			makeSnackBar(
+				getString(
+					R.string.controller_catalogue_error_name,
+					it.message ?: "Unknown exception"
+				)
+			)?.setAction(R.string.report) { _ ->
+				ACRA.errorReporter.handleSilentException(it)
+			}?.show()
 		}) {
 			setViewTitle(it)
 			if (recyclerArray.isEmpty()) viewModel.resetView()
 		}
 
 		viewModel.hasSearchLive.observe(catch = {
-			TODO("HANDLE")
+			makeSnackBar(
+				getString(
+					R.string.controller_catalogue_error_has_search,
+					it.message ?: "Unknown exception"
+				)
+			)?.setAction(R.string.report) { _ ->
+				ACRA.errorReporter.handleSilentException(it)
+			}?.show()
 		}) {
 			activity?.invalidateOptionsMenu()
 		}
 
 		viewModel.novelCardTypeLive.observe(catch = {
-			TODO("HANDLE")
+			makeSnackBar(
+				getString(
+					R.string.controller_catalogue_error_card_type,
+					it.message ?: "Unknown exception"
+				)
+			)?.setAction(R.string.report) { _ ->
+				ACRA.errorReporter.handleSilentException(it)
+			}?.show()
 		}) {
 			binding.recyclerView.layoutManager = createLayoutManager()
 		}

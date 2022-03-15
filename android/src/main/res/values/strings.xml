@@ -549,7 +549,6 @@
     <string name="activity_css_paste">Paste clipboard</string>
     <string name="activity_css_redo">Redo</string>
     <string name="activity_css_undo">Undo</string>
-    <string name="activity_css_id_fail">Invalid CSS identification</string>
     <string name="activity_css_save">Save CSS</string>
     <string name="activity_css_example"><![CDATA[
     <!DOCTYPE html>
@@ -644,6 +643,27 @@
     <string name="controller_library_menu_tri_by_source">By source</string>
     <string name="controller_library_menu_tri_by_date">By date</string>
     <string name="reader_leave_error">Please exit the reader and rejoin due to error</string>
+    <string name="worker_export_backup_null_resolver">Recieved a null content resolver</string>
+    <string name="worker_export_backup_file_missing">URI is for an invalid file</string>
+    <string name="worker_export_backup_file_perm">Invalid permisson to write backup</string>
+    <string name="controller_catalogue_toast_background_add_fail">Failed to add: %s</string>
+    <string name="controller_catalogue_error_base_url">Error getting URL for extension: %s</string>
+    <string name="controller_catalogue_error_name">Error getting name of extension: %s</string>
+    <string name="controller_catalogue_error_has_search">Error checking if extension has search: %s</string>
+    <string name="controller_catalogue_error_card_type">Error getting card type: %s</string>
+    <string name="controller_downloads_error_list">Error getting download list: %s</string>
+    <string name="controller_repositories_error_recycler">Error getting repo list: %s</string>
+    <string name="controller_library_error_recycler">Error getting library: %s</string>
+    <string name="report">Report</string>
+    <string name="reader_error_chapters">Error loading chapters: %s</string>
+    <string name="activity_main_error_theme">Error collecting app theme: %s</string>
+    <string name="activity_main_error_update_check">Error running app update: %s</string>
+    <string name="activity_main_error_handle_update">Error handling app update: %s</string>
+    <string name="controller_novel_error_url">Error getting novel url: %s</string>
+    <string name="controller_novel_error_load">Error loading novel: %s</string>
+    <string name="controller_novel_error_load_chapters">Error getting chapters: %s</string>
+    <string name="controller_novel_error_share">Error getting share: %s</string>
+    <string name="controller_novel_error_true_delete">Error checking for true delete: %s</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

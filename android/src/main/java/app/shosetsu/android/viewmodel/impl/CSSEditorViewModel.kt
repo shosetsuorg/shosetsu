@@ -109,21 +109,16 @@ class CSSEditorViewModel(
 		cssContentFlow.tryEmit(combined)
 	}
 
-	override fun setCSSId(int: Int): Flow<Unit> =
-		flow {
-			when {
-				int == cssIDFlow.value -> emit(Unit)
-				int != cssIDFlow.value -> {
-					undoStack.clear()
-					redoStack.clear()
-					cssContentFlow.emit("")
-					cssIDFlow.emit(int)
-					emit(Unit)
-				}
-				else -> {
-				}
+	override fun setCSSId(int: Int) {
+		launchIO {
+			if (int != cssIDFlow.value) {
+				undoStack.clear()
+				redoStack.clear()
+				cssContentFlow.emit("")
+				cssIDFlow.emit(int)
 			}
 		}
+	}
 
 	init {
 		launchIO {

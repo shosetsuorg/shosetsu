@@ -50,7 +50,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.getSystemService
-import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.openInWebView
+import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.viewmodel.abstracted.ACSSEditorViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.composethemeadapter.MdcTheme
@@ -80,18 +82,9 @@ class CSSEditorActivity : AppCompatActivity(), DIAware {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		requestWindowFeature(Window.FEATURE_NO_TITLE)
-		if (savedInstanceState != null) {
+		if (savedInstanceState != null)
 			viewModel.setCSSId(savedInstanceState.getInt(CSS_ID, -1))
-				.collectLA(
-					this,
-					catch = {
-						toast(R.string.activity_css_id_fail)
-						finish()
-					},
-				) {
-					// good :D
-				}
-		}
+
 
 		setContent {
 			val cssTitle by viewModel.cssTitle.collectAsState(stringResource(R.string.loading))

@@ -4,11 +4,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleOwner
 import androidx.viewpager.widget.PagerAdapter
 import app.shosetsu.android.common.ext.collectLatestLA
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logV
+import app.shosetsu.android.common.ext.makeSnackBar
 import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
 import app.shosetsu.common.enums.ChapterSortType.SOURCE
 import app.shosetsu.common.enums.ChapterSortType.UPLOAD
@@ -22,6 +22,7 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottom
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottomMenu1Binding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottomMenuBinding
 import kotlinx.coroutines.flow.Flow
+import org.acra.ACRA
 
 /*
  * This file is part of Shosetsu.
@@ -47,7 +48,7 @@ import kotlinx.coroutines.flow.Flow
  * Creates the bottom menu for Novel Controller
  */
 class NovelFilterMenuBuilder(
-	private val novelControllerLifeCycle: LifecycleOwner,
+	private val novelController: NovelController,
 	private val inflater: LayoutInflater,
 	private val viewModel: ANovelViewModel
 ) {
@@ -67,9 +68,13 @@ class NovelFilterMenuBuilder(
 				this.adapter = menuAdapter
 				var isInitialSetup = true
 				menuAdapter.onMenuCreated = {
-					novelSettingFlow.collectLatestLA(novelControllerLifeCycle,
+					novelSettingFlow.collectLatestLA(novelController,
 						catch = {
-							TODO("Handle")
+							novelController
+								.makeSnackBar(it.message ?: "Unknown error loading app theme")
+								?.setAction(R.string.report) { _ ->
+									ACRA.errorReporter.handleSilentException(it)
+								}?.show()
 						}) { settings ->
 						if (settings == null) return@collectLatestLA
 

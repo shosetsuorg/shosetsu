@@ -30,6 +30,7 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.select.getSelectExtension
 import com.mikepenz.fastadapter.select.selectExtension
+import org.acra.ACRA
 
 /**
  * Shosetsu
@@ -159,7 +160,15 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 	}
 
 	override fun handleRecyclerException(e: Throwable) {
-		TODO("HANDLE")
+		logE("Error occurred", e)
+		makeSnackBar(
+			getString(
+				R.string.controller_downloads_error_list,
+				e.message ?: "Unknown exception"
+			)
+		)?.setAction(R.string.report) {
+			ACRA.errorReporter.handleSilentException(e)
+		}?.show()
 	}
 
 	override fun setupRecyclerView() {

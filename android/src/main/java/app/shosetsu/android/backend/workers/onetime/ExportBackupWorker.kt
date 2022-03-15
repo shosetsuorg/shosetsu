@@ -121,11 +121,26 @@ class ExportBackupWorker(appContext: Context, params: WorkerParameters) : Corout
 		try {
 			writeToUri(uri, backupEntity)
 		} catch (e: NullContentResolverException) {
-			TODO("handle")
+			logE("Failed to write to URI", e)
+			notify(R.string.worker_export_backup_null_resolver) {
+				setNotOngoing()
+			}
+
+			return Result.failure()
 		} catch (e: FileNotFoundException) {
-			TODO("handle")
+			logE("URI is invalid file", e)
+			notify(R.string.worker_export_backup_file_missing) {
+				setNotOngoing()
+			}
+
+			return Result.failure()
 		} catch (e: FilePermissionException) {
-			TODO("handle")
+			logE("Invalid permission to file", e)
+			notify(R.string.worker_export_backup_file_perm) {
+				setNotOngoing()
+			}
+
+			return Result.failure()
 		}
 
 		notify(R.string.restore_notification_content_completed) {

@@ -61,7 +61,15 @@ class RepositoryController : FastAdapterRefreshableRecyclerController<Repository
 	}
 
 	override fun handleRecyclerException(e: Throwable) {
-		TODO("HANDLE")
+		logE("Error occurred", e)
+		makeSnackBar(
+			getString(
+				R.string.controller_repositories_error_recycler,
+				e.message ?: "Unknown exception"
+			)
+		)?.setAction(R.string.report) {
+			ACRA.errorReporter.handleSilentException(e)
+		}?.show()
 	}
 
 	override fun FastAdapter<RepositoryUI>.setupFastAdapter() {

@@ -148,7 +148,14 @@ class MainActivity : AppCompatActivity(), DIAware,
 		}
 
 		viewModel.appThemeLiveData.collectLA(this, catch = {
-			TODO("Error")
+			makeSnackBar(
+				getString(
+					R.string.activity_main_error_theme,
+					it.message ?: "Unknown error"
+				)
+			).setAction(R.string.report) { _ ->
+				ACRA.errorReporter.handleSilentException(it)
+			}.show()
 		}) {
 			logI("Setting theme to $it")
 			when (it) {
@@ -400,8 +407,15 @@ class MainActivity : AppCompatActivity(), DIAware,
 
 	private fun setupProcesses() {
 		viewModel.startAppUpdateCheck().collectLA(this, catch = {
-			applicationContext.toast("$it")
-			ACRA.errorReporter.handleException(it)
+			makeSnackBar(
+				getString(
+					R.string.activity_main_error_update_check,
+					it.message ?: "Unknown error"
+				)
+			)
+				.setAction(R.string.report) { _ ->
+					ACRA.errorReporter.handleSilentException(it)
+				}.show()
 		}) { result ->
 			if (result != null)
 				AlertDialog.Builder(this).apply {
@@ -464,7 +478,17 @@ class MainActivity : AppCompatActivity(), DIAware,
 	}
 
 	private fun handleAppUpdate() {
-		viewModel.handleAppUpdate().collectLA(this, catch = {}) {
+		viewModel.handleAppUpdate().collectLA(this, catch = {
+			makeSnackBar(
+				getString(
+					R.string.activity_main_error_handle_update,
+					it.message ?: "Unknown error"
+				)
+			)
+				.setAction(R.string.report) { _ ->
+					ACRA.errorReporter.handleSilentException(it)
+				}.show()
+		}) {
 			when (it) {
 				AMainViewModel.AppUpdateAction.SelfUpdate -> {
 					makeSnackBar(R.string.activity_main_app_update_download)

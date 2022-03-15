@@ -19,6 +19,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.*
+import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.consts.READER_BAR_ALPHA
@@ -45,6 +46,7 @@ import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.calculateDiff
 import com.mikepenz.fastadapter.listeners.OnCreateViewHolderListenerImpl
 import kotlinx.coroutines.delay
+import org.acra.ACRA
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -225,7 +227,18 @@ class ChapterReader
 	private fun setObservers() {
 		logD("Loading chapters")
 		viewModel.liveData.collectLA(this, catch = {
-			logE("Error occured while loading chapters", it)
+			logE("Error occurred while loading chapters", it)
+			(parent as? MainActivity)
+				?.makeSnackBar(
+					getString(
+						R.string.reader_error_chapters,
+						it.message ?: "Unknown error"
+					)
+				)
+				?.setAction(R.string.report) { _ ->
+					ACRA.errorReporter.handleSilentException(it)
+				}?.show()
+			finish()
 		}) { result ->
 			handleChaptersResult(result)
 		}

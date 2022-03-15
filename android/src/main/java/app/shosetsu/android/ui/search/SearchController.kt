@@ -30,10 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import app.shosetsu.android.common.consts.BundleKeys
-import app.shosetsu.android.common.ext.collectLA
-import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.common.ext.shosetsuPush
-import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
@@ -128,7 +125,12 @@ class SearchController(bundle: Bundle) : ShosetsuController(bundle) {
 		val searchView = menu.findItem(R.id.search).actionView as SearchView
 		searchView.setOnQueryTextListener(InternalQuery())
 		searchView.setIconifiedByDefault(false)
-		viewModel.query.collectLA(this, catch = {}) {
+		viewModel.query.collectLA(this, catch = {
+			makeSnackBar(it.message ?: "Unknown error loading app theme")
+				?.setAction(R.string.report) { _ ->
+					ACRA.errorReporter.handleSilentException(it)
+				}?.show()
+		}) {
 			searchView.setQuery(it, false)
 		}
 	}

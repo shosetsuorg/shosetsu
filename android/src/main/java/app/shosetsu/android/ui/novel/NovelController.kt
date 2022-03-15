@@ -187,7 +187,15 @@ class NovelController(bundle: Bundle) :
 			shareBasicURL = {
 				viewModel.getShareInfo().observe(
 					catch = {
-						TODO("Handle")
+						makeSnackBar(
+							getString(
+								R.string.controller_novel_error_share,
+								it.message ?: "Unknown"
+							)
+						)
+							?.setAction(R.string.report) { _ ->
+								ACRA.errorReporter.handleSilentException(it)
+							}?.show()
 					}
 				) { info ->
 					if (info != null)
@@ -490,7 +498,15 @@ class NovelController(bundle: Bundle) :
 	private fun openWebView() {
 		viewModel.getNovelURL().observe(
 			catch = {
-				TODO("Handle")
+				makeSnackBar(
+					getString(
+						R.string.controller_novel_error_url,
+						it.message ?: "Unknown"
+					)
+				)
+					?.setAction(R.string.report) { _ ->
+						ACRA.errorReporter.handleSilentException(it)
+					}?.show()
 			}
 		) {
 			if (it != null)
@@ -521,7 +537,14 @@ class NovelController(bundle: Bundle) :
 	private fun setObserver() {
 		viewModel.novelLive.observe(
 			catch = {
-				handleRecyclerException(it)
+				makeSnackBar(
+					getString(
+						R.string.controller_novel_error_load,
+						it.message ?: "Unknown"
+					)
+				)?.setAction(R.string.report) { _ ->
+					ACRA.errorReporter.handleSilentException(it)
+				}?.show()
 			}
 		) { result ->
 			if (result == null) return@observe
@@ -553,7 +576,14 @@ class NovelController(bundle: Bundle) :
 		}
 
 		viewModel.chaptersLive.observe(catch = {
-			TODO("HANDLE")
+			makeSnackBar(
+				getString(
+					R.string.controller_novel_error_load_chapters,
+					it.message ?: "Unknown"
+				)
+			)?.setAction(R.string.report) { _ ->
+				ACRA.errorReporter.handleSilentException(it)
+			}?.show()
 		}) {
 			handleRecyclerUpdate(chapterUIAdapter, { showEmpty() }, { hideEmpty() }, it)
 			binding.progressBar.isVisible = false
@@ -565,7 +595,6 @@ class NovelController(bundle: Bundle) :
 	}
 
 	override fun handleRecyclerException(e: Throwable) {
-		TODO("HANDLE")
 	}
 
 	private val selectedChapters: List<ChapterUI>
@@ -631,7 +660,15 @@ class NovelController(bundle: Bundle) :
 
 			viewModel.getIfAllowTrueDelete().observe(
 				catch = {
-					TODO("Handle")
+					makeSnackBar(
+						getString(
+							R.string.controller_novel_error_true_delete,
+							it.message ?: "Unknown"
+						)
+					)
+						?.setAction(R.string.report) { _ ->
+							ACRA.errorReporter.handleSilentException(it)
+						}?.show()
 				}
 			) {
 				menu.findItem(id.true_delete).isVisible = it
