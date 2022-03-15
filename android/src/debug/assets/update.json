@@ -1,13 +1,9 @@
 {
-  "latestVersion": "1939",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1939/shosetsu-r1939-universal.apk",
+  "latestVersion": "1943",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1943/shosetsu-r1943-universal.apk",
   "releaseNotes": [
-    "- Downgrade okhttp to fix errors",
-    "- Notify in reader to leave when an error happens",
-    "- Fix chapter jumping",
-    "- Improve download error handling",
-    "- Attempt to fix download errors",
-    "- Fix global search errors",
-    "- Fix extension updates not displaying"
+    "- Fix extension update button being invisible",
+    "- Handle more exceptions",
+    "- I apologize for issues with the reader, I am trying to fix it as soon as possible"
   ]
 }
