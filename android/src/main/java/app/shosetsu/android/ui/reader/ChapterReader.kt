@@ -545,7 +545,7 @@ fun ChapterReaderContent(
 
 			Card(
 				modifier = Modifier.offset {
-					IntOffset(0, if (isExpanded) 0 else 757.dp.toPx().toInt())
+					IntOffset(0, if (isExpanded) 0 else 756.dp.toPx().toInt())
 				},
 				elevation = AppBarDefaults.BottomAppBarElevation,
 				shape = MaterialTheme.shapes.large
