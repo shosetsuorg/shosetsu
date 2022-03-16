@@ -87,6 +87,9 @@ abstract class AChapterReaderViewModel :
 	 */
 	abstract val liveTheme: Flow<Pair<Int, Int>>
 
+	abstract val textColor: Flow<Int>
+	abstract val backgroundColor: Flow<Int>
+
 	abstract val liveIndentSize: Flow<Int>
 
 	abstract val liveParagraphSpacing: Flow<Float>

@@ -72,21 +72,58 @@ class ChapterReaderViewModel(
 		settingsRepo.getBooleanFlow(ReaderHorizontalPageSwap)
 	}
 
+	private val indentSizeFlow: Flow<Int> by lazy {
+		readerSettingsFlow.mapLatest { result ->
+			result.paragraphIndentSize
+		}
+	}
+
+	private val paragraphSpacingFlow: Flow<Float> by lazy {
+		readerSettingsFlow.mapLatest { result ->
+			result.paragraphSpacingSize
+		}
+	}
+
+	private val stringMap by lazy { HashMap<Int, Flow<String>>() }
+
 	override val ttsPitch: Float
 		get() = runBlocking {
 			settingsRepo.getFloat(ReaderPitch)
 		}
 
-	override fun getChapterStringPassage(item: ReaderChapterUI): Flow<String> =
-		getChapterPassage(item).map {
-			it?.decodeToString() ?: "Null"
-		}.onIO()
+	override fun getChapterStringPassage(item: ReaderChapterUI): Flow<String> {
+		return stringMap.getOrPut(item.id) {
+			getChapterPassage(item).transformLatest { bytes ->
+
+				if (bytes != null)
+					emitAll(indentSizeFlow.combine(paragraphSpacingFlow) { indentSize, paragraphSpacing ->
+						val unformattedText = bytes.decodeToString()
+
+						val replaceSpacing = StringBuilder("\n")
+						// Calculate changes to \n
+						for (x in 0 until paragraphSpacing.toInt())
+							replaceSpacing.append("\n")
+
+						// Calculate changes to \t
+						for (x in 0 until indentSize)
+							replaceSpacing.append("\t")
+
+						// Set new text formatted
+						unformattedText.replace("\n".toRegex(), replaceSpacing.toString())
+					})
+				else emit("Null")
+
+			}.onIO()
+		}
+	}
 
 	override fun getChapterHTMLPassage(item: ReaderChapterUI): Flow<String> =
-		getChapterPassage(item).map {
-			// TODO modify html
-			it.toString()
-		}.onIO()
+		stringMap.getOrPut(item.id) {
+			getChapterPassage(item).map {
+				// TODO modify html
+				it.toString()
+			}.onIO()
+		}
 
 	override val isCurrentChapterBookmarked: Flow<Boolean> by lazy {
 		chaptersFlow.transformLatest { items ->
@@ -217,7 +254,7 @@ class ChapterReaderViewModel(
 		}
 	}
 
-	override val liveTheme: Flow<Pair<Int, Int>> by lazy {
+	private val themeFlow: Flow<Pair<Int, Int>> by lazy {
 		settingsRepo.getIntFlow(ReaderTheme).transformLatest { id: Int ->
 			settingsRepo.getStringSet(ReaderUserThemes)
 				.map { ColorChoiceData.fromString(it) }
@@ -229,21 +266,32 @@ class ChapterReaderViewModel(
 					emit(textColor to backgroundColor)
 				} ?: emit(Color.BLACK to Color.WHITE)
 
-		}.onIO()
+		}
+	}
+	override val liveTheme: Flow<Pair<Int, Int>> by lazy {
+		themeFlow.onIO()
 	}
 
+	override val textColor: Flow<Int> by lazy {
+		themeFlow.map { it.first }.onIO()
+	}
+
+	override val backgroundColor: Flow<Int> by lazy {
+		themeFlow.map { it.second }.onIO()
+	}
+
+
 	override val liveIndentSize: Flow<Int> by lazy {
-		readerSettingsFlow.mapLatest { result ->
-			result.paragraphIndentSize.also {
+		indentSizeFlow.mapLatest { result ->
+			result.also {
 				_defaultIndentSize = it
 			}
 		}.onIO()
 	}
 
 	override val liveParagraphSpacing: Flow<Float> by lazy {
-		readerSettingsFlow.mapLatest { result ->
-			logV("Mapping latest paragraph spacing")
-			result.paragraphSpacingSize.also {
+		paragraphSpacingFlow.mapLatest { result ->
+			result.also {
 				_defaultParaSpacing = it
 			}
 		}.onIO()

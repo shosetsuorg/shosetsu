@@ -13,7 +13,10 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
@@ -30,6 +33,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
@@ -208,15 +212,15 @@ class ChapterReader
 					isTTSPlaying = isTTSPlaying,
 					isTTSCapable = isTTSCapable,
 					lowerSheet = {
-						viewModel.textSizeOption()
-						viewModel.tapToScrollOption()
-						viewModel.volumeScrollingOption()
-						viewModel.horizontalSwitchOption()
-						viewModel.continuousScrollOption()
-						viewModel.invertChapterSwipeOption()
-						viewModel.readerKeepScreenOnOption()
-						viewModel.showReaderDivider()
-						viewModel.stringAsHtmlOption()
+						item { viewModel.textSizeOption() }
+						item { viewModel.tapToScrollOption() }
+						item { viewModel.volumeScrollingOption() }
+						item { viewModel.horizontalSwitchOption() }
+						item { viewModel.continuousScrollOption() }
+						item { viewModel.invertChapterSwipeOption() }
+						item { viewModel.readerKeepScreenOnOption() }
+						item { viewModel.showReaderDivider() }
+						item { viewModel.stringAsHtmlOption() }
 					},
 					setting = setting,
 					updateSetting = viewModel::updateSetting,
@@ -229,7 +233,9 @@ class ChapterReader
 					isRotationLocked = isRotationLocked,
 					onPageChanged = viewModel::setCurrentPage,
 					paragraphSpacingFlow = viewModel.liveParagraphSpacing,
-					textSizeFlow = viewModel.liveTextSize
+					textSizeFlow = viewModel.liveTextSize,
+					textColorFlow = viewModel.textColor,
+					backgroundColorFlow = viewModel.backgroundColor
 				)
 			}
 		}
@@ -344,6 +350,8 @@ fun PreviewChapterReaderContent() {
 			onPageChanged = {},
 			paragraphSpacingFlow = flow { },
 			textSizeFlow = flow { },
+			textColorFlow = flow { },
+			backgroundColorFlow = flow { },
 		)
 	}
 }
@@ -382,144 +390,44 @@ fun ChapterReaderContent(
 
 	setting: NovelReaderSettingEntity,
 	updateSetting: (NovelReaderSettingEntity) -> Unit,
-	lowerSheet: @Composable () -> Unit,
+	lowerSheet: LazyListScope.() -> Unit,
 
 	textSizeFlow: Flow<Float>,
 	paragraphSpacingFlow: Flow<Float>,
+	textColorFlow: Flow<Int>,
+	backgroundColorFlow: Flow<Int>
 ) {
 	var isFocused by remember { mutableStateOf(false) }
-	val scaffoldState = rememberBottomSheetScaffoldState()
 	val coroutineScope = rememberCoroutineScope()
 
-	BottomSheetScaffold(
+	Card {
+
+	}
+
+	Scaffold(
 		topBar = {
 			if (!isFocused)
-				Row {
-					TopAppBar(
-						navigationIcon = {
-							IconButton(onClick = exit) {
-								Icon(Icons.Filled.ArrowBack, null)
-							}
-						},
-						title = {
-							Text(title, maxLines = 2, modifier = Modifier.padding(end = 16.dp))
-						},
-						modifier = Modifier.alpha(READER_BAR_ALPHA)
-					)
-
-				}
+				TopAppBar(
+					navigationIcon = {
+						IconButton(onClick = exit) {
+							Icon(Icons.Filled.ArrowBack, null)
+						}
+					},
+					title = {
+						Text(title, maxLines = 2, modifier = Modifier.padding(end = 16.dp))
+					},
+					modifier = Modifier.alpha(READER_BAR_ALPHA)
+				)
 		},
-		sheetContent = {
-			if (!isFocused) {
-				Card(
-					shape = MaterialTheme.shapes.large
-				) {
-					Column(
-						modifier = Modifier.padding(16.dp)
-					) {
-						Row(
-							modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
-							horizontalArrangement = Arrangement.SpaceBetween
-						) {
-							IconButton(onClick = {
-								isFocused = !isFocused
-							}) {
-								Icon(
-									painterResource(R.drawable.ic_baseline_visibility_off_24),
-									null
-								)
-							}
-
-							Row {
-								IconButton(onClick = toggleBookmark) {
-									Icon(
-										painterResource(
-											if (!isBookmarked) {
-												R.drawable.empty_bookmark
-											} else {
-												R.drawable.filled_bookmark
-											}
-										),
-										null
-									)
-								}
-
-								IconButton(onClick = toggleRotationLock) {
-									Icon(
-										painterResource(
-											if (!isRotationLocked)
-												R.drawable.ic_baseline_screen_rotation_24
-											else R.drawable.ic_baseline_screen_lock_rotation_24
-										),
-										null
-									)
-								}
-
-								if (isTTSCapable)
-									IconButton(onClick = onPlayTTS) {
-										Icon(
-											painterResource(R.drawable.ic_baseline_audiotrack_24),
-											null
-										)
-									}
-							}
-
-							IconButton(onClick = {
-								coroutineScope.launch {
-									if (scaffoldState.bottomSheetState.isCollapsed)
-										scaffoldState.bottomSheetState.expand()
-									else scaffoldState.bottomSheetState.collapse()
-								}
-							}) {
-								Icon(
-									painterResource(R.drawable.expand_less),
-									null
-								)
-							}
-						}
-						GenericBottomSettingLayout(
-							stringResource(R.string.paragraph_spacing),
-							"",
-						) {
-							DiscreteSlider(
-								setting.paragraphSpacingSize,
-								"${setting.paragraphSpacingSize}",
-								{ it, a ->
-									updateSetting(
-										setting.copy(
-											paragraphSpacingSize = if (!a)
-												it.roundToInt().toFloat()
-											else it
-										)
-									)
-								},
-								0..10,
-							)
-						}
-						GenericBottomSettingLayout(
-							stringResource(R.string.paragraph_indent),
-							"",
-						) {
-							DiscreteSlider(
-								setting.paragraphIndentSize,
-								"${setting.paragraphIndentSize}",
-								{ it, _ ->
-									updateSetting(setting.copy(paragraphIndentSize = it))
-								},
-								0..10,
-							)
-						}
-						lowerSheet()
-					}
-				}
-			}
-		},
-		scaffoldState = scaffoldState,
-		sheetGesturesEnabled = !isFocused,
-		sheetPeekHeight = 82.dp
 	) {
+
 		// Do not create the pager if the currentPage has not been set yet
-		if (currentPage == null) return@BottomSheetScaffold
+		if (currentPage == null) {
+			Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+				Text(stringResource(R.string.loading))
+			}
+			return@Scaffold
+		}
 
 		val pagerState =
 			rememberPagerState(currentPage)
@@ -544,29 +452,37 @@ fun ChapterReaderContent(
 				}
 			}
 
+		val textSize by textSizeFlow.collectAsState(SettingKey.ReaderTextSize.default)
+		val textColor by textColorFlow.collectAsState(Color.Black.toArgb())
+		val backgroundColor by backgroundColorFlow.collectAsState(Color.White.toArgb())
+
 		@Composable
 		fun createPage(page: Int) {
 			when (val item = items[page]) {
 				is ReaderChapterUI -> {
 					when (chapterType) {
 						ChapterType.STRING -> {
-							val content by getStringContent(item).collectAsState("")
-							val textSize by textSizeFlow.collectAsState(SettingKey.ReaderTextSize.default)
-							val paragraphSpacing by paragraphSpacingFlow.collectAsState(SettingKey.ReaderParagraphSpacing.default)
+							val content by getStringContent(item).collectAsState(null)
 
-							StringPageContent(
-								content,
-								item.readingPosition,
-								textSize = textSize,
-								paragraphSpacing = paragraphSpacing,
-								onScroll = {
-									onScroll(item, it)
-								},
-								onFocusToggle = {
-									isFocused = !isFocused
-								},
-								isHorizontal = isHorizontal
-							)
+							Column {
+								if (content == null)
+									LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+
+								StringPageContent(
+									content ?: "",
+									item.readingPosition,
+									textSize = textSize,
+									onScroll = {
+										onScroll(item, it)
+									},
+									onFocusToggle = {
+										isFocused = !isFocused
+									},
+									isHorizontal = isHorizontal,
+									textColor = textColor,
+									backgroundColor = backgroundColor
+								)
+							}
 						}
 						ChapterType.HTML -> {
 							val html by getHTMLContent(item).collectAsState("")
@@ -604,7 +520,10 @@ fun ChapterReaderContent(
 			HorizontalPager(
 				count = count,
 				state = pagerState,
-				modifier = Modifier.fillMaxSize(),
+				modifier = Modifier.fillMaxSize().padding(
+					top = it.calculateTopPadding(),
+					bottom = if (isFocused) 0.dp else 56.dp
+				),
 			) { page ->
 				createPage(page)
 			}
@@ -612,9 +531,131 @@ fun ChapterReaderContent(
 			VerticalPager(
 				count = count,
 				state = pagerState,
-				modifier = Modifier.fillMaxSize()
+				modifier = Modifier.fillMaxSize().padding(
+					top = it.calculateTopPadding(),
+					bottom = if (isFocused) 0.dp else 56.dp
+				)
 			) { page ->
 				createPage(page)
+			}
+		}
+
+		if (!isFocused) {
+			var isExpanded by remember { mutableStateOf(false) }
+
+			Card(
+				modifier = Modifier.offset {
+					IntOffset(0, if (isExpanded) 0 else 757.dp.toPx().toInt())
+				},
+				elevation = AppBarDefaults.BottomAppBarElevation,
+				shape = MaterialTheme.shapes.large
+			) {
+				Column {
+					Row(
+						modifier = Modifier.fillMaxWidth().height(56.dp),
+						horizontalArrangement = Arrangement.SpaceBetween,
+						verticalAlignment = Alignment.CenterVertically
+					) {
+						IconButton(onClick = {
+							isFocused = !isFocused
+						}) {
+							Icon(
+								painterResource(R.drawable.ic_baseline_visibility_off_24),
+								null
+							)
+						}
+
+						Row {
+							IconButton(onClick = toggleBookmark) {
+								Icon(
+									painterResource(
+										if (!isBookmarked) {
+											R.drawable.empty_bookmark
+										} else {
+											R.drawable.filled_bookmark
+										}
+									),
+									null
+								)
+							}
+
+							IconButton(onClick = toggleRotationLock) {
+								Icon(
+									painterResource(
+										if (!isRotationLocked)
+											R.drawable.ic_baseline_screen_rotation_24
+										else R.drawable.ic_baseline_screen_lock_rotation_24
+									),
+									null
+								)
+							}
+
+							if (isTTSCapable)
+								IconButton(onClick = onPlayTTS) {
+									Icon(
+										painterResource(R.drawable.ic_baseline_audiotrack_24),
+										null
+									)
+								}
+						}
+
+						IconButton(onClick = {
+							isExpanded = !isExpanded
+						}) {
+							Icon(
+								if (isExpanded)
+									painterResource(R.drawable.expand_more)
+								else
+									painterResource(R.drawable.expand_less),
+								null
+							)
+						}
+					}
+
+					LazyColumn(
+						contentPadding = PaddingValues(16.dp)
+					) {
+						item {
+							GenericBottomSettingLayout(
+								stringResource(R.string.paragraph_spacing),
+								"",
+							) {
+								DiscreteSlider(
+									setting.paragraphSpacingSize,
+									"${setting.paragraphSpacingSize}",
+									{ it, a ->
+										updateSetting(
+											setting.copy(
+												paragraphSpacingSize = if (!a)
+													it.roundToInt().toFloat()
+												else it
+											)
+										)
+									},
+									0..10,
+								)
+							}
+
+						}
+
+						item {
+							GenericBottomSettingLayout(
+								stringResource(R.string.paragraph_indent),
+								"",
+							) {
+								DiscreteSlider(
+									setting.paragraphIndentSize,
+									"${setting.paragraphIndentSize}",
+									{ it, _ ->
+										updateSetting(setting.copy(paragraphIndentSize = it))
+									},
+									0..10,
+								)
+							}
+						}
+						lowerSheet()
+					}
+				}
 			}
 		}
 	}
@@ -658,10 +699,11 @@ fun StringPageContent(
 	content: String,
 	progress: Double,
 	textSize: Float,
-	paragraphSpacing: Float,
 	onScroll: (perc: Double) -> Unit,
 	onFocusToggle: () -> Unit,
-	isHorizontal: Boolean
+	isHorizontal: Boolean,
+	textColor: Int,
+	backgroundColor: Int
 ) {
 	val state = rememberScrollState()
 
@@ -675,14 +717,21 @@ fun StringPageContent(
 		}
 
 	SelectionContainer(
-		modifier = Modifier.clickable {
+		modifier = Modifier.clickable(
+			interactionSource = remember { MutableInteractionSource() },
+			indication = null
+		) {
 			onFocusToggle()
 		}
 	) {
 		Text(
 			content,
 			fontSize = textSize.sp,
-			modifier = Modifier.fillMaxSize().verticalScroll(state),
+			modifier = Modifier
+				.fillMaxSize()
+				.verticalScroll(state)
+				.background(Color(backgroundColor)),
+			color = Color(textColor)
 		)
 	}
 
