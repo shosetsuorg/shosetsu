@@ -40,13 +40,19 @@ abstract class AChapterReaderViewModel :
 
 	abstract fun getChapterHTMLPassage(item: ReaderChapterUI): Flow<String>
 
+	abstract fun setCurrentPage(page: Int)
+
+	abstract val currentPage: Flow<Int>
+
+	abstract val isCurrentChapterBookmarked: Flow<Boolean>
+
 	/**
 	 * Is loading up initial content
 	 */
 	abstract val isMainLoading: Flow<Boolean>
 	abstract val chapterType: Flow<Novel.ChapterType?>
 
-	abstract val currentChapterTitle: Flow<String?>
+	abstract val currentTitle: Flow<String?>
 
 	abstract val ttsSpeed: Float
 	abstract val ttsPitch: Float
@@ -137,8 +143,10 @@ abstract class AChapterReaderViewModel :
 	/** Start loading up a [readerChapterUI]'s passage */
 	abstract fun getChapterPassage(readerChapterUI: ReaderChapterUI): Flow<ByteArray?>
 
-	/** An easy method to toggle the state of a bookmark */
-	abstract fun toggleBookmark(readerChapterUI: ReaderChapterUI)
+	/**
+	 * Toggle the bookmark of the current chapter
+	 */
+	abstract fun toggleBookmark()
 
 	/** Update a [chapter] */
 	abstract fun updateChapter(chapter: ReaderChapterUI)
@@ -172,7 +180,7 @@ abstract class AChapterReaderViewModel :
 	 */
 	abstract fun toggleScreenRotationLock()
 
-	abstract fun setCurrentChapterID(intExtra: Int)
+	abstract fun setCurrentChapterID(chapterId: Int, initial: Boolean = false)
 	abstract fun incrementProgress()
 	abstract fun depleteProgress()
 	abstract fun getCurrentChapterURL(): Flow<String>
