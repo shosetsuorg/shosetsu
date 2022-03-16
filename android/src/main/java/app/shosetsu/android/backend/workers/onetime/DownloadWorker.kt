@@ -22,6 +22,7 @@ import app.shosetsu.android.domain.usecases.get.GetExtensionUseCase
 import app.shosetsu.common.FileNotFoundException
 import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.common.LuaException
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.DownloadEntity
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
@@ -132,7 +133,8 @@ class DownloadWorker(
 		IOException::class,
 		GenericSQLiteException::class,
 		FilePermissionException::class,
-		FileNotFoundException::class
+		FileNotFoundException::class,
+		LuaException::class
 	)
 	private suspend fun download(downloadEntity: DownloadEntity) =
 		chapRepo.getChapter(downloadEntity.chapterID)!!.let { chapterEntity ->

@@ -23,6 +23,7 @@ import app.shosetsu.android.domain.repository.base.IBackupUriRepository
 import app.shosetsu.android.domain.usecases.InstallExtensionUseCase
 import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.common.LuaException
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.BackupEntity
 import app.shosetsu.common.domain.model.local.ChapterEntity
@@ -303,17 +304,22 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 			}
 
 			val siteNovel = try {
-				iExt.parseNovel(bNovelURL, true)
+				try {
+					iExt.parseNovel(bNovelURL, true)
+				} catch (e: LuaError) {
+					if (e.cause != null)
+						throw e.cause!!
+					else throw LuaException(e)
+				}
 			} catch (e: Exception) {
-				val cause = e.cause
-				when {
-					cause is HTTPException -> {
+				when (e) {
+					is HTTPException -> {
 						logE("Failed to load novel from website", e)
 
 						notify(
 							getString(
 								R.string.restore_notification_content_novel_fail_parse_http,
-								"${cause.code}"
+								"${e.code}"
 							),
 							2000 + bNovelURL.hashCode()
 						) {
@@ -323,13 +329,13 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 						}
 
 					}
-					cause is UnknownHostException -> {
+					is UnknownHostException -> {
 						logE("Failed to locate website", e)
 
 						notify(
 							getString(
 								R.string.restore_notification_content_novel_fail_parse_host,
-								"${cause.message}"
+								"${e.message}"
 							),
 							2000 + bNovelURL.hashCode()
 						) {
@@ -338,7 +344,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 							setNotOngoing()
 						}
 					}
-					e is LuaError -> {
+					is LuaError -> {
 						logE("Lua error occurred", e)
 
 						notify(

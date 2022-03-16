@@ -1,8 +1,10 @@
 package app.shosetsu.android.datasource.remote.impl
 
+import app.shosetsu.common.LuaException
 import app.shosetsu.common.datasource.remote.base.IRemoteNovelDataSource
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
+import org.luaj.vm2.LuaError
 
 /*
  * This file is part of Shosetsu.
@@ -28,10 +30,18 @@ import app.shosetsu.lib.Novel
  */
 class RemoteNovelDataSource : IRemoteNovelDataSource {
 
+	@Throws(LuaException::class)
 	override suspend fun loadNovel(
 		formatter: IExtension,
 		novelURL: String,
 		loadChapters: Boolean,
-	): Novel.Info =
-		formatter.parseNovel(novelURL, loadChapters)
+	): Novel.Info {
+		try {
+			return formatter.parseNovel(novelURL, loadChapters)
+		} catch (e: LuaError) {
+			if (e.cause != null)
+				throw e.cause!!
+			else throw LuaException(e)
+		}
+	}
 }

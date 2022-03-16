@@ -1,11 +1,13 @@
 package app.shosetsu.android.datasource.remote.impl
 
 import app.shosetsu.android.common.ext.logD
+import app.shosetsu.common.LuaException
 import app.shosetsu.common.datasource.remote.base.IRemoteCatalogueDataSource
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.PAGE_INDEX
 import app.shosetsu.lib.QUERY_INDEX
+import org.luaj.vm2.LuaError
 import javax.net.ssl.SSLException
 
 /*
@@ -32,20 +34,26 @@ import javax.net.ssl.SSLException
  */
 class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 
+	@Throws(LuaException::class)
 	override suspend fun search(
 		ext: IExtension,
 		query: String,
 		data: Map<Int, Any>,
-	): List<Novel.Listing> =
-		if (ext.hasSearch) {
-			val l = ext.search(HashMap(data).apply {
-				this[QUERY_INDEX] = query
-			}).toList()
-
-			l
+	): List<Novel.Listing> {
+		return if (ext.hasSearch) {
+			try {
+				ext.search(HashMap(data).apply {
+					this[QUERY_INDEX] = query
+				}).toList()
+			} catch (e: LuaError) {
+				if (e.cause != null)
+					throw e.cause!!
+				else throw LuaException(e)
+			}
 		} else emptyList()
+	}
 
-	@Throws(SSLException::class)
+	@Throws(SSLException::class, LuaException::class)
 	override suspend fun loadListing(
 		ext: IExtension,
 		listingIndex: Int,
@@ -57,7 +65,13 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 
 		return if (!listing.isIncrementing && (data[PAGE_INDEX] as Int) > 1) {
 			emptyList()
-		} else listing.getListing(data).toList()
+		} else try {
+			listing.getListing(data).toList()
+		} catch (e: LuaError) {
+			if (e.cause != null)
+				throw e.cause!!
+			else throw LuaException(e)
+		}
 	}
 }
 

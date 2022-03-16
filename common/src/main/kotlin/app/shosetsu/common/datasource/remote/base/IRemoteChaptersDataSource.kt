@@ -1,5 +1,6 @@
 package app.shosetsu.common.datasource.remote.base
 
+import app.shosetsu.common.LuaException
 import app.shosetsu.lib.IExtension
 
 /*
@@ -29,5 +30,6 @@ interface IRemoteChaptersDataSource {
 	 * Loads the chapter passage from network
 	 * @return chapter content
 	 */
+	@Throws(LuaException::class)
 	suspend fun loadChapterPassage(formatter: IExtension, chapterURL: String): ByteArray
 }

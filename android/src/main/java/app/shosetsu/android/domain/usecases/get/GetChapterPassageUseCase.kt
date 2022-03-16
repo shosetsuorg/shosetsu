@@ -4,6 +4,7 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.common.FileNotFoundException
 import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.common.LuaException
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 
 /*
@@ -34,7 +35,8 @@ class GetChapterPassageUseCase(
 	@Throws(
 		GenericSQLiteException::class,
 		FilePermissionException::class,
-		FileNotFoundException::class
+		FileNotFoundException::class,
+		LuaException::class
 	)
 	suspend operator fun invoke(readerChapterUI: ReaderChapterUI): ByteArray? =
 		iChaptersRepository.getChapter(readerChapterUI.id)?.let { chapterEntity ->

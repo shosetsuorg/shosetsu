@@ -1,6 +1,7 @@
 package app.shosetsu.common.domain.repositories.impl
 
 import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.common.LuaException
 import app.shosetsu.common.datasource.database.base.IDBNovelsDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteCatalogueDataSource
 import app.shosetsu.common.datasource.remote.base.IRemoteNovelDataSource
@@ -113,6 +114,7 @@ class NovelsRepository(
 	override suspend fun updateLibraryNovelEntity(list: List<LibraryNovelEntity>): Unit =
 		database.update(list)
 
+	@Throws(LuaException::class)
 	override suspend fun retrieveNovelInfo(
 		extension: IExtension,
 		novelEntity: NovelEntity,
@@ -129,13 +131,14 @@ class NovelsRepository(
 	override suspend fun clearUnBookmarkedNovels(): Unit =
 		database.clearUnBookmarkedNovels()
 
+	@Throws(LuaException::class)
 	override suspend fun getCatalogueSearch(
 		ext: IExtension,
 		query: String,
 		data: Map<Int, Any>
 	): List<Novel.Listing> = remoteCatalogueDataSource.search(ext, query, data)
 
-	@Throws(SSLException::class)
+	@Throws(SSLException::class, LuaException::class)
 	override suspend fun getCatalogueData(
 		ext: IExtension,
 		listing: Int,

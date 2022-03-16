@@ -1,7 +1,9 @@
 package app.shosetsu.android.datasource.remote.impl
 
+import app.shosetsu.common.LuaException
 import app.shosetsu.common.datasource.remote.base.IRemoteChaptersDataSource
 import app.shosetsu.lib.IExtension
+import org.luaj.vm2.LuaError
 
 /*
  * This file is part of shosetsu.
@@ -25,8 +27,16 @@ import app.shosetsu.lib.IExtension
  * 12 / 05 / 2020
  */
 class RemoteChaptersDataSource : IRemoteChaptersDataSource {
+
+	@Throws(LuaException::class)
 	override suspend fun loadChapterPassage(
 		formatter: IExtension,
 		chapterURL: String,
-	): ByteArray = formatter.getPassage(chapterURL)
+	): ByteArray = try {
+		formatter.getPassage(chapterURL)
+	} catch (e: LuaError) {
+		if (e.cause != null)
+			throw e.cause!!
+		else throw LuaException(e)
+	}
 }

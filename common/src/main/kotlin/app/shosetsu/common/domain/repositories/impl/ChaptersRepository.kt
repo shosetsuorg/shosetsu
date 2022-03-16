@@ -3,6 +3,7 @@ package app.shosetsu.common.domain.repositories.impl
 import app.shosetsu.common.FileNotFoundException
 import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.common.LuaException
 import app.shosetsu.common.datasource.database.base.IDBChaptersDataSource
 import app.shosetsu.common.datasource.file.base.IFileCachedChapterDataSource
 import app.shosetsu.common.datasource.file.base.IFileChapterDataSource
@@ -58,7 +59,7 @@ class ChaptersRepository(
 		result: ByteArray
 	) = saveChapterPassageToMemory(entity, chapterType, result)
 
-	@Throws(FilePermissionException::class, FileNotFoundException::class)
+	@Throws(FilePermissionException::class, FileNotFoundException::class, LuaException::class)
 	override suspend fun getChapterPassage(
 		formatter: IExtension,
 		entity: ChapterEntity,

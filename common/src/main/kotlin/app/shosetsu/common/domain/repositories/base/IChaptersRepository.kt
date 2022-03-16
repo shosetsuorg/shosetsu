@@ -3,6 +3,7 @@ package app.shosetsu.common.domain.repositories.base
 import app.shosetsu.common.FileNotFoundException
 import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.common.LuaException
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.ReaderChapterEntity
 import app.shosetsu.lib.IExtension
@@ -43,7 +44,7 @@ interface IChaptersRepository {
 	 * Saves successful passages into caches
 	 *
 	 */
-	@Throws(FilePermissionException::class, FileNotFoundException::class)
+	@Throws(FilePermissionException::class, FileNotFoundException::class, LuaException::class)
 	suspend fun getChapterPassage(
 		formatter: IExtension,
 		entity: ChapterEntity,

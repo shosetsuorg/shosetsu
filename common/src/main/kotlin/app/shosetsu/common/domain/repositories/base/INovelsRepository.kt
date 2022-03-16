@@ -16,6 +16,7 @@ package app.shosetsu.common.domain.repositories.base
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.common.LuaException
 import app.shosetsu.common.domain.model.local.LibraryNovelEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.StrippedBookmarkedNovelEntity
@@ -100,6 +101,7 @@ interface INovelsRepository {
 	/**
 	 * Retrieves NovelInfo from it's source
 	 */
+	@Throws(LuaException::class)
 	suspend fun retrieveNovelInfo(
 		extension: IExtension,
 		novelEntity: NovelEntity,
@@ -118,6 +120,7 @@ interface INovelsRepository {
 	/**
 	 * Queries the [IExtension] for a search result
 	 */
+	@Throws(LuaException::class)
 	suspend fun getCatalogueSearch(
 		ext: IExtension,
 		query: String,
@@ -127,7 +130,7 @@ interface INovelsRepository {
 	/**
 	 * Loads catalogue data of an [IExtension]
 	 */
-	@Throws(SSLException::class)
+	@Throws(SSLException::class, LuaException::class)
 	suspend fun getCatalogueData(
 		ext: IExtension,
 		listing: Int,

@@ -1,8 +1,4 @@
-package app.shosetsu.common.datasource.remote.base
-
-import app.shosetsu.common.LuaException
-import app.shosetsu.lib.IExtension
-import app.shosetsu.lib.Novel
+package app.shosetsu.common
 
 /*
  * This file is part of shosetsu.
@@ -22,18 +18,9 @@ import app.shosetsu.lib.Novel
  */
 
 /**
- * shosetsu
- * 04 / 05 / 2020
+ * Shosetsu
+ *
+ * @since 16 / 03 / 2022
+ * @author Doomsdayrs
  */
-interface IRemoteNovelDataSource {
-
-	/**
-	 * Loads novel info
-	 */
-	@Throws(LuaException::class)
-	suspend fun loadNovel(
-		formatter: IExtension,
-		novelURL: String,
-		loadChapters: Boolean = true,
-	): Novel.Info
-}
+class LuaException(throwable: Throwable) : Exception(throwable)

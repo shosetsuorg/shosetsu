@@ -6,6 +6,7 @@ import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.IncompatibleExtensionException
+import app.shosetsu.common.LuaException
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
@@ -39,7 +40,11 @@ class GetCatalogueQueryDataUseCase(
 	private val convertNCToCNUIUseCase: ConvertNCToCNUIUseCase,
 	private val iSettingsRepository: ISettingsRepository
 ) {
-	@Throws(GenericSQLiteException::class, IncompatibleExtensionException::class)
+	@Throws(
+		GenericSQLiteException::class,
+		IncompatibleExtensionException::class,
+		LuaException::class
+	)
 	suspend operator fun invoke(
 		extID: Int,
 		query: String,
@@ -48,6 +53,7 @@ class GetCatalogueQueryDataUseCase(
 		invoke(it, query, filters)
 	} ?: emptyList()
 
+	@Throws(LuaException::class)
 	suspend operator fun invoke(
 		ext: IExtension,
 		query: String,
