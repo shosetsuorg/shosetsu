@@ -15,6 +15,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -569,14 +570,20 @@ fun ChapterReaderContent(
 						}
 						ChapterType.HTML -> {
 							val html by getHTMLContent(item).collectAsState("")
-							WebViewPageContent(html, item.readingPosition, onScroll = {
-								onScroll(item, it)
-							}, onFocusToggle = {
-								isFocused = !isFocused
-							},
+
+							WebViewPageContent(
+								html = html,
+								progress = item.readingPosition,
+								onScroll = {
+									onScroll(item, it)
+								},
+								onFocusToggle = {
+									isFocused = !isFocused
+								},
 								onHitBottom = {
 
-								})
+								}
+							)
 						}
 						else -> {
 
@@ -661,18 +668,23 @@ fun StringPageContent(
 	if (state.isScrollInProgress)
 		DisposableEffect(Unit) {
 			onDispose {
-				onScroll((state.maxValue / state.value).toDouble())
+				if (state.value != 0)
+					onScroll((state.maxValue / state.value).toDouble())
+				else onScroll(0.0)
 			}
 		}
 
-	Text(
-		content,
-		fontSize = textSize.sp,
-		lineHeight = paragraphSpacing.sp,
-		modifier = Modifier.fillMaxSize().verticalScroll(state).clickable {
+	SelectionContainer(
+		modifier = Modifier.clickable {
 			onFocusToggle()
 		}
-	)
+	) {
+		Text(
+			content,
+			fontSize = textSize.sp,
+			modifier = Modifier.fillMaxSize().verticalScroll(state),
+		)
+	}
 
 	LaunchedEffect(Unit) {
 		launch {

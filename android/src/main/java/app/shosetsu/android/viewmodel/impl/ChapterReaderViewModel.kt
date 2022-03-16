@@ -79,7 +79,7 @@ class ChapterReaderViewModel(
 
 	override fun getChapterStringPassage(item: ReaderChapterUI): Flow<String> =
 		getChapterPassage(item).map {
-			it.toString()
+			it?.decodeToString() ?: "Null"
 		}.onIO()
 
 	override fun getChapterHTMLPassage(item: ReaderChapterUI): Flow<String> =
