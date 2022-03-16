@@ -3,6 +3,7 @@ package app.shosetsu.android.datasource.local.file.impl
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
+import app.shosetsu.common.FileNotFoundException
 import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.datasource.file.base.IFileBackupDataSource
 import app.shosetsu.common.domain.model.local.BackupEntity
@@ -43,6 +44,7 @@ class FileBackupDataSource(
 		}
 	}
 
+	@Throws(FilePermissionException::class, FileNotFoundException::class)
 	override suspend fun loadBackup(
 		backupName: String,
 		isExternal: Boolean

@@ -4,9 +4,12 @@ import app.shosetsu.android.common.consts.FILE_LIBRARY_DIR
 import app.shosetsu.android.common.consts.FILE_SOURCE_DIR
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logV
+import app.shosetsu.common.FileNotFoundException
+import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.datasource.file.base.IFileExtLibDataSource
 import app.shosetsu.common.enums.InternalFileDir.FILES
 import app.shosetsu.common.providers.file.base.IFileSystemProvider
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -46,19 +49,24 @@ class FileExtLibDataSource(
 	private fun makeLibraryFile(fileName: String): String =
 		"$FILE_SOURCE_DIR$FILE_LIBRARY_DIR$fileName.lua"
 
-	override suspend fun writeExtLib(fileName: String, data: String): Unit =
+	@Throws(FilePermissionException::class, IOException::class)
+	override suspend fun writeExtLib(fileName: String, data: String) {
 		iFileSystemProvider.writeFile(
 			FILES,
 			makeLibraryFile(fileName),
 			data.encodeToByteArray()
 		)
+	}
 
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
 	override suspend fun loadExtLib(fileName: String): String =
 		blockingLoadLib(fileName)
 
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
 	override fun blockingLoadLib(fileName: String): String =
 		iFileSystemProvider.readFile(FILES, makeLibraryFile(fileName)).decodeToString()
 
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
 	override suspend fun deleteExtLib(fileName: String) {
 		iFileSystemProvider.deleteFile(FILES, makeLibraryFile(fileName))
 	}

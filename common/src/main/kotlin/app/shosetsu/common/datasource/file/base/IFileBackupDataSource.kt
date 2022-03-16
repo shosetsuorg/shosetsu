@@ -1,5 +1,6 @@
 package app.shosetsu.common.datasource.file.base
 
+import app.shosetsu.common.FileNotFoundException
 import app.shosetsu.common.FilePermissionException
 import app.shosetsu.common.domain.model.local.BackupEntity
 import java.io.IOException
@@ -26,6 +27,7 @@ import java.io.IOException
  */
 interface IFileBackupDataSource {
 
+	@Throws(FilePermissionException::class, FileNotFoundException::class)
 	suspend fun loadBackup(backupName: String, isExternal: Boolean): BackupEntity
 
 	@Throws(FilePermissionException::class, IOException::class)

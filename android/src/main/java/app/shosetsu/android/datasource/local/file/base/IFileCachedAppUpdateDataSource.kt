@@ -36,7 +36,7 @@ interface IFileCachedAppUpdateDataSource {
 	/**
 	 * Accessor method to read the current cached update
 	 */
-	@Throws(FileNotFoundException::class)
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
 	suspend fun loadCachedAppUpdate(): AppUpdateEntity
 
 	/** Puts an update into cache */

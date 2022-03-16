@@ -61,7 +61,7 @@ class FileAppUpdateDataSource(
 			Json.encodeToString(debugAppUpdate).encodeToByteArray()
 		)
 
-	@Throws(FileNotFoundException::class)
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
 	override suspend fun loadCachedAppUpdate(): AppUpdateEntity =
 		updateAvaLive.value ?: Json.decodeFromString<AppUpdateDTO>(
 			iFileSystemProvider.readFile(CACHE, APP_UPDATE_CACHE_FILE).decodeToString()

@@ -5,6 +5,7 @@ import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.common.LuaException
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
 import app.shosetsu.common.domain.repositories.base.INovelsRepository
@@ -39,7 +40,7 @@ class GetCatalogueListingDataUseCase(
 	private val settingsRepo: ISettingsRepository,
 	private val extSettingsRepo: IExtensionSettingsRepository
 ) {
-	@Throws(SSLException::class)
+	@Throws(SSLException::class, LuaException::class)
 	suspend operator fun invoke(
 		iExtension: IExtension,
 		data: Map<Int, Any>

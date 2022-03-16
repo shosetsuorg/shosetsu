@@ -1,5 +1,9 @@
 package app.shosetsu.common.datasource.file.base
 
+import app.shosetsu.common.FileNotFoundException
+import app.shosetsu.common.FilePermissionException
+import java.io.IOException
+
 /*
  * This file is part of shosetsu.
  *
@@ -22,8 +26,16 @@ package app.shosetsu.common.datasource.file.base
  * 12 / 05 / 2020
  */
 interface IFileExtLibDataSource {
+
+	@Throws(FilePermissionException::class, IOException::class)
 	suspend fun writeExtLib(fileName: String, data: String)
+
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
 	suspend fun loadExtLib(fileName: String): String
+
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
 	fun blockingLoadLib(fileName: String): String
+
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
 	suspend fun deleteExtLib(fileName: String)
 }
