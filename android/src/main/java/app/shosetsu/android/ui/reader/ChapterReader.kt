@@ -44,6 +44,7 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
 import app.shosetsu.android.viewmodel.impl.settings.*
+import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.lib.Novel.ChapterType
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -129,14 +130,16 @@ class ChapterReader
 		window.hideBar()
 		viewModel.apply {
 			setNovelID(intent.getIntExtra(BUNDLE_NOVEL_ID, -1))
-			viewModel.setCurrentChapterID(intent.getIntExtra(BUNDLE_CHAPTER_ID, -1))
+			viewModel.setCurrentChapterID(intent.getIntExtra(BUNDLE_CHAPTER_ID, -1), true)
 		}
 
 		super.onCreate(savedInstanceState)
 		setContent {
-			val currentChapterTitle by viewModel.currentChapterTitle.collectAsState(null)
+			val currentTitle by viewModel.currentTitle.collectAsState(null)
 			val items by viewModel.liveData.collectAsState(emptyList())
 			val isHorizontalReading by viewModel.isHorizontalReading.collectAsState(false)
+			val isBookmarked by viewModel.isCurrentChapterBookmarked.collectAsState(false)
+			val isRotationLocked by viewModel.liveIsScreenRotationLocked.collectAsState(false)
 			val chapterType by viewModel.chapterType.collectAsState(null)
 			val isLoading by viewModel.isMainLoading.collectAsState(true)
 			val currentChapterID by viewModel.currentChapterID.collectAsState(-1)
@@ -144,18 +147,17 @@ class ChapterReader
 			val isTTSPlaying by isTTSPlaying.collectAsState(false)
 			val setting by viewModel.getSettings()
 				.collectAsState(NovelReaderSettingEntity(-1, 0, 0.0F))
-
+			val currentPage by viewModel.currentPage.collectAsState(null)
 			MdcTheme {
 				ChapterReaderContent(
-					currentChapterTitle ?: stringResource(R.string.loading),
+					currentTitle ?: stringResource(R.string.loading),
 					exit = {
 						finish()
 					},
 					items = items,
 					isHorizontal = isHorizontalReading,
 					chapterType = chapterType,
-					isInitalLoading = isLoading,
-					currentChapterId = currentChapterID,
+					isInitialLoading = isLoading,
 					getStringContent = viewModel::getChapterStringPassage,
 					getHTMLContent = viewModel::getChapterHTMLPassage,
 					onScroll = { item, percentage ->
@@ -220,15 +222,22 @@ class ChapterReader
 					markChapterAsCurrent = {
 						viewModel.setCurrentChapterID(it.id)
 					},
-					onChapterRead = viewModel::updateChapterAsRead
+					onChapterRead = viewModel::updateChapterAsRead,
+					currentPage = currentPage,
+					isBookmarked = isBookmarked,
+					isRotationLocked = isRotationLocked,
+					onPageChanged = viewModel::setCurrentPage,
+					paragraphSpacingFlow = viewModel.liveParagraphSpacing,
+					textSizeFlow = viewModel.liveTextSize
 				)
 			}
 		}
 
-		// Show back button
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-		//slidingUpPanelLayout.setGravity(Gravity.BOTTOM)
+		viewModel.liveIsScreenRotationLocked.collectLA(this, catch = {}) {
+			if (it)
+				lockRotation()
+			else unlockRotation()
+		}
 	}
 
 	/** On Destroy */
@@ -286,6 +295,7 @@ class ChapterReader
 		else super.onKeyDown(keyCode, event)
 	}
 
+
 	private fun lockRotation() {
 		val currentOrientation = resources.configuration.orientation
 		requestedOrientation = if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -306,17 +316,16 @@ class ChapterReader
 fun PreviewChapterReaderContent() {
 	MdcTheme {
 		ChapterReaderContent(
-			currentChapterTitle = "Chapter 1",
+			title = "Chapter 1",
 			exit = {},
 			items = emptyList(),
 			isHorizontal = false,
 			chapterType = ChapterType.HTML,
-			currentChapterId = 0,
 			getStringContent = { flow { } },
 			getHTMLContent = { flow { } },
 			onScroll = { a, b ->
 			},
-			isInitalLoading = false,
+			isInitialLoading = true,
 			onStopTTS = {},
 			onPlayTTS = {},
 			isTTSCapable = false,
@@ -327,7 +336,13 @@ fun PreviewChapterReaderContent() {
 			updateSetting = {},
 			lowerSheet = {},
 			markChapterAsCurrent = {},
-			onChapterRead = {}
+			onChapterRead = {},
+			currentPage = 0,
+			isBookmarked = false,
+			isRotationLocked = false,
+			onPageChanged = {},
+			paragraphSpacingFlow = flow { },
+			textSizeFlow = flow { },
 		)
 	}
 }
@@ -335,45 +350,63 @@ fun PreviewChapterReaderContent() {
 @OptIn(ExperimentalMaterialApi::class, com.google.accompanist.pager.ExperimentalPagerApi::class)
 @Composable
 fun ChapterReaderContent(
-	currentChapterTitle: String,
+	title: String,
 	exit: () -> Unit,
 	items: List<ReaderUIItem<*, *>>,
 	isHorizontal: Boolean,
-	isInitalLoading: Boolean,
+	isInitialLoading: Boolean,
 	chapterType: ChapterType?,
-	currentChapterId: Int,
+
+	currentPage: Int?,
+	onPageChanged: (Int) -> Unit,
+
 	markChapterAsCurrent: (item: ReaderChapterUI) -> Unit,
 	onChapterRead: (item: ReaderChapterUI) -> Unit,
+
 	getStringContent: (item: ReaderChapterUI) -> Flow<String>,
 	getHTMLContent: (item: ReaderChapterUI) -> Flow<String>,
+
 	onScroll: (item: ReaderChapterUI, perc: Double) -> Unit,
+
+	isTTSCapable: Boolean,
+	isTTSPlaying: Boolean,
 	onPlayTTS: () -> Unit,
 	onStopTTS: () -> Unit,
-	isTTSPlaying: Boolean,
-	isTTSCapable: Boolean,
-	toggleBookmark: (item: ReaderChapterUI) -> Unit,
+
+	isBookmarked: Boolean,
+	toggleBookmark: () -> Unit,
+
+	isRotationLocked: Boolean,
 	toggleRotationLock: () -> Unit,
+
 	setting: NovelReaderSettingEntity,
 	updateSetting: (NovelReaderSettingEntity) -> Unit,
-	lowerSheet: @Composable () -> Unit
+	lowerSheet: @Composable () -> Unit,
+
+	textSizeFlow: Flow<Float>,
+	paragraphSpacingFlow: Flow<Float>,
 ) {
 	var isFocused by remember { mutableStateOf(false) }
 	val scaffoldState = rememberBottomSheetScaffoldState()
+	val coroutineScope = rememberCoroutineScope()
 
 	BottomSheetScaffold(
 		topBar = {
 			if (!isFocused)
-				TopAppBar(
-					navigationIcon = {
-						IconButton(onClick = exit) {
-							Icon(Icons.Filled.ArrowBack, null)
-						}
-					},
-					title = {
-						Text(currentChapterTitle, maxLines = 2)
-					},
-					modifier = Modifier.alpha(READER_BAR_ALPHA)
-				)
+				Row {
+					TopAppBar(
+						navigationIcon = {
+							IconButton(onClick = exit) {
+								Icon(Icons.Filled.ArrowBack, null)
+							}
+						},
+						title = {
+							Text(title, maxLines = 2, modifier = Modifier.padding(end = 16.dp))
+						},
+						modifier = Modifier.alpha(READER_BAR_ALPHA)
+					)
+
+				}
 		},
 		sheetContent = {
 			if (!isFocused) {
@@ -388,7 +421,7 @@ fun ChapterReaderContent(
 							horizontalArrangement = Arrangement.SpaceBetween
 						) {
 							IconButton(onClick = {
-								//TODO toggle focus
+								isFocused = !isFocused
 							}) {
 								Icon(
 									painterResource(R.drawable.ic_baseline_visibility_off_24),
@@ -397,38 +430,45 @@ fun ChapterReaderContent(
 							}
 
 							Row {
-
-								IconButton(onClick = {
-									//TODO toggle bookmark
-								}) {
+								IconButton(onClick = toggleBookmark) {
 									Icon(
-										painterResource(R.drawable.empty_bookmark),
+										painterResource(
+											if (!isBookmarked) {
+												R.drawable.empty_bookmark
+											} else {
+												R.drawable.filled_bookmark
+											}
+										),
 										null
 									)
 								}
 
-								IconButton(onClick = {
-									//TODO toggle rotation
-								}) {
+								IconButton(onClick = toggleRotationLock) {
 									Icon(
-										painterResource(R.drawable.ic_baseline_screen_rotation_24),
+										painterResource(
+											if (!isRotationLocked)
+												R.drawable.ic_baseline_screen_rotation_24
+											else R.drawable.ic_baseline_screen_lock_rotation_24
+										),
 										null
 									)
 								}
 
-								IconButton(onClick = {
-									//TODO start tts
-								}) {
-									Icon(
-										painterResource(R.drawable.ic_baseline_audiotrack_24),
-										null
-									)
-								}
+								if (isTTSCapable)
+									IconButton(onClick = onPlayTTS) {
+										Icon(
+											painterResource(R.drawable.ic_baseline_audiotrack_24),
+											null
+										)
+									}
 							}
 
-
 							IconButton(onClick = {
-								//TODO toggle drawer
+								coroutineScope.launch {
+									if (scaffoldState.bottomSheetState.isCollapsed)
+										scaffoldState.bottomSheetState.expand()
+									else scaffoldState.bottomSheetState.collapse()
+								}
 							}) {
 								Icon(
 									painterResource(R.drawable.expand_less),
@@ -471,26 +511,20 @@ fun ChapterReaderContent(
 						lowerSheet()
 					}
 				}
-				// TODO Fill
-				// Use READER_BAR_ALPHA
-				items
-					.filterIsInstance<ReaderChapterUI>()
-					.find { it.id == currentChapterId }
-					?.let {
-						if (it.bookmarked)
-							R.drawable.filled_bookmark
-						else R.drawable.empty_bookmark
-					}
 			}
 		},
 		scaffoldState = scaffoldState,
 		sheetGesturesEnabled = !isFocused,
 		sheetPeekHeight = 82.dp
 	) {
+		// Do not create the pager if the currentPage has not been set yet
+		if (currentPage == null) return@BottomSheetScaffold
+
 		val pagerState =
-			rememberPagerState(items.indexOfFirst { it.identifier == currentChapterId.toLong() }
-				.takeIf { it != -1 } ?: 0)
+			rememberPagerState(currentPage)
+
 		val count = items.size
+
 		var curChapter: ReaderChapterUI? by remember { mutableStateOf(null) }
 
 		if (pagerState.isScrollInProgress)
@@ -505,6 +539,7 @@ fun ChapterReaderContent(
 					} else {
 						curChapter?.let(onChapterRead)
 					}
+					onPageChanged(pagerState.currentPage)
 				}
 			}
 
@@ -514,7 +549,23 @@ fun ChapterReaderContent(
 				is ReaderChapterUI -> {
 					when (chapterType) {
 						ChapterType.STRING -> {
+							val content by getStringContent(item).collectAsState("")
+							val textSize by textSizeFlow.collectAsState(SettingKey.ReaderTextSize.default)
+							val paragraphSpacing by paragraphSpacingFlow.collectAsState(SettingKey.ReaderParagraphSpacing.default)
 
+							StringPageContent(
+								content,
+								item.readingPosition,
+								textSize = textSize,
+								paragraphSpacing = paragraphSpacing,
+								onScroll = {
+									onScroll(item, it)
+								},
+								onFocusToggle = {
+									isFocused = !isFocused
+								},
+								isHorizontal = isHorizontal
+							)
 						}
 						ChapterType.HTML -> {
 							val html by getHTMLContent(item).collectAsState("")

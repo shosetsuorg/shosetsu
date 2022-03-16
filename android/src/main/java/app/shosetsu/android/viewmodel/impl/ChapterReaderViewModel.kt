@@ -1,5 +1,6 @@
 package app.shosetsu.android.viewmodel.impl
 
+import android.app.Application
 import android.graphics.Color
 import androidx.annotation.WorkerThread
 import app.shosetsu.android.common.ext.launchIO
@@ -24,6 +25,7 @@ import app.shosetsu.common.enums.MarkingType.ONVIEW
 import app.shosetsu.common.enums.ReadingStatus.READ
 import app.shosetsu.common.enums.ReadingStatus.READING
 import app.shosetsu.lib.Novel
+import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
@@ -53,6 +55,7 @@ import kotlinx.coroutines.runBlocking
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class ChapterReaderViewModel(
+	private val application: Application,
 	override val settingsRepo: ISettingsRepository,
 	private val loadReaderChaptersUseCase: GetReaderChaptersUseCase,
 	private val loadChapterPassageUseCase: GetChapterPassageUseCase,
@@ -85,6 +88,18 @@ class ChapterReaderViewModel(
 			it.toString()
 		}.onIO()
 
+	override val isCurrentChapterBookmarked: Flow<Boolean> by lazy {
+		chaptersFlow.transformLatest { items ->
+			emitAll(
+				currentChapterID.transformLatest { id ->
+					items.find { it.id == id }?.let {
+						emit(it.bookmarked)
+					}
+				}
+			)
+		}.onIO()
+	}
+
 	override val isMainLoading: MutableStateFlow<Boolean> = MutableStateFlow(true)
 
 	override val chapterType: Flow<Novel.ChapterType?> by lazy {
@@ -97,12 +112,20 @@ class ChapterReaderViewModel(
 		}.onIO()
 	}
 
-	override val currentChapterTitle: Flow<String?> by lazy {
-		currentChapterID.transformLatest { id ->
+	override val currentTitle: Flow<String?> by lazy {
+		flow {
 			emit(null)
-			chaptersFlow.first().find { it.id == id }?.let {
-				emit(it.title)
-			}
+			emitAll(
+				currentPage.transformLatest { page ->
+					liveData.first()[page].let {
+						if (it is ReaderChapterUI)
+							emit(it.title)
+						else if (it is ReaderDividerUI) {
+							emit(application.getString(R.string.next_chapter))
+						}
+					}
+				}
+			)
 		}.onIO()
 	}
 
@@ -136,6 +159,8 @@ class ChapterReaderViewModel(
 			.combineInvert()
 			.onIO()
 	}
+
+	override val currentPage: MutableStateFlow<Int> = MutableStateFlow(0)
 
 	private fun Flow<List<ReaderUIItem<*, *>>>.combineInvert(): Flow<List<ReaderUIItem<*, *>>> =
 		combine(
@@ -182,6 +207,9 @@ class ChapterReaderViewModel(
 			}
 		}
 
+	override fun setCurrentPage(page: Int) {
+		currentPage.tryEmit(page)
+	}
 
 	private val readerSettingsFlow: Flow<NovelReaderSettingEntity> by lazy {
 		novelIDLive.transformLatest {
@@ -304,12 +332,18 @@ class ChapterReaderViewModel(
 			}
 		}.onIO()
 
-	override fun toggleBookmark(readerChapterUI: ReaderChapterUI) {
-		updateChapter(
-			readerChapterUI.copy(
-				bookmarked = !readerChapterUI.bookmarked
-			)
-		)
+	override fun toggleBookmark() {
+		launchIO {
+			val id = currentChapterID.first()
+			val items = chaptersFlow.first()
+			items.find { it.id == id }?.let {
+				updateChapter(
+					it.copy(
+						bookmarked = !it.bookmarked
+					)
+				)
+			}
+		}
 	}
 
 	override fun updateChapter(
@@ -416,8 +450,17 @@ class ChapterReaderViewModel(
 		isScreenRotationLockedFlow.value = !isScreenRotationLockedFlow.value
 	}
 
-	override fun setCurrentChapterID(intExtra: Int) {
-		currentChapterID.tryEmit(intExtra)
+	override fun setCurrentChapterID(chapterId: Int, initial: Boolean) {
+		currentChapterID.tryEmit(chapterId)
+
+		if (initial)
+			launchIO {
+				val items = liveData.first()
+				currentPage.emit(
+					items
+						.indexOfFirst { it is ReaderChapterUI && it.id == chapterId }
+				)
+			}
 	}
 
 	override fun incrementProgress() {
