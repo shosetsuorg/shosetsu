@@ -3,15 +3,18 @@ package app.shosetsu.android.backend.receivers
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.EXTRA_NOTIFICATION_ID
 import androidx.core.app.NotificationManagerCompat
 import app.shosetsu.android.backend.workers.onetime.DownloadWorker
 import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker
 import app.shosetsu.android.common.consts.ACTION_UPDATE_EXTENSION
 import app.shosetsu.android.common.consts.EXTRA_UPDATE_EXTENSION_ID
 import app.shosetsu.android.common.consts.EXTRA_UPDATE_REPO_ID
+import app.shosetsu.android.common.ext.ACTION_REPORT_ERROR
+import app.shosetsu.android.common.ext.EXTRA_EXCEPTION
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.usecases.RequestInstallExtensionUseCase
+import org.acra.ACRA
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
 
@@ -52,7 +55,7 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
 				manager.stop()
 				notificationManager.cancel(
 					intent.getIntExtra(
-						NotificationCompat.EXTRA_NOTIFICATION_ID,
+						EXTRA_NOTIFICATION_ID,
 						-1
 					)
 				)
@@ -62,7 +65,7 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
 				manager.stop()
 				notificationManager.cancel(
 					intent.getIntExtra(
-						NotificationCompat.EXTRA_NOTIFICATION_ID,
+						EXTRA_NOTIFICATION_ID,
 						-1
 					)
 				)
@@ -83,6 +86,17 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
 					notificationManager.cancel(extensionId + 3000)
 					manager.invoke(extensionId, repoId)
 				}
+			}
+
+			ACTION_REPORT_ERROR -> {
+				ACRA.errorReporter
+					.handleSilentException(intent.extras?.get(EXTRA_EXCEPTION) as? Throwable)
+				notificationManager.cancel(
+					intent.getIntExtra(
+						EXTRA_NOTIFICATION_ID,
+						-1
+					)
+				)
 			}
 		}
 	}

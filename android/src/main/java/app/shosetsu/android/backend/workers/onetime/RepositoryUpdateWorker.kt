@@ -282,6 +282,11 @@ class RepositoryUpdateWorker(
 						removeProgress()
 						setContentTitle("${repo.name} failed to load")
 						setNotOngoing()
+						addReportErrorAction(
+							applicationContext,
+							ID_REPOSITORY_UPDATE + 1 + repo.id,
+							e
+						)
 					}
 					logE(
 						"${repo.name} failed to load : ${e.message}",

@@ -13,12 +13,15 @@ import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.WorkerTags.EXTENSION_INSTALL_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.usecases.InstallExtensionUseCase
+import app.shosetsu.common.FilePermissionException
+import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.consts.settings.SettingKey.NotifyExtensionDownload
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionDownloadRepository
 import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.common.enums.DownloadStatus
+import app.shosetsu.lib.exceptions.HTTPException
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -28,6 +31,7 @@ import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -90,7 +94,7 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 		/**
 		 * Cancels default and notifies the user
 		 */
-		fun notifyError(contentText: String, contentTitle: String) {
+		fun notifyError(contentText: String, contentTitle: String, e: Throwable? = null) {
 			cancelDefault()
 
 			notify(
@@ -100,6 +104,8 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 				setContentTitle(contentTitle)
 				setContentInfo(extensionDownloaderString)
 				setNotOngoing()
+				if (e != null)
+					addReportErrorAction(applicationContext, extensionId * -1, e)
 			}
 		}
 
@@ -116,7 +122,18 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 		// Notify progress
 		val extension = try {
 			extensionRepository.getExtension(repositoryId, extensionId)
-		} catch (e: Exception) {//TODO specify
+		} catch (e: GenericSQLiteException) {
+			markExtensionDownloadAsError()
+
+			logE("SQLite exception", e)
+			notifyError(
+				e.message ?: "???",
+				getString(R.string.worker_extension_install_error_get_sql),
+				e
+			)
+
+			return Result.failure()
+		} catch (e: Exception) {
 			markExtensionDownloadAsError()
 
 			logE(
@@ -126,10 +143,11 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 
 			notifyError(
 				e.message ?: "???",
-				applicationContext.getString(
+				getString(
 					R.string.notification_content_text_extension_load_error,
 					extensionId
-				)
+				),
+				e
 			)
 
 			ACRA.errorReporter.handleException(e)
@@ -189,6 +207,48 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 
 		val flags = try {
 			installExtension(extension)
+		} catch (e: HTTPException) {
+			markExtensionDownloadAsError()
+
+			logE("HTTP exception ${e.code}", e)
+			notifyError(
+				e.code.toString(),
+				getString(R.string.worker_extension_install_error_http)
+			)
+
+			return Result.failure()
+		} catch (e: GenericSQLiteException) {
+			markExtensionDownloadAsError()
+
+			logE("SQLite exception", e)
+			notifyError(
+				e.message ?: "???",
+				getString(R.string.worker_extension_install_error_sql),
+				e
+			)
+
+			return Result.failure()
+		} catch (e: FilePermissionException) {
+			markExtensionDownloadAsError()
+
+			logE("File permission exception", e)
+			notifyError(
+				e.message ?: "???",
+				getString(R.string.worker_extension_install_error_perm),
+				e
+			)
+
+			return Result.failure()
+		} catch (e: IOException) {
+			markExtensionDownloadAsError()
+
+			logE("IOException", e)
+			notifyError(
+				e.message ?: "???",
+				getString(R.string.worker_extension_install_error_io)
+			)
+
+			return Result.failure()
 		} catch (e: Exception) {// TODO specify
 			markExtensionDownloadAsError()
 
@@ -197,12 +257,12 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 				applicationContext.getString(
 					R.string.notification_content_text_extension_installed_failed,
 					extension.name
-				)
+				),
+				e
 			)
 
 			logE("Failed to install ${extension.name}", e)
 
-			ACRA.errorReporter.handleIfValid(e)
 
 			cleanupImageLoader()
 

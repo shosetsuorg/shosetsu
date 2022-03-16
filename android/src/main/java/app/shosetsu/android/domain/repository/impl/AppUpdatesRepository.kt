@@ -95,7 +95,7 @@ class AppUpdatesRepository(
 		return null
 	}
 
-	@Throws(FileNotFoundException::class)
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
 	override suspend fun loadAppUpdate(): AppUpdateEntity =
 		iFileAppUpdateDataSource.loadCachedAppUpdate()
 

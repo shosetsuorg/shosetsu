@@ -643,8 +643,6 @@
     <string name="controller_library_menu_tri_by_source">By source</string>
     <string name="controller_library_menu_tri_by_date">By date</string>
     <string name="reader_leave_error">Please exit the reader and rejoin due to error</string>
-    <string name="worker_export_backup_null_resolver">Recieved a null content resolver</string>
-    <string name="worker_export_backup_file_missing">URI is for an invalid file</string>
     <string name="worker_export_backup_file_perm">Invalid permisson to write backup</string>
     <string name="controller_catalogue_toast_background_add_fail">Failed to add: %s</string>
     <string name="controller_catalogue_error_base_url">Error getting URL for extension: %s</string>
@@ -664,6 +662,14 @@
     <string name="controller_novel_error_load_chapters">Error getting chapters: %s</string>
     <string name="controller_novel_error_share">Error getting share: %s</string>
     <string name="controller_novel_error_true_delete">Error checking for true delete: %s</string>
+    <string name="worker_export_backup_null_resolver">Null content resolver when trying to write backup</string>
+    <string name="worker_export_backup_file_missing">How can the export file be missing</string>
+    <string name="worker_export_backup_missing_perm">Missing permissions to write backup</string>
+    <string name="worker_extension_install_error_http">HTTP error</string>
+    <string name="worker_extension_install_error_sql">SQL error when installing extension</string>
+    <string name="worker_extension_install_error_perm">File permission error</string>
+    <string name="worker_extension_install_error_io">IOException</string>
+    <string name="worker_extension_install_error_get_sql">SQL Error when getting extension</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

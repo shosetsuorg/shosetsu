@@ -47,8 +47,8 @@ interface IAppUpdatesRepository {
 	/**
 	 * Load an app update if present
 	 */
-	@Throws(FileNotFoundException::class)
-	suspend fun loadAppUpdate(): AppUpdateEntity?
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
+	suspend fun loadAppUpdate(): AppUpdateEntity
 
 	/**
 	 * Can the app self update itself

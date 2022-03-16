@@ -191,6 +191,12 @@ class NovelUpdateWorker(
 						removeProgress()
 						addCancelAction()
 						this.priority = NotificationCompat.PRIORITY_HIGH
+
+						addReportErrorAction(
+							applicationContext,
+							10000 + nE.id!!,
+							e
+						)
 					}
 					return@forEach
 				}

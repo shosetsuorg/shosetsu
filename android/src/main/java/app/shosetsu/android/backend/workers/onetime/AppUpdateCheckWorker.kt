@@ -23,7 +23,6 @@ import app.shosetsu.common.consts.settings.SettingKey.AppUpdateOnMeteredConnecti
 import app.shosetsu.common.consts.settings.SettingKey.AppUpdateOnlyWhenIdle
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import com.github.doomsdayrs.apps.shosetsu.R
-import org.acra.ACRA
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -86,8 +85,8 @@ class AppUpdateCheckWorker(
 			logE("Error!", e)
 			notify("Error! ${e.message}") {
 				setOngoing(false)
+				addReportErrorAction(applicationContext, defaultNotificationID, e)
 			}
-			ACRA.errorReporter.handleException(e)
 			return Result.failure()
 		}
 
@@ -124,7 +123,6 @@ class AppUpdateCheckWorker(
 
 		private suspend fun appUpdateOnMetered(): Boolean =
 			iSettingsRepository.getBoolean(AppUpdateOnMeteredConnection)
-
 
 		private suspend fun appUpdateOnlyIdle(): Boolean =
 			iSettingsRepository.getBoolean(AppUpdateOnlyWhenIdle)

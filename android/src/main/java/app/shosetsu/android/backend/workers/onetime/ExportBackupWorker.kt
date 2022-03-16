@@ -124,22 +124,22 @@ class ExportBackupWorker(appContext: Context, params: WorkerParameters) : Corout
 			logE("Failed to write to URI", e)
 			notify(R.string.worker_export_backup_null_resolver) {
 				setNotOngoing()
+				addReportErrorAction(applicationContext, defaultNotificationID, e)
 			}
-
 			return Result.failure()
 		} catch (e: FileNotFoundException) {
 			logE("URI is invalid file", e)
 			notify(R.string.worker_export_backup_file_missing) {
 				setNotOngoing()
+				addReportErrorAction(applicationContext, defaultNotificationID, e)
 			}
-
 			return Result.failure()
 		} catch (e: FilePermissionException) {
 			logE("Invalid permission to file", e)
-			notify(R.string.worker_export_backup_file_perm) {
+			notify(R.string.worker_export_backup_missing_perm) {
 				setNotOngoing()
+				addReportErrorAction(applicationContext, defaultNotificationID, e)
 			}
-
 			return Result.failure()
 		}
 

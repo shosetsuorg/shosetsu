@@ -135,9 +135,13 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		} catch (e: Exception) {//TODO specify
 			with(e) {
 				logE(" $message", e)
-				ACRA.errorReporter.handleException(e)
 				notify("$message $e") {
 					setNotOngoing()
+					addReportErrorAction(
+						applicationContext,
+						defaultNotificationID,
+						e
+					)
 				}
 				return Result.failure()
 			}
