@@ -398,13 +398,18 @@ fun CatalogFilterMenuTriStateContent(
 	setInt: (Filter<Int>, Int) -> Unit
 ) {
 	val triState by getInt(filter)
-		.collectAsState(initial = ToggleableState.Off)
+		.collectAsState(initial = Filter.TriState.STATE_IGNORED)
+	println(triState)
+
 	val convertedState = when (triState) {
-		Filter.TriState.STATE_IGNORED -> ToggleableState.Indeterminate
-		Filter.TriState.STATE_EXCLUDE -> ToggleableState.Off
+		Filter.TriState.STATE_IGNORED -> ToggleableState.Off
+		Filter.TriState.STATE_EXCLUDE -> ToggleableState.Indeterminate
 		Filter.TriState.STATE_INCLUDE -> ToggleableState.On
 		else -> ToggleableState.Off
 	}
+
+	println(convertedState.name)
+
 	Row(
 		modifier = Modifier.fillMaxWidth(),
 		horizontalArrangement = Arrangement.SpaceBetween
@@ -415,10 +420,11 @@ fun CatalogFilterMenuTriStateContent(
 			onClick = {
 				setInt(
 					filter,
-					when (convertedState) {
-						ToggleableState.On -> Filter.TriState.STATE_EXCLUDE
-						ToggleableState.Off -> Filter.TriState.STATE_IGNORED
-						ToggleableState.Indeterminate -> Filter.TriState.STATE_INCLUDE
+					when (triState) {
+						Filter.TriState.STATE_IGNORED -> Filter.TriState.STATE_INCLUDE
+						Filter.TriState.STATE_INCLUDE -> Filter.TriState.STATE_EXCLUDE
+						Filter.TriState.STATE_EXCLUDE -> Filter.TriState.STATE_IGNORED
+						else -> Filter.TriState.STATE_IGNORED
 					}
 				)
 			}
