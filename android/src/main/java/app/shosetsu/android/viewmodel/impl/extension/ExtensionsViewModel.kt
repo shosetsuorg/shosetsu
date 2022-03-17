@@ -186,7 +186,7 @@ class ExtensionsViewModel(
 							.sortedBy { it.name }
 							.sortedBy { it.lang }
 							.sortedBy { !it.isInstalled }
-							.sortedBy { it.isUpdateAvailable }
+							.sortedBy { !it.isUpdateAvailable }
 							.toList()
 					})
 		}
