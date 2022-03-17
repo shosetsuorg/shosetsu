@@ -399,7 +399,6 @@ fun CatalogFilterMenuTriStateContent(
 ) {
 	val triState by getInt(filter)
 		.collectAsState(initial = Filter.TriState.STATE_IGNORED)
-	println(triState)
 
 	val convertedState = when (triState) {
 		Filter.TriState.STATE_IGNORED -> ToggleableState.Off
@@ -407,8 +406,6 @@ fun CatalogFilterMenuTriStateContent(
 		Filter.TriState.STATE_INCLUDE -> ToggleableState.On
 		else -> ToggleableState.Off
 	}
-
-	println(convertedState.name)
 
 	Row(
 		modifier = Modifier.fillMaxWidth(),
