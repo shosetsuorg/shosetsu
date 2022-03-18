@@ -32,9 +32,9 @@ import app.shosetsu.android.common.consts.READER_BAR_ALPHA
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.compose.DiscreteSlider
 import app.shosetsu.android.view.compose.setting.GenericBottomSettingLayout
-import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
-import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
+import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderChapterUI
+import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderDividerUI
 import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
 import app.shosetsu.android.viewmodel.impl.settings.*
 import app.shosetsu.common.consts.settings.SettingKey
@@ -271,7 +271,7 @@ class ChapterReader
 	 * Adds the
 	 */
 	override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-		return if (viewModel.defaultVolumeScroll)
+		return if (viewModel.isVolumeScrollEnabled)
 			when (keyCode) {
 				KeyEvent.KEYCODE_VOLUME_DOWN -> {
 					viewModel.incrementProgress()
@@ -344,7 +344,7 @@ fun PreviewChapterReaderContent() {
 fun ChapterReaderContent(
 	title: String,
 	exit: () -> Unit,
-	items: List<ReaderUIItem<*, *>>,
+	items: List<ReaderUIItem>,
 	isHorizontal: Boolean,
 	isInitialLoading: Boolean,
 	chapterType: ChapterType?,

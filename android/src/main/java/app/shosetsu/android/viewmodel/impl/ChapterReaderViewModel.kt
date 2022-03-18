@@ -16,10 +16,9 @@ import app.shosetsu.android.domain.usecases.RecordChapterIsReadingUseCase
 import app.shosetsu.android.domain.usecases.get.*
 import app.shosetsu.android.domain.usecases.update.UpdateReaderChapterUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateReaderSettingUseCase
-import app.shosetsu.android.ui.reader.types.model.HTMLReader
-import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
-import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
+import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderChapterUI
+import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderDividerUI
 import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.consts.settings.SettingKey.*
@@ -92,41 +91,79 @@ class ChapterReaderViewModel(
 		}
 	}
 
-	private val stringMap by lazy { HashMap<Int, Flow<String>>() }
 
 	override val ttsPitch: Float
 		get() = runBlocking {
 			settingsRepo.getFloat(ReaderPitch)
 		}
 
-	override fun getChapterStringPassage(item: ReaderChapterUI): Flow<String> {
-		return stringMap.getOrPut(item.id) {
-			getChapterPassage(item).transformLatest { bytes ->
+	private val stringMap by lazy { HashMap<Int, Flow<String>>() }
 
-				if (bytes != null)
-					emitAll(indentSizeFlow.combine(paragraphSpacingFlow) { indentSize, paragraphSpacing ->
-						val unformattedText = bytes.decodeToString()
+	/**
+	 * Trim out the strings present
+	 *
+	 * Ensures there is only 5 flows at a time in memory
+	 */
+	private fun cleanStrings(currentIndex: Int) {
+		val excluded = arrayListOf<Int>()
+		val keys = stringMap.keys.toList()
 
-						val replaceSpacing = StringBuilder("\n")
-						// Calculate changes to \n
-						for (x in 0 until paragraphSpacing.toInt())
-							replaceSpacing.append("\n")
+		excluded.add(keys[currentIndex])
 
-						// Calculate changes to \t
-						for (x in 0 until indentSize)
-							replaceSpacing.append("\t")
+		keys.getOrNull(currentIndex - 1)?.let {
+			excluded.add(it)
+		}
 
-						// Set new text formatted
-						unformattedText.replace("\n".toRegex(), replaceSpacing.toString())
-					})
-				else emit("Null")
+		keys.getOrNull(currentIndex - 2)?.let {
+			excluded.add(it)
+		}
 
-			}.onIO()
+		keys.getOrNull(currentIndex + 1)?.let {
+			excluded.add(it)
+		}
+
+		keys.getOrNull(currentIndex + 2)?.let {
+			excluded.add(it)
+		}
+
+		keys.filterNot { excluded.contains(it) }.forEach { key ->
+			stringMap.remove(key)
 		}
 	}
 
-	override fun getChapterHTMLPassage(item: ReaderChapterUI): Flow<String> =
-		stringMap.getOrPut(item.id) {
+	override fun getChapterStringPassage(item: ReaderChapterUI): Flow<String> =
+		flow {
+			val flow = stringMap.getOrPut(item.id) {
+				getChapterPassage(item).transformLatest { bytes ->
+
+					if (bytes != null)
+						emitAll(indentSizeFlow.combine(paragraphSpacingFlow) { indentSize, paragraphSpacing ->
+							val unformattedText = bytes.decodeToString()
+
+							val replaceSpacing = StringBuilder("\n")
+							// Calculate changes to \n
+							for (x in 0 until paragraphSpacing.toInt())
+								replaceSpacing.append("\n")
+
+							// Calculate changes to \t
+							for (x in 0 until indentSize)
+								replaceSpacing.append("\t")
+
+							// Set new text formatted
+							unformattedText.replace("\n".toRegex(), replaceSpacing.toString())
+						})
+					else emit("Null")
+
+				}
+			}
+
+			cleanStrings(stringMap.keys.indexOf(item.id))
+
+			emitAll(flow)
+		}.onIO()
+
+	override fun getChapterHTMLPassage(item: ReaderChapterUI): Flow<String> = flow {
+		val flow = stringMap.getOrPut(item.id) {
 			getChapterPassage(item).transformLatest { bytes ->
 				if (bytes == null) {
 					emit("Null")
@@ -160,6 +197,11 @@ class ChapterReaderViewModel(
 				)
 			}.onIO()
 		}
+
+		cleanStrings(stringMap.keys.indexOf(item.id))
+
+		emitAll(flow)
+	}.onIO()
 
 	override val isCurrentChapterBookmarked: Flow<Boolean> by lazy {
 		chaptersFlow.transformLatest { items ->
@@ -207,13 +249,6 @@ class ChapterReaderViewModel(
 			settingsRepo.getFloat(ReaderSpeed)
 		}
 
-	/**
-	 * TODO Memory management here
-	 *
-	 * ChapterID to the data flow for it
-	 */
-	private val hashMap: HashMap<Int, Flow<ByteArray?>> = hashMapOf()
-
 	private val chaptersFlow: Flow<List<ReaderChapterUI>> by lazy {
 		novelIDLive.transformLatest { nId ->
 			isMainLoading.emit(true)
@@ -224,7 +259,7 @@ class ChapterReaderViewModel(
 		}
 	}
 
-	override val liveData: Flow<List<ReaderUIItem<*, *>>> by lazy {
+	override val liveData: Flow<List<ReaderUIItem>> by lazy {
 		chaptersFlow
 			.combineDividers() // Add dividers
 
@@ -235,7 +270,7 @@ class ChapterReaderViewModel(
 
 	override val currentPage: MutableStateFlow<Int> = MutableStateFlow(0)
 
-	private fun Flow<List<ReaderUIItem<*, *>>>.combineInvert(): Flow<List<ReaderUIItem<*, *>>> =
+	private fun Flow<List<ReaderUIItem>>.combineInvert(): Flow<List<ReaderUIItem>> =
 		combine(
 			// Only invert if horizontalSwipe && invertSwipe are true.
 			// Because who will read with an inverted vertical scroll??
@@ -253,11 +288,11 @@ class ChapterReaderViewModel(
 			}
 		}
 
-	private fun Flow<List<ReaderChapterUI>>.combineDividers(): Flow<List<ReaderUIItem<*, *>>> =
+	private fun Flow<List<ReaderChapterUI>>.combineDividers(): Flow<List<ReaderUIItem>> =
 		combine(settingsRepo.getBooleanFlow(ReaderShowChapterDivider)) { result, value ->
 			result.let {
 				if (value) {
-					val modified = ArrayList<ReaderUIItem<*, *>>(it)
+					val modified = ArrayList<ReaderUIItem>(it)
 					// Adds the "No more chapters" marker
 					modified.add(modified.size, ReaderDividerUI(prev = it.last().title))
 
@@ -296,16 +331,10 @@ class ChapterReaderViewModel(
 				.map { ColorChoiceData.fromString(it) }
 				.find { it.identifier == id.toLong() }
 				?.let { (_, _, textColor, backgroundColor) ->
-					_defaultForeground = textColor
-					_defaultBackground = backgroundColor
-
 					emit(textColor to backgroundColor)
 				} ?: emit(Color.BLACK to Color.WHITE)
 
 		}
-	}
-	override val liveTheme: Flow<Pair<Int, Int>> by lazy {
-		themeFlow.onIO()
 	}
 
 	override val textColor: Flow<Int> by lazy {
@@ -316,28 +345,8 @@ class ChapterReaderViewModel(
 		themeFlow.map { it.second }.onIO()
 	}
 
-
-	override val liveIndentSize: Flow<Int> by lazy {
-		indentSizeFlow.mapLatest { result ->
-			result.also {
-				_defaultIndentSize = it
-			}
-		}.onIO()
-	}
-
-	override val liveParagraphSpacing: Flow<Float> by lazy {
-		paragraphSpacingFlow.mapLatest { result ->
-			result.also {
-				_defaultParaSpacing = it
-			}
-		}.onIO()
-	}
-
 	private val textSizeFlow by lazy {
-		settingsRepo.getFloatFlow(ReaderTextSize).mapLatest {
-			_defaultTextSize = it
-			it
-		}
+		settingsRepo.getFloatFlow(ReaderTextSize)
 	}
 
 	override val liveTextSize: Flow<Float> by lazy {
@@ -359,35 +368,11 @@ class ChapterReaderViewModel(
 
 	private val novelIDLive: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
 
-	private var _defaultTextSize: Float = ReaderTextSize.default
-
-	private var _defaultBackground: Int = Color.WHITE
-	private var _defaultForeground: Int = Color.BLACK
-
-	private var _defaultParaSpacing: Float = ReaderParagraphSpacing.default
-
-	private var _defaultIndentSize: Int = ReaderIndentSize.default
-
 	private var _defaultVolumeScroll: Boolean = ReaderVolumeScroll.default
 
 	private var _isHorizontalReading: Boolean = ReaderHorizontalPageSwap.default
 
-	override val defaultTextSize: Float
-		get() = _defaultTextSize
-
-	override val defaultBackground: Int
-		get() = _defaultBackground
-
-	override val defaultForeground: Int
-		get() = _defaultForeground
-
-	override val defaultParaSpacing: Float
-		get() = _defaultParaSpacing
-
-	override val defaultIndentSize: Int
-		get() = _defaultIndentSize
-
-	override val defaultVolumeScroll: Boolean
+	override val isVolumeScrollEnabled: Boolean
 		get() = _defaultVolumeScroll
 
 	override val isHorizontalReading: Flow<Boolean> by lazy {
@@ -413,11 +398,9 @@ class ChapterReaderViewModel(
 	}
 
 	@WorkerThread
-	override fun getChapterPassage(readerChapterUI: ReaderChapterUI): Flow<ByteArray?> =
-		hashMap.getOrPut(readerChapterUI.id) {
-			flow {
-				emit(loadChapterPassageUseCase(readerChapterUI))
-			}
+	private fun getChapterPassage(readerChapterUI: ReaderChapterUI): Flow<ByteArray?> =
+		flow {
+			emit(loadChapterPassageUseCase(readerChapterUI))
 		}.onIO()
 
 	override fun toggleBookmark() {
@@ -515,10 +498,7 @@ class ChapterReaderViewModel(
 	override val tapToScroll: Boolean
 		get() = _tapToScroll
 
-	override val userCss: String
-		get() = _userCss
-
-	override val userCssFlow: Flow<String> by lazy {
+	private val userCssFlow: Flow<String> by lazy {
 		settingsRepo.getStringFlow(ReaderHtmlCss).onIO()
 	}
 
@@ -530,7 +510,7 @@ class ChapterReaderViewModel(
 		val paragraphSpacing: Float = SettingKey.ReaderParagraphSpacing.default
 	)
 
-	override val shosetsuCss: Flow<String> by lazy {
+	private val shosetsuCss: Flow<String> by lazy {
 		themeFlow.combine(liveTextSize) { (fore, back), textSize ->
 			ShosetsuCSSBuilder(
 				backgroundColor = back,
@@ -556,7 +536,7 @@ class ChapterReaderViewModel(
 			setShosetsuStyle("body") {
 				this["background-color"] = it.backgroundColor.cssColor()
 				this["color"] = it.foregroundColor.cssColor()
-				this["font-size"] = "${it.textSize / HTMLReader.HTML_SIZE_DIVISION}pt"
+				this["font-size"] = "${it.textSize / HTML_SIZE_DIVISION}pt"
 				this["scroll-behavior"] = "smooth"
 				this["text-indent"] = "${it.indentSize}em"
 				this["overflow-wrap"] = "break-word"
@@ -624,4 +604,7 @@ class ChapterReaderViewModel(
 	}
 
 
+	companion object {
+		const val HTML_SIZE_DIVISION = 1.25
+	}
 }

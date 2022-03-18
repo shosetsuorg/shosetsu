@@ -1,8 +1,8 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
-import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
+import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderChapterUI
 import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeViewModel
@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.Flow
  * 06 / 05 / 2020
  */
 abstract class AChapterReaderViewModel :
-	SubscribeViewModel<List<ReaderUIItem<*, *>>>,
+	SubscribeViewModel<List<ReaderUIItem>>,
 	ShosetsuViewModel(),
 	ExposedSettingsRepoViewModel {
 
@@ -58,13 +58,6 @@ abstract class AChapterReaderViewModel :
 	abstract val ttsPitch: Float
 
 	/**
-	 * User CSS to store for repeat use from reader
-	 */
-	abstract val userCss: String
-	abstract val userCssFlow: Flow<String>
-	abstract val shosetsuCss: Flow<String>
-
-	/**
 	 * Is tap to scroll enabled
 	 */
 	abstract val tapToScroll: Boolean
@@ -84,17 +77,8 @@ abstract class AChapterReaderViewModel :
 	 */
 	abstract val currentChapterID: Flow<Int>
 
-	/**
-	 * Pair of Text color to background color
-	 */
-	abstract val liveTheme: Flow<Pair<Int, Int>>
-
 	abstract val textColor: Flow<Int>
 	abstract val backgroundColor: Flow<Int>
-
-	abstract val liveIndentSize: Flow<Int>
-
-	abstract val liveParagraphSpacing: Flow<Float>
 
 	abstract val liveTextSize: Flow<Float>
 
@@ -107,46 +91,13 @@ abstract class AChapterReaderViewModel :
 	abstract val isHorizontalReading: Flow<Boolean>
 
 	/**
-	 * The text size that should be used by default for newly created views
-	 * This also is the way to easily get current size without async calls
-	 */
-	abstract val defaultTextSize: Float
-
-	/**
-	 * The para space size that should be used by default for newly created views
-	 * This also is the way to easily get current size without async calls
-	 */
-	abstract val defaultParaSpacing: Float
-
-	/**
-	 * The indent size that should be used by default for newly created views
-	 * This also is the way to easily get current size without async calls
-	 */
-	abstract val defaultIndentSize: Int
-
-	/**
-	 * The text color that should be used by default for newly created views
-	 * This also is the way to easily get current color without async calls
-	 */
-	abstract val defaultForeground: Int
-
-	/**
-	 * The background color that should be used by default for newly created views
-	 * This also is the way to easily get current color without async calls
-	 */
-	abstract val defaultBackground: Int
-
-	/**
 	 * The state that should be used by default for newly created views
 	 * This also is the way to easily get current state without async calls
 	 */
-	abstract val defaultVolumeScroll: Boolean
+	abstract val isVolumeScrollEnabled: Boolean
 
 	/** Set the novelID */
 	abstract fun setNovelID(novelID: Int)
-
-	/** Start loading up a [readerChapterUI]'s passage */
-	abstract fun getChapterPassage(readerChapterUI: ReaderChapterUI): Flow<ByteArray?>
 
 	/**
 	 * Toggle the bookmark of the current chapter
