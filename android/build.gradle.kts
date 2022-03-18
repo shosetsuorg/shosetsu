@@ -198,6 +198,7 @@ dependencies {
 	//val shosetsuLibVersion: String by extra
 	implementation("org.luaj:luaj-jse:3.0.1")
 	implementation("com.github.shosetsuorg:kotlin-lib:2e27ebb")
+	implementation("org.jsoup:jsoup:1.14.3")
 
 
 	// Image loading
