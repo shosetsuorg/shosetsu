@@ -2,7 +2,11 @@ package app.shosetsu.android.viewmodel.impl
 
 import android.app.Application
 import android.graphics.Color
+import android.net.Uri
 import androidx.annotation.WorkerThread
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logV
@@ -12,10 +16,12 @@ import app.shosetsu.android.domain.usecases.RecordChapterIsReadingUseCase
 import app.shosetsu.android.domain.usecases.get.*
 import app.shosetsu.android.domain.usecases.update.UpdateReaderChapterUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateReaderSettingUseCase
+import app.shosetsu.android.ui.reader.types.model.HTMLReader
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderDividerUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
+import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
@@ -29,6 +35,8 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Element
 
 /*
  * This file is part of shosetsu.
@@ -119,9 +127,37 @@ class ChapterReaderViewModel(
 
 	override fun getChapterHTMLPassage(item: ReaderChapterUI): Flow<String> =
 		stringMap.getOrPut(item.id) {
-			getChapterPassage(item).map {
-				// TODO modify html
-				it.toString()
+			getChapterPassage(item).transformLatest { bytes ->
+				if (bytes == null) {
+					emit("Null")
+					return@transformLatest
+				}
+
+				val document = Jsoup.parse(bytes.decodeToString())
+
+				emitAll(
+					shosetsuCss.combine(userCssFlow) { shoCSS, useCSS ->
+						fun update(id: String, css: String) {
+							var style: Element? = document.getElementById(id)
+
+							if (style == null) {
+								style = document.createElement("style") ?: return
+
+								style.id(id)
+								style.attr("type", "text/css")
+
+								document.head().appendChild(style)
+							}
+
+							style.text(css)
+						}
+
+						update("shosetsu-style", shoCSS)
+						update("user-style", useCSS)
+
+						Uri.encode(document.toString())
+					}
+				)
 			}.onIO()
 		}
 
@@ -297,11 +333,15 @@ class ChapterReaderViewModel(
 		}.onIO()
 	}
 
-	override val liveTextSize: Flow<Float> by lazy {
+	private val textSizeFlow by lazy {
 		settingsRepo.getFloatFlow(ReaderTextSize).mapLatest {
 			_defaultTextSize = it
 			it
-		}.onIO()
+		}
+	}
+
+	override val liveTextSize: Flow<Float> by lazy {
+		textSizeFlow.onIO()
 	}
 
 	override val liveVolumeScroll: Flow<Boolean> by lazy {
@@ -477,6 +517,66 @@ class ChapterReaderViewModel(
 
 	override val userCss: String
 		get() = _userCss
+
+	override val userCssFlow: Flow<String> by lazy {
+		settingsRepo.getStringFlow(ReaderHtmlCss).onIO()
+	}
+
+	data class ShosetsuCSSBuilder(
+		val backgroundColor: Int = Color.WHITE,
+		val foregroundColor: Int = Color.BLACK,
+		val textSize: Float = SettingKey.ReaderTextSize.default,
+		val indentSize: Int = SettingKey.ReaderIndentSize.default,
+		val paragraphSpacing: Float = SettingKey.ReaderParagraphSpacing.default
+	)
+
+	override val shosetsuCss: Flow<String> by lazy {
+		themeFlow.combine(liveTextSize) { (fore, back), textSize ->
+			ShosetsuCSSBuilder(
+				backgroundColor = back,
+				foregroundColor = fore,
+				textSize = textSize
+			)
+		}.combine(indentSizeFlow) { builder, indent ->
+			builder.copy(
+				indentSize = indent
+			)
+		}.combine(paragraphSpacingFlow) { builder, space ->
+			builder.copy(
+				paragraphSpacing = space
+			)
+		}.map {
+			val shosetsuStyle: HashMap<String, HashMap<String, String>> = hashMapOf()
+
+			fun setShosetsuStyle(elem: String, action: HashMap<String, String>.() -> Unit) =
+				shosetsuStyle.getOrPut(elem) { hashMapOf() }.apply(action)
+
+			fun Int.cssColor(): String = "rgb($red,$green,$blue)"
+
+			setShosetsuStyle("body") {
+				this["background-color"] = it.backgroundColor.cssColor()
+				this["color"] = it.foregroundColor.cssColor()
+				this["font-size"] = "${it.textSize / HTMLReader.HTML_SIZE_DIVISION}pt"
+				this["scroll-behavior"] = "smooth"
+				this["text-indent"] = "${it.indentSize}em"
+				this["overflow-wrap"] = "break-word"
+			}
+
+			setShosetsuStyle("p") {
+				this["margin-top"] = "${it.paragraphSpacing}em"
+			}
+
+			setShosetsuStyle("img") {
+				this["max-width"] = "100%"
+				this["height"] = "initial !important"
+			}
+
+			shosetsuStyle.map { elem ->
+				"${elem.key} {" + elem.value.map { rule -> "${rule.key}:${rule.value}" }
+					.joinToString(";", postfix = ";") + "}"
+			}.joinToString("")
+		}.onIO()
+	}
 
 	init {
 		launchIO {

@@ -636,8 +636,8 @@
     <string name="controller_add_open_novel">Open Novel</string>
     <string name="settings_advanced_auto_bookmark_title">Bookmark from QR</string>
     <string name="settings_advanced_auto_bookmark_desc">Automatically bookmark novels that are scanned via QR code.</string>
-    <string name="reader_last_chapter">Last chapter:\n%s</string>
-    <string name="reader_next_chapter">Next chapter:\n%s</string>
+    <string name="reader_last_chapter">Last chapter:</string>
+    <string name="reader_next_chapter">Next chapter:</string>
     <string name="controller_library_menu_tri_by_title">By title</string>
     <string name="controller_library_menu_tri_by_unread">By unread chapter count</string>
     <string name="controller_library_menu_tri_by_id">By novel ID</string>

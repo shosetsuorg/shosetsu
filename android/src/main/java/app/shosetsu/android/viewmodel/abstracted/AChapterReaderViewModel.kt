@@ -61,6 +61,8 @@ abstract class AChapterReaderViewModel :
 	 * User CSS to store for repeat use from reader
 	 */
 	abstract val userCss: String
+	abstract val userCssFlow: Flow<String>
+	abstract val shosetsuCss: Flow<String>
 
 	/**
 	 * Is tap to scroll enabled

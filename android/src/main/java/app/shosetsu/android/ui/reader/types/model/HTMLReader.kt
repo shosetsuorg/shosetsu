@@ -256,7 +256,7 @@ class HTMLReader(itemView: View) : ReaderChapterViewHolder(itemView) {
 
 	companion object {
 
-		private const val HTML_SIZE_DIVISION = 1.25
+		const val HTML_SIZE_DIVISION = 1.25
 
 	}
 }

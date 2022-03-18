@@ -1,25 +1,17 @@
 package app.shosetsu.android.ui.reader
 
-import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.view.KeyEvent
 import android.view.MenuItem
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -29,19 +21,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.consts.READER_BAR_ALPHA
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.ui.reader.types.model.ShosetsuScript
-import app.shosetsu.android.ui.reader.types.model.getMaxJson
 import app.shosetsu.android.view.compose.DiscreteSlider
 import app.shosetsu.android.view.compose.setting.GenericBottomSettingLayout
 import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
@@ -56,13 +44,10 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
-import com.google.accompanist.web.WebView
-import com.google.accompanist.web.rememberWebViewStateWithHTMLData
 import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -232,10 +217,9 @@ class ChapterReader
 					isBookmarked = isBookmarked,
 					isRotationLocked = isRotationLocked,
 					onPageChanged = viewModel::setCurrentPage,
-					paragraphSpacingFlow = viewModel.liveParagraphSpacing,
-					textSizeFlow = viewModel.liveTextSize,
-					textColorFlow = viewModel.textColor,
-					backgroundColorFlow = viewModel.backgroundColor
+					textSizeFlow = { viewModel.liveTextSize },
+					textColorFlow = { viewModel.textColor },
+					backgroundColorFlow = { viewModel.backgroundColor },
 				)
 			}
 		}
@@ -348,10 +332,9 @@ fun PreviewChapterReaderContent() {
 			isBookmarked = false,
 			isRotationLocked = false,
 			onPageChanged = {},
-			paragraphSpacingFlow = flow { },
-			textSizeFlow = flow { },
-			textColorFlow = flow { },
-			backgroundColorFlow = flow { },
+			textSizeFlow = { flow { } },
+			textColorFlow = { flow { } },
+			backgroundColorFlow = { flow { } },
 		)
 	}
 }
@@ -392,10 +375,9 @@ fun ChapterReaderContent(
 	updateSetting: (NovelReaderSettingEntity) -> Unit,
 	lowerSheet: LazyListScope.() -> Unit,
 
-	textSizeFlow: Flow<Float>,
-	paragraphSpacingFlow: Flow<Float>,
-	textColorFlow: Flow<Int>,
-	backgroundColorFlow: Flow<Int>
+	textSizeFlow: () -> Flow<Float>,
+	textColorFlow: () -> Flow<Int>,
+	backgroundColorFlow: () -> Flow<Int>,
 ) {
 	var isFocused by remember { mutableStateOf(false) }
 	val coroutineScope = rememberCoroutineScope()
@@ -419,7 +401,7 @@ fun ChapterReaderContent(
 					modifier = Modifier.alpha(READER_BAR_ALPHA)
 				)
 		},
-	) {
+	) { paddingValues ->
 
 		// Do not create the pager if the currentPage has not been set yet
 		if (currentPage == null) {
@@ -452,9 +434,7 @@ fun ChapterReaderContent(
 				}
 			}
 
-		val textSize by textSizeFlow.collectAsState(SettingKey.ReaderTextSize.default)
-		val textColor by textColorFlow.collectAsState(Color.Black.toArgb())
-		val backgroundColor by backgroundColorFlow.collectAsState(Color.White.toArgb())
+
 
 		@Composable
 		fun createPage(page: Int) {
@@ -463,6 +443,9 @@ fun ChapterReaderContent(
 					when (chapterType) {
 						ChapterType.STRING -> {
 							val content by getStringContent(item).collectAsState(null)
+							val textSize by textSizeFlow().collectAsState(SettingKey.ReaderTextSize.default)
+							val textColor by textColorFlow().collectAsState(Color.Black.toArgb())
+							val backgroundColor by backgroundColorFlow().collectAsState(Color.White.toArgb())
 
 							Column {
 								if (content == null)
@@ -478,28 +461,36 @@ fun ChapterReaderContent(
 									onFocusToggle = {
 										isFocused = !isFocused
 									},
-									isHorizontal = isHorizontal,
 									textColor = textColor,
 									backgroundColor = backgroundColor
 								)
 							}
 						}
 						ChapterType.HTML -> {
-							val html by getHTMLContent(item).collectAsState("")
+							val html by getHTMLContent(item).collectAsState(null)
 
-							WebViewPageContent(
-								html = html,
-								progress = item.readingPosition,
-								onScroll = {
-									onScroll(item, it)
-								},
-								onFocusToggle = {
-									isFocused = !isFocused
-								},
-								onHitBottom = {
+							Column {
+								if (html == null)
+									LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
 
-								}
-							)
+								if (html != null)
+									WebViewPageContent(
+										html = html!!,
+										progress = item.readingPosition,
+										onScroll = {
+											onScroll(item, it)
+										},
+										onFocusToggle = {
+											isFocused = !isFocused
+										},
+										onHitBottom = {
+
+										},
+									)
+								else Box(
+									modifier = Modifier.background(Color.Black).fillMaxSize()
+								) {}
+							}
 						}
 						else -> {
 
@@ -521,7 +512,7 @@ fun ChapterReaderContent(
 				count = count,
 				state = pagerState,
 				modifier = Modifier.fillMaxSize().padding(
-					top = it.calculateTopPadding(),
+					top = paddingValues.calculateTopPadding(),
 					bottom = if (isFocused) 0.dp else 56.dp
 				),
 			) { page ->
@@ -532,7 +523,7 @@ fun ChapterReaderContent(
 				count = count,
 				state = pagerState,
 				modifier = Modifier.fillMaxSize().padding(
-					top = it.calculateTopPadding(),
+					top = paddingValues.calculateTopPadding(),
 					bottom = if (isFocused) 0.dp else 56.dp
 				)
 			) { page ->
@@ -659,142 +650,4 @@ fun ChapterReaderContent(
 			}
 		}
 	}
-}
-
-@Preview
-@Composable
-fun PreviewDividerPageContent() {
-	DividierPageContent(
-		"The first",
-		"The second"
-	)
-}
-
-@Composable
-fun DividierPageContent(
-	previous: String,
-	next: String?
-) {
-	Box(
-		modifier = Modifier.fillMaxSize().background(Color.Black)
-	) {
-		Column(
-			horizontalAlignment = Alignment.CenterHorizontally,
-			verticalArrangement = Arrangement.Center,
-			modifier = Modifier.fillMaxSize().padding(16.dp)
-		) {
-
-			if (next != null) {
-				Text(stringResource(R.string.reader_last_chapter, previous))
-				Text(stringResource(R.string.reader_next_chapter, next))
-			} else {
-				Text(stringResource(R.string.no_more_chapters))
-			}
-		}
-	}
-}
-
-@Composable
-fun StringPageContent(
-	content: String,
-	progress: Double,
-	textSize: Float,
-	onScroll: (perc: Double) -> Unit,
-	onFocusToggle: () -> Unit,
-	isHorizontal: Boolean,
-	textColor: Int,
-	backgroundColor: Int
-) {
-	val state = rememberScrollState()
-
-	if (state.isScrollInProgress)
-		DisposableEffect(Unit) {
-			onDispose {
-				if (state.value != 0)
-					onScroll((state.maxValue / state.value).toDouble())
-				else onScroll(0.0)
-			}
-		}
-
-	SelectionContainer(
-		modifier = Modifier.clickable(
-			interactionSource = remember { MutableInteractionSource() },
-			indication = null
-		) {
-			onFocusToggle()
-		}
-	) {
-		Text(
-			content,
-			fontSize = textSize.sp,
-			modifier = Modifier
-				.fillMaxSize()
-				.verticalScroll(state)
-				.background(Color(backgroundColor)),
-			color = Color(textColor)
-		)
-	}
-
-	LaunchedEffect(Unit) {
-		launch {
-			state.scrollTo((state.maxValue * progress).toInt())
-		}
-	}
-}
-
-@Composable
-fun WebViewPageContent(
-	html: String,
-	progress: Double,
-	onScroll: (perc: Double) -> Unit,
-	onFocusToggle: () -> Unit,
-	onHitBottom: () -> Unit
-) {
-	val state = rememberWebViewStateWithHTMLData(html)
-	val blackColor = colorResource(android.R.color.black)
-
-	Box {
-		WebView(
-			state,
-			captureBackPresses = false,
-			onCreated = { webView ->
-				webView.setBackgroundColor(blackColor.toArgb())
-				@SuppressLint("SetJavaScriptEnabled")
-				webView.settings.javaScriptEnabled = true
-
-				val inter = ShosetsuScript(
-					webView,
-					onHitBottom = onHitBottom,
-					onScroll = onScroll
-				)
-
-				inter.onClickMethod = onFocusToggle
-
-				webView.addJavascriptInterface(inter, "shosetsuScript")
-
-				webView.webViewClient = object : WebViewClient() {
-					override fun onPageFinished(view: WebView?, url: String?) {
-						super.onPageFinished(view, url)
-						webView.evaluateJavascript(
-							"""
-						window.addEventListener("scroll",(event)=>{ shosetsuScript.onScroll(); });
-						window.addEventListener("click",(event)=>{ shosetsuScript.onClick(); });
-					""".trimIndent(), null
-						)
-
-						webView.evaluateJavascript(getMaxJson) { maxString ->
-							maxString.toDoubleOrNull()?.let { maxY ->
-								webView.evaluateJavascript(
-									"window.scrollTo(0,${(maxY * (progress / 100)).toInt()})",
-									null
-								)
-							}
-						}
-					}
-				}
-			},
-			modifier = Modifier.fillMaxSize()
-		)
-	}
-
 }
