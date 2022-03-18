@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases.update
 
-import app.shosetsu.android.view.uimodels.model.reader.ReaderChapterUI
+import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderChapterUI
 import app.shosetsu.common.GenericSQLiteException
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 

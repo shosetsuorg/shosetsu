@@ -1,7 +1,9 @@
 package app.shosetsu.android.view.uimodels.model.reader
 
-import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.items.AbstractItem
+import app.shosetsu.common.domain.model.local.ReaderChapterEntity
+import app.shosetsu.common.dto.Convertible
+import app.shosetsu.common.enums.ReadingStatus
+import app.shosetsu.lib.Novel
 
 /*
  * This file is part of Shosetsu.
@@ -24,5 +26,49 @@ import com.mikepenz.fastadapter.items.AbstractItem
  * shosetsu
  * 13 / 11 / 2020
  */
-abstract class ReaderUIItem<ITEM, VH> : AbstractItem<VH>()
-		where ITEM : AbstractItem<VH>, VH : FastAdapter.ViewHolder<ITEM>
+sealed class ReaderUIItem {
+	/**
+	 * Data class that holds each chapter and its data (not including text content)
+	 *
+	 * @param id Id of the chapter in shosetsu db
+	 * @param link URL of the chapter
+	 * @param readingPosition Where the user last left off while reading
+	 * @param readingStatus What is the reading status of the chapter
+	 * @param bookmarked Is the chapter bookmarked
+	 * @param chapterType What type of [ReaderChapterViewHolder] to use for loading,
+	 * this is defined by the the extension first,
+	 * otherwise the user choice will dictate what reader is used
+	 *
+	 * @param convertStringToHtml Convert a string chapter to an html chapter
+	 */
+	data class ReaderChapterUI(
+		val id: Int,
+		val link: String,
+		val title: String,
+		var readingPosition: Double,
+		var readingStatus: ReadingStatus,
+		var bookmarked: Boolean,
+		val chapterType: Novel.ChapterType,
+		val convertStringToHtml: Boolean = false
+	) : Convertible<ReaderChapterEntity>, ReaderUIItem() {
+
+		override fun convertTo(): ReaderChapterEntity = ReaderChapterEntity(
+			id,
+			link,
+			title,
+			readingPosition,
+			readingStatus,
+			bookmarked
+		)
+	}
+
+	/**
+	 * Divides each chapter, signalling what is from before and what is next
+	 * Will always appear after the first chapter, never before the first.
+	 * Will appear after the last chapter, but stating there are no more chapters
+	 */
+	data class ReaderDividerUI(
+		val prev: String,
+		val next: String? = null
+	) : ReaderUIItem()
+}

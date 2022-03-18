@@ -2,14 +2,16 @@ package app.shosetsu.android.ui.reader
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.webkit.JavascriptInterface
+import android.webkit.WebView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import app.shosetsu.android.ui.reader.types.model.ShosetsuScript
-import app.shosetsu.android.ui.reader.types.model.getMaxJson
+import app.shosetsu.android.common.ext.launchUI
+import app.shosetsu.android.common.ext.logD
 
 /*
  * This file is part of shosetsu.
@@ -81,6 +83,56 @@ fun WebViewPageContent(
 			modifier = Modifier.fillMaxSize().verticalScroll(scrollState)
 		)
 	}
+}
+
+const val getMaxJson = """
+   var innerh = window.innerHeight || ebody.clientHeight, yWithScroll = 0;
+   yWithScroll = document.body.scrollHeight;
+   yWithScroll-innerh; 
+"""
+
+class ShosetsuScript(
+	private val webView: WebView,
+	private val onHitBottom: () -> Unit,
+	private val onScroll: (percentage: Double) -> Unit
+) {
+	var onClickMethod: () -> Unit = {}
+
+	@Suppress("unused")
+	@JavascriptInterface
+	fun onClick() {
+		launchUI {
+			onClickMethod()
+		}
+	}
+
+	@Suppress("unused", "RedundantVisibilityModifier")
+	@JavascriptInterface
+	public fun onScroll() {
+		launchUI {
+			webView.evaluateJavascript("window.pageYOffset") { _yPosition ->
+				val yPosition: Double? = _yPosition.toDoubleOrNull()
+				yPosition ?: logD("Null Y position")
+				yPosition ?: return@evaluateJavascript
+
+				webView.evaluateJavascript(getMaxJson) { _scrollMaxY ->
+					val scrollMaxY: Double? = _scrollMaxY.toDoubleOrNull()
+					scrollMaxY ?: logD("Null Y max")
+					scrollMaxY ?: return@evaluateJavascript
 
 
+					val percentage = ((yPosition / scrollMaxY) * 100)
+					if (percentage < 99) {
+						if (yPosition.toInt() % 5 == 0) {
+							// Mark as reading if on scroll
+							onScroll(percentage)
+						}
+					} else {
+						// Hit bottom
+						onHitBottom()
+					}
+				}
+			}
+		}
+	}
 }
