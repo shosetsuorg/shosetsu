@@ -381,11 +381,6 @@ fun ChapterReaderContent(
 	backgroundColorFlow: () -> Flow<Int>,
 ) {
 	var isFocused by remember { mutableStateOf(false) }
-	val coroutineScope = rememberCoroutineScope()
-
-	Card {
-
-	}
 
 	Scaffold(
 		topBar = {

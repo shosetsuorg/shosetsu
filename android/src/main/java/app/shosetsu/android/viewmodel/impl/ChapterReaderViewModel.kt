@@ -315,6 +315,7 @@ class ChapterReaderViewModel(
 		}
 
 	override fun setCurrentPage(page: Int) {
+		logV("$page")
 		currentPage.tryEmit(page)
 	}
 
@@ -591,6 +592,7 @@ class ChapterReaderViewModel(
 	}
 
 	override fun setCurrentChapterID(chapterId: Int, initial: Boolean) {
+		logV("$chapterId, $initial")
 		currentChapterID.tryEmit(chapterId)
 
 		if (initial)
