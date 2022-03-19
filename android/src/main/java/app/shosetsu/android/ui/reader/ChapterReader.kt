@@ -623,6 +623,14 @@ fun ChapterReaderContent(
 										null
 									)
 								}
+
+							if (isTTSPlaying)
+								IconButton(onClick = onStopTTS) {
+									Icon(
+										painterResource(R.drawable.ic_baseline_stop_circle_24),
+										null
+									)
+								}
 						}
 
 						IconButton(onClick = {
