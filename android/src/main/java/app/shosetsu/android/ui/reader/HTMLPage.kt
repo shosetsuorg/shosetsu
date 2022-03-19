@@ -3,15 +3,17 @@ package app.shosetsu.android.ui.reader
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.webkit.JavascriptInterface
-import android.webkit.WebView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import app.shosetsu.android.common.ext.launchUI
-import app.shosetsu.android.common.ext.logD
+import app.shosetsu.android.common.ext.logV
+import kotlinx.coroutines.launch
 
 /*
  * This file is part of shosetsu.
@@ -44,6 +46,15 @@ fun WebViewPageContent(
 	val scrollState = rememberScrollState()
 	val state = rememberWebViewStateWithHTMLData(html)
 
+	if (scrollState.isScrollInProgress)
+		DisposableEffect(Unit) {
+			onDispose {
+				if (scrollState.value != 0)
+					onScroll((scrollState.value.toDouble() / scrollState.maxValue))
+				else onScroll(0.0)
+			}
+		}
+
 	Box {
 		WebView(
 			state,
@@ -51,7 +62,6 @@ fun WebViewPageContent(
 			onPageFinished = { webView, _ ->
 				webView.evaluateJavascript(
 					"""
-						window.addEventListener("scroll",(event)=>{ shosetsuScript.onScroll(); });
 						window.addEventListener("click",(event)=>{ shosetsuScript.onClick(); });
 					""".trimIndent(), null
 				)
@@ -70,19 +80,22 @@ fun WebViewPageContent(
 				@SuppressLint("SetJavaScriptEnabled")
 				webView.settings.javaScriptEnabled = true
 
-				val inter = ShosetsuScript(
-					webView,
-					onHitBottom = onHitBottom,
-					onScroll = onScroll
-				)
-
-				inter.onClickMethod = onFocusToggle
+				val inter = ShosetsuScript(onFocusToggle)
 
 				webView.addJavascriptInterface(inter, "shosetsuScript")
 			},
 			modifier = Modifier.fillMaxSize().verticalScroll(scrollState)
 		)
 	}
+
+	if (scrollState.maxValue != 0 || scrollState.maxValue != Int.MAX_VALUE)
+		LaunchedEffect(Unit) {
+			launch {
+				val result = (scrollState.maxValue * progress).toInt()
+				logV("Scrolling to $result from $progress")
+				scrollState.scrollTo(result)
+			}
+		}
 }
 
 const val getMaxJson = """
@@ -92,47 +105,14 @@ const val getMaxJson = """
 """
 
 class ShosetsuScript(
-	private val webView: WebView,
-	private val onHitBottom: () -> Unit,
-	private val onScroll: (percentage: Double) -> Unit
+	val onClickMethod: () -> Unit
 ) {
-	var onClickMethod: () -> Unit = {}
 
 	@Suppress("unused")
 	@JavascriptInterface
 	fun onClick() {
 		launchUI {
 			onClickMethod()
-		}
-	}
-
-	@Suppress("unused", "RedundantVisibilityModifier")
-	@JavascriptInterface
-	public fun onScroll() {
-		launchUI {
-			webView.evaluateJavascript("window.pageYOffset") { _yPosition ->
-				val yPosition: Double? = _yPosition.toDoubleOrNull()
-				yPosition ?: logD("Null Y position")
-				yPosition ?: return@evaluateJavascript
-
-				webView.evaluateJavascript(getMaxJson) { _scrollMaxY ->
-					val scrollMaxY: Double? = _scrollMaxY.toDoubleOrNull()
-					scrollMaxY ?: logD("Null Y max")
-					scrollMaxY ?: return@evaluateJavascript
-
-
-					val percentage = ((yPosition / scrollMaxY) * 100)
-					if (percentage < 99) {
-						if (yPosition.toInt() % 5 == 0) {
-							// Mark as reading if on scroll
-							onScroll(percentage)
-						}
-					} else {
-						// Hit bottom
-						onHitBottom()
-					}
-				}
-			}
 		}
 	}
 }

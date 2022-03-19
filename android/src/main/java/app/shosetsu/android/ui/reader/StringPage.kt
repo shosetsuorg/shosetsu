@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import app.shosetsu.android.common.ext.logV
 import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.launch
 
@@ -72,7 +73,7 @@ fun StringPageContent(
 		DisposableEffect(Unit) {
 			onDispose {
 				if (state.value != 0)
-					onScroll((state.maxValue / state.value).toDouble())
+					onScroll((state.value.toDouble() / state.maxValue))
 				else onScroll(0.0)
 			}
 		}
@@ -98,6 +99,7 @@ fun StringPageContent(
 
 	LaunchedEffect(Unit) {
 		launch {
+			logV("Scroll to")
 			state.scrollTo((state.maxValue * progress).toInt())
 		}
 	}

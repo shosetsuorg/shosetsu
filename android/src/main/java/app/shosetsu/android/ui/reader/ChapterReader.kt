@@ -150,9 +150,7 @@ class ChapterReader
 					isInitialLoading = isLoading,
 					getStringContent = viewModel::getChapterStringPassage,
 					getHTMLContent = viewModel::getChapterHTMLPassage,
-					onScroll = { item, percentage ->
-						viewModel.markAsReadingOnScroll(item, percentage)
-					},
+					onScroll = viewModel::onScroll,
 					onPlayTTS = {
 						if (chapterType == null) return@ChapterReaderContent
 						items
@@ -220,6 +218,7 @@ class ChapterReader
 					textSizeFlow = { viewModel.liveTextSize },
 					textColorFlow = { viewModel.textColor },
 					backgroundColorFlow = { viewModel.backgroundColor },
+					onViewed = viewModel::onViewed
 				)
 			}
 		}
@@ -335,6 +334,7 @@ fun PreviewChapterReaderContent() {
 			textSizeFlow = { flow { } },
 			textColorFlow = { flow { } },
 			backgroundColorFlow = { flow { } },
+			onViewed = {}
 		)
 	}
 }
@@ -359,6 +359,7 @@ fun ChapterReaderContent(
 	getHTMLContent: (item: ReaderChapterUI) -> Flow<String>,
 
 	onScroll: (item: ReaderChapterUI, perc: Double) -> Unit,
+	onViewed: (item: ReaderChapterUI) -> Unit,
 
 	isTTSCapable: Boolean,
 	isTTSPlaying: Boolean,
@@ -448,8 +449,15 @@ fun ChapterReaderContent(
 							val backgroundColor by backgroundColorFlow().collectAsState(Color.White.toArgb())
 
 							Column {
-								if (content == null)
+								if (content == null) {
 									LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+
+									DisposableEffect(Unit) {
+										onDispose {
+											onViewed(item)
+										}
+									}
+								}
 
 								StringPageContent(
 									content ?: "",
@@ -470,8 +478,15 @@ fun ChapterReaderContent(
 							val html by getHTMLContent(item).collectAsState(null)
 
 							Column {
-								if (html == null)
+								if (html == null) {
 									LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+
+									DisposableEffect(Unit) {
+										onDispose {
+											onViewed(item)
+										}
+									}
+								}
 
 								if (html != null)
 									WebViewPageContent(
