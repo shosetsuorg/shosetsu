@@ -111,13 +111,12 @@ abstract class AChapterReaderViewModel :
 	abstract fun updateChapterAsRead(chapter: ReaderChapterUI)
 
 	/** Called when a [chapter] is viewed by the user */
-	abstract fun markAsReadingOnView(chapter: ReaderChapterUI)
+	abstract fun onViewed(chapter: ReaderChapterUI)
 
 	/**
-	 * Called when a [chapter] is scrolled,
-	 * will also update the [readingPosition] for ease
+	 * Called when a [chapter] is scrolled
 	 */
-	abstract fun markAsReadingOnScroll(chapter: ReaderChapterUI, readingPosition: Double)
+	abstract fun onScroll(chapter: ReaderChapterUI, readingPosition: Double)
 
 	/**
 	 * Loads a [LiveData] reflection of the global custom css

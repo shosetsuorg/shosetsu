@@ -45,9 +45,9 @@ sealed class ReaderUIItem {
 		val id: Int,
 		val link: String,
 		val title: String,
-		var readingPosition: Double,
-		var readingStatus: ReadingStatus,
-		var bookmarked: Boolean,
+		val readingPosition: Double,
+		val readingStatus: ReadingStatus,
+		val bookmarked: Boolean,
 		val chapterType: Novel.ChapterType,
 		val convertStringToHtml: Boolean = false
 	) : Convertible<ReaderChapterEntity>, ReaderUIItem() {

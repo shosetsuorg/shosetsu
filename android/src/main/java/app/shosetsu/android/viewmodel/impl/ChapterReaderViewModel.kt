@@ -24,7 +24,6 @@ import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.enums.MarkingType
 import app.shosetsu.common.enums.MarkingType.ONSCROLL
 import app.shosetsu.common.enums.MarkingType.ONVIEW
 import app.shosetsu.common.enums.ReadingStatus.READ
@@ -437,43 +436,56 @@ class ChapterReaderViewModel(
 		}
 	}
 
-	/**
-	 * @param chapterUI Entity to update
-	 * @param markingType What is calling this update
-	 * @param readingPosition Optionally update the reading position
-	 */
-	private fun markAsReading(
-		chapterUI: ReaderChapterUI,
-		markingType: MarkingType,
-		readingPosition: Double = chapterUI.readingPosition
-	) = launchIO {
-		settingsRepo.getBoolean(ReaderMarkReadAsReading).let { markReadAsReading ->
-			/*
-			 * If marking chapters that are read as reading is disabled
-			 * and the chapter's readingStatus is read, return to prevent further IO.
-			 */
-			if (!markReadAsReading && chapterUI.readingStatus == READ) return@launchIO
+	override fun onViewed(chapter: ReaderChapterUI) {
+		logV("$chapter")
+		launchIO {
+			settingsRepo.getBoolean(ReaderMarkReadAsReading).let { markReadAsReading ->
+				/*
+				 * If marking chapters that are read as reading is disabled
+				 * and the chapter's readingStatus is read, return to prevent further IO.
+				 */
+				if (!markReadAsReading && chapter.readingStatus == READ) return@launchIO
 
-			chapterUI.readingStatus = if (getReadingMarkingType() == markingType) {
-				launchIO {
-					recordChapterIsReading(chapterUI)
-				}
-				READING
-			} else chapterUI.readingStatus
+				/*
+				 * If the reading marking type does not equal on view, then return
+				 */
+				if (getReadingMarkingType() != ONVIEW) return@launchIO
 
-			chapterUI.readingPosition = readingPosition
+				recordChapterIsReading(chapter)
 
-			updateReaderChapterUseCase(chapterUI)
+				updateReaderChapterUseCase(chapter.copy(readingStatus = READING))
+			}
 		}
 	}
 
+	override fun onScroll(chapter: ReaderChapterUI, readingPosition: Double) {
+		logV("$chapter , $readingPosition")
+		launchIO {
+			settingsRepo.getBoolean(ReaderMarkReadAsReading).let { markReadAsReading ->
+				/*
+				 * If marking chapters that are read as reading is disabled
+				 * and the chapter's readingStatus is read, return to prevent further IO.
+				 */
+				if (!markReadAsReading && chapter.readingStatus == READ) return@launchIO
 
-	override fun markAsReadingOnView(chapter: ReaderChapterUI) {
-		markAsReading(chapter, ONVIEW)
-	}
+				/*
+				 * If marking type is on scroll, record as reading
+				 */
+				val markingType = getReadingMarkingType()
+				if (markingType == ONSCROLL) {
+					recordChapterIsReading(chapter)
+				}
 
-	override fun markAsReadingOnScroll(chapter: ReaderChapterUI, readingPosition: Double) {
-		markAsReading(chapter, ONSCROLL, readingPosition)
+				updateReaderChapterUseCase(
+					chapter.copy(
+						readingStatus = if (markingType == ONSCROLL) {
+							READING
+						} else chapter.readingStatus,
+						readingPosition = readingPosition
+					)
+				)
+			}
+		}
 	}
 
 
