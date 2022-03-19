@@ -88,11 +88,12 @@ fun WebViewPageContent(
 		)
 	}
 
-	if (scrollState.maxValue != 0 || scrollState.maxValue != Int.MAX_VALUE)
+	// Avoid scrolling when the state has not fully loaded
+	if (scrollState.maxValue != 0 && scrollState.maxValue != Int.MAX_VALUE)
 		LaunchedEffect(Unit) {
 			launch {
 				val result = (scrollState.maxValue * progress).toInt()
-				logV("Scrolling to $result from $progress")
+				logV("Scrolling to $result from $progress with max of ${scrollState.maxValue}")
 				scrollState.scrollTo(result)
 			}
 		}
