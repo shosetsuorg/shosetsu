@@ -131,7 +131,6 @@ class ChapterReader
 			val isBookmarked by viewModel.isCurrentChapterBookmarked.collectAsState(false)
 			val isRotationLocked by viewModel.liveIsScreenRotationLocked.collectAsState(false)
 			val chapterType by viewModel.chapterType.collectAsState(null)
-			val isLoading by viewModel.isMainLoading.collectAsState(true)
 			val currentChapterID by viewModel.currentChapterID.collectAsState(-1)
 			val isTTSCapable by isTTSCapable.collectAsState(false)
 			val isTTSPlaying by isTTSPlaying.collectAsState(false)
@@ -147,7 +146,6 @@ class ChapterReader
 					items = items,
 					isHorizontal = isHorizontalReading,
 					chapterType = chapterType,
-					isInitialLoading = isLoading,
 					getStringContent = viewModel::getChapterStringPassage,
 					getHTMLContent = viewModel::getChapterHTMLPassage,
 					onScroll = viewModel::onScroll,
@@ -315,7 +313,6 @@ fun PreviewChapterReaderContent() {
 			getHTMLContent = { flow { } },
 			onScroll = { a, b ->
 			},
-			isInitialLoading = true,
 			onStopTTS = {},
 			onPlayTTS = {},
 			isTTSCapable = false,
@@ -339,6 +336,35 @@ fun PreviewChapterReaderContent() {
 	}
 }
 
+/**
+ * @param title Title to display on top, either chapter title or what is currently occuring.
+ * @param exit called to leave the chapter reader
+ * @param items Chapters to display
+ * @param isHorizontal If the chapters should be displayed horizontally or not
+ * @param chapterType Chapter type to load into
+ * @param currentPage Current page to open up to, should be null initially for loading purposes
+ * @param onPageChanged Called when the page is changed, with the new page passed in
+ * @param markChapterAsCurrent Mark a chapter as the current chapter
+ * @param onChapterRead Chapter has been completely read
+ * @param getHTMLContent Get HTML content for web
+ * @param getStringContent Get string content for text
+ * @param onScroll Called when the content is scrolled
+ * @param onViewed Called when a chapter has been viewed by the reader
+ * @param isTTSCapable Is the system capable of TTS
+ * @param isTTSPlaying Is TTS playing currently
+ * @param onPlayTTS Play TTS of the current content
+ * @param onStopTTS Stop TTS
+ * @param isBookmarked Is the current chapter bookmarked
+ * @param toggleBookmark Toggle the bookmark of the current chapter
+ * @param isRotationLocked Is rotation prohibited
+ * @param toggleRotationLock Toggle the lock of rotation
+ * @param setting Settings of the current novel
+ * @param updateSetting Update settings of the current novel
+ * @param lowerSheet Define any other settings below [setting]
+ * @param textSizeFlow Get a text size flow, useful for text
+ * @param textColorFlow Get text color flow, useful for text
+ * @param backgroundColorFlow Get background color flow, useful for text
+ */
 @OptIn(ExperimentalMaterialApi::class, com.google.accompanist.pager.ExperimentalPagerApi::class)
 @Composable
 fun ChapterReaderContent(
@@ -346,7 +372,6 @@ fun ChapterReaderContent(
 	exit: () -> Unit,
 	items: List<ReaderUIItem>,
 	isHorizontal: Boolean,
-	isInitialLoading: Boolean,
 	chapterType: ChapterType?,
 
 	currentPage: Int?,
@@ -394,7 +419,7 @@ fun ChapterReaderContent(
 					title = {
 						Text(title, maxLines = 2, modifier = Modifier.padding(end = 16.dp))
 					},
-					modifier = Modifier.alpha(READER_BAR_ALPHA)
+					modifier = Modifier.alpha(READER_BAR_ALPHA),
 				)
 		},
 	) { paddingValues ->

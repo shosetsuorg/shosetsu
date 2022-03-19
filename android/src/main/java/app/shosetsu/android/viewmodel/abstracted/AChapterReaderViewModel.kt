@@ -46,10 +46,6 @@ abstract class AChapterReaderViewModel :
 
 	abstract val isCurrentChapterBookmarked: Flow<Boolean>
 
-	/**
-	 * Is loading up initial content
-	 */
-	abstract val isMainLoading: Flow<Boolean>
 	abstract val chapterType: Flow<Novel.ChapterType?>
 
 	abstract val currentTitle: Flow<String?>
@@ -82,7 +78,6 @@ abstract class AChapterReaderViewModel :
 
 	abstract val liveTextSize: Flow<Float>
 
-	abstract val liveVolumeScroll: Flow<Boolean>
 
 	/**
 	 * false    -> vertical paging
@@ -138,5 +133,11 @@ abstract class AChapterReaderViewModel :
 	abstract fun setCurrentChapterID(chapterId: Int, initial: Boolean = false)
 	abstract fun incrementProgress()
 	abstract fun depleteProgress()
+
+	/**
+	 * Allow user to open current chapter in web view
+	 *
+	 * TODO Implement
+	 */
 	abstract fun getCurrentChapterURL(): Flow<String>
 }
