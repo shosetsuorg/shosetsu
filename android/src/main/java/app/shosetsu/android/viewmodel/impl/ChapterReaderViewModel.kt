@@ -90,7 +90,6 @@ class ChapterReaderViewModel(
 		}
 	}
 
-
 	override val ttsPitch: Float
 		get() = runBlocking {
 			settingsRepo.getFloat(ReaderPitch)
@@ -214,8 +213,6 @@ class ChapterReaderViewModel(
 		}.onIO()
 	}
 
-	override val isMainLoading: MutableStateFlow<Boolean> = MutableStateFlow(true)
-
 	override val chapterType: Flow<Novel.ChapterType?> by lazy {
 		novelIDLive.transformLatest { id ->
 			emit(null)
@@ -250,11 +247,9 @@ class ChapterReaderViewModel(
 
 	private val chaptersFlow: Flow<List<ReaderChapterUI>> by lazy {
 		novelIDLive.transformLatest { nId ->
-			isMainLoading.emit(true)
 			emitAll(
 				loadReaderChaptersUseCase(nId)
 			)
-			isMainLoading.emit(false)
 		}
 	}
 
@@ -351,13 +346,6 @@ class ChapterReaderViewModel(
 
 	override val liveTextSize: Flow<Float> by lazy {
 		textSizeFlow.onIO()
-	}
-
-	override val liveVolumeScroll: Flow<Boolean> by lazy {
-		settingsRepo.getBooleanFlow(ReaderVolumeScroll).mapLatest {
-			_defaultVolumeScroll = it
-			it
-		}.onIO()
 	}
 
 	override val liveKeepScreenOn: Flow<Boolean> by lazy {
@@ -506,7 +494,6 @@ class ChapterReaderViewModel(
 	private val isScreenRotationLockedFlow = MutableStateFlow(false)
 
 	private var _tapToScroll: Boolean = ReaderIsTapToScroll.default
-	private var _userCss: String = ReaderHtmlCss.default
 
 	override val tapToScroll: Boolean
 		get() = _tapToScroll
@@ -573,13 +560,13 @@ class ChapterReaderViewModel(
 
 	init {
 		launchIO {
-			settingsRepo.getBooleanFlow(ReaderIsTapToScroll).collectLatest {
+			settingsRepo.getBooleanFlow(ReaderIsTapToScroll).collect {
 				_tapToScroll = it
 			}
 		}
 		launchIO {
-			settingsRepo.getStringFlow(ReaderHtmlCss).collect {
-				_userCss = it
+			settingsRepo.getBooleanFlow(ReaderVolumeScroll).collect {
+				_defaultVolumeScroll = it
 			}
 		}
 	}
@@ -606,19 +593,39 @@ class ChapterReaderViewModel(
 	}
 
 	override fun incrementProgress() {
-		TODO("Not yet implemented")
+		launchIO {
+			val chapterId = currentChapterID.first()
+
+			val chapter = chaptersFlow.first().find { it.id == chapterId } ?: return@launchIO
+
+			/*
+			 * Increment 5% at a time, let us hope this does not back fire
+			 */
+			if ((chapter.readingPosition + INCREMENT_PERCENTAGE) < 1)
+				onScroll(chapter, chapter.readingPosition + INCREMENT_PERCENTAGE)
+		}
 	}
 
 	override fun depleteProgress() {
-		TODO("Not yet implemented")
+		launchIO {
+			val chapterId = currentChapterID.first()
+
+			val chapter = chaptersFlow.first().find { it.id == chapterId } ?: return@launchIO
+
+			/*
+			 * Increment 5% at a time, let us hope this does not back fire
+			 */
+			if ((chapter.readingPosition - INCREMENT_PERCENTAGE) > 0)
+				onScroll(chapter, chapter.readingPosition - INCREMENT_PERCENTAGE)
+		}
 	}
 
 	override fun getCurrentChapterURL(): Flow<String> {
 		TODO("Not yet implemented")
 	}
 
-
 	companion object {
 		const val HTML_SIZE_DIVISION = 1.25
+		const val INCREMENT_PERCENTAGE = 0.05
 	}
 }
