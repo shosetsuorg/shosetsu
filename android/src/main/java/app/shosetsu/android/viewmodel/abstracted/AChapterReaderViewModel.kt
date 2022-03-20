@@ -42,6 +42,10 @@ abstract class AChapterReaderViewModel :
 
 	abstract fun setCurrentPage(page: Int)
 
+	abstract val isFirstFocusFlow: Flow<Boolean>
+
+	abstract fun onFirstFocus()
+
 	abstract val currentPage: Flow<Int>
 
 	abstract val isCurrentChapterBookmarked: Flow<Boolean>

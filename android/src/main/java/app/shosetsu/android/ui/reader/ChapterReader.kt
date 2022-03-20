@@ -48,6 +48,7 @@ import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -137,6 +138,9 @@ class ChapterReader
 			val setting by viewModel.getSettings()
 				.collectAsState(NovelReaderSettingEntity(-1, 0, 0.0F))
 			val currentPage by viewModel.currentPage.collectAsState(null)
+
+			val isFirstFocus by viewModel.isFirstFocusFlow.collectAsState(false)
+
 			MdcTheme {
 				ChapterReaderContent(
 					currentTitle ?: stringResource(R.string.loading),
@@ -216,7 +220,10 @@ class ChapterReader
 					textSizeFlow = { viewModel.liveTextSize },
 					textColorFlow = { viewModel.textColor },
 					backgroundColorFlow = { viewModel.backgroundColor },
-					onViewed = viewModel::onViewed
+					onViewed = viewModel::onViewed,
+
+					isFirstFocus = isFirstFocus,
+					onFirstFocus = viewModel::onFirstFocus
 				)
 			}
 		}
@@ -331,7 +338,9 @@ fun PreviewChapterReaderContent() {
 			textSizeFlow = { flow { } },
 			textColorFlow = { flow { } },
 			backgroundColorFlow = { flow { } },
-			onViewed = {}
+			onViewed = {},
+			isFirstFocus = false,
+			onFirstFocus = {}
 		)
 	}
 }
@@ -374,6 +383,9 @@ fun ChapterReaderContent(
 	isHorizontal: Boolean,
 	chapterType: ChapterType?,
 
+	isFirstFocus: Boolean,
+	onFirstFocus: () -> Unit,
+
 	currentPage: Int?,
 	onPageChanged: (Int) -> Unit,
 
@@ -406,6 +418,20 @@ fun ChapterReaderContent(
 	backgroundColorFlow: () -> Flow<Int>,
 ) {
 	var isFocused by remember { mutableStateOf(false) }
+	val scaffoldState = rememberScaffoldState()
+
+	if (isFocused && isFirstFocus) {
+		val string = stringResource(R.string.reader_first_focus)
+		val dismiss = stringResource(R.string.reader_first_focus_dismiss)
+		LaunchedEffect(scaffoldState.snackbarHostState) {
+			launch {
+				when (scaffoldState.snackbarHostState.showSnackbar(string, dismiss)) {
+					SnackbarResult.Dismissed -> onFirstFocus()
+					SnackbarResult.ActionPerformed -> onFirstFocus()
+				}
+			}
+		}
+	}
 
 	Scaffold(
 		topBar = {
@@ -422,6 +448,7 @@ fun ChapterReaderContent(
 					modifier = Modifier.alpha(READER_BAR_ALPHA),
 				)
 		},
+		scaffoldState = scaffoldState
 	) { paddingValues ->
 
 		// Do not create the pager if the currentPage has not been set yet
@@ -454,8 +481,6 @@ fun ChapterReaderContent(
 					onPageChanged(pagerState.currentPage)
 				}
 			}
-
-
 
 		@Composable
 		fun createPage(page: Int) {
