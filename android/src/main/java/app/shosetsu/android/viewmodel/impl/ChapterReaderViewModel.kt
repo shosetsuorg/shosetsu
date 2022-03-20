@@ -97,6 +97,17 @@ class ChapterReaderViewModel(
 
 	private val stringMap by lazy { HashMap<Int, Flow<String>>() }
 
+	override val isFirstFocusFlow: Flow<Boolean> by lazy {
+		settingsRepo.getBooleanFlow(ReaderIsFirstFocus).onIO()
+	}
+
+	override fun onFirstFocus() {
+		logV("")
+		launchIO {
+			settingsRepo.setBoolean(ReaderIsFirstFocus, false)
+		}
+	}
+
 	/**
 	 * Trim out the strings present
 	 *
