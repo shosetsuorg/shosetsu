@@ -47,6 +47,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import org.kodein.di.DI
@@ -466,11 +467,11 @@ fun ChapterReaderContent(
 
 		var curChapter: ReaderChapterUI? by remember { mutableStateOf(null) }
 
-		if (pagerState.isScrollInProgress)
-			DisposableEffect(Unit) {
-				onDispose {
+		if (items.isNotEmpty())
+			LaunchedEffect(pagerState) {
+				snapshotFlow { pagerState.currentPage }.distinctUntilChanged().collect { newPage ->
 					onStopTTS()
-					val item = items[pagerState.currentPage]
+					val item = items[newPage]
 
 					if (item is ReaderChapterUI) {
 						markChapterAsCurrent(item)
@@ -478,7 +479,7 @@ fun ChapterReaderContent(
 					} else {
 						curChapter?.let(onChapterRead)
 					}
-					onPageChanged(pagerState.currentPage)
+					onPageChanged(newPage)
 				}
 			}
 
