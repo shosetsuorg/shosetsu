@@ -202,7 +202,6 @@ class ChapterReader
 						item { viewModel.tapToScrollOption() }
 						item { viewModel.volumeScrollingOption() }
 						item { viewModel.horizontalSwitchOption() }
-						item { viewModel.continuousScrollOption() }
 						item { viewModel.invertChapterSwipeOption() }
 						item { viewModel.readerKeepScreenOnOption() }
 						item { viewModel.showReaderDivider() }
