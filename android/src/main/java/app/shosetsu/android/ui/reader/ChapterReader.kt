@@ -472,6 +472,7 @@ fun ChapterReaderContent(
 						Text(title, maxLines = 2, modifier = Modifier.padding(end = 16.dp))
 					},
 					modifier = Modifier.alpha(READER_BAR_ALPHA),
+					backgroundColor = MaterialTheme.colors.background
 				)
 		},
 		scaffoldState = scaffoldState
