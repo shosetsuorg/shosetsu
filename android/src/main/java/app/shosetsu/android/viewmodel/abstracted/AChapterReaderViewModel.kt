@@ -60,7 +60,7 @@ abstract class AChapterReaderViewModel :
 	/**
 	 * Is tap to scroll enabled
 	 */
-	abstract val tapToScroll: Boolean
+	abstract val tapToScroll: Flow<Boolean>
 
 	/**
 	 * Should the screen be locked

@@ -504,10 +504,10 @@ class ChapterReaderViewModel(
 
 	private val isScreenRotationLockedFlow = MutableStateFlow(false)
 
-	private var _tapToScroll: Boolean = ReaderIsTapToScroll.default
 
-	override val tapToScroll: Boolean
-		get() = _tapToScroll
+	override val tapToScroll: Flow<Boolean> by lazy {
+		settingsRepo.getBooleanFlow(ReaderIsTapToScroll).onIO()
+	}
 
 	private val userCssFlow: Flow<String> by lazy {
 		settingsRepo.getStringFlow(ReaderHtmlCss).onIO()
@@ -570,11 +570,6 @@ class ChapterReaderViewModel(
 	}
 
 	init {
-		launchIO {
-			settingsRepo.getBooleanFlow(ReaderIsTapToScroll).collect {
-				_tapToScroll = it
-			}
-		}
 		launchIO {
 			settingsRepo.getBooleanFlow(ReaderVolumeScroll).collect {
 				_defaultVolumeScroll = it
