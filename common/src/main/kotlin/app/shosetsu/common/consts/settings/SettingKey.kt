@@ -100,7 +100,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	 * Should the application convert string returns from an extension to an Html page
 	 */
 	object ReaderStringToHtml : BooleanKey("convertStringToHtml", false)
-	object ReaderIsFirstFocus : BooleanKey("reader_first_focus3", true)
+	object ReaderIsFirstFocus : BooleanKey("reader_first_focus", true)
 
 	/**
 	 * User customization for CSS in html reader
