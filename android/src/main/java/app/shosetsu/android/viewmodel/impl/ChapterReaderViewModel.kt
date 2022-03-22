@@ -28,6 +28,7 @@ import app.shosetsu.common.enums.MarkingType.ONSCROLL
 import app.shosetsu.common.enums.MarkingType.ONVIEW
 import app.shosetsu.common.enums.ReadingStatus.READ
 import app.shosetsu.common.enums.ReadingStatus.READING
+import app.shosetsu.common.utils.asHtml
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -183,7 +184,13 @@ class ChapterReaderViewModel(
 					return@transformLatest
 				}
 
-				val document = Jsoup.parse(bytes.decodeToString())
+				var result = bytes.decodeToString()
+
+				if (item.chapterType == Novel.ChapterType.STRING && item.convertStringToHtml) {
+					result = asHtml(result, item.title)
+				}
+
+				val document = Jsoup.parse(result)
 
 				emitAll(
 					shosetsuCss.combine(userCssFlow) { shoCSS, useCSS ->
@@ -228,13 +235,40 @@ class ChapterReaderViewModel(
 		}.onIO()
 	}
 
+
+	/**
+	 * Specifies what chapter type the reader should render.
+	 *
+	 * Upon [ReaderStringToHtml] being true, will clear out any previous strings if the prevType was
+	 * not html, causing the content to regenerate.
+	 */
 	override val chapterType: Flow<Novel.ChapterType?> by lazy {
 		novelIDLive.transformLatest { id ->
 			emit(null)
 
-			getNovel(id).first()?.let { novel ->
-				emit(getExt(novel.extID)?.chapterType)
-			}
+
+			val novel = getNovel(id).first() ?: return@transformLatest
+
+			val type = getExt(novel.extID)?.chapterType ?: return@transformLatest
+			var prevType: Novel.ChapterType? = null
+
+			emitAll(
+				settingsRepo.getBooleanFlow(ReaderStringToHtml).transformLatest { convert ->
+					if (convert && type == Novel.ChapterType.STRING) {
+						if (prevType != Novel.ChapterType.HTML)
+							stringMap.clear()
+
+						prevType = Novel.ChapterType.HTML
+						emit(Novel.ChapterType.HTML)
+					} else {
+						if (prevType != type)
+							stringMap.clear()
+
+						prevType = type
+						emit(type)
+					}
+				}
+			)
 		}.onIO()
 	}
 
