@@ -643,6 +643,8 @@
     <string name="controller_library_menu_tri_by_source">By source</string>
     <string name="controller_library_menu_tri_by_date">By date</string>
     <string name="reader_leave_error">Please exit the reader and rejoin due to error</string>
+    <string name="reader_first_focus">Click the content to unfocus.</string>
+    <string name="reader_first_focus_dismiss">Dismiss</string>
     <string name="worker_export_backup_file_perm">Invalid permisson to write backup</string>
     <string name="controller_catalogue_toast_background_add_fail">Failed to add: %s</string>
     <string name="controller_catalogue_error_base_url">Error getting URL for extension: %s</string>
