@@ -116,7 +116,7 @@ class ChapterReaderViewModel(
 	/**
 	 * Trim out the strings present
 	 *
-	 * Ensures there is only 5 flows at a time in memory
+	 * Ensures there is only 10~ flows at a time in memory
 	 */
 	private fun cleanStrings(currentIndex: Int) {
 		val excluded = arrayListOf<Int>()
@@ -124,20 +124,13 @@ class ChapterReaderViewModel(
 
 		excluded.add(keys[currentIndex])
 
-		keys.getOrNull(currentIndex - 1)?.let {
-			excluded.add(it)
-		}
-
-		keys.getOrNull(currentIndex - 2)?.let {
-			excluded.add(it)
-		}
-
-		keys.getOrNull(currentIndex + 1)?.let {
-			excluded.add(it)
-		}
-
-		keys.getOrNull(currentIndex + 2)?.let {
-			excluded.add(it)
+		for (i in 1..5) {
+			keys.getOrNull(currentIndex - i)?.let {
+				excluded.add(it)
+			}
+			keys.getOrNull(currentIndex + i)?.let {
+				excluded.add(it)
+			}
 		}
 
 		keys.filterNot { excluded.contains(it) }.forEach { key ->
