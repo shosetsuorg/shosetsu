@@ -58,12 +58,12 @@ fun DividierPageContent(
 		) {
 
 			if (next != null) {
-				Text(stringResource(R.string.reader_last_chapter))
-				Text(previous)
-				Text(stringResource(R.string.reader_next_chapter))
-				Text(next)
+				Text(stringResource(R.string.reader_last_chapter), color = Color.White)
+				Text(previous, color = Color.White)
+				Text(stringResource(R.string.reader_next_chapter), color = Color.White)
+				Text(next, color = Color.White)
 			} else {
-				Text(stringResource(R.string.no_more_chapters))
+				Text(stringResource(R.string.no_more_chapters), color = Color.White)
 			}
 		}
 	}
