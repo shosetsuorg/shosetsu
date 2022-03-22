@@ -43,6 +43,7 @@ abstract class AChapterReaderViewModel :
 	abstract fun setCurrentPage(page: Int)
 
 	abstract val isFirstFocusFlow: Flow<Boolean>
+	abstract val isSwipeInverted: Flow<Boolean>
 
 	abstract fun onFirstFocus()
 

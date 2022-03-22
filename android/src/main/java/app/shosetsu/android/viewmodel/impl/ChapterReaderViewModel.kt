@@ -101,6 +101,10 @@ class ChapterReaderViewModel(
 		settingsRepo.getBooleanFlow(ReaderIsFirstFocus).onIO()
 	}
 
+	override val isSwipeInverted: Flow<Boolean> by lazy {
+		settingsRepo.getBooleanFlow(ReaderIsInvertedSwipe).onIO()
+	}
+
 	override fun onFirstFocus() {
 		logV("")
 		launchIO {
@@ -268,30 +272,10 @@ class ChapterReaderViewModel(
 		chaptersFlow
 			.combineDividers() // Add dividers
 
-			// Invert chapters after all processing has been done
-			.combineInvert()
 			.onIO()
 	}
 
 	override val currentPage: MutableStateFlow<Int> = MutableStateFlow(0)
-
-	private fun Flow<List<ReaderUIItem>>.combineInvert(): Flow<List<ReaderUIItem>> =
-		combine(
-			// Only invert if horizontalSwipe && invertSwipe are true.
-			// Because who will read with an inverted vertical scroll??
-			settingsRepo.getBooleanFlow(ReaderIsInvertedSwipe)
-				.combine(settingsRepo.getBooleanFlow(ReaderHorizontalPageSwap)) { invertSwipe, horizontalSwipe ->
-					horizontalSwipe && invertSwipe
-				}
-		) { listResult, b ->
-			listResult.let { list ->
-				if (b) {
-					list.reversed()
-				} else {
-					list
-				}
-			}
-		}
 
 	private fun Flow<List<ReaderChapterUI>>.combineDividers(): Flow<List<ReaderUIItem>> =
 		combine(settingsRepo.getBooleanFlow(ReaderShowChapterDivider)) { result, value ->

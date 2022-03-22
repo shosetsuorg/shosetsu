@@ -141,6 +141,7 @@ class ChapterReader
 			val currentPage by viewModel.currentPage.collectAsState(null)
 
 			val isFirstFocus by viewModel.isFirstFocusFlow.collectAsState(false)
+			val isSwipeInverted by viewModel.isSwipeInverted.collectAsState(false)
 			//val isTapToScroll by viewModel.tapToScroll.collectAsState(false)
 
 			MdcTheme {
@@ -224,7 +225,8 @@ class ChapterReader
 					onViewed = viewModel::onViewed,
 
 					isFirstFocus = isFirstFocus,
-					onFirstFocus = viewModel::onFirstFocus
+					onFirstFocus = viewModel::onFirstFocus,
+					isSwipeInverted = isSwipeInverted
 					//isTapToScroll = isTapToScroll
 				)
 			}
@@ -341,7 +343,8 @@ fun PreviewChapterReaderContent() {
 			backgroundColorFlow = { flow { } },
 			onViewed = {},
 			isFirstFocus = false,
-			onFirstFocus = {}
+			onFirstFocus = {},
+			isSwipeInverted = false
 			//isTapToScroll = false
 		)
 	}
@@ -386,6 +389,7 @@ fun ChapterReaderContent(
 	chapterType: ChapterType?,
 
 	//isTapToScroll: Boolean,
+	isSwipeInverted: Boolean,
 
 	isFirstFocus: Boolean,
 	onFirstFocus: () -> Unit,
@@ -580,6 +584,7 @@ fun ChapterReaderContent(
 					top = paddingValues.calculateTopPadding(),
 					bottom = if (isFocused) 0.dp else 56.dp
 				),
+				reverseLayout = isSwipeInverted
 			) { page ->
 				createPage(page)
 			}
