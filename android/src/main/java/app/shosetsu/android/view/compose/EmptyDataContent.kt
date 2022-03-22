@@ -44,6 +44,9 @@ fun PreviewErrorContent() {
 fun ErrorContent(@StringRes messageRes: Int, vararg actions: EmptyDataView.Action) =
 	ErrorContent(stringResource(messageRes), *actions)
 
+/**
+ * TODO add "more" button to display error description
+ */
 @Composable
 fun ErrorContent(message: String, vararg actions: EmptyDataView.Action) {
 	Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
