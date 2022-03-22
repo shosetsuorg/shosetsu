@@ -672,8 +672,6 @@
     <string name="worker_extension_install_error_perm">File permission error</string>
     <string name="worker_extension_install_error_io">IOException</string>
     <string name="worker_extension_install_error_get_sql">SQL Error when getting extension</string>
-    <string name="reader_first_focus">Click the content to unfocus.</string>
-    <string name="reader_first_focus_dismiss">Dismiss</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>
