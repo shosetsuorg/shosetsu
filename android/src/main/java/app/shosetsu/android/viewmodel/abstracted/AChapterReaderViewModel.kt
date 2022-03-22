@@ -36,6 +36,9 @@ abstract class AChapterReaderViewModel :
 	ShosetsuViewModel(),
 	ExposedSettingsRepoViewModel {
 
+	abstract fun getChapterException(item: ReaderChapterUI): Flow<Throwable?>
+	abstract fun retryChapter(item: ReaderChapterUI)
+
 	abstract fun getChapterStringPassage(item: ReaderChapterUI): Flow<String>
 
 	abstract fun getChapterHTMLPassage(item: ReaderChapterUI): Flow<String>
