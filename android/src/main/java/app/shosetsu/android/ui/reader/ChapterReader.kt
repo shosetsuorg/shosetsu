@@ -141,6 +141,7 @@ class ChapterReader
 			val currentPage by viewModel.currentPage.collectAsState(null)
 
 			val isFirstFocus by viewModel.isFirstFocusFlow.collectAsState(false)
+			//val isTapToScroll by viewModel.tapToScroll.collectAsState(false)
 
 			MdcTheme {
 				ChapterReaderContent(
@@ -199,7 +200,7 @@ class ChapterReader
 					isTTSCapable = isTTSCapable,
 					lowerSheet = {
 						item { viewModel.textSizeOption() }
-						item { viewModel.tapToScrollOption() }
+						//item { viewModel.tapToScrollOption() }
 						item { viewModel.volumeScrollingOption() }
 						item { viewModel.horizontalSwitchOption() }
 						item { viewModel.invertChapterSwipeOption() }
@@ -224,6 +225,7 @@ class ChapterReader
 
 					isFirstFocus = isFirstFocus,
 					onFirstFocus = viewModel::onFirstFocus
+					//isTapToScroll = isTapToScroll
 				)
 			}
 		}
@@ -340,6 +342,7 @@ fun PreviewChapterReaderContent() {
 			onViewed = {},
 			isFirstFocus = false,
 			onFirstFocus = {}
+			//isTapToScroll = false
 		)
 	}
 }
@@ -381,6 +384,8 @@ fun ChapterReaderContent(
 	items: List<ReaderUIItem>,
 	isHorizontal: Boolean,
 	chapterType: ChapterType?,
+
+	//isTapToScroll: Boolean,
 
 	isFirstFocus: Boolean,
 	onFirstFocus: () -> Unit,
@@ -515,6 +520,7 @@ fun ChapterReaderContent(
 									},
 									textColor = textColor,
 									backgroundColor = backgroundColor
+									//	isTapToScroll=isTapToScroll
 								)
 							}
 						}

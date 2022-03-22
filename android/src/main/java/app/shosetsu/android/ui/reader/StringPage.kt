@@ -46,13 +46,14 @@ import kotlinx.coroutines.launch
 fun PreviewStringPageContent() {
 	MdcTheme {
 		StringPageContent(
-			"la\nla\nla\nla\nla\nla\nla\nla\nla\nla\nla\nla\nla\nla\nla\nla\nla\nla\nla\n",
-			0.0,
-			16.0f,
-			{},
-			{},
-			Color.Black.toArgb(),
-			Color.White.toArgb()
+			content = "la\nla\nla\nla\nla\nla\nla\nla\nla\nla\nla\nla\nla\nla\nla\nla\nla\nla\nla\n",
+			progress = 0.0,
+			textSize = 16.0f,
+			onScroll = {},
+			onFocusToggle = {},
+			textColor = Color.Black.toArgb(),
+			backgroundColor = Color.White.toArgb()
+			//isTapToScroll = false
 		)
 	}
 }
@@ -66,6 +67,7 @@ fun StringPageContent(
 	onFocusToggle: () -> Unit,
 	textColor: Int,
 	backgroundColor: Int
+	//isTapToScroll: Boolean
 ) {
 	val state = rememberScrollState()
 

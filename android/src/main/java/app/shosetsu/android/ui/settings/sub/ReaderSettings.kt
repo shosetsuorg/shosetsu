@@ -208,9 +208,7 @@ fun ReaderSettingsContent(
 			viewModel.invertChapterSwipeOption()
 		}
 
-		item {
-			viewModel.tapToScrollOption()
-		}
+		//item { viewModel.tapToScrollOption() }
 
 		item {
 			viewModel.volumeScrollingOption()
