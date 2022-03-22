@@ -99,7 +99,7 @@ fun StringPageContent(
 
 	// Avoid scrolling when the state has not fully loaded
 	if (state.maxValue != 0 && state.maxValue != Int.MAX_VALUE)
-		LaunchedEffect(Unit) {
+		LaunchedEffect(progress) {
 			launch {
 				logV("Scroll to")
 				state.scrollTo((state.maxValue * progress).toInt())
