@@ -97,6 +97,7 @@ class ChapterReaderViewModel(
 		}
 
 	private val stringMap by lazy { HashMap<Int, Flow<String>>() }
+	private val exceptionMap by lazy { HashMap<Int, MutableStateFlow<Throwable?>>() }
 
 	override val isFirstFocusFlow: Flow<Boolean> by lazy {
 		settingsRepo.getBooleanFlow(ReaderIsFirstFocus).onIO()
@@ -114,27 +115,53 @@ class ChapterReaderViewModel(
 	}
 
 	/**
-	 * Trim out the strings present
+	 * Trim out the strings present around the current page
 	 *
 	 * Ensures there is only 10~ flows at a time in memory
 	 */
-	private fun cleanStrings(currentIndex: Int) {
-		val excluded = arrayListOf<Int>()
-		val keys = stringMap.keys.toList()
+	private fun cleanMap(map: HashMap<Int, *>, currentIndex: Int) {
+		val excludedKeys = arrayListOf<Int>()
+		val keys = map.keys.toList()
 
-		excluded.add(keys[currentIndex])
+		excludedKeys.add(keys[currentIndex])
 
 		for (i in 1..5) {
 			keys.getOrNull(currentIndex - i)?.let {
-				excluded.add(it)
+				excludedKeys.add(it)
 			}
 			keys.getOrNull(currentIndex + i)?.let {
-				excluded.add(it)
+				excludedKeys.add(it)
 			}
 		}
 
-		keys.filterNot { excluded.contains(it) }.forEach { key ->
-			stringMap.remove(key)
+		keys.filterNot { excludedKeys.contains(it) }.forEach { key ->
+			map.remove(key)
+		}
+	}
+
+	/**
+	 * Clear all maps
+	 */
+	private fun clearMaps() {
+		stringMap.clear()
+		exceptionMap.clear()
+	}
+
+	override fun getChapterException(item: ReaderChapterUI): Flow<Throwable?> =
+		flow {
+			val flow = exceptionMap.getOrPut(item.id) {
+				MutableStateFlow(null)
+			}
+
+			cleanMap(exceptionMap, exceptionMap.keys.indexOf(item.id))
+
+			emitAll(flow)
+		}.onIO()
+
+	override fun retryChapter(item: ReaderChapterUI) {
+		launchIO {
+			exceptionMap[item.id]?.emit(null)
+			stringMap.remove(item.id)
 		}
 	}
 
@@ -161,10 +188,12 @@ class ChapterReaderViewModel(
 						})
 					else emit("Null")
 
+				}.catch {
+					exceptionMap[item.id]?.emit(it)
 				}
 			}
 
-			cleanStrings(stringMap.keys.indexOf(item.id))
+			cleanMap(stringMap, stringMap.keys.indexOf(item.id))
 
 			emitAll(flow)
 		}.onIO()
@@ -208,10 +237,12 @@ class ChapterReaderViewModel(
 						Uri.encode(document.toString())
 					}
 				)
-			}.onIO()
+			}.catch {
+				exceptionMap[item.id]?.emit(it)
+			}
 		}
 
-		cleanStrings(stringMap.keys.indexOf(item.id))
+		cleanMap(stringMap, stringMap.keys.indexOf(item.id))
 
 		emitAll(flow)
 	}.onIO()
@@ -249,13 +280,13 @@ class ChapterReaderViewModel(
 				settingsRepo.getBooleanFlow(ReaderStringToHtml).transformLatest { convert ->
 					if (convert && type == Novel.ChapterType.STRING) {
 						if (prevType != Novel.ChapterType.HTML)
-							stringMap.clear()
+							clearMaps()
 
 						prevType = Novel.ChapterType.HTML
 						emit(Novel.ChapterType.HTML)
 					} else {
 						if (prevType != type)
-							stringMap.clear()
+							clearMaps()
 
 						prevType = type
 						emit(type)

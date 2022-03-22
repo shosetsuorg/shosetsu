@@ -32,10 +32,12 @@ import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.consts.READER_BAR_ALPHA
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.compose.DiscreteSlider
+import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.compose.setting.GenericBottomSettingLayout
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderDividerUI
+import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
 import app.shosetsu.android.viewmodel.impl.settings.*
 import app.shosetsu.common.consts.settings.SettingKey
@@ -227,7 +229,9 @@ class ChapterReader
 
 					isFirstFocus = isFirstFocus,
 					onFirstFocus = viewModel::onFirstFocus,
-					isSwipeInverted = isSwipeInverted
+					isSwipeInverted = isSwipeInverted,
+					getException = viewModel::getChapterException,
+					retryChapter = viewModel::retryChapter
 					//isTapToScroll = isTapToScroll
 				)
 			}
@@ -353,7 +357,9 @@ fun PreviewChapterReaderContent() {
 			onViewed = {},
 			isFirstFocus = false,
 			onFirstFocus = {},
-			isSwipeInverted = false
+			isSwipeInverted = false,
+			getException = { flow { } },
+			retryChapter = {}
 			//isTapToScroll = false
 		)
 	}
@@ -408,6 +414,9 @@ fun ChapterReaderContent(
 
 	markChapterAsCurrent: (item: ReaderChapterUI) -> Unit,
 	onChapterRead: (item: ReaderChapterUI) -> Unit,
+
+	getException: (item: ReaderChapterUI) -> Flow<Throwable?>,
+	retryChapter: (item: ReaderChapterUI) -> Unit,
 
 	getStringContent: (item: ReaderChapterUI) -> Flow<String>,
 	getHTMLContent: (item: ReaderChapterUI) -> Flow<String>,
@@ -505,6 +514,7 @@ fun ChapterReaderContent(
 				is ReaderChapterUI -> {
 					when (chapterType) {
 						ChapterType.STRING -> {
+							val exception by getException(item).collectAsState(null)
 							val content by getStringContent(item).collectAsState(null)
 							val textSize by textSizeFlow().collectAsState(SettingKey.ReaderTextSize.default)
 							val textColor by textColorFlow().collectAsState(Color.Black.toArgb())
@@ -521,23 +531,33 @@ fun ChapterReaderContent(
 									}
 								}
 
-								StringPageContent(
-									content ?: "",
-									item.readingPosition,
-									textSize = textSize,
-									onScroll = {
-										onScroll(item, it)
-									},
-									onFocusToggle = {
-										isFocused = !isFocused
-									},
-									textColor = textColor,
-									backgroundColor = backgroundColor
-									//	isTapToScroll=isTapToScroll
-								)
+								if (exception == null) {
+									StringPageContent(
+										content ?: "",
+										item.readingPosition,
+										textSize = textSize,
+										onScroll = {
+											onScroll(item, it)
+										},
+										onFocusToggle = {
+											isFocused = !isFocused
+										},
+										textColor = textColor,
+										backgroundColor = backgroundColor
+										//	isTapToScroll=isTapToScroll
+									)
+								} else {
+									ErrorContent(
+										exception!!.message ?: "Unknown error",
+										EmptyDataView.Action(R.string.retry) {
+											retryChapter(item)
+										}
+									)
+								}
 							}
 						}
 						ChapterType.HTML -> {
+							val exception by getException(item).collectAsState(null)
 							val html by getHTMLContent(item).collectAsState(null)
 
 							Column {
@@ -551,23 +571,35 @@ fun ChapterReaderContent(
 									}
 								}
 
-								if (html != null)
-									WebViewPageContent(
-										html = html!!,
-										progress = item.readingPosition,
-										onScroll = {
-											onScroll(item, it)
-										},
-										onFocusToggle = {
-											isFocused = !isFocused
-										},
-										onHitBottom = {
+								if (exception == null) {
+									if (html != null) {
+										WebViewPageContent(
+											html = html!!,
+											progress = item.readingPosition,
+											onScroll = {
+												onScroll(item, it)
+											},
+											onFocusToggle = {
+												isFocused = !isFocused
+											},
+											onHitBottom = {
 
-										},
+											},
+										)
+									} else {
+										Box(
+											modifier = Modifier.background(Color.Black)
+												.fillMaxSize()
+										) {}
+									}
+								} else {
+									ErrorContent(
+										exception!!.message ?: "Unknown error",
+										EmptyDataView.Action(R.string.retry) {
+											retryChapter(item)
+										}
 									)
-								else Box(
-									modifier = Modifier.background(Color.Black).fillMaxSize()
-								) {}
+								}
 							}
 						}
 						else -> {
@@ -576,7 +608,6 @@ fun ChapterReaderContent(
 					}
 				}
 				is ReaderDividerUI -> {
-
 					DividierPageContent(
 						item.prev,
 						item.next
