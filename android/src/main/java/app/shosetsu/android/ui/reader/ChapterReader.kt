@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.view.KeyEvent
 import android.view.MenuItem
+import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
@@ -236,6 +237,14 @@ class ChapterReader
 			if (it)
 				lockRotation()
 			else unlockRotation()
+		}
+
+		viewModel.liveKeepScreenOn.collectLA(this, catch = {}) {
+			if (it) {
+				window.addFlags(FLAG_KEEP_SCREEN_ON)
+			} else {
+				window.clearFlags(FLAG_KEEP_SCREEN_ON)
+			}
 		}
 	}
 
