@@ -278,18 +278,17 @@ class ChapterReader
 		return if (viewModel.isVolumeScrollEnabled)
 			when (keyCode) {
 				KeyEvent.KEYCODE_VOLUME_DOWN -> {
-					viewModel.incrementProgress()
+					viewModel.depleteProgress()
 					true
 				}
 				KeyEvent.KEYCODE_VOLUME_UP -> {
-					viewModel.depleteProgress()
+					viewModel.incrementProgress()
 					true
 				}
 				else -> super.onKeyDown(keyCode, event)
 			}
 		else super.onKeyDown(keyCode, event)
 	}
-
 
 	private fun lockRotation() {
 		val currentOrientation = resources.configuration.orientation
