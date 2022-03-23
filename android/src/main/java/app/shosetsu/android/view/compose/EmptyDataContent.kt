@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -49,12 +50,13 @@ fun ErrorContent(@StringRes messageRes: Int, vararg actions: EmptyDataView.Actio
  */
 @Composable
 fun ErrorContent(message: String, vararg actions: EmptyDataView.Action) {
+	val face = remember { EmptyDataView.getRandomErrorFace() }
 	Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 		Column(
 			horizontalAlignment = Alignment.CenterHorizontally,
 		) {
 			Text(
-				EmptyDataView.getRandomErrorFace(),
+				face,
 				fontSize = 48.sp,
 				modifier = Modifier.padding(bottom = 16.dp)
 			)
