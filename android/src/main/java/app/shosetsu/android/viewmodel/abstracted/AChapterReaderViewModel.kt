@@ -36,12 +36,17 @@ abstract class AChapterReaderViewModel :
 	ShosetsuViewModel(),
 	ExposedSettingsRepoViewModel {
 
-	abstract fun getChapterException(item: ReaderChapterUI): Flow<Throwable?>
 	abstract fun retryChapter(item: ReaderChapterUI)
 
-	abstract fun getChapterStringPassage(item: ReaderChapterUI): Flow<String>
+	sealed class ChapterPassage {
+		object Loading : ChapterPassage()
+		class Error(val throwable: Throwable?) : ChapterPassage()
+		class Success(val content: String) : ChapterPassage()
+	}
 
-	abstract fun getChapterHTMLPassage(item: ReaderChapterUI): Flow<String>
+	abstract fun getChapterStringPassage(item: ReaderChapterUI): Flow<ChapterPassage>
+
+	abstract fun getChapterHTMLPassage(item: ReaderChapterUI): Flow<ChapterPassage>
 
 	abstract fun setCurrentPage(page: Int)
 

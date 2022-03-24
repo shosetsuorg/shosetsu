@@ -96,8 +96,7 @@ class ChapterReaderViewModel(
 			settingsRepo.getFloat(ReaderPitch)
 		}
 
-	private val stringMap by lazy { HashMap<Int, Flow<String>>() }
-	private val exceptionMap by lazy { HashMap<Int, MutableStateFlow<Throwable?>>() }
+	private val stringMap by lazy { HashMap<Int, MutableStateFlow<ChapterPassage>>() }
 
 	override val isFirstFocusFlow: Flow<Boolean> by lazy {
 		settingsRepo.getBooleanFlow(ReaderIsFirstFocus).onIO()
@@ -144,52 +143,57 @@ class ChapterReaderViewModel(
 	 */
 	private fun clearMaps() {
 		stringMap.clear()
-		exceptionMap.clear()
 	}
 
-	override fun getChapterException(item: ReaderChapterUI): Flow<Throwable?> =
-		flow {
-			val flow = exceptionMap.getOrPut(item.id) {
-				MutableStateFlow(null)
-			}
-
-			cleanMap(exceptionMap, exceptionMap.keys.indexOf(item.id))
-
-			emitAll(flow)
-		}.onIO()
 
 	override fun retryChapter(item: ReaderChapterUI) {
+		logV("$item")
 		launchIO {
-			exceptionMap[item.id]?.emit(null)
 			stringMap.remove(item.id)
 		}
 	}
 
-	override fun getChapterStringPassage(item: ReaderChapterUI): Flow<String> =
+
+	override fun getChapterStringPassage(item: ReaderChapterUI): Flow<ChapterPassage> =
 		flow {
+			emit(ChapterPassage.Loading)
+
 			val flow = stringMap.getOrPut(item.id) {
-				getChapterPassage(item).transformLatest { bytes ->
+				MutableStateFlow<ChapterPassage>(ChapterPassage.Loading).apply mutable@{
+					this@mutable.emit(ChapterPassage.Loading)
 
-					if (bytes != null)
-						emitAll(indentSizeFlow.combine(paragraphSpacingFlow) { indentSize, paragraphSpacing ->
-							val unformattedText = bytes.decodeToString()
+					getChapterPassage(item).catch {
+						println("Oops")
+						this@mutable.emit(ChapterPassage.Error(it))
+					}.collectLatest { bytes ->
+						println("Parsing")
+						this@mutable.emit(ChapterPassage.Loading)
+						if (bytes != null)
+							this@mutable.emitAll(
+								indentSizeFlow.combine(
+									paragraphSpacingFlow
+								) { indentSize, paragraphSpacing ->
+									val unformattedText = bytes.decodeToString()
 
-							val replaceSpacing = StringBuilder("\n")
-							// Calculate changes to \n
-							for (x in 0 until paragraphSpacing.toInt())
-								replaceSpacing.append("\n")
+									val replaceSpacing = StringBuilder("\n")
+									// Calculate changes to \n
+									for (x in 0 until paragraphSpacing.toInt())
+										replaceSpacing.append("\n")
 
-							// Calculate changes to \t
-							for (x in 0 until indentSize)
-								replaceSpacing.append("\t")
+									// Calculate changes to \t
+									for (x in 0 until indentSize)
+										replaceSpacing.append("\t")
 
-							// Set new text formatted
-							unformattedText.replace("\n".toRegex(), replaceSpacing.toString())
-						})
-					else emit("Null")
-
-				}.catch {
-					exceptionMap[item.id]?.emit(it)
+									// Set new text formatted
+									ChapterPassage.Success(
+										unformattedText.replace(
+											"\n".toRegex(),
+											replaceSpacing.toString()
+										)
+									)
+								})
+						else this@mutable.emit(ChapterPassage.Error(Exception("No content received")))
+					}
 				}
 			}
 
@@ -198,54 +202,62 @@ class ChapterReaderViewModel(
 			emitAll(flow)
 		}.onIO()
 
-	override fun getChapterHTMLPassage(item: ReaderChapterUI): Flow<String> = flow {
-		val flow = stringMap.getOrPut(item.id) {
-			getChapterPassage(item).transformLatest { bytes ->
-				if (bytes == null) {
-					emit("Null")
-					return@transformLatest
-				}
+	override fun getChapterHTMLPassage(item: ReaderChapterUI): Flow<ChapterPassage> {
+		return flow {
+			emit(ChapterPassage.Loading)
 
-				var result = bytes.decodeToString()
-
-				if (item.chapterType == Novel.ChapterType.STRING && item.convertStringToHtml) {
-					result = asHtml(result, item.title)
-				}
-
-				val document = Jsoup.parse(result)
-
-				emitAll(
-					shosetsuCss.combine(userCssFlow) { shoCSS, useCSS ->
-						fun update(id: String, css: String) {
-							var style: Element? = document.getElementById(id)
-
-							if (style == null) {
-								style = document.createElement("style") ?: return
-
-								style.id(id)
-								style.attr("type", "text/css")
-
-								document.head().appendChild(style)
-							}
-
-							style.text(css)
+			val flow: MutableStateFlow<ChapterPassage> = stringMap.getOrPut(item.id) {
+				MutableStateFlow<ChapterPassage>(ChapterPassage.Loading).apply {
+					getChapterPassage(item).catch {
+						emit(ChapterPassage.Error(it))
+					}.collectLatest { bytes ->
+						if (bytes == null) {
+							emit(ChapterPassage.Error(Exception("No content received")))
+							return@collectLatest
 						}
 
-						update("shosetsu-style", shoCSS)
-						update("user-style", useCSS)
+						var result = bytes.decodeToString()
 
-						Uri.encode(document.toString())
+						if (item.chapterType == Novel.ChapterType.STRING && item.convertStringToHtml) {
+							result = asHtml(result, item.title)
+						}
+
+						val document = Jsoup.parse(result)
+
+						emitAll(
+							shosetsuCss.combine(userCssFlow) { shoCSS, useCSS ->
+								fun update(id: String, css: String) {
+									var style: Element? = document.getElementById(id)
+
+									if (style == null) {
+										style = document.createElement("style") ?: return
+
+										style.id(id)
+										style.attr("type", "text/css")
+
+										document.head().appendChild(style)
+									}
+
+									style.text(css)
+								}
+
+								update("shosetsu-style", shoCSS)
+								update("user-style", useCSS)
+
+								ChapterPassage.Success(
+									Uri.encode(document.toString())
+								)
+							}
+						)
 					}
-				)
-			}.catch {
-				exceptionMap[item.id]?.emit(it)
+				}
 			}
-		}
 
-		cleanMap(stringMap, stringMap.keys.indexOf(item.id))
+			cleanMap(stringMap, stringMap.keys.indexOf(item.id))
 
-		emitAll(flow)
-	}.onIO()
+			emitAll(flow)
+		}.onIO()
+	}
 
 	override val isCurrentChapterBookmarked: Flow<Boolean> by lazy {
 		chaptersFlow.transformLatest { items ->
