@@ -40,8 +40,8 @@ abstract class AChapterReaderViewModel :
 
 	sealed class ChapterPassage {
 		object Loading : ChapterPassage()
-		class Error(val throwable: Throwable?) : ChapterPassage()
-		class Success(val content: String) : ChapterPassage()
+		data class Error(val throwable: Throwable?) : ChapterPassage()
+		data class Success(val content: String) : ChapterPassage()
 	}
 
 	abstract fun getChapterStringPassage(item: ReaderChapterUI): Flow<ChapterPassage>

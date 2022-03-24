@@ -518,46 +518,60 @@ fun ChapterReaderContent(
 							val content by getStringContent(item).collectAsState(ChapterPassage.Loading)
 
 							when (content) {
-								is ChapterPassage.Error -> ErrorContent(
-									(content as? ChapterPassage.Error)?.throwable!!.message
-										?: "Unknown error",
-									EmptyDataView.Action(R.string.retry) {
-										retryChapter(item)
+								is ChapterPassage.Error -> {
+									println("error")
+									ErrorContent(
+										(content as? ChapterPassage.Error)?.throwable!!.message
+											?: "Unknown error",
+										EmptyDataView.Action(R.string.retry) {
+											retryChapter(item)
+										}
+									)
+								}
+								is ChapterPassage.Loading -> {
+									println("loading")
+									val backgroundColor by backgroundColorFlow().collectAsState(
+										Color.Gray.toArgb()
+									)
+
+									Column {
+										LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+
+										Box(
+											modifier = Modifier.background(Color(backgroundColor))
+												.fillMaxSize()
+										) { }
 									}
-								)
-								else -> {
+								}
+								is ChapterPassage.Success -> {
+									println("success")
+									LaunchedEffect(Unit) {
+										launch {
+											onViewed(item)
+										}
+									}
+
 									val textSize by textSizeFlow().collectAsState(SettingKey.ReaderTextSize.default)
 									val textColor by textColorFlow().collectAsState(Color.White.toArgb())
 									val backgroundColor by backgroundColorFlow().collectAsState(
 										Color.Gray.toArgb()
 									)
 
-									Column {
-										if (content is ChapterPassage.Loading) {
-											LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-										} else {
-											LaunchedEffect(Unit) {
-												launch {
-													onViewed(item)
-												}
-											}
-										}
 
-										StringPageContent(
-											(content as? ChapterPassage.Success)?.content ?: "",
-											item.readingPosition,
-											textSize = textSize,
-											onScroll = {
-												onScroll(item, it)
-											},
-											onFocusToggle = {
-												isFocused = !isFocused
-											},
-											textColor = textColor,
-											backgroundColor = backgroundColor
-											//	isTapToScroll=isTapToScroll
-										)
-									}
+									StringPageContent(
+										(content as? ChapterPassage.Success)?.content ?: "",
+										item.readingPosition,
+										textSize = textSize,
+										onScroll = {
+											onScroll(item, it)
+										},
+										onFocusToggle = {
+											isFocused = !isFocused
+										},
+										textColor = textColor,
+										backgroundColor = backgroundColor
+										//	isTapToScroll=isTapToScroll
+									)
 								}
 
 							}
@@ -565,48 +579,48 @@ fun ChapterReaderContent(
 						ChapterType.HTML -> {
 							val html by getHTMLContent(item).collectAsState(ChapterPassage.Loading)
 
-							if (html !is ChapterPassage.Error) {
-								Column {
-									if (html is ChapterPassage.Loading) {
-										LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-									} else {
-										LaunchedEffect(Unit) {
-											launch {
-												onViewed(item)
-											}
+							when (html) {
+								is ChapterPassage.Error -> {
+									ErrorContent(
+										(html as? ChapterPassage.Error)?.throwable?.message
+											?: "Unknown error",
+										EmptyDataView.Action(R.string.retry) {
+											retryChapter(item)
 										}
-									}
-
-									if (html is ChapterPassage.Success) {
-										WebViewPageContent(
-											html = (html as ChapterPassage.Success).content,
-											progress = item.readingPosition,
-											onScroll = {
-												onScroll(item, it)
-											},
-											onFocusToggle = {
-												isFocused = !isFocused
-											},
-											onHitBottom = {
-
-											},
-										)
-									} else {
+									)
+								}
+								ChapterPassage.Loading -> {
+									Column {
+										LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
 										Box(
 											modifier = Modifier.background(Color.Black)
 												.fillMaxSize()
 										) {}
 									}
 								}
-							} else {
-								ErrorContent(
-									(html as? ChapterPassage.Error)?.throwable?.message
-										?: "Unknown error",
-									EmptyDataView.Action(R.string.retry) {
-										retryChapter(item)
+								is ChapterPassage.Success -> {
+									LaunchedEffect(Unit) {
+										launch {
+											onViewed(item)
+										}
 									}
-								)
+
+									WebViewPageContent(
+										html = (html as ChapterPassage.Success).content,
+										progress = item.readingPosition,
+										onScroll = {
+											onScroll(item, it)
+										},
+										onFocusToggle = {
+											isFocused = !isFocused
+										},
+										onHitBottom = {
+
+										},
+									)
+								}
 							}
+
 						}
 						else -> {
 

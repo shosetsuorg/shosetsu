@@ -1,7 +1,6 @@
 package app.shosetsu.android.common.utils
 
 import android.webkit.CookieManager
-import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.utils.CookieJarSync.androidCookieManager
 import okhttp3.Cookie
 import okhttp3.CookieJar
@@ -33,21 +32,21 @@ object CookieJarSync : CookieJar {
 	private val androidCookieManager by lazy { CookieManager.getInstance() }
 
 	override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
-		logV("`$url` saving the following cookies: $cookies")
+		//	logV("`$url` saving the following cookies: $cookies")
 		val urlString = url.toString()
 		cookies.forEach { androidCookieManager.setCookie(urlString, it.toString()) }
 	}
 
 	override fun loadForRequest(url: HttpUrl): List<Cookie> {
-		logV("`$url` loading cookies...")
+		//	logV("`$url` loading cookies...")
 		return when (val cookies = androidCookieManager.getCookie(url.toString())) {
 			null -> {
-				logV("`$url` has no cookies")
+				//			logV("`$url` has no cookies")
 				emptyList()
 			}
 			else -> {
 				val result = cookies.split("; ").mapNotNull { Cookie.parse(url, it) }
-				logV("`$url` has the following cookies: $result")
+				//			logV("`$url` has the following cookies: $result")
 				result
 			}
 		}
