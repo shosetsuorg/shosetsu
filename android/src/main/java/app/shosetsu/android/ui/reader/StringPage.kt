@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import app.shosetsu.android.common.ext.logV
 import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.launch
 
@@ -103,7 +102,6 @@ fun StringPageContent(
 	if (state.maxValue != 0 && state.maxValue != Int.MAX_VALUE)
 		LaunchedEffect(progress) {
 			launch {
-				logV("Scroll to")
 				state.scrollTo((state.maxValue * progress).toInt())
 			}
 		}

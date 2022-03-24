@@ -12,7 +12,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import app.shosetsu.android.common.ext.launchUI
-import app.shosetsu.android.common.ext.logV
 import kotlinx.coroutines.launch
 
 /*
@@ -93,7 +92,6 @@ fun WebViewPageContent(
 		LaunchedEffect(progress) {
 			launch {
 				val result = (scrollState.maxValue * progress).toInt()
-				logV("Scrolling to $result from $progress with max of ${scrollState.maxValue}")
 				scrollState.scrollTo(result)
 			}
 		}

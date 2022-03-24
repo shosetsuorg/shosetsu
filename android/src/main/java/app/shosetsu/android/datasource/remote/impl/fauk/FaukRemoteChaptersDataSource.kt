@@ -1,5 +1,6 @@
 package app.shosetsu.android.datasource.remote.impl.fauk
 
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.common.datasource.remote.base.IRemoteChaptersDataSource
 import app.shosetsu.lib.IExtension
 import java.io.IOException
@@ -33,6 +34,7 @@ import javax.net.ssl.SSLException
 class FaukRemoteChaptersDataSource : IRemoteChaptersDataSource {
 
 	override suspend fun loadChapterPassage(formatter: IExtension, chapterURL: String): ByteArray {
+		logV("Fauk")
 		// Change the number below and click apply in Android Studio
 		// to change the error that is sent
 		when (5) {

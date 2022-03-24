@@ -519,7 +519,6 @@ fun ChapterReaderContent(
 
 							when (content) {
 								is ChapterPassage.Error -> {
-									println("error")
 									ErrorContent(
 										(content as? ChapterPassage.Error)?.throwable!!.message
 											?: "Unknown error",
@@ -529,7 +528,6 @@ fun ChapterReaderContent(
 									)
 								}
 								is ChapterPassage.Loading -> {
-									println("loading")
 									val backgroundColor by backgroundColorFlow().collectAsState(
 										Color.Gray.toArgb()
 									)
@@ -544,7 +542,6 @@ fun ChapterReaderContent(
 									}
 								}
 								is ChapterPassage.Success -> {
-									println("success")
 									LaunchedEffect(Unit) {
 										launch {
 											onViewed(item)
