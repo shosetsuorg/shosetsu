@@ -72,7 +72,11 @@ abstract class ANovelViewModel
 	/** Deletes the previous chapter */
 	abstract fun deletePrevious()
 
-	/** Next chapter to read uwu */
+	/**
+	 * Will return the next chapter to read & scroll to said chapter
+	 *
+	 * @return Next chapter to read uwu
+	 */
 	abstract fun openLastRead(array: List<ChapterUI>): Flow<Int>
 
 	/**
@@ -146,4 +150,23 @@ abstract class ANovelViewModel
 	abstract fun getIfAllowTrueDelete(): Flow<Boolean>
 
 	abstract fun getQRCode(): Flow<ImageBitmap?>
+
+	/**
+	 * Scroll to [index]
+	 *
+	 * Should cause the item to become selected momentarily
+	 */
+	abstract fun scrollToIndex(index: Int)
+	abstract fun bookmarkSelected()
+	abstract fun removeBookmarkFromSelected()
+
+	abstract fun selectAll()
+
+	abstract fun invertSelection()
+	abstract fun downloadSelected()
+	abstract fun deleteSelected()
+	abstract fun markSelectedAs(readingStatus: ReadingStatus)
+	abstract fun selectBetween()
+
+	abstract fun trueDeleteSelected()
 }
