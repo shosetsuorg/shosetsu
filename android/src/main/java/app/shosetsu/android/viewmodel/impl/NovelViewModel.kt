@@ -88,6 +88,8 @@ class NovelViewModel(
 		chaptersFlow.onIO()
 	}
 
+	private val selectedChapters = MutableStateFlow<Map<Int, Boolean>>(mapOf())
+
 	private val chaptersFlow: Flow<List<ChapterUI>> by lazy {
 		novelIDLive.transformLatest { id: Int ->
 			emitAll(
@@ -100,9 +102,15 @@ class NovelViewModel(
 					.combineStatus()
 					.combineSort()
 					.combineReverse()
+					.combineSelection().map {
+						it
+					}
 			)
-			_isRefreshing.emit(false)
 		}
+	}
+
+	override val chaptersSize: Flow<Int> by lazy {
+		chaptersFlow.map { it.size }.onIO()
 	}
 
 	override val novelSettingFlow: Flow<NovelSettingUI?> by lazy {
@@ -261,6 +269,15 @@ class NovelViewModel(
 			else result
 		}
 
+	private fun Flow<List<ChapterUI>>.combineSelection(): Flow<List<ChapterUI>> =
+		combine(selectedChapters) { chapters, selection ->
+			chapters.map {
+				it.copy(
+					isSelected = selection.getOrElse(it.id) { false }
+				)
+			}
+		}
+
 
 	override fun delete(vararg chapterUI: ChapterUI) {
 		launchIO {
@@ -330,21 +347,24 @@ class NovelViewModel(
 		}
 	}
 
-	override fun openLastRead(array: List<ChapterUI>): Flow<Int> =
+	override fun openLastRead(): Flow<ChapterUI?> =
 		flow {
+			val array = chaptersFlow.first()
+
 			val sortedArray = array.sortedBy { it.order }
 			val result = isChaptersResumeFirstUnread()
+
 			val index: Int = if (!result)
 				sortedArray.indexOfFirst { it.readingStatus != ReadingStatus.READ }
 			else sortedArray.indexOfFirst { it.readingStatus == ReadingStatus.UNREAD }
 
+
 			emit(
 				if (index == -1) {
-					index
+					null
 				} else {
-					// Find the original index
-					val chapter = sortedArray[index]
-					array.indexOf(chapter)
+					itemIndex.emit(index + 1) // +1 to account for header
+					sortedArray[index]
 				}
 			)
 		}.onIO()
@@ -523,4 +543,140 @@ class NovelViewModel(
 			field = !value
 			value
 		} else field
+
+	override val itemIndex: MutableStateFlow<Int> = MutableStateFlow(0)
+
+	override fun bookmarkSelected() {
+		launchIO {
+			val list = chaptersFlow.first()
+			list.filter { it.isSelected }.forEach {
+				updateChapterUseCase(it.copy(bookmarked = true))
+			}
+		}
+	}
+
+	override fun deleteSelected() {
+		launchIO {
+			val list = chaptersFlow.first()
+			list.filter { it.isSelected && it.isSaved }.forEach {
+				deleteChapterPassageUseCase(it)
+			}
+		}
+	}
+
+	override fun downloadSelected() {
+		launchIO {
+			val list = chaptersFlow.first()
+			list.filter { it.isSelected && !it.isSaved }.forEach {
+				downloadChapterPassageUseCase(it)
+			}
+		}
+	}
+
+	override fun invertSelection() {
+		launchIO {
+			val list = chaptersFlow.first()
+			val selection = HashMap(selectedChapters.first())
+
+			list.forEach {
+				selection[it.id] = !it.isSelected
+			}
+
+			selectedChapters.emit(selection)
+		}
+	}
+
+	override fun markSelectedAs(readingStatus: ReadingStatus) {
+		launchIO {
+			val list =
+				chaptersFlow.first().filter { it.isSelected && it.readingStatus != readingStatus }
+			when (readingStatus) {
+				ReadingStatus.UNREAD -> list.forEach {
+					markChapterAsUnread(it)
+				}
+				ReadingStatus.READING -> list.forEach {
+					markChapterAsReading(it)
+				}
+				ReadingStatus.READ -> list.forEach {
+					markChapterAsRead(it)
+				}
+				else -> {
+					logE("Invalid input")
+				}
+			}
+		}
+	}
+
+	override fun removeBookmarkFromSelected() {
+		launchIO {
+			val list = chaptersFlow.first()
+			list.filter { it.isSelected }.forEach {
+				updateChapterUseCase(it.copy(bookmarked = false))
+			}
+		}
+	}
+
+	override fun selectAll() {
+		launchIO {
+			val list = chaptersFlow.first()
+			val selection = HashMap(selectedChapters.first())
+
+			list.forEach {
+				selection[it.id] = true
+			}
+
+			selectedChapters.emit(selection)
+		}
+	}
+
+	override fun selectBetween() {
+		launchIO {
+			val list = chaptersFlow.first()
+			val selection = HashMap(selectedChapters.first())
+
+			val firstSelected = list.indexOfFirst { it.isSelected }
+			val lastSelected = list.indexOfLast { it.isSelected }
+
+			if (listOf(firstSelected, lastSelected).any { it == -1 }) {
+				logE("Received -1 index")
+				return@launchIO
+			}
+
+			if (firstSelected == lastSelected) {
+				logE("Ignoring select between, requires more then 1 selected item")
+				return@launchIO
+			}
+
+			if (firstSelected + 1 == lastSelected) {
+				logE("Ignoring select between, requires gap between items")
+				return@launchIO
+			}
+
+			list.subList(firstSelected + 1, lastSelected).forEach {
+				selection[it.id] = true
+			}
+
+			selectedChapters.emit(selection)
+		}
+	}
+
+	override fun trueDeleteSelected() {
+		launchIO {
+			val list = chaptersFlow.first()
+			list.filter { it.isSelected && it.isSaved }.forEach {
+				trueDeleteChapter(it)
+			}
+		}
+	}
+
+	override fun scrollTo(predicate: (ChapterUI) -> Boolean): Flow<Boolean> =
+		flow {
+			val chapters = chaptersFlow.first()
+			chapters.indexOfFirst(predicate).takeIf { it != -1 }?.let {
+				itemIndex.emit(it + 1) // +1 to account for header
+				emit(true)
+			} ?: emit(false)
+		}
+
+
 }

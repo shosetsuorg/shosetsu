@@ -7,13 +7,11 @@ import android.view.*
 import android.widget.NumberPicker
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -52,8 +50,8 @@ import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.mikepenz.fastadapter.adapters.ItemAdapter
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.acra.ACRA
 import javax.security.auth.DestroyFailedException
@@ -97,8 +95,6 @@ class NovelController(bundle: Bundle) :
 	override val viewTitle: String
 		get() = ""
 	private var resume: FloatingActionButton? = null
-	private val novelUIAdapter by lazy { ItemAdapter<NovelUI>() }
-	private val chapterUIAdapter by lazy { ItemAdapter<ChapterUI>() }
 
 	private var actionMode: ActionMode? = null
 
@@ -143,7 +139,6 @@ class NovelController(bundle: Bundle) :
 		}
 	}
 
-	private fun getChapters(): List<ChapterUI> = chapterUIAdapter.itemList.items
 	override fun showFAB(fab: FloatingActionButton) {
 		if (actionMode == null) super.showFAB(fab)
 	}
@@ -151,11 +146,11 @@ class NovelController(bundle: Bundle) :
 	override fun manipulateFAB(fab: FloatingActionButton) {
 		resume = fab
 		fab.setOnClickListener {
-			viewModel.openLastRead(getChapters()).observe(catch = {
+			viewModel.openLastRead().observe(catch = {
 				logE("Loading last read hit an error")
-			}) { chapterIndex ->
-				if (chapterIndex != -1) {
-					activity?.openChapter(getChapters()[chapterIndex])
+			}) { chapterUI ->
+				if (chapterUI != null) {
+					activity?.openChapter(chapterUI)
 				} else {
 					makeSnackBar(R.string.controller_novel_snackbar_finished_reading)?.show()
 				}
@@ -311,16 +306,8 @@ class NovelController(bundle: Bundle) :
 					predicate = { it.order == selectedNumber }
 				}
 
-				// Search for chapter on IO, then jump to it on UI
-				launchIO {
-					chapterUIAdapter.adapterItems
-						.indexOfFirst(predicate)
-						.takeIf { it != -1 }?.let { index ->
-
-							val index = index + 1 // We need to adjust for the header
-
-							viewModel.scrollToIndex(index)
-						} ?: launchUI {
+				viewModel.scrollTo(predicate).collectLA(this, catch = {}) {
+					if (!it) {
 						makeSnackBar(R.string.toast_error_chapter_jump_invalid_target)
 							?.setAction(R.string.generic_question_retry) {
 								openChapterJumpDialog()
@@ -328,7 +315,8 @@ class NovelController(bundle: Bundle) :
 							?.show()
 					}
 				}
-			}.show()
+			}
+			.show()
 	}
 
 	/**
@@ -340,7 +328,7 @@ class NovelController(bundle: Bundle) :
 			setTitle(R.string.download_custom_chapters)
 			val numberPicker = NumberPicker(activity!!).apply {
 				minValue = 0
-				maxValue = getChapters().size
+				maxValue = 0 // TODO Compose alert
 			}
 			setView(numberPicker)
 
@@ -372,6 +360,7 @@ class NovelController(bundle: Bundle) :
 			val novelInfo by viewModel.novelLive.collectAsState(null)
 			val chapters by viewModel.chaptersLive.collectAsState(emptyList())
 			val isRefreshing by viewModel.isRefreshing.collectAsState(false)
+			val itemAt by viewModel.itemIndex.collectAsState(0)
 
 			activity?.invalidateOptionsMenu()
 			// If the data is not present, loads it
@@ -383,24 +372,27 @@ class NovelController(bundle: Bundle) :
 				}
 			}
 
-			NovelInfoContent(
-				novelInfo,
-				chapters,
-				isRefreshing,
-				onRefresh = {
-					if (viewModel.isOnline())
-						refresh()
-					else displayOfflineSnackBar()
-				},
-				openWebview = ::openWebView,
-				toggleBookmark = viewModel::toggleNovelBookmark,
-				openChapterJump = {
-					//TODO
-				},
-				openChapter = {
-					//TODO
-				}
-			)
+			MdcTheme {
+				NovelInfoContent(
+					novelInfo,
+					chapters,
+					itemAt,
+					isRefreshing,
+					onRefresh = {
+						if (viewModel.isOnline())
+							refresh()
+						else displayOfflineSnackBar()
+					},
+					openWebview = ::openWebView,
+					toggleBookmark = viewModel::toggleNovelBookmark,
+					openChapterJump = {
+						//TODO
+					},
+					openChapter = {
+						//TODO
+					}
+				)
+			}
 		}
 	}
 
@@ -409,117 +401,117 @@ class NovelController(bundle: Bundle) :
 		if (viewModel.isFromChapterReader) viewModel.deletePrevious()
 	}
 
-	/* TODO Re-implement
-	private fun calculateBottomSelectionMenuChanges() {
-		val chaptersSelected =
-			fastAdapter.getSelectExtension().selectedItems.filterIsInstance<ChapterUI>()
+/* TODO Re-implement
+private fun calculateBottomSelectionMenuChanges() {
+	val chaptersSelected =
+		fastAdapter.getSelectExtension().selectedItems.filterIsInstance<ChapterUI>()
 
-		// If any chapters are bookmarked, show the remove bookmark logo
-		binding.bottomMenu.findItem(id.remove_bookmark)?.isEnabled =
-			chaptersSelected.any { it.bookmarked }
+	// If any chapters are bookmarked, show the remove bookmark logo
+	binding.bottomMenu.findItem(id.remove_bookmark)?.isEnabled =
+		chaptersSelected.any { it.bookmarked }
 
-		// If any chapters are not bookmarked, show bookmark
-		binding.bottomMenu.findItem(id.bookmark)?.isEnabled =
-			chaptersSelected.any { !it.bookmarked }
+	// If any chapters are not bookmarked, show bookmark
+	binding.bottomMenu.findItem(id.bookmark)?.isEnabled =
+		chaptersSelected.any { !it.bookmarked }
 
-		// If any are downloaded, show delete
-		binding.bottomMenu.findItem(id.chapter_delete_selected)?.isEnabled =
-			chaptersSelected.any { it.isSaved }
+	// If any are downloaded, show delete
+	binding.bottomMenu.findItem(id.chapter_delete_selected)?.isEnabled =
+		chaptersSelected.any { it.isSaved }
 
-		// If any are not downloaded, show download option
-		binding.bottomMenu.findItem(id.chapter_download_selected)?.isEnabled =
-			chaptersSelected.any { !it.isSaved }
+	// If any are not downloaded, show download option
+	binding.bottomMenu.findItem(id.chapter_download_selected)?.isEnabled =
+		chaptersSelected.any { !it.isSaved }
 
-		// If any are unread, show read option
-		binding.bottomMenu.findItem(id.mark_read)?.isEnabled =
-			chaptersSelected.any { it.readingStatus != ReadingStatus.READ }
+	// If any are unread, show read option
+	binding.bottomMenu.findItem(id.mark_read)?.isEnabled =
+		chaptersSelected.any { it.readingStatus != ReadingStatus.READ }
 
-		// If any are read, show unread option
-		binding.bottomMenu.findItem(id.mark_unread)?.isEnabled =
-			chaptersSelected.any { it.readingStatus != ReadingStatus.UNREAD }
+	// If any are read, show unread option
+	binding.bottomMenu.findItem(id.mark_unread)?.isEnabled =
+		chaptersSelected.any { it.readingStatus != ReadingStatus.UNREAD }
+}
+*/
+
+/* TODO re-implement
+override fun FastAdapter<AbstractItem<*>>.setupFastAdapter() {
+	selectExtension {
+		isSelectable = true
+		multiSelect = true
+		selectOnLongClick = true
+		setSelectionListener { item, isSelected ->
+			// Recreates the item view
+			this@setupFastAdapter.notifyItemChanged(this@setupFastAdapter.getPosition(item))
+
+			// Updates action mode
+			calculateBottomSelectionMenuChanges()
+
+			// Swaps the options menu on top
+			val size = selectedItems.size
+
+			// Incase the size is empty and the item is selected, add the item and try again
+			if (size == 0 && isSelected) {
+				logE("Migrating selection bug")
+				(fastAdapter.getItemById(item.identifier)?.first as? ChapterUI)?.isSelected =
+					true
+				this.select(item, true)
+				return@setSelectionListener
+			}
+
+			if (size == 1) startSelectionAction() else if (size == 0) finishSelectionAction()
+		}
 	}
-	*/
-
-	/* TODO re-implement
-	override fun FastAdapter<AbstractItem<*>>.setupFastAdapter() {
+	setOnPreClickListener FastAdapterClick@{ _, _, item, position ->
+		// Handles one click select when in selection mode
 		selectExtension {
-			isSelectable = true
-			multiSelect = true
-			selectOnLongClick = true
-			setSelectionListener { item, isSelected ->
-				// Recreates the item view
-				this@setupFastAdapter.notifyItemChanged(this@setupFastAdapter.getPosition(item))
-
-				// Updates action mode
-				calculateBottomSelectionMenuChanges()
-
-				// Swaps the options menu on top
-				val size = selectedItems.size
-
-				// Incase the size is empty and the item is selected, add the item and try again
-				if (size == 0 && isSelected) {
-					logE("Migrating selection bug")
-					(fastAdapter.getItemById(item.identifier)?.first as? ChapterUI)?.isSelected =
-						true
-					this.select(item, true)
-					return@setSelectionListener
+			if (selectedItems.isNotEmpty()) {
+				if (!item.isSelected) {
+					select(
+						item = item,
+						considerSelectableFlag = true
+					)
+				} else {
+					deselect(position)
 				}
-
-				if (size == 1) startSelectionAction() else if (size == 0) finishSelectionAction()
+				return@FastAdapterClick true
 			}
 		}
-		setOnPreClickListener FastAdapterClick@{ _, _, item, position ->
-			// Handles one click select when in selection mode
-			selectExtension {
-				if (selectedItems.isNotEmpty()) {
-					if (!item.isSelected) {
-						select(
-							item = item,
-							considerSelectableFlag = true
-						)
-					} else {
-						deselect(position)
-					}
-					return@FastAdapterClick true
-				}
-			}
-			false
-		}
-		setOnClickListener { _, _, item, _ ->
-			if (item !is ChapterUI) return@setOnClickListener false
-			viewModel.isFromChapterReader = true
-			activity?.openChapter(item)
-			true
-		}
-
-		hookClickEvent(
-			bind = { it: NovelUI.ViewHolder -> it.binding.inLibrary }
-		) { _, _, _, _ ->
-			viewModel.toggleNovelBookmark()
-		}
-
-		hookClickEvent(
-			bind = { it: NovelUI.ViewHolder -> it.binding.webView }
-		) { _, _, _, _ ->
-			openWebView()
-		}
-
-		hookClickEvent(
-			bind = { it: NovelUI.ViewHolder -> it.binding.filterChip }
-		) { _, _, _, _ ->
-			openFilterMenu()
-		}
-
-		hookClickEvent(
-			bind = { it: NovelUI.ViewHolder -> it.binding.chipJumpTo }
-		) { _, _, _, _ ->
-			openChapterJumpDialog()
-		}
-
-		setObserver()
+		false
+	}
+	setOnClickListener { _, _, item, _ ->
+		if (item !is ChapterUI) return@setOnClickListener false
+		viewModel.isFromChapterReader = true
+		activity?.openChapter(item)
+		true
 	}
 
-	 */
+	hookClickEvent(
+		bind = { it: NovelUI.ViewHolder -> it.binding.inLibrary }
+	) { _, _, _, _ ->
+		viewModel.toggleNovelBookmark()
+	}
+
+	hookClickEvent(
+		bind = { it: NovelUI.ViewHolder -> it.binding.webView }
+	) { _, _, _, _ ->
+		openWebView()
+	}
+
+	hookClickEvent(
+		bind = { it: NovelUI.ViewHolder -> it.binding.filterChip }
+	) { _, _, _, _ ->
+		openFilterMenu()
+	}
+
+	hookClickEvent(
+		bind = { it: NovelUI.ViewHolder -> it.binding.chipJumpTo }
+	) { _, _, _, _ ->
+		openChapterJumpDialog()
+	}
+
+	setObserver()
+}
+
+ */
 
 	private fun openWebView() {
 		viewModel.getNovelURL().observe(
@@ -773,7 +765,8 @@ fun PreviewNovelInfoContent() {
 			openWebview = {},
 			toggleBookmark = {},
 			openChapterJump = {},
-			openChapter = {}
+			openChapter = {},
+			itemAt = 0
 		)
 	}
 }
@@ -783,6 +776,7 @@ fun PreviewNovelInfoContent() {
 fun NovelInfoContent(
 	novelInfo: NovelUI?,
 	chapters: List<ChapterUI>?,
+	itemAt: Int,
 	isRefreshing: Boolean,
 	onRefresh: () -> Unit,
 	openWebview: () -> Unit,
@@ -791,8 +785,17 @@ fun NovelInfoContent(
 	openChapter: (id: Int) -> Unit
 ) {
 	SwipeRefresh(state = SwipeRefreshState(isRefreshing), onRefresh = onRefresh) {
+		val state = rememberLazyListState(itemAt)
+
+		LaunchedEffect(itemAt) {
+			launch {
+				state.scrollToItem(itemAt)
+			}
+		}
+
 		LazyColumn(
 			modifier = Modifier.fillMaxSize(),
+			state = state
 		) {
 			if (novelInfo != null)
 				item {
@@ -877,7 +880,9 @@ fun NovelChapterContent(
 			Text(
 				chapter.title,
 				maxLines = 1,
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp),
 				color = if (chapter.bookmarked) MaterialTheme.colors.primary else Color.Unspecified
 			)
 
@@ -961,6 +966,18 @@ fun NovelInfoHeaderContent(
 		Box(
 			modifier = Modifier.fillMaxWidth(),
 		) {
+			AsyncImage(
+				ImageRequest.Builder(LocalContext.current)
+					.data(novelInfo.imageURL)
+					.placeholder(R.drawable.animated_refresh)
+					.error(R.drawable.broken_image)
+					.build(),
+				stringResource(R.string.controller_novel_info_image),
+				modifier = Modifier
+					.fillMaxWidth()
+					.aspectRatio(.75f)
+					.alpha(.25f)
+			)
 
 			Column(
 				modifier = Modifier.fillMaxWidth(),
@@ -975,7 +992,9 @@ fun NovelInfoHeaderContent(
 							.error(R.drawable.broken_image)
 							.build(),
 						stringResource(R.string.controller_novel_info_image),
-						modifier = Modifier.fillMaxWidth(.35f).aspectRatio(.75f)
+						modifier = Modifier
+							.fillMaxWidth(.35f)
+							.aspectRatio(.75f)
 					)
 					Column {
 						Row(
@@ -1031,13 +1050,15 @@ fun NovelInfoHeaderContent(
 							if (novelInfo.bookmarked) {
 								Icon(
 									painterResource(R.drawable.ic_heart_svg_filled),
-									null
+									null,
+									tint = MaterialTheme.colors.primary
 								)
 								Text(stringResource(R.string.controller_novel_in_library))
 							} else {
 								Icon(
 									painterResource(R.drawable.ic_heart_svg),
-									null
+									null,
+									tint = MaterialTheme.colors.primary
 								)
 								Text(stringResource(R.string.controller_novel_add_to_library))
 							}
@@ -1070,14 +1091,18 @@ fun NovelInfoHeaderContent(
 
 		Text(
 			novelInfo.description,
-			modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp)
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(start = 8.dp, end = 8.dp)
 		)
 
 		Divider()
 
 		Row(
 			horizontalArrangement = Arrangement.SpaceBetween,
-			modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp),
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(start = 8.dp, end = 8.dp),
 			verticalAlignment = Alignment.CenterVertically
 		) {
 			Text(stringResource(R.string.chapters))

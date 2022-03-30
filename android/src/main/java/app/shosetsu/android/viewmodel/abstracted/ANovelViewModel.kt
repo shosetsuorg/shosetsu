@@ -37,9 +37,13 @@ import javax.security.auth.Destroyable
 abstract class ANovelViewModel
 	: ShosetsuViewModel(), IsOnlineCheckViewModel, Destroyable {
 
+	abstract val itemIndex: Flow<Int>
 	abstract val novelLive: Flow<NovelUI?>
 	abstract val isRefreshing: Flow<Boolean>
 	abstract val chaptersLive: Flow<List<ChapterUI>>
+
+	abstract val chaptersSize: Flow<Int>
+
 	abstract val novelSettingFlow: Flow<NovelSettingUI?>
 
 	/** Set's the value to be loaded */
@@ -77,7 +81,7 @@ abstract class ANovelViewModel
 	 *
 	 * @return Next chapter to read uwu
 	 */
-	abstract fun openLastRead(array: List<ChapterUI>): Flow<Int>
+	abstract fun openLastRead(): Flow<ChapterUI?>
 
 	/**
 	 * Marks all the provided chapters as whatever [readingStatus] is
@@ -151,12 +155,6 @@ abstract class ANovelViewModel
 
 	abstract fun getQRCode(): Flow<ImageBitmap?>
 
-	/**
-	 * Scroll to [index]
-	 *
-	 * Should cause the item to become selected momentarily
-	 */
-	abstract fun scrollToIndex(index: Int)
 	abstract fun bookmarkSelected()
 	abstract fun removeBookmarkFromSelected()
 
@@ -169,4 +167,11 @@ abstract class ANovelViewModel
 	abstract fun selectBetween()
 
 	abstract fun trueDeleteSelected()
+
+	/**
+	 * Try to scroll to a chapter via predicate
+	 *
+	 * @return false if the chapter could not be found
+	 */
+	abstract fun scrollTo(predicate: (ChapterUI) -> Boolean): Flow<Boolean>
 }
