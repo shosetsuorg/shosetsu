@@ -36,6 +36,7 @@ import app.shosetsu.common.enums.InclusionState.EXCLUDE
 import app.shosetsu.common.enums.InclusionState.INCLUDE
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.common.enums.NovelSortType
+import app.shosetsu.common.utils.copy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -354,14 +355,6 @@ class LibraryViewModel(
 
 		novelSortTypeFlow.value = NovelSortType.BY_TITLE
 		areNovelsReversedFlow.value = false
-	}
-
-	private inline fun <reified K, reified V> HashMap<K, V>.copy(): HashMap<K, V> {
-		val map = HashMap<K, V>()
-		onEach { (k, v) ->
-			map[k] = v
-		}
-		return map
 	}
 
 	override fun setViewType(cardType: NovelCardType) {

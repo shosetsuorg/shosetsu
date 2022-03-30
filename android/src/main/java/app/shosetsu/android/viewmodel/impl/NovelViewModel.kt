@@ -4,10 +4,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.logD
-import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.share.toURL
 import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
@@ -28,6 +25,7 @@ import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
 import app.shosetsu.common.enums.ChapterSortType
 import app.shosetsu.common.enums.ChapterSortType.SOURCE
 import app.shosetsu.common.enums.ReadingStatus
+import app.shosetsu.common.utils.copy
 import app.shosetsu.common.view.uimodel.NovelSettingUI
 import app.shosetsu.lib.share.ExtensionLink
 import app.shosetsu.lib.share.NovelLink
@@ -90,6 +88,9 @@ class NovelViewModel(
 
 	private val selectedChapters = MutableStateFlow<Map<Int, Boolean>>(mapOf())
 
+	suspend fun copySelected(): HashMap<Int, Boolean> =
+		selectedChapters.first().copy()
+
 	private val chaptersFlow: Flow<List<ChapterUI>> by lazy {
 		novelIDLive.transformLatest { id: Int ->
 			emitAll(
@@ -102,9 +103,7 @@ class NovelViewModel(
 					.combineStatus()
 					.combineSort()
 					.combineReverse()
-					.combineSelection().map {
-						it
-					}
+					.combineSelection()
 			)
 		}
 	}
@@ -546,6 +545,10 @@ class NovelViewModel(
 
 	override val itemIndex: MutableStateFlow<Int> = MutableStateFlow(0)
 
+	override val hasSelected: Flow<Boolean> by lazy {
+		selectedChapters.map { it.size > 0 }
+	}
+
 	override fun bookmarkSelected() {
 		launchIO {
 			val list = chaptersFlow.first()
@@ -576,7 +579,7 @@ class NovelViewModel(
 	override fun invertSelection() {
 		launchIO {
 			val list = chaptersFlow.first()
-			val selection = HashMap(selectedChapters.first())
+			val selection = copySelected()
 
 			list.forEach {
 				selection[it.id] = !it.isSelected
@@ -619,7 +622,7 @@ class NovelViewModel(
 	override fun selectAll() {
 		launchIO {
 			val list = chaptersFlow.first()
-			val selection = HashMap(selectedChapters.first())
+			val selection = copySelected()
 
 			list.forEach {
 				selection[it.id] = true
@@ -632,7 +635,7 @@ class NovelViewModel(
 	override fun selectBetween() {
 		launchIO {
 			val list = chaptersFlow.first()
-			val selection = HashMap(selectedChapters.first())
+			val selection = copySelected()
 
 			val firstSelected = list.indexOfFirst { it.isSelected }
 			val lastSelected = list.indexOfLast { it.isSelected }
@@ -678,5 +681,15 @@ class NovelViewModel(
 			} ?: emit(false)
 		}
 
+	override fun toggleSelection(it: ChapterUI) {
+		logV("$it")
+		launchIO {
+			val selection = copySelected()
+
+			selection[it.id] = !it.isSelected
+
+			selectedChapters.emit(selection)
+		}
+	}
 
 }

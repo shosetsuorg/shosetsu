@@ -6,6 +6,9 @@ import android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 import android.view.*
 import android.widget.NumberPicker
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.os.bundleOf
 import app.shosetsu.android.activity.MainActivity
+import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
@@ -360,6 +364,7 @@ class NovelController(bundle: Bundle) :
 			val novelInfo by viewModel.novelLive.collectAsState(null)
 			val chapters by viewModel.chaptersLive.collectAsState(emptyList())
 			val isRefreshing by viewModel.isRefreshing.collectAsState(false)
+			val hasSelected by viewModel.hasSelected.collectAsState(false)
 			val itemAt by viewModel.itemIndex.collectAsState(0)
 
 			activity?.invalidateOptionsMenu()
@@ -383,14 +388,21 @@ class NovelController(bundle: Bundle) :
 							refresh()
 						else displayOfflineSnackBar()
 					},
-					openWebview = ::openWebView,
+					openWebView = ::openWebView,
 					toggleBookmark = viewModel::toggleNovelBookmark,
-					openChapterJump = {
-						//TODO
+					chapterContent = {
+						NovelChapterContent(
+							chapter = it,
+							openChapter = {
+								viewModel.isFromChapterReader = true
+								activity?.openChapter(it)
+							},
+							onToggleSelection = {
+								viewModel.toggleSelection(it)
+							},
+							selectionMode = hasSelected
+						)
 					},
-					openChapter = {
-						//TODO
-					}
 				)
 			}
 		}
@@ -460,55 +472,8 @@ override fun FastAdapter<AbstractItem<*>>.setupFastAdapter() {
 			if (size == 1) startSelectionAction() else if (size == 0) finishSelectionAction()
 		}
 	}
-	setOnPreClickListener FastAdapterClick@{ _, _, item, position ->
-		// Handles one click select when in selection mode
-		selectExtension {
-			if (selectedItems.isNotEmpty()) {
-				if (!item.isSelected) {
-					select(
-						item = item,
-						considerSelectableFlag = true
-					)
-				} else {
-					deselect(position)
-				}
-				return@FastAdapterClick true
-			}
-		}
-		false
-	}
-	setOnClickListener { _, _, item, _ ->
-		if (item !is ChapterUI) return@setOnClickListener false
-		viewModel.isFromChapterReader = true
-		activity?.openChapter(item)
-		true
-	}
 
-	hookClickEvent(
-		bind = { it: NovelUI.ViewHolder -> it.binding.inLibrary }
-	) { _, _, _, _ ->
-		viewModel.toggleNovelBookmark()
-	}
 
-	hookClickEvent(
-		bind = { it: NovelUI.ViewHolder -> it.binding.webView }
-	) { _, _, _, _ ->
-		openWebView()
-	}
-
-	hookClickEvent(
-		bind = { it: NovelUI.ViewHolder -> it.binding.filterChip }
-	) { _, _, _, _ ->
-		openFilterMenu()
-	}
-
-	hookClickEvent(
-		bind = { it: NovelUI.ViewHolder -> it.binding.chipJumpTo }
-	) { _, _, _, _ ->
-		openChapterJumpDialog()
-	}
-
-	setObserver()
 }
 
  */
@@ -586,18 +551,6 @@ override fun FastAdapter<AbstractItem<*>>.setupFastAdapter() {
 
 	private fun invertSelection() {
 		viewModel.invertSelection()
-	}
-
-	private fun downloadSelected() {
-		viewModel.downloadSelected()
-	}
-
-	private fun deleteSelected() {
-		viewModel.deleteSelected()
-	}
-
-	private fun markSelectedAs(readingStatus: ReadingStatus) {
-		viewModel.markSelectedAs(readingStatus)
 	}
 
 	/**
@@ -762,11 +715,16 @@ fun PreviewNovelInfoContent() {
 			chapters = chapters,
 			isRefreshing = false,
 			onRefresh = {},
-			openWebview = {},
+			openWebView = {},
 			toggleBookmark = {},
-			openChapterJump = {},
-			openChapter = {},
-			itemAt = 0
+			itemAt = 0,
+			chapterContent = {
+				NovelChapterContent(
+					chapter = it,
+					openChapter = { /*TODO*/ },
+					selectionMode = false
+				) {}
+			}
 		)
 	}
 }
@@ -779,10 +737,9 @@ fun NovelInfoContent(
 	itemAt: Int,
 	isRefreshing: Boolean,
 	onRefresh: () -> Unit,
-	openWebview: () -> Unit,
+	openWebView: () -> Unit,
 	toggleBookmark: () -> Unit,
-	openChapterJump: () -> Unit,
-	openChapter: (id: Int) -> Unit
+	chapterContent: @Composable (ChapterUI) -> Unit
 ) {
 	SwipeRefresh(state = SwipeRefreshState(isRefreshing), onRefresh = onRefresh) {
 		val state = rememberLazyListState(itemAt)
@@ -800,10 +757,11 @@ fun NovelInfoContent(
 			if (novelInfo != null)
 				item {
 					NovelInfoHeaderContent(
-						novelInfo,
-						openWebview,
-						toggleBookmark,
-						openChapterJump
+						novelInfo = novelInfo,
+						openWebview = openWebView,
+						toggleBookmark = toggleBookmark,
+						openChapterJump = {
+						}
 					)
 				}
 
@@ -811,7 +769,7 @@ fun NovelInfoContent(
 				NovelInfoChaptersContent(
 					this,
 					chapters,
-					openChapter
+					chapterContent
 				)
 		}
 	}
@@ -837,7 +795,9 @@ fun PreviewChapterContent() {
 	MdcTheme {
 		NovelChapterContent(
 			chapter,
-			openChapter = {}
+			openChapter = {},
+			onToggleSelection = {},
+			selectionMode = false
 		)
 	}
 }
@@ -845,33 +805,46 @@ fun PreviewChapterContent() {
 fun NovelInfoChaptersContent(
 	scope: LazyListScope,
 	chapters: List<ChapterUI>,
-	openChapter: (id: Int) -> Unit
+	chapterContent: @Composable (ChapterUI) -> Unit
 ) {
 	chapters.forEach {
 		scope.item {
-			NovelChapterContent(
-				it,
-				openChapter
-			)
+			chapterContent(it)
 		}
 	}
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun NovelChapterContent(
 	chapter: ChapterUI,
-	openChapter: (id: Int) -> Unit
+	selectionMode: Boolean,
+	openChapter: () -> Unit,
+	onToggleSelection: () -> Unit
 ) {
 	Card(
 		shape = RectangleShape,
-		modifier = Modifier.let {
-			if (chapter.readingStatus == ReadingStatus.READ)
-				it.alpha(.5f)
-			else it
-		},
-		onClick = {
-			openChapter(chapter.id)
+		modifier = Modifier
+			.let {
+				if (chapter.readingStatus == ReadingStatus.READ)
+					it.alpha(.5f)
+				else it
+			}
+			.combinedClickable(
+				onClick =
+				if (!selectionMode)
+					openChapter
+				else onToggleSelection,
+				onLongClick = onToggleSelection
+			),
+		border =
+		if (chapter.isSelected) {
+			BorderStroke(
+				width = SELECTED_STROKE_WIDTH.dp,
+				color = MaterialTheme.colors.primary
+			)
+		} else {
+			null
 		}
 	) {
 		Column(

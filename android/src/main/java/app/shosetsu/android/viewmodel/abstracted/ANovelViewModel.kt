@@ -37,6 +37,7 @@ import javax.security.auth.Destroyable
 abstract class ANovelViewModel
 	: ShosetsuViewModel(), IsOnlineCheckViewModel, Destroyable {
 
+	abstract val hasSelected: Flow<Boolean>
 	abstract val itemIndex: Flow<Int>
 	abstract val novelLive: Flow<NovelUI?>
 	abstract val isRefreshing: Flow<Boolean>
@@ -174,4 +175,6 @@ abstract class ANovelViewModel
 	 * @return false if the chapter could not be found
 	 */
 	abstract fun scrollTo(predicate: (ChapterUI) -> Boolean): Flow<Boolean>
+
+	abstract fun toggleSelection(it: ChapterUI)
 }
