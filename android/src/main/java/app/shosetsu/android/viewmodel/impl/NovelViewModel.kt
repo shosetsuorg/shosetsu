@@ -546,7 +546,7 @@ class NovelViewModel(
 	override val itemIndex: MutableStateFlow<Int> = MutableStateFlow(0)
 
 	override val hasSelected: Flow<Boolean> by lazy {
-		selectedChapters.map { it.size > 0 }
+		chaptersFlow.mapLatest { chapters -> chapters.any { it.isSelected } }
 	}
 
 	override fun bookmarkSelected() {

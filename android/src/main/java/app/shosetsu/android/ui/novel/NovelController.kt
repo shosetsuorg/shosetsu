@@ -411,6 +411,14 @@ class NovelController(bundle: Bundle) :
 	override fun onViewCreated(view: View) {
 		viewModel.setNovelID(args.getNovelID())
 		if (viewModel.isFromChapterReader) viewModel.deletePrevious()
+
+		viewModel.hasSelected.collectLatestLA(this, catch = {}) { hasSelected ->
+			if (hasSelected) {
+				startSelectionAction()
+			} else {
+				finishSelectionAction()
+			}
+		}
 	}
 
 /* TODO Re-implement
