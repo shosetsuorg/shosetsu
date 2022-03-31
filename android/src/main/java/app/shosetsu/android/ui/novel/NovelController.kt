@@ -11,7 +11,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -402,6 +401,7 @@ class NovelController(bundle: Bundle) :
 							selectionMode = hasSelected
 						)
 					},
+					openFilter = ::openFilterMenu
 				)
 			}
 		}
@@ -731,7 +731,8 @@ fun PreviewNovelInfoContent() {
 					openChapter = { /*TODO*/ },
 					selectionMode = false
 				) {}
-			}
+			},
+			openFilter = {}
 		)
 	}
 }
@@ -746,6 +747,7 @@ fun NovelInfoContent(
 	onRefresh: () -> Unit,
 	openWebView: () -> Unit,
 	toggleBookmark: () -> Unit,
+	openFilter: () -> Unit,
 	chapterContent: @Composable (ChapterUI) -> Unit
 ) {
 	Box(
@@ -776,7 +778,8 @@ fun NovelInfoContent(
 								openWebview = openWebView,
 								toggleBookmark = toggleBookmark,
 								openChapterJump = {
-								}
+								},
+								openFilter = openFilter
 							)
 						}
 
@@ -789,10 +792,7 @@ fun NovelInfoContent(
 				}
 			}
 		}
-
-
 	}
-
 }
 
 @Preview
@@ -940,6 +940,7 @@ fun PreviewHeaderContent() {
 			info,
 			{},
 			{},
+			{},
 			{}
 		)
 	}
@@ -951,6 +952,7 @@ fun NovelInfoHeaderContent(
 	novelInfo: NovelUI,
 	openWebview: () -> Unit,
 	toggleBookmark: () -> Unit,
+	openFilter: () -> Unit,
 	openChapterJump: () -> Unit
 ) {
 	Column(
@@ -988,16 +990,13 @@ fun NovelInfoHeaderContent(
 						modifier = Modifier
 							.fillMaxWidth(.35f)
 							.aspectRatio(.75f)
+							.padding(top = 8.dp)
 					)
 					Column {
 						Row(
 							modifier = Modifier.padding(bottom = 8.dp)
 						) {
-							Text(
-								stringResource(R.string.novel_title),
-								style = MaterialTheme.typography.caption
-							)
-							Text(novelInfo.title)
+							Text(novelInfo.title, style = MaterialTheme.typography.h5)
 						}
 						Row(
 							modifier = Modifier.padding(bottom = 8.dp)
@@ -1011,30 +1010,32 @@ fun NovelInfoHeaderContent(
 								style = MaterialTheme.typography.caption
 							)
 						}
-						Row(
-							modifier = Modifier.padding(bottom = 8.dp)
-						) {
-							Text(
-								stringResource(R.string.authors),
-								style = MaterialTheme.typography.caption
-							)
-							Text(
-								novelInfo.authors.toString(),
-								style = MaterialTheme.typography.caption
-							)
-						}
-						Row(
-							modifier = Modifier.padding(bottom = 8.dp)
-						) {
-							Text(
-								stringResource(R.string.artists),
-								style = MaterialTheme.typography.caption
-							)
-							Text(
-								novelInfo.artists.toString(),
-								style = MaterialTheme.typography.caption
-							)
-						}
+						if (novelInfo.authors.isNotEmpty())
+							Row(
+								modifier = Modifier.padding(bottom = 8.dp)
+							) {
+								Text(
+									stringResource(R.string.authors),
+									style = MaterialTheme.typography.caption
+								)
+								Text(
+									novelInfo.authors.toString(),
+									style = MaterialTheme.typography.caption
+								)
+							}
+						if (novelInfo.artists.isNotEmpty())
+							Row(
+								modifier = Modifier.padding(bottom = 8.dp)
+							) {
+								Text(
+									stringResource(R.string.artists),
+									style = MaterialTheme.typography.caption
+								)
+								Text(
+									novelInfo.artists.toString(),
+									style = MaterialTheme.typography.caption
+								)
+							}
 						Row {
 							Text(
 								stringResource(R.string.publishing_state),
@@ -1055,15 +1056,15 @@ fun NovelInfoHeaderContent(
 
 				Row(
 					modifier = Modifier.fillMaxWidth(),
-					horizontalArrangement = Arrangement.SpaceEvenly
+					horizontalArrangement = Arrangement.SpaceEvenly,
+					verticalAlignment = Alignment.CenterVertically
 				) {
-					Card(
+					IconButton(
 						onClick = toggleBookmark,
-						shape = RoundedCornerShape(5.dp)
+						modifier = Modifier.padding(8.dp)
 					) {
-						Row(
-							verticalAlignment = Alignment.CenterVertically,
-							modifier = Modifier.padding(8.dp)
+						Column(
+							horizontalAlignment = Alignment.CenterHorizontally
 						) {
 							if (novelInfo.bookmarked) {
 								Icon(
@@ -1083,10 +1084,15 @@ fun NovelInfoHeaderContent(
 						}
 					}
 					IconButton(onClick = openWebview) {
-						Icon(
-							painterResource(R.drawable.open_in_browser),
-							stringResource(R.string.controller_novel_info_open_web)
-						)
+						Column(
+							horizontalAlignment = Alignment.CenterHorizontally
+						) {
+							Icon(
+								painterResource(R.drawable.open_in_browser),
+								stringResource(R.string.controller_novel_info_open_web)
+							)
+							Text(stringResource(R.string.open_in_webview))
+						}
 					}
 				}
 
@@ -1137,7 +1143,7 @@ fun NovelInfoHeaderContent(
 				}
 
 				Card(
-					onClick = openChapterJump
+					onClick = openFilter
 				) {
 					Row(
 						verticalAlignment = Alignment.CenterVertically,
