@@ -13,15 +13,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -955,9 +953,9 @@ fun NovelInfoHeaderContent(
 					.build(),
 				stringResource(R.string.controller_novel_info_image),
 				modifier = Modifier
-					.fillMaxWidth()
-					.aspectRatio(.75f)
-					.alpha(.25f)
+					.matchParentSize()
+					.alpha(.10f),
+				contentScale = ContentScale.Crop
 			)
 
 			Column(
@@ -981,36 +979,61 @@ fun NovelInfoHeaderContent(
 						Row(
 							modifier = Modifier.padding(bottom = 8.dp)
 						) {
-							Text(stringResource(R.string.novel_title))
+							Text(
+								stringResource(R.string.novel_title),
+								style = MaterialTheme.typography.caption
+							)
 							Text(novelInfo.title)
 						}
 						Row(
 							modifier = Modifier.padding(bottom = 8.dp)
 						) {
-							Text(stringResource(R.string.site))
-							Text(novelInfo.extName)
+							Text(
+								stringResource(R.string.site),
+								style = MaterialTheme.typography.caption
+							)
+							Text(
+								novelInfo.extName,
+								style = MaterialTheme.typography.caption
+							)
 						}
 						Row(
 							modifier = Modifier.padding(bottom = 8.dp)
 						) {
-							Text(stringResource(R.string.authors))
-							Text(novelInfo.authors.toString())
+							Text(
+								stringResource(R.string.authors),
+								style = MaterialTheme.typography.caption
+							)
+							Text(
+								novelInfo.authors.toString(),
+								style = MaterialTheme.typography.caption
+							)
 						}
 						Row(
 							modifier = Modifier.padding(bottom = 8.dp)
 						) {
-							Text(stringResource(R.string.artists))
-							Text(novelInfo.artists.toString())
+							Text(
+								stringResource(R.string.artists),
+								style = MaterialTheme.typography.caption
+							)
+							Text(
+								novelInfo.artists.toString(),
+								style = MaterialTheme.typography.caption
+							)
 						}
 						Row {
-							Text(stringResource(R.string.publishing_state))
+							Text(
+								stringResource(R.string.publishing_state),
+								style = MaterialTheme.typography.caption
+							)
 							Text(
 								when (novelInfo.status) {
 									Novel.Status.PUBLISHING -> stringResource(R.string.publishing)
 									Novel.Status.COMPLETED -> stringResource(R.string.completed)
 									Novel.Status.PAUSED -> stringResource(R.string.paused)
 									Novel.Status.UNKNOWN -> stringResource(R.string.unknown)
-								}
+								},
+								style = MaterialTheme.typography.caption
 							)
 						}
 					}
@@ -1070,11 +1093,11 @@ fun NovelInfoHeaderContent(
 			}
 		}
 
-		Text(
-			novelInfo.description,
+		ExpandedText(
+			text = novelInfo.description,
 			modifier = Modifier
 				.fillMaxWidth()
-				.padding(start = 8.dp, end = 8.dp)
+				.padding(start = 8.dp, end = 8.dp, top = 8.dp),
 		)
 
 		Divider()
@@ -1107,12 +1130,49 @@ fun NovelInfoHeaderContent(
 						modifier = Modifier.padding(8.dp),
 					) {
 						Icon(painterResource(R.drawable.filter), null)
-						Text(stringResource(R.string.jump_to_chapter_short))
+						Text(stringResource(R.string.filter))
 					}
 				}
 			}
 		}
 
 		Divider()
+	}
+}
+
+@Composable
+fun ExpandedText(
+	text: String,
+	modifier: Modifier = Modifier,
+) {
+	var isExpanded by remember { mutableStateOf(false) }
+
+	Column(
+		horizontalAlignment = Alignment.CenterHorizontally,
+		modifier = modifier
+	) {
+		Text(
+			if (isExpanded) {
+				text
+			} else {
+				text.let {
+					if (it.length > 100)
+						it.substring(0, 100) + "..."
+					else it
+				}
+			}
+		)
+
+		TextButton(
+			onClick = {
+				isExpanded = !isExpanded
+			}
+		) {
+			Text(
+				if (!isExpanded)
+					stringResource(R.string.more)
+				else stringResource(R.string.less)
+			)
+		}
 	}
 }
