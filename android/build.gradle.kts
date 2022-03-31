@@ -382,4 +382,6 @@ dependencies {
 	implementation("io.github.g00fy2.quickie:quickie-bundled:1.4.0")
 
 	implementation("com.github.doomsdayrs:qrcode-kotlin:513d290b")
+
+	implementation("com.github.nanihadesuka:LazyColumnScrollbar:1.0.3")
 }

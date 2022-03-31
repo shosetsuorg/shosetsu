@@ -55,6 +55,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import my.nanihadesuka.compose.LazyColumnScrollbar
 import org.acra.ACRA
 import javax.security.auth.DestroyFailedException
 
@@ -747,38 +748,51 @@ fun NovelInfoContent(
 	toggleBookmark: () -> Unit,
 	chapterContent: @Composable (ChapterUI) -> Unit
 ) {
-	SwipeRefresh(state = SwipeRefreshState(isRefreshing), onRefresh = onRefresh) {
-		val state = rememberLazyListState(itemAt)
+	Box(
+		modifier = Modifier.fillMaxSize()
+	) {
+		SwipeRefresh(state = SwipeRefreshState(isRefreshing), onRefresh = onRefresh) {
+			val state = rememberLazyListState(itemAt)
 
-		LaunchedEffect(itemAt) {
-			launch {
-				state.scrollToItem(itemAt)
+			LaunchedEffect(itemAt) {
+				launch {
+					state.scrollToItem(itemAt)
+				}
+			}
+
+			LazyColumnScrollbar(
+				state,
+				thumbColor = MaterialTheme.colors.primary,
+				thumbSelectedColor = MaterialTheme.colors.background
+			) {
+				LazyColumn(
+					modifier = Modifier.fillMaxSize(),
+					state = state
+				) {
+					if (novelInfo != null)
+						item {
+							NovelInfoHeaderContent(
+								novelInfo = novelInfo,
+								openWebview = openWebView,
+								toggleBookmark = toggleBookmark,
+								openChapterJump = {
+								}
+							)
+						}
+
+					if (chapters != null)
+						NovelInfoChaptersContent(
+							this,
+							chapters,
+							chapterContent
+						)
+				}
 			}
 		}
 
-		LazyColumn(
-			modifier = Modifier.fillMaxSize(),
-			state = state
-		) {
-			if (novelInfo != null)
-				item {
-					NovelInfoHeaderContent(
-						novelInfo = novelInfo,
-						openWebview = openWebView,
-						toggleBookmark = toggleBookmark,
-						openChapterJump = {
-						}
-					)
-				}
 
-			if (chapters != null)
-				NovelInfoChaptersContent(
-					this,
-					chapters,
-					chapterContent
-				)
-		}
 	}
+
 }
 
 @Preview
