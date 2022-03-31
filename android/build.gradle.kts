@@ -176,7 +176,7 @@ dependencies {
 
 	implementation("androidx.room:room-ktx:2.4.2")
 	implementation("androidx.collection:collection-ktx:1.2.0")
-	implementation("androidx.core:core-splashscreen:1.0.0-beta01")
+	implementation("androidx.core:core-splashscreen:1.0.0-beta02")
 
 	// - Life Cycle
 	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
@@ -202,7 +202,7 @@ dependencies {
 
 
 	// Image loading
-	implementation("io.coil-kt:coil-compose:2.0.0-rc01")
+	implementation("io.coil-kt:coil-compose:2.0.0-rc02")
 
 	//TODO GITHUB sign in to save backup data to cloud
 	//implementation "com.github.kohsuke:github-api:github-api-1.95"
@@ -211,7 +211,7 @@ dependencies {
 	//implementation("us.feras.mdv:markdownview:1.1.0")
 
 	// Time control
-	implementation("joda-time:joda-time:2.10.13")
+	implementation("joda-time:joda-time:2.10.14")
 
 	// Cloud flare calculator
 	//implementation("com.zhkrb.cloudflare-scrape-android:scrape-webview:0.0.3")
@@ -367,7 +367,7 @@ dependencies {
 	//androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.2")
 
 	// MDC Adapter
-	implementation("com.google.android.material:compose-theme-adapter:1.1.5")
+	implementation("com.google.android.material:compose-theme-adapter:1.1.6")
 
 	val androidxActivity = "1.4.0"
 	fun androidxActivity(module: String, version: String = androidxActivity) =
@@ -376,7 +376,7 @@ dependencies {
 	implementation(androidxActivity("activity-ktx"))
 	implementation(androidxActivity("activity-compose"))
 
-	implementation("com.chargemap.compose:numberpicker:0.0.11")
+	implementation("com.chargemap.compose:numberpicker:0.0.12")
 
 	// QR Code
 	implementation("io.github.g00fy2.quickie:quickie-bundled:1.4.0")
