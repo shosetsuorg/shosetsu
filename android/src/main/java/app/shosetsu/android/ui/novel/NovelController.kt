@@ -908,7 +908,7 @@ fun PreviewHeaderContent() {
 		description = "laaaaaaaaaaaaaaaaaaaaaaaaaa\nlaaaaaaaaaaaaaaaaaaa\nklaaaaaaaaaaaaa",
 		loaded = true,
 		language = "eng",
-		genres = listOf("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"),
+		genres = listOf("A", "B", "C"),
 		authors = listOf("A", "B", "C"),
 		artists = listOf("A", "B", "C"),
 		tags = listOf("A", "B", "C"),
@@ -1047,7 +1047,7 @@ fun NovelInfoHeaderContent(
 
 				LazyRow(
 					modifier = Modifier.fillMaxWidth(),
-					horizontalArrangement = Arrangement.SpaceEvenly,
+					horizontalArrangement = Arrangement.Center,
 					contentPadding = PaddingValues(start = 8.dp, end = 8.dp)
 				) {
 					items(novelInfo.genres) {
