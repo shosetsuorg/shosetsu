@@ -750,10 +750,15 @@ fun NovelInfoContent(
 	openFilter: () -> Unit,
 	chapterContent: @Composable (ChapterUI) -> Unit
 ) {
-	Box(
+	Column(
 		modifier = Modifier.fillMaxSize()
 	) {
-		SwipeRefresh(state = SwipeRefreshState(isRefreshing), onRefresh = onRefresh) {
+		if (isRefreshing)
+			LinearProgressIndicator(
+				modifier = Modifier.fillMaxWidth()
+			)
+
+		SwipeRefresh(state = SwipeRefreshState(false), onRefresh = onRefresh) {
 			val state = rememberLazyListState(itemAt)
 
 			LaunchedEffect(itemAt) {
@@ -782,6 +787,13 @@ fun NovelInfoContent(
 								openFilter = openFilter
 							)
 						}
+					else {
+						item {
+							LinearProgressIndicator(
+								modifier = Modifier.fillMaxWidth()
+							)
+						}
+					}
 
 					if (chapters != null)
 						NovelInfoChaptersContent(

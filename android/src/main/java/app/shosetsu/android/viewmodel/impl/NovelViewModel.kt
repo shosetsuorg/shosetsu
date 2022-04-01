@@ -88,16 +88,13 @@ class NovelViewModel(
 
 	private val selectedChapters = MutableStateFlow<Map<Int, Boolean>>(mapOf())
 
-	suspend fun copySelected(): HashMap<Int, Boolean> =
+	private suspend fun copySelected(): HashMap<Int, Boolean> =
 		selectedChapters.first().copy()
 
 	private val chaptersFlow: Flow<List<ChapterUI>> by lazy {
 		novelIDLive.transformLatest { id: Int ->
 			emitAll(
 				getChapterUIsUseCase(id)
-					.transform {
-						emit(it)
-					}
 					.combineBookmarked()
 					.combineDownloaded()
 					.combineStatus()
@@ -183,7 +180,7 @@ class NovelViewModel(
 
 	private val novelFlow: Flow<NovelUI?> by lazy {
 		novelIDLive.transformLatest {
-			_isRefreshing.emit(true)
+			emit(null)
 			emitAll(loadNovelUIUseCase(it))
 		}
 	}
@@ -321,6 +318,7 @@ class NovelViewModel(
 
 	override fun destroy() {
 		novelIDLive.tryEmit(-1) // Reset view to nothing
+		_isRefreshing.tryEmit(false)
 	}
 
 	override fun downloadChapter(vararg chapterUI: ChapterUI, startManager: Boolean) {
@@ -389,10 +387,15 @@ class NovelViewModel(
 
 	override fun refresh(): Flow<Unit> =
 		flow {
-			loadRemoteNovel(novelIDLive.value, true)?.let {
-				startDownloadWorkerAfterUpdateUseCase(it.updatedChapters)
+			_isRefreshing.emit(true)
+			try {
+				loadRemoteNovel(novelIDLive.value, true)?.let {
+					startDownloadWorkerAfterUpdateUseCase(it.updatedChapters)
+				}
+			} finally {
+				emit(Unit)
+				_isRefreshing.emit(false)
 			}
-			emit(Unit)
 		}.onIO()
 
 	override fun setNovelID(novelID: Int) {
