@@ -32,6 +32,7 @@ import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
+import app.shosetsu.android.view.compose.LazyColumnScrollbar
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.FABController
 import app.shosetsu.android.view.openQRCodeShareDialog
@@ -54,7 +55,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import my.nanihadesuka.compose.LazyColumnScrollbar
 import org.acra.ACRA
 import javax.security.auth.DestroyFailedException
 
