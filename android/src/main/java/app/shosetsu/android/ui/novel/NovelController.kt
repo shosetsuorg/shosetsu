@@ -11,6 +11,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,9 +24,11 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.core.os.bundleOf
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
@@ -750,6 +753,8 @@ fun NovelInfoContent(
 	openFilter: () -> Unit,
 	chapterContent: @Composable (ChapterUI) -> Unit
 ) {
+	var isChapterJumpShowing by remember { mutableStateOf(false) }
+
 	Column(
 		modifier = Modifier.fillMaxSize()
 	) {
@@ -783,6 +788,7 @@ fun NovelInfoContent(
 								openWebview = openWebView,
 								toggleBookmark = toggleBookmark,
 								openChapterJump = {
+									isChapterJumpShowing = true
 								},
 								openFilter = openFilter
 							)
@@ -801,6 +807,112 @@ fun NovelInfoContent(
 							chapters,
 							chapterContent
 						)
+				}
+			}
+		}
+	}
+
+	if (isChapterJumpShowing) {
+		NovelInfoJumpDialog(
+			onDismissRequest = {
+				isChapterJumpShowing = false
+			},
+			onFinish = { _, _ ->
+			}
+		)
+	}
+}
+
+@Preview
+@Composable
+fun PreviewNovelInfoJumpDialog() {
+	MdcTheme {
+		NovelInfoJumpDialog(
+			{
+
+			}
+		) { _, _ ->
+
+		}
+	}
+}
+
+@Composable
+fun NovelInfoJumpDialog(
+	onDismissRequest: () -> Unit,
+	onFinish: (String, Boolean) -> Unit
+) {
+	var text by remember { mutableStateOf("") }
+	var isChecked by remember { mutableStateOf(false) }
+	LaunchedEffect(isChecked) {
+		launch {
+			text = ""
+		}
+	}
+
+	Dialog(
+		onDismissRequest = onDismissRequest,
+	) {
+		Card {
+			Column(
+				modifier = Modifier.padding(16.dp)
+			) {
+				Text(
+					stringResource(R.string.jump_to_chapter),
+					style = MaterialTheme.typography.h6,
+					modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+				)
+
+				TextField(
+					text,
+					onValueChange = {
+						text = it
+					},
+					keyboardOptions = KeyboardOptions.Default.copy(
+						keyboardType = if (isChecked) {
+							KeyboardType.Text
+						} else {
+							KeyboardType.Number
+						}
+					),
+					modifier = Modifier.fillMaxWidth(),
+					label = {
+						if (isChecked) {
+							Text(stringResource(R.string.controller_novel_jump_dialog_hint_chapter_title))
+						} else {
+							Text(stringResource(R.string.controller_novel_jump_dialog_hint_chapter_number))
+						}
+					}
+				)
+
+				Row(
+					modifier = Modifier.fillMaxWidth(),
+					verticalAlignment = Alignment.CenterVertically,
+					horizontalArrangement = Arrangement.SpaceBetween
+				) {
+					Text(stringResource(R.string.controller_novel_jum_dialog_by_title))
+
+					Checkbox(isChecked, onCheckedChange = { isChecked = it })
+				}
+
+				Row(
+					horizontalArrangement = Arrangement.End,
+					verticalAlignment = Alignment.CenterVertically,
+					modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+				) {
+					TextButton(
+						onClick = onDismissRequest
+					) {
+						Text(stringResource(android.R.string.cancel))
+					}
+					TextButton(
+						onClick = {
+							onFinish(text, isChecked)
+							onDismissRequest()
+						}
+					) {
+						Text(stringResource(R.string.jump_to_chapter_short))
+					}
 				}
 			}
 		}
