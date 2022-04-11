@@ -679,7 +679,7 @@ class NovelViewModel(
 		flow {
 			val chapters = chaptersFlow.first()
 			chapters.indexOfFirst(predicate).takeIf { it != -1 }?.let {
-				itemIndex.emit(it + 1) // +1 to account for header
+				itemIndex.emit(it)
 				emit(true)
 			} ?: emit(false)
 		}
