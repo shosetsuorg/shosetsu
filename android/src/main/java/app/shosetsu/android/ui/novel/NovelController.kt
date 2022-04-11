@@ -8,6 +8,7 @@ import android.widget.NumberPicker
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
@@ -26,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.core.os.bundleOf
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
@@ -961,6 +963,26 @@ fun PreviewHeaderContent() {
 	}
 }
 
+@Composable
+fun NovelInfoCoverContent(
+	imageURL: String,
+	modifier: Modifier = Modifier,
+	onClick: () -> Unit,
+) {
+	AsyncImage(
+		ImageRequest.Builder(LocalContext.current)
+			.data(imageURL)
+			.placeholder(R.drawable.animated_refresh)
+			.error(R.drawable.broken_image)
+			.build(),
+		stringResource(R.string.controller_novel_info_image),
+		modifier = modifier
+			.aspectRatio(.75f)
+			.padding(top = 8.dp)
+			.clickable(onClick = onClick)
+	)
+}
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun NovelInfoHeaderContent(
@@ -970,6 +992,17 @@ fun NovelInfoHeaderContent(
 	openFilter: () -> Unit,
 	openChapterJump: () -> Unit
 ) {
+	var isCoverClicked: Boolean by remember { mutableStateOf(false) }
+	if (isCoverClicked)
+		Dialog(onDismissRequest = { isCoverClicked = false }) {
+			NovelInfoCoverContent(
+				novelInfo.imageURL,
+				modifier = Modifier.fillMaxWidth()
+			) {
+				isCoverClicked = false
+			}
+		}
+
 	Column(
 		modifier = Modifier.fillMaxWidth(),
 	) {
@@ -986,7 +1019,7 @@ fun NovelInfoHeaderContent(
 				modifier = Modifier
 					.matchParentSize()
 					.alpha(.10f),
-				contentScale = ContentScale.Crop
+				contentScale = ContentScale.Crop,
 			)
 
 			Column(
@@ -995,18 +1028,12 @@ fun NovelInfoHeaderContent(
 				Row(
 					modifier = Modifier.fillMaxWidth(),
 				) {
-					AsyncImage(
-						ImageRequest.Builder(LocalContext.current)
-							.data(novelInfo.imageURL)
-							.placeholder(R.drawable.animated_refresh)
-							.error(R.drawable.broken_image)
-							.build(),
-						stringResource(R.string.controller_novel_info_image),
-						modifier = Modifier
-							.fillMaxWidth(.35f)
-							.aspectRatio(.75f)
-							.padding(top = 8.dp)
-					)
+					NovelInfoCoverContent(
+						novelInfo.imageURL,
+						modifier = Modifier.fillMaxWidth(.35f)
+					) {
+						isCoverClicked = true
+					}
 					Column {
 						Row(
 							modifier = Modifier.padding(bottom = 8.dp)
