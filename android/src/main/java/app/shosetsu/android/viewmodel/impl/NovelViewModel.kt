@@ -91,6 +91,10 @@ class NovelViewModel(
 	private suspend fun copySelected(): HashMap<Int, Boolean> =
 		selectedChapters.first().copy()
 
+	private suspend fun clearSelected() {
+		selectedChapters.emit(mapOf())
+	}
+
 	private val chaptersFlow: Flow<List<ChapterUI>> by lazy {
 		novelIDLive.transformLatest { id: Int ->
 			emitAll(
@@ -558,6 +562,7 @@ class NovelViewModel(
 			list.filter { it.isSelected }.forEach {
 				updateChapterUseCase(it.copy(bookmarked = true))
 			}
+			clearSelected()
 		}
 	}
 
@@ -567,6 +572,7 @@ class NovelViewModel(
 			list.filter { it.isSelected && it.isSaved }.forEach {
 				deleteChapterPassageUseCase(it)
 			}
+			clearSelected()
 		}
 	}
 
@@ -576,6 +582,7 @@ class NovelViewModel(
 			list.filter { it.isSelected && !it.isSaved }.forEach {
 				downloadChapterPassageUseCase(it)
 			}
+			clearSelected()
 		}
 	}
 
@@ -610,6 +617,7 @@ class NovelViewModel(
 					logE("Invalid input")
 				}
 			}
+			clearSelected()
 		}
 	}
 
@@ -619,6 +627,8 @@ class NovelViewModel(
 			list.filter { it.isSelected }.forEach {
 				updateChapterUseCase(it.copy(bookmarked = false))
 			}
+			selectAll()
+			clearSelected()
 		}
 	}
 
@@ -672,6 +682,7 @@ class NovelViewModel(
 			list.filter { it.isSelected && it.isSaved }.forEach {
 				trueDeleteChapter(it)
 			}
+			clearSelected()
 		}
 	}
 

@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -390,6 +391,8 @@ class NovelController(bundle: Bundle) :
 					},
 					openWebView = ::openWebView,
 					toggleBookmark = viewModel::toggleNovelBookmark,
+					openFilter = ::openFilterMenu,
+					openChapterJump = ::openChapterJumpDialog,
 					chapterContent = {
 						NovelChapterContent(
 							chapter = it,
@@ -403,8 +406,16 @@ class NovelController(bundle: Bundle) :
 							selectionMode = hasSelected
 						)
 					},
-					openFilter = ::openFilterMenu,
-					openChapterJump = ::openChapterJumpDialog
+					downloadSelected = viewModel::downloadSelected,
+					deleteSelected = viewModel::deleteSelected,
+					markSelectedAsRead = {
+						viewModel.markSelectedAs(ReadingStatus.READ)
+					},
+					markSelectedAsUnread = {
+						viewModel.markSelectedAs(ReadingStatus.UNREAD)
+					},
+					bookmarkSelected = viewModel::bookmarkSelected,
+					unbookmarkSelected = viewModel::removeBookmarkFromSelected
 				)
 			}
 		}
@@ -422,71 +433,6 @@ class NovelController(bundle: Bundle) :
 			}
 		}
 	}
-
-/* TODO Re-implement
-private fun calculateBottomSelectionMenuChanges() {
-	val chaptersSelected =
-		fastAdapter.getSelectExtension().selectedItems.filterIsInstance<ChapterUI>()
-
-	// If any chapters are bookmarked, show the remove bookmark logo
-	binding.bottomMenu.findItem(id.remove_bookmark)?.isEnabled =
-		chaptersSelected.any { it.bookmarked }
-
-	// If any chapters are not bookmarked, show bookmark
-	binding.bottomMenu.findItem(id.bookmark)?.isEnabled =
-		chaptersSelected.any { !it.bookmarked }
-
-	// If any are downloaded, show delete
-	binding.bottomMenu.findItem(id.chapter_delete_selected)?.isEnabled =
-		chaptersSelected.any { it.isSaved }
-
-	// If any are not downloaded, show download option
-	binding.bottomMenu.findItem(id.chapter_download_selected)?.isEnabled =
-		chaptersSelected.any { !it.isSaved }
-
-	// If any are unread, show read option
-	binding.bottomMenu.findItem(id.mark_read)?.isEnabled =
-		chaptersSelected.any { it.readingStatus != ReadingStatus.READ }
-
-	// If any are read, show unread option
-	binding.bottomMenu.findItem(id.mark_unread)?.isEnabled =
-		chaptersSelected.any { it.readingStatus != ReadingStatus.UNREAD }
-}
-*/
-
-/* TODO re-implement
-override fun FastAdapter<AbstractItem<*>>.setupFastAdapter() {
-	selectExtension {
-		isSelectable = true
-		multiSelect = true
-		selectOnLongClick = true
-		setSelectionListener { item, isSelected ->
-			// Recreates the item view
-			this@setupFastAdapter.notifyItemChanged(this@setupFastAdapter.getPosition(item))
-
-			// Updates action mode
-			calculateBottomSelectionMenuChanges()
-
-			// Swaps the options menu on top
-			val size = selectedItems.size
-
-			// Incase the size is empty and the item is selected, add the item and try again
-			if (size == 0 && isSelected) {
-				logE("Migrating selection bug")
-				(fastAdapter.getItemById(item.identifier)?.first as? ChapterUI)?.isSelected =
-					true
-				this.select(item, true)
-				return@setSelectionListener
-			}
-
-			if (size == 1) startSelectionAction() else if (size == 0) finishSelectionAction()
-		}
-	}
-
-
-}
-
- */
 
 	private fun openWebView() {
 		viewModel.getNovelURL().observe(
@@ -723,11 +669,13 @@ fun PreviewNovelInfoContent() {
 		NovelInfoContent(
 			novelInfo = info,
 			chapters = chapters,
+			itemAt = 0,
 			isRefreshing = false,
 			onRefresh = {},
 			openWebView = {},
 			toggleBookmark = {},
-			itemAt = 0,
+			openFilter = {},
+			openChapterJump = {},
 			chapterContent = {
 				NovelChapterContent(
 					chapter = it,
@@ -735,8 +683,12 @@ fun PreviewNovelInfoContent() {
 					selectionMode = false
 				) {}
 			},
-			openFilter = {},
-			openChapterJump = {}
+			{},
+			{},
+			{},
+			{},
+			{},
+			{},
 		)
 	}
 }
@@ -753,63 +705,163 @@ fun NovelInfoContent(
 	toggleBookmark: () -> Unit,
 	openFilter: () -> Unit,
 	openChapterJump: () -> Unit,
-	chapterContent: @Composable (ChapterUI) -> Unit
+	chapterContent: @Composable (ChapterUI) -> Unit,
+	downloadSelected: () -> Unit,
+	deleteSelected: () -> Unit,
+	markSelectedAsRead: () -> Unit,
+	markSelectedAsUnread: () -> Unit,
+	bookmarkSelected: () -> Unit,
+	unbookmarkSelected: () -> Unit
 ) {
 
-	Column(
+	Box(
 		modifier = Modifier.fillMaxSize()
 	) {
-		if (isRefreshing)
-			LinearProgressIndicator(
-				modifier = Modifier.fillMaxWidth()
-			)
+		Column(
+			modifier = Modifier.fillMaxSize()
+		) {
+			if (isRefreshing)
+				LinearProgressIndicator(
+					modifier = Modifier.fillMaxWidth()
+				)
 
-		SwipeRefresh(state = SwipeRefreshState(false), onRefresh = onRefresh) {
-			val state = rememberLazyListState(itemAt)
+			SwipeRefresh(state = SwipeRefreshState(false), onRefresh = onRefresh) {
+				val state = rememberLazyListState(itemAt)
 
-			LaunchedEffect(itemAt) {
-				launch {
-					state.scrollToItem(itemAt)
+				LaunchedEffect(itemAt) {
+					launch {
+						state.scrollToItem(itemAt)
+					}
+				}
+
+				LazyColumnScrollbar(
+					state,
+					thumbColor = MaterialTheme.colors.primary,
+					thumbSelectedColor = MaterialTheme.colors.background
+				) {
+					LazyColumn(
+						modifier = Modifier.fillMaxSize(),
+						state = state
+					) {
+						if (novelInfo != null)
+							item {
+								NovelInfoHeaderContent(
+									novelInfo = novelInfo,
+									openWebview = openWebView,
+									toggleBookmark = toggleBookmark,
+									openChapterJump = openChapterJump,
+									openFilter = openFilter
+								)
+							}
+						else {
+							item {
+								LinearProgressIndicator(
+									modifier = Modifier.fillMaxWidth()
+								)
+							}
+						}
+
+						if (chapters != null)
+							NovelInfoChaptersContent(
+								this,
+								chapters,
+								chapterContent
+							)
+					}
 				}
 			}
+		}
 
-			LazyColumnScrollbar(
-				state,
-				thumbColor = MaterialTheme.colors.primary,
-				thumbSelectedColor = MaterialTheme.colors.background
+		if (chapters != null && chapters.any { it.isSelected }) {
+			// If any chapters are bookmarked, show the remove bookmark logo
+			val showRemoveBookmark =
+				chapters.any { it.bookmarked }
+
+			// If any chapters are not bookmarked, show bookmark
+			val showBookmark =
+				chapters.any { !it.bookmarked }
+
+			// If any are downloaded, show delete
+			val showDelete =
+				chapters.any { it.isSaved }
+
+			// If any are not downloaded, show download option
+			val showDownload =
+				chapters.any { !it.isSaved }
+
+			// If any are unread, show read option
+			val showMarkAsRead =
+				chapters.any { it.readingStatus != ReadingStatus.READ }
+
+			// If any are read, show unread option
+			val showMarkAsUnread =
+				chapters.any { it.readingStatus != ReadingStatus.UNREAD }
+
+			Card(
+				modifier = Modifier
+					.align(BiasAlignment(0f, 0.8f))
 			) {
-				LazyColumn(
-					modifier = Modifier.fillMaxSize(),
-					state = state
-				) {
-					if (novelInfo != null)
-						item {
-							NovelInfoHeaderContent(
-								novelInfo = novelInfo,
-								openWebview = openWebView,
-								toggleBookmark = toggleBookmark,
-								openChapterJump = openChapterJump,
-								openFilter = openFilter
-							)
-						}
-					else {
-						item {
-							LinearProgressIndicator(
-								modifier = Modifier.fillMaxWidth()
-							)
-						}
-					}
-
-					if (chapters != null)
-						NovelInfoChaptersContent(
-							this,
-							chapters,
-							chapterContent
+				Row {
+					IconButton(
+						onClick = downloadSelected,
+						enabled = showDownload
+					) {
+						Icon(
+							painterResource(R.drawable.download),
+							stringResource(R.string.controller_novel_selected_download)
 						)
+					}
+					IconButton(
+						onClick = deleteSelected,
+						enabled = showDelete
+					) {
+						Icon(
+							painterResource(R.drawable.trash),
+							stringResource(R.string.controller_novel_selected_delete)
+						)
+					}
+					IconButton(
+						onClick = markSelectedAsRead,
+						enabled = showMarkAsRead
+					) {
+						Icon(
+							painterResource(R.drawable.read_mark),
+							stringResource(R.string.controller_novel_selected_read)
+						)
+					}
+					IconButton(
+						onClick = markSelectedAsUnread,
+						enabled = showMarkAsUnread
+					) {
+						Icon(
+							painterResource(R.drawable.unread_mark),
+							stringResource(R.string.controller_novel_selected_unread)
+						)
+					}
+					IconButton(
+						onClick = bookmarkSelected,
+						enabled = showBookmark
+					) {
+						Icon(
+							painterResource(R.drawable.ic_outline_bookmark_add_24),
+							stringResource(R.string.controller_novel_selected_bookmark)
+						)
+					}
+					IconButton(
+						onClick = unbookmarkSelected,
+						enabled = showRemoveBookmark
+					) {
+						Icon(
+							painterResource(R.drawable.ic_baseline_bookmark_remove_24),
+							stringResource(R.string.controller_novel_selected_unbookmark)
+						)
+					}
 				}
 			}
 		}
 	}
+
+
 }
 
 @Preview

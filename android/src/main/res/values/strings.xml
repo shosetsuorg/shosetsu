@@ -675,6 +675,12 @@
     <string name="worker_extension_install_error_io">IOException</string>
     <string name="worker_extension_install_error_get_sql">SQL Error when getting extension</string>
     <string name="less">Less</string>
+    <string name="controller_novel_selected_download">Download selected chapters</string>
+    <string name="controller_novel_selected_delete">Delete selected chapters from storage</string>
+    <string name="controller_novel_selected_read">Mark selected chapters as read</string>
+    <string name="controller_novel_selected_unread">Mark selected chapters as unread</string>
+    <string name="controller_novel_selected_bookmark">Bookmark selected chapters</string>
+    <string name="controller_novel_selected_unbookmark">Unbookmark selected chapters</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>
