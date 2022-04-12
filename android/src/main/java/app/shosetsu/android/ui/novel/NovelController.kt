@@ -119,11 +119,10 @@ class NovelController(bundle: Bundle) :
 		super.onAttach(view)
 	}
 
-	private fun startSelectionAction(): Boolean {
-		if (actionMode != null) return false
+	private fun startSelectionAction() {
+		if (actionMode != null) return
 		hideFAB(resume!!)
 		actionMode = activity?.startActionMode(SelectionActionMode())
-		return true
 	}
 
 	private fun finishSelectionAction() {
@@ -433,6 +432,35 @@ class NovelController(bundle: Bundle) :
 				finishSelectionAction()
 			}
 		}
+
+		viewModel.novelException.collectLatestLA(this, catch = {}) {
+			if (it != null)
+				makeSnackBar(
+					getString(
+						R.string.controller_novel_error_load,
+						it.message ?: "Unknown"
+					)
+				)?.setAction(R.string.report) { _ ->
+					ACRA.errorReporter.handleSilentException(it)
+				}?.show()
+		}
+
+		viewModel.chaptersException.collectLatestLA(this, catch = {}) {
+			if (it != null)
+				makeSnackBar(
+					getString(
+						R.string.controller_novel_error_load_chapters,
+						it.message ?: "Unknown"
+					)
+				)?.setAction(R.string.report) { _ ->
+					ACRA.errorReporter.handleSilentException(it)
+				}?.show()
+		}
+
+		viewModel.otherException.collectLatestLA(this, catch = {}) {
+			// TODO Figure out use of other exception
+		}
+
 	}
 
 	private fun openWebView() {
@@ -468,38 +496,6 @@ class NovelController(bundle: Bundle) :
 		}
 		actionMode?.finish()
 		super.onDestroy()
-	}
-
-	private fun setObserver() {
-		/* TODO handle novel load exception
-		makeSnackBar(
-					getString(
-						R.string.controller_novel_error_load,
-						it.message ?: "Unknown"
-					)
-				)?.setAction(R.string.report) { _ ->
-					ACRA.errorReporter.handleSilentException(it)
-				}?.show()
-		 */
-
-		/* TODO handle chapter load exception
-		 * makeSnackBar(
-				getString(
-					R.string.controller_novel_error_load_chapters,
-					it.message ?: "Unknown"
-				)
-			)?.setAction(R.string.report) { _ ->
-				ACRA.errorReporter.handleSilentException(it)
-			}?.show()
-		 */
-	}
-
-	private fun bookmarkSelected() {
-		viewModel.bookmarkSelected()
-	}
-
-	private fun removeSelectedBookmark() {
-		viewModel.removeBookmarkFromSelected()
 	}
 
 	private fun selectAll() {

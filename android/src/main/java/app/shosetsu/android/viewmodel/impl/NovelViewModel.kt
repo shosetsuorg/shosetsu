@@ -34,6 +34,7 @@ import io.github.g0dkar.qrcode.QRCode
 import io.github.g0dkar.qrcode.render.QRCodeCanvasFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.runBlocking
 
 /*
  * This file is part of shosetsu.
@@ -82,6 +83,12 @@ class NovelViewModel(
 	private val getRepositoryUseCase: GetRepositoryUseCase
 ) : ANovelViewModel() {
 
+	override val chaptersException: MutableStateFlow<Throwable?> = MutableStateFlow(null)
+
+	override val novelException: MutableStateFlow<Throwable?> = MutableStateFlow(null)
+
+	override val otherException: MutableStateFlow<Throwable?> = MutableStateFlow(null)
+
 	override val chaptersLive: Flow<List<ChapterUI>> by lazy {
 		chaptersFlow.onIO()
 	}
@@ -106,6 +113,8 @@ class NovelViewModel(
 					.combineReverse()
 					.combineSelection()
 			)
+		}.catch {
+			chaptersException.emit(it)
 		}
 	}
 
@@ -182,6 +191,8 @@ class NovelViewModel(
 		novelIDLive.transformLatest {
 			emit(null)
 			emitAll(loadNovelUIUseCase(it))
+		}.catch {
+			novelException.emit(it)
 		}
 	}
 
@@ -310,6 +321,13 @@ class NovelViewModel(
 	override fun destroy() {
 		novelIDLive.tryEmit(-1) // Reset view to nothing
 		_isRefreshing.tryEmit(false)
+
+		novelException.tryEmit(null)
+		chaptersException.tryEmit(null)
+		otherException.tryEmit(null)
+		runBlocking {
+			clearSelected()
+		}
 	}
 
 	private fun downloadChapter(vararg chapterUI: ChapterUI, startManager: Boolean = false) {

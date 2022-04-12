@@ -39,9 +39,14 @@ abstract class ANovelViewModel
 
 	abstract val hasSelected: Flow<Boolean>
 	abstract val itemIndex: Flow<Int>
-	abstract val novelLive: Flow<NovelUI?>
 	abstract val isRefreshing: Flow<Boolean>
+
+	abstract val novelLive: Flow<NovelUI?>
 	abstract val chaptersLive: Flow<List<ChapterUI>>
+
+	abstract val otherException: Flow<Throwable?>
+	abstract val novelException: Flow<Throwable?>
+	abstract val chaptersException: Flow<Throwable?>
 
 	abstract val novelSettingFlow: Flow<NovelSettingUI?>
 
