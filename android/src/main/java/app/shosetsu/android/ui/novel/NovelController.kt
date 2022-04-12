@@ -55,6 +55,7 @@ import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -97,8 +98,10 @@ class NovelController(bundle: Bundle) :
 	*/
 
 	internal val viewModel: ANovelViewModel by viewModel()
+
 	override val viewTitle: String
 		get() = ""
+
 	private var resume: FloatingActionButton? = null
 
 	private var actionMode: ActionMode? = null
@@ -354,6 +357,8 @@ class NovelController(bundle: Bundle) :
 		}
 	}
 
+	private var state = LazyListState(0)
+
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup,
@@ -382,6 +387,7 @@ class NovelController(bundle: Bundle) :
 					novelInfo,
 					chapters,
 					itemAt,
+					updateItemAt = viewModel::setItemAt,
 					isRefreshing,
 					onRefresh = {
 						if (viewModel.isOnline())
@@ -415,7 +421,8 @@ class NovelController(bundle: Bundle) :
 					},
 					bookmarkSelected = viewModel::bookmarkSelected,
 					unbookmarkSelected = viewModel::removeBookmarkFromSelected,
-					hasSelected = hasSelected
+					hasSelected = hasSelected,
+					state = state
 				)
 			}
 		}
@@ -495,6 +502,7 @@ class NovelController(bundle: Bundle) :
 			ACRA.errorReporter.handleException(e)
 		}
 		actionMode?.finish()
+		state = LazyListState(0)
 		super.onDestroy()
 	}
 
@@ -667,6 +675,7 @@ fun PreviewNovelInfoContent() {
 			novelInfo = info,
 			chapters = chapters,
 			itemAt = 0,
+			{},
 			isRefreshing = false,
 			onRefresh = {},
 			openWebView = {},
@@ -687,6 +696,7 @@ fun PreviewNovelInfoContent() {
 			{},
 			{},
 			hasSelected = false,
+			state = rememberLazyListState(0)
 		)
 	}
 }
@@ -697,6 +707,7 @@ fun NovelInfoContent(
 	novelInfo: NovelUI?,
 	chapters: List<ChapterUI>?,
 	itemAt: Int,
+	updateItemAt: (Int) -> Unit,
 	isRefreshing: Boolean,
 	onRefresh: () -> Unit,
 	openWebView: () -> Unit,
@@ -710,7 +721,8 @@ fun NovelInfoContent(
 	markSelectedAsUnread: () -> Unit,
 	bookmarkSelected: () -> Unit,
 	unbookmarkSelected: () -> Unit,
-	hasSelected: Boolean
+	hasSelected: Boolean,
+	state: LazyListState
 ) {
 	Box(
 		modifier = Modifier.fillMaxSize()
@@ -724,14 +736,6 @@ fun NovelInfoContent(
 				)
 
 			SwipeRefresh(state = SwipeRefreshState(false), onRefresh = onRefresh) {
-				val state = rememberLazyListState(itemAt)
-
-				LaunchedEffect(itemAt) {
-					launch {
-						state.scrollToItem(itemAt)
-					}
-				}
-
 				LazyColumnScrollbar(
 					state,
 					thumbColor = MaterialTheme.colors.primary,
@@ -739,7 +743,8 @@ fun NovelInfoContent(
 				) {
 					LazyColumn(
 						modifier = Modifier.fillMaxSize(),
-						state = state
+						state = state,
+						contentPadding = PaddingValues(bottom = 256.dp)
 					) {
 						if (novelInfo != null)
 							item {
@@ -765,6 +770,26 @@ fun NovelInfoContent(
 								chapters,
 								chapterContent
 							)
+					}
+				}
+
+				// Do not save progress when there is nothing being displayed
+				if (novelInfo != null && chapters != null) {
+					LaunchedEffect(itemAt) {
+						launch {
+							if (!state.isScrollInProgress)
+								state.scrollToItem(itemAt)
+						}
+					}
+
+					LaunchedEffect(state) {
+						snapshotFlow { state.layoutInfo.visibleItemsInfo.firstOrNull()?.index }
+							.distinctUntilChanged()
+							.collect { item ->
+								if (item == null) return@collect
+								println("Updating item at: $item")
+								updateItemAt(item)
+							}
 					}
 				}
 			}

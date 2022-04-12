@@ -320,6 +320,7 @@ class NovelViewModel(
 
 	override fun destroy() {
 		novelIDLive.tryEmit(-1) // Reset view to nothing
+		itemIndex.tryEmit(0)
 		_isRefreshing.tryEmit(false)
 
 		novelException.tryEmit(null)
@@ -511,6 +512,9 @@ class NovelViewModel(
 		} else field
 
 	override val itemIndex: MutableStateFlow<Int> = MutableStateFlow(0)
+	override fun setItemAt(index: Int) {
+		itemIndex.tryEmit(index)
+	}
 
 	override val hasSelected: Flow<Boolean> by lazy {
 		chaptersFlow.mapLatest { chapters -> chapters.any { it.isSelected } }
