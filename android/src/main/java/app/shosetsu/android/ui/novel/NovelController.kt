@@ -415,7 +415,8 @@ class NovelController(bundle: Bundle) :
 						viewModel.markSelectedAs(ReadingStatus.UNREAD)
 					},
 					bookmarkSelected = viewModel::bookmarkSelected,
-					unbookmarkSelected = viewModel::removeBookmarkFromSelected
+					unbookmarkSelected = viewModel::removeBookmarkFromSelected,
+					hasSelected = hasSelected
 				)
 			}
 		}
@@ -689,6 +690,7 @@ fun PreviewNovelInfoContent() {
 			{},
 			{},
 			{},
+			hasSelected = false,
 		)
 	}
 }
@@ -711,9 +713,9 @@ fun NovelInfoContent(
 	markSelectedAsRead: () -> Unit,
 	markSelectedAsUnread: () -> Unit,
 	bookmarkSelected: () -> Unit,
-	unbookmarkSelected: () -> Unit
+	unbookmarkSelected: () -> Unit,
+	hasSelected: Boolean
 ) {
-
 	Box(
 		modifier = Modifier.fillMaxSize()
 	) {
@@ -772,7 +774,7 @@ fun NovelInfoContent(
 			}
 		}
 
-		if (chapters != null && chapters.any { it.isSelected }) {
+		if (chapters != null && hasSelected) {
 			// If any chapters are bookmarked, show the remove bookmark logo
 			val showRemoveBookmark =
 				chapters.any { it.bookmarked }
@@ -860,8 +862,6 @@ fun NovelInfoContent(
 			}
 		}
 	}
-
-
 }
 
 @Preview
