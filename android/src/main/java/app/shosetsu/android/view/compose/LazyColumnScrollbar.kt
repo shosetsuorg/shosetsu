@@ -128,29 +128,25 @@ fun LazyColumnScrollbar(
 				.align(if (rightSide) Alignment.TopEnd else Alignment.TopStart)
 				.alpha(alpha)
 				.fillMaxHeight()
-				.let {
-					if (isInAction)
-						it.draggable(
-							state = dragState,
-							orientation = Orientation.Vertical,
-							startDragImmediately = true,
-							onDragStarted = { offset ->
-								val newOffset = offset.y / constraints.maxHeight.toFloat()
-								val currentOffset = normalizedOffsetPosition()
+				.draggable(
+					state = dragState,
+					orientation = Orientation.Vertical,
+					startDragImmediately = true,
+					onDragStarted = { offset ->
+						val newOffset = offset.y / constraints.maxHeight.toFloat()
+						val currentOffset = normalizedOffsetPosition()
 
-								if (currentOffset < newOffset && newOffset < currentOffset + normalizedThumbSize())
-									dragOffset = currentOffset
-								else
-									setScrollOffset(newOffset)
+						if (currentOffset < newOffset && newOffset < currentOffset + normalizedThumbSize())
+							dragOffset = currentOffset
+						else
+							setScrollOffset(newOffset)
 
-								isSelected = true
-							},
-							onDragStopped = {
-								isSelected = false
-							}
-						)
-					else it
-				}
+						isSelected = true
+					},
+					onDragStopped = {
+						isSelected = false
+					}
+				)
 				.absoluteOffset(x = if (rightSide) displacement.dp else -displacement.dp)
 		) {
 
