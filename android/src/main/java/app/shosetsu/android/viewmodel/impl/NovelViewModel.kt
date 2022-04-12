@@ -109,10 +109,6 @@ class NovelViewModel(
 		}
 	}
 
-	override val chaptersSize: Flow<Int> by lazy {
-		chaptersFlow.map { it.size }.onIO()
-	}
-
 	override val novelSettingFlow: Flow<NovelSettingUI?> by lazy {
 		novelSettingsFlow.onIO()
 	}
@@ -278,15 +274,6 @@ class NovelViewModel(
 			}
 		}
 
-
-	override fun delete(vararg chapterUI: ChapterUI) {
-		launchIO {
-			chapterUI.filter { it.isSaved }.forEach {
-				deleteChapterPassageUseCase(it)
-			}
-		}
-	}
-
 	override fun deletePrevious() {
 		logI("Deleting previous chapters")
 		launchIO {
@@ -325,7 +312,7 @@ class NovelViewModel(
 		_isRefreshing.tryEmit(false)
 	}
 
-	override fun downloadChapter(vararg chapterUI: ChapterUI, startManager: Boolean) {
+	private fun downloadChapter(vararg chapterUI: ChapterUI, startManager: Boolean = false) {
 		launchIO {
 			downloadChapterPassageUseCase(*chapterUI)
 
@@ -336,17 +323,6 @@ class NovelViewModel(
 	}
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
-	override fun markAllChaptersAs(vararg chapterUI: ChapterUI, readingStatus: ReadingStatus) {
-		launchIO {
-			chapterUI.forEach {
-				updateChapterUseCase(
-					it.copy(
-						readingStatus = readingStatus
-					)
-				)
-			}
-		}
-	}
 
 	override fun openLastRead(): Flow<ChapterUI?> =
 		flow {
@@ -425,7 +401,7 @@ class NovelViewModel(
 		emit(novelFlow.first()?.bookmarked ?: false)
 	}.onIO()
 
-	override fun markChapterAsRead(chapterUI: ChapterUI) {
+	private fun markChapterAsRead(chapterUI: ChapterUI) {
 		launchIO {
 			updateChapterUseCase(
 				chapterUI.copy(
@@ -435,7 +411,7 @@ class NovelViewModel(
 		}
 	}
 
-	override fun markChapterAsReading(chapterUI: ChapterUI) {
+	private fun markChapterAsReading(chapterUI: ChapterUI) {
 		launchIO {
 			updateChapterUseCase(
 				chapterUI.copy(
@@ -445,21 +421,11 @@ class NovelViewModel(
 		}
 	}
 
-	override fun markChapterAsUnread(chapterUI: ChapterUI) {
+	private fun markChapterAsUnread(chapterUI: ChapterUI) {
 		launchIO {
 			updateChapterUseCase(
 				chapterUI.copy(
 					readingStatus = ReadingStatus.UNREAD
-				)
-			)
-		}
-	}
-
-	override fun toggleChapterBookmark(chapterUI: ChapterUI) {
-		launchIO {
-			updateChapterUseCase(
-				chapterUI.copy(
-					bookmarked = !chapterUI.bookmarked
 				)
 			)
 		}
@@ -516,30 +482,6 @@ class NovelViewModel(
 		logD("Launching update")
 		launchIO {
 			updateNovelSettingUseCase(novelSettingUI)
-		}
-	}
-
-	override fun trueDelete(list: List<ChapterUI>) {
-		launchIO {
-			list.forEach {
-				trueDeleteChapter(it)
-			}
-		}
-	}
-
-	override fun bookmarkChapters(vararg chapterUI: ChapterUI) {
-		launchIO {
-			chapterUI.forEach {
-				if (!it.bookmarked) updateChapterUseCase(it.copy(bookmarked = true))
-			}
-		}
-	}
-
-	override fun removeChapterBookmarks(vararg chapterUI: ChapterUI) {
-		launchIO {
-			chapterUI.forEach {
-				if (it.bookmarked) updateChapterUseCase(it.copy(bookmarked = false))
-			}
 		}
 	}
 

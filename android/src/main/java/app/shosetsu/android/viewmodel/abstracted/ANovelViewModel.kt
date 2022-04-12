@@ -43,8 +43,6 @@ abstract class ANovelViewModel
 	abstract val isRefreshing: Flow<Boolean>
 	abstract val chaptersLive: Flow<List<ChapterUI>>
 
-	abstract val chaptersSize: Flow<Int>
-
 	abstract val novelSettingFlow: Flow<NovelSettingUI?>
 
 	/** Set's the value to be loaded */
@@ -70,10 +68,6 @@ abstract class ANovelViewModel
 	 */
 	abstract fun getChapterURL(chapterUI: ChapterUI): Flow<String?>
 
-	/** Instruction to download a specific chapter */
-	abstract fun downloadChapter(vararg chapterUI: ChapterUI, startManager: Boolean = false)
-
-
 	/** Deletes the previous chapter */
 	abstract fun deletePrevious()
 
@@ -84,17 +78,6 @@ abstract class ANovelViewModel
 	 */
 	abstract fun openLastRead(): Flow<ChapterUI?>
 
-	/**
-	 * Marks all the provided chapters as whatever [readingStatus] is
-	 */
-	abstract fun markAllChaptersAs(vararg chapterUI: ChapterUI, readingStatus: ReadingStatus)
-
-	/**
-	 * Deletes a chapter
-	 */
-	abstract fun delete(vararg chapterUI: ChapterUI)
-
-
 	/** Refresh media */
 	abstract fun refresh(): Flow<Unit>
 
@@ -102,24 +85,6 @@ abstract class ANovelViewModel
 	 * Is the novel bookmarked?
 	 */
 	abstract fun isBookmarked(): Flow<Boolean>
-
-	/** Self explanatory */
-	abstract fun markChapterAsRead(chapterUI: ChapterUI)
-
-	/** Self explanatory */
-	abstract fun markChapterAsUnread(chapterUI: ChapterUI)
-
-	/** Self explanatory */
-	abstract fun markChapterAsReading(chapterUI: ChapterUI)
-
-	/** Self explanatory */
-	abstract fun toggleChapterBookmark(chapterUI: ChapterUI)
-
-	/** Removes the bookmarks of the chapters provided */
-	abstract fun removeChapterBookmarks(vararg chapterUI: ChapterUI)
-
-	/** Bookmarks the chapters provided */
-	abstract fun bookmarkChapters(vararg chapterUI: ChapterUI)
 
 	/** Download the next unread chapters */
 	abstract fun downloadNextChapter()
@@ -140,8 +105,6 @@ abstract class ANovelViewModel
 	abstract fun downloadAllChapters()
 
 	abstract fun updateNovelSetting(novelSettingUI: NovelSettingUI)
-
-	abstract fun trueDelete(list: List<ChapterUI>)
 
 	/**
 	 * Remember that the next time the novel controller is rendered,
