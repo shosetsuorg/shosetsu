@@ -1291,8 +1291,8 @@ fun ExpandedText(
 				text
 			} else {
 				text.let {
-					if (it.length > 100)
-						it.substring(0, 100) + "..."
+					if (it.length > 200)
+						it.substring(0, 200) + "..."
 					else it
 				}
 			}
