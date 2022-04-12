@@ -98,7 +98,13 @@ class NovelViewModel(
 	private suspend fun copySelected(): HashMap<Int, Boolean> =
 		selectedChapters.first().copy()
 
-	private suspend fun clearSelected() {
+	override fun clearSelection() {
+		launchIO {
+			clearSelectedSuspend()
+		}
+	}
+
+	private suspend fun clearSelectedSuspend() {
 		selectedChapters.emit(mapOf())
 	}
 
@@ -327,7 +333,7 @@ class NovelViewModel(
 		chaptersException.tryEmit(null)
 		otherException.tryEmit(null)
 		runBlocking {
-			clearSelected()
+			clearSelectedSuspend()
 		}
 	}
 
@@ -526,7 +532,7 @@ class NovelViewModel(
 			list.filter { it.isSelected }.forEach {
 				updateChapterUseCase(it.copy(bookmarked = true))
 			}
-			clearSelected()
+			clearSelectedSuspend()
 		}
 	}
 
@@ -536,7 +542,7 @@ class NovelViewModel(
 			list.filter { it.isSelected && it.isSaved }.forEach {
 				deleteChapterPassageUseCase(it)
 			}
-			clearSelected()
+			clearSelectedSuspend()
 		}
 	}
 
@@ -546,7 +552,7 @@ class NovelViewModel(
 			list.filter { it.isSelected && !it.isSaved }.forEach {
 				downloadChapterPassageUseCase(it)
 			}
-			clearSelected()
+			clearSelectedSuspend()
 		}
 	}
 
@@ -581,7 +587,7 @@ class NovelViewModel(
 					logE("Invalid input")
 				}
 			}
-			clearSelected()
+			clearSelectedSuspend()
 		}
 	}
 
@@ -592,7 +598,7 @@ class NovelViewModel(
 				updateChapterUseCase(it.copy(bookmarked = false))
 			}
 			selectAll()
-			clearSelected()
+			clearSelectedSuspend()
 		}
 	}
 
@@ -646,7 +652,7 @@ class NovelViewModel(
 			list.filter { it.isSelected && it.isSaved }.forEach {
 				trueDeleteChapter(it)
 			}
-			clearSelected()
+			clearSelectedSuspend()
 		}
 	}
 

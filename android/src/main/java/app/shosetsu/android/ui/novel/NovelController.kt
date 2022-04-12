@@ -615,11 +615,9 @@ binding.bottomMenu.show(mode, R.menu.toolbar_novel_chapters_selected_bottom) {
 			}
 
 		override fun onDestroyActionMode(mode: ActionMode) {
-			//binding.bottomMenu.hide() TODO
-			//binding.bottomMenu.clear()
 			actionMode = null
 			showFAB(resume!!)
-			//fastAdapter.getSelectExtension().deselect()
+			viewModel.clearSelection()
 		}
 	}
 }

@@ -38,6 +38,7 @@ abstract class ANovelViewModel
 	: ShosetsuViewModel(), IsOnlineCheckViewModel, Destroyable {
 
 	abstract val hasSelected: Flow<Boolean>
+	abstract fun clearSelection()
 
 	abstract val itemIndex: Flow<Int>
 	abstract fun setItemAt(index: Int)
