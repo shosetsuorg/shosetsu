@@ -738,7 +738,7 @@ fun NovelInfoContent(
 				LazyColumnScrollbar(
 					state,
 					thumbColor = MaterialTheme.colors.primary,
-					thumbSelectedColor = MaterialTheme.colors.background
+					thumbSelectedColor = Color.Gray
 				) {
 					LazyColumn(
 						modifier = Modifier.fillMaxSize(),
