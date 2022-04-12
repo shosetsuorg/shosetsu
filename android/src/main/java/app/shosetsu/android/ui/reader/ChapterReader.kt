@@ -483,148 +483,145 @@ fun ChapterReaderContent(
 			backgroundColorFlow = backgroundColorFlow,
 		) { isFocused = !isFocused }
 
-	if (!isFocused) {
-		BottomSheetScaffold(
-			topBar = {
-				if (!isFocused)
-					TopAppBar(
-						navigationIcon = {
-							IconButton(onClick = exit) {
-								Icon(Icons.Filled.ArrowBack, null)
-							}
-						},
-						title = {
-							Text(title, maxLines = 2, modifier = Modifier.padding(end = 16.dp))
-						},
-						modifier = Modifier.alpha(READER_BAR_ALPHA),
-						backgroundColor = MaterialTheme.colors.background
-					)
-			},
-			scaffoldState = scaffoldState,
-			sheetContent = {
-				Column {
-					Row(
-						modifier = Modifier.fillMaxWidth().height(56.dp),
-						horizontalArrangement = Arrangement.SpaceBetween,
-						verticalAlignment = Alignment.CenterVertically
-					) {
-						IconButton(onClick = { isFocused = !isFocused }) {
-							Icon(
-								painterResource(R.drawable.ic_baseline_visibility_off_24),
-								null
-							)
+	BottomSheetScaffold(
+		topBar = {
+			if (!isFocused)
+				TopAppBar(
+					navigationIcon = {
+						IconButton(onClick = exit) {
+							Icon(Icons.Filled.ArrowBack, null)
 						}
-
-						Row {
-							IconButton(onClick = toggleBookmark) {
-								Icon(
-									painterResource(
-										if (!isBookmarked) {
-											R.drawable.empty_bookmark
-										} else {
-											R.drawable.filled_bookmark
-										}
-									),
-									null
-								)
-							}
-
-							IconButton(onClick = toggleRotationLock) {
-								Icon(
-									painterResource(
-										if (!isRotationLocked)
-											R.drawable.ic_baseline_screen_rotation_24
-										else R.drawable.ic_baseline_screen_lock_rotation_24
-									),
-									null
-								)
-							}
-
-							if (isTTSCapable)
-								IconButton(onClick = onPlayTTS) {
-									Icon(
-										painterResource(R.drawable.ic_baseline_audiotrack_24),
-										null
-									)
-								}
-
-							if (isTTSPlaying)
-								IconButton(onClick = onStopTTS) {
-									Icon(
-										painterResource(R.drawable.ic_baseline_stop_circle_24),
-										null
-									)
-								}
-						}
-
-						IconButton(onClick = {
-							coroutineScope.launch {
-								if (!scaffoldState.bottomSheetState.isExpanded)
-									scaffoldState.bottomSheetState.expand()
-								else scaffoldState.bottomSheetState.collapse()
-							}
-						}) {
-							Icon(
-								if (scaffoldState.bottomSheetState.isExpanded) {
-									painterResource(R.drawable.expand_more)
-								} else {
-									painterResource(R.drawable.expand_less)
-								},
-								null
-							)
-						}
+					},
+					title = {
+						Text(title, maxLines = 2, modifier = Modifier.padding(end = 16.dp))
+					},
+					modifier = Modifier.alpha(READER_BAR_ALPHA),
+					backgroundColor = MaterialTheme.colors.background
+				)
+		},
+		scaffoldState = scaffoldState,
+		sheetContent = {
+			Column {
+				Row(
+					modifier = Modifier.fillMaxWidth().height(56.dp),
+					horizontalArrangement = Arrangement.SpaceBetween,
+					verticalAlignment = Alignment.CenterVertically
+				) {
+					IconButton(onClick = { isFocused = !isFocused }) {
+						Icon(
+							painterResource(R.drawable.ic_baseline_visibility_off_24),
+							null
+						)
 					}
 
-					LazyColumn(
-						contentPadding = PaddingValues(16.dp)
-					) {
-						item {
-							GenericBottomSettingLayout(
-								stringResource(R.string.paragraph_spacing),
-								"",
-							) {
-								DiscreteSlider(
-									setting.paragraphSpacingSize,
-									"${setting.paragraphSpacingSize}",
-									{ it, a ->
-										updateSetting(
-											setting.copy(
-												paragraphSpacingSize = if (!a)
-													it.roundToInt().toFloat()
-												else it
-											)
-										)
-									},
-									0..10,
+					Row {
+						IconButton(onClick = toggleBookmark) {
+							Icon(
+								painterResource(
+									if (!isBookmarked) {
+										R.drawable.empty_bookmark
+									} else {
+										R.drawable.filled_bookmark
+									}
+								),
+								null
+							)
+						}
+
+						IconButton(onClick = toggleRotationLock) {
+							Icon(
+								painterResource(
+									if (!isRotationLocked)
+										R.drawable.ic_baseline_screen_rotation_24
+									else R.drawable.ic_baseline_screen_lock_rotation_24
+								),
+								null
+							)
+						}
+
+						if (isTTSCapable)
+							IconButton(onClick = onPlayTTS) {
+								Icon(
+									painterResource(R.drawable.ic_baseline_audiotrack_24),
+									null
 								)
 							}
 
-						}
-
-						item {
-							GenericBottomSettingLayout(
-								stringResource(R.string.paragraph_indent),
-								"",
-							) {
-								DiscreteSlider(
-									setting.paragraphIndentSize,
-									"${setting.paragraphIndentSize}",
-									{ it, _ ->
-										updateSetting(setting.copy(paragraphIndentSize = it))
-									},
-									0..10,
+						if (isTTSPlaying)
+							IconButton(onClick = onStopTTS) {
+								Icon(
+									painterResource(R.drawable.ic_baseline_stop_circle_24),
+									null
 								)
 							}
+					}
+
+					IconButton(onClick = {
+						coroutineScope.launch {
+							if (!scaffoldState.bottomSheetState.isExpanded)
+								scaffoldState.bottomSheetState.expand()
+							else scaffoldState.bottomSheetState.collapse()
 						}
-						lowerSheet()
+					}) {
+						Icon(
+							if (scaffoldState.bottomSheetState.isExpanded) {
+								painterResource(R.drawable.expand_more)
+							} else {
+								painterResource(R.drawable.expand_less)
+							},
+							null
+						)
 					}
 				}
-			},
-		) { paddingValues ->
-			content(paddingValues)
-		}
-	} else {
-		content(PaddingValues(0.dp))
+
+				LazyColumn(
+					contentPadding = PaddingValues(16.dp)
+				) {
+					item {
+						GenericBottomSettingLayout(
+							stringResource(R.string.paragraph_spacing),
+							"",
+						) {
+							DiscreteSlider(
+								setting.paragraphSpacingSize,
+								"${setting.paragraphSpacingSize}",
+								{ it, a ->
+									updateSetting(
+										setting.copy(
+											paragraphSpacingSize = if (!a)
+												it.roundToInt().toFloat()
+											else it
+										)
+									)
+								},
+								0..10,
+							)
+						}
+
+					}
+
+					item {
+						GenericBottomSettingLayout(
+							stringResource(R.string.paragraph_indent),
+							"",
+						) {
+							DiscreteSlider(
+								setting.paragraphIndentSize,
+								"${setting.paragraphIndentSize}",
+								{ it, _ ->
+									updateSetting(setting.copy(paragraphIndentSize = it))
+								},
+								0..10,
+							)
+						}
+					}
+					lowerSheet()
+				}
+			}
+		},
+		sheetPeekHeight = if (!isFocused) BottomSheetScaffoldDefaults.SheetPeekHeight else 0.dp
+	) { paddingValues ->
+		content(paddingValues)
 	}
 }
 
