@@ -83,16 +83,6 @@ fun WebViewPageContent(
 						window.addEventListener("click",(event)=>{ shosetsuScript.onClick(); });
 					""".trimIndent(), null
 					)
-
-					view?.evaluateJavascript(getMaxJson) { maxString ->
-						maxString.toDoubleOrNull()?.let { maxY ->
-							view?.evaluateJavascript(
-								"window.scrollTo(0,${(maxY * (progress / 100)).toInt()})",
-								null
-							)
-						}
-					}
-
 				}
 			}
 		)
@@ -107,12 +97,6 @@ fun WebViewPageContent(
 			}
 		}
 }
-
-const val getMaxJson = """
-   var innerh = window.innerHeight || ebody.clientHeight, yWithScroll = 0;
-   yWithScroll = document.body.scrollHeight;
-   yWithScroll-innerh; 
-"""
 
 class ShosetsuScript(
 	val onClickMethod: () -> Unit
