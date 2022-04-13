@@ -3,6 +3,7 @@ package app.shosetsu.android.ui.reader
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.webkit.JavascriptInterface
+import android.webkit.WebView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
@@ -12,6 +13,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import app.shosetsu.android.common.ext.launchUI
+import com.google.accompanist.web.AccompanistWebViewClient
+import com.google.accompanist.web.WebView
+import com.google.accompanist.web.rememberWebViewStateWithHTMLData
 import kotlinx.coroutines.launch
 
 /*
@@ -58,22 +62,6 @@ fun WebViewPageContent(
 		WebView(
 			state,
 			captureBackPresses = false,
-			onPageFinished = { webView, _ ->
-				webView.evaluateJavascript(
-					"""
-						window.addEventListener("click",(event)=>{ shosetsuScript.onClick(); });
-					""".trimIndent(), null
-				)
-
-				webView.evaluateJavascript(getMaxJson) { maxString ->
-					maxString.toDoubleOrNull()?.let { maxY ->
-						webView.evaluateJavascript(
-							"window.scrollTo(0,${(maxY * (progress / 100)).toInt()})",
-							null
-						)
-					}
-				}
-			},
 			onCreated = { webView ->
 				webView.setBackgroundColor(Color.BLACK)
 				@SuppressLint("SetJavaScriptEnabled")
@@ -82,8 +70,31 @@ fun WebViewPageContent(
 				val inter = ShosetsuScript(onFocusToggle)
 
 				webView.addJavascriptInterface(inter, "shosetsuScript")
+				webView.isScrollContainer = false
 			},
-			modifier = Modifier.fillMaxSize().verticalScroll(scrollState)
+			modifier = Modifier
+				.fillMaxSize()
+				.verticalScroll(scrollState),
+			client = object : AccompanistWebViewClient() {
+				override fun onPageFinished(view: WebView?, url: String?) {
+					super.onPageFinished(view, url)
+					view?.evaluateJavascript(
+						"""
+						window.addEventListener("click",(event)=>{ shosetsuScript.onClick(); });
+					""".trimIndent(), null
+					)
+
+					view?.evaluateJavascript(getMaxJson) { maxString ->
+						maxString.toDoubleOrNull()?.let { maxY ->
+							view?.evaluateJavascript(
+								"window.scrollTo(0,${(maxY * (progress / 100)).toInt()})",
+								null
+							)
+						}
+					}
+
+				}
+			}
 		)
 	}
 

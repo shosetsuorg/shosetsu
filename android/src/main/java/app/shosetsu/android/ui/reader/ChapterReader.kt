@@ -503,7 +503,9 @@ fun ChapterReaderContent(
 		sheetContent = {
 			Column {
 				Row(
-					modifier = Modifier.fillMaxWidth().height(56.dp),
+					modifier = Modifier
+						.fillMaxWidth()
+						.height(56.dp),
 					horizontalArrangement = Arrangement.SpaceBetween,
 					verticalAlignment = Alignment.CenterVertically
 				) {
@@ -716,7 +718,8 @@ fun ChapterReaderPagerContent(
 									LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
 
 									Box(
-										modifier = Modifier.background(Color(backgroundColor))
+										modifier = Modifier
+											.background(Color(backgroundColor))
 											.fillMaxSize()
 									) { }
 								}
@@ -768,7 +771,8 @@ fun ChapterReaderPagerContent(
 								Column {
 									LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
 									Box(
-										modifier = Modifier.background(Color.Black)
+										modifier = Modifier
+											.background(Color.Black)
 											.fillMaxSize()
 									) {}
 								}
@@ -813,10 +817,12 @@ fun ChapterReaderPagerContent(
 		HorizontalPager(
 			count = count,
 			state = pagerState,
-			modifier = Modifier.fillMaxSize().padding(
-				top = paddingValues.calculateTopPadding(),
-				bottom = paddingValues.calculateBottomPadding()
-			),
+			modifier = Modifier
+				.fillMaxSize()
+				.padding(
+					top = paddingValues.calculateTopPadding(),
+					bottom = paddingValues.calculateBottomPadding()
+				),
 			reverseLayout = isSwipeInverted
 		) { page ->
 			createPage(page)
@@ -825,10 +831,12 @@ fun ChapterReaderPagerContent(
 		VerticalPager(
 			count = count,
 			state = pagerState,
-			modifier = Modifier.fillMaxSize().padding(
-				top = paddingValues.calculateTopPadding(),
-				bottom = paddingValues.calculateBottomPadding()
-			)
+			modifier = Modifier
+				.fillMaxSize()
+				.padding(
+					top = paddingValues.calculateTopPadding(),
+					bottom = paddingValues.calculateBottomPadding()
+				),
 		) { page ->
 			createPage(page)
 		}

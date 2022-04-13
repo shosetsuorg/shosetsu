@@ -2,7 +2,6 @@ package app.shosetsu.android.viewmodel.impl
 
 import android.app.Application
 import android.graphics.Color
-import android.net.Uri
 import androidx.annotation.WorkerThread
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
@@ -256,7 +255,7 @@ class ChapterReaderViewModel(
 											update("user-style", useCSS)
 
 											ChapterPassage.Success(
-												Uri.encode(document.toString())
+												document.toString()
 											)
 										}
 									)

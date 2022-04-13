@@ -358,7 +358,7 @@ dependencies {
 	implementation(accompanist("accompanist-appcompat-theme"))
 	implementation(accompanist("accompanist-pager"))
 	implementation(accompanist("accompanist-swiperefresh"))
-	implementation(accompanist("accompanist-webview", "0.24.3-alpha"))
+	implementation(accompanist("accompanist-webview", "0.24.6-alpha"))
 
 	//- Integration with observables
 	implementation("androidx.compose.runtime:runtime-livedata:1.1.1")
