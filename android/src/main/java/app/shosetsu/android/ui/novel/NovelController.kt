@@ -1118,7 +1118,7 @@ fun NovelInfoHeaderContent(
 								.fillMaxWidth(),
 							textAlign = TextAlign.Center
 						)
-						if (novelInfo.authors.isNotEmpty())
+						if (novelInfo.authors.isNotEmpty() && novelInfo.authors.all { it.isNotEmpty() })
 							Row(
 								modifier = Modifier.padding(bottom = 8.dp)
 							) {
@@ -1132,7 +1132,7 @@ fun NovelInfoHeaderContent(
 								)
 							}
 
-						if (novelInfo.artists.isNotEmpty())
+						if (novelInfo.artists.isNotEmpty() && novelInfo.artists.all { it.isNotEmpty() })
 							Row(
 								modifier = Modifier.padding(bottom = 8.dp)
 							) {
