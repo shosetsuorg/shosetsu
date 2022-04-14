@@ -1256,10 +1256,13 @@ fun NovelInfoHeaderContent(
 		) {
 			Text(stringResource(R.string.chapters))
 
-			Row {
+			Row(
+				verticalAlignment = Alignment.CenterVertically,
+				modifier = Modifier.padding(8.dp).height(34.dp)
+			) {
 				Card(
 					onClick = openChapterJump,
-					modifier = Modifier.padding(end = 8.dp),
+					modifier = Modifier.fillMaxHeight(),
 				) {
 					Text(
 						stringResource(R.string.jump_to_chapter_short),
@@ -1268,7 +1271,8 @@ fun NovelInfoHeaderContent(
 				}
 
 				Card(
-					onClick = openFilter
+					onClick = openFilter,
+					modifier = Modifier.padding(start = 8.dp).fillMaxHeight()
 				) {
 					Row(
 						verticalAlignment = Alignment.CenterVertically,
