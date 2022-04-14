@@ -12,10 +12,10 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import app.shosetsu.android.common.ext.launchUI
+import app.shosetsu.android.view.compose.ScrollStateBar
 import com.google.accompanist.web.AccompanistWebViewClient
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewStateWithHTMLData
-import app.shosetsu.android.view.compose.ScrollStateBar
 import kotlinx.coroutines.launch
 
 /*
@@ -44,7 +44,6 @@ fun WebViewPageContent(
 	progress: Double,
 	onScroll: (perc: Double) -> Unit,
 	onFocusToggle: () -> Unit,
-	onHitBottom: () -> Unit,
 ) {
 	val scrollState = rememberScrollState()
 	val state = rememberWebViewStateWithHTMLData(html)

@@ -791,9 +791,6 @@ fun ChapterReaderPagerContent(
 										onScroll(item, it)
 									},
 									onFocusToggle = toggleFocus,
-									onHitBottom = {
-
-									},
 								)
 							}
 						}

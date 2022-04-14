@@ -530,37 +530,49 @@ class ChapterReaderViewModel(
 	override fun onScroll(chapter: ReaderChapterUI, readingPosition: Double) {
 		logV("$chapter , $readingPosition")
 		launchIO {
-			settingsRepo.getBoolean(ReaderMarkReadAsReading).let { markReadAsReading ->
-				/*
-				 * If marking chapters that are read as reading is disabled
-				 * and the chapter's readingStatus is read, return to prevent further IO.
-				 */
-				if (!markReadAsReading && chapter.readingStatus == READ) return@launchIO
+			// If the chapter reaches 95% read, we can assume the reader already sees it all :P
+			if (readingPosition < 0.95) {
+				settingsRepo.getBoolean(ReaderMarkReadAsReading).let { markReadAsReading ->
+					/*
+							 * If marking chapters that are read as reading is disabled
+							 * and the chapter's readingStatus is read, return to prevent further IO.
+							 */
+					if (!markReadAsReading && chapter.readingStatus == READ) return@launchIO
 
-				/*
-				 * If marking type is on scroll, record as reading
-				 */
-				val markingType = getReadingMarkingType()
-				if (markingType == ONSCROLL) {
-					recordChapterIsReading(chapter)
+					/*
+							 * If marking type is on scroll, record as reading
+							 */
+					val markingType = getReadingMarkingType()
+					if (markingType == ONSCROLL) {
+						recordChapterIsReading(chapter)
+					}
+
+					updateReaderChapterUseCase(
+						chapter.copy(
+							readingStatus = if (markingType == ONSCROLL) {
+								READING
+							} else chapter.readingStatus,
+							readingPosition = readingPosition
+						)
+					)
 				}
+			} else {
+				// User probably sees everything at this point
+				// Just to be safe, we do not change the reading position
 
+				recordChapterIsRead(chapter)
+				// We do not set the reading position to 0, to ensure the UI retains the shape
 				updateReaderChapterUseCase(
 					chapter.copy(
-						readingStatus = if (markingType == ONSCROLL) {
-							READING
-						} else chapter.readingStatus,
-						readingPosition = readingPosition
+						readingStatus = READ,
 					)
 				)
 			}
 		}
 	}
 
-
 	override fun loadChapterCss(): Flow<String> =
 		settingsRepo.getStringFlow(ReaderHtmlCss)
-
 
 	override fun updateSetting(novelReaderSettingEntity: NovelReaderSettingEntity) {
 		launchIO {
