@@ -44,10 +44,7 @@ import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.lib.Novel.ChapterType
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.VerticalPager
-import com.google.accompanist.pager.rememberPagerState
+import com.google.accompanist.pager.*
 import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -395,7 +392,7 @@ fun PreviewChapterReaderContent() {
  * @param textColorFlow Get text color flow, useful for text
  * @param backgroundColorFlow Get background color flow, useful for text
  */
-@OptIn(ExperimentalMaterialApi::class, com.google.accompanist.pager.ExperimentalPagerApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalPagerApi::class)
 @Composable
 fun ChapterReaderContent(
 	title: String,
@@ -460,28 +457,7 @@ fun ChapterReaderContent(
 		}
 	}
 
-	@Composable
-	fun content(paddingValues: PaddingValues) =
-		ChapterReaderPagerContent(
-			paddingValues = paddingValues,
-			items = items,
-			isHorizontal = isHorizontal,
-			chapterType = chapterType,
-			isSwipeInverted = isSwipeInverted,
-			currentPage = currentPage,
-			onPageChanged = onPageChanged,
-			markChapterAsCurrent = markChapterAsCurrent,
-			onChapterRead = onChapterRead,
-			retryChapter = retryChapter,
-			getStringContent = getStringContent,
-			getHTMLContent = getHTMLContent,
-			onScroll = onScroll,
-			onViewed = onViewed,
-			onStopTTS = onStopTTS,
-			textSizeFlow = textSizeFlow,
-			textColorFlow = textColorFlow,
-			backgroundColorFlow = backgroundColorFlow,
-		) { isFocused = !isFocused }
+
 
 	BottomSheetScaffold(
 		topBar = {
@@ -623,42 +599,207 @@ fun ChapterReaderContent(
 		},
 		sheetPeekHeight = if (!isFocused) BottomSheetScaffoldDefaults.SheetPeekHeight else 0.dp
 	) { paddingValues ->
-		content(paddingValues)
+		ChapterReaderPagerContent(
+			paddingValues = paddingValues,
+			items = items,
+			isHorizontal = isHorizontal,
+			isSwipeInverted = isSwipeInverted,
+			currentPage = currentPage,
+			onPageChanged = onPageChanged,
+			markChapterAsCurrent = markChapterAsCurrent,
+			onChapterRead = onChapterRead,
+			onStopTTS = onStopTTS,
+			createPage = { page ->
+				when (val item = items[page]) {
+					is ReaderChapterUI -> {
+						when (chapterType) {
+							ChapterType.STRING -> {
+								ChapterReaderStringContent(
+									item = item,
+									getStringContent = getStringContent,
+									retryChapter = retryChapter,
+									textSizeFlow = textSizeFlow,
+									textColorFlow = textColorFlow,
+									backgroundColorFlow = backgroundColorFlow,
+									onScroll = onScroll,
+									onViewed = onViewed
+								) {
+									isFocused = !isFocused
+								}
+							}
+							ChapterType.HTML -> {
+								ChapterReaderHTMLContent(
+									item = item,
+									getHTMLContent = getHTMLContent,
+									retryChapter = retryChapter,
+									onScroll = onScroll,
+									onViewed = onViewed
+								) {
+									isFocused = !isFocused
+								}
+							}
+							else -> {
+							}
+						}
+					}
+					is ReaderDividerUI -> {
+						DividierPageContent(
+							item.prev,
+							item.next
+						)
+					}
+				}
+			}
+		)
 	}
 }
 
+@Suppress("FunctionName")
+@Composable
+inline fun ChapterReaderStringContent(
+	item: ReaderChapterUI,
+	getStringContent: (item: ReaderChapterUI) -> Flow<ChapterPassage>,
+	crossinline retryChapter: (item: ReaderChapterUI) -> Unit,
+	textSizeFlow: () -> Flow<Float>,
+	textColorFlow: () -> Flow<Int>,
+	backgroundColorFlow: () -> Flow<Int>,
+	crossinline onScroll: (item: ReaderChapterUI, perc: Double) -> Unit,
+	crossinline onViewed: (item: ReaderChapterUI) -> Unit,
+	crossinline toggleFocus: () -> Unit
+) {
+	val content by getStringContent(item).collectAsState(ChapterPassage.Loading)
+
+	when (content) {
+		is ChapterPassage.Error -> {
+			ErrorContent(
+				(content as? ChapterPassage.Error)?.throwable!!.message
+					?: "Unknown error",
+				EmptyDataView.Action(R.string.retry) {
+					retryChapter(item)
+				}
+			)
+		}
+		is ChapterPassage.Loading -> {
+			val backgroundColor by backgroundColorFlow().collectAsState(
+				Color.Gray.toArgb()
+			)
+
+			Column {
+				LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+
+				Box(
+					modifier = Modifier
+						.background(Color(backgroundColor))
+						.fillMaxSize()
+				) { }
+			}
+		}
+		is ChapterPassage.Success -> {
+			LaunchedEffect(Unit) {
+				launch {
+					onViewed(item)
+				}
+			}
+
+			val textSize by textSizeFlow().collectAsState(SettingKey.ReaderTextSize.default)
+			val textColor by textColorFlow().collectAsState(Color.White.toArgb())
+			val backgroundColor by backgroundColorFlow().collectAsState(
+				Color.Gray.toArgb()
+			)
+
+
+			StringPageContent(
+				(content as? ChapterPassage.Success)?.content ?: "",
+				item.readingPosition,
+				textSize = textSize,
+				onScroll = {
+					onScroll(item, it)
+				},
+				onFocusToggle = {
+					toggleFocus()
+				},
+				textColor = textColor,
+				backgroundColor = backgroundColor
+				//	isTapToScroll=isTapToScroll
+			)
+		}
+
+	}
+}
+
+@Suppress("FunctionName")
+@Composable
+inline fun ChapterReaderHTMLContent(
+	item: ReaderChapterUI,
+	getHTMLContent: (item: ReaderChapterUI) -> Flow<ChapterPassage>,
+	crossinline retryChapter: (item: ReaderChapterUI) -> Unit,
+	crossinline onScroll: (item: ReaderChapterUI, perc: Double) -> Unit,
+	crossinline onViewed: (item: ReaderChapterUI) -> Unit,
+	crossinline toggleFocus: () -> Unit
+) {
+	val html by getHTMLContent(item).collectAsState(ChapterPassage.Loading)
+
+	when (html) {
+		is ChapterPassage.Error -> {
+			ErrorContent(
+				(html as? ChapterPassage.Error)?.throwable?.message
+					?: "Unknown error",
+				EmptyDataView.Action(R.string.retry) {
+					retryChapter(item)
+				}
+			)
+		}
+		ChapterPassage.Loading -> {
+			Column {
+				LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+				Box(
+					modifier = Modifier
+						.background(Color.Black)
+						.fillMaxSize()
+				) {}
+			}
+		}
+		is ChapterPassage.Success -> {
+			LaunchedEffect(Unit) {
+				launch {
+					onViewed(item)
+				}
+			}
+
+			WebViewPageContent(
+				html = (html as ChapterPassage.Success).content,
+				progress = item.readingPosition,
+				onScroll = {
+					onScroll(item, it)
+				},
+				onFocusToggle = {
+					toggleFocus()
+				},
+			)
+		}
+	}
+}
+
+@Suppress("FunctionName", "DEPRECATION")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun ChapterReaderPagerContent(
+inline fun ChapterReaderPagerContent(
 	paddingValues: PaddingValues,
 
 	items: List<ReaderUIItem>,
 	isHorizontal: Boolean,
-	chapterType: ChapterType?,
 
-	//isTapToScroll: Boolean,
 	isSwipeInverted: Boolean,
 
 	currentPage: Int?,
-	onPageChanged: (Int) -> Unit,
+	crossinline onPageChanged: (Int) -> Unit,
 
-	markChapterAsCurrent: (item: ReaderChapterUI) -> Unit,
-	onChapterRead: (item: ReaderChapterUI) -> Unit,
+	crossinline markChapterAsCurrent: (item: ReaderChapterUI) -> Unit,
+	crossinline onChapterRead: (item: ReaderChapterUI) -> Unit,
 
-	retryChapter: (item: ReaderChapterUI) -> Unit,
+	crossinline onStopTTS: () -> Unit,
 
-	getStringContent: (item: ReaderChapterUI) -> Flow<ChapterPassage>,
-	getHTMLContent: (item: ReaderChapterUI) -> Flow<ChapterPassage>,
-
-	onScroll: (item: ReaderChapterUI, perc: Double) -> Unit,
-	onViewed: (item: ReaderChapterUI) -> Unit,
-
-	onStopTTS: () -> Unit,
-
-	textSizeFlow: () -> Flow<Float>,
-	textColorFlow: () -> Flow<Int>,
-	backgroundColorFlow: () -> Flow<Int>,
-	toggleFocus: () -> Unit,
+	crossinline createPage: @Composable PagerScope.(page: Int) -> Unit
 ) {
 	// Do not create the pager if the currentPage has not been set yet
 	if (currentPage == null) {
@@ -668,10 +809,7 @@ fun ChapterReaderPagerContent(
 		return
 	}
 
-	val pagerState =
-		rememberPagerState(currentPage)
-
-	val count = items.size
+	val pagerState = rememberPagerState(currentPage)
 
 	var curChapter: ReaderChapterUI? by remember { mutableStateOf(null) }
 
@@ -691,128 +829,9 @@ fun ChapterReaderPagerContent(
 			}
 		}
 
-	@Composable
-	fun createPage(page: Int) {
-		when (val item = items[page]) {
-			is ReaderChapterUI -> {
-				when (chapterType) {
-					ChapterType.STRING -> {
-						val content by getStringContent(item).collectAsState(ChapterPassage.Loading)
-
-						when (content) {
-							is ChapterPassage.Error -> {
-								ErrorContent(
-									(content as? ChapterPassage.Error)?.throwable!!.message
-										?: "Unknown error",
-									EmptyDataView.Action(R.string.retry) {
-										retryChapter(item)
-									}
-								)
-							}
-							is ChapterPassage.Loading -> {
-								val backgroundColor by backgroundColorFlow().collectAsState(
-									Color.Gray.toArgb()
-								)
-
-								Column {
-									LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-
-									Box(
-										modifier = Modifier
-											.background(Color(backgroundColor))
-											.fillMaxSize()
-									) { }
-								}
-							}
-							is ChapterPassage.Success -> {
-								LaunchedEffect(Unit) {
-									launch {
-										onViewed(item)
-									}
-								}
-
-								val textSize by textSizeFlow().collectAsState(SettingKey.ReaderTextSize.default)
-								val textColor by textColorFlow().collectAsState(Color.White.toArgb())
-								val backgroundColor by backgroundColorFlow().collectAsState(
-									Color.Gray.toArgb()
-								)
-
-
-								StringPageContent(
-									(content as? ChapterPassage.Success)?.content ?: "",
-									item.readingPosition,
-									textSize = textSize,
-									onScroll = {
-										onScroll(item, it)
-									},
-									onFocusToggle = toggleFocus,
-									textColor = textColor,
-									backgroundColor = backgroundColor
-									//	isTapToScroll=isTapToScroll
-								)
-							}
-
-						}
-					}
-					ChapterType.HTML -> {
-						val html by getHTMLContent(item).collectAsState(ChapterPassage.Loading)
-
-						when (html) {
-							is ChapterPassage.Error -> {
-								ErrorContent(
-									(html as? ChapterPassage.Error)?.throwable?.message
-										?: "Unknown error",
-									EmptyDataView.Action(R.string.retry) {
-										retryChapter(item)
-									}
-								)
-							}
-							ChapterPassage.Loading -> {
-								Column {
-									LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-									Box(
-										modifier = Modifier
-											.background(Color.Black)
-											.fillMaxSize()
-									) {}
-								}
-							}
-							is ChapterPassage.Success -> {
-								LaunchedEffect(Unit) {
-									launch {
-										onViewed(item)
-									}
-								}
-
-								WebViewPageContent(
-									html = (html as ChapterPassage.Success).content,
-									progress = item.readingPosition,
-									onScroll = {
-										onScroll(item, it)
-									},
-									onFocusToggle = toggleFocus,
-								)
-							}
-						}
-
-					}
-					else -> {
-
-					}
-				}
-			}
-			is ReaderDividerUI -> {
-				DividierPageContent(
-					item.prev,
-					item.next
-				)
-			}
-		}
-	}
-
 	if (isHorizontal) {
 		HorizontalPager(
-			count = count,
+			count = items.size,
 			state = pagerState,
 			modifier = Modifier
 				.fillMaxSize()
@@ -820,13 +839,14 @@ fun ChapterReaderPagerContent(
 					top = paddingValues.calculateTopPadding(),
 					bottom = paddingValues.calculateBottomPadding()
 				),
-			reverseLayout = isSwipeInverted
-		) { page ->
-			createPage(page)
-		}
+			reverseLayout = isSwipeInverted,
+			content = {
+				createPage(this, it)
+			}
+		)
 	} else {
 		VerticalPager(
-			count = count,
+			count = items.size,
 			state = pagerState,
 			modifier = Modifier
 				.fillMaxSize()
@@ -834,9 +854,9 @@ fun ChapterReaderPagerContent(
 					top = paddingValues.calculateTopPadding(),
 					bottom = paddingValues.calculateBottomPadding()
 				),
-		) { page ->
-			createPage(page)
-		}
+			content = {
+				createPage(this, it)
+			}
+		)
 	}
-
 }
