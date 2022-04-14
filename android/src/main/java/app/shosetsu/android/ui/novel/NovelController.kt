@@ -987,7 +987,7 @@ fun NovelChapterContent(
 								modifier = Modifier.padding(end = 4.dp)
 							)
 							Text(
-								"%2.1f%%".format(chapter.readingPosition),
+								"%2.1f%%".format(chapter.readingPosition * 100),
 								fontSize = 12.sp
 							)
 						}
@@ -1113,7 +1113,9 @@ fun NovelInfoHeaderContent(
 						Text(
 							novelInfo.title,
 							style = MaterialTheme.typography.h6,
-							modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth(),
+							modifier = Modifier
+								.padding(bottom = 8.dp)
+								.fillMaxWidth(),
 							textAlign = TextAlign.Center
 						)
 						if (novelInfo.authors.isNotEmpty())
