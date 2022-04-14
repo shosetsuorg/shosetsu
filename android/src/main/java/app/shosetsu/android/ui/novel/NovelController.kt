@@ -1123,11 +1123,11 @@ fun NovelInfoHeaderContent(
 								modifier = Modifier.padding(bottom = 8.dp)
 							) {
 								Text(
-									stringResource(R.string.authors),
+									stringResource(R.string.novel_author),
 									style = MaterialTheme.typography.caption
 								)
 								Text(
-									novelInfo.authors.toString(),
+									novelInfo.authors.joinToString(", "),
 									style = MaterialTheme.typography.caption
 								)
 							}
@@ -1137,11 +1137,11 @@ fun NovelInfoHeaderContent(
 								modifier = Modifier.padding(bottom = 8.dp)
 							) {
 								Text(
-									stringResource(R.string.artists),
+									stringResource(R.string.artist_s),
 									style = MaterialTheme.typography.caption
 								)
 								Text(
-									novelInfo.artists.toString(),
+									novelInfo.artists.joinToString(", "),
 									style = MaterialTheme.typography.caption
 								)
 							}
