@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import app.shosetsu.android.view.compose.ScrollStateBar
 import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.launch
 
@@ -79,23 +80,25 @@ fun StringPageContent(
 			}
 		}
 
-	SelectionContainer(
-		modifier = Modifier.clickable(
-			interactionSource = remember { MutableInteractionSource() },
-			indication = null
+	ScrollStateBar(state) {
+		SelectionContainer(
+			modifier = Modifier.clickable(
+				interactionSource = remember { MutableInteractionSource() },
+				indication = null
+			) {
+				onFocusToggle()
+			}
 		) {
-			onFocusToggle()
+			Text(
+				content,
+				fontSize = textSize.sp,
+				modifier = Modifier
+					.fillMaxSize()
+					.verticalScroll(state)
+					.background(Color(backgroundColor)),
+				color = Color(textColor)
+			)
 		}
-	) {
-		Text(
-			content,
-			fontSize = textSize.sp,
-			modifier = Modifier
-				.fillMaxSize()
-				.verticalScroll(state)
-				.background(Color(backgroundColor)),
-			color = Color(textColor)
-		)
 	}
 
 	// Avoid scrolling when the state has not fully loaded

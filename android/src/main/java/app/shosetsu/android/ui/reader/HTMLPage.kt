@@ -3,7 +3,6 @@ package app.shosetsu.android.ui.reader
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.webkit.JavascriptInterface
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,6 +11,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import app.shosetsu.android.common.ext.launchUI
+import app.shosetsu.android.view.compose.ScrollStateBar
 import kotlinx.coroutines.launch
 
 /*
@@ -54,7 +54,7 @@ fun WebViewPageContent(
 			}
 		}
 
-	Box {
+	ScrollStateBar(scrollState) {
 		WebView(
 			state,
 			captureBackPresses = false,
