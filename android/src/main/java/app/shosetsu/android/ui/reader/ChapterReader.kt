@@ -364,6 +364,8 @@ fun PreviewChapterReaderContent() {
 }
 
 /**
+ * Main reader content
+ *
  * @param title Title to display on top, either chapter title or what is currently occuring.
  * @param exit called to leave the chapter reader
  * @param items Chapters to display
@@ -622,10 +624,11 @@ fun ChapterReaderContent(
 									textColorFlow = textColorFlow,
 									backgroundColorFlow = backgroundColorFlow,
 									onScroll = onScroll,
-									onViewed = onViewed
-								) {
-									isFocused = !isFocused
-								}
+									onViewed = onViewed,
+									toggleFocus = {
+										isFocused = !isFocused
+									}
+								)
 							}
 							ChapterType.HTML -> {
 								ChapterReaderHTMLContent(
@@ -633,10 +636,11 @@ fun ChapterReaderContent(
 									getHTMLContent = getHTMLContent,
 									retryChapter = retryChapter,
 									onScroll = onScroll,
-									onViewed = onViewed
-								) {
-									isFocused = !isFocused
-								}
+									onViewed = onViewed,
+									toggleFocus = {
+										isFocused = !isFocused
+									}
+								)
 							}
 							else -> {
 							}
@@ -654,6 +658,9 @@ fun ChapterReaderContent(
 	}
 }
 
+/**
+ * Creates the string page
+ */
 @Suppress("FunctionName")
 @Composable
 inline fun ChapterReaderStringContent(
@@ -727,6 +734,9 @@ inline fun ChapterReaderStringContent(
 	}
 }
 
+/**
+ * Creates the HTML page
+ */
 @Suppress("FunctionName")
 @Composable
 inline fun ChapterReaderHTMLContent(
@@ -780,6 +790,9 @@ inline fun ChapterReaderHTMLContent(
 	}
 }
 
+/**
+ * Content of pager itself
+ */
 @Suppress("FunctionName", "DEPRECATION")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
