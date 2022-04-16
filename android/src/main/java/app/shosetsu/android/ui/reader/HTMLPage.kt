@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -76,7 +76,7 @@ fun WebViewPageContent(
 				webView.isScrollContainer = false
 			},
 			modifier = Modifier
-				.fillMaxSize()
+				.fillMaxWidth()
 				.verticalScroll(scrollState),
 			client = object : AccompanistWebViewClient() {
 				override fun onPageFinished(view: WebView?, url: String?) {
