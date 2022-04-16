@@ -590,6 +590,30 @@ class ChapterReaderViewModel(
 		settingsRepo.getBooleanFlow(ReaderIsTapToScroll).onIO()
 	}
 
+	private val doubleTapFocus: Flow<Boolean> by lazy {
+		settingsRepo.getBooleanFlow(ReaderDoubleTapFocus).onIO()
+	}
+
+	override val isFocused: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
+	override fun toggleFocus() {
+		isFocused.tryEmit(!isFocused.value)
+	}
+
+	override fun onFocusClick() {
+		launchIO {
+			if (!doubleTapFocus.first())
+				isFocused.emit(!isFocused.value)
+		}
+	}
+
+	override fun onFocusDoubleClick() {
+		launchIO {
+			if (doubleTapFocus.first())
+				isFocused.emit(!isFocused.value)
+		}
+	}
+
 	private val userCssFlow: Flow<String> by lazy {
 		settingsRepo.getStringFlow(ReaderHtmlCss).onIO()
 	}

@@ -133,6 +133,7 @@ class ChapterReader
 			val isHorizontalReading by viewModel.isHorizontalReading.collectAsState(false)
 			val isBookmarked by viewModel.isCurrentChapterBookmarked.collectAsState(false)
 			val isRotationLocked by viewModel.liveIsScreenRotationLocked.collectAsState(false)
+			val isFocused by viewModel.isFocused.collectAsState(false)
 			val chapterType by viewModel.chapterType.collectAsState(null)
 			val currentChapterID by viewModel.currentChapterID.collectAsState(-1)
 			val isTTSCapable by isTTSCapable.collectAsState(false)
@@ -211,6 +212,7 @@ class ChapterReader
 						item { viewModel.readerKeepScreenOnOption() }
 						item { viewModel.showReaderDivider() }
 						item { viewModel.stringAsHtmlOption() }
+						item { viewModel.doubleTapFocus() }
 					},
 					setting = setting,
 					updateSetting = viewModel::updateSetting,
@@ -230,7 +232,11 @@ class ChapterReader
 					isFirstFocus = isFirstFocus,
 					onFirstFocus = viewModel::onFirstFocus,
 					isSwipeInverted = isSwipeInverted,
-					retryChapter = viewModel::retryChapter
+					retryChapter = viewModel::retryChapter,
+					isFocused = isFocused,
+					toggleFocus = viewModel::toggleFocus,
+					onFocusClick = viewModel::onFocusClick,
+					onFocusDoubleClick = viewModel::onFocusDoubleClick
 					//isTapToScroll = isTapToScroll
 				)
 			}
@@ -357,7 +363,11 @@ fun PreviewChapterReaderContent() {
 			isFirstFocus = false,
 			onFirstFocus = {},
 			isSwipeInverted = false,
-			retryChapter = {}
+			retryChapter = {},
+			isFocused = false,
+			onFocusClick = {},
+			onFocusDoubleClick = {},
+			toggleFocus = {}
 			//isTapToScroll = false
 		)
 	}
@@ -441,8 +451,13 @@ fun ChapterReaderContent(
 	textSizeFlow: () -> Flow<Float>,
 	textColorFlow: () -> Flow<Int>,
 	backgroundColorFlow: () -> Flow<Int>,
+
+	isFocused: Boolean,
+	toggleFocus: () -> Unit,
+	onFocusClick: () -> Unit,
+	onFocusDoubleClick: () -> Unit
 ) {
-	var isFocused by remember { mutableStateOf(false) }
+
 	val scaffoldState = rememberBottomSheetScaffoldState()
 	val coroutineScope = rememberCoroutineScope()
 
@@ -458,8 +473,6 @@ fun ChapterReaderContent(
 			}
 		}
 	}
-
-
 
 	BottomSheetScaffold(
 		topBar = {
@@ -487,7 +500,7 @@ fun ChapterReaderContent(
 					horizontalArrangement = Arrangement.SpaceBetween,
 					verticalAlignment = Alignment.CenterVertically
 				) {
-					IconButton(onClick = { isFocused = !isFocused }) {
+					IconButton(onClick = toggleFocus) {
 						Icon(
 							painterResource(R.drawable.ic_baseline_visibility_off_24),
 							null
@@ -625,9 +638,8 @@ fun ChapterReaderContent(
 									backgroundColorFlow = backgroundColorFlow,
 									onScroll = onScroll,
 									onViewed = onViewed,
-									toggleFocus = {
-										isFocused = !isFocused
-									}
+									onClick = onFocusClick,
+									onDoubleClick = onFocusDoubleClick
 								)
 							}
 							ChapterType.HTML -> {
@@ -637,9 +649,8 @@ fun ChapterReaderContent(
 									retryChapter = retryChapter,
 									onScroll = onScroll,
 									onViewed = onViewed,
-									toggleFocus = {
-										isFocused = !isFocused
-									}
+									onClick = onFocusClick,
+									onDoubleClick = onFocusDoubleClick
 								)
 							}
 							else -> {
@@ -672,7 +683,8 @@ inline fun ChapterReaderStringContent(
 	backgroundColorFlow: () -> Flow<Int>,
 	crossinline onScroll: (item: ReaderChapterUI, perc: Double) -> Unit,
 	crossinline onViewed: (item: ReaderChapterUI) -> Unit,
-	crossinline toggleFocus: () -> Unit
+	crossinline onClick: () -> Unit,
+	crossinline onDoubleClick: () -> Unit
 ) {
 	val content by getStringContent(item).collectAsState(ChapterPassage.Loading)
 
@@ -722,11 +734,14 @@ inline fun ChapterReaderStringContent(
 				onScroll = {
 					onScroll(item, it)
 				},
-				onFocusToggle = {
-					toggleFocus()
-				},
 				textColor = textColor,
-				backgroundColor = backgroundColor
+				backgroundColor = backgroundColor,
+				onClick = {
+					onClick()
+				},
+				onDoubleClick = {
+					onDoubleClick()
+				}
 				//	isTapToScroll=isTapToScroll
 			)
 		}
@@ -745,7 +760,8 @@ inline fun ChapterReaderHTMLContent(
 	crossinline retryChapter: (item: ReaderChapterUI) -> Unit,
 	crossinline onScroll: (item: ReaderChapterUI, perc: Double) -> Unit,
 	crossinline onViewed: (item: ReaderChapterUI) -> Unit,
-	crossinline toggleFocus: () -> Unit
+	crossinline onClick: () -> Unit,
+	crossinline onDoubleClick: () -> Unit
 ) {
 	val html by getHTMLContent(item).collectAsState(ChapterPassage.Loading)
 
@@ -782,9 +798,12 @@ inline fun ChapterReaderHTMLContent(
 				onScroll = {
 					onScroll(item, it)
 				},
-				onFocusToggle = {
-					toggleFocus()
+				onClick = {
+					onClick()
 				},
+				onDoubleClick = {
+					onDoubleClick()
+				}
 			)
 		}
 	}

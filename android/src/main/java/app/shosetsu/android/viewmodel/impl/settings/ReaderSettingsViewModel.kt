@@ -95,6 +95,16 @@ fun ExposedSettingsRepoViewModel.showReaderDivider() {
 }
 
 @Composable
+fun ExposedSettingsRepoViewModel.doubleTapFocus() {
+	SwitchSettingContent(
+		stringResource(R.string.settings_reader_double_tap),
+		stringResource(R.string.settings_reader_double_tap_desc),
+		settingsRepo,
+		ReaderDoubleTapFocus, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+	)
+}
+
+@Composable
 fun ExposedSettingsRepoViewModel.continuousScrollOption() {
 	SwitchSettingContent(
 		stringResource(R.string.settings_reader_title_continous_scroll),

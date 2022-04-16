@@ -681,6 +681,8 @@
     <string name="controller_novel_selected_unread">Mark selected chapters as unread</string>
     <string name="controller_novel_selected_bookmark">Bookmark selected chapters</string>
     <string name="controller_novel_selected_unbookmark">Unbookmark selected chapters</string>
+    <string name="settings_reader_double_tap">Double tap to toggle focus</string>
+    <string name="settings_reader_double_tap_desc">Instead of a single tap, require a double tap to toggle the focus in the reader.</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

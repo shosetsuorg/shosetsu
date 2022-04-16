@@ -303,6 +303,9 @@ fun ReaderSettingsContent(
 			viewModel.showReaderDivider()
 		}
 
+		item {
+			viewModel.doubleTapFocus()
+		}
 	}
 
 }

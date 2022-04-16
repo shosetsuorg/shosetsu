@@ -1,17 +1,12 @@
 package app.shosetsu.android.ui.reader
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -50,24 +45,27 @@ fun PreviewStringPageContent() {
 			progress = 0.0,
 			textSize = 16.0f,
 			onScroll = {},
-			onFocusToggle = {},
 			textColor = Color.Black.toArgb(),
-			backgroundColor = Color.White.toArgb()
+			backgroundColor = Color.White.toArgb(),
+			onClick = {},
+			onDoubleClick = {}
 			//isTapToScroll = false
 		)
 	}
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StringPageContent(
 	content: String,
 	progress: Double,
 	textSize: Float,
 	onScroll: (perc: Double) -> Unit,
-	onFocusToggle: () -> Unit,
 	textColor: Int,
-	backgroundColor: Int
-	//isTapToScroll: Boolean
+	backgroundColor: Int,
+	onClick: () -> Unit,
+	onDoubleClick: () -> Unit
+//isTapToScroll: Boolean
 ) {
 	val state = rememberScrollState()
 
@@ -82,12 +80,11 @@ fun StringPageContent(
 
 	ScrollStateBar(state) {
 		SelectionContainer(
-			modifier = Modifier.clickable(
-				interactionSource = remember { MutableInteractionSource() },
-				indication = null
-			) {
-				onFocusToggle()
-			}
+			modifier = Modifier.combinedClickable(
+				onDoubleClick = onDoubleClick,
+				onClick = onClick
+			)
+
 		) {
 			Text(
 				content,

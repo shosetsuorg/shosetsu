@@ -72,6 +72,14 @@ abstract class AChapterReaderViewModel :
 	abstract val tapToScroll: Flow<Boolean>
 
 	/**
+	 * Double tap required to focus/unfocus the reader
+	 */
+	abstract val isFocused: Flow<Boolean>
+	abstract fun toggleFocus()
+	abstract fun onFocusClick()
+	abstract fun onFocusDoubleClick()
+
+	/**
 	 * Should the screen be locked
 	 */
 	abstract val liveIsScreenRotationLocked: Flow<Boolean>

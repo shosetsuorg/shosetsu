@@ -43,7 +43,8 @@ fun WebViewPageContent(
 	html: String,
 	progress: Double,
 	onScroll: (perc: Double) -> Unit,
-	onFocusToggle: () -> Unit,
+	onClick: () -> Unit,
+	onDoubleClick: () -> Unit
 ) {
 	val scrollState = rememberScrollState()
 	val state = rememberWebViewStateWithHTMLData(html)
@@ -66,7 +67,10 @@ fun WebViewPageContent(
 				@SuppressLint("SetJavaScriptEnabled")
 				webView.settings.javaScriptEnabled = true
 
-				val inter = ShosetsuScript(onFocusToggle)
+				val inter = ShosetsuScript(
+					onClickMethod = onClick,
+					onDClickMethod = onDoubleClick
+				)
 
 				webView.addJavascriptInterface(inter, "shosetsuScript")
 				webView.isScrollContainer = false
@@ -80,7 +84,8 @@ fun WebViewPageContent(
 					view?.evaluateJavascript(
 						"""
 						window.addEventListener("click",(event)=>{ shosetsuScript.onClick(); });
-					""".trimIndent(), null
+						window.addEventListener("dblclick",(event)=>{ shosetsuScript.onDClick(); });
+	""".trimIndent(), null
 					)
 				}
 			}
@@ -98,14 +103,22 @@ fun WebViewPageContent(
 }
 
 class ShosetsuScript(
-	val onClickMethod: () -> Unit
+	val onClickMethod: () -> Unit,
+	val onDClickMethod: () -> Unit
 ) {
-
 	@Suppress("unused")
 	@JavascriptInterface
 	fun onClick() {
 		launchUI {
 			onClickMethod()
+		}
+	}
+
+	@Suppress("unused")
+	@JavascriptInterface
+	fun onDClick() {
+		launchUI {
+			onDClickMethod()
 		}
 	}
 }
