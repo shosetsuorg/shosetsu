@@ -300,11 +300,11 @@ class ChapterReader
 		return if (viewModel.isVolumeScrollEnabled)
 			when (keyCode) {
 				KeyEvent.KEYCODE_VOLUME_DOWN -> {
-					viewModel.depleteProgress()
+					viewModel.incrementProgress()
 					true
 				}
 				KeyEvent.KEYCODE_VOLUME_UP -> {
-					viewModel.incrementProgress()
+					viewModel.depleteProgress()
 					true
 				}
 				else -> super.onKeyDown(keyCode, event)
