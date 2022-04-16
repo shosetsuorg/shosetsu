@@ -27,6 +27,7 @@ import app.shosetsu.common.enums.MarkingType.ONVIEW
 import app.shosetsu.common.enums.ReadingStatus.READ
 import app.shosetsu.common.enums.ReadingStatus.READING
 import app.shosetsu.common.utils.asHtml
+import app.shosetsu.common.utils.copy
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -88,6 +89,20 @@ class ChapterReaderViewModel(
 			result.paragraphSpacingSize
 		}
 	}
+
+	/**
+	 * Lets explain what goes on here
+	 *
+	 * Say the User reads a chapter,
+	 * the action that is then taken by the code is to mark the chapter as read and 0 it out.
+	 * But when it 0s out the progress, and the user refreshes the UI, the user sees the UI reset.
+	 *
+	 * The user will view this as an "error" because they expect things to remain the way they left
+	 * it while reading. (Object permanence).
+	 *
+	 * To correct this,
+	 */
+	private val progressMap by lazy { MutableStateFlow(HashMap<Int, Double>()) }
 
 	override val ttsPitch: Float
 		get() = runBlocking {
@@ -355,6 +370,7 @@ class ChapterReaderViewModel(
 
 	override val liveData: Flow<List<ReaderUIItem>> by lazy {
 		chaptersFlow
+			.combineTempProgress()
 			.combineDividers() // Add dividers
 
 			.onIO()
@@ -363,26 +379,40 @@ class ChapterReaderViewModel(
 	override val currentPage: MutableStateFlow<Int> = MutableStateFlow(0)
 
 	private fun Flow<List<ReaderChapterUI>>.combineDividers(): Flow<List<ReaderUIItem>> =
-		combine(settingsRepo.getBooleanFlow(ReaderShowChapterDivider)) { result, value ->
-			result.let {
-				if (value) {
-					val modified = ArrayList<ReaderUIItem>(it)
-					// Adds the "No more chapters" marker
-					modified.add(modified.size, ReaderDividerUI(prev = it.last().title))
+		combine(settingsRepo.getBooleanFlow(ReaderShowChapterDivider)) { list, value ->
+			if (value) {
+				val modified = ArrayList<ReaderUIItem>(list)
+				// Adds the "No more chapters" marker
+				modified.add(modified.size, ReaderDividerUI(prev = list.last().title))
 
-					/**
-					 * Loops down the list, adding in the seperators
-					 */
-					val startPoint = modified.size - 2
-					for (index in startPoint downTo 1)
-						modified.add(
-							index, ReaderDividerUI(
-								(modified[index - 1] as ReaderChapterUI).title,
-								(modified[index] as ReaderChapterUI).title
-							)
+				/**
+				 * Loops down the list, adding in the seperators
+				 */
+				val startPoint = modified.size - 2
+				for (index in startPoint downTo 1)
+					modified.add(
+						index, ReaderDividerUI(
+							(modified[index - 1] as ReaderChapterUI).title,
+							(modified[index] as ReaderChapterUI).title
 						)
+					)
 
-					modified
+				modified
+			} else {
+				list
+			}
+		}
+
+	private fun Flow<List<ReaderChapterUI>>.combineTempProgress(): Flow<List<ReaderChapterUI>> =
+		combine(progressMap) { list, progress ->
+			list.map {
+				if (progress.containsKey(it.id)) {
+					val progress = progress[it.id]
+					val copy = it.copy(
+						readingPosition = progress!!
+					)
+					logD("Progress map contains temp key for $it=$progress, result: $copy")
+					copy
 				} else {
 					it
 				}
@@ -533,11 +563,16 @@ class ChapterReaderViewModel(
 			// If the chapter reaches 95% read, we can assume the reader already sees it all :P
 			if (readingPosition < 0.95) {
 				settingsRepo.getBoolean(ReaderMarkReadAsReading).let { markReadAsReading ->
-					/*
-							 * If marking chapters that are read as reading is disabled
-							 * and the chapter's readingStatus is read, return to prevent further IO.
-							 */
-					if (!markReadAsReading && chapter.readingStatus == READ) return@launchIO
+					/**
+					 * If marking chapters that are read as reading is disabled
+					 * and the chapter's readingStatus is read, save progress temporarily.
+					 */
+					if (!markReadAsReading && chapter.readingStatus == READ) {
+						progressMap.emit(progressMap.value.copy().apply {
+							put(chapter.id, readingPosition)
+						})
+						return@launchIO
+					}
 
 					/*
 							 * If marking type is on scroll, record as reading
@@ -546,6 +581,11 @@ class ChapterReaderViewModel(
 					if (markingType == ONSCROLL) {
 						recordChapterIsReading(chapter)
 					}
+
+					// Remove temp progress
+					progressMap.emit(progressMap.value.copy().apply {
+						remove(chapter.id)
+					})
 
 					updateReaderChapterUseCase(
 						chapter.copy(
@@ -558,13 +598,18 @@ class ChapterReaderViewModel(
 				}
 			} else {
 				// User probably sees everything at this point
-				// Just to be safe, we do not change the reading position
 
 				recordChapterIsRead(chapter)
-				// We do not set the reading position to 0, to ensure the UI retains the shape
+
+				// Temp remember the progress
+				progressMap.emit(progressMap.value.copy().apply {
+					put(chapter.id, readingPosition)
+				})
+
 				updateReaderChapterUseCase(
 					chapter.copy(
 						readingStatus = READ,
+						readingPosition = 0.0
 					)
 				)
 			}
