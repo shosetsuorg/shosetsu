@@ -95,7 +95,6 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 
 	bind<UpdateChapterUseCase>() with provider { UpdateChapterUseCase(instance()) }
 
-	bind<UpdateReaderChapterUseCase>() with provider { UpdateReaderChapterUseCase(instance()) }
 	bind<GetReaderChaptersUseCase>() with provider {
 		GetReaderChaptersUseCase(
 			instance(),
@@ -235,10 +234,6 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 		GetReaderSettingUseCase(instance(), instance())
 	}
 
-	bind<UpdateReaderSettingUseCase>() with provider {
-		UpdateReaderSettingUseCase(instance())
-	}
-
 	bind<LoadLibraryFilterSettingsUseCase>() with provider {
 		LoadLibraryFilterSettingsUseCase(instance())
 	}
@@ -298,7 +293,6 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 		)
 	}
 
-	bind<GetReadingMarkingTypeUseCase>() with provider { GetReadingMarkingTypeUseCase(instance()) }
 	bind<RecordChapterIsReadingUseCase>() with provider {
 		RecordChapterIsReadingUseCase(
 			instance(),
