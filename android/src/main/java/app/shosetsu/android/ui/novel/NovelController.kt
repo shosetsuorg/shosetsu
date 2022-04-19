@@ -753,7 +753,8 @@ fun NovelInfoContent(
 									openWebview = openWebView,
 									toggleBookmark = toggleBookmark,
 									openChapterJump = openChapterJump,
-									openFilter = openFilter
+									openFilter = openFilter,
+									chapterCount = chapters?.size ?: 0
 								)
 							}
 						else {
@@ -1028,6 +1029,7 @@ fun PreviewHeaderContent() {
 	MdcTheme {
 		NovelInfoHeaderContent(
 			info,
+			chapterCount = 0,
 			{},
 			{},
 			{},
@@ -1060,6 +1062,7 @@ fun NovelInfoCoverContent(
 @Composable
 fun NovelInfoHeaderContent(
 	novelInfo: NovelUI,
+	chapterCount: Int,
 	openWebview: () -> Unit,
 	toggleBookmark: () -> Unit,
 	openFilter: () -> Unit,
@@ -1258,7 +1261,10 @@ fun NovelInfoHeaderContent(
 				.padding(start = 16.dp, end = 16.dp),
 			verticalAlignment = Alignment.CenterVertically
 		) {
-			Text(stringResource(R.string.chapters))
+			Row {
+				Text(stringResource(R.string.chapters))
+				Text("$chapterCount", modifier = Modifier.padding(start = 8.dp))
+			}
 
 			Row(
 				verticalAlignment = Alignment.CenterVertically,
