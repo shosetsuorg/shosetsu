@@ -148,7 +148,9 @@ class NovelUpdateWorker(
 		}.let { novels ->
 			var progress = 0
 
-			novels.forEach { nE ->
+			for (nE in novels) {
+				if (isStopped) break
+
 				val style = notificationStyle()
 				val title: String =
 					if (style) nE.title else applicationContext.getString(R.string.updating)
@@ -173,7 +175,7 @@ class NovelUpdateWorker(
 				} catch (e: Exception) {
 					if (e is CancellationException) {
 						logE("Job was canceled", e)
-						return@forEach
+						continue
 					}
 					logE("Failed to load novel: $nE", e)
 					notify(
@@ -198,7 +200,7 @@ class NovelUpdateWorker(
 							e
 						)
 					}
-					return@forEach
+					continue
 				}
 				if (it != null)
 					if (it.updatedChapters.isNotEmpty()) {
@@ -260,7 +262,6 @@ class NovelUpdateWorker(
 		// Will update only if downloadOnUpdate is enabled and there have been chapters
 		if (downloadOnUpdate() && updateNovels.size > 0 && updatedChapters.size > 0)
 			startDownloadWorker(updatedChapters)
-
 
 		return Result.success()
 	}
