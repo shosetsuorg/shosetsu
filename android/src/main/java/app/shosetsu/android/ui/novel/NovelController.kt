@@ -1221,7 +1221,7 @@ fun NovelInfoHeaderContent(
 				}
 
 				LazyRow(
-					modifier = Modifier.fillMaxWidth(),
+					modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
 					horizontalArrangement = Arrangement.Center,
 					contentPadding = PaddingValues(start = 8.dp, end = 8.dp)
 				) {
