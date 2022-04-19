@@ -375,12 +375,11 @@ class ChapterReaderViewModel(
 			emitAll(
 				loadReaderChaptersUseCase(nId)
 			)
-		}
+		}.combineTempProgress()
 	}
 
 	override val liveData: Flow<List<ReaderUIItem>> by lazy {
 		chaptersFlow
-			.combineTempProgress()
 			.combineDividers() // Add dividers
 
 			.onIO()
@@ -576,7 +575,6 @@ class ChapterReaderViewModel(
 	}
 
 	override fun onScroll(chapter: ReaderChapterUI, readingPosition: Double) {
-		//logV("$chapter , $readingPosition")
 		launchIO {
 			// If the chapter reaches 95% read, we can assume the reader already sees it all :P
 			if (readingPosition < 0.95) {
