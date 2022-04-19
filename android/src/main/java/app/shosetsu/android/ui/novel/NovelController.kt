@@ -12,12 +12,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
@@ -25,7 +27,6 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -949,7 +950,7 @@ fun NovelChapterContent(
 		border =
 		if (chapter.isSelected) {
 			BorderStroke(
-				width = SELECTED_STROKE_WIDTH.dp,
+				width = (SELECTED_STROKE_WIDTH / 2).dp,
 				color = MaterialTheme.colors.primary
 			)
 		} else {
@@ -1051,7 +1052,7 @@ fun NovelInfoCoverContent(
 		modifier = modifier
 			.aspectRatio(.75f)
 			.padding(top = 8.dp)
-			.clickable(onClick = onClick)
+			.clickable(onClick = onClick).clip(RoundedCornerShape(16.dp)),
 	)
 }
 
@@ -1099,7 +1100,8 @@ fun NovelInfoHeaderContent(
 				modifier = Modifier.fillMaxWidth(),
 			) {
 				Row(
-					modifier = Modifier.fillMaxWidth(),
+					modifier = Modifier.fillMaxWidth().padding(end = 8.dp),
+					verticalAlignment = Alignment.CenterVertically
 				) {
 					NovelInfoCoverContent(
 						novelInfo.imageURL,
@@ -1108,7 +1110,8 @@ fun NovelInfoHeaderContent(
 						isCoverClicked = true
 					}
 					Column(
-						modifier = Modifier.padding(top = 16.dp)
+						modifier = Modifier.padding(top = 16.dp),
+						verticalArrangement = Arrangement.Center
 					) {
 						Text(
 							novelInfo.title,
@@ -1116,19 +1119,19 @@ fun NovelInfoHeaderContent(
 							modifier = Modifier
 								.padding(bottom = 8.dp)
 								.fillMaxWidth(),
-							textAlign = TextAlign.Center
 						)
 						if (novelInfo.authors.isNotEmpty() && novelInfo.authors.all { it.isNotEmpty() })
 							Row(
 								modifier = Modifier.padding(bottom = 8.dp)
 							) {
-								Text(
-									stringResource(R.string.novel_author),
-									style = MaterialTheme.typography.caption
-								)
+								if (novelInfo.artists.isEmpty() && novelInfo.artists.none { it.isNotEmpty() })
+									Text(
+										stringResource(R.string.novel_author),
+										style = MaterialTheme.typography.subtitle2
+									)
 								Text(
 									novelInfo.authors.joinToString(", "),
-									style = MaterialTheme.typography.caption
+									style = MaterialTheme.typography.subtitle2
 								)
 							}
 
@@ -1136,13 +1139,14 @@ fun NovelInfoHeaderContent(
 							Row(
 								modifier = Modifier.padding(bottom = 8.dp)
 							) {
-								Text(
-									stringResource(R.string.artist_s),
-									style = MaterialTheme.typography.caption
-								)
+								if (novelInfo.authors.isEmpty() && novelInfo.authors.none { it.isNotEmpty() })
+									Text(
+										stringResource(R.string.artist_s),
+										style = MaterialTheme.typography.subtitle2
+									)
 								Text(
 									novelInfo.artists.joinToString(", "),
-									style = MaterialTheme.typography.caption
+									style = MaterialTheme.typography.subtitle2
 								)
 							}
 
@@ -1154,15 +1158,15 @@ fun NovelInfoHeaderContent(
 									Novel.Status.PAUSED -> stringResource(R.string.paused)
 									Novel.Status.UNKNOWN -> stringResource(R.string.unknown)
 								},
-								style = MaterialTheme.typography.caption
+								style = MaterialTheme.typography.subtitle2
 							)
 							Text(
-								"@",
-								style = MaterialTheme.typography.caption
+								" • ",
+								style = MaterialTheme.typography.subtitle2
 							)
 							Text(
 								novelInfo.extName,
-								style = MaterialTheme.typography.caption
+								style = MaterialTheme.typography.subtitle2
 							)
 						}
 					}
@@ -1211,7 +1215,7 @@ fun NovelInfoHeaderContent(
 								painterResource(R.drawable.open_in_browser),
 								stringResource(R.string.controller_novel_info_open_web)
 							)
-							Text(stringResource(R.string.open_in_webview))
+							Text(stringResource(R.string.controller_novel_info_open_web_text))
 						}
 					}
 				}

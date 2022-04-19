@@ -50,7 +50,7 @@
     <string name="paragraph_indent">Paragraph indent</string>
 
     <string name="novel_title">Title:</string>
-    <string name="novel_author">Author(s):</string>
+    <string name="novel_author">Author(s): </string>
     <string name="novel_description">Description</string>
     <string name="download">Download</string>
     <string name="download_directory">Download directory</string>
@@ -101,7 +101,7 @@
     <string name="map_to">Map to</string>
     <string name="migrate_source">Migrate source</string>
     <string name="site">Site:</string>
-    <string name="artist_s">Artist(s):</string>
+    <string name="artist_s">Artist(s): </string>
     <string name="reading_status">Reading Status</string>
     <string name="publishing_state">Publishing State:</string>
 
@@ -683,6 +683,7 @@
     <string name="controller_novel_selected_unbookmark">Unbookmark selected chapters</string>
     <string name="settings_reader_double_tap">Double tap to toggle focus</string>
     <string name="settings_reader_double_tap_desc">Instead of a single tap, require a double tap to toggle the focus in the reader.</string>
+    <string name="controller_novel_info_open_web_text">Webview</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>
