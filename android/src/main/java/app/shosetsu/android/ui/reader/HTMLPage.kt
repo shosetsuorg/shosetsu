@@ -1,7 +1,9 @@
 package app.shosetsu.android.ui.reader
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -79,6 +81,14 @@ fun WebViewPageContent(
 				.fillMaxWidth()
 				.verticalScroll(scrollState),
 			client = object : AccompanistWebViewClient() {
+				override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+					super.onPageStarted(view, url, favicon)
+					view?.layoutParams = ViewGroup.LayoutParams(
+						ViewGroup.LayoutParams.MATCH_PARENT,
+						ViewGroup.LayoutParams.WRAP_CONTENT
+					)
+				}
+
 				override fun onPageFinished(view: WebView?, url: String?) {
 					super.onPageFinished(view, url)
 					view?.evaluateJavascript(
