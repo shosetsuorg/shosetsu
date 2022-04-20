@@ -217,6 +217,7 @@ class ChapterReader
 					setting = setting,
 					updateSetting = viewModel::updateSetting,
 					markChapterAsCurrent = {
+						viewModel.onViewed(it)
 						viewModel.setCurrentChapterID(it.id)
 					},
 					onChapterRead = viewModel::updateChapterAsRead,
@@ -227,7 +228,6 @@ class ChapterReader
 					textSizeFlow = { viewModel.liveTextSize },
 					textColorFlow = { viewModel.textColor },
 					backgroundColorFlow = { viewModel.backgroundColor },
-					onViewed = viewModel::onViewed,
 
 					isFirstFocus = isFirstFocus,
 					onFirstFocus = viewModel::onFirstFocus,
@@ -359,7 +359,6 @@ fun PreviewChapterReaderContent() {
 			textSizeFlow = { flow { } },
 			textColorFlow = { flow { } },
 			backgroundColorFlow = { flow { } },
-			onViewed = {},
 			isFirstFocus = false,
 			onFirstFocus = {},
 			isSwipeInverted = false,
@@ -431,7 +430,6 @@ fun ChapterReaderContent(
 	getHTMLContent: (item: ReaderChapterUI) -> Flow<ChapterPassage>,
 
 	onScroll: (item: ReaderChapterUI, perc: Double) -> Unit,
-	onViewed: (item: ReaderChapterUI) -> Unit,
 
 	isTTSCapable: Boolean,
 	isTTSPlaying: Boolean,
@@ -637,7 +635,6 @@ fun ChapterReaderContent(
 									textColorFlow = textColorFlow,
 									backgroundColorFlow = backgroundColorFlow,
 									onScroll = onScroll,
-									onViewed = onViewed,
 									onClick = onFocusClick,
 									onDoubleClick = onFocusDoubleClick
 								)
@@ -648,7 +645,6 @@ fun ChapterReaderContent(
 									getHTMLContent = getHTMLContent,
 									retryChapter = retryChapter,
 									onScroll = onScroll,
-									onViewed = onViewed,
 									onClick = onFocusClick,
 									onDoubleClick = onFocusDoubleClick
 								)
@@ -682,7 +678,6 @@ inline fun ChapterReaderStringContent(
 	textColorFlow: () -> Flow<Int>,
 	backgroundColorFlow: () -> Flow<Int>,
 	crossinline onScroll: (item: ReaderChapterUI, perc: Double) -> Unit,
-	crossinline onViewed: (item: ReaderChapterUI) -> Unit,
 	crossinline onClick: () -> Unit,
 	crossinline onDoubleClick: () -> Unit
 ) {
@@ -714,12 +709,6 @@ inline fun ChapterReaderStringContent(
 			}
 		}
 		is ChapterPassage.Success -> {
-			LaunchedEffect(Unit) {
-				launch {
-					onViewed(item)
-				}
-			}
-
 			val textSize by textSizeFlow().collectAsState(SettingKey.ReaderTextSize.default)
 			val textColor by textColorFlow().collectAsState(Color.White.toArgb())
 			val backgroundColor by backgroundColorFlow().collectAsState(
@@ -759,7 +748,6 @@ inline fun ChapterReaderHTMLContent(
 	getHTMLContent: (item: ReaderChapterUI) -> Flow<ChapterPassage>,
 	crossinline retryChapter: (item: ReaderChapterUI) -> Unit,
 	crossinline onScroll: (item: ReaderChapterUI, perc: Double) -> Unit,
-	crossinline onViewed: (item: ReaderChapterUI) -> Unit,
 	crossinline onClick: () -> Unit,
 	crossinline onDoubleClick: () -> Unit
 ) {
@@ -786,12 +774,6 @@ inline fun ChapterReaderHTMLContent(
 			}
 		}
 		is ChapterPassage.Success -> {
-			LaunchedEffect(Unit) {
-				launch {
-					onViewed(item)
-				}
-			}
-
 			WebViewPageContent(
 				html = (html as ChapterPassage.Success).content,
 				progress = item.readingPosition,
