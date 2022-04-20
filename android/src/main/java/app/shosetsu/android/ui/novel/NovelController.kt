@@ -554,45 +554,6 @@ class NovelController(bundle: Bundle) :
 			}
 
 			mode.setTitle(R.string.selection)
-/*			 TODO
-binding.bottomMenu.show(mode, R.menu.toolbar_novel_chapters_selected_bottom) {
-				when (it.itemId) {
-					id.chapter_download_selected -> {
-						downloadSelected()
-						finishSelectionAction()
-						true
-					}
-					id.chapter_delete_selected -> {
-						deleteSelected()
-						finishSelectionAction()
-						true
-					}
-					id.mark_read -> {
-						markSelectedAs(ReadingStatus.READ)
-						finishSelectionAction()
-						true
-					}
-					id.mark_unread -> {
-						markSelectedAs(ReadingStatus.UNREAD)
-						finishSelectionAction()
-						true
-					}
-					id.bookmark -> {
-						bookmarkSelected()
-						finishSelectionAction()
-						true
-					}
-					id.remove_bookmark -> {
-						removeSelectedBookmark()
-						finishSelectionAction()
-						true
-					}
-					else -> false
-				}
-			}
-
- */
-//			calculateBottomSelectionMenuChanges() TODO
 			return true
 		}
 
@@ -688,7 +649,7 @@ fun PreviewNovelInfoContent() {
 			chapterContent = {
 				NovelChapterContent(
 					chapter = it,
-					openChapter = { /*TODO*/ },
+					openChapter = { },
 					selectionMode = false
 				) {}
 			},
