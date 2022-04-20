@@ -7,6 +7,7 @@ import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeViewModel
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
+import app.shosetsu.common.enums.AppThemes
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
 
@@ -35,6 +36,8 @@ abstract class AChapterReaderViewModel :
 	SubscribeViewModel<List<ReaderUIItem>>,
 	ShosetsuViewModel(),
 	ExposedSettingsRepoViewModel {
+
+	abstract val appThemeLiveData: Flow<AppThemes>
 
 	abstract fun retryChapter(item: ReaderChapterUI)
 

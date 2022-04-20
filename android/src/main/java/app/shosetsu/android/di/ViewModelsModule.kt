@@ -185,6 +185,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			settingsRepo = instance(),
 			instance(),
 			instance(),
+			instance(),
 			loadReaderChaptersUseCase = instance(),
 			loadChapterPassageUseCase = instance(),
 

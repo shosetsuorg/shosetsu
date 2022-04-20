@@ -10,6 +10,7 @@ import app.shosetsu.android.domain.model.local.ColorChoiceData
 import app.shosetsu.android.domain.usecases.RecordChapterIsReadUseCase
 import app.shosetsu.android.domain.usecases.RecordChapterIsReadingUseCase
 import app.shosetsu.android.domain.usecases.get.*
+import app.shosetsu.android.domain.usecases.load.LoadLiveAppThemeUseCase
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderDividerUI
@@ -19,6 +20,7 @@ import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.common.domain.repositories.base.IChaptersRepository
 import app.shosetsu.common.domain.repositories.base.INovelReaderSettingsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.common.enums.AppThemes
 import app.shosetsu.common.enums.MarkingType
 import app.shosetsu.common.enums.MarkingType.ONSCROLL
 import app.shosetsu.common.enums.MarkingType.ONVIEW
@@ -63,6 +65,7 @@ class ChapterReaderViewModel(
 	override val settingsRepo: ISettingsRepository,
 	private val chapterRepository: IChaptersRepository,
 	private val readerSettingsRepo: INovelReaderSettingsRepository,
+	private var loadLiveAppThemeUseCase: LoadLiveAppThemeUseCase,
 	private val loadReaderChaptersUseCase: GetReaderChaptersUseCase,
 	private val loadChapterPassageUseCase: GetChapterPassageUseCase,
 	private val getReaderSettingsUseCase: GetReaderSettingUseCase,
@@ -71,6 +74,9 @@ class ChapterReaderViewModel(
 	private val getNovel: GetNovelUIUseCase,
 	private val getExt: GetExtensionUseCase
 ) : AChapterReaderViewModel() {
+	override val appThemeLiveData: Flow<AppThemes>
+		get() = loadLiveAppThemeUseCase()
+
 	private val isHorizontalPageSwapping by lazy {
 		settingsRepo.getBooleanFlow(ReaderHorizontalPageSwap)
 	}
