@@ -676,4 +676,9 @@ class NovelViewModel(
 		}
 	}
 
+	override fun getChapterCount(): Flow<Int> =
+		flow {
+			emit(chaptersFlow.first().size)
+		}
+
 }

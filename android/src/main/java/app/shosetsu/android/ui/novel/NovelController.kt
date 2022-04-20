@@ -333,22 +333,25 @@ class NovelController(bundle: Bundle) :
 	 */
 	private fun downloadCustom() {
 		if (context == null) return
-		AlertDialog.Builder(activity!!).apply {
-			setTitle(R.string.download_custom_chapters)
-			val numberPicker = NumberPicker(activity!!).apply {
-				minValue = 0
-				maxValue = 0 // TODO Compose alert
-			}
-			setView(numberPicker)
+		viewModel.getChapterCount().collectLA(this, catch = {}) { max ->
+			AlertDialog.Builder(activity!!).apply {
+				setTitle(R.string.download_custom_chapters)
+				val numberPicker = NumberPicker(activity!!).apply {
+					minValue = 0
+					maxValue = max
+				}
+				setView(numberPicker)
 
-			setPositiveButton(android.R.string.ok) { d, _ ->
-				viewModel.downloadNextCustomChapters(numberPicker.value)
-				d.dismiss()
-			}
-			setNegativeButton(android.R.string.cancel) { d, _ ->
-				d.cancel()
-			}
-		}.show()
+				setPositiveButton(android.R.string.ok) { d, _ ->
+					viewModel.downloadNextCustomChapters(numberPicker.value)
+					d.dismiss()
+				}
+				setNegativeButton(android.R.string.cancel) { d, _ ->
+					d.cancel()
+				}
+			}.show()
+		}
+
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

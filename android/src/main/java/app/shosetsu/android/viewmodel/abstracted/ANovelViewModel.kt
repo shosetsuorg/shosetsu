@@ -149,4 +149,5 @@ abstract class ANovelViewModel
 	abstract fun scrollTo(predicate: (ChapterUI) -> Boolean): Flow<Boolean>
 
 	abstract fun toggleSelection(it: ChapterUI)
+	abstract fun getChapterCount(): Flow<Int>
 }
