@@ -576,8 +576,8 @@ class ChapterReaderViewModel(
 
 	override fun onScroll(chapter: ReaderChapterUI, readingPosition: Double) {
 		launchIO {
-			// If the chapter reaches 95% read, we can assume the reader already sees it all :P
-			if (readingPosition < 0.95) {
+			// If the chapter reaches 90% read, we can assume the reader already sees it all :P
+			if (readingPosition <= 0.90) {
 				settingsRepo.getBoolean(ReaderMarkReadAsReading).let { markReadAsReading ->
 					/**
 					 * If marking chapters that are read as reading is disabled
