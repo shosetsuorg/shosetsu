@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
 import app.shosetsu.android.common.consts.BundleKeys
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
@@ -12,6 +14,7 @@ import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.ui.webView.WebViewApp
 import app.shosetsu.android.view.uimodels.model.ChapterUI
+import app.shosetsu.common.enums.AppThemes
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -102,4 +105,23 @@ fun Context.readAsset(name: String): String {
 		Log.e(javaClass.name, "Failed to read asset of $name", e)
 	}
 	return string.toString()
+}
+
+fun AppCompatActivity.setTheme(theme: AppThemes) {
+	logI("Setting theme to $theme")
+	when (theme) {
+		AppThemes.FOLLOW_SYSTEM -> {
+			delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+		}
+		AppThemes.LIGHT -> {
+			delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
+		}
+		AppThemes.DARK -> {
+			delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
+		}
+		AppThemes.AMOLED -> {
+			// TODO Implement amoled mode
+			delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
+		}
+	}
 }

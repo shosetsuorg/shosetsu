@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,16 +42,13 @@ import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel.Chapter
 import app.shosetsu.android.viewmodel.impl.settings.*
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
-import app.shosetsu.common.enums.AppThemes
 import app.shosetsu.lib.Novel.ChapterType
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.pager.*
 import com.google.android.material.composethemeadapter.MdcTheme
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -127,23 +123,11 @@ class ChapterReader
 			setNovelID(intent.getIntExtra(BUNDLE_NOVEL_ID, -1))
 			viewModel.setCurrentChapterID(intent.getIntExtra(BUNDLE_CHAPTER_ID, -1), true)
 		}
+		runBlocking {
+			setTheme(viewModel.appThemeLiveData.first())
+		}
 		viewModel.appThemeLiveData.collectLA(this, catch = {}) {
-			when (it) {
-				AppThemes.FOLLOW_SYSTEM -> {
-					delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-				}
-				AppThemes.LIGHT -> {
-					delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
-				}
-				AppThemes.DARK -> {
-					delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
-				}
-				AppThemes.AMOLED -> {
-					// TODO Implement amoled mode
-					delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
-				}
-				else -> logE("Null theme received")
-			}
+			setTheme(it)
 		}
 		super.onCreate(savedInstanceState)
 		setContent {

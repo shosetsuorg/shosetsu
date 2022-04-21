@@ -21,7 +21,6 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.GravityCompat
@@ -44,7 +43,6 @@ import app.shosetsu.android.ui.updates.ComposeUpdatesController
 import app.shosetsu.android.view.controller.base.*
 import app.shosetsu.android.viewmodel.abstracted.AMainViewModel
 import app.shosetsu.common.domain.repositories.base.IBackupRepository
-import app.shosetsu.common.enums.AppThemes.*
 import com.bluelinelabs.conductor.Conductor.attachRouter
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.ControllerChangeHandler
@@ -55,6 +53,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.BaseTransientBottomBar.Duration
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.acra.ACRA
 import org.kodein.di.DI
@@ -147,6 +146,9 @@ class MainActivity : AppCompatActivity(), DIAware,
 			}
 		}
 
+		runBlocking {
+			setTheme(viewModel.appThemeLiveData.first())
+		}
 		viewModel.appThemeLiveData.collectLA(this, catch = {
 			makeSnackBar(
 				getString(
@@ -157,23 +159,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 				ACRA.errorReporter.handleSilentException(it)
 			}.show()
 		}) {
-			logI("Setting theme to $it")
-			when (it) {
-				FOLLOW_SYSTEM -> {
-					delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-				}
-				LIGHT -> {
-					delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
-				}
-				DARK -> {
-					delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
-				}
-				AMOLED -> {
-					// TODO Implement amoled mode
-					delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
-				}
-				else -> logE("Null theme received")
-			}
+			setTheme(it)
 		}
 		this.requestPerms()
 		super.onCreate(savedInstanceState)
