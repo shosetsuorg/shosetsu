@@ -1,9 +1,9 @@
 {
-  "latestVersion": "1943",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r1943/shosetsu-r1943-universal.apk",
+  "latestVersion": "2089",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r2089/shosetsu-r2089-universal.apk",
   "releaseNotes": [
-    "- Fix extension update button being invisible",
-    "- Handle more exceptions",
-    "- I apologize for issues with the reader, I am trying to fix it as soon as possible"
+    "- # Complete UI rewrite for Novel info & Reader",
+    "- Added scroll bar to novel info",
+    "- Removed super fast to bottom mechanic from novel info"
   ]
 }
