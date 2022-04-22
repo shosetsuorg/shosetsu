@@ -202,7 +202,7 @@ dependencies {
 
 
 	// Image loading
-	implementation("io.coil-kt:coil-compose:2.0.0-rc02")
+	implementation("io.coil-kt:coil-compose:2.0.0-rc03")
 
 	//TODO GITHUB sign in to save backup data to cloud
 	//implementation "com.github.kohsuke:github-api:github-api-1.95"
@@ -367,7 +367,7 @@ dependencies {
 	//androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.2")
 
 	// MDC Adapter
-	implementation("com.google.android.material:compose-theme-adapter:1.1.6")
+	implementation("com.google.android.material:compose-theme-adapter:1.1.7")
 
 	val androidxActivity = "1.4.0"
 	fun androidxActivity(module: String, version: String = androidxActivity) =
@@ -376,10 +376,10 @@ dependencies {
 	implementation(androidxActivity("activity-ktx"))
 	implementation(androidxActivity("activity-compose"))
 
-	implementation("com.chargemap.compose:numberpicker:0.0.12")
+	implementation("com.chargemap.compose:numberpicker:1.0.3")
 
 	// QR Code
-	implementation("io.github.g00fy2.quickie:quickie-bundled:1.4.0")
+	implementation("io.github.g00fy2.quickie:quickie-bundled:1.4.1")
 
 	implementation("com.github.doomsdayrs:qrcode-kotlin:513d290b")
 }
