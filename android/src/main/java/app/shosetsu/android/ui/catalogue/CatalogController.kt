@@ -1,19 +1,40 @@
 package app.shosetsu.android.ui.catalogue
 
-import android.content.res.Configuration
 import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
 import android.view.*
 import android.widget.SearchView
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.lifecycle.ViewTreeLifecycleOwner
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
-import androidx.recyclerview.widget.RecyclerView
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.PagingDataDiffer
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
@@ -21,25 +42,26 @@ import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.listeners.CatalogueSearchQuery
 import app.shosetsu.android.ui.novel.NovelController
-import app.shosetsu.android.view.controller.FastAdapterRecyclerController
+import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel.BackgroundNovelAddProgress.ADDED
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel.BackgroundNovelAddProgress.ADDING
+import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.common.enums.NovelCardType.COMPRESSED
 import app.shosetsu.common.enums.NovelCardType.NORMAL
 import app.shosetsu.lib.exceptions.HTTPException
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ComposeViewBinding
-import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerCatalogueBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.scroll.EndlessRecyclerOnScrollListener
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import org.acra.ACRA
 import java.net.SocketTimeoutException
 
@@ -70,24 +92,52 @@ import java.net.SocketTimeoutException
 class CatalogController(
 	/** data bundle uwu */
 	val bundle: Bundle,
-) : FastAdapterRecyclerController<ControllerCatalogueBinding, ACatalogNovelUI>(bundle),
-	ExtendedFABController {
+) : ShosetsuController(bundle), ExtendedFABController {
 	private var bsg: BottomSheetDialog? = null
 
 	/***/
 	val viewModel: ACatalogViewModel by viewModel()
 	//private val progressAdapter by lazy { ItemAdapter<ProgressItem>() }
 
-	override val fastAdapter: FastAdapter<ACatalogNovelUI> by lazy {
-		FastAdapter<ACatalogNovelUI>().apply {
-			addAdapter(0, itemAdapter)
-			//@Suppress("UNCHECKED_CAST")
-			//addAdapter(1, progressAdapter as ItemAdapter<ACatalogNovelUI>)
-		}
-	}
-
 	init {
 		setHasOptionsMenu(true)
+	}
+
+	override fun onCreateView(
+		inflater: LayoutInflater,
+		container: ViewGroup,
+		savedViewState: Bundle?
+	): View = ComposeView(container.context).apply {
+		setViewTitle()
+		setContent {
+			MdcTheme {
+				val type by viewModel.novelCardTypeLive.collectAsState(NORMAL)
+
+				val columnsInV by viewModel.columnsInV.collectAsState(SettingKey.ChapterColumnsInPortait.default)
+				val columnsInH by viewModel.columnsInH.collectAsState(SettingKey.ChapterColumnsInLandscape.default)
+
+				val items = viewModel.itemsLive.collectAsLazyPagingItems()
+
+				CatalogContent(
+					items,
+					type,
+					columnsInV,
+					onClick = {
+						router.shosetsuPush(
+							NovelController(
+								bundleOf(
+									BUNDLE_NOVEL_ID to it.id,
+									BUNDLE_EXTENSION to bundle.getInt(BUNDLE_EXTENSION)
+								)
+							)
+						)
+					},
+					onLongClick = {
+						itemLongClicked(it)
+					}
+				)
+			}
+		}
 	}
 
 	override fun onDestroy() {
@@ -96,45 +146,11 @@ class CatalogController(
 		viewModel.destroy()
 	}
 
-	override fun createLayoutManager(): RecyclerView.LayoutManager {
-		return when (viewModel.novelCardType) {
-			COMPRESSED -> LinearLayoutManager(
-				context,
-				VERTICAL,
-				false
-			)
-			else -> GridLayoutManager(
-				context,
-				context!!.resources.let {
-					val density = it.displayMetrics.density
-					val widthPixels = it.displayMetrics.widthPixels
-					when (it.configuration.orientation) {
-						Configuration.ORIENTATION_LANDSCAPE -> {
-							viewModel.calculateHColumnCount(
-								widthPixels,
-								density,
-								200f
-							)
-						}
-						else -> {
-							viewModel.calculatePColumnCount(
-								widthPixels,
-								density,
-								200f
-							)
-						}
-					}
-				},
-				VERTICAL,
-				false
-			)
-		}
-	}
 
 	/**
 	 * A [ACatalogNovelUI] was long clicked, invoking a background add
 	 */
-	private fun itemLongClicked(item: ACatalogNovelUI, position: Int): Boolean {
+	private fun itemLongClicked(item: ACatalogNovelUI): Boolean {
 		logI("Adding novel to library in background: $item")
 
 		if (item.bookmarked) {
@@ -173,50 +189,12 @@ class CatalogController(
 			}
 		}
 
-		//itemAdapter[position] = item.apply { bookmarked = true }
-		//fastAdapter.notifyItemChanged(position)
-
 		return true
-	}
-
-
-	override fun FastAdapter<ACatalogNovelUI>.setupFastAdapter() {
-		fastAdapter.apply {
-			setOnClickListener { _, _, item, _ ->
-				router.shosetsuPush(
-					NovelController(
-						bundleOf(
-							BUNDLE_NOVEL_ID to item.id,
-							BUNDLE_EXTENSION to bundle.getInt(BUNDLE_EXTENSION)
-						)
-					)
-				)
-				true
-			}
-			onLongClickListener = longClick@{ _, _, item, position ->
-				itemLongClicked(item, position)
-			}
-		}
 	}
 
 	override fun onViewCreated(view: View) {
 		viewModel.setExtensionID(bundle.getInt(BUNDLE_EXTENSION))
-		binding.swipeRefreshLayout.setOnRefreshListener { viewModel.resetView() }
 		setupObservers()
-		setupRecyclerView()
-	}
-
-	override fun setupRecyclerView() {
-		recyclerView.setHasFixedSize(false)
-		//recyclerView.addOnScrollListener(CatalogueHitBottom(viewModel))
-		super.setupRecyclerView()
-		recyclerView.addOnScrollListener(object :
-			EndlessRecyclerOnScrollListener(recyclerView.layoutManager!!) {
-			override fun onLoadMore(currentPage: Int) {
-				binding.fragmentCatalogueProgressBottom.isVisible = true
-				viewModel.loadMore()
-			}
-		})
 	}
 
 	/***/
@@ -307,16 +285,8 @@ class CatalogController(
 			else -> false
 		}
 
-	override fun updateUI(newList: List<ACatalogNovelUI>) {
-		super.updateUI(newList)
-		binding.fragmentCatalogueProgressBottom.isVisible = false
-		binding.swipeRefreshLayout.isRefreshing = false
-	}
-
-	override fun handleRecyclerException(e: Throwable) {
+	fun handleRecyclerException(e: Throwable) {
 		logE("Error occurred", e)
-		binding.fragmentCatalogueProgressBottom.isVisible = false
-		binding.swipeRefreshLayout.isRefreshing = false
 		val cause = e.cause
 
 		when {
@@ -346,15 +316,7 @@ class CatalogController(
 		}
 	}
 
-	override fun showLoading() {
-		super.showLoading()
-		if (recyclerArray.isEmpty() && !binding.swipeRefreshLayout.isRefreshing)
-			binding.swipeRefreshLayout.isRefreshing = true
-	}
-
 	private fun setupObservers() {
-		viewModel.itemsLive.observeRecyclerUpdates()
-
 		setViewTitle(getString(R.string.loading))
 		viewModel.extensionName.observe(catch = {
 			makeSnackBar(
@@ -367,7 +329,6 @@ class CatalogController(
 			}?.show()
 		}) {
 			setViewTitle(it)
-			if (recyclerArray.isEmpty()) viewModel.resetView()
 		}
 
 		viewModel.hasSearchLive.observe(catch = {
@@ -382,23 +343,7 @@ class CatalogController(
 		}) {
 			activity?.invalidateOptionsMenu()
 		}
-
-		viewModel.novelCardTypeLive.observe(catch = {
-			makeSnackBar(
-				getString(
-					R.string.controller_catalogue_error_card_type,
-					it.message ?: "Unknown exception"
-				)
-			)?.setAction(R.string.report) { _ ->
-				ACRA.errorReporter.handleSilentException(it)
-			}?.show()
-		}) {
-			binding.recyclerView.layoutManager = createLayoutManager()
-		}
 	}
-
-	override fun bindView(inflater: LayoutInflater): ControllerCatalogueBinding =
-		ControllerCatalogueBinding.inflate(inflater).also { recyclerView = it.recyclerView }
 
 	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
 		fab.setIconResource(R.drawable.filter)
@@ -446,5 +391,172 @@ class CatalogController(
 				}?.show()
 			}
 		}
+	}
+}
+
+/**
+ * Adds the [LazyPagingItems] and their content to the scope where the content of an item is
+ * aware of its local index. The range from 0 (inclusive) to [LazyPagingItems.itemCount] (exclusive)
+ * always represents the full range of presentable items, because every event from
+ * [PagingDataDiffer] will trigger a recomposition.
+ *
+ * @sample androidx.paging.compose.samples.ItemsIndexedDemo
+ *
+ * @param items the items received from a [Flow] of [PagingData].
+ * @param key a factory of stable and unique keys representing the item. Using the same key
+ * for multiple items in the list is not allowed. Type of the key should be saveable
+ * via Bundle on Android. If null is passed the position in the list will represent the key.
+ * When you specify the key the scroll position will be maintained based on the key, which
+ * means if you add/remove items before the current visible item the item with the given key
+ * will be kept as the first visible one.
+ * @param itemContent the content displayed by a single item. In case the item is `null`, the
+ * [itemContent] method should handle the logic of displaying a placeholder instead of the main
+ * content displayed by an item which is not `null`.
+ */
+fun <T : Any> LazyGridScope.itemsIndexed(
+	items: LazyPagingItems<T>,
+	key: ((index: Int, item: T) -> Any)? = null,
+	itemContent: @Composable LazyGridScope.(index: Int, value: T?) -> Unit
+) {
+	items(
+		count = items.itemCount,
+		key = if (key == null) null else { index ->
+			val item = items.peek(index)
+			if (item == null) {
+				PagingPlaceholderKey(index)
+			} else {
+				key(index, item)
+			}
+		}
+	) { index ->
+		itemContent(index, items[index])
+	}
+}
+
+data class PagingPlaceholderKey(private val index: Int) : Parcelable {
+	override fun writeToParcel(parcel: Parcel, flags: Int) {
+		parcel.writeInt(index)
+	}
+
+	override fun describeContents(): Int {
+		return 0
+	}
+
+	companion object {
+		@Suppress("unused")
+		@JvmField
+		val CREATOR: Parcelable.Creator<PagingPlaceholderKey> =
+			object : Parcelable.Creator<PagingPlaceholderKey> {
+				override fun createFromParcel(parcel: Parcel) =
+					PagingPlaceholderKey(parcel.readInt())
+
+				override fun newArray(size: Int) = arrayOfNulls<PagingPlaceholderKey?>(size)
+			}
+	}
+}
+
+@Composable
+fun CatalogContent(
+	items: LazyPagingItems<ACatalogNovelUI>,
+	cardType: NovelCardType,
+	columnsInV: Int,
+	onClick: (ACatalogNovelUI) -> Unit,
+	onLongClick: (ACatalogNovelUI) -> Unit
+) {
+	Column {
+		if (items.loadState.refresh == LoadState.Loading)
+			LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+
+		when (cardType) {
+			NORMAL, NovelCardType.COZY -> {
+				LazyVerticalGrid(columns = GridCells.Fixed(columnsInV)) {
+					itemsIndexed(
+						items,
+						key = { index, item -> item.hashCode() + index }
+					) { _, item ->
+						if (cardType == NORMAL) {
+							if (item != null)
+								NovelCardNormalContent(
+									item.title,
+									item.imageURL,
+									onClick = {
+										onClick(item)
+									},
+									onLongClick = {
+										onLongClick(item)
+									}
+								)
+						} else {
+							TODO("Cozy Type type")
+						}
+					}
+				}
+			}
+			COMPRESSED -> TODO("Compressed type")
+		}
+
+		if (items.loadState.append == LoadState.Loading)
+			LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+
+		if (items.loadState.append is LoadState.NotLoading) {
+			CatalogContentNoMore()
+		}
+	}
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun NovelCardNormalContent(
+	title: String,
+	imageURL: String,
+	onClick: () -> Unit,
+	onLongClick: () -> Unit,
+	overlay: (BoxScope.() -> Unit)? = null,
+) {
+	Card(
+		modifier = Modifier.combinedClickable(
+			onClick = onClick,
+			onLongClick = onLongClick
+		)
+	) {
+		Box {
+			AsyncImage(
+				ImageRequest.Builder(LocalContext.current)
+					.data(imageURL)
+					.placeholder(R.drawable.animated_refresh)
+					.error(R.drawable.broken_image)
+					.build(),
+				stringResource(R.string.controller_novel_info_image),
+				modifier = Modifier
+					.aspectRatio(.75f)
+					.padding(top = 8.dp)
+					.clickable(onClick = onClick)
+					.clip(RoundedCornerShape(16.dp)),
+			)
+			Text(title)
+			if (overlay != null)
+				overlay()
+		}
+
+	}
+}
+
+@Preview
+@Composable
+fun PreviewCatalogContentNoMore() {
+	MdcTheme {
+		CatalogContentNoMore()
+	}
+}
+
+@Composable
+fun CatalogContentNoMore() {
+	Box(
+		modifier = Modifier.fillMaxWidth()
+	) {
+		Text(
+			stringResource(R.string.controller_catalogue_no_more),
+			modifier = Modifier.padding(32.dp).align(Alignment.Center)
+		)
 	}
 }

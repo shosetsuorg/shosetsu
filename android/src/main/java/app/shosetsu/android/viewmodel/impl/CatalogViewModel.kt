@@ -1,5 +1,6 @@
 package app.shosetsu.android.viewmodel.impl
 
+import androidx.paging.PagingData
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.usecases.NovelBackgroundAddUseCase
 import app.shosetsu.android.domain.usecases.get.GetCatalogueListingDataUseCase
@@ -80,7 +81,10 @@ class CatalogViewModel(
 	 */
 	private val extensionIDFlow: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
 
-	override val itemsLive: Flow<List<ACatalogNovelUI>> by lazy {
+	override val itemsLive: Flow<PagingData<ACatalogNovelUI>>
+		get() = TODO("Not yet implemented")
+
+	val _itemsLive: Flow<List<ACatalogNovelUI>> by lazy {
 		itemsFlow.combine(novelCardTypeFlow) { items, type ->
 			items.let { list ->
 				list.map { card ->
@@ -380,25 +384,13 @@ class CatalogViewModel(
 
 	private var columnH: Int = SettingKey.ChapterColumnsInLandscape.default
 
-	init {
-		launchIO {
-			loadNovelUIColumnsHUseCase().collect {
-				columnH = it
-			}
-		}
-
-		launchIO {
-			loadNovelUIColumnsPUseCase().collect {
-				columnP = it
-			}
-		}
+	override val columnsInH: Flow<Int> by lazy {
+		loadNovelUIColumnsHUseCase().onIO()
 	}
 
-	override val columnsInH
-		get() = columnH
-
-	override val columnsInP
-		get() = columnP
+	override val columnsInV: Flow<Int> by lazy {
+		loadNovelUIColumnsPUseCase().onIO()
+	}
 
 	/**
 	 * @param [V] Value type of the hash map
