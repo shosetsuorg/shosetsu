@@ -382,4 +382,12 @@ dependencies {
 	implementation("io.github.g00fy2.quickie:quickie-bundled:1.4.1")
 
 	implementation("com.github.doomsdayrs:qrcode-kotlin:513d290b")
+
+	// - paging
+	val pagingVersion = "3.1.1"
+	fun paging(module: String, version: String = pagingVersion) =
+		"androidx.paging:$module:$version"
+
+	implementation(paging("paging-runtime"))
+	implementation(paging("paging-compose", "1.0.0-alpha14"))
 }

@@ -1,6 +1,6 @@
 package app.shosetsu.android.viewmodel.abstracted
 
-import app.shosetsu.android.common.utils.ColumnCalculator
+import androidx.paging.PagingData
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.common.enums.NovelCardType
@@ -31,13 +31,12 @@ import kotlinx.coroutines.flow.Flow
  * Used for showing the specific listing of a novel
  */
 abstract class ACatalogViewModel :
-	ShosetsuViewModel(),
-	ColumnCalculator {
+	ShosetsuViewModel() {
 
 	/**
 	 * What is currently being displayed to the user
 	 */
-	abstract val itemsLive: Flow<List<ACatalogNovelUI>>
+	abstract val itemsLive: Flow<PagingData<ACatalogNovelUI>>
 
 	/**
 	 * The list of items that will be presented as the filter menu
@@ -68,6 +67,9 @@ abstract class ACatalogViewModel :
 	 * Only set if [novelCardTypeLive] has been collected at least once
 	 */
 	abstract val novelCardType: NovelCardType
+
+	abstract val columnsInH: Flow<Int>
+	abstract val columnsInV: Flow<Int>
 
 	/**
 	 * Sets the [IExtension]
