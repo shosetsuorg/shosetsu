@@ -63,11 +63,6 @@ abstract class ACatalogViewModel :
 	 */
 	abstract val novelCardTypeLive: Flow<NovelCardType>
 
-	/**
-	 * Only set if [novelCardTypeLive] has been collected at least once
-	 */
-	abstract val novelCardType: NovelCardType
-
 	abstract val columnsInH: Flow<Int>
 	abstract val columnsInV: Flow<Int>
 
@@ -84,13 +79,6 @@ abstract class ACatalogViewModel :
 	 * This will reload the view
 	 */
 	abstract fun applyQuery(newQuery: String)
-
-	/**
-	 * Ask for more to be loaded
-	 *
-	 * Will append new data to [itemsLive]
-	 */
-	abstract fun loadMore()
 
 	/**
 	 * Resets the view back to what it was when it first opened
@@ -126,17 +114,14 @@ abstract class ACatalogViewModel :
 	 */
 	abstract fun destroy()
 
-
 	abstract fun getFilterStringState(id: Filter<String>): Flow<String>
 	abstract fun setFilterStringState(id: Filter<String>, value: String)
 
 	abstract fun getFilterBooleanState(id: Filter<Boolean>): Flow<Boolean>
 	abstract fun setFilterBooleanState(id: Filter<Boolean>, value: Boolean)
 
-
 	abstract fun getFilterIntState(id: Filter<Int>): Flow<Int>
 	abstract fun setFilterIntState(id: Filter<Int>, value: Int)
-
 
 	/**
 	 * Get the URL to open web view for the extension

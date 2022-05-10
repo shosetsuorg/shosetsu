@@ -1,7 +1,11 @@
 package app.shosetsu.android.viewmodel.impl
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.usecases.NovelBackgroundAddUseCase
 import app.shosetsu.android.domain.usecases.get.GetCatalogueListingDataUseCase
 import app.shosetsu.android.domain.usecases.get.GetCatalogueQueryDataUseCase
@@ -14,17 +18,12 @@ import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.CompactCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
-import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
-import app.shosetsu.lib.PAGE_INDEX
-import app.shosetsu.lib.mapify
+import app.shosetsu.lib.QUERY_INDEX
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.*
-import javax.net.ssl.SSLException
 
 /*
  * This file is part of shosetsu.
@@ -58,21 +57,16 @@ class CatalogViewModel(
 	private val loadNovelUIColumnsPUseCase: LoadNovelUIColumnsPUseCase,
 	private val setNovelUIType: SetNovelUITypeUseCase,
 ) : ACatalogViewModel() {
-	private var queryState: String = ""
-
 	/**
 	 * Map of filter id to the state to pass into the extension
 	 */
 	private var filterDataState: HashMap<Int, MutableStateFlow<Any>> = hashMapOf()
 
-	private var ext: IExtension? = null
+	private val filterDataFlow by lazy { MutableStateFlow<Map<Int, Any>>(hashMapOf()) }
 
 	private val iExtensionFlow: Flow<IExtension> by lazy {
-		extensionIDFlow.transformLatest { extensionID ->
-			ext = getExtensionUseCase(extensionID)
-
-			if (ext != null)
-				emit(ext!!)
+		extensionIDFlow.mapNotNull { extensionID ->
+			getExtensionUseCase(extensionID)
 		}
 	}
 
@@ -81,8 +75,19 @@ class CatalogViewModel(
 	 */
 	private val extensionIDFlow: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
 
-	override val itemsLive: Flow<PagingData<ACatalogNovelUI>>
-		get() = TODO("Not yet implemented")
+	override val itemsLive: Flow<PagingData<ACatalogNovelUI>> = iExtensionFlow.transform { ext ->
+		emitAll(
+			filterDataFlow.transform { data ->
+				emitAll(
+					Pager(
+						PagingConfig(10)
+					) {
+						getCatalogueListingData(ext, data)
+					}.flow
+				)
+			}
+		)
+	}.onIO()
 
 	val _itemsLive: Flow<List<ACatalogNovelUI>> by lazy {
 		itemsFlow.combine(novelCardTypeFlow) { items, type ->
@@ -151,120 +156,10 @@ class CatalogViewModel(
 		iExtensionFlow.mapLatest { it.name }.onIO()
 	}
 
-	private var stateManager = StateManager()
-
 	override fun getBaseURL(): Flow<String> =
 		flow {
 			emitAll(iExtensionFlow.mapLatest { it.baseURL })
 		}.onIO()
-
-	/**
-	 * Handles the current state of the UI
-	 */
-	private inner class StateManager {
-		private val loaderManager by lazy { LoaderManager() }
-
-		fun loadMore() {
-			loaderManager.loadMore(
-				QueryFilter(
-					queryState,
-					filterDataState.mapValues { it.value.value })
-			)
-		}
-
-		/**
-		 * The idea behind this class is the squeeze all the loading jobs into a single class.
-		 * There will only be 1 instance at a time
-		 */
-		private inner class LoaderManager {
-			/**
-			 * Current loading job
-			 */
-			private var loadingJob: Job? = null
-
-			private var _canLoadMore = true
-
-			/**
-			 * The current max page loaded.
-			 *
-			 * if 2, then the current page that has been appended is 2
-			 */
-			private var currentMaxPage: Int = 1
-
-			init {
-				itemsFlow.tryEmit(emptyList())
-				// TODO LOADING
-				currentMaxPage = ext?.startIndex ?: 1
-			}
-
-			private var values = arrayListOf<ACatalogNovelUI>()
-
-			fun loadMore(queryFilter: QueryFilter) {
-				logD("")
-				if (_canLoadMore && ((loadingJob != null && (loadingJob!!.isCancelled || loadingJob!!.isCompleted)) || (loadingJob == null))) {
-					logD("Proceeding with loading")
-					loadingJob = null
-					loadingJob = loadData(queryFilter)
-				}
-			}
-
-			private fun loadData(queryFilter: QueryFilter): Job = launchIO {
-				if (ext == null) {
-					logE("formatter was null")
-					this.cancel("Extension not loaded")
-					return@launchIO
-				}
-				itemsFlow.tryEmit(emptyList()) // TODO LOADING
-
-				try {
-					val result = getDataLoaderAndLoad(queryFilter)
-					if (result.isEmpty())
-						_canLoadMore = false
-					else {
-						values.plusAssign(result)
-						itemsFlow.tryEmit(values)
-					}
-				} catch (e: Exception) {
-					_canLoadMore = false
-					// TODO How to feed this to UI
-					logE("Cannot load more", e)
-				}
-
-				currentMaxPage++
-			}
-
-			@Throws(SSLException::class)
-			private suspend fun getDataLoaderAndLoad(queryFilter: QueryFilter): List<ACatalogNovelUI> {
-				return if (queryFilter.query.isEmpty()) {
-					logV("Loading listing data")
-					getCatalogueListingData(
-						ext!!,
-						HashMap<Int, Any>().apply {
-							putAll(ext!!.searchFiltersModel.mapify())
-							putAll(queryFilter.filters)
-							this[PAGE_INDEX] = currentMaxPage
-						}
-					)
-				} else {
-					logV("Loading query data")
-					loadCatalogueQueryDataUseCase(
-						ext!!,
-						queryFilter.query,
-						HashMap<Int, Any>().apply {
-							putAll(ext!!.searchFiltersModel.mapify())
-							putAll(queryFilter.filters)
-							this[PAGE_INDEX] = currentMaxPage
-						}
-					)
-				}
-			}
-		}
-	}
-
-	private data class QueryFilter(
-		var query: String,
-		var filters: Map<Int, Any>
-	)
 
 	override fun setExtensionID(extensionID: Int) {
 		when {
@@ -280,20 +175,14 @@ class CatalogViewModel(
 		extensionIDFlow.tryEmit(extensionID)
 	}
 
-	override fun applyQuery(newQuery: String) {
-		queryState = newQuery
-		stateManager = StateManager()
-		stateManager.loadMore()
-	}
+	private val queryKey = Filter.Text(QUERY_INDEX, "query")
 
-	@Synchronized
-	override fun loadMore() {
-		stateManager.loadMore()
+	override fun applyQuery(newQuery: String) {
+		setFilterStringState(queryKey, newQuery)
 	}
 
 	override fun resetView() {
 		itemsFlow.tryEmit(emptyList())
-		queryState = ""
 		filterDataState.clear()
 		applyFilter()
 	}
@@ -306,24 +195,20 @@ class CatalogViewModel(
 		}.onIO()
 
 	override fun applyFilter() {
-		stateManager = StateManager()
-		stateManager.loadMore()
+		filterDataFlow.tryEmit(filterDataState.mapValues { it.value.value })
 	}
 
 	override fun destroy() {
-		queryState = ""
 		extensionIDFlow.value = -1
 		itemsFlow.tryEmit(emptyList())
 		// TODO LOADING
 		filterDataState.clear()
-		stateManager = StateManager()
 	}
-
 
 	override fun getFilterStringState(id: Filter<String>): Flow<String> =
 		filterDataState.specialGetOrPut(id.id) {
 			MutableStateFlow(id.state)
-		}
+		}.onIO()
 
 	override fun setFilterStringState(id: Filter<String>, value: String) {
 		filterDataState.specialGetOrPut(id.id) {
@@ -334,7 +219,7 @@ class CatalogViewModel(
 	override fun getFilterBooleanState(id: Filter<Boolean>): Flow<Boolean> =
 		filterDataState.specialGetOrPut(id.id) {
 			MutableStateFlow(id.state)
-		}
+		}.onIO()
 
 	override fun setFilterBooleanState(id: Filter<Boolean>, value: Boolean) {
 		filterDataState.specialGetOrPut(id.id) {
@@ -345,7 +230,7 @@ class CatalogViewModel(
 	override fun getFilterIntState(id: Filter<Int>): Flow<Int> =
 		filterDataState.specialGetOrPut(id.id) {
 			MutableStateFlow(id.state)
-		}
+		}.onIO()
 
 	override fun setFilterIntState(id: Filter<Int>, value: Int) {
 		filterDataState.specialGetOrPut(id.id) {
@@ -365,24 +250,11 @@ class CatalogViewModel(
 		launchIO { setNovelUIType(cardType) }
 	}
 
-
 	private val novelCardTypeFlow by lazy { loadNovelUITypeUseCase() }
 
 	override val novelCardTypeLive: Flow<NovelCardType> by lazy {
-		novelCardTypeFlow.transformLatest {
-			_novelCardType = it
-			emit(it)
-		}
+		novelCardTypeFlow.onIO()
 	}
-
-	private var _novelCardType: NovelCardType = NovelCardType.NORMAL
-
-	override val novelCardType: NovelCardType
-		get() = _novelCardType
-
-	private var columnP: Int = SettingKey.ChapterColumnsInPortait.default
-
-	private var columnH: Int = SettingKey.ChapterColumnsInLandscape.default
 
 	override val columnsInH: Flow<Int> by lazy {
 		loadNovelUIColumnsHUseCase().onIO()
