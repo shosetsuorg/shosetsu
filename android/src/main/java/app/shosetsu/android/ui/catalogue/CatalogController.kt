@@ -60,7 +60,7 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ComposeViewBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import org.acra.ACRA
 import java.net.SocketTimeoutException
@@ -203,36 +203,23 @@ class CatalogController(
 		inflater.inflate(R.menu.toolbar_catalogue, menu)
 	}
 
-	private fun configureViewTypeMenu(menu: Menu, isRetry: Boolean = false) {
-		logI("Syncing menu")
-		when (viewModel.novelCardType) {
-			NORMAL -> {
-				menu.findItem(R.id.view_type_normal)?.isChecked = true
-			}
-			COMPRESSED -> {
-				menu.findItem(R.id.view_type_comp)?.isChecked = true
-			}
-			NovelCardType.COZY -> logE("Not cozy card implemented")
-			null -> {
-				if (isRetry) {
-					logE("No value still found for novelCardType, aborting")
-					return
-				}
-
-				logE("No value found for novelCardType, retrying in a 100 ms")
-				launchIO {
-					delay(100)
-					launchUI {
-						configureViewTypeMenu(menu, true)
-					}
-				}
-			}
-		}
-	}
+	private var optionSyncJob: Job? = null
 
 	override fun onPrepareOptionsMenu(menu: Menu) {
 		logI("Preparing option menu")
-		configureViewTypeMenu(menu)
+		optionSyncJob?.cancel()
+		optionSyncJob =
+			viewModel.novelCardTypeLive.collectLA(this@CatalogController, catch = {}) {
+				when (it) {
+					NORMAL -> {
+						menu.findItem(R.id.view_type_normal)?.isChecked = true
+					}
+					COMPRESSED -> {
+						menu.findItem(R.id.view_type_comp)?.isChecked = true
+					}
+					NovelCardType.COZY -> TODO()
+				}
+			}
 
 		menu.findItem(R.id.search_item)?.let { searchItem ->
 			if (!viewModel.hasSearch) {
@@ -533,11 +520,10 @@ fun NovelCardNormalContent(
 					.clickable(onClick = onClick)
 					.clip(RoundedCornerShape(16.dp)),
 			)
-			Text(title)
+			Text(title, modifier = Modifier.align(Alignment.BottomStart))
 			if (overlay != null)
 				overlay()
 		}
-
 	}
 }
 
