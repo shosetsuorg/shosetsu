@@ -126,6 +126,7 @@ android {
 	lint {
 		abortOnError = false
 	}
+	namespace = "com.github.doomsdayrs.apps.shosetsu"
 }
 
 //TODO Fix application variant naming
