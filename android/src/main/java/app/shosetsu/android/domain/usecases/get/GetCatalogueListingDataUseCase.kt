@@ -14,6 +14,7 @@ import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.PAGE_INDEX
+import app.shosetsu.lib.exceptions.HTTPException
 import coil.network.HttpException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -86,6 +87,8 @@ class GetCatalogueListingDataUseCase(
 						nextKey = nextKey
 					)
 				} catch (e: IOException) {
+					LoadResult.Error(e)
+				} catch (e: HTTPException) {
 					LoadResult.Error(e)
 				} catch (e: HttpException) {
 					LoadResult.Error(e)
