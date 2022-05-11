@@ -1,5 +1,6 @@
 package app.shosetsu.android.ui.catalogue
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
@@ -26,6 +27,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
@@ -126,6 +128,7 @@ class CatalogController(
 					items,
 					type,
 					columnsInV,
+					columnsInH,
 					onClick = {
 						router.shosetsuPush(
 							NovelController(
@@ -451,6 +454,7 @@ fun CatalogContent(
 	items: LazyPagingItems<ACatalogNovelUI>,
 	cardType: NovelCardType,
 	columnsInV: Int,
+	columnsInH: Int,
 	onClick: (ACatalogNovelUI) -> Unit,
 	onLongClick: (ACatalogNovelUI) -> Unit
 ) {
@@ -460,7 +464,14 @@ fun CatalogContent(
 
 		when (cardType) {
 			NORMAL, NovelCardType.COZY -> {
-				LazyVerticalGrid(columns = GridCells.Fixed(columnsInV)) {
+				LazyVerticalGrid(
+					columns = GridCells.Fixed(
+						when (LocalConfiguration.current.orientation) {
+							Configuration.ORIENTATION_LANDSCAPE -> columnsInH
+							else -> columnsInV
+						}
+					)
+				) {
 					itemsIndexed(
 						items,
 						key = { index, item -> item.hashCode() + index }
