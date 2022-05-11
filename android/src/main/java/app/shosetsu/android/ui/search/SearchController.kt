@@ -29,6 +29,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import app.shosetsu.android.common.consts.BundleKeys
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.novel.NovelController
@@ -89,19 +94,20 @@ class SearchController(bundle: Bundle) : ShosetsuController(bundle) {
 			MdcTheme {
 				val rows by viewModel.listings.collectAsState(listOf())
 				SearchContent(
-					rows,
-					viewModel::getIsLoading,
-					{
-						if (it == -1)
-							viewModel.searchLibrary()
-						else viewModel.searchExtension(it)
+					rows = rows,
+					getIsLoading = viewModel::getIsLoading,
+					getChildren = {
+						viewModel.searchLibrary()
 					},
-					viewModel::getException,
-					{
+					getExtChildren = {
+						viewModel.searchExtension(it)
+					},
+					getException = viewModel::getException,
+					onClick = {
 						router.shosetsuPush(NovelController(bundleOf(BundleKeys.BUNDLE_NOVEL_ID to it.id)))
 					},
-					viewModel::refresh,
-					viewModel::refresh
+					onRefresh = viewModel::refresh,
+					onRefreshAll = viewModel::refresh
 				)
 			}
 		}
@@ -186,7 +192,10 @@ fun PreviewSearchContent() {
 		},
 		onClick = {},
 		onRefresh = {},
-		onRefreshAll = {}
+		onRefreshAll = {},
+		getExtChildren = {
+			flow { }
+		}
 	)
 }
 
@@ -194,7 +203,8 @@ fun PreviewSearchContent() {
 fun SearchContent(
 	rows: List<SearchRowUI>,
 	getIsLoading: (id: Int) -> Flow<Boolean>,
-	getChildren: (id: Int) -> Flow<List<ACatalogNovelUI>>,
+	getChildren: () -> Flow<List<ACatalogNovelUI>>,
+	getExtChildren: (id: Int) -> Flow<PagingData<ACatalogNovelUI>>,
 	getException: (id: Int) -> Flow<Throwable?>,
 	onClick: (ACatalogNovelUI) -> Unit,
 	onRefresh: (id: Int) -> Unit,
@@ -204,22 +214,33 @@ fun SearchContent(
 		rememberSwipeRefreshState(false),
 		onRefresh = onRefreshAll
 	) {
+		val libraryChildren: List<ACatalogNovelUI> by getChildren().collectAsState(listOf())
+		val isLoading by getIsLoading(-1).collectAsState(false)
+
 		LazyColumn(
 			modifier = Modifier.fillMaxSize(),
 			contentPadding = PaddingValues(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 64.dp)
 		) {
-
 			items(rows, key = { it.extensionID }) { row ->
-				val isLoading by getIsLoading(row.extensionID).collectAsState(false)
 				val exception by getException(row.extensionID).collectAsState(null)
-				val children by getChildren(row.extensionID).collectAsState(listOf())
+
+				val items: LazyPagingItems<ACatalogNovelUI>? =
+					if (row.extensionID != -1)
+						getExtChildren(row.extensionID).collectAsLazyPagingItems()
+					else null
+
 
 				SearchRowContent(
-					row,
-					isLoading,
-					children,
-					onClick,
-					exception
+					row = row,
+					isLoading = if (row.extensionID == -1) {
+						isLoading
+					} else {
+						false
+					},
+					children = items,
+					libraryChildren = libraryChildren,
+					onClick = onClick,
+					exception = exception,
 				) {
 					onRefresh(row.extensionID)
 				}
@@ -240,18 +261,17 @@ fun PreviewSearchRowContent() {
 			imageURL = null
 		),
 		isLoading = true,
-		children = listOf(),
 		onClick = {},
-		exception = null,
-		onRefresh = {}
-	)
+		exception = null
+	) {}
 }
 
 @Composable
 fun SearchRowContent(
 	row: SearchRowUI,
 	isLoading: Boolean,
-	children: List<ACatalogNovelUI>,
+	libraryChildren: List<ACatalogNovelUI> = listOf(),
+	children: LazyPagingItems<ACatalogNovelUI>? = null,
 	onClick: (ACatalogNovelUI) -> Unit,
 	exception: Throwable?,
 	onRefresh: () -> Unit
@@ -274,17 +294,27 @@ fun SearchRowContent(
 			)
 			Text(row.name, modifier = Modifier.padding(start = 8.dp))
 		}
-		if (isLoading) {
+		if (children?.loadState?.refresh == LoadState.Loading || isLoading) {
 			LinearProgressIndicator(
 				modifier = Modifier.fillMaxWidth()
 			)
 		} else {
 			LazyRow {
-				items(children, key = { it.id }) {
-					SearchResultContent(
-						it,
-						onClick
-					)
+				if (children != null) {
+					items(children, key = { it.id }) {
+						if (it != null)
+							SearchResultContent(
+								it,
+								onClick
+							)
+					}
+				} else {
+					items(libraryChildren, key = { it.id }) {
+						SearchResultContent(
+							it,
+							onClick
+						)
+					}
 				}
 			}
 		}

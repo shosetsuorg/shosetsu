@@ -1,5 +1,7 @@
 package app.shosetsu.android.domain.usecases.get
 
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import app.shosetsu.android.common.ext.convertTo
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
@@ -12,6 +14,11 @@ import app.shosetsu.common.domain.repositories.base.INovelsRepository
 import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
+import app.shosetsu.lib.PAGE_INDEX
+import coil.network.HttpException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -40,6 +47,75 @@ class GetCatalogueQueryDataUseCase(
 	private val convertNCToCNUIUseCase: ConvertNCToCNUIUseCase,
 	private val iSettingsRepository: ISettingsRepository
 ) {
+	inner class MyPagingSource(
+		val iExtension: IExtension,
+		val query: String,
+		val data: Map<Int, Any>,
+	) : PagingSource<Int, ACatalogNovelUI>() {
+		override fun getRefreshKey(state: PagingState<Int, ACatalogNovelUI>): Int? {
+			return state.anchorPosition?.let {
+				state.closestPageToPosition(it)?.prevKey?.plus(1)
+					?: state.closestPageToPosition(it)?.nextKey?.minus(1)
+			}
+		}
+
+		override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ACatalogNovelUI> {
+			return withContext(Dispatchers.IO) {
+				try {
+					// Key may be null during a refresh, if no explicit key is passed into Pager
+					// construction. Use 0 as default, because our API is indexed started at index 0
+					val pageNumber = params.key ?: iExtension.startIndex
+
+					// Suspending network load via Retrofit. This doesn't need to be wrapped in a
+					// withContext(Dispatcher.IO) { ... } block since Retrofit's Coroutine
+					// CallAdapter dispatches on a worker thread.
+					val response =
+						novelsRepository.getCatalogueSearch(
+							iExtension,
+							query,
+							HashMap(data).also { it[PAGE_INDEX] = pageNumber }
+						).let {
+							val data: List<Novel.Listing> = it
+							iSettingsRepository.getInt(SettingKey.SelectedNovelCardType)
+								.let { cardType ->
+									(data.map { novelListing ->
+										novelListing.convertTo(iExtension)
+									}.mapNotNull { ne ->
+										try {
+											novelsRepository.insertReturnStripped(ne)?.let { card ->
+												convertNCToCNUIUseCase(card, cardType)
+											}
+										} catch (e: GenericSQLiteException) {
+											logE("Failed to load parse novel", e)
+											null
+										}
+									})
+								}
+						}
+
+					// Since 0 is the lowest page number, return null to signify no more pages should
+					// be loaded before it.
+					val prevKey = if (pageNumber > iExtension.startIndex) pageNumber - 1 else null
+
+					// This API defines that it's out of data when a page returns empty. When out of
+					// data, we return `null` to signify no more pages should be loaded
+					val nextKey = if (response.isNotEmpty()) pageNumber + 1 else null
+					LoadResult.Page(
+						data = response,
+						prevKey = prevKey,
+						nextKey = nextKey
+					)
+				} catch (e: IOException) {
+					LoadResult.Error(e)
+				} catch (e: HttpException) {
+					LoadResult.Error(e)
+				} catch (e: LuaException) {
+					LoadResult.Error(e)
+				}
+			}
+		}
+	}
+
 	@Throws(
 		GenericSQLiteException::class,
 		IncompatibleExtensionException::class,
@@ -49,35 +125,15 @@ class GetCatalogueQueryDataUseCase(
 		extID: Int,
 		query: String,
 		filters: Map<Int, Any>
-	): List<ACatalogNovelUI> = getExt(extID)?.let {
+	): MyPagingSource = getExt(extID)?.let {
 		invoke(it, query, filters)
-	} ?: emptyList()
+	} ?: throw Exception("Ext missing")
 
 	@Throws(LuaException::class)
-	suspend operator fun invoke(
+	operator fun invoke(
 		ext: IExtension,
 		query: String,
 		filters: Map<Int, Any>
-	): List<ACatalogNovelUI> = novelsRepository.getCatalogueSearch(
-		ext,
-		query,
-		filters
-	).let {
-		val data: List<Novel.Listing> = it
-		iSettingsRepository.getInt(SettingKey.SelectedNovelCardType).let { cardType ->
-			(data.map { novelListing ->
-				novelListing.convertTo(ext)
-			}.mapNotNull { ne ->
-				try {
-					novelsRepository.insertReturnStripped(ne)?.let { card ->
-						convertNCToCNUIUseCase(card, cardType)
-					}
-				} catch (e: GenericSQLiteException) {
-					logE("Failed to load parse novel", e)
-					null
-				}
-			})
-		}
-	}
+	): MyPagingSource = MyPagingSource(ext, query, filters)
 
 }

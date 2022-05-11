@@ -1,5 +1,6 @@
 package app.shosetsu.android.viewmodel.abstracted
 
+import androidx.paging.PagingData
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
@@ -43,7 +44,7 @@ abstract class ASearchViewModel : ShosetsuViewModel(), Destroyable {
 	/**
 	 * Gets the search flow of an extension
 	 */
-	abstract fun searchExtension(extensionId: Int): Flow<List<ACatalogNovelUI>>
+	abstract fun searchExtension(extensionId: Int): Flow<PagingData<ACatalogNovelUI>>
 
 	/**
 	 * Refresh all rows
