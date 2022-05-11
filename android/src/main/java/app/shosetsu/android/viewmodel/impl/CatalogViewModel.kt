@@ -67,7 +67,7 @@ class CatalogViewModel(
 	private val iExtensionFlow: Flow<IExtension> by lazy {
 		extensionIDFlow.mapNotNull { extensionID ->
 			getExtensionUseCase(extensionID)
-		}
+		}.distinctUntilChanged()
 	}
 
 	/**
@@ -76,7 +76,7 @@ class CatalogViewModel(
 	private val extensionIDFlow: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
 
 	private val pagerFlow: Flow<Pager<Int, ACatalogNovelUI>> by lazy {
-		iExtensionFlow.distinctUntilChanged().transformLatest { ext ->
+		iExtensionFlow.transformLatest { ext ->
 			emitAll(queryFlow.transformLatest { query ->
 				emitAll(filterDataFlow.transformLatest { data ->
 					emit(
@@ -104,35 +104,12 @@ class CatalogViewModel(
 		}.cachedIn(viewModelScope)
 	}
 
-	private val itemsFlow: MutableStateFlow<List<ACatalogNovelUI>> by lazy {
-		MutableStateFlow(emptyList())
-	}
-
-	private val filterItemFlow: Flow<Array<Filter<*>>> by lazy {
-		iExtensionFlow.mapLatest {
-			(it.searchFiltersModel)
-		}
-	}
-
-	/**
-	 * This flow is used to reload the filters
-	 */
-	private val filterReloadFlow = MutableStateFlow(true)
-
 	override val filterItemsLive: Flow<List<Filter<*>>>
-		get() = filterItemFlow.mapLatest { it.toList() }.onIO()
+		get() = iExtensionFlow.mapLatest { it.searchFiltersModel.toList() }.onIO()
 
 	override val hasSearchLive: Flow<Boolean> by lazy {
-		iExtensionFlow.mapLatest { it.hasSearch }.transformLatest {
-			_hasSearch = it
-			emit(it)
-		}.onIO()
+		iExtensionFlow.mapLatest { it.hasSearch }.onIO()
 	}
-
-	private var _hasSearch: Boolean = false
-
-	override val hasSearch: Boolean
-		get() = _hasSearch
 
 	override val extensionName: Flow<String> by lazy {
 		iExtensionFlow.mapLatest { it.name }.onIO()
@@ -163,7 +140,6 @@ class CatalogViewModel(
 	}
 
 	override fun resetView() {
-		itemsFlow.tryEmit(emptyList())
 		filterDataState.clear()
 		queryFlow.tryEmit(null)
 		applyFilter()
@@ -215,20 +191,15 @@ class CatalogViewModel(
 
 	override fun resetFilter() {
 		filterDataState.clear()
-		launchIO {
-			filterReloadFlow.emit(!filterReloadFlow.value)
-			applyFilter()
-		}
+		applyFilter()
 	}
 
 	override fun setViewType(cardType: NovelCardType) {
 		launchIO { setNovelUIType(cardType) }
 	}
 
-	private val novelCardTypeFlow by lazy { loadNovelUITypeUseCase() }
-
 	override val novelCardTypeLive: Flow<NovelCardType> by lazy {
-		novelCardTypeFlow.onIO()
+		loadNovelUITypeUseCase().onIO()
 	}
 
 	override val columnsInH: Flow<Int> by lazy {
