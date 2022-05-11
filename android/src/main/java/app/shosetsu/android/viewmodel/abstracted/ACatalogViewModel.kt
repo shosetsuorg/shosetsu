@@ -109,11 +109,6 @@ abstract class ACatalogViewModel :
 
 	abstract fun setViewType(cardType: NovelCardType)
 
-	/**
-	 * This will reset the view model completely so it can be reused later
-	 */
-	abstract fun destroy()
-
 	abstract fun getFilterStringState(id: Filter<String>): Flow<String>
 	abstract fun setFilterStringState(id: Filter<String>, value: String)
 

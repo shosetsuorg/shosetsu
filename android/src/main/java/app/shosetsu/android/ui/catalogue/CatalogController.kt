@@ -147,13 +147,6 @@ class CatalogController(
 		}
 	}
 
-	override fun onDestroy() {
-		logV("")
-		super.onDestroy()
-		viewModel.destroy()
-	}
-
-
 	/**
 	 * A [ACatalogNovelUI] was long clicked, invoking a background add
 	 */
