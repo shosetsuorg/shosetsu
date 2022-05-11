@@ -104,8 +104,18 @@ class CatalogViewModel(
 		}.cachedIn(viewModelScope)
 	}
 
-	override val filterItemsLive: Flow<List<Filter<*>>>
-		get() = iExtensionFlow.mapLatest { it.searchFiltersModel.toList() }.onIO()
+	private val filterItemsFlow by lazy {
+		iExtensionFlow.mapLatest {
+			it.searchFiltersModel.toList()
+		}.onIO()
+	}
+
+	override val filterItemsLive: Flow<List<Filter<*>>> by lazy {
+		filterItemsFlow.transformLatest {
+			filterDataState.clear() // Reset filter state so no data conflicts occur
+			emit(it)
+		}
+	}
 
 	override val hasSearchLive: Flow<Boolean> by lazy {
 		iExtensionFlow.mapLatest { it.hasSearch }.onIO()
@@ -163,7 +173,7 @@ class CatalogViewModel(
 	}
 
 	private suspend fun resetFilterDataState() {
-		filterItemsLive.first().forEach { filter -> resetFilter(filter) }
+		filterItemsFlow.first().forEach { filter -> resetFilter(filter) }
 	}
 
 	override fun backgroundNovelAdd(novelID: Int): Flow<BackgroundNovelAddProgress> =
