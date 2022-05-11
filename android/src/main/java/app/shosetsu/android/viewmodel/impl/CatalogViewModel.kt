@@ -1,8 +1,10 @@
 package app.shosetsu.android.viewmodel.impl
 
+import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.usecases.NovelBackgroundAddUseCase
@@ -74,7 +76,7 @@ class CatalogViewModel(
 	private val extensionIDFlow: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
 
 	private val pagerFlow: Flow<Pager<Int, ACatalogNovelUI>> by lazy {
-		iExtensionFlow.transformLatest { ext ->
+		iExtensionFlow.distinctUntilChanged().transformLatest { ext ->
 			emitAll(queryFlow.transformLatest { query ->
 				emitAll(filterDataFlow.transformLatest { data ->
 					emit(
@@ -99,7 +101,7 @@ class CatalogViewModel(
 	override val itemsLive: Flow<PagingData<ACatalogNovelUI>> by lazy {
 		pagerFlow.transformLatest {
 			emitAll(it.flow)
-		}
+		}.cachedIn(viewModelScope)
 	}
 
 	private val itemsFlow: MutableStateFlow<List<ACatalogNovelUI>> by lazy {
@@ -176,12 +178,6 @@ class CatalogViewModel(
 
 	override fun applyFilter() {
 		filterDataFlow.tryEmit(filterDataState.mapValues { it.value.value })
-	}
-
-	override fun destroy() {
-		extensionIDFlow.value = -1
-		itemsFlow.tryEmit(emptyList())
-		filterDataState.clear()
 	}
 
 	override fun getFilterStringState(id: Filter<String>): Flow<String> =
