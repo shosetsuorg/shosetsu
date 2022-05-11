@@ -32,7 +32,6 @@ class CatalogueSearchQuery(private val catalogFragment: CatalogController) :
 	}
 
 	override fun onQueryTextChange(newText: String): Boolean {
-		catalogFragment.viewModel.applyQuery(newText)
 		return true
 	}
 
