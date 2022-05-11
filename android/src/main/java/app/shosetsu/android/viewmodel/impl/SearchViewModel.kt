@@ -1,5 +1,8 @@
 package app.shosetsu.android.viewmodel.impl
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.usecases.SearchBookMarkedNovelsUseCase
@@ -46,7 +49,7 @@ class SearchViewModel(
 	private val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
 
 	private val searchFlows =
-		HashMap<Int, Flow<List<ACatalogNovelUI>>>()
+		HashMap<Int, Flow<PagingData<ACatalogNovelUI>>>()
 
 	private val refreshFlows =
 		HashMap<Int, MutableStateFlow<Int>>()
@@ -82,15 +85,11 @@ class SearchViewModel(
 	}
 
 	override fun searchLibrary(): Flow<List<ACatalogNovelUI>> =
-		searchFlows.getOrPut(-1) {
-			libraryResultFlow
-		}
+		libraryResultFlow
 
-	override fun searchExtension(extensionId: Int): Flow<List<ACatalogNovelUI>> =
+	override fun searchExtension(extensionId: Int): Flow<PagingData<ACatalogNovelUI>> =
 		searchFlows.getOrPut(extensionId) {
 			loadExtension(extensionId)
-		}.map { list ->
-			list.distinctBy { it.id }
 		}
 
 	override fun getIsLoading(id: Int): Flow<Boolean> =
@@ -181,41 +180,37 @@ class SearchViewModel(
 	 * Creates a flow for an extension query
 	 */
 	@OptIn(ExperimentalCoroutinesApi::class)
-	private fun loadExtension(extensionID: Int): Flow<List<ACatalogNovelUI>> {
-		val flow = MutableStateFlow<List<ACatalogNovelUI>>(listOf())
-
-		launchIO {
+	private fun loadExtension(extensionID: Int): Flow<PagingData<ACatalogNovelUI>> {
+		return flow {
 			val ext = getExtensionUseCase(extensionID)!!
+			emitAll(queryFlow.combine(getRefreshFlow(extensionID)) { query, _ -> query }
+				.transformLatest { query ->
 
-			flow.emitAll(
-				queryFlow.combine(getRefreshFlow(extensionID)) { query, _ -> query }
-					.transformLatest { query ->
+					val exceptionFlow = getExceptionFlow(extensionID)
 
-						val loadingFlow = getIsLoadingFlow(extensionID)
-						val exceptionFlow = getExceptionFlow(extensionID)
+					exceptionFlow.emit(null)
 
-						loadingFlow.emit(true)
-						exceptionFlow.emit(null)
+					try {
+						val source = loadCatalogueQueryDataUseCase(
+							extensionID,
+							query,
+							HashMap<Int, Any>().apply {
+								putAll(ext.searchFiltersModel.mapify())
+								this[PAGE_INDEX] = ext.startIndex
+							}
+						)
+						emitAll(
+							Pager(
+								PagingConfig(10)
+							) {
+								source
+							}.flow
+						)
+					} catch (e: Exception) {
+						exceptionFlow.emit(e)
+					}
 
-						try {
-							emit(
-								loadCatalogueQueryDataUseCase(
-									extensionID,
-									query,
-									HashMap<Int, Any>().apply {
-										putAll(ext.searchFiltersModel.mapify())
-										this[PAGE_INDEX] = ext.startIndex
-									}
-								)
-							)
-						} catch (e: Exception) {
-							exceptionFlow.emit(e)
-						}
-
-						loadingFlow.emit(false)
-					})
-		}
-
-		return flow.onIO()
+				})
+		}.onIO()
 	}
 }
