@@ -49,11 +49,6 @@ abstract class ACatalogViewModel :
 	abstract val hasSearchLive: Flow<Boolean>
 
 	/**
-	 * Only set if [hasSearchLive] has been collected at least once
-	 */
-	abstract val hasSearch: Boolean
-
-	/**
 	 * Name of the extension that is used for its catalogue
 	 */
 	abstract val extensionName: Flow<String>
