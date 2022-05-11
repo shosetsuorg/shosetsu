@@ -135,14 +135,35 @@ class CatalogViewModel(
 	}
 
 	override fun applyQuery(newQuery: String) {
-		queryFlow.tryEmit(newQuery)
-		applyFilter()
+		launchIO {
+			queryFlow.emit(newQuery)
+			_applyFilter()
+		}
 	}
 
 	override fun resetView() {
-		filterDataState.clear()
-		queryFlow.tryEmit(null)
-		applyFilter()
+		launchIO {
+			resetFilterDataState()
+			queryFlow.emit(null)
+			_applyFilter()
+		}
+	}
+
+	private suspend fun resetFilter(filter: Filter<*>) {
+		when (filter) {
+			is Filter.Text -> _setFilterStringState(filter, filter.state)
+			is Filter.Switch -> _setFilterBooleanState(filter, filter.state)
+			is Filter.Checkbox -> _setFilterBooleanState(filter, filter.state)
+			is Filter.TriState -> _setFilterIntState(filter, filter.state)
+			is Filter.Dropdown -> _setFilterIntState(filter, filter.state)
+			is Filter.RadioGroup -> _setFilterIntState(filter, filter.state)
+			is Filter.List -> filter.filters.forEach { resetFilter(it) }
+			is Filter.Group<*> -> filter.filters.forEach { resetFilter(it) }
+		}
+	}
+
+	private suspend fun resetFilterDataState() {
+		filterItemsLive.first().forEach { filter -> resetFilter(filter) }
 	}
 
 	override fun backgroundNovelAdd(novelID: Int): Flow<BackgroundNovelAddProgress> =
@@ -152,8 +173,15 @@ class CatalogViewModel(
 			emit(BackgroundNovelAddProgress.ADDED)
 		}.onIO()
 
+	private suspend fun _applyFilter() {
+		filterDataFlow.emit(filterDataState.mapValues { it.value.value })
+
+	}
+
 	override fun applyFilter() {
-		filterDataFlow.tryEmit(filterDataState.mapValues { it.value.value })
+		launchIO {
+			_applyFilter()
+		}
 	}
 
 	override fun getFilterStringState(id: Filter<String>): Flow<String> =
@@ -161,10 +189,15 @@ class CatalogViewModel(
 			MutableStateFlow(id.state)
 		}.onIO()
 
-	override fun setFilterStringState(id: Filter<String>, value: String) {
+	private suspend fun _setFilterStringState(id: Filter<String>, value: String) {
 		filterDataState.specialGetOrPut(id.id) {
 			MutableStateFlow(id.state)
-		}.tryEmit(value)
+		}.emit(value)
+	}
+
+
+	override fun setFilterStringState(id: Filter<String>, value: String) {
+		launchIO { _setFilterStringState(id, value) }
 	}
 
 	override fun getFilterBooleanState(id: Filter<Boolean>): Flow<Boolean> =
@@ -172,10 +205,14 @@ class CatalogViewModel(
 			MutableStateFlow(id.state)
 		}.onIO()
 
-	override fun setFilterBooleanState(id: Filter<Boolean>, value: Boolean) {
+	private suspend fun _setFilterBooleanState(id: Filter<Boolean>, value: Boolean) {
 		filterDataState.specialGetOrPut(id.id) {
 			MutableStateFlow(id.state)
-		}.tryEmit(value)
+		}.emit(value)
+	}
+
+	override fun setFilterBooleanState(id: Filter<Boolean>, value: Boolean) {
+		launchIO { _setFilterBooleanState(id, value) }
 	}
 
 	override fun getFilterIntState(id: Filter<Int>): Flow<Int> =
@@ -183,15 +220,21 @@ class CatalogViewModel(
 			MutableStateFlow(id.state)
 		}.onIO()
 
-	override fun setFilterIntState(id: Filter<Int>, value: Int) {
+	private suspend fun _setFilterIntState(id: Filter<Int>, value: Int) {
 		filterDataState.specialGetOrPut(id.id) {
 			MutableStateFlow(id.state)
-		}.tryEmit(value)
+		}.emit(value)
+	}
+
+	override fun setFilterIntState(id: Filter<Int>, value: Int) {
+		launchIO { _setFilterIntState(id, value) }
 	}
 
 	override fun resetFilter() {
-		filterDataState.clear()
-		applyFilter()
+		launchIO {
+			resetFilterDataState()
+			_applyFilter()
+		}
 	}
 
 	override fun setViewType(cardType: NovelCardType) {

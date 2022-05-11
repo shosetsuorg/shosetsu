@@ -222,21 +222,24 @@ class CatalogController(
 			}
 
 		menu.findItem(R.id.search_item)?.let { searchItem ->
-			if (!viewModel.hasSearch) {
-				logV("Hiding search icon")
-				menu.removeItem(R.id.search_item)
-				return@let
-			}
-			logV("Showing search icon")
-			(searchItem.actionView as SearchView).apply {
-				setOnQueryTextListener(CatalogueSearchQuery(this@CatalogController))
-				setOnCloseListener {
-					logV("closing search view")
-					viewModel.applyQuery("")
-					viewModel.resetView()
-					true
+			viewModel.hasSearchLive.collectLA(this, catch = {}) {
+				if (!it) {
+					logV("Hiding search icon")
+					menu.removeItem(R.id.search_item)
+				} else {
+					logV("Showing search icon")
+					(searchItem.actionView as SearchView).apply {
+						setOnQueryTextListener(CatalogueSearchQuery(this@CatalogController))
+						setOnCloseListener {
+							logV("closing search view")
+							viewModel.applyQuery("")
+							viewModel.resetView()
+							true
+						}
+					}
 				}
 			}
+
 		}
 	}
 
@@ -359,15 +362,15 @@ class CatalogController(
 							MdcTheme(view!!.context) {
 								val items by viewModel.filterItemsLive.collectAsState(emptyList())
 								CatalogFilterMenu(
-									items,
-									viewModel::getFilterBooleanState,
-									viewModel::setFilterBooleanState,
-									viewModel::getFilterIntState,
-									viewModel::setFilterIntState,
-									viewModel::getFilterStringState,
-									viewModel::setFilterStringState,
-									viewModel::applyFilter,
-									viewModel::resetFilter
+									items = items,
+									getBoolean = viewModel::getFilterBooleanState,
+									setBoolean = viewModel::setFilterBooleanState,
+									getInt = viewModel::getFilterIntState,
+									setInt = viewModel::setFilterIntState,
+									getString = viewModel::getFilterStringState,
+									setString = viewModel::setFilterStringState,
+									applyFilter = viewModel::applyFilter,
+									resetFilter = viewModel::resetFilter
 								)
 							}
 						}
