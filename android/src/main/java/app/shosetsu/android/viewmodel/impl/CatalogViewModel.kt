@@ -4,7 +4,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.usecases.NovelBackgroundAddUseCase
 import app.shosetsu.android.domain.usecases.get.GetCatalogueListingDataUseCase
@@ -15,13 +14,10 @@ import app.shosetsu.android.domain.usecases.load.LoadNovelUIColumnsPUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUITypeUseCase
 import app.shosetsu.android.domain.usecases.settings.SetNovelUITypeUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
-import app.shosetsu.android.view.uimodels.model.catlog.CompactCatalogNovelUI
-import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
 import app.shosetsu.common.enums.NovelCardType
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
-import app.shosetsu.lib.QUERY_INDEX
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
@@ -57,6 +53,8 @@ class CatalogViewModel(
 	private val loadNovelUIColumnsPUseCase: LoadNovelUIColumnsPUseCase,
 	private val setNovelUIType: SetNovelUITypeUseCase,
 ) : ACatalogViewModel() {
+	private val queryFlow: MutableStateFlow<String?> by lazy { MutableStateFlow(null) }
+
 	/**
 	 * Map of filter id to the state to pass into the extension
 	 */
@@ -75,53 +73,33 @@ class CatalogViewModel(
 	 */
 	private val extensionIDFlow: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
 
-	override val itemsLive: Flow<PagingData<ACatalogNovelUI>> = iExtensionFlow.transform { ext ->
-		emitAll(
-			filterDataFlow.transform { data ->
-				emitAll(
-					Pager(
-						PagingConfig(10)
-					) {
-						getCatalogueListingData(ext, data)
-					}.flow
-				)
-			}
-		)
-	}.onIO()
-
-	val _itemsLive: Flow<List<ACatalogNovelUI>> by lazy {
-		itemsFlow.combine(novelCardTypeFlow) { items, type ->
-			items.let { list ->
-				list.map { card ->
-					when (type) {
-						NovelCardType.NORMAL -> {
-							if (card is FullCatalogNovelUI)
-								card
-							else FullCatalogNovelUI(
-								card.id,
-								card.title,
-								card.imageURL,
-								card.bookmarked
+	private val pagerFlow: Flow<Pager<Int, ACatalogNovelUI>> by lazy {
+		iExtensionFlow.transformLatest { ext ->
+			emitAll(queryFlow.transformLatest { query ->
+				emitAll(filterDataFlow.transformLatest { data ->
+					emit(
+						Pager(
+							PagingConfig(10)
+						) {
+							if (query == null)
+								getCatalogueListingData(ext, data)
+							else loadCatalogueQueryDataUseCase(
+								ext,
+								query,
+								data
 							)
 						}
-						NovelCardType.COMPRESSED -> {
-							if (card is CompactCatalogNovelUI)
-								card
-							else CompactCatalogNovelUI(
-								card.id,
-								card.title,
-								card.imageURL,
-								card.bookmarked
-							)
-						}
-						NovelCardType.COZY -> {
-							logE("Cozy type not implemented")
-							card
-						}
-					}
+					)
 				}
-			}
+				)
+			})
 		}.onIO()
+	}
+
+	override val itemsLive: Flow<PagingData<ACatalogNovelUI>> by lazy {
+		pagerFlow.transformLatest {
+			emitAll(it.flow)
+		}
 	}
 
 	private val itemsFlow: MutableStateFlow<List<ACatalogNovelUI>> by lazy {
@@ -129,7 +107,9 @@ class CatalogViewModel(
 	}
 
 	private val filterItemFlow: Flow<Array<Filter<*>>> by lazy {
-		iExtensionFlow.mapLatest { (it.searchFiltersModel) }
+		iExtensionFlow.mapLatest {
+			(it.searchFiltersModel)
+		}
 	}
 
 	/**
@@ -175,15 +155,15 @@ class CatalogViewModel(
 		extensionIDFlow.tryEmit(extensionID)
 	}
 
-	private val queryKey = Filter.Text(QUERY_INDEX, "query")
-
 	override fun applyQuery(newQuery: String) {
-		setFilterStringState(queryKey, newQuery)
+		queryFlow.tryEmit(newQuery)
+		applyFilter()
 	}
 
 	override fun resetView() {
 		itemsFlow.tryEmit(emptyList())
 		filterDataState.clear()
+		queryFlow.tryEmit(null)
 		applyFilter()
 	}
 
@@ -201,7 +181,6 @@ class CatalogViewModel(
 	override fun destroy() {
 		extensionIDFlow.value = -1
 		itemsFlow.tryEmit(emptyList())
-		// TODO LOADING
 		filterDataState.clear()
 	}
 
