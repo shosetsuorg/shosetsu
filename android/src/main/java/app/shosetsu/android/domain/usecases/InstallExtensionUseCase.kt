@@ -1,14 +1,14 @@
 package app.shosetsu.android.domain.usecases
 
 import app.shosetsu.android.common.ext.generify
-import app.shosetsu.common.FilePermissionException
-import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.android.common.FilePermissionException
+import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
-import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
-import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository.InstallExtensionFlags
+import app.shosetsu.android.domain.repository.base.IExtensionEntitiesRepository
+import app.shosetsu.android.domain.repository.base.IExtensionRepoRepository
+import app.shosetsu.android.domain.repository.base.IExtensionsRepository
+import app.shosetsu.android.domain.repository.base.IExtensionsRepository.InstallExtensionFlags
 import app.shosetsu.common.utils.asIEntity
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.exceptions.HTTPException

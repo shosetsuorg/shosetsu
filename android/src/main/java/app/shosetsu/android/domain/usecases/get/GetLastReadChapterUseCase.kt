@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.common.domain.model.local.ChapterHistoryEntity
-import app.shosetsu.common.domain.repositories.base.IChapterHistoryRepository
+import app.shosetsu.android.domain.model.local.ChapterHistoryEntity
+import app.shosetsu.android.domain.repository.base.IChapterHistoryRepository
 
 /*
  * This file is part of shosetsu.

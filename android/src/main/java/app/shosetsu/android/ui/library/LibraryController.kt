@@ -24,8 +24,8 @@ import app.shosetsu.android.view.controller.base.syncFABWithRecyclerView
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.enums.NovelCardType
-import app.shosetsu.common.enums.NovelCardType.*
+import app.shosetsu.android.common.enums.NovelCardType
+import app.shosetsu.android.common.enums.NovelCardType.*
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton

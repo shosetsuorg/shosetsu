@@ -2,10 +2,10 @@ package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderChapterUI
 import app.shosetsu.common.consts.settings.SettingKey.ReaderStringToHtml
-import app.shosetsu.common.domain.repositories.base.IChaptersRepository
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.domain.repositories.base.INovelsRepository
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.android.domain.repository.base.IChaptersRepository
+import app.shosetsu.android.domain.repository.base.IExtensionsRepository
+import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emitAll

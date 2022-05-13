@@ -2,7 +2,7 @@ package app.shosetsu.android.domain.usecases.start
 
 import app.shosetsu.android.backend.workers.onetime.DownloadWorker.Manager
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 
 /*
  * This file is part of shosetsu.

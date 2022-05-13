@@ -1,11 +1,11 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
+import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
+import app.shosetsu.android.domain.model.local.ExtensionInstallOptionEntity
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeViewModel
-import app.shosetsu.common.domain.model.local.BrowseExtensionEntity
-import app.shosetsu.common.domain.model.local.ExtensionInstallOptionEntity
 
 /*
  * This file is part of shosetsu.

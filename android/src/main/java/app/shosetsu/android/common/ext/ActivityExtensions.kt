@@ -11,10 +11,10 @@ import androidx.core.os.bundleOf
 import app.shosetsu.android.common.consts.BundleKeys
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
+import app.shosetsu.android.common.enums.AppThemes
 import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.android.ui.webView.WebViewApp
 import app.shosetsu.android.view.uimodels.model.ChapterUI
-import app.shosetsu.common.enums.AppThemes
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader

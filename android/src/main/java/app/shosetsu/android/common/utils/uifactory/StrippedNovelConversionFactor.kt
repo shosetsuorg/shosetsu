@@ -1,7 +1,7 @@
 package app.shosetsu.android.common.utils.uifactory
 
 import app.shosetsu.android.view.uimodels.model.IDTitleImageUI
-import app.shosetsu.common.domain.model.local.StrippedBookmarkedNovelEntity
+import app.shosetsu.android.domain.model.local.StrippedBookmarkedNovelEntity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest

@@ -1,13 +1,13 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.lifecycle.LiveData
+import app.shosetsu.android.common.enums.AppThemes
+import app.shosetsu.android.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderChapterUI
 import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeViewModel
-import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
-import app.shosetsu.common.enums.AppThemes
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
 

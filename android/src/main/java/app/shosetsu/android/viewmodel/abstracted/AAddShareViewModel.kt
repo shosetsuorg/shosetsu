@@ -1,7 +1,7 @@
 package app.shosetsu.android.viewmodel.abstracted
 
+import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
-import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.lib.share.ExtensionLink
 import app.shosetsu.lib.share.NovelLink
 import app.shosetsu.lib.share.RepositoryLink

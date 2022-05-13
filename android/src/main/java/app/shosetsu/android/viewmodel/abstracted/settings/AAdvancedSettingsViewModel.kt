@@ -1,7 +1,7 @@
 package app.shosetsu.android.viewmodel.abstracted.settings
 
 import androidx.lifecycle.LiveData
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import kotlinx.coroutines.flow.Flow
 
 /*

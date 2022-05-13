@@ -2,7 +2,7 @@ package app.shosetsu.android
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
-import app.shosetsu.common.domain.repositories.base.IBackupRepository
+import app.shosetsu.android.domain.repository.base.IBackupRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.future.future
 import org.junit.Test

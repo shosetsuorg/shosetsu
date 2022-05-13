@@ -3,8 +3,10 @@ package app.shosetsu.android.datasource.local.database.impl
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.providers.database.dao.UpdatesDao
-import app.shosetsu.common.GenericSQLiteException
-import app.shosetsu.common.datasource.database.base.IDBUpdatesDataSource
+import app.shosetsu.android.common.GenericSQLiteException
+import app.shosetsu.android.datasource.local.database.base.IDBUpdatesDataSource
+import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
+import app.shosetsu.android.domain.model.local.UpdateEntity
 import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.common.domain.model.local.UpdateEntity
 import app.shosetsu.common.dto.convertList

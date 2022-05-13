@@ -8,7 +8,7 @@ import app.shosetsu.android.common.utils.uifactory.mapToFactory
 import app.shosetsu.android.domain.model.local.ColorChoiceData
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.common.consts.settings.SettingKey.ReaderUserThemes
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.common.dto.convertList
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi

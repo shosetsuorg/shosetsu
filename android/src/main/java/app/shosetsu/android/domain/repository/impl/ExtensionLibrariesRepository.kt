@@ -1,12 +1,12 @@
 package app.shosetsu.android.domain.repository.impl
 
-import app.shosetsu.common.GenericSQLiteException
-import app.shosetsu.common.datasource.database.base.IDBExtLibDataSource
-import app.shosetsu.common.datasource.file.base.IFileExtLibDataSource
+import app.shosetsu.android.common.GenericSQLiteException
+import app.shosetsu.android.datasource.local.database.base.IDBExtLibDataSource
+import app.shosetsu.android.datasource.file.base.IFileExtLibDataSource
 import app.shosetsu.common.datasource.memory.base.IMemExtLibDataSource
-import app.shosetsu.common.datasource.remote.base.IRemoteExtLibDataSource
+import app.shosetsu.android.datasource.remote.base.IRemoteExtLibDataSource
 import app.shosetsu.common.domain.model.local.ExtLibEntity
-import app.shosetsu.common.domain.repositories.base.IExtensionLibrariesRepository
+import app.shosetsu.android.domain.repository.base.IExtensionLibrariesRepository
 import app.shosetsu.lib.Version
 import app.shosetsu.lib.json.J_VERSION
 import kotlinx.serialization.json.Json

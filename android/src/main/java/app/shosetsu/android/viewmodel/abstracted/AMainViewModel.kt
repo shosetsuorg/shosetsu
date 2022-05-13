@@ -1,11 +1,11 @@
 package app.shosetsu.android.viewmodel.abstracted
 
+import app.shosetsu.android.common.enums.AppThemes
 import app.shosetsu.android.common.enums.NavigationStyle
+import app.shosetsu.android.domain.model.local.AppUpdateEntity
+import app.shosetsu.android.domain.repository.base.IBackupRepository
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
-import app.shosetsu.common.domain.model.local.AppUpdateEntity
-import app.shosetsu.common.domain.repositories.base.IBackupRepository
-import app.shosetsu.common.enums.AppThemes
 import kotlinx.coroutines.flow.Flow
 
 /*

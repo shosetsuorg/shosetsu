@@ -1,10 +1,10 @@
 package app.shosetsu.android.viewmodel.abstracted
 
+import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.StartUpdateManagerViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeViewModel
-import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.common.enums.ReadingStatus
 import kotlinx.coroutines.flow.Flow
 import org.joda.time.DateTime

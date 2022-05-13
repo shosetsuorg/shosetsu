@@ -23,10 +23,10 @@ import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.ExtLibEntity
 import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
-import app.shosetsu.common.domain.repositories.base.IExtensionLibrariesRepository
-import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.android.domain.repository.base.IExtensionLibrariesRepository
+import app.shosetsu.android.domain.repository.base.IExtensionRepoRepository
+import app.shosetsu.android.domain.repository.base.IExtensionsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.lib.Version
 import app.shosetsu.lib.json.RepoExtension
 import app.shosetsu.lib.json.RepoLibrary

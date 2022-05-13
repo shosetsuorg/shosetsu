@@ -2,7 +2,7 @@ package app.shosetsu.android.di
 
 import app.shosetsu.android.providers.file.impl.AndroidFileSystemProvider
 import app.shosetsu.android.providers.prefrences.SharedPreferenceProvider
-import app.shosetsu.common.providers.file.base.IFileSystemProvider
+import app.shosetsu.android.providers.file.base.IFileSystemProvider
 import org.kodein.di.*
 
 /*

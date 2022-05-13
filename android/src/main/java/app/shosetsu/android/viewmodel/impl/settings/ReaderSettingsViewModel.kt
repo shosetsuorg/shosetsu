@@ -15,7 +15,7 @@ import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
 import app.shosetsu.android.viewmodel.abstracted.settings.AReaderSettingsViewModel
 import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
 import app.shosetsu.common.consts.settings.SettingKey.*
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine

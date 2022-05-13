@@ -3,12 +3,12 @@ package app.shosetsu.android.providers.file.impl
 import android.content.Context
 import android.os.Environment.DIRECTORY_DOCUMENTS
 import android.os.Environment.DIRECTORY_DOWNLOADS
-import app.shosetsu.common.FileNotFoundException
-import app.shosetsu.common.FilePermissionException
-import app.shosetsu.common.FilePermissionException.PermissionType
+import app.shosetsu.android.common.FileNotFoundException
+import app.shosetsu.android.common.FilePermissionException
+import app.shosetsu.android.common.FilePermissionException.PermissionType
+import app.shosetsu.android.providers.file.base.IFileSystemProvider
 import app.shosetsu.common.enums.ExternalFileDir
 import app.shosetsu.common.enums.InternalFileDir
-import app.shosetsu.common.providers.file.base.IFileSystemProvider
 import java.io.File
 import java.io.IOException
 

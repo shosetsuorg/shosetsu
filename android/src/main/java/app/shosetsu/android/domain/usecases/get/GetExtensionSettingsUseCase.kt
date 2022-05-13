@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.common.domain.model.local.FilterEntity
-import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
+import app.shosetsu.android.domain.model.local.FilterEntity
+import app.shosetsu.android.domain.repository.base.IExtensionSettingsRepository
 import app.shosetsu.common.enums.TriStateState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*

@@ -1,9 +1,8 @@
 package app.shosetsu.android.domain.usecases.load
 
-import app.shosetsu.common.domain.model.local.BrowseExtensionEntity
-import app.shosetsu.common.domain.repositories.base.IExtensionDownloadRepository
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
-import app.shosetsu.common.enums.DownloadStatus
+import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
+import app.shosetsu.android.domain.repository.base.IExtensionDownloadRepository
+import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 

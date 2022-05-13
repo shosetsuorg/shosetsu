@@ -3,8 +3,9 @@ package app.shosetsu.android.datasource.local.database.impl
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.providers.database.dao.DownloadsDao
-import app.shosetsu.common.GenericSQLiteException
-import app.shosetsu.common.datasource.database.base.IDBDownloadsDataSource
+import app.shosetsu.android.common.GenericSQLiteException
+import app.shosetsu.android.datasource.local.database.base.IDBDownloadsDataSource
+import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.common.domain.model.local.DownloadEntity
 import app.shosetsu.common.dto.convertList
 import kotlinx.coroutines.flow.Flow

@@ -3,8 +3,9 @@ package app.shosetsu.android.datasource.local.database.impl
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.domain.model.database.DBNovelSettingsEntity
 import app.shosetsu.android.providers.database.dao.NovelSettingsDao
-import app.shosetsu.common.GenericSQLiteException
-import app.shosetsu.common.datasource.database.base.IDBNovelSettingsDataSource
+import app.shosetsu.android.common.GenericSQLiteException
+import app.shosetsu.android.datasource.local.database.base.IDBNovelSettingsDataSource
+import app.shosetsu.android.domain.model.local.NovelSettingEntity
 import app.shosetsu.common.domain.model.local.NovelSettingEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll

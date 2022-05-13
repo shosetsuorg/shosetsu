@@ -1,6 +1,7 @@
 package app.shosetsu.android.common.ext
 
 import app.shosetsu.android.domain.model.database.DBInstalledExtensionEntity
+import app.shosetsu.android.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 

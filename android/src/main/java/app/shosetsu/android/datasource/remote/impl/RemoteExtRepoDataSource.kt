@@ -1,7 +1,7 @@
 package app.shosetsu.android.datasource.remote.impl
 
 import app.shosetsu.android.common.ext.quickie
-import app.shosetsu.common.datasource.remote.base.IRemoteExtRepoDataSource
+import app.shosetsu.android.datasource.remote.base.IRemoteExtRepoDataSource
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.lib.json.RepoIndex
 import okhttp3.OkHttpClient

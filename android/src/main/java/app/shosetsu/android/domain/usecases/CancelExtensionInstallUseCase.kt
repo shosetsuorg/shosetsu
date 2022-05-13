@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.common.domain.model.local.BrowseExtensionEntity
-import app.shosetsu.common.domain.repositories.base.IExtensionDownloadRepository
+import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
+import app.shosetsu.android.domain.repository.base.IExtensionDownloadRepository
 
 /*
  * This file is part of shosetsu.

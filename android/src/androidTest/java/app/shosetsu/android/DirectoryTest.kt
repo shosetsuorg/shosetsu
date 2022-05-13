@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import app.shosetsu.common.enums.ExternalFileDir
 import app.shosetsu.common.enums.InternalFileDir
-import app.shosetsu.common.providers.file.base.IFileSystemProvider
+import app.shosetsu.android.providers.file.base.IFileSystemProvider
 import org.junit.Test
 import org.kodein.di.DI
 import org.kodein.di.DIAware

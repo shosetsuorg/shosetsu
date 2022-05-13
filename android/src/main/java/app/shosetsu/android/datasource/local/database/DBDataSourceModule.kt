@@ -1,7 +1,7 @@
 package app.shosetsu.android.datasource.local.database
 
+import app.shosetsu.android.datasource.local.database.base.*
 import app.shosetsu.android.datasource.local.database.impl.*
-import app.shosetsu.common.datasource.database.base.*
 import org.kodein.di.DI
 import org.kodein.di.bind
 import org.kodein.di.instance

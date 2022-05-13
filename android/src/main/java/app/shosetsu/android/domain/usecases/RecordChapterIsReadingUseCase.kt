@@ -2,11 +2,11 @@ package app.shosetsu.android.domain.usecases
 
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderChapterUI
-import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.ReaderChapterEntity
-import app.shosetsu.common.domain.repositories.base.IChapterHistoryRepository
-import app.shosetsu.common.domain.repositories.base.IChaptersRepository
+import app.shosetsu.android.domain.repository.base.IChapterHistoryRepository
+import app.shosetsu.android.domain.repository.base.IChaptersRepository
 
 /*
  * This file is part of shosetsu.

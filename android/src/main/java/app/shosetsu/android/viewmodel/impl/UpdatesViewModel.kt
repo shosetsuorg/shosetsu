@@ -1,6 +1,8 @@
 package app.shosetsu.android.viewmodel.impl
 
+import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.trimDate
+import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.load.LoadUpdatesUseCase
 import app.shosetsu.android.domain.usecases.start.StartUpdateWorkerUseCase

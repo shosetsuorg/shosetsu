@@ -17,7 +17,7 @@ import app.shosetsu.android.domain.usecases.load.LoadNovelUITypeUseCase
 import app.shosetsu.android.domain.usecases.settings.SetNovelUITypeUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
-import app.shosetsu.common.enums.NovelCardType
+import app.shosetsu.android.common.enums.NovelCardType
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
 import kotlinx.coroutines.ExperimentalCoroutinesApi

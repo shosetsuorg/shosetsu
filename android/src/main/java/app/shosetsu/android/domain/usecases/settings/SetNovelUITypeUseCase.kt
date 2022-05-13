@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.usecases.settings
 
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.enums.NovelCardType
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import app.shosetsu.android.common.enums.NovelCardType
 
 /*
  * This file is part of Shosetsu.

@@ -42,7 +42,7 @@ import app.shosetsu.android.ui.search.SearchController
 import app.shosetsu.android.ui.updates.ComposeUpdatesController
 import app.shosetsu.android.view.controller.base.*
 import app.shosetsu.android.viewmodel.abstracted.AMainViewModel
-import app.shosetsu.common.domain.repositories.base.IBackupRepository
+import app.shosetsu.android.domain.repository.base.IBackupRepository
 import com.bluelinelabs.conductor.Conductor.attachRouter
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.ControllerChangeHandler

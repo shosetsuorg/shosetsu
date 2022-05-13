@@ -64,9 +64,9 @@ import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
-import app.shosetsu.common.consts.REPOSITORY_HELP_URL
-import app.shosetsu.common.domain.model.local.BrowseExtensionEntity
-import app.shosetsu.common.domain.model.local.ExtensionInstallOptionEntity
+import app.shosetsu.android.common.consts.REPOSITORY_HELP_URL
+import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
+import app.shosetsu.android.domain.model.local.ExtensionInstallOptionEntity
 import app.shosetsu.lib.Version
 import coil.compose.rememberAsyncImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R

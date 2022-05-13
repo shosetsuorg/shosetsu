@@ -2,11 +2,11 @@ package app.shosetsu.android.domain.usecases.update
 
 import app.shosetsu.android.common.ext.generify
 import app.shosetsu.android.common.ext.logI
-import app.shosetsu.common.GenericSQLiteException
-import app.shosetsu.common.IncompatibleExtensionException
-import app.shosetsu.common.domain.repositories.base.IExtensionEntitiesRepository
-import app.shosetsu.common.domain.repositories.base.IExtensionSettingsRepository
-import app.shosetsu.common.domain.repositories.base.IExtensionsRepository
+import app.shosetsu.android.common.GenericSQLiteException
+import app.shosetsu.android.common.IncompatibleExtensionException
+import app.shosetsu.android.domain.repository.base.IExtensionEntitiesRepository
+import app.shosetsu.android.domain.repository.base.IExtensionSettingsRepository
+import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 
 /*
  * This file is part of Shosetsu.

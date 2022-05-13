@@ -1,7 +1,7 @@
 package app.shosetsu.android.common.utils.uifactory
 
 import app.shosetsu.common.domain.model.local.NovelSettingEntity
-import app.shosetsu.common.view.uimodel.NovelSettingUI
+import app.shosetsu.android.view.uimodels.NovelSettingUI
 
 /*
  * This file is part of Shosetsu.

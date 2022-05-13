@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import com.chargemap.compose.numberpicker.NumberPicker
 import com.github.doomsdayrs.apps.shosetsu.R
 

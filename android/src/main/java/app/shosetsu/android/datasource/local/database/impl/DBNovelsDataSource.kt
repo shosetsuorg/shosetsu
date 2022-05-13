@@ -3,8 +3,11 @@ package app.shosetsu.android.datasource.local.database.impl
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.providers.database.dao.NovelsDao
-import app.shosetsu.common.GenericSQLiteException
-import app.shosetsu.common.datasource.database.base.IDBNovelsDataSource
+import app.shosetsu.android.common.GenericSQLiteException
+import app.shosetsu.android.datasource.local.database.base.IDBNovelsDataSource
+import app.shosetsu.android.domain.model.local.LibraryNovelEntity
+import app.shosetsu.android.domain.model.local.NovelEntity
+import app.shosetsu.android.domain.model.local.StrippedNovelEntity
 import app.shosetsu.common.domain.model.local.LibraryNovelEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.StrippedNovelEntity

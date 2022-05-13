@@ -1,14 +1,14 @@
 package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.common.ext.logI
-import app.shosetsu.common.GenericSQLiteException
-import app.shosetsu.common.LuaException
+import app.shosetsu.android.common.GenericSQLiteException
+import app.shosetsu.android.common.LuaException
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.common.domain.model.local.UpdateEntity
-import app.shosetsu.common.domain.repositories.base.IChaptersRepository
-import app.shosetsu.common.domain.repositories.base.INovelsRepository
-import app.shosetsu.common.domain.repositories.base.IUpdatesRepository
+import app.shosetsu.android.domain.repository.base.IChaptersRepository
+import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.android.domain.repository.base.IUpdatesRepository
 
 /*
  * This file is part of shosetsu.

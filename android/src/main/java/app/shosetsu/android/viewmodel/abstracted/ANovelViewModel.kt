@@ -1,12 +1,12 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.compose.ui.graphics.ImageBitmap
+import app.shosetsu.android.common.enums.ReadingStatus
+import app.shosetsu.android.view.uimodels.NovelSettingUI
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
-import app.shosetsu.common.enums.ReadingStatus
-import app.shosetsu.common.view.uimodel.NovelSettingUI
 import kotlinx.coroutines.flow.Flow
 import javax.security.auth.Destroyable
 

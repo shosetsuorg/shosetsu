@@ -2,7 +2,7 @@ package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.android.common.utils.uifactory.mapLatestToResultFlowWithFactory
 import app.shosetsu.android.view.uimodels.model.DownloadUI
-import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
+import app.shosetsu.android.domain.repository.base.IDownloadsRepository
 import app.shosetsu.common.dto.convertList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

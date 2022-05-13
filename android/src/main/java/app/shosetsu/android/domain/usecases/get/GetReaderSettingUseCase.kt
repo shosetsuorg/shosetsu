@@ -1,11 +1,11 @@
 package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.common.ext.logE
-import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
-import app.shosetsu.common.domain.repositories.base.INovelReaderSettingsRepository
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.android.domain.repository.base.INovelReaderSettingsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll

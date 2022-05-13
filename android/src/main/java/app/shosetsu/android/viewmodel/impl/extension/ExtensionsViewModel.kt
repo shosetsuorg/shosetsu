@@ -18,6 +18,8 @@ package app.shosetsu.android.viewmodel.impl.extension
  */
 
 import androidx.lifecycle.LiveData
+import app.shosetsu.android.common.SettingKey
+import app.shosetsu.android.common.SettingKey.BrowseFilteredLanguages
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
@@ -31,9 +33,9 @@ import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.consts.settings.SettingKey.BrowseFilteredLanguages
-import app.shosetsu.common.domain.model.local.BrowseExtensionEntity
-import app.shosetsu.common.domain.model.local.ExtensionInstallOptionEntity
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
+import app.shosetsu.android.domain.model.local.ExtensionInstallOptionEntity
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*

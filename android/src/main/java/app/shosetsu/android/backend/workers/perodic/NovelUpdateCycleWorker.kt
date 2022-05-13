@@ -15,7 +15,7 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.common.consts.settings.SettingKey.*
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import org.kodein.di.instance
 import java.util.concurrent.TimeUnit.HOURS
 import androidx.work.PeriodicWorkRequestBuilder as PWRB

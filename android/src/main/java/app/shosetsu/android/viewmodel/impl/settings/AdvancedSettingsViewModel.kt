@@ -3,9 +3,9 @@ package app.shosetsu.android.viewmodel.impl.settings
 import app.shosetsu.android.backend.workers.perodic.AppUpdateCheckCycleWorker
 import app.shosetsu.android.backend.workers.perodic.BackupCycleWorker
 import app.shosetsu.android.backend.workers.perodic.NovelUpdateCycleWorker
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.PurgeNovelCacheUseCase
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
