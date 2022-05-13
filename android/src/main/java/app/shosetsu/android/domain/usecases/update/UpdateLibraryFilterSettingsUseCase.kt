@@ -2,7 +2,7 @@ package app.shosetsu.android.domain.usecases.update
 
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.LibrarySortFilterEntity
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 

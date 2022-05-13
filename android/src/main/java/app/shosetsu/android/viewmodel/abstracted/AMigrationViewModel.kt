@@ -1,10 +1,10 @@
 package app.shosetsu.android.viewmodel.abstracted
 
+import app.shosetsu.android.domain.model.local.StrippedBookmarkedNovelEntity
 import app.shosetsu.android.view.uimodels.model.MigrationExtensionUI
 import app.shosetsu.android.view.uimodels.model.MigrationNovelUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
-import app.shosetsu.common.domain.model.local.StrippedBookmarkedNovelEntity
 import kotlinx.coroutines.flow.Flow
 
 /*

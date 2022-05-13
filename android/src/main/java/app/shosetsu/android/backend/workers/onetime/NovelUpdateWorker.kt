@@ -29,8 +29,8 @@ import app.shosetsu.android.domain.usecases.get.GetRemoteNovelUseCase
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
-import app.shosetsu.common.domain.repositories.base.INovelsRepository
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.lib.Novel
 import coil.imageLoader
 import coil.request.ImageRequest

@@ -29,7 +29,7 @@ import app.shosetsu.android.view.compose.setting.SwitchSettingContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
 import app.shosetsu.android.viewmodel.abstracted.AExtensionConfigureViewModel
-import app.shosetsu.common.domain.model.local.FilterEntity
+import app.shosetsu.android.domain.model.local.FilterEntity
 import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.common.enums.TriStateState
 import app.shosetsu.lib.ExtensionType

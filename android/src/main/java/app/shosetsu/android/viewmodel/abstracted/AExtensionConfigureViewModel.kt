@@ -1,9 +1,9 @@
 package app.shosetsu.android.viewmodel.abstracted
 
+import app.shosetsu.android.domain.model.local.FilterEntity
+import app.shosetsu.android.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeViewModel
-import app.shosetsu.common.domain.model.local.FilterEntity
-import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import kotlinx.coroutines.flow.Flow
 
 /*

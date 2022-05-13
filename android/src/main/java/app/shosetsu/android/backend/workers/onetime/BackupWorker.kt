@@ -15,13 +15,13 @@ import app.shosetsu.android.common.consts.WorkerTags.BACKUP_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.backupJSON
 import app.shosetsu.android.domain.model.local.backup.*
-import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.android.domain.repository.base.*
+import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.common.domain.model.local.BackupEntity
 import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.common.domain.model.local.NovelEntity
-import app.shosetsu.common.domain.repositories.base.*
-import app.shosetsu.common.domain.repositories.base.IBackupRepository.BackupProgress
+import app.shosetsu.android.domain.repository.base.IBackupRepository.BackupProgress
 import app.shosetsu.common.enums.ReadingStatus
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.delay

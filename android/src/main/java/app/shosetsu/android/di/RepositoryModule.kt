@@ -1,11 +1,7 @@
 package app.shosetsu.android.di
 
-import app.shosetsu.android.domain.repository.base.IBackupUriRepository
-import app.shosetsu.android.domain.repository.impl.AppUpdatesRepository
-import app.shosetsu.android.domain.repository.impl.BackupUriRepository
-import app.shosetsu.android.domain.repository.impl.ExtensionLibrariesRepository
-import app.shosetsu.common.domain.repositories.base.*
-import app.shosetsu.common.domain.repositories.impl.*
+import app.shosetsu.android.domain.repository.base.*
+import app.shosetsu.android.domain.repository.impl.*
 import org.kodein.di.DI
 import org.kodein.di.bind
 import org.kodein.di.instance

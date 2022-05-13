@@ -1,7 +1,7 @@
 package app.shosetsu.android.datasource.remote.impl
 
-import app.shosetsu.common.LuaException
-import app.shosetsu.common.datasource.remote.base.IRemoteChaptersDataSource
+import app.shosetsu.android.common.LuaException
+import app.shosetsu.android.datasource.remote.base.IRemoteChaptersDataSource
 import app.shosetsu.lib.IExtension
 import org.luaj.vm2.LuaError
 

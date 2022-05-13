@@ -2,7 +2,7 @@ package app.shosetsu.android.datasource.remote.impl
 
 import app.shosetsu.android.common.consts.REPO_SOURCE_DIR
 import app.shosetsu.android.common.ext.quickie
-import app.shosetsu.common.datasource.remote.base.IRemoteExtensionDataSource
+import app.shosetsu.android.datasource.remote.base.IRemoteExtensionDataSource
 import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.lib.exceptions.HTTPException

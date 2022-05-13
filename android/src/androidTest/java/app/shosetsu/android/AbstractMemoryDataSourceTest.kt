@@ -1,6 +1,6 @@
 package app.shosetsu.android
 
-import app.shosetsu.common.datasource.memory.impl.AbstractMemoryDataSource
+import app.shosetsu.android.datasource.local.memory.impl.AbstractMemoryDataSource
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.future.future

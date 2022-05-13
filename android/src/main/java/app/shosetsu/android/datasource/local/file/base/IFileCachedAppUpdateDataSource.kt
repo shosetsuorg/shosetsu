@@ -1,7 +1,8 @@
 package app.shosetsu.android.datasource.local.file.base
 
-import app.shosetsu.common.FileNotFoundException
-import app.shosetsu.common.FilePermissionException
+import app.shosetsu.android.common.FileNotFoundException
+import app.shosetsu.android.common.FilePermissionException
+import app.shosetsu.android.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import kotlinx.coroutines.flow.Flow
 import java.io.IOException

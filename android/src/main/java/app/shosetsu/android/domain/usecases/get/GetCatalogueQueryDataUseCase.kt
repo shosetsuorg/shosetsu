@@ -6,12 +6,12 @@ import app.shosetsu.android.common.ext.convertTo
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
-import app.shosetsu.common.GenericSQLiteException
-import app.shosetsu.common.IncompatibleExtensionException
-import app.shosetsu.common.LuaException
+import app.shosetsu.android.common.GenericSQLiteException
+import app.shosetsu.android.common.IncompatibleExtensionException
+import app.shosetsu.android.common.LuaException
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.domain.repositories.base.INovelsRepository
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.PAGE_INDEX

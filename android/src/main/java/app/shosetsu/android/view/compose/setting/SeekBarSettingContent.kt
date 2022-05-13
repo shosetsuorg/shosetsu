@@ -8,7 +8,7 @@ import androidx.compose.ui.unit.Dp
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.view.compose.DiscreteSlider
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import kotlin.math.roundToInt
 
 @Composable

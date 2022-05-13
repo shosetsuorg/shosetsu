@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.usecases.delete
 
 import app.shosetsu.android.view.uimodels.model.DownloadUI
-import app.shosetsu.common.GenericSQLiteException
-import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
+import app.shosetsu.android.common.GenericSQLiteException
+import app.shosetsu.android.domain.repository.base.IDownloadsRepository
 
 /*
  * This file is part of shosetsu.

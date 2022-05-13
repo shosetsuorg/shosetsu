@@ -9,6 +9,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.work.Configuration
 import app.shosetsu.android.backend.database.DBHelper
+import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.ShortCuts
 import app.shosetsu.android.common.ext.fileOut
@@ -19,8 +20,8 @@ import app.shosetsu.android.di.*
 import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.android.viewmodel.factory.ViewModelFactory
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.domain.repositories.base.IExtensionLibrariesRepository
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.android.domain.repository.base.IExtensionLibrariesRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.lib.ShosetsuSharedLib
 import app.shosetsu.lib.lua.ShosetsuLuaLib
 import app.shosetsu.lib.lua.shosetsuGlobals

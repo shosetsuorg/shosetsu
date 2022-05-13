@@ -9,8 +9,8 @@ import app.shosetsu.common.datasource.memory.base.IMemChaptersDataSource
 import app.shosetsu.common.datasource.memory.base.IMemExtLibDataSource
 import app.shosetsu.common.datasource.memory.base.IMemExtensionsDataSource
 import app.shosetsu.common.datasource.memory.impl.GenericMemChaptersDataSource
-import app.shosetsu.common.datasource.memory.impl.GenericMemExtLibDataSource
-import app.shosetsu.common.datasource.memory.impl.GenericMemExtensionDataSource
+import app.shosetsu.android.datasource.local.memory.impl.GenericMemExtLibDataSource
+import app.shosetsu.android.datasource.local.memory.impl.GenericMemExtensionDataSource
 import org.kodein.di.DI
 import org.kodein.di.bind
 import org.kodein.di.singleton

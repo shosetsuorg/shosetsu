@@ -152,7 +152,6 @@ android {
 
 dependencies {
 	implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-	implementation(project(mapOf("path" to ":common")))
 
 	// Google view things
 	implementation("com.google.android.material:material:1.6.0")

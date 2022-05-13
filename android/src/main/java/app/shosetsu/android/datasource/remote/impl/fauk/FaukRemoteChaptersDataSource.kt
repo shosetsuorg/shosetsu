@@ -1,7 +1,7 @@
 package app.shosetsu.android.datasource.remote.impl.fauk
 
 import app.shosetsu.android.common.ext.logV
-import app.shosetsu.common.datasource.remote.base.IRemoteChaptersDataSource
+import app.shosetsu.android.datasource.remote.base.IRemoteChaptersDataSource
 import app.shosetsu.lib.IExtension
 import java.io.IOException
 import java.net.SocketTimeoutException

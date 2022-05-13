@@ -18,6 +18,8 @@ package app.shosetsu.android.viewmodel.impl
  */
 
 import androidx.lifecycle.LiveData
+import app.shosetsu.android.common.enums.InclusionState
+import app.shosetsu.android.common.enums.InclusionState.*
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.load.LoadLibraryUseCase
@@ -34,7 +36,8 @@ import app.shosetsu.common.consts.settings.SettingKey.ChapterColumnsInPortait
 import app.shosetsu.common.enums.InclusionState
 import app.shosetsu.common.enums.InclusionState.EXCLUDE
 import app.shosetsu.common.enums.InclusionState.INCLUDE
-import app.shosetsu.common.enums.NovelCardType
+import app.shosetsu.android.common.enums.NovelCardType
+import app.shosetsu.android.common.enums.NovelSortType
 import app.shosetsu.common.enums.NovelSortType
 import app.shosetsu.common.utils.copy
 import kotlinx.coroutines.ExperimentalCoroutinesApi

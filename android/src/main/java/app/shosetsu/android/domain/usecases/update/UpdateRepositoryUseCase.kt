@@ -1,9 +1,9 @@
 package app.shosetsu.android.domain.usecases.update
 
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
-import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.common.domain.model.local.RepositoryEntity
-import app.shosetsu.common.domain.repositories.base.IExtensionRepoRepository
+import app.shosetsu.android.domain.repository.base.IExtensionRepoRepository
 
 /*
  * This file is part of Shosetsu.

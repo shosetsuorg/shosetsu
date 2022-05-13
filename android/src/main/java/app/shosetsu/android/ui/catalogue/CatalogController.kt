@@ -56,9 +56,9 @@ import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel.BackgroundNovelAddProgress.ADDED
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel.BackgroundNovelAddProgress.ADDING
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.enums.NovelCardType
-import app.shosetsu.common.enums.NovelCardType.COMPRESSED
-import app.shosetsu.common.enums.NovelCardType.NORMAL
+import app.shosetsu.android.common.enums.NovelCardType
+import app.shosetsu.android.common.enums.NovelCardType.COMPRESSED
+import app.shosetsu.android.common.enums.NovelCardType.NORMAL
 import app.shosetsu.lib.exceptions.HTTPException
 import coil.compose.AsyncImage
 import coil.request.ImageRequest

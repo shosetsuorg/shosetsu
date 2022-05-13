@@ -1,12 +1,13 @@
 package app.shosetsu.android.viewmodel.impl
 
 import android.app.Application
+import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.viewmodel.abstracted.ACSSEditorViewModel
 import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.domain.model.local.StyleEntity
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.android.domain.model.local.StyleEntity
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

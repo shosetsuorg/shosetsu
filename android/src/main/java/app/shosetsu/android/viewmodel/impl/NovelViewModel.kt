@@ -4,6 +4,8 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import app.shosetsu.android.common.enums.ChapterSortType
+import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.share.toURL
 import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
@@ -26,7 +28,7 @@ import app.shosetsu.common.enums.ChapterSortType
 import app.shosetsu.common.enums.ChapterSortType.SOURCE
 import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.common.utils.copy
-import app.shosetsu.common.view.uimodel.NovelSettingUI
+import app.shosetsu.android.view.uimodels.NovelSettingUI
 import app.shosetsu.lib.share.ExtensionLink
 import app.shosetsu.lib.share.NovelLink
 import app.shosetsu.lib.share.RepositoryLink
@@ -229,7 +231,7 @@ class NovelViewModel(
 		novelSettingsFlow.mapLatest { it?.showOnlyBookmarked ?: false }
 
 	private val _sortTypeFlow: Flow<ChapterSortType> =
-		novelSettingsFlow.mapLatest { it?.sortType ?: SOURCE }
+		novelSettingsFlow.mapLatest { it?.sortType ?: ChapterSortType.SOURCE }
 
 	private val _reversedSortFlow: Flow<Boolean> =
 		novelSettingsFlow.mapLatest { it?.reverseOrder ?: false }
@@ -265,7 +267,7 @@ class NovelViewModel(
 	private fun Flow<List<ChapterUI>>.combineSort(): Flow<List<ChapterUI>> =
 		combine(_sortTypeFlow) { chapters, sortType ->
 			when (sortType) {
-				SOURCE -> {
+				ChapterSortType.SOURCE -> {
 					chapters.sortedBy { it.order }
 				}
 				ChapterSortType.UPLOAD -> {

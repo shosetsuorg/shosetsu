@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
-import app.shosetsu.common.domain.repositories.base.IUpdatesRepository
+import app.shosetsu.android.domain.repository.base.IUpdatesRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll

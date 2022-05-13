@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.common.domain.repositories.base.IAppUpdatesRepository
+import app.shosetsu.android.domain.repository.base.IAppUpdatesRepository
 
 /*
  * This file is part of Shosetsu.

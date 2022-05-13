@@ -18,10 +18,10 @@ import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.Notifications.ID_APP_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_WORK_ID
 import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.load.LoadRemoteAppUpdateUseCase
 import app.shosetsu.common.consts.settings.SettingKey.AppUpdateOnMeteredConnection
 import app.shosetsu.common.consts.settings.SettingKey.AppUpdateOnlyWhenIdle
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.DI
 import org.kodein.di.DIAware

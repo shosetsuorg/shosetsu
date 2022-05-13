@@ -1,9 +1,9 @@
 package app.shosetsu.android.domain.model.remote
 
+import app.shosetsu.android.domain.model.local.AppUpdateEntity
+import app.shosetsu.android.domain.model.local.ArchitectureURLs
 import app.shosetsu.android.domain.model.remote.ArchitectureURLsDTO.Companion.toEntity
-import app.shosetsu.common.domain.model.local.AppUpdateEntity
-import app.shosetsu.common.domain.model.local.ArchitectureURLs
-import app.shosetsu.common.dto.Convertible
+import app.shosetsu.android.dto.Convertible
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

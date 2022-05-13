@@ -2,13 +2,12 @@ package app.shosetsu.android.datasource.remote
 
 import app.shosetsu.android.common.enums.ProductFlavors
 import app.shosetsu.android.common.utils.flavor
-import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
+import app.shosetsu.android.datasource.remote.base.*
 import app.shosetsu.android.datasource.remote.impl.*
 import app.shosetsu.android.datasource.remote.impl.update.FDroidAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.impl.update.GithubAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.impl.update.PlayAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.impl.update.UpToDownAppUpdateDataSource
-import app.shosetsu.common.datasource.remote.base.*
 import org.kodein.di.DI
 import org.kodein.di.bind
 import org.kodein.di.instance

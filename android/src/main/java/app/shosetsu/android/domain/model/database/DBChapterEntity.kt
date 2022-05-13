@@ -2,6 +2,9 @@ package app.shosetsu.android.domain.model.database
 
 import androidx.annotation.NonNull
 import androidx.room.*
+import app.shosetsu.android.common.enums.ReadingStatus
+import app.shosetsu.android.domain.model.local.ChapterEntity
+import app.shosetsu.android.dto.Convertible
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.dto.Convertible
 import app.shosetsu.common.enums.ReadingStatus

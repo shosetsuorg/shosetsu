@@ -2,13 +2,13 @@ package app.shosetsu.android.domain.usecases
 
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.view.uimodels.model.ChapterUI
-import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.common.domain.model.local.DownloadEntity
-import app.shosetsu.common.domain.repositories.base.IDownloadsRepository
-import app.shosetsu.common.domain.repositories.base.INovelsRepository
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
+import app.shosetsu.android.domain.repository.base.IDownloadsRepository
+import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 
 /*
  * This file is part of shosetsu.

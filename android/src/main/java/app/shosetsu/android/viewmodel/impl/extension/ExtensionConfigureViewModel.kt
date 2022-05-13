@@ -28,7 +28,8 @@ import app.shosetsu.android.domain.usecases.get.GetInstalledExtensionUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateExtSelectedListing
 import app.shosetsu.android.domain.usecases.update.UpdateExtensionSettingUseCase
 import app.shosetsu.android.viewmodel.abstracted.AExtensionConfigureViewModel
-import app.shosetsu.common.domain.model.local.FilterEntity
+import app.shosetsu.android.domain.model.local.FilterEntity
+import app.shosetsu.android.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

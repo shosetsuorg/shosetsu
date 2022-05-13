@@ -16,7 +16,7 @@ import app.shosetsu.common.enums.ReadingStatus.READ
 import app.shosetsu.common.enums.ReadingStatus.UNREAD
 import app.shosetsu.common.enums.TriStateState.CHECKED
 import app.shosetsu.common.enums.TriStateState.UNCHECKED
-import app.shosetsu.common.view.uimodel.NovelSettingUI
+import app.shosetsu.android.view.uimodels.NovelSettingUI
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottomMenu0Binding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottomMenu1Binding

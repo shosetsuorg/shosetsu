@@ -5,8 +5,8 @@ import android.util.Base64
 import androidx.test.platform.app.InstrumentationRegistry
 import app.shosetsu.android.common.utils.backupJSON
 import app.shosetsu.android.domain.model.local.backup.*
+import app.shosetsu.android.domain.repository.base.IBackupRepository
 import app.shosetsu.common.domain.model.local.BackupEntity
-import app.shosetsu.common.domain.repositories.base.IBackupRepository
 import app.shosetsu.common.enums.ReadingStatus
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.future.future

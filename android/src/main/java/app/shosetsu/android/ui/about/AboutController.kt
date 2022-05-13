@@ -27,13 +27,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.shosetsu.android.common.consts.*
 import app.shosetsu.android.common.enums.TextAsset
 import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.settings.sub.TextAssetReader
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.AAboutViewModel
-import app.shosetsu.common.consts.*
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.composethemeadapter.MdcTheme

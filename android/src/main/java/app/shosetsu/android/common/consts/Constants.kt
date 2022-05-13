@@ -55,3 +55,11 @@ const val APK_MIME = "application/vnd.android.package-archive"
  * The version of backups this build of shosetsu supports
  */
 const val VERSION_BACKUP: String = "1.0.0"
+const val BACKUP_FILE_EXTENSION = "sbk"
+const val REPOSITORY_HELP_URL = "https://shosetsu.app/help/guides/repositories/"
+const val URL_WEBSITE = "https://shosetsu.app"
+const val URL_GITHUB_APP = "https://github.com/shosetsuorg/shosetsu"
+const val URL_GITHUB_EXTENSIONS = "https://github.com/shosetsuorg/extensions"
+const val URL_PATREON = "https://www.patreon.com/doomsdayrs"
+const val URL_DISCORD = "https://discord.gg/ttSX7gB"
+const val URL_MATRIX = "https://matrix.to/#/#shosetsu:matrix.org"

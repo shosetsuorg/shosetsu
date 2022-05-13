@@ -5,10 +5,10 @@ import app.shosetsu.android.view.uimodels.model.library.ComfyBookmarkedNovelUI
 import app.shosetsu.android.view.uimodels.model.library.CompressedBookmarkedNovelUI
 import app.shosetsu.android.view.uimodels.model.library.NormalBookmarkedNovelUI
 import app.shosetsu.common.consts.settings.SettingKey.SelectedNovelCardType
-import app.shosetsu.common.domain.repositories.base.INovelsRepository
-import app.shosetsu.common.domain.repositories.base.ISettingsRepository
-import app.shosetsu.common.enums.NovelCardType
-import app.shosetsu.common.enums.NovelCardType.*
+import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import app.shosetsu.android.common.enums.NovelCardType
+import app.shosetsu.android.common.enums.NovelCardType.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapLatest

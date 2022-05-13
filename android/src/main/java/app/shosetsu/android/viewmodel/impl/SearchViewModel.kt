@@ -13,7 +13,7 @@ import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ASearchViewModel
-import app.shosetsu.common.GenericSQLiteException
+import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.lib.PAGE_INDEX
 import app.shosetsu.lib.mapify
 import kotlinx.coroutines.ExperimentalCoroutinesApi

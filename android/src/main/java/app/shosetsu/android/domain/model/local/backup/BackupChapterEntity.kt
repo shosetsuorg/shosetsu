@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.model.local.backup
 
-import app.shosetsu.common.enums.ReadingStatus
+import app.shosetsu.android.common.enums.ReadingStatus
 import kotlinx.serialization.Serializable
 
 /**

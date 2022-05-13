@@ -14,10 +14,10 @@ import app.shosetsu.android.common.consts.Notifications.ID_EXPORT
 import app.shosetsu.android.common.consts.WorkerTags.EXPORT_BACKUP_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.repository.base.IBackupUriRepository
-import app.shosetsu.common.FilePermissionException
-import app.shosetsu.common.FilePermissionException.PermissionType
+import app.shosetsu.android.common.FilePermissionException
+import app.shosetsu.android.common.FilePermissionException.PermissionType
 import app.shosetsu.common.domain.model.local.BackupEntity
-import app.shosetsu.common.domain.repositories.base.IBackupRepository
+import app.shosetsu.android.domain.repository.base.IBackupRepository
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.DI
 import org.kodein.di.DIAware
