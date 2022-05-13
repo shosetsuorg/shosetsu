@@ -1,9 +1,9 @@
 package app.shosetsu.android.domain.usecases.get
 
 import app.shosetsu.android.common.utils.uifactory.mapLatestToResultFlowWithFactory
-import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
-import app.shosetsu.common.dto.convertList
+import app.shosetsu.android.dto.convertList
+import app.shosetsu.android.view.uimodels.model.ChapterUI
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll

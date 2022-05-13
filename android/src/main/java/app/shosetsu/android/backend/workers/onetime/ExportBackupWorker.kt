@@ -7,17 +7,17 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
+import app.shosetsu.android.common.FilePermissionException
+import app.shosetsu.android.common.FilePermissionException.PermissionType
 import app.shosetsu.android.common.NullContentResolverException
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.Notifications.ID_EXPORT
 import app.shosetsu.android.common.consts.WorkerTags.EXPORT_BACKUP_WORK_ID
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.domain.repository.base.IBackupUriRepository
-import app.shosetsu.android.common.FilePermissionException
-import app.shosetsu.android.common.FilePermissionException.PermissionType
-import app.shosetsu.common.domain.model.local.BackupEntity
+import app.shosetsu.android.domain.model.local.BackupEntity
 import app.shosetsu.android.domain.repository.base.IBackupRepository
+import app.shosetsu.android.domain.repository.base.IBackupUriRepository
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -109,7 +109,7 @@ class ExportBackupWorker(appContext: Context, params: WorkerParameters) : Corout
 			return Result.failure()
 		}
 
-		val backupEntity = backupRepo.loadBackup(backupName);
+		val backupEntity = backupRepo.loadBackup(backupName)
 
 		if (backupEntity == null) {
 			notify(R.string.export_backup_notification_invalid_backup) {

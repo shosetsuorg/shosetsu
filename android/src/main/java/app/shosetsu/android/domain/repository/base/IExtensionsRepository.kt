@@ -5,9 +5,6 @@ import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.android.domain.model.local.GenericExtensionEntity
 import app.shosetsu.android.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.android.domain.model.local.RepositoryEntity
-import app.shosetsu.common.domain.model.local.GenericExtensionEntity
-import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
-import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.exceptions.HTTPException

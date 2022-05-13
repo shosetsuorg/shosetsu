@@ -4,13 +4,13 @@ import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.LuaException
-import app.shosetsu.android.datasource.local.database.base.IDBChaptersDataSource
 import app.shosetsu.android.datasource.file.base.IFileCachedChapterDataSource
 import app.shosetsu.android.datasource.file.base.IFileChapterDataSource
-import app.shosetsu.common.datasource.memory.base.IMemChaptersDataSource
+import app.shosetsu.android.datasource.local.database.base.IDBChaptersDataSource
+import app.shosetsu.android.datasource.local.memory.base.IMemChaptersDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteChaptersDataSource
-import app.shosetsu.common.domain.model.local.ChapterEntity
-import app.shosetsu.common.domain.model.local.ReaderChapterEntity
+import app.shosetsu.android.domain.model.local.ChapterEntity
+import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel

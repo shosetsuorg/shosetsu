@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.GenericSQLiteException
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 
 /*

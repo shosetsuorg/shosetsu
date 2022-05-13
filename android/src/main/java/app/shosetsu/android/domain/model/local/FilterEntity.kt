@@ -1,7 +1,6 @@
 package app.shosetsu.android.domain.model.local
 
 import app.shosetsu.android.common.enums.TriStateState
-import app.shosetsu.common.enums.TriStateState
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.Filter.TriState.Companion.STATE_EXCLUDE
 import app.shosetsu.lib.Filter.TriState.Companion.STATE_INCLUDE
@@ -111,7 +110,7 @@ sealed class FilterEntity {
 					when (filter.state) {
 						STATE_INCLUDE -> TriStateState.CHECKED
 						STATE_EXCLUDE -> TriStateState.UNCHECKED
-						else -> TriStateState.IGNORED;
+						else -> TriStateState.IGNORED
 					}
 				)
 				is Filter.Dropdown -> Dropdown(

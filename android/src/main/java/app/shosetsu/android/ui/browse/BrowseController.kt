@@ -53,10 +53,13 @@ import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
+import app.shosetsu.android.common.consts.REPOSITORY_HELP_URL
 import app.shosetsu.android.common.ext.displayOfflineSnackBar
 import app.shosetsu.android.common.ext.makeSnackBar
 import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
+import app.shosetsu.android.domain.model.local.ExtensionInstallOptionEntity
 import app.shosetsu.android.ui.catalogue.CatalogController
 import app.shosetsu.android.ui.extensionsConfigure.ConfigureExtension
 import app.shosetsu.android.view.compose.ErrorContent
@@ -64,9 +67,6 @@ import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
-import app.shosetsu.android.common.consts.REPOSITORY_HELP_URL
-import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
-import app.shosetsu.android.domain.model.local.ExtensionInstallOptionEntity
 import app.shosetsu.lib.Version
 import coil.compose.rememberAsyncImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -399,7 +399,7 @@ fun BrowseExtensionContent(
 
 							if (item.isInstalled && item.installedVersion != null)
 								Text(
-									item.installedVersion!!.toString(),
+									item.installedVersion.toString(),
 									modifier = Modifier.padding(start = 8.dp),
 									fontSize = TextUnit(14f, TextUnitType.Sp)
 								)
@@ -409,7 +409,7 @@ fun BrowseExtensionContent(
 									Text(
 										stringResource(
 											R.string.update_to,
-											item.updateVersion!!.toString()
+											item.updateVersion.toString()
 										),
 										modifier = Modifier.padding(start = 8.dp),
 										fontSize = TextUnit(14f, TextUnitType.Sp),
@@ -428,9 +428,9 @@ fun BrowseExtensionContent(
 						IconButton(
 							onClick = {
 								// We can skip to dropdown if there is only 1 install option
-								if (item.installOptions!!.size != 1)
+								if (item.installOptions.size != 1)
 									isDropdownVisible = true
-								else install(item.installOptions!![0])
+								else install(item.installOptions[0])
 							}
 						) {
 							Icon(painterResource(R.drawable.download), null)
@@ -439,7 +439,7 @@ fun BrowseExtensionContent(
 							expanded = isDropdownVisible,
 							onDismissRequest = { isDropdownVisible = false },
 						) {
-							item.installOptions?.forEach { s ->
+							item.installOptions.forEach { s ->
 								DropdownMenuItem(
 									onClick = {
 										install(s)

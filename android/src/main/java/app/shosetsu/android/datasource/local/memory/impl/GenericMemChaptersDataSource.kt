@@ -3,9 +3,6 @@ package app.shosetsu.android.datasource.local.memory.impl
 import app.shosetsu.android.common.consts.MEMORY_EXPIRE_CHAPTER_TIME
 import app.shosetsu.android.common.consts.MEMORY_MAX_CHAPTERS
 import app.shosetsu.android.datasource.local.memory.base.IMemChaptersDataSource
-import app.shosetsu.common.consts.MEMORY_EXPIRE_CHAPTER_TIME
-import app.shosetsu.common.consts.MEMORY_MAX_CHAPTERS
-import app.shosetsu.common.datasource.memory.base.IMemChaptersDataSource
 
 /*
  * This file is part of Shosetsu.

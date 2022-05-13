@@ -1,9 +1,9 @@
 package app.shosetsu.android.domain.usecases.get
 
+import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.utils.uifactory.NovelSettingConversionFactory
-import app.shosetsu.android.common.GenericSQLiteException
-import app.shosetsu.common.domain.model.local.NovelSettingEntity
+import app.shosetsu.android.domain.model.local.NovelSettingEntity
 import app.shosetsu.android.domain.repository.base.INovelSettingsRepository
 import app.shosetsu.android.view.uimodels.NovelSettingUI
 import kotlinx.coroutines.flow.Flow

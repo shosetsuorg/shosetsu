@@ -1,10 +1,10 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.android.common.utils.uifactory.StrippedNovelConversionFactory
-import app.shosetsu.android.view.uimodels.model.IDTitleImageUI
 import app.shosetsu.android.common.GenericSQLiteException
+import app.shosetsu.android.common.utils.uifactory.StrippedNovelConversionFactory
 import app.shosetsu.android.domain.repository.base.INovelsRepository
-import app.shosetsu.common.dto.convertList
+import app.shosetsu.android.dto.convertList
+import app.shosetsu.android.view.uimodels.model.IDTitleImageUI
 
 /*
  * This file is part of shosetsu.

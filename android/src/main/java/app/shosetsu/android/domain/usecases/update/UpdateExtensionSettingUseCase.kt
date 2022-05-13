@@ -1,9 +1,9 @@
 package app.shosetsu.android.domain.usecases.update
 
-import app.shosetsu.android.common.ext.generify
-import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.IncompatibleExtensionException
+import app.shosetsu.android.common.ext.generify
+import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.repository.base.IExtensionEntitiesRepository
 import app.shosetsu.android.domain.repository.base.IExtensionSettingsRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository

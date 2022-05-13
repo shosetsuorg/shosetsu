@@ -17,11 +17,10 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.toast
 import app.shosetsu.android.di.*
-import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
-import app.shosetsu.android.viewmodel.factory.ViewModelFactory
-import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.android.domain.repository.base.IExtensionLibrariesRepository
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
+import app.shosetsu.android.viewmodel.factory.ViewModelFactory
 import app.shosetsu.lib.ShosetsuSharedLib
 import app.shosetsu.lib.lua.ShosetsuLuaLib
 import app.shosetsu.lib.lua.shosetsuGlobals

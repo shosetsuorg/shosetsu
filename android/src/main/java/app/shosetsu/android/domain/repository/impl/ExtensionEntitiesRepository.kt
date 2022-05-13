@@ -2,11 +2,11 @@ package app.shosetsu.android.domain.repository.impl
 
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.IncompatibleExtensionException
-import app.shosetsu.common.consts.settings.SettingKey
+import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.datasource.file.base.IFileExtensionDataSource
 import app.shosetsu.android.datasource.file.base.IFileSettingsDataSource
-import app.shosetsu.common.datasource.memory.base.IMemExtensionsDataSource
-import app.shosetsu.common.domain.model.local.GenericExtensionEntity
+import app.shosetsu.android.datasource.local.memory.base.IMemExtensionsDataSource
+import app.shosetsu.android.domain.model.local.GenericExtensionEntity
 import app.shosetsu.android.domain.repository.base.IExtensionEntitiesRepository
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension

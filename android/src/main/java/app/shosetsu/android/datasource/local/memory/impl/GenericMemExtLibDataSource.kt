@@ -3,9 +3,6 @@ package app.shosetsu.android.datasource.local.memory.impl
 import app.shosetsu.android.common.consts.MEMORY_EXPIRE_EXT_LIB_TIME
 import app.shosetsu.android.common.consts.MEMORY_MAX_EXT_LIBS
 import app.shosetsu.android.datasource.local.memory.base.IMemExtLibDataSource
-import app.shosetsu.common.consts.MEMORY_EXPIRE_EXT_LIB_TIME
-import app.shosetsu.common.consts.MEMORY_MAX_EXT_LIBS
-import app.shosetsu.common.datasource.memory.base.IMemExtLibDataSource
 
 /*
  * This file is part of Shosetsu.

@@ -1,8 +1,7 @@
 package app.shosetsu.android.providers.database.converters
 
 import androidx.room.TypeConverter
-import app.shosetsu.common.enums.DownloadStatus
-import app.shosetsu.common.enums.DownloadStatus.Companion.fromInt
+import app.shosetsu.android.common.enums.DownloadStatus
 
 /*
  * This file is part of Shosetsu.
@@ -30,5 +29,5 @@ class DownloadStatusConverter {
 	fun toInt(downloadStatus: DownloadStatus): Int = downloadStatus.key
 
 	@TypeConverter
-	fun toStatus(key: Int): DownloadStatus = fromInt(key)
+	fun toStatus(key: Int): DownloadStatus = DownloadStatus.fromInt(key)
 }

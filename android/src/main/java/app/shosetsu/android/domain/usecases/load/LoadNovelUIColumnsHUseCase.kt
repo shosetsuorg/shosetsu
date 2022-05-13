@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases.load
 
-import app.shosetsu.common.consts.settings.SettingKey.ChapterColumnsInLandscape
+import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 
 /*
@@ -27,5 +27,5 @@ import app.shosetsu.android.domain.repository.base.ISettingsRepository
 class LoadNovelUIColumnsHUseCase(
 	private val iSettingsRepository: ISettingsRepository
 ) {
-	operator fun invoke() = iSettingsRepository.getIntFlow(ChapterColumnsInLandscape)
+	operator fun invoke() = iSettingsRepository.getIntFlow(SettingKey.ChapterColumnsInLandscape)
 }

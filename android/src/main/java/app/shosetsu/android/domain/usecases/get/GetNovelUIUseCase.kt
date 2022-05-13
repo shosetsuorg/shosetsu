@@ -1,10 +1,10 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.android.common.utils.uifactory.NovelConversionFactory
-import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.common.GenericSQLiteException
+import app.shosetsu.android.common.utils.uifactory.NovelConversionFactory
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.android.view.uimodels.model.NovelUI
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 

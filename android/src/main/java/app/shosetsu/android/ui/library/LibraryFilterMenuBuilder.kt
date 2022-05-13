@@ -9,14 +9,15 @@ import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
+import app.shosetsu.android.common.enums.InclusionState
+import app.shosetsu.android.common.enums.InclusionState.EXCLUDE
+import app.shosetsu.android.common.enums.InclusionState.INCLUDE
+import app.shosetsu.android.common.enums.NovelSortType.*
+import app.shosetsu.android.common.enums.TriStateState
+import app.shosetsu.android.common.enums.TriStateState.*
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
-import app.shosetsu.common.enums.InclusionState
-import app.shosetsu.common.enums.InclusionState.EXCLUDE
-import app.shosetsu.common.enums.InclusionState.INCLUDE
-import app.shosetsu.common.enums.NovelSortType.*
-import app.shosetsu.common.enums.TriStateState.*
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerLibraryBottomMenu0Binding
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerLibraryBottomMenu1Binding
@@ -101,10 +102,11 @@ class LibraryFilterMenuBuilder constructor(
 						this.root.apply {
 							setText(item.filterKeyName)
 							state = item.inclusionState?.let {
-								when (it) {
+								val triStateState: TriStateState? = when (it) {
 									INCLUDE -> CHECKED
 									EXCLUDE -> UNCHECKED
 								}
+								triStateState
 							} ?: IGNORED
 							onStateChangeListeners.add {
 								when (it) {

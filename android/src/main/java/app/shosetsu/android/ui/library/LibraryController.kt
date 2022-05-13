@@ -13,7 +13,10 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.consts.BundleKeys
+import app.shosetsu.android.common.enums.NovelCardType
+import app.shosetsu.android.common.enums.NovelCardType.*
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.library.listener.LibrarySearchQuery
 import app.shosetsu.android.ui.migration.MigrationController
@@ -23,9 +26,6 @@ import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.syncFABWithRecyclerView
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
-import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.android.common.enums.NovelCardType
-import app.shosetsu.android.common.enums.NovelCardType.*
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton

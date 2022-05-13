@@ -2,7 +2,9 @@ package app.shosetsu.android.di
 
 import app.shosetsu.android.providers.network.createOkHttpClient
 import okhttp3.OkHttpClient
-import org.kodein.di.*
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.singleton
 
 /*
  * This file is part of shosetsu.

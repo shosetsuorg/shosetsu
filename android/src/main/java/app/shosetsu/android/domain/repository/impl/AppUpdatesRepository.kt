@@ -7,8 +7,8 @@ import app.shosetsu.android.common.MissingFeatureException
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.datasource.local.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
+import app.shosetsu.android.domain.model.local.AppUpdateEntity
 import app.shosetsu.android.domain.repository.base.IAppUpdatesRepository
-import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.lib.exceptions.HTTPException
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import kotlinx.coroutines.flow.Flow

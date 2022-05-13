@@ -1,9 +1,9 @@
 package app.shosetsu.android.datasource.local.database.base
 
 import app.shosetsu.android.common.GenericSQLiteException
-import app.shosetsu.common.domain.model.local.LibraryNovelEntity
-import app.shosetsu.common.domain.model.local.NovelEntity
-import app.shosetsu.common.domain.model.local.StrippedNovelEntity
+import app.shosetsu.android.domain.model.local.LibraryNovelEntity
+import app.shosetsu.android.domain.model.local.NovelEntity
+import app.shosetsu.android.domain.model.local.StrippedNovelEntity
 import kotlinx.coroutines.flow.Flow
 
 /*

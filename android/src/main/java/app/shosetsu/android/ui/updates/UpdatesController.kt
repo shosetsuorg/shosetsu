@@ -30,12 +30,12 @@ import app.shosetsu.android.common.ext.displayOfflineSnackBar
 import app.shosetsu.android.common.ext.openChapter
 import app.shosetsu.android.common.ext.trimDate
 import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
 import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.AUpdatesViewModel
-import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import coil.compose.rememberAsyncImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.swiperefresh.SwipeRefresh

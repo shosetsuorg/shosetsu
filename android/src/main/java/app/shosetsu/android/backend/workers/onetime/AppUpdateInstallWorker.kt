@@ -163,7 +163,7 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 			ACRA.errorReporter.handleException(e)
 
 			return Result.failure()
-		};
+		}
 
 		val uri = File(path).getUriCompat(applicationContext)
 

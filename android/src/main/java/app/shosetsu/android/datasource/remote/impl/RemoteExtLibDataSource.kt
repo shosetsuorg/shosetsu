@@ -2,7 +2,7 @@ package app.shosetsu.android.datasource.remote.impl
 
 import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.datasource.remote.base.IRemoteExtLibDataSource
-import app.shosetsu.common.domain.model.local.ExtLibEntity
+import app.shosetsu.android.domain.model.local.ExtLibEntity
 import okhttp3.OkHttpClient
 
 /*

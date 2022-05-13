@@ -2,16 +2,16 @@ package app.shosetsu.android.domain.usecases.get
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import app.shosetsu.android.common.ext.convertTo
-import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
-import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.IncompatibleExtensionException
 import app.shosetsu.android.common.LuaException
-import app.shosetsu.common.consts.settings.SettingKey
+import app.shosetsu.android.common.SettingKey
+import app.shosetsu.android.common.ext.convertTo
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
+import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.PAGE_INDEX

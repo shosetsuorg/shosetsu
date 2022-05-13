@@ -2,7 +2,7 @@ package app.shosetsu.android.domain.repository.impl
 
 import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.datasource.local.database.base.IDBNovelSettingsDataSource
-import app.shosetsu.common.domain.model.local.NovelSettingEntity
+import app.shosetsu.android.domain.model.local.NovelSettingEntity
 import app.shosetsu.android.domain.repository.base.INovelSettingsRepository
 import kotlinx.coroutines.flow.Flow
 

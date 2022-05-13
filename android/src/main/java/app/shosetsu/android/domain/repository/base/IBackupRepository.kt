@@ -2,7 +2,6 @@ package app.shosetsu.android.domain.repository.base
 
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.domain.model.local.BackupEntity
-import app.shosetsu.common.domain.model.local.BackupEntity
 import kotlinx.coroutines.flow.Flow
 import java.io.IOException
 

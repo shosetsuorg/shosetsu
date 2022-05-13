@@ -1,7 +1,7 @@
 package app.shosetsu.android.providers.database.converters
 
 import androidx.room.TypeConverter
-import app.shosetsu.common.enums.ChapterSortType
+import app.shosetsu.android.common.enums.ChapterSortType
 
 /*
  * This file is part of Shosetsu.

@@ -9,10 +9,6 @@ import app.shosetsu.android.common.enums.ChapterSortType
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.domain.model.local.NovelSettingEntity
 import app.shosetsu.android.dto.Convertible
-import app.shosetsu.common.domain.model.local.NovelSettingEntity
-import app.shosetsu.common.dto.Convertible
-import app.shosetsu.common.enums.ChapterSortType
-import app.shosetsu.common.enums.ReadingStatus
 
 /*
  * This file is part of Shosetsu.

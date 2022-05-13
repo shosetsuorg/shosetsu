@@ -5,10 +5,19 @@ import android.graphics.Color
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
-import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.SettingKey.*
+import app.shosetsu.android.common.enums.AppThemes
+import app.shosetsu.android.common.enums.MarkingType
+import app.shosetsu.android.common.enums.MarkingType.ONSCROLL
+import app.shosetsu.android.common.enums.MarkingType.ONVIEW
+import app.shosetsu.android.common.enums.ReadingStatus.READ
+import app.shosetsu.android.common.enums.ReadingStatus.READING
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.model.local.ColorChoiceData
+import app.shosetsu.android.domain.model.local.NovelReaderSettingEntity
+import app.shosetsu.android.domain.repository.base.IChaptersRepository
+import app.shosetsu.android.domain.repository.base.INovelReaderSettingsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.RecordChapterIsReadUseCase
 import app.shosetsu.android.domain.usecases.RecordChapterIsReadingUseCase
 import app.shosetsu.android.domain.usecases.get.*
@@ -17,22 +26,6 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderDividerUI
 import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
-import app.shosetsu.common.consts.settings.SettingKey.*
-import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
-import app.shosetsu.android.domain.repository.base.IChaptersRepository
-import app.shosetsu.android.domain.repository.base.INovelReaderSettingsRepository
-import app.shosetsu.android.domain.repository.base.ISettingsRepository
-import app.shosetsu.android.common.enums.AppThemes
-import app.shosetsu.android.common.enums.MarkingType
-import app.shosetsu.android.common.enums.MarkingType.*
-import app.shosetsu.android.common.enums.ReadingStatus
-import app.shosetsu.android.common.enums.ReadingStatus.*
-import app.shosetsu.android.domain.model.local.NovelReaderSettingEntity
-import app.shosetsu.common.enums.MarkingType
-import app.shosetsu.common.enums.MarkingType.ONSCROLL
-import app.shosetsu.common.enums.MarkingType.ONVIEW
-import app.shosetsu.common.enums.ReadingStatus.READ
-import app.shosetsu.common.enums.ReadingStatus.READING
 import app.shosetsu.common.utils.asHtml
 import app.shosetsu.common.utils.copy
 import app.shosetsu.lib.Novel
@@ -559,7 +552,7 @@ class ChapterReaderViewModel(
 
 	private val readingMarkingTypeFlow by lazy {
 		settingsRepo.getStringFlow(ReadingMarkingType).map {
-			valueOf(it)
+			MarkingType.valueOf(it)
 		}
 	}
 

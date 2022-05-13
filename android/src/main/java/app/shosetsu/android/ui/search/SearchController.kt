@@ -309,7 +309,7 @@ fun PreviewSearchRowContent() {
 fun SearchRowContent(
 	row: SearchRowUI,
 	loadingBar: @Composable () -> Unit,
-	items: @Composable LazyListScope.() -> Unit,
+	items: LazyListScope.() -> Unit,
 	exception: @Composable () -> Unit,
 ) {
 	Column(

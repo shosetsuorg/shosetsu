@@ -1,7 +1,7 @@
 package app.shosetsu.android.view.uimodels.model
 
-import app.shosetsu.common.domain.model.local.NovelEntity
-import app.shosetsu.common.dto.Convertible
+import app.shosetsu.android.domain.model.local.NovelEntity
+import app.shosetsu.android.dto.Convertible
 import app.shosetsu.lib.Novel
 
 /*

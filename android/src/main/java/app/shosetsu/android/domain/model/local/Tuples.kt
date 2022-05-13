@@ -5,7 +5,6 @@ import app.shosetsu.android.dto.Convertible
 import app.shosetsu.android.view.uimodels.model.IDTitleImageBookUI
 import app.shosetsu.android.view.uimodels.model.IDTitleImageUI
 import app.shosetsu.android.view.uimodels.model.URLTitleImageUI
-import app.shosetsu.common.dto.Convertible
 import java.io.Serializable
 
 /*

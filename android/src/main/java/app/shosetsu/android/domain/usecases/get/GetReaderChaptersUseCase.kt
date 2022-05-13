@@ -1,11 +1,11 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderChapterUI
-import app.shosetsu.common.consts.settings.SettingKey.ReaderStringToHtml
+import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderChapterUI
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emitAll
@@ -45,7 +45,7 @@ class GetReaderChaptersUseCase(
 					.combine(chapterRepo.getReaderChaptersFlow(novelID)) { novel, chapters ->
 						novel to chapters
 					}
-					.combine(settingsRepo.getBooleanFlow(ReaderStringToHtml)) { (novel, list), convertToHtml ->
+					.combine(settingsRepo.getBooleanFlow(SettingKey.ReaderStringToHtml)) { (novel, list), convertToHtml ->
 						if (novel != null) {
 							val extensionEntity =
 								extRepo.getInstalledExtension(novel.extensionID)

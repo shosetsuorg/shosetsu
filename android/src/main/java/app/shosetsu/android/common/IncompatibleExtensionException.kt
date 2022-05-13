@@ -1,6 +1,6 @@
 package app.shosetsu.android.common
 
-import app.shosetsu.common.domain.model.local.GenericExtensionEntity
+import app.shosetsu.android.domain.model.local.GenericExtensionEntity
 import app.shosetsu.lib.KOTLIN_LIB_VERSION
 import app.shosetsu.lib.Version
 

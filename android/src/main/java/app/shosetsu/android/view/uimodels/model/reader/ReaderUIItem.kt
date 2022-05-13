@@ -1,8 +1,8 @@
 package app.shosetsu.android.view.uimodels.model.reader
 
-import app.shosetsu.common.domain.model.local.ReaderChapterEntity
-import app.shosetsu.common.dto.Convertible
-import app.shosetsu.common.enums.ReadingStatus
+import app.shosetsu.android.common.enums.ReadingStatus
+import app.shosetsu.android.domain.model.local.ReaderChapterEntity
+import app.shosetsu.android.dto.Convertible
 import app.shosetsu.lib.Novel
 
 /*

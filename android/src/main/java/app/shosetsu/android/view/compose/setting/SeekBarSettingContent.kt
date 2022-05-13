@@ -5,10 +5,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
+import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.view.compose.DiscreteSlider
-import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import app.shosetsu.android.view.compose.DiscreteSlider
 import kotlin.math.roundToInt
 
 @Composable

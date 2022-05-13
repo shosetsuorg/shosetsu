@@ -1,10 +1,10 @@
 package app.shosetsu.android.datasource.remote.impl.update
 
+import app.shosetsu.android.common.EmptyResponseBodyException
 import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
+import app.shosetsu.android.domain.model.local.AppUpdateEntity
 import app.shosetsu.android.domain.model.remote.AppUpdateDTO
-import app.shosetsu.android.common.EmptyResponseBodyException
-import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.utils.archURL
 import app.shosetsu.lib.exceptions.HTTPException
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig.DEBUG

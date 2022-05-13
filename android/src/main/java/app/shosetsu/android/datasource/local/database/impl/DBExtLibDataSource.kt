@@ -1,13 +1,12 @@
 package app.shosetsu.android.datasource.local.database.impl
 
 import android.database.sqlite.SQLiteException
-import app.shosetsu.android.common.ext.toDB
-import app.shosetsu.android.providers.database.dao.ExtensionLibraryDao
 import app.shosetsu.android.common.GenericSQLiteException
+import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.datasource.local.database.base.IDBExtLibDataSource
 import app.shosetsu.android.domain.model.local.ExtLibEntity
-import app.shosetsu.common.domain.model.local.ExtLibEntity
-import app.shosetsu.common.dto.convertList
+import app.shosetsu.android.dto.convertList
+import app.shosetsu.android.providers.database.dao.ExtensionLibraryDao
 
 /*
  * This file is part of shosetsu.

@@ -8,8 +8,6 @@ import app.shosetsu.android.domain.usecases.load.LoadUpdatesUseCase
 import app.shosetsu.android.domain.usecases.start.StartUpdateWorkerUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateChapterUseCase
 import app.shosetsu.android.viewmodel.abstracted.AUpdatesViewModel
-import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
-import app.shosetsu.common.enums.ReadingStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -18,8 +18,12 @@ package app.shosetsu.android.viewmodel.impl
  */
 
 import androidx.lifecycle.LiveData
+import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.enums.InclusionState
-import app.shosetsu.android.common.enums.InclusionState.*
+import app.shosetsu.android.common.enums.InclusionState.EXCLUDE
+import app.shosetsu.android.common.enums.InclusionState.INCLUDE
+import app.shosetsu.android.common.enums.NovelCardType
+import app.shosetsu.android.common.enums.NovelSortType
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.load.LoadLibraryUseCase
@@ -31,14 +35,6 @@ import app.shosetsu.android.domain.usecases.start.StartUpdateWorkerUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateBookmarkedNovelUseCase
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
-import app.shosetsu.common.consts.settings.SettingKey.ChapterColumnsInLandscape
-import app.shosetsu.common.consts.settings.SettingKey.ChapterColumnsInPortait
-import app.shosetsu.common.enums.InclusionState
-import app.shosetsu.common.enums.InclusionState.EXCLUDE
-import app.shosetsu.common.enums.InclusionState.INCLUDE
-import app.shosetsu.android.common.enums.NovelCardType
-import app.shosetsu.android.common.enums.NovelSortType
-import app.shosetsu.common.enums.NovelSortType
 import app.shosetsu.common.utils.copy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -65,9 +61,9 @@ class LibraryViewModel(
 ) : ALibraryViewModel() {
 
 
-	private var columnP: Int = ChapterColumnsInPortait.default
+	private var columnP: Int = SettingKey.ChapterColumnsInPortait.default
 
-	private var columnH: Int = ChapterColumnsInLandscape.default
+	private var columnH: Int = SettingKey.ChapterColumnsInLandscape.default
 
 	init {
 		launchIO {

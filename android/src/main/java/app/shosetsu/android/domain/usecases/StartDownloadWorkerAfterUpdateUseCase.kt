@@ -1,9 +1,9 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.android.domain.usecases.start.StartDownloadWorkerUseCase
-import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.domain.model.local.ChapterEntity
+import app.shosetsu.android.common.SettingKey
+import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import app.shosetsu.android.domain.usecases.start.StartDownloadWorkerUseCase
 
 /*
  * This file is part of Shosetsu.

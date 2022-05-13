@@ -1,9 +1,13 @@
 package app.shosetsu.android.viewmodel.impl
 
 import app.shosetsu.android.common.SettingKey
+import app.shosetsu.android.common.enums.AppThemes
 import app.shosetsu.android.common.enums.NavigationStyle
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logV
+import app.shosetsu.android.domain.model.local.AppUpdateEntity
+import app.shosetsu.android.domain.repository.base.IBackupRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.CanAppSelfUpdateUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.load.LoadAppUpdateFlowLiveUseCase
@@ -14,12 +18,6 @@ import app.shosetsu.android.domain.usecases.settings.LoadNavigationStyleUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadRequireDoubleBackUseCase
 import app.shosetsu.android.domain.usecases.start.StartAppUpdateInstallWorkerUseCase
 import app.shosetsu.android.viewmodel.abstracted.AMainViewModel
-import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.domain.model.local.AppUpdateEntity
-import app.shosetsu.android.domain.repository.base.IBackupRepository
-import app.shosetsu.android.domain.repository.base.ISettingsRepository
-import app.shosetsu.android.common.enums.AppThemes
-import app.shosetsu.android.domain.model.local.AppUpdateEntity
 import app.shosetsu.common.utils.archURL
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -96,7 +94,7 @@ class MainViewModel(
 						startInstallWorker()
 						AppUpdateAction.SelfUpdate
 					} else {
-						loadAppUpdateUseCase()?.let {
+						loadAppUpdateUseCase().let {
 							AppUpdateAction.UserUpdate(
 								it.version,
 								it.archURL()

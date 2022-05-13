@@ -7,8 +7,8 @@ import androidx.room.Transaction
 import app.shosetsu.android.common.ext.entity
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.domain.model.database.DBChapterEntity
+import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
-import app.shosetsu.common.domain.model.local.ReaderChapterEntity
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
 

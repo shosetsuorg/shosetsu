@@ -1,5 +1,6 @@
 package app.shosetsu.android.domain.usecases.load
 
+import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.android.domain.repository.base.IExtensionDownloadRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository

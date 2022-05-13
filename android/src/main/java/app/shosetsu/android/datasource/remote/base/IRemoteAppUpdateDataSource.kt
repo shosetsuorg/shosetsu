@@ -1,7 +1,7 @@
 package app.shosetsu.android.datasource.remote.base
 
 import app.shosetsu.android.common.EmptyResponseBodyException
-import app.shosetsu.common.domain.model.local.AppUpdateEntity
+import app.shosetsu.android.domain.model.local.AppUpdateEntity
 import app.shosetsu.lib.exceptions.HTTPException
 
 /*

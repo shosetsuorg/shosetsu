@@ -3,8 +3,8 @@ package app.shosetsu.android.providers.prefrences
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import app.shosetsu.android.common.*
 import app.shosetsu.android.common.ext.logE
-import app.shosetsu.common.consts.settings.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 

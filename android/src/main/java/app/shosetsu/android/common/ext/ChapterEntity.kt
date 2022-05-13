@@ -1,7 +1,7 @@
 package app.shosetsu.android.common.ext
 
 import app.shosetsu.android.domain.model.database.DBChapterEntity
-import app.shosetsu.common.domain.model.local.ChapterEntity
+import app.shosetsu.android.domain.model.local.ChapterEntity
 
 /*
  * This file is part of Shosetsu.

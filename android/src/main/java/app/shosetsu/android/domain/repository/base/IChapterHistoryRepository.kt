@@ -1,7 +1,6 @@
 package app.shosetsu.android.domain.repository.base
 
 import app.shosetsu.android.domain.model.local.ChapterEntity
-import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.ChapterHistoryEntity
 import kotlinx.coroutines.flow.Flow
 

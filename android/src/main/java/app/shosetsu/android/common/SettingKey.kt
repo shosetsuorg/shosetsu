@@ -1,7 +1,7 @@
 package app.shosetsu.android.common
 
-import app.shosetsu.common.domain.model.local.LibrarySortFilterEntity
-import app.shosetsu.common.enums.MarkingType.ONVIEW
+import app.shosetsu.android.common.enums.MarkingType
+import app.shosetsu.android.domain.model.local.LibrarySortFilterEntity
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.util.*
@@ -94,7 +94,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 
 	object ReaderIsInvertedSwipe : BooleanKey("invertedSwipe", false)
-	object ReadingMarkingType : StringKey("readingMarkingType", ONVIEW.name)
+	object ReadingMarkingType : StringKey("readingMarkingType", MarkingType.ONVIEW.name)
 
 	/**
 	 * Should the application convert string returns from an extension to an Html page

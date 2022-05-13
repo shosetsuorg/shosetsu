@@ -5,7 +5,6 @@ import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.MissingFeatureException
 import app.shosetsu.android.domain.model.local.AppUpdateEntity
-import app.shosetsu.common.domain.model.local.AppUpdateEntity
 import app.shosetsu.lib.exceptions.HTTPException
 import kotlinx.coroutines.flow.Flow
 import java.io.IOException

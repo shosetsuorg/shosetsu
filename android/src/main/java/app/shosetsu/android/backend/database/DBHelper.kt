@@ -20,15 +20,11 @@ import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.providers.database.converters.NovelStatusConverter
 import app.shosetsu.android.providers.database.dao.ChaptersDao
 import app.shosetsu.android.providers.database.dao.NovelsDao
-import app.shosetsu.common.domain.model.local.ChapterEntity
-import app.shosetsu.common.domain.model.local.NovelEntity
-import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.lib.Novel
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
-
 import java.io.IOException
 
 /*

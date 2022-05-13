@@ -1,7 +1,7 @@
 package app.shosetsu.android.datasource.local.database.base
 
 import app.shosetsu.android.common.GenericSQLiteException
-import app.shosetsu.common.domain.model.local.NovelSettingEntity
+import app.shosetsu.android.domain.model.local.NovelSettingEntity
 import kotlinx.coroutines.flow.Flow
 
 /*

@@ -20,6 +20,8 @@ package app.shosetsu.android.viewmodel.impl.extension
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
+import app.shosetsu.android.domain.model.local.FilterEntity
+import app.shosetsu.android.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.android.domain.usecases.UninstallExtensionUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtListingNamesUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtSelectedListingFlowUseCase
@@ -28,9 +30,6 @@ import app.shosetsu.android.domain.usecases.get.GetInstalledExtensionUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateExtSelectedListing
 import app.shosetsu.android.domain.usecases.update.UpdateExtensionSettingUseCase
 import app.shosetsu.android.viewmodel.abstracted.AExtensionConfigureViewModel
-import app.shosetsu.android.domain.model.local.FilterEntity
-import app.shosetsu.android.domain.model.local.InstalledExtensionEntity
-import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

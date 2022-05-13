@@ -5,9 +5,6 @@ import app.shosetsu.android.common.consts.MEMORY_MAX_EXTENSIONS
 import app.shosetsu.android.common.ext.get
 import app.shosetsu.android.common.ext.set
 import app.shosetsu.android.datasource.local.memory.base.IMemExtensionsDataSource
-import app.shosetsu.common.consts.MEMORY_EXPIRE_EXT_LIB_TIME
-import app.shosetsu.common.consts.MEMORY_MAX_EXTENSIONS
-import app.shosetsu.common.datasource.memory.base.IMemExtensionsDataSource
 import app.shosetsu.lib.IExtension
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder

@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.usecases.get
 
+import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
-import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.lib.IExtension.Companion.KEY_CHAPTER_URL
 import app.shosetsu.lib.IExtension.Companion.KEY_NOVEL_URL
 

@@ -2,8 +2,6 @@ package app.shosetsu.android.domain.model.local
 
 import app.shosetsu.android.common.enums.InclusionState
 import app.shosetsu.android.common.enums.NovelSortType
-import app.shosetsu.common.enums.InclusionState
-import app.shosetsu.common.enums.NovelSortType
 import kotlinx.serialization.Serializable
 
 /*

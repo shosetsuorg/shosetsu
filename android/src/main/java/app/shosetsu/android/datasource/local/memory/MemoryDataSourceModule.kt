@@ -2,15 +2,10 @@ package app.shosetsu.android.datasource.local.memory
 
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.M
-import app.shosetsu.android.datasource.local.memory.impl.GuavaMemChaptersDataSource
-import app.shosetsu.android.datasource.local.memory.impl.GuavaMemExtLibDataSource
-import app.shosetsu.android.datasource.local.memory.impl.GuavaMemExtensionDataSource
-import app.shosetsu.common.datasource.memory.base.IMemChaptersDataSource
-import app.shosetsu.common.datasource.memory.base.IMemExtLibDataSource
-import app.shosetsu.common.datasource.memory.base.IMemExtensionsDataSource
-import app.shosetsu.common.datasource.memory.impl.GenericMemChaptersDataSource
-import app.shosetsu.android.datasource.local.memory.impl.GenericMemExtLibDataSource
-import app.shosetsu.android.datasource.local.memory.impl.GenericMemExtensionDataSource
+import app.shosetsu.android.datasource.local.memory.base.IMemChaptersDataSource
+import app.shosetsu.android.datasource.local.memory.base.IMemExtLibDataSource
+import app.shosetsu.android.datasource.local.memory.base.IMemExtensionsDataSource
+import app.shosetsu.android.datasource.local.memory.impl.*
 import org.kodein.di.DI
 import org.kodein.di.bind
 import org.kodein.di.singleton

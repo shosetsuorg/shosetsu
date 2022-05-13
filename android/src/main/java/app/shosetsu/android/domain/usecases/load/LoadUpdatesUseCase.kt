@@ -1,8 +1,7 @@
 package app.shosetsu.android.domain.usecases.load
 
-import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
+import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.domain.repository.base.IUpdatesRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -31,7 +30,6 @@ import kotlinx.coroutines.flow.flow
 class LoadUpdatesUseCase(
 	private val updatesRepository: IUpdatesRepository,
 ) {
-	@OptIn(ExperimentalCoroutinesApi::class)
 	operator fun invoke(): Flow<List<UpdateCompleteEntity>> = flow {
 		emitAll(
 			updatesRepository.getCompleteUpdatesFlow()
