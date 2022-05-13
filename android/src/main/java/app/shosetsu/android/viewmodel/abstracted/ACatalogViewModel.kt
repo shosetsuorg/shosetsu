@@ -38,6 +38,8 @@ abstract class ACatalogViewModel :
 	 */
 	abstract val itemsLive: Flow<PagingData<ACatalogNovelUI>>
 
+	abstract val exceptionFlow: Flow<Throwable?>
+
 	/**
 	 * The list of items that will be presented as the filter menu
 	 */

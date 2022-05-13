@@ -155,7 +155,7 @@ dependencies {
 	implementation(project(mapOf("path" to ":common")))
 
 	// Google view things
-	implementation("com.google.android.material:material:1.5.0")
+	implementation("com.google.android.material:material:1.6.0")
 
 	// Androidx
 	//implementation("androidx.constraintlayout:constraintlayout:2.1.3")
@@ -175,7 +175,6 @@ dependencies {
 
 
 
-	implementation("androidx.room:room-ktx:2.4.2")
 	implementation("androidx.collection:collection-ktx:1.2.0")
 	implementation("androidx.core:core-splashscreen:1.0.0-beta02")
 
@@ -203,7 +202,7 @@ dependencies {
 
 
 	// Image loading
-	implementation("io.coil-kt:coil-compose:2.0.0-rc03")
+	implementation("io.coil-kt:coil-compose:2.0.0")
 
 	//TODO GITHUB sign in to save backup data to cloud
 	//implementation "com.github.kohsuke:github-api:github-api-1.95"
@@ -224,7 +223,7 @@ dependencies {
 	implementation(kotlin("stdlib-jdk8"))
 	//implementation(kotlin("reflect"))
 
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1")
 
 	// Showcase
 	//implementation("com.github.deano2390:MaterialShowcaseView:1.3.4")
@@ -269,8 +268,10 @@ dependencies {
 //	implementation("com.github.shosetsuorg:Bubbleseekbar:2dae010baf")
 
 	// Room
+	implementation("androidx.room:room-ktx:2.4.2")
 	implementation("androidx.room:room-runtime:2.4.2")
 	kapt("androidx.room:room-compiler:2.4.2")
+	implementation("androidx.room:room-paging:2.5.0-alpha01")
 
 	// Fast Adapter
 	val latestFastAdapterRelease = "5.6.0"
@@ -304,7 +305,7 @@ dependencies {
 
 	// KTX
 
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.0")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.1")
 
 	// KTX - Serialization
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
@@ -368,7 +369,7 @@ dependencies {
 	//androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.2")
 
 	// MDC Adapter
-	implementation("com.google.android.material:compose-theme-adapter:1.1.7")
+	implementation("com.google.android.material:compose-theme-adapter:1.1.8")
 
 	val androidxActivity = "1.4.0"
 	fun androidxActivity(module: String, version: String = androidxActivity) =

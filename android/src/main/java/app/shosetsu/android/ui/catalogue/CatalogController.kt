@@ -17,6 +17,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -124,6 +125,40 @@ class CatalogController(
 
 				val items = viewModel.itemsLive.collectAsLazyPagingItems()
 
+				val exception by viewModel.exceptionFlow.collectAsState(null)
+
+				if (exception != null)
+					LaunchedEffect(Unit) {
+						launchUI {
+							makeSnackBar(exception!!.message ?: "Unknown error")?.show()
+						}
+					}
+
+				val prepend = items.loadState.prepend
+				if (prepend is LoadState.Error) {
+					LaunchedEffect(Unit) {
+						launchUI {
+							makeSnackBar(prepend.error.message ?: "Unknown error")?.show()
+						}
+					}
+				}
+				val append = items.loadState.prepend
+				if (append is LoadState.Error) {
+					LaunchedEffect(Unit) {
+						launchUI {
+							makeSnackBar(append.error.message ?: "Unknown error")?.show()
+						}
+					}
+				}
+
+				val refresh = items.loadState.refresh
+				if (refresh is LoadState.Error) {
+					LaunchedEffect(Unit) {
+						launchUI {
+							makeSnackBar(refresh.error.message ?: "Unknown error")?.show()
+						}
+					}
+				}
 				CatalogContent(
 					items,
 					type,

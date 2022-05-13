@@ -101,7 +101,13 @@ class CatalogViewModel(
 	override val itemsLive: Flow<PagingData<ACatalogNovelUI>> by lazy {
 		pagerFlow.transformLatest {
 			emitAll(it.flow)
+		}.catch {
+			exceptionFlow.emit(it)
 		}.cachedIn(viewModelScope)
+	}
+
+	override val exceptionFlow: MutableStateFlow<Throwable?> by lazy {
+		MutableStateFlow(null)
 	}
 
 	private val filterItemsFlow by lazy {
