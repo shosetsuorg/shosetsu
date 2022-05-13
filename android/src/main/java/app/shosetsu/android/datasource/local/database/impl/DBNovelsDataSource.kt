@@ -1,11 +1,13 @@
 package app.shosetsu.android.datasource.local.database.impl
 
 import android.database.sqlite.SQLiteException
+import androidx.paging.PagingSource
 import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.datasource.local.database.base.IDBNovelsDataSource
 import app.shosetsu.android.domain.model.local.LibraryNovelEntity
 import app.shosetsu.android.domain.model.local.NovelEntity
+import app.shosetsu.android.domain.model.local.StrippedBookmarkedNovelEntity
 import app.shosetsu.android.domain.model.local.StrippedNovelEntity
 import app.shosetsu.android.dto.convertList
 import app.shosetsu.android.providers.database.dao.NovelsDao
@@ -106,4 +108,11 @@ class DBNovelsDataSource(
 	} catch (e: SQLiteException) {
 		throw GenericSQLiteException(e)
 	}
+
+	override fun searchBookmarked(query: String): PagingSource<Int, StrippedBookmarkedNovelEntity> =
+		try {
+			novelsDao.searchBookmarked(query)
+		} catch (e: SQLiteException) {
+			throw GenericSQLiteException(e)
+		}
 }

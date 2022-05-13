@@ -1,8 +1,7 @@
 package app.shosetsu.android.viewmodel.impl
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
+import androidx.lifecycle.viewModelScope
+import androidx.paging.*
 import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
@@ -57,8 +56,6 @@ class SearchViewModel(
 	private val exceptionFlows =
 		HashMap<Int, MutableStateFlow<Throwable?>>()
 
-	private val loadingFlows = HashMap<Int, MutableStateFlow<Boolean>>()
-
 	override val query: Flow<String>
 		get() = queryFlow.onIO()
 
@@ -84,22 +81,13 @@ class SearchViewModel(
 		this.queryFlow.value = query
 	}
 
-	override fun searchLibrary(): Flow<List<ACatalogNovelUI>> =
-		libraryResultFlow
+	override fun searchLibrary(): Flow<PagingData<ACatalogNovelUI>> =
+		libraryResultFlow.cachedIn(viewModelScope).onIO()
 
 	override fun searchExtension(extensionId: Int): Flow<PagingData<ACatalogNovelUI>> =
 		searchFlows.getOrPut(extensionId) {
 			loadExtension(extensionId)
 		}
-
-	override fun getIsLoading(id: Int): Flow<Boolean> =
-		getIsLoadingFlow(id)
-
-	private fun getIsLoadingFlow(id: Int): MutableStateFlow<Boolean> =
-		loadingFlows.getOrPut(id) {
-			MutableStateFlow(true)
-		}
-
 
 	override fun getException(id: Int): Flow<Throwable?> =
 		getExceptionFlow(id)
@@ -142,38 +130,38 @@ class SearchViewModel(
 	 * Creates a flow for a library query
 	 */
 	@OptIn(ExperimentalCoroutinesApi::class)
-	private val libraryResultFlow: Flow<List<ACatalogNovelUI>> by lazy {
-		val flow = MutableStateFlow<List<ACatalogNovelUI>>(listOf())
+	private val libraryResultFlow: Flow<PagingData<ACatalogNovelUI>> by lazy {
+		queryFlow.combine(getRefreshFlow(-1)) { query, _ -> query }
+			.transformLatest { query ->
 
-		launchIO {
-			flow.emitAll(
-				queryFlow.combine(getRefreshFlow(-1)) { query, _ -> query }
-					.transformLatest { query ->
+				val exceptionFlow = getExceptionFlow(-1)
 
-						val loadingFlow = getIsLoadingFlow(-1)
-						val exceptionFlow = getExceptionFlow(-1)
+				exceptionFlow.emit(null)
 
-						loadingFlow.emit(true)
-						exceptionFlow.emit(null)
-
-						try {
-							emit(searchBookMarkedNovelsUseCase(query).let {
-								it.map { (id, title, imageURL) ->
-									FullCatalogNovelUI(id, title, imageURL, false)
+				try {
+					emitAll(
+						Pager(
+							PagingConfig(10)
+						) {
+							searchBookMarkedNovelsUseCase(query)
+						}.flow.map { data ->
+							val ids = arrayListOf<Int>()
+							data.filter {
+								if (ids.contains(it.id)) {
+									false
+								} else {
+									ids.add(it.id)
+									true
 								}
-							})
-						} catch (e: GenericSQLiteException) {
-							exceptionFlow.emit(e)
+							}.map { (id, title, imageURL) ->
+								FullCatalogNovelUI(id, title, imageURL, false)
+							}
 						}
-
-
-						loadingFlow.emit(false)
-					}
-			)
-
-		}
-
-		flow.onIO()
+					)
+				} catch (e: GenericSQLiteException) {
+					exceptionFlow.emit(e)
+				}
+			}
 	}
 
 	/**

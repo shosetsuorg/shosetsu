@@ -1,5 +1,6 @@
 package app.shosetsu.android.domain.repository.impl
 
+import androidx.paging.PagingSource
 import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.datasource.local.database.base.IDBNovelsDataSource
@@ -71,16 +72,8 @@ class NovelsRepository(
 	 * TODO this operation is resource intensive, create a low level DB object
 	 */
 	@Throws(GenericSQLiteException::class)
-	override suspend fun searchBookmarked(string: String): List<StrippedBookmarkedNovelEntity> =
-		loadBookmarkedNovelEntities().let { list ->
-			if (list.isEmpty())
-				emptyList()
-			else
-				list.filter { it.title.contains(string, false) }
-					.map {
-						StrippedBookmarkedNovelEntity(it.id!!, it.title, it.imageURL)
-					}
-		}
+	override fun searchBookmarked(string: String): PagingSource<Int, StrippedBookmarkedNovelEntity> =
+		database.searchBookmarked(string)
 
 
 	@Throws(GenericSQLiteException::class)

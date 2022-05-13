@@ -39,7 +39,7 @@ abstract class ASearchViewModel : ShosetsuViewModel(), Destroyable {
 
 	abstract fun setQuery(query: String)
 
-	abstract fun searchLibrary(): Flow<List<ACatalogNovelUI>>
+	abstract fun searchLibrary(): Flow<PagingData<ACatalogNovelUI>>
 
 	/**
 	 * Gets the search flow of an extension
@@ -55,11 +55,6 @@ abstract class ASearchViewModel : ShosetsuViewModel(), Destroyable {
 	 * Refresh a specific row
 	 */
 	abstract fun refresh(id: Int)
-
-	/**
-	 * Get if a certain row is loading or not
-	 */
-	abstract fun getIsLoading(id: Int): Flow<Boolean>
 
 	/**
 	 * Get the exception that occurred in a certain row

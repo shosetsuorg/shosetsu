@@ -267,10 +267,15 @@ dependencies {
 //	implementation("com.github.shosetsuorg:Bubbleseekbar:2dae010baf")
 
 	// Room
-	implementation("androidx.room:room-ktx:2.4.2")
-	implementation("androidx.room:room-runtime:2.4.2")
-	kapt("androidx.room:room-compiler:2.4.2")
-	implementation("androidx.room:room-paging:2.5.0-alpha01")
+	val roomVersion = "2.5.0-alpha01"
+	fun room(module: String, version: String = roomVersion) =
+		"androidx.room:$module:$version"
+
+	implementation(room("room-runtime"))
+	annotationProcessor(room("room-compiler"))
+	kapt(room("room-compiler"))
+	implementation(room("room-ktx"))
+	implementation(room("room-paging"))
 
 	// Fast Adapter
 	val latestFastAdapterRelease = "5.6.0"

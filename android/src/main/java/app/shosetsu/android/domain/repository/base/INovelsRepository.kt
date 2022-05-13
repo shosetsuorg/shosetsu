@@ -15,6 +15,7 @@ package app.shosetsu.android.domain.repository.base
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
+import androidx.paging.PagingSource
 import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.domain.model.local.LibraryNovelEntity
@@ -55,7 +56,7 @@ interface INovelsRepository {
 	 * Searches the bookmarked novels and returns a live data of them
 	 */
 	@Throws(GenericSQLiteException::class)
-	suspend fun searchBookmarked(string: String): List<StrippedBookmarkedNovelEntity>
+	fun searchBookmarked(string: String): PagingSource<Int, StrippedBookmarkedNovelEntity>
 
 	/**
 	 * Loads the [NovelEntity] by its [novelID]

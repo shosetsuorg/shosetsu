@@ -40,7 +40,6 @@ import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
-import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ASearchViewModel
 import coil.compose.AsyncImage
@@ -96,12 +95,11 @@ class SearchController(bundle: Bundle) : ShosetsuController(bundle) {
 				val rows by viewModel.listings.collectAsState(listOf())
 				SearchContent(
 					rows = rows,
-					getIsLoading = viewModel::getIsLoading,
 					getChildren = {
-						viewModel.searchLibrary()
-					},
-					getExtChildren = {
-						viewModel.searchExtension(it)
+						if (id == -1)
+							viewModel.searchLibrary()
+						else
+							viewModel.searchExtension(it)
 					},
 					getException = viewModel::getException,
 					onClick = {
@@ -173,28 +171,13 @@ fun PreviewSearchContent() {
 				null
 			)
 		},
-		getIsLoading = {
-			flow { emit(false) }
-		},
-		getChildren = {
-			flow {
-				emit(List(5) {
-					FullCatalogNovelUI(
-						it,
-						"Test",
-						"",
-						it % 2 == 0
-					)
-				})
-			}
-		},
 		getException = {
 			flow { emit(null) }
 		},
 		onClick = {},
 		onRefresh = {},
 		onRefreshAll = {},
-		getExtChildren = {
+		getChildren = {
 			flow { }
 		}
 	)
@@ -203,9 +186,7 @@ fun PreviewSearchContent() {
 @Composable
 fun SearchContent(
 	rows: List<SearchRowUI>,
-	getIsLoading: (id: Int) -> Flow<Boolean>,
-	getChildren: () -> Flow<List<ACatalogNovelUI>>,
-	getExtChildren: (id: Int) -> Flow<PagingData<ACatalogNovelUI>>,
+	getChildren: (id: Int) -> Flow<PagingData<ACatalogNovelUI>>,
 	getException: (id: Int) -> Flow<Throwable?>,
 	onClick: (ACatalogNovelUI) -> Unit,
 	onRefresh: (id: Int) -> Unit,
@@ -215,59 +196,40 @@ fun SearchContent(
 		rememberSwipeRefreshState(false),
 		onRefresh = onRefreshAll
 	) {
-		val libraryChildren: List<ACatalogNovelUI> by getChildren().collectAsState(listOf())
-		val isLoading by getIsLoading(-1).collectAsState(false)
-
 		LazyColumn(
 			modifier = Modifier.fillMaxSize(),
 			contentPadding = PaddingValues(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 64.dp)
 		) {
 			items(rows, key = { it.extensionID }) { row ->
-
-				val children: LazyPagingItems<ACatalogNovelUI>? =
-					if (row.extensionID != -1)
-						getExtChildren(row.extensionID).collectAsLazyPagingItems()
-					else null
+				val children: LazyPagingItems<ACatalogNovelUI> =
+					getChildren(row.extensionID).collectAsLazyPagingItems()
 
 				SearchRowContent(
 					row = row,
 					loadingBar = {
-						if (children?.loadState?.refresh == LoadState.Loading || isLoading)
+						if (children.loadState.refresh == LoadState.Loading)
 							LinearProgressIndicator(
 								modifier = Modifier.fillMaxWidth()
 							)
 					},
 					items = {
-						if (children != null) {
-							items(children, key = { it.id }) { novelUI ->
-								if (novelUI != null)
-									SearchResultContent(
-										novelUI,
-										onClick
-									)
-							}
-						} else {
-							items(libraryChildren, key = { it.id }) {
+						items(children, key = { it.id }) { novelUI ->
+							if (novelUI != null)
 								SearchResultContent(
-									it,
+									novelUI,
 									onClick
 								)
-							}
 						}
 					},
 					exception = {
-						if (row.extensionID == -1) {
-							val exception by getException(row.extensionID).collectAsState(null)
-							if (exception != null)
-								ExceptionBar(
-									exception!!,
-									onRefresh = {
-										onRefresh(row.extensionID)
-									}
-								)
-						} else {
-
-						}
+						val exception by getException(row.extensionID).collectAsState(null)
+						if (exception != null)
+							ExceptionBar(
+								exception!!,
+								onRefresh = {
+									onRefresh(row.extensionID)
+								}
+							)
 					}
 				)
 			}
