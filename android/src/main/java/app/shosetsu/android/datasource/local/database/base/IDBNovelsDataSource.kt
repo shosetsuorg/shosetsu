@@ -1,8 +1,10 @@
 package app.shosetsu.android.datasource.local.database.base
 
+import androidx.paging.PagingSource
 import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.domain.model.local.LibraryNovelEntity
 import app.shosetsu.android.domain.model.local.NovelEntity
+import app.shosetsu.android.domain.model.local.StrippedBookmarkedNovelEntity
 import app.shosetsu.android.domain.model.local.StrippedNovelEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -70,4 +72,6 @@ interface IDBNovelsDataSource {
 	 */
 	@Throws(GenericSQLiteException::class)
 	suspend fun clearUnBookmarkedNovels()
+
+	fun searchBookmarked(query: String): PagingSource<Int, StrippedBookmarkedNovelEntity>
 }

@@ -1,10 +1,9 @@
 package app.shosetsu.android.domain.usecases
 
+import androidx.paging.PagingSource
 import app.shosetsu.android.common.GenericSQLiteException
-import app.shosetsu.android.common.utils.uifactory.StrippedNovelConversionFactory
+import app.shosetsu.android.domain.model.local.StrippedBookmarkedNovelEntity
 import app.shosetsu.android.domain.repository.base.INovelsRepository
-import app.shosetsu.android.dto.convertList
-import app.shosetsu.android.view.uimodels.model.IDTitleImageUI
 
 /*
  * This file is part of shosetsu.
@@ -31,7 +30,6 @@ class SearchBookMarkedNovelsUseCase(
 	private val iNovelsRepository: INovelsRepository,
 ) {
 	@Throws(GenericSQLiteException::class)
-	suspend operator fun invoke(p1: String): List<IDTitleImageUI> =
-		iNovelsRepository.searchBookmarked(p1).map { StrippedNovelConversionFactory(it) }
-			.convertList()
+	operator fun invoke(p1: String): PagingSource<Int, StrippedBookmarkedNovelEntity> =
+		iNovelsRepository.searchBookmarked(p1)
 }

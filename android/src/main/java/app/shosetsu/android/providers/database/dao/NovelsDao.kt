@@ -1,12 +1,14 @@
 package app.shosetsu.android.providers.database.dao
 
 import android.database.sqlite.SQLiteException
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import app.shosetsu.android.domain.model.database.DBNovelEntity
 import app.shosetsu.android.domain.model.database.DBStrippedNovelEntity
 import app.shosetsu.android.domain.model.local.LibraryNovelEntity
+import app.shosetsu.android.domain.model.local.StrippedBookmarkedNovelEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import kotlinx.coroutines.flow.Flow
 
@@ -107,6 +109,9 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 
 	@Query("SELECT * FROM novels")
 	fun loadNovels(): List<DBNovelEntity>
+
+	@Query("SELECT id, title, imageURL FROM novels WHERE title like '%'||:query||'%'")
+	fun searchBookmarked(query: String): PagingSource<Int, StrippedBookmarkedNovelEntity>
 
 	//@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
 	//fun loadNovelWithChapters(novelID: Int): DBNovelWithChapters
