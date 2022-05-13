@@ -7,6 +7,7 @@ import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.PAGE_INDEX
 import app.shosetsu.lib.QUERY_INDEX
+import app.shosetsu.lib.exceptions.HTTPException
 import org.luaj.vm2.LuaError
 import javax.net.ssl.SSLException
 
@@ -40,6 +41,7 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 		query: String,
 		data: Map<Int, Any>,
 	): List<Novel.Listing> {
+		throw HTTPException(404)
 		return if (ext.hasSearch) {
 			try {
 				ext.search(HashMap(data).apply {
@@ -59,6 +61,7 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 		listingIndex: Int,
 		data: Map<Int, Any>,
 	): List<Novel.Listing> {
+		throw HTTPException(404)
 		val listing = ext.listings[listingIndex]
 
 		logD(data.toString())

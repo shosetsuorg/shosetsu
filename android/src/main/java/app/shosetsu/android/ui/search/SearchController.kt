@@ -7,6 +7,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
@@ -222,30 +223,72 @@ fun SearchContent(
 			contentPadding = PaddingValues(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 64.dp)
 		) {
 			items(rows, key = { it.extensionID }) { row ->
-				val exception by getException(row.extensionID).collectAsState(null)
 
-				val items: LazyPagingItems<ACatalogNovelUI>? =
+				val children: LazyPagingItems<ACatalogNovelUI>? =
 					if (row.extensionID != -1)
 						getExtChildren(row.extensionID).collectAsLazyPagingItems()
 					else null
 
-
 				SearchRowContent(
 					row = row,
-					isLoading = if (row.extensionID == -1) {
-						isLoading
-					} else {
-						false
+					loadingBar = {
+						if (children?.loadState?.refresh == LoadState.Loading || isLoading)
+							LinearProgressIndicator(
+								modifier = Modifier.fillMaxWidth()
+							)
 					},
-					children = items,
-					libraryChildren = libraryChildren,
-					onClick = onClick,
-					exception = exception,
-				) {
-					onRefresh(row.extensionID)
-				}
+					items = {
+						if (children != null) {
+							items(children, key = { it.id }) { novelUI ->
+								if (novelUI != null)
+									SearchResultContent(
+										novelUI,
+										onClick
+									)
+							}
+						} else {
+							items(libraryChildren, key = { it.id }) {
+								SearchResultContent(
+									it,
+									onClick
+								)
+							}
+						}
+					},
+					exception = {
+						if (row.extensionID == -1) {
+							val exception by getException(row.extensionID).collectAsState(null)
+							if (exception != null)
+								ExceptionBar(
+									exception!!,
+									onRefresh = {
+										onRefresh(row.extensionID)
+									}
+								)
+						} else {
 
+						}
+					}
+				)
 			}
+		}
+	}
+}
+
+@Composable
+fun ExceptionBar(
+	exception: Throwable,
+	onRefresh: () -> Unit
+) {
+	Row(
+		verticalAlignment = Alignment.CenterVertically
+	) {
+		Text(
+			exception.message ?: stringResource(R.string.unknown),
+			modifier = Modifier.fillMaxWidth(.75f)
+		)
+		Button(onRefresh) {
+			Text(stringResource(R.string.retry))
 		}
 	}
 }
@@ -259,22 +302,15 @@ fun PreviewSearchRowContent() {
 			extensionID = 0,
 			name = "Name",
 			imageURL = null
-		),
-		isLoading = true,
-		onClick = {},
-		exception = null
-	) {}
+		), loadingBar = {}, items = {}, exception = {})
 }
 
 @Composable
 fun SearchRowContent(
 	row: SearchRowUI,
-	isLoading: Boolean,
-	libraryChildren: List<ACatalogNovelUI> = listOf(),
-	children: LazyPagingItems<ACatalogNovelUI>? = null,
-	onClick: (ACatalogNovelUI) -> Unit,
-	exception: Throwable?,
-	onRefresh: () -> Unit
+	loadingBar: @Composable () -> Unit,
+	items: @Composable LazyListScope.() -> Unit,
+	exception: @Composable () -> Unit,
 ) {
 	Column(
 		modifier = Modifier.fillMaxWidth().padding(top = 8.dp, start = 8.dp, end = 8.dp),
@@ -294,44 +330,14 @@ fun SearchRowContent(
 			)
 			Text(row.name, modifier = Modifier.padding(start = 8.dp))
 		}
-		if (children?.loadState?.refresh == LoadState.Loading || isLoading) {
-			LinearProgressIndicator(
-				modifier = Modifier.fillMaxWidth()
-			)
-		} else {
-			LazyRow {
-				if (children != null) {
-					items(children, key = { it.id }) {
-						if (it != null)
-							SearchResultContent(
-								it,
-								onClick
-							)
-					}
-				} else {
-					items(libraryChildren, key = { it.id }) {
-						SearchResultContent(
-							it,
-							onClick
-						)
-					}
-				}
-			}
+		loadingBar()
+
+		LazyRow {
+			items()
 		}
 
-		if (exception != null) {
-			Row(
-				verticalAlignment = Alignment.CenterVertically
-			) {
-				Text(
-					exception.message ?: stringResource(R.string.unknown),
-					modifier = Modifier.fillMaxWidth(.75f)
-				)
-				Button(onRefresh) {
-					Text(stringResource(R.string.retry))
-				}
-			}
-		}
+		exception()
+
 		Divider(modifier = Modifier.fillMaxWidth())
 	}
 }

@@ -148,7 +148,7 @@ class SearchViewModel(
 		launchIO {
 			flow.emitAll(
 				queryFlow.combine(getRefreshFlow(-1)) { query, _ -> query }
-					.transformLatest<String, List<ACatalogNovelUI>> { query ->
+					.transformLatest { query ->
 
 						val loadingFlow = getIsLoadingFlow(-1)
 						val exceptionFlow = getExceptionFlow(-1)
@@ -183,14 +183,13 @@ class SearchViewModel(
 	private fun loadExtension(extensionID: Int): Flow<PagingData<ACatalogNovelUI>> {
 		return flow {
 			val ext = getExtensionUseCase(extensionID)!!
-			emitAll(queryFlow.combine(getRefreshFlow(extensionID)) { query, _ -> query }
-				.transformLatest { query ->
+			val exceptionFlow = getExceptionFlow(extensionID)
 
-					val exceptionFlow = getExceptionFlow(extensionID)
+			emitAll(
+				queryFlow.combine(getRefreshFlow(extensionID)) { query, _ -> query }
+					.transformLatest { query ->
+						exceptionFlow.emit(null)
 
-					exceptionFlow.emit(null)
-
-					try {
 						val source = loadCatalogueQueryDataUseCase(
 							extensionID,
 							query,
@@ -206,11 +205,11 @@ class SearchViewModel(
 								source
 							}.flow
 						)
-					} catch (e: Exception) {
-						exceptionFlow.emit(e)
-					}
 
-				})
+					}.catch {
+						exceptionFlow.emit(it)
+					}
+			)
 		}.onIO()
 	}
 }
