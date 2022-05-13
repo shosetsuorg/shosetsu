@@ -1,7 +1,7 @@
 package app.shosetsu.android.common.ext
 
-import app.shosetsu.common.domain.model.local.ChapterEntity
-import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.android.domain.model.local.ChapterEntity
+import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 

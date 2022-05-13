@@ -4,11 +4,11 @@ import androidx.work.Data
 import app.shosetsu.android.backend.workers.onetime.ExtensionInstallWorker
 import app.shosetsu.android.backend.workers.onetime.ExtensionInstallWorker.Companion.KEY_EXTENSION_ID
 import app.shosetsu.android.backend.workers.onetime.ExtensionInstallWorker.Companion.KEY_REPOSITORY_ID
+import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.android.domain.model.local.ExtensionInstallOptionEntity
 import app.shosetsu.android.domain.repository.base.IExtensionDownloadRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
-import app.shosetsu.common.enums.DownloadStatus
 
 /*
  * This file is part of shosetsu.

@@ -1,13 +1,11 @@
 package app.shosetsu.android.domain.repository.impl
 
-import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
-import app.shosetsu.android.domain.model.local.ExtensionInstallOptionEntity
 import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.datasource.local.database.base.IDBExtRepoDataSource
 import app.shosetsu.android.datasource.local.database.base.IDBInstalledExtensionsDataSource
 import app.shosetsu.android.datasource.local.database.base.IDBRepositoryExtensionsDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteExtensionDataSource
-import app.shosetsu.common.domain.model.local.*
+import app.shosetsu.android.domain.model.local.*
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.lib.exceptions.HTTPException
 import kotlinx.coroutines.ExperimentalCoroutinesApi

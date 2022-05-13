@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.repository.impl
 
+import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.domain.repository.base.IExtensionDownloadRepository
-import app.shosetsu.common.enums.DownloadStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 

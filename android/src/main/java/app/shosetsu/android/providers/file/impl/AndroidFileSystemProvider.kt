@@ -6,9 +6,9 @@ import android.os.Environment.DIRECTORY_DOWNLOADS
 import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.FilePermissionException.PermissionType
+import app.shosetsu.android.common.enums.ExternalFileDir
+import app.shosetsu.android.common.enums.InternalFileDir
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
-import app.shosetsu.common.enums.ExternalFileDir
-import app.shosetsu.common.enums.InternalFileDir
 import java.io.File
 import java.io.IOException
 

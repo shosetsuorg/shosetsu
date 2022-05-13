@@ -6,8 +6,8 @@ import androidx.room.Query
 import androidx.room.Transaction
 import app.shosetsu.android.domain.model.database.DBNovelEntity
 import app.shosetsu.android.domain.model.database.DBStrippedNovelEntity
+import app.shosetsu.android.domain.model.local.LibraryNovelEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
-import app.shosetsu.common.domain.model.local.LibraryNovelEntity
 import kotlinx.coroutines.flow.Flow
 
 /*

@@ -1,14 +1,11 @@
 package app.shosetsu.android.datasource.local.file.impl
 
-import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
-import app.shosetsu.android.common.enums.ExternalFileDir
-import app.shosetsu.android.common.enums.ExternalFileDir.*
+import app.shosetsu.android.common.enums.ExternalFileDir.DOWNLOADS
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.datasource.file.base.IFileChapterDataSource
 import app.shosetsu.android.domain.model.local.ChapterEntity
-import app.shosetsu.common.domain.model.local.ChapterEntity
-import app.shosetsu.common.enums.ExternalFileDir.DOWNLOADS
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
 import app.shosetsu.lib.Novel
 import java.io.IOException

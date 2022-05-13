@@ -2,7 +2,6 @@ package app.shosetsu.android.domain.repository.base
 
 import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.domain.model.local.RepositoryEntity
-import app.shosetsu.common.domain.model.local.RepositoryEntity
 import app.shosetsu.lib.json.RepoIndex
 import kotlinx.coroutines.flow.Flow
 

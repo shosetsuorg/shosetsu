@@ -1,9 +1,8 @@
 package app.shosetsu.android.datasource.local.file.impl
 
 import app.shosetsu.android.common.SettingKey
-import app.shosetsu.android.providers.prefrences.SharedPreferenceProvider
-import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.android.datasource.file.base.IFileSettingsDataSource
+import app.shosetsu.android.providers.prefrences.SharedPreferenceProvider
 import kotlinx.coroutines.flow.Flow
 
 /*

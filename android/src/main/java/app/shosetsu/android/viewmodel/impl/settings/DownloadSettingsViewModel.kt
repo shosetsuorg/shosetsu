@@ -2,10 +2,10 @@ package app.shosetsu.android.viewmodel.impl.settings
 
 import androidx.work.WorkInfo
 import app.shosetsu.android.backend.workers.onetime.DownloadWorker
+import app.shosetsu.android.common.SettingKey.*
 import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.android.viewmodel.abstracted.settings.ADownloadSettingsViewModel
-import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import app.shosetsu.android.viewmodel.abstracted.settings.ADownloadSettingsViewModel
 import kotlinx.coroutines.flow.combine
 
 /*

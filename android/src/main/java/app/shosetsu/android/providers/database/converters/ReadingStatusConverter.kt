@@ -1,8 +1,7 @@
 package app.shosetsu.android.providers.database.converters
 
 import androidx.room.TypeConverter
-import app.shosetsu.common.enums.ReadingStatus
-import app.shosetsu.common.enums.ReadingStatus.Companion.fromInt
+import app.shosetsu.android.common.enums.ReadingStatus
 
 /*
  * This file is part of shosetsu.
@@ -33,5 +32,5 @@ class ReadingStatusConverter {
 	fun toInt(readingStatus: ReadingStatus?): Int? = readingStatus?.key
 
 	@TypeConverter
-	fun toStatus(int: Int?): ReadingStatus? = int?.let { fromInt(int) }
+	fun toStatus(int: Int?): ReadingStatus? = int?.let { ReadingStatus.fromInt(int) }
 }

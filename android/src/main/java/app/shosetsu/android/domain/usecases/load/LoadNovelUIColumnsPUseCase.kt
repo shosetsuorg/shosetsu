@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases.load
 
-import app.shosetsu.common.consts.settings.SettingKey.ChapterColumnsInPortait
+import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 
 /*
@@ -27,5 +27,5 @@ import app.shosetsu.android.domain.repository.base.ISettingsRepository
 class LoadNovelUIColumnsPUseCase(
 	private val iSettingsRepository: ISettingsRepository
 ) {
-	operator fun invoke() = iSettingsRepository.getIntFlow(ChapterColumnsInPortait)
+	operator fun invoke() = iSettingsRepository.getIntFlow(SettingKey.ChapterColumnsInPortait)
 }

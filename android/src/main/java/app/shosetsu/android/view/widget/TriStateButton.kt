@@ -8,8 +8,7 @@ import android.widget.FrameLayout
 import androidx.annotation.StringRes
 import androidx.core.content.res.getResourceIdOrThrow
 import androidx.core.view.isVisible
-import app.shosetsu.common.enums.TriStateState
-import app.shosetsu.common.enums.TriStateState.*
+import app.shosetsu.android.common.enums.TriStateState
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.TriStateButtonBinding
 
@@ -47,7 +46,7 @@ open class TriStateButton @JvmOverloads constructor(
 	private val uncheckedRes: Int
 	private val ignoredRes: Int
 
-	override var state: TriStateState = IGNORED
+	override var state: TriStateState = TriStateState.IGNORED
 		set(value) {
 			field = value
 			onStateChangeListeners.forEach { listener ->
@@ -74,7 +73,10 @@ open class TriStateButton @JvmOverloads constructor(
 					checkedRes = getResourceIdOrThrow(R.styleable.TriStateButton_button_checked)
 					uncheckedRes = getResourceIdOrThrow(R.styleable.TriStateButton_button_unchecked)
 					ignoredRes = getResourceId(R.styleable.TriStateButton_button_ignored, -1)
-					state = values()[getResourceId(R.styleable.TriStateButton_button_state, 0)]
+					state = TriStateState.values()[getResourceId(
+						R.styleable.TriStateButton_button_state,
+						0
+					)]
 
 					binding.textView.text = getString(R.styleable.TriStateButton_android_text)
 						?: ""
@@ -114,7 +116,7 @@ open class TriStateButton @JvmOverloads constructor(
 	}
 
 	private fun setDrawable() {
-		if (state == IGNORED) {
+		if (state == TriStateState.IGNORED) {
 			if (ignoredRes != -1) {
 				binding.imageView.setImageResource(ignoredRes)
 			} else binding.imageView.visibility = INVISIBLE
@@ -122,7 +124,7 @@ open class TriStateButton @JvmOverloads constructor(
 		}
 		// If checked / unchecked, set visibility to visible
 		binding.imageView.isVisible = true
-		binding.imageView.setImageResource(if (state == CHECKED) checkedRes else uncheckedRes)
+		binding.imageView.setImageResource(if (state == TriStateState.CHECKED) checkedRes else uncheckedRes)
 	}
 
 }

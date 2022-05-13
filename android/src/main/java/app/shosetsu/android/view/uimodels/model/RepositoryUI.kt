@@ -1,11 +1,11 @@
 package app.shosetsu.android.view.uimodels.model
 
 import android.view.View
+import app.shosetsu.android.domain.model.local.RepositoryEntity
+import app.shosetsu.android.dto.Convertible
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import app.shosetsu.android.view.uimodels.model.RepositoryUI.ViewHolder
-import app.shosetsu.common.domain.model.local.RepositoryEntity
-import app.shosetsu.common.dto.Convertible
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerRepositoryInfoBinding
 import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerRepositoryInfoBinding.bind

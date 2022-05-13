@@ -1,9 +1,9 @@
 package app.shosetsu.android.domain.usecases
 
+import app.shosetsu.android.domain.model.local.StrippedNovelEntity
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.CompactCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
-import app.shosetsu.common.domain.model.local.StrippedNovelEntity
 
 /*
  * This file is part of shosetsu.

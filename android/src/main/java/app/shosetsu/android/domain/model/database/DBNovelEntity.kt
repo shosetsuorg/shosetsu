@@ -7,8 +7,6 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.dto.Convertible
-import app.shosetsu.common.domain.model.local.NovelEntity
-import app.shosetsu.common.dto.Convertible
 import app.shosetsu.lib.Novel
 
 /*

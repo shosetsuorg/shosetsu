@@ -3,7 +3,6 @@ package app.shosetsu.android.datasource.file.base
 import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.domain.model.local.ChapterEntity
-import app.shosetsu.common.domain.model.local.ChapterEntity
 import app.shosetsu.lib.Novel
 import java.io.IOException
 

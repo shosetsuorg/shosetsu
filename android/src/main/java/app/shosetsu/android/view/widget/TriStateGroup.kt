@@ -5,8 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.children
-import app.shosetsu.common.enums.TriStateState
-import app.shosetsu.common.enums.TriStateState.IGNORED
+import app.shosetsu.android.common.enums.TriStateState
 
 /*
  * This file is part of Shosetsu.
@@ -45,7 +44,7 @@ class TriStateGroup @JvmOverloads constructor(
 			}
 
 			child.onStateChangeListeners.add {
-				if (it != IGNORED)
+				if (it != TriStateState.IGNORED)
 					stateChangeListeners.forEach { listener ->
 						listener(child.id, it)
 					}
@@ -64,7 +63,7 @@ class TriStateGroup @JvmOverloads constructor(
 		triStateButton.skipIgnored = true
 		buttons.filterNot { it == triStateButton }.forEach {
 			it.skipIgnored = false
-			it.state = IGNORED
+			it.state = TriStateState.IGNORED
 		}
 	}
 

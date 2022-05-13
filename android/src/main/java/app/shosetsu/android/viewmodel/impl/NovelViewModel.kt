@@ -21,14 +21,11 @@ import app.shosetsu.android.domain.usecases.update.UpdateChapterUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateNovelSettingUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
 import app.shosetsu.android.view.AndroidQRCodeDrawable
+import app.shosetsu.android.view.uimodels.NovelSettingUI
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
-import app.shosetsu.common.enums.ChapterSortType
-import app.shosetsu.common.enums.ChapterSortType.SOURCE
-import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.common.utils.copy
-import app.shosetsu.android.view.uimodels.NovelSettingUI
 import app.shosetsu.lib.share.ExtensionLink
 import app.shosetsu.lib.share.NovelLink
 import app.shosetsu.lib.share.RepositoryLink

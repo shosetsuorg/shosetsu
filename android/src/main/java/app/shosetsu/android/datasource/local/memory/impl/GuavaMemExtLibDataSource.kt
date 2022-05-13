@@ -5,9 +5,6 @@ import app.shosetsu.android.common.consts.MEMORY_MAX_EXT_LIBS
 import app.shosetsu.android.common.ext.get
 import app.shosetsu.android.common.ext.set
 import app.shosetsu.android.datasource.local.memory.base.IMemExtLibDataSource
-import app.shosetsu.common.consts.MEMORY_EXPIRE_EXTENSION_TIME
-import app.shosetsu.common.consts.MEMORY_MAX_EXT_LIBS
-import app.shosetsu.common.datasource.memory.base.IMemExtLibDataSource
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
 import java.util.concurrent.TimeUnit.HOURS

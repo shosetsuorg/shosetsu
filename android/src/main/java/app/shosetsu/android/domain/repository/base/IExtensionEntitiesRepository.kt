@@ -3,7 +3,6 @@ package app.shosetsu.android.domain.repository.base
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.IncompatibleExtensionException
 import app.shosetsu.android.domain.model.local.GenericExtensionEntity
-import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.lib.IExtension
 import java.io.IOException
 

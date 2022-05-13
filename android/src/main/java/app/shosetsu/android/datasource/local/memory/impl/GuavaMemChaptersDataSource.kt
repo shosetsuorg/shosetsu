@@ -5,9 +5,6 @@ import app.shosetsu.android.common.consts.MEMORY_MAX_CHAPTERS
 import app.shosetsu.android.common.ext.get
 import app.shosetsu.android.common.ext.set
 import app.shosetsu.android.datasource.local.memory.base.IMemChaptersDataSource
-import app.shosetsu.common.consts.MEMORY_EXPIRE_CHAPTER_TIME
-import app.shosetsu.common.consts.MEMORY_MAX_CHAPTERS
-import app.shosetsu.common.datasource.memory.base.IMemChaptersDataSource
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
 import java.util.concurrent.TimeUnit.MINUTES

@@ -26,10 +26,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.consts.READER_BAR_ALPHA
 import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.android.view.compose.DiscreteSlider
 import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.compose.setting.GenericBottomSettingLayout
@@ -40,8 +42,6 @@ import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
 import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel.ChapterPassage
 import app.shosetsu.android.viewmodel.impl.settings.*
-import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.lib.Novel.ChapterType
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.pager.*

@@ -8,8 +8,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
+import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.ext.launchIO
-import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import com.github.doomsdayrs.apps.shosetsu.R
 

@@ -11,6 +11,7 @@ import androidx.work.*
 import app.shosetsu.android.backend.receivers.NotificationBroadcastReceiver
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
+import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.consts.ACTION_UPDATE_EXTENSION
 import app.shosetsu.android.common.consts.EXTRA_UPDATE_EXTENSION_ID
 import app.shosetsu.android.common.consts.LogConstants
@@ -18,15 +19,14 @@ import app.shosetsu.android.common.consts.Notifications.CHANNEL_REPOSITORY_UPDAT
 import app.shosetsu.android.common.consts.Notifications.ID_REPOSITORY_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags.REPOSITORY_UPDATE_TAG
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.domain.usecases.RemoveExtensionEntityUseCase
-import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.domain.model.local.ExtLibEntity
-import app.shosetsu.common.domain.model.local.GenericExtensionEntity
-import app.shosetsu.common.domain.model.local.RepositoryEntity
+import app.shosetsu.android.domain.model.local.ExtLibEntity
+import app.shosetsu.android.domain.model.local.GenericExtensionEntity
+import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.android.domain.repository.base.IExtensionLibrariesRepository
 import app.shosetsu.android.domain.repository.base.IExtensionRepoRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import app.shosetsu.android.domain.usecases.RemoveExtensionEntityUseCase
 import app.shosetsu.lib.Version
 import app.shosetsu.lib.json.RepoExtension
 import app.shosetsu.lib.json.RepoLibrary

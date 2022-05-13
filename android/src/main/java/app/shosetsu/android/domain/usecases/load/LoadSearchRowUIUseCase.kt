@@ -1,12 +1,12 @@
 package app.shosetsu.android.domain.usecases.load
 
+import app.shosetsu.android.common.IncompatibleExtensionException
 import app.shosetsu.android.common.ext.generify
 import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
-import app.shosetsu.android.common.IncompatibleExtensionException
-import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
+import app.shosetsu.android.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.android.domain.repository.base.IExtensionEntitiesRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
+import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest

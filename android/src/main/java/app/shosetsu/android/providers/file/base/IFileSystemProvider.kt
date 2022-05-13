@@ -2,8 +2,8 @@ package app.shosetsu.android.providers.file.base
 
 import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
-import app.shosetsu.common.enums.ExternalFileDir
-import app.shosetsu.common.enums.InternalFileDir
+import app.shosetsu.android.common.enums.ExternalFileDir
+import app.shosetsu.android.common.enums.InternalFileDir
 import java.io.IOException
 
 /*

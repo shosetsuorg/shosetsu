@@ -4,8 +4,8 @@ import android.database.sqlite.SQLiteException
 import androidx.room.Dao
 import androidx.room.Query
 import app.shosetsu.android.domain.model.database.DBNovelReaderSettingEntity
+import app.shosetsu.android.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
-import app.shosetsu.common.domain.model.local.NovelReaderSettingEntity
 import kotlinx.coroutines.flow.Flow
 
 /*

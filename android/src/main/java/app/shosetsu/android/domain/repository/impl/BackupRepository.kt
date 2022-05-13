@@ -2,9 +2,9 @@ package app.shosetsu.android.domain.repository.impl
 
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.datasource.file.base.IFileBackupDataSource
+import app.shosetsu.android.domain.model.local.BackupEntity
 import app.shosetsu.android.domain.repository.base.IBackupRepository
 import app.shosetsu.android.domain.repository.base.IBackupRepository.BackupProgress
-import app.shosetsu.common.domain.model.local.BackupEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.IOException

@@ -5,12 +5,12 @@ import android.os.Build
 import androidx.work.*
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.onetime.BackupWorker
+import app.shosetsu.android.common.SettingKey.*
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.WorkerTags.BACKUP_CYCLE_WORK_ID
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
-import app.shosetsu.common.consts.settings.SettingKey.*
 import org.kodein.di.instance
 import java.util.concurrent.TimeUnit
 

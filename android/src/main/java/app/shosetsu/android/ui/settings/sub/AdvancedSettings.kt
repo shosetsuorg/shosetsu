@@ -16,14 +16,13 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import app.shosetsu.android.common.SettingKey.*
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.compose.setting.ButtonSettingContent
 import app.shosetsu.android.view.compose.setting.DropdownSettingContent
 import app.shosetsu.android.view.compose.setting.SwitchSettingContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
-import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.consts.settings.SettingKey.AppTheme
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.snackbar.Snackbar
@@ -179,7 +178,7 @@ fun AdvancedSettingsContent(
 				description = stringResource(R.string.settings_advanced_verify_checksum_desc),
 				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
 				repo = viewModel.settingsRepo,
-				key = SettingKey.VerifyCheckSum
+				key = VerifyCheckSum
 			)
 		}
 
@@ -189,7 +188,7 @@ fun AdvancedSettingsContent(
 				description = stringResource(R.string.settings_advanced_require_double_back_desc),
 				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
 				repo = viewModel.settingsRepo,
-				key = SettingKey.RequireDoubleBackToExit
+				key = RequireDoubleBackToExit
 			)
 		}
 
@@ -219,7 +218,7 @@ fun AdvancedSettingsContent(
 				description = stringResource(R.string.settings_advanced_true_chapter_delete_desc),
 				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
 				repo = viewModel.settingsRepo,
-				key = SettingKey.ExposeTrueChapterDelete
+				key = ExposeTrueChapterDelete
 			)
 		}
 
@@ -229,7 +228,7 @@ fun AdvancedSettingsContent(
 				description = stringResource(R.string.settings_advanced_log_desc),
 				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
 				repo = viewModel.settingsRepo,
-				key = SettingKey.LogToFile
+				key = LogToFile
 			)
 		}
 
@@ -239,7 +238,7 @@ fun AdvancedSettingsContent(
 				description = stringResource(R.string.settings_advanced_auto_bookmark_desc),
 				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
 				repo = viewModel.settingsRepo,
-				key = SettingKey.AutoBookmarkFromQR
+				key = AutoBookmarkFromQR
 			)
 		}
 	}

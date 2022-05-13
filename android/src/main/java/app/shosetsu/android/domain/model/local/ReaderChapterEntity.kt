@@ -1,7 +1,6 @@
 package app.shosetsu.android.domain.model.local
 
 import app.shosetsu.android.common.enums.ReadingStatus
-import app.shosetsu.common.enums.ReadingStatus
 
 /*
  * This file is part of shosetsu.

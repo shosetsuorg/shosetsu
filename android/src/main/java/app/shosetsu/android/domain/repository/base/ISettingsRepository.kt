@@ -1,7 +1,6 @@
 package app.shosetsu.android.domain.repository.base
 
 import app.shosetsu.android.common.SettingKey
-import app.shosetsu.common.consts.settings.SettingKey
 import kotlinx.coroutines.flow.Flow
 
 /*

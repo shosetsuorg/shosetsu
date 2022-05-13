@@ -1,12 +1,12 @@
 package app.shosetsu.android.domain.usecases.delete
 
-import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.NoSuchExtensionException
-import app.shosetsu.common.domain.model.local.ChapterEntity
+import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
+import app.shosetsu.android.view.uimodels.model.ChapterUI
 
 /*
  * This file is part of shosetsu.

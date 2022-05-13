@@ -1,9 +1,9 @@
 package app.shosetsu.android.domain.usecases.update
 
-import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.domain.repository.base.INovelsRepository
-import app.shosetsu.common.dto.convertList
+import app.shosetsu.android.dto.convertList
+import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 
 /*
  * This file is part of shosetsu.

@@ -4,8 +4,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import app.shosetsu.android.domain.model.local.ExtLibEntity
 import app.shosetsu.android.dto.Convertible
-import app.shosetsu.common.domain.model.local.ExtLibEntity
-import app.shosetsu.common.dto.Convertible
 import app.shosetsu.lib.Version
 
 /*

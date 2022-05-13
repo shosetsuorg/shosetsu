@@ -2,8 +2,6 @@ package app.shosetsu.android.domain.model.database
 
 import app.shosetsu.android.domain.model.local.StrippedNovelEntity
 import app.shosetsu.android.dto.Convertible
-import app.shosetsu.common.domain.model.local.StrippedNovelEntity
-import app.shosetsu.common.dto.Convertible
 
 /*
  * This file is part of Shosetsu.

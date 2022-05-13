@@ -2,8 +2,8 @@ package app.shosetsu.android.domain.repository.impl
 
 import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.datasource.local.database.base.IDBUpdatesDataSource
-import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
-import app.shosetsu.common.domain.model.local.UpdateEntity
+import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
+import app.shosetsu.android.domain.model.local.UpdateEntity
 import app.shosetsu.android.domain.repository.base.IUpdatesRepository
 import kotlinx.coroutines.flow.Flow
 

@@ -4,8 +4,8 @@ import android.database.sqlite.SQLiteException
 import androidx.room.Dao
 import androidx.room.Query
 import app.shosetsu.android.domain.model.database.DBUpdate
+import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
-import app.shosetsu.common.domain.model.local.UpdateCompleteEntity
 import kotlinx.coroutines.flow.Flow
 
 /*

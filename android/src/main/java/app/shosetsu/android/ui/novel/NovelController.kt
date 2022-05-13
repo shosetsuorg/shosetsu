@@ -34,6 +34,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.core.os.bundleOf
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
+import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
@@ -45,7 +46,6 @@ import app.shosetsu.android.view.openShareMenu
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
-import app.shosetsu.common.enums.ReadingStatus
 import app.shosetsu.lib.Novel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest

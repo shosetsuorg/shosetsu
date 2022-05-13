@@ -12,6 +12,7 @@ import androidx.work.NetworkType.UNMETERED
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
+import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.consts.ACTION_OPEN_APP_UPDATE
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications
@@ -20,8 +21,6 @@ import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.load.LoadRemoteAppUpdateUseCase
-import app.shosetsu.common.consts.settings.SettingKey.AppUpdateOnMeteredConnection
-import app.shosetsu.common.consts.settings.SettingKey.AppUpdateOnlyWhenIdle
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -122,10 +121,10 @@ class AppUpdateCheckWorker(
 		private val iSettingsRepository: ISettingsRepository by instance()
 
 		private suspend fun appUpdateOnMetered(): Boolean =
-			iSettingsRepository.getBoolean(AppUpdateOnMeteredConnection)
+			iSettingsRepository.getBoolean(SettingKey.AppUpdateOnMeteredConnection)
 
 		private suspend fun appUpdateOnlyIdle(): Boolean =
-			iSettingsRepository.getBoolean(AppUpdateOnlyWhenIdle)
+			iSettingsRepository.getBoolean(SettingKey.AppUpdateOnlyWhenIdle)
 
 		override suspend fun getWorkerState(index: Int): WorkInfo.State =
 			getWorkerInfoList()[index].state

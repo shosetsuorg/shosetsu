@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.common.domain.model.local.InstalledExtensionEntity
+import app.shosetsu.android.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import kotlinx.coroutines.flow.Flow
 

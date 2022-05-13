@@ -1,6 +1,6 @@
 package app.shosetsu.common.utils
 
-import app.shosetsu.common.domain.model.local.GenericExtensionEntity
+import app.shosetsu.android.domain.model.local.GenericExtensionEntity
 import app.shosetsu.lib.ExtensionType
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.lua.LuaExtension

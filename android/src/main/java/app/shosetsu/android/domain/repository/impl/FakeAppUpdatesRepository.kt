@@ -1,12 +1,12 @@
 package app.shosetsu.android.domain.repository.impl
 
-import app.shosetsu.android.datasource.local.file.base.IFileCachedAppUpdateDataSource
-import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.android.common.EmptyResponseBodyException
 import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.MissingFeatureException
-import app.shosetsu.common.domain.model.local.AppUpdateEntity
+import app.shosetsu.android.datasource.local.file.base.IFileCachedAppUpdateDataSource
+import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
+import app.shosetsu.android.domain.model.local.AppUpdateEntity
 import app.shosetsu.android.domain.repository.base.IAppUpdatesRepository
 import app.shosetsu.lib.exceptions.HTTPException
 import kotlinx.coroutines.flow.Flow

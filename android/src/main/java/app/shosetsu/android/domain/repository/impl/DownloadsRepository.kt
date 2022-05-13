@@ -19,7 +19,7 @@ package app.shosetsu.android.domain.repository.impl
 
 import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.datasource.local.database.base.IDBDownloadsDataSource
-import app.shosetsu.common.domain.model.local.DownloadEntity
+import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.domain.repository.base.IDownloadsRepository
 import kotlinx.coroutines.flow.Flow
 

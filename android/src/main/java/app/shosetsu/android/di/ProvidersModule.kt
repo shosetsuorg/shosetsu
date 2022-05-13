@@ -1,9 +1,12 @@
 package app.shosetsu.android.di
 
+import app.shosetsu.android.providers.file.base.IFileSystemProvider
 import app.shosetsu.android.providers.file.impl.AndroidFileSystemProvider
 import app.shosetsu.android.providers.prefrences.SharedPreferenceProvider
-import app.shosetsu.android.providers.file.base.IFileSystemProvider
-import org.kodein.di.*
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.singleton
 
 /*
  * This file is part of Shosetsu.

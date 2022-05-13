@@ -1,14 +1,12 @@
 package app.shosetsu.android.datasource.local.file.impl
 
+import app.shosetsu.android.common.FileNotFoundException
+import app.shosetsu.android.common.FilePermissionException
+import app.shosetsu.android.common.enums.InternalFileDir.CACHE
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logV
-import app.shosetsu.android.common.FileNotFoundException
-import app.shosetsu.android.common.FilePermissionException
-import app.shosetsu.android.common.enums.InternalFileDir
-import app.shosetsu.android.common.enums.InternalFileDir.*
 import app.shosetsu.android.datasource.file.base.IFileCachedChapterDataSource
-import app.shosetsu.common.enums.InternalFileDir.CACHE
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
 import app.shosetsu.lib.Novel
 import org.json.JSONArray

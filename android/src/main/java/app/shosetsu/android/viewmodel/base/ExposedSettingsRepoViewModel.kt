@@ -1,6 +1,5 @@
 package app.shosetsu.android.viewmodel.base
 
-import app.shosetsu.common.consts.settings.SettingKey
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 
 /*

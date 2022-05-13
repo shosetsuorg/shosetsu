@@ -1,14 +1,14 @@
 package app.shosetsu.android.domain.usecases.load
 
+import app.shosetsu.android.common.SettingKey
+import app.shosetsu.android.common.enums.NovelCardType
+import app.shosetsu.android.common.enums.NovelCardType.*
+import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.view.uimodels.model.library.ComfyBookmarkedNovelUI
 import app.shosetsu.android.view.uimodels.model.library.CompressedBookmarkedNovelUI
 import app.shosetsu.android.view.uimodels.model.library.NormalBookmarkedNovelUI
-import app.shosetsu.common.consts.settings.SettingKey.SelectedNovelCardType
-import app.shosetsu.android.domain.repository.base.INovelsRepository
-import app.shosetsu.android.domain.repository.base.ISettingsRepository
-import app.shosetsu.android.common.enums.NovelCardType
-import app.shosetsu.android.common.enums.NovelCardType.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapLatest
@@ -40,13 +40,13 @@ class LoadLibraryUseCase(
 ) {
 	operator fun invoke(): Flow<List<ABookmarkedNovelUI>> =
 		novelsRepo.loadLibraryNovelEntities()
-			.combine(settingsRepo.getIntFlow(SelectedNovelCardType).mapLatest {
+			.combine(settingsRepo.getIntFlow(SettingKey.SelectedNovelCardType).mapLatest {
 				NovelCardType.valueOf(it)
 			}) { origin, cardType ->
 				origin.let {
 					val list = it
 					val newList = list.map { (id, title, imageURL, bookmarked, unread,
-						                         genres, authors, artists, tags) ->
+												 genres, authors, artists, tags) ->
 						when (cardType) {
 							NORMAL -> NormalBookmarkedNovelUI(
 								id = id,

@@ -24,6 +24,9 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
+import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
+import app.shosetsu.android.domain.model.local.ExtensionInstallOptionEntity
+import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.CancelExtensionInstallUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.RequestInstallExtensionUseCase
@@ -31,11 +34,6 @@ import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.android.domain.usecases.load.LoadBrowseExtensionsUseCase
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
-import app.shosetsu.common.consts.settings.SettingKey
-import app.shosetsu.common.consts.settings.SettingKey.BrowseFilteredLanguages
-import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
-import app.shosetsu.android.domain.model.local.ExtensionInstallOptionEntity
-import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*

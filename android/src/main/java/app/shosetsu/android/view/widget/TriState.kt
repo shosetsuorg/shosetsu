@@ -1,6 +1,6 @@
 package app.shosetsu.android.view.widget
 
-import app.shosetsu.common.enums.TriStateState
+import app.shosetsu.android.common.enums.TriStateState
 
 interface TriState {
 

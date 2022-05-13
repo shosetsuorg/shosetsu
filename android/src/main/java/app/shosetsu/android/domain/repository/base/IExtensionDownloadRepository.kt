@@ -1,7 +1,6 @@
 package app.shosetsu.android.domain.repository.base
 
 import app.shosetsu.android.common.enums.DownloadStatus
-import app.shosetsu.common.enums.DownloadStatus
 import kotlinx.coroutines.flow.Flow
 
 /*

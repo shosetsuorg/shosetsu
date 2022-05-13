@@ -2,11 +2,11 @@ package app.shosetsu.android.view.uimodels.model
 
 import android.view.View
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
+import app.shosetsu.android.common.enums.DownloadStatus
+import app.shosetsu.android.domain.model.local.DownloadEntity
+import app.shosetsu.android.dto.Convertible
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
-import app.shosetsu.common.domain.model.local.DownloadEntity
-import app.shosetsu.common.dto.Convertible
-import app.shosetsu.common.enums.DownloadStatus
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerDownloadCardBinding
 

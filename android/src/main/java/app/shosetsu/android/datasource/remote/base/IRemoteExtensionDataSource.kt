@@ -1,7 +1,7 @@
 package app.shosetsu.android.datasource.remote.base
 
-import app.shosetsu.common.domain.model.local.GenericExtensionEntity
-import app.shosetsu.common.domain.model.local.RepositoryEntity
+import app.shosetsu.android.domain.model.local.GenericExtensionEntity
+import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.lib.exceptions.HTTPException
 
 /*

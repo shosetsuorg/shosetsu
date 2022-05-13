@@ -1,6 +1,6 @@
 package app.shosetsu.common.utils
 
-import app.shosetsu.common.domain.model.local.AppUpdateEntity
+import app.shosetsu.android.domain.model.local.AppUpdateEntity
 
 /*
  * This file is part of shosetsu.

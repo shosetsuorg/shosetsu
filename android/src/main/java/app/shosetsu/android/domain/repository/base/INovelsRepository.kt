@@ -19,11 +19,8 @@ import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.domain.model.local.LibraryNovelEntity
 import app.shosetsu.android.domain.model.local.NovelEntity
-import app.shosetsu.common.domain.model.local.LibraryNovelEntity
-import app.shosetsu.common.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.model.local.StrippedBookmarkedNovelEntity
 import app.shosetsu.android.domain.model.local.StrippedNovelEntity
-import app.shosetsu.common.domain.model.local.StrippedNovelEntity
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow

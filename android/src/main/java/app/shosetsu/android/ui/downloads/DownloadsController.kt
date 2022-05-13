@@ -19,12 +19,12 @@ package app.shosetsu.android.ui.downloads
 
 import android.view.*
 import androidx.recyclerview.widget.RecyclerView
+import app.shosetsu.android.common.enums.DownloadStatus.*
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.controller.BottomMenuBasicFastAdapterRecyclerController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.ADownloadsViewModel
-import app.shosetsu.common.enums.DownloadStatus.*
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.mikepenz.fastadapter.FastAdapter

@@ -2,7 +2,6 @@ package app.shosetsu.android.datasource.file.base
 
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.domain.model.local.GenericExtensionEntity
-import app.shosetsu.common.domain.model.local.GenericExtensionEntity
 import app.shosetsu.lib.IExtension
 import java.io.IOException
 

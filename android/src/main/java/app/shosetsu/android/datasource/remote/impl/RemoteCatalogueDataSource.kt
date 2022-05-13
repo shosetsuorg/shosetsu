@@ -1,7 +1,7 @@
 package app.shosetsu.android.datasource.remote.impl
 
-import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.LuaException
+import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.datasource.remote.base.IRemoteCatalogueDataSource
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel

@@ -4,11 +4,11 @@ import androidx.work.WorkInfo
 import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker
 import app.shosetsu.android.backend.workers.onetime.RepositoryUpdateWorker
 import app.shosetsu.android.backend.workers.perodic.NovelUpdateCycleWorker
+import app.shosetsu.android.common.SettingKey.*
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.viewmodel.abstracted.settings.AUpdateSettingsViewModel
-import app.shosetsu.common.consts.settings.SettingKey.*
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import app.shosetsu.android.viewmodel.abstracted.settings.AUpdateSettingsViewModel
 import kotlinx.coroutines.flow.combine
 
 /*

@@ -1,13 +1,12 @@
 package app.shosetsu.android.datasource.local.database.impl
 
 import android.database.sqlite.SQLiteException
-import app.shosetsu.android.domain.model.database.DBRepositoryExtensionEntity
-import app.shosetsu.android.providers.database.dao.RepositoryExtensionsDao
 import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.datasource.local.database.base.IDBRepositoryExtensionsDataSource
+import app.shosetsu.android.domain.model.database.DBRepositoryExtensionEntity
 import app.shosetsu.android.domain.model.local.GenericExtensionEntity
-import app.shosetsu.common.domain.model.local.GenericExtensionEntity
-import app.shosetsu.common.dto.convertList
+import app.shosetsu.android.dto.convertList
+import app.shosetsu.android.providers.database.dao.RepositoryExtensionsDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

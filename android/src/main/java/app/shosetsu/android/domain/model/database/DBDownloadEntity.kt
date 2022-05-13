@@ -5,9 +5,6 @@ import androidx.room.*
 import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.dto.Convertible
-import app.shosetsu.common.domain.model.local.DownloadEntity
-import app.shosetsu.common.dto.Convertible
-import app.shosetsu.common.enums.DownloadStatus
 
 /*
  * This file is part of Shosetsu.

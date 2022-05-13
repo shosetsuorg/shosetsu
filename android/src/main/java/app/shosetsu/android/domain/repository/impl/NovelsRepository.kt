@@ -5,10 +5,10 @@ import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.datasource.local.database.base.IDBNovelsDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteCatalogueDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteNovelDataSource
-import app.shosetsu.common.domain.model.local.LibraryNovelEntity
-import app.shosetsu.common.domain.model.local.NovelEntity
+import app.shosetsu.android.domain.model.local.LibraryNovelEntity
+import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.model.local.StrippedBookmarkedNovelEntity
-import app.shosetsu.common.domain.model.local.StrippedNovelEntity
+import app.shosetsu.android.domain.model.local.StrippedNovelEntity
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
