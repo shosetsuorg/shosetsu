@@ -34,7 +34,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
+import androidx.paging.compose.itemsIndexed
 import app.shosetsu.android.common.consts.BundleKeys
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.novel.NovelController
@@ -96,7 +96,7 @@ class SearchController(bundle: Bundle) : ShosetsuController(bundle) {
 				SearchContent(
 					rows = rows,
 					getChildren = {
-						if (id == -1)
+						if (it == -1)
 							viewModel.searchLibrary()
 						else
 							viewModel.searchExtension(it)
@@ -198,9 +198,9 @@ fun SearchContent(
 	) {
 		LazyColumn(
 			modifier = Modifier.fillMaxSize(),
-			contentPadding = PaddingValues(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 64.dp)
+			contentPadding = PaddingValues(top = 8.dp, bottom = 64.dp)
 		) {
-			items(rows, key = { it.extensionID }) { row ->
+			items(rows, key = { row -> row.extensionID }) { row ->
 				val children: LazyPagingItems<ACatalogNovelUI> =
 					getChildren(row.extensionID).collectAsLazyPagingItems()
 
@@ -213,7 +213,9 @@ fun SearchContent(
 							)
 					},
 					items = {
-						items(children, key = { it.id }) { novelUI ->
+						itemsIndexed(
+							children,
+							key = { index, item -> item.hashCode() + index }) { _, novelUI ->
 							if (novelUI != null)
 								SearchResultContent(
 									novelUI,
@@ -230,6 +232,17 @@ fun SearchContent(
 									onRefresh(row.extensionID)
 								}
 							)
+						else {
+							val refreshState = children.loadState.refresh
+							if (refreshState is LoadState.Error) {
+								ExceptionBar(
+									refreshState.error,
+									onRefresh = {
+										children.refresh()
+									}
+								)
+							}
+						}
 					}
 				)
 			}
@@ -275,7 +288,7 @@ fun SearchRowContent(
 	exception: @Composable () -> Unit,
 ) {
 	Column(
-		modifier = Modifier.fillMaxWidth().padding(top = 8.dp, start = 8.dp, end = 8.dp),
+		modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
 	) {
 		Row(
 			modifier = Modifier.padding(8.dp),
@@ -318,7 +331,7 @@ fun SearchResultContent(item: ACatalogNovelUI, onClick: (ACatalogNovelUI) -> Uni
 		} else {
 			null
 		},
-		modifier = Modifier.aspectRatio(.70f).width(124.dp).padding(8.dp)
+		modifier = Modifier.aspectRatio(.70f).width(105.dp).height(140.dp).padding(8.dp)
 	) {
 		val blackTrans = colorResource(id = R.color.black_trans)
 		Box {
