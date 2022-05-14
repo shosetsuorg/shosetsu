@@ -33,11 +33,14 @@ import javax.security.auth.Destroyable
  */
 abstract class ASearchViewModel : ShosetsuViewModel(), Destroyable {
 
-	abstract val query: Flow<String>
+	abstract val query: Flow<String?>
 
 	abstract val listings: Flow<List<SearchRowUI>>
 
+	abstract fun initQuery(string: String)
 	abstract fun setQuery(query: String)
+	abstract fun applyQuery(query: String)
+
 
 	abstract fun searchLibrary(): Flow<PagingData<ACatalogNovelUI>>
 
@@ -60,4 +63,5 @@ abstract class ASearchViewModel : ShosetsuViewModel(), Destroyable {
 	 * Get the exception that occurred in a certain row
 	 */
 	abstract fun getException(id: Int): Flow<Throwable?>
+
 }

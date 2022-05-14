@@ -143,18 +143,19 @@ class SearchController(bundle: Bundle) : ShosetsuController(bundle) {
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = true
 
 	override fun onViewCreated(view: View) {
-		viewModel.setQuery(args.getString(BundleKeys.BUNDLE_QUERY, ""))
+		viewModel.initQuery(args.getString(BundleKeys.BUNDLE_QUERY, "")!!)
 	}
 
 	/** Class that handles querying */
 	inner class InternalQuery
 		: SearchView.OnQueryTextListener {
 		override fun onQueryTextSubmit(query: String): Boolean {
-			viewModel.setQuery(query)
+			viewModel.applyQuery(query)
 			return true
 		}
 
 		override fun onQueryTextChange(newText: String?): Boolean {
+			viewModel.setQuery(newText ?: "")
 			return true
 		}
 	}
