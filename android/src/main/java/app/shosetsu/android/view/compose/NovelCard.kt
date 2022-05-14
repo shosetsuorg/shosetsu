@@ -75,7 +75,8 @@ fun NovelCardNormalContent(
 				modifier = Modifier
 					.fillMaxSize()
 					.aspectRatio(.75f)
-					.clickable(onClick = onClick)
+					.clickable(onClick = onClick),
+				contentScale = ContentScale.Crop
 			)
 
 			Box(
