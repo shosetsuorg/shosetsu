@@ -9,10 +9,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -32,12 +29,12 @@ import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
 import app.shosetsu.android.common.enums.NovelCardType
-import app.shosetsu.android.common.enums.NovelCardType.COMPRESSED
-import app.shosetsu.android.common.enums.NovelCardType.NORMAL
+import app.shosetsu.android.common.enums.NovelCardType.*
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.listeners.CatalogueSearchQuery
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.compose.ErrorContent
+import app.shosetsu.android.view.compose.NovelCardCompressedContent
 import app.shosetsu.android.view.compose.NovelCardNormalContent
 import app.shosetsu.android.view.compose.itemsIndexed
 import app.shosetsu.android.view.controller.ShosetsuController
@@ -437,47 +434,64 @@ fun CatalogContent(
 					}
 				)
 		}
+		SwipeRefresh(
+			SwipeRefreshState(false),
+			{
+				items.refresh()
+			},
+		) {
+			val w = LocalConfiguration.current.screenWidthDp
+			val o = LocalConfiguration.current.orientation
 
-		when (cardType) {
-			NORMAL, NovelCardType.COZY -> {
-				SwipeRefresh(
-					SwipeRefreshState(false),
-					{
-						items.refresh()
-					},
-				) {
-					LazyVerticalGrid(
-						columns = GridCells.Fixed(
-							when (LocalConfiguration.current.orientation) {
-								Configuration.ORIENTATION_LANDSCAPE -> columnsInH
-								else -> columnsInV
-							}
-						)
-					) {
-						itemsIndexed(
-							items,
-							key = { index, item -> item.hashCode() + index }
-						) { _, item ->
-							if (cardType == NORMAL) {
-								if (item != null)
-									NovelCardNormalContent(
-										item.title,
-										item.imageURL,
-										onClick = {
-											onClick(item)
-										},
-										onLongClick = {
-											onLongClick(item)
-										}
-									)
-							} else {
-								TODO("Cozy Type type")
-							}
+			val size by remember {
+				derivedStateOf {
+					(w / when (o) {
+						Configuration.ORIENTATION_LANDSCAPE -> columnsInH
+						else -> columnsInV
+					}).dp
+				}
+			}
+
+			LazyVerticalGrid(
+				columns = GridCells.Adaptive(if (cardType != COMPRESSED) size else 400.dp)
+			) {
+				itemsIndexed(
+					items,
+					key = { index, item -> item.hashCode() + index }
+				) { _, item ->
+					when (cardType) {
+						NORMAL -> {
+							if (item != null)
+								NovelCardNormalContent(
+									item.title,
+									item.imageURL,
+									onClick = {
+										onClick(item)
+									},
+									onLongClick = {
+										onLongClick(item)
+									}
+								)
+						}
+						COMPRESSED -> {
+							if (item != null)
+								NovelCardCompressedContent(
+									item.title,
+									item.imageURL,
+									onClick = {
+										onClick(item)
+									},
+									onLongClick = {
+										onLongClick(item)
+									}
+								)
+						}
+						COZY -> {
+							TODO("Cozy Type type")
 						}
 					}
 				}
 			}
-			COMPRESSED -> TODO("Compressed type")
 		}
 
 		if (items.loadState.append == LoadState.Loading)

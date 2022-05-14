@@ -14,13 +14,16 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.google.android.material.composethemeadapter.MdcTheme
 
 /*
  * This file is part of shosetsu.
@@ -102,6 +105,67 @@ fun NovelCardNormalContent(
 			)
 			if (overlay != null)
 				overlay()
+		}
+	}
+}
+
+
+@Preview
+@Composable
+fun PreviewNovelCardCompressedContent() {
+	MdcTheme {
+		NovelCardCompressedContent(
+			"Test",
+			"",
+			onClick = {},
+			onLongClick = {}
+		)
+	}
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun NovelCardCompressedContent(
+	title: String,
+	imageURL: String,
+	onClick: () -> Unit,
+	onLongClick: () -> Unit,
+	overlay: (RowScope.() -> Unit)? = null,
+) {
+	Card(
+		modifier = Modifier.combinedClickable(
+			onClick = onClick,
+			onLongClick = onLongClick
+		).padding(4.dp)
+			.fillMaxWidth()
+	) {
+		Box {
+			Row(
+				verticalAlignment = Alignment.CenterVertically
+			) {
+				AsyncImage(
+					ImageRequest.Builder(LocalContext.current)
+						.data(imageURL)
+						.placeholder(R.drawable.animated_refresh)
+						.error(R.drawable.broken_image)
+						.build(),
+					stringResource(R.string.controller_novel_info_image),
+					modifier = Modifier
+						.width(64.dp)
+						.aspectRatio(1.0f)
+						.clickable(onClick = onClick),
+					contentScale = ContentScale.Crop
+				)
+
+				Text(
+					title,
+					textAlign = TextAlign.Center,
+					color = Color.White
+				)
+
+				if (overlay != null)
+					overlay()
+			}
 		}
 	}
 }
