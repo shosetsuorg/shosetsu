@@ -396,4 +396,5 @@ dependencies {
 
 	implementation(paging("paging-runtime"))
 	implementation(paging("paging-compose", "1.0.0-alpha14"))
+	implementation(kotlin("reflect"))
 }
