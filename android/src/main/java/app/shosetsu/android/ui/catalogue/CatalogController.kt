@@ -558,7 +558,7 @@ fun CatalogContent(
 		if (items.loadState.append == LoadState.Loading)
 			LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
 
-		if (items.loadState.append is LoadState.NotLoading) {
+		if (items.loadState.refresh != LoadState.Loading && items.loadState.append is LoadState.NotLoading) {
 			CatalogContentNoMore()
 		}
 	}
