@@ -45,7 +45,19 @@ class SearchViewModel(
 	private val loadCatalogueQueryDataUseCase: GetCatalogueQueryDataUseCase,
 	private val getExtensionUseCase: GetExtensionUseCase
 ) : ASearchViewModel() {
-	private val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
+	/**
+	 * Holds the current query
+	 *
+	 * Used to save user input
+	 */
+	private val queryFlow: MutableStateFlow<String?> = MutableStateFlow(null)
+
+	/**
+	 * Holds the applied query
+	 *
+	 * Applied means it is used for data retrieval
+	 */
+	private val appliedQueryFlow: MutableStateFlow<String?> = MutableStateFlow(null)
 
 	private val searchFlows =
 		HashMap<Int, Flow<PagingData<ACatalogNovelUI>>>()
@@ -56,8 +68,7 @@ class SearchViewModel(
 	private val exceptionFlows =
 		HashMap<Int, MutableStateFlow<Throwable?>>()
 
-	override val query: Flow<String>
-		get() = queryFlow.onIO()
+	override val query: Flow<String?> by lazy { queryFlow.onIO() }
 
 	override val listings: Flow<List<SearchRowUI>> by lazy {
 		loadSearchRowUIUseCase().transformLatest { ogList ->
@@ -77,8 +88,22 @@ class SearchViewModel(
 		}.onIO()
 	}
 
+	override fun initQuery(string: String) {
+		launchIO {
+			if (queryFlow.first() == null) {
+				queryFlow.value = string
+				appliedQueryFlow.value = string
+			}
+		}
+	}
+
 	override fun setQuery(query: String) {
 		this.queryFlow.value = query
+	}
+
+	override fun applyQuery(query: String) {
+		queryFlow.value = query
+		appliedQueryFlow.value = query
 	}
 
 	override fun searchLibrary(): Flow<PagingData<ACatalogNovelUI>> =
@@ -114,6 +139,8 @@ class SearchViewModel(
 	override fun destroy() {
 		logI("Clearing out all flows")
 		searchFlows.clear()
+		queryFlow.value = null
+		appliedQueryFlow.value = null
 	}
 
 	private fun getRefreshFlow(id: Int) =
@@ -131,8 +158,9 @@ class SearchViewModel(
 	 */
 	@OptIn(ExperimentalCoroutinesApi::class)
 	private val libraryResultFlow: Flow<PagingData<ACatalogNovelUI>> by lazy {
-		queryFlow.combine(getRefreshFlow(-1)) { query, _ -> query }
+		appliedQueryFlow.combine(getRefreshFlow(-1)) { query, _ -> query }
 			.transformLatest { query ->
+				if (query == null) return@transformLatest
 
 				val exceptionFlow = getExceptionFlow(-1)
 
@@ -174,8 +202,9 @@ class SearchViewModel(
 			val exceptionFlow = getExceptionFlow(extensionID)
 
 			emitAll(
-				queryFlow.combine(getRefreshFlow(extensionID)) { query, _ -> query }
+				appliedQueryFlow.combine(getRefreshFlow(extensionID)) { query, _ -> query }
 					.transformLatest { query ->
+						if (query == null) return@transformLatest
 						exceptionFlow.emit(null)
 
 						val source = loadCatalogueQueryDataUseCase(
