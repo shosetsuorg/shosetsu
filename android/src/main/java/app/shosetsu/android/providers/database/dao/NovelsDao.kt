@@ -110,7 +110,7 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 	@Query("SELECT * FROM novels")
 	fun loadNovels(): List<DBNovelEntity>
 
-	@Query("SELECT id, title, imageURL FROM novels WHERE title like '%'||:query||'%'")
+	@Query("SELECT id, title, imageURL FROM novels WHERE title like '%'||:query||'%' AND novels.bookmarked = 1")
 	fun searchBookmarked(query: String): PagingSource<Int, StrippedBookmarkedNovelEntity>
 
 	//@Query("SELECT * FROM novels WHERE id = :novelID LIMIT 1")
