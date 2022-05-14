@@ -161,7 +161,6 @@ fun NovelCardCompressedContent(
 				Text(
 					title,
 					textAlign = TextAlign.Center,
-					color = Color.White
 				)
 
 				if (overlay != null)
