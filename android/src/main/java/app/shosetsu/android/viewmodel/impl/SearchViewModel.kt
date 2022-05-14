@@ -86,7 +86,7 @@ class SearchViewModel(
 
 	override fun searchExtension(extensionId: Int): Flow<PagingData<ACatalogNovelUI>> =
 		searchFlows.getOrPut(extensionId) {
-			loadExtension(extensionId)
+			loadExtension(extensionId).cachedIn(viewModelScope)
 		}
 
 	override fun getException(id: Int): Flow<Throwable?> =
