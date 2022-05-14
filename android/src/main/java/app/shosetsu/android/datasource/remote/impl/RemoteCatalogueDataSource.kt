@@ -63,7 +63,7 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 
 		logD(data.toString())
 
-		return if (!listing.isIncrementing && (data[PAGE_INDEX] as Int) > 1) {
+		return if (!listing.isIncrementing && (data[PAGE_INDEX] as Int) > ext.startIndex) {
 			emptyList()
 		} else try {
 			listing.getListing(data).toList()
