@@ -64,6 +64,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ComposeViewBinding
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -130,7 +132,11 @@ class CatalogController(
 				if (exception != null)
 					LaunchedEffect(Unit) {
 						launchUI {
-							makeSnackBar(exception!!.message ?: "Unknown error")?.show()
+							makeSnackBar(exception!!.message ?: "Unknown error")
+								?.setAction(R.string.retry) {
+									viewModel.resetView()
+								}
+								?.show()
 						}
 					}
 
@@ -138,7 +144,11 @@ class CatalogController(
 				if (prepend is LoadState.Error) {
 					LaunchedEffect(Unit) {
 						launchUI {
-							makeSnackBar(prepend.error.message ?: "Unknown error")?.show()
+							makeSnackBar(prepend.error.message ?: "Unknown error")
+								?.setAction(R.string.retry) {
+									items.retry()
+								}
+								?.show()
 						}
 					}
 				}
@@ -146,7 +156,11 @@ class CatalogController(
 				if (append is LoadState.Error) {
 					LaunchedEffect(Unit) {
 						launchUI {
-							makeSnackBar(append.error.message ?: "Unknown error")?.show()
+							makeSnackBar(append.error.message ?: "Unknown error")
+								?.setAction(R.string.retry) {
+									items.retry()
+								}
+								?.show()
 						}
 					}
 				}
@@ -155,7 +169,11 @@ class CatalogController(
 				if (refresh is LoadState.Error) {
 					LaunchedEffect(Unit) {
 						launchUI {
-							makeSnackBar(refresh.error.message ?: "Unknown error")?.show()
+							makeSnackBar(refresh.error.message ?: "Unknown error")
+								?.setAction(R.string.retry) {
+									items.refresh()
+								}
+								?.show()
 						}
 					}
 				}
@@ -489,38 +507,47 @@ fun CatalogContent(
 	onClick: (ACatalogNovelUI) -> Unit,
 	onLongClick: (ACatalogNovelUI) -> Unit
 ) {
-	Column {
+	Column(
+		modifier = Modifier.fillMaxSize(),
+	) {
 		if (items.loadState.refresh == LoadState.Loading)
 			LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
 
 		when (cardType) {
 			NORMAL, NovelCardType.COZY -> {
-				LazyVerticalGrid(
-					columns = GridCells.Fixed(
-						when (LocalConfiguration.current.orientation) {
-							Configuration.ORIENTATION_LANDSCAPE -> columnsInH
-							else -> columnsInV
-						}
-					)
+				SwipeRefresh(
+					SwipeRefreshState(false),
+					{
+						items.refresh()
+					},
 				) {
-					itemsIndexed(
-						items,
-						key = { index, item -> item.hashCode() + index }
-					) { _, item ->
-						if (cardType == NORMAL) {
-							if (item != null)
-								NovelCardNormalContent(
-									item.title,
-									item.imageURL,
-									onClick = {
-										onClick(item)
-									},
-									onLongClick = {
-										onLongClick(item)
-									}
-								)
-						} else {
-							TODO("Cozy Type type")
+					LazyVerticalGrid(
+						columns = GridCells.Fixed(
+							when (LocalConfiguration.current.orientation) {
+								Configuration.ORIENTATION_LANDSCAPE -> columnsInH
+								else -> columnsInV
+							}
+						)
+					) {
+						itemsIndexed(
+							items,
+							key = { index, item -> item.hashCode() + index }
+						) { _, item ->
+							if (cardType == NORMAL) {
+								if (item != null)
+									NovelCardNormalContent(
+										item.title,
+										item.imageURL,
+										onClick = {
+											onClick(item)
+										},
+										onLongClick = {
+											onLongClick(item)
+										}
+									)
+							} else {
+								TODO("Cozy Type type")
+							}
 						}
 					}
 				}
