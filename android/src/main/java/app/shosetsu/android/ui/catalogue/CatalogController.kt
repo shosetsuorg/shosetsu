@@ -53,9 +53,11 @@ import app.shosetsu.android.common.enums.NovelCardType.NORMAL
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.listeners.CatalogueSearchQuery
 import app.shosetsu.android.ui.novel.NovelController
+import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
+import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel.BackgroundNovelAddProgress.ADDED
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel.BackgroundNovelAddProgress.ADDING
@@ -165,18 +167,6 @@ class CatalogController(
 					}
 				}
 
-				val refresh = items.loadState.refresh
-				if (refresh is LoadState.Error) {
-					LaunchedEffect(Unit) {
-						launchUI {
-							makeSnackBar(refresh.error.message ?: "Unknown error")
-								?.setAction(R.string.retry) {
-									items.refresh()
-								}
-								?.show()
-						}
-					}
-				}
 				CatalogContent(
 					items,
 					type,
@@ -510,8 +500,21 @@ fun CatalogContent(
 	Column(
 		modifier = Modifier.fillMaxSize(),
 	) {
-		if (items.loadState.refresh == LoadState.Loading)
-			LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+		val refreshState = items.loadState.refresh
+		when (refreshState) {
+			is LoadState.NotLoading -> {
+			}
+			LoadState.Loading ->
+				LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+
+			is LoadState.Error ->
+				ErrorContent(
+					refreshState.error.message ?: "Unknown",
+					EmptyDataView.Action(R.string.retry) {
+						items.refresh()
+					}
+				)
+		}
 
 		when (cardType) {
 			NORMAL, NovelCardType.COZY -> {
@@ -558,7 +561,9 @@ fun CatalogContent(
 		if (items.loadState.append == LoadState.Loading)
 			LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
 
-		if (items.loadState.refresh != LoadState.Loading && items.loadState.append is LoadState.NotLoading) {
+		if (refreshState is LoadState.NotLoading &&
+			items.loadState.append is LoadState.NotLoading
+		) {
 			CatalogContentNoMore()
 		}
 	}
