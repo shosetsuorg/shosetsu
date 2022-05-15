@@ -670,6 +670,7 @@
     <string name="worker_export_backup_file_missing">How can the export file be missing</string>
     <string name="worker_export_backup_missing_perm">Missing permissions to write backup</string>
     <string name="worker_extension_install_error_http">HTTP error</string>
+    <string name="worker_extension_install_error_lua">Malformed extension?</string>
     <string name="worker_extension_install_error_sql">SQL error when installing extension</string>
     <string name="worker_extension_install_error_perm">File permission error</string>
     <string name="worker_extension_install_error_io">IOException</string>

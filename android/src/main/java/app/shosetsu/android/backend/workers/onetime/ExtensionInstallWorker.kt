@@ -25,12 +25,15 @@ import app.shosetsu.lib.exceptions.HTTPException
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.withContext
 import org.acra.ACRA
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
+import org.luaj.vm2.LuaError
 import java.io.IOException
 
 /*
@@ -206,7 +209,19 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 		)
 
 		val flags = try {
-			installExtension(extension)
+			withContext(Dispatchers.IO) {
+				installExtension(extension)
+			}
+		} catch (e: LuaError) {
+			markExtensionDownloadAsError()
+
+			logE("LuaError", e)
+			notifyError(
+				e.message ?: "Unknown Lua Error",
+				getString(R.string.worker_extension_install_error_lua)
+			)
+
+			return Result.failure()
 		} catch (e: HTTPException) {
 			markExtensionDownloadAsError()
 
