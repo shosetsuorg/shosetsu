@@ -5,6 +5,7 @@ import app.shosetsu.android.domain.model.local.AppUpdateEntity
 import app.shosetsu.android.domain.repository.base.IAppUpdatesRepository
 import app.shosetsu.lib.exceptions.HTTPException
 import java.io.IOException
+import java.net.UnknownHostException
 
 /*
  * This file is part of shosetsu.
@@ -30,7 +31,12 @@ import java.io.IOException
 class LoadRemoteAppUpdateUseCase(
 	private val iAppUpdatesRepository: IAppUpdatesRepository
 ) {
-	@Throws(FilePermissionException::class, IOException::class, HTTPException::class)
+	@Throws(
+		FilePermissionException::class,
+		UnknownHostException::class,
+		IOException::class,
+		HTTPException::class
+	)
 	suspend operator fun invoke(): AppUpdateEntity? =
 		iAppUpdatesRepository.loadRemoteUpdate()
 }

@@ -1,7 +1,9 @@
 package app.shosetsu.android.domain.usecases.load
 
 import app.shosetsu.android.common.FileNotFoundException
+import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.domain.repository.base.IAppUpdatesRepository
+import java.net.UnknownHostException
 
 /*
  * This file is part of Shosetsu.
@@ -28,6 +30,10 @@ import app.shosetsu.android.domain.repository.base.IAppUpdatesRepository
 class LoadAppUpdateUseCase(
 	private val repo: IAppUpdatesRepository
 ) {
-	@Throws(FileNotFoundException::class)
+	@Throws(
+		FileNotFoundException::class,
+		UnknownHostException::class,
+		FilePermissionException::class
+	)
 	suspend operator fun invoke() = repo.loadAppUpdate()
 }

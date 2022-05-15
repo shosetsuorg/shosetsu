@@ -31,6 +31,7 @@ import org.kodein.di.android.closestDI
 import org.kodein.di.instance
 import java.io.File
 import java.io.IOException
+import java.net.UnknownHostException
 
 /*
  * This file is part of Shosetsu.
@@ -112,14 +113,6 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 		// download the app update and get the path to the installed file
 		val path = try {
 			updateRepo.downloadAppUpdate(update)
-		} catch (e: IOException) {
-			notify("IO exception occurred \n ${e.message} ") {
-				setNotOngoing()
-				removeProgress()
-			}
-
-			ACRA.errorReporter.handleSilentException(e)
-			return Result.failure()
 		} catch (e: FilePermissionException) {
 			notify("How does the app lack the ability to download its apk\n ${e.message} ") {
 				setNotOngoing()
@@ -127,6 +120,12 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 			}
 
 			ACRA.errorReporter.handleSilentException(e)
+			return Result.failure()
+		} catch (e: UnknownHostException) {
+			notify("${e.message}") {
+				setNotOngoing()
+				removeProgress()
+			}
 			return Result.failure()
 		} catch (e: FileNotFoundException) {
 			notify("How does the app lack the ability to download its apk\n ${e.message} ") {
@@ -147,6 +146,14 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 				setNotOngoing()
 				removeProgress()
 			}
+			return Result.failure()
+		} catch (e: IOException) {
+			notify("IO exception occurred \n ${e.message} ") {
+				setNotOngoing()
+				removeProgress()
+			}
+
+			ACRA.errorReporter.handleSilentException(e)
 			return Result.failure()
 		} catch (e: HTTPException) {
 			notify("Failed due to HTTP code :${e.code}") {

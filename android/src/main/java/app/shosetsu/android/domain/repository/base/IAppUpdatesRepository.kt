@@ -8,6 +8,7 @@ import app.shosetsu.android.domain.model.local.AppUpdateEntity
 import app.shosetsu.lib.exceptions.HTTPException
 import kotlinx.coroutines.flow.Flow
 import java.io.IOException
+import java.net.UnknownHostException
 
 /*
  * This file is part of shosetsu.
@@ -41,13 +42,22 @@ interface IAppUpdatesRepository {
 	/**
 	 * Load an app update if present
 	 */
-	@Throws(FilePermissionException::class, IOException::class, HTTPException::class)
+	@Throws(
+		FilePermissionException::class,
+		UnknownHostException::class,
+		IOException::class,
+		HTTPException::class
+	)
 	suspend fun loadRemoteUpdate(): AppUpdateEntity?
 
 	/**
 	 * Load an app update if present
 	 */
-	@Throws(FileNotFoundException::class, FilePermissionException::class)
+	@Throws(
+		FileNotFoundException::class,
+		UnknownHostException::class,
+		FilePermissionException::class
+	)
 	suspend fun loadAppUpdate(): AppUpdateEntity
 
 	/**
@@ -66,6 +76,7 @@ interface IAppUpdatesRepository {
 		FileNotFoundException::class,
 		MissingFeatureException::class,
 		EmptyResponseBodyException::class,
+		UnknownHostException::class,
 		HTTPException::class,
 	)
 	suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): String
