@@ -3,30 +3,24 @@ package app.shosetsu.android.ui.search
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.Divider
+import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
@@ -38,13 +32,13 @@ import androidx.paging.compose.itemsIndexed
 import app.shosetsu.android.common.consts.BundleKeys
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.novel.NovelController
+import app.shosetsu.android.view.compose.NovelCardNormalContent
+import app.shosetsu.android.view.compose.PlaceholderNovelCardNormalContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ASearchViewModel
-import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -217,11 +211,20 @@ fun SearchContent(
 						itemsIndexed(
 							children,
 							key = { index, item -> item.hashCode() + index }) { _, novelUI ->
-							if (novelUI != null)
-								SearchResultContent(
-									novelUI,
-									onClick
-								)
+							Box(
+								modifier = Modifier.width(105.dp)
+							) {
+								if (novelUI != null)
+									NovelCardNormalContent(
+										novelUI.title,
+										novelUI.imageURL,
+										onClick = {
+											onClick(novelUI)
+										},
+										onLongClick = {},
+									)
+								else PlaceholderNovelCardNormalContent()
+							}
 						}
 					},
 					exception = {
@@ -315,61 +318,5 @@ fun SearchRowContent(
 		exception()
 
 		Divider(modifier = Modifier.fillMaxWidth())
-	}
-}
-
-@OptIn(
-	ExperimentalMaterialApi::class,
-	androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi::class
-)
-@Composable
-fun SearchResultContent(item: ACatalogNovelUI, onClick: (ACatalogNovelUI) -> Unit) {
-	Card(
-		onClick = { onClick(item) },
-		border =
-		if (item.isSelected) {
-			BorderStroke(2.dp, colorResource(id = R.color.colorPrimary))
-		} else {
-			null
-		},
-		modifier = Modifier.aspectRatio(.70f).width(105.dp).height(140.dp).padding(8.dp)
-	) {
-		val blackTrans = colorResource(id = R.color.black_trans)
-		Box {
-
-			AsyncImage(
-				model = ImageRequest.Builder(LocalContext.current)
-					.data(item.imageURL)
-					.error(R.drawable.broken_image)
-					.placeholder(R.drawable.animated_refresh)
-					.build(),
-				contentDescription = null,
-				modifier = Modifier
-					.fillMaxSize()
-					.drawWithContent {
-
-						drawContent()
-						drawRect(
-							Brush.verticalGradient(
-								colors = listOf(
-									Color.Transparent,
-									blackTrans
-								),
-							)
-						)
-					},
-				contentScale = ContentScale.Crop
-			)
-
-			Text(
-				text = item.title,
-				modifier = Modifier
-					.align(Alignment.BottomCenter)
-					.padding(8.dp),
-				fontWeight = FontWeight.Bold,
-				textAlign = TextAlign.Center,
-				maxLines = 3
-			)
-		}
 	}
 }

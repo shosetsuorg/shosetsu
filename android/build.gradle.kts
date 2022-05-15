@@ -365,7 +365,7 @@ dependencies {
 	implementation(accompanist("accompanist-pager"))
 	implementation(accompanist("accompanist-swiperefresh"))
 	implementation(accompanist("accompanist-webview", "0.24.6-alpha"))
-
+	implementation(accompanist("accompanist-placeholder-material"))
 	//- Integration with observables
 	implementation("androidx.compose.runtime:runtime-livedata:1.1.1")
 
@@ -397,4 +397,6 @@ dependencies {
 	implementation(paging("paging-runtime"))
 	implementation(paging("paging-compose", "1.0.0-alpha14"))
 	implementation(kotlin("reflect"))
+
+
 }
