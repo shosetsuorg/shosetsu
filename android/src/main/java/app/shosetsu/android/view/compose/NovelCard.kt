@@ -9,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.google.accompanist.placeholder.material.placeholder
 import com.google.android.material.composethemeadapter.MdcTheme
 
 /*
@@ -49,6 +51,17 @@ import com.google.android.material.composethemeadapter.MdcTheme
  * @author Doomsdayrs
  */
 
+@Composable
+fun PlaceholderNovelCardNormalContent() {
+	NovelCardNormalContent(
+		"",
+		"",
+		onClick = {},
+		onLongClick = {},
+		isPlaceholder = true
+	)
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NovelCardNormalContent(
@@ -57,6 +70,7 @@ fun NovelCardNormalContent(
 	onClick: () -> Unit,
 	onLongClick: () -> Unit,
 	overlay: (BoxScope.() -> Unit)? = null,
+	isPlaceholder: Boolean = false,
 ) {
 	Card(
 		modifier = Modifier.combinedClickable(
@@ -75,7 +89,8 @@ fun NovelCardNormalContent(
 				modifier = Modifier
 					.fillMaxSize()
 					.aspectRatio(.75f)
-					.clickable(onClick = onClick),
+					.clickable(onClick = onClick)
+					.placeholder(visible = isPlaceholder),
 				contentScale = ContentScale.Crop
 			)
 
@@ -96,13 +111,14 @@ fun NovelCardNormalContent(
 								)
 							)
 						}
-					}
+					}.alpha(if (isPlaceholder) 0.0f else 1.0f)
 			)
 			Text(
 				title,
-				modifier = Modifier.align(Alignment.BottomCenter),
+				modifier = Modifier.align(Alignment.BottomCenter)
+					.placeholder(visible = isPlaceholder),
 				textAlign = TextAlign.Center,
-				color = Color.White
+				color = Color.White,
 			)
 			if (overlay != null)
 				overlay()
@@ -124,6 +140,17 @@ fun PreviewNovelCardCompressedContent() {
 	}
 }
 
+@Composable
+fun PlaceholderNovelCardCompressedContent() {
+	NovelCardCompressedContent(
+		"",
+		"",
+		onClick = {},
+		onLongClick = {},
+		isPlaceholder = true
+	)
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NovelCardCompressedContent(
@@ -132,6 +159,7 @@ fun NovelCardCompressedContent(
 	onClick: () -> Unit,
 	onLongClick: () -> Unit,
 	overlay: (RowScope.() -> Unit)? = null,
+	isPlaceholder: Boolean = false,
 ) {
 	Card(
 		modifier = Modifier.combinedClickable(
@@ -154,13 +182,16 @@ fun NovelCardCompressedContent(
 					modifier = Modifier
 						.width(64.dp)
 						.aspectRatio(1.0f)
-						.clickable(onClick = onClick),
+						.clickable(onClick = onClick)
+						.placeholder(visible = isPlaceholder),
 					contentScale = ContentScale.Crop
 				)
 
 				Text(
 					title,
 					textAlign = TextAlign.Center,
+					modifier = Modifier
+						.placeholder(visible = isPlaceholder)
 				)
 
 				if (overlay != null)
