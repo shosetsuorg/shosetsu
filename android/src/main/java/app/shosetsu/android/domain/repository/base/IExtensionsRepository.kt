@@ -9,6 +9,8 @@ import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.exceptions.HTTPException
 import kotlinx.coroutines.flow.Flow
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 /*
  * This file is part of shosetsu.
@@ -115,7 +117,11 @@ interface IExtensionsRepository {
 	@Throws(GenericSQLiteException::class)
 	suspend fun insert(extensionEntity: InstalledExtensionEntity): Long
 
-	@Throws(HTTPException::class)
+	@Throws(
+		HTTPException::class,
+		SocketTimeoutException::class,
+		UnknownHostException::class,
+	)
 	suspend fun downloadExtension(
 		repositoryEntity: RepositoryEntity,
 		extension: GenericExtensionEntity

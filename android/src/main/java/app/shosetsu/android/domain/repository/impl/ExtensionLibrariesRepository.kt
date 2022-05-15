@@ -8,10 +8,13 @@ import app.shosetsu.android.datasource.remote.base.IRemoteExtLibDataSource
 import app.shosetsu.android.domain.model.local.ExtLibEntity
 import app.shosetsu.android.domain.repository.base.IExtensionLibrariesRepository
 import app.shosetsu.lib.Version
+import app.shosetsu.lib.exceptions.HTTPException
 import app.shosetsu.lib.json.J_VERSION
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 /*
  * This file is part of shosetsu.
@@ -46,7 +49,12 @@ class ExtensionLibrariesRepository(
 	): List<ExtLibEntity> =
 		databaseSource.loadExtLibByRepo(repoID)
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(
+		GenericSQLiteException::class,
+		HTTPException::class,
+		SocketTimeoutException::class,
+		UnknownHostException::class,
+	)
 	override suspend fun installExtLibrary(
 		repoURL: String,
 		extLibEntity: ExtLibEntity,

@@ -11,6 +11,8 @@ import com.github.doomsdayrs.apps.shosetsu.BuildConfig.DEBUG
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 /*
  * This file is part of shosetsu.
@@ -52,7 +54,12 @@ class GithubAppUpdateDataSource(
 		}
 	}
 
-	@Throws(EmptyResponseBodyException::class, HTTPException::class)
+	@Throws(
+		EmptyResponseBodyException::class,
+		HTTPException::class,
+		SocketTimeoutException::class,
+		UnknownHostException::class,
+	)
 	override suspend fun loadAppUpdate(): AppUpdateEntity {
 		okHttpClient.quickie(shosetsuGitUpdateURL)
 			.use { gitResponse ->
@@ -65,7 +72,12 @@ class GithubAppUpdateDataSource(
 			}
 	}
 
-	@Throws(EmptyResponseBodyException::class, HTTPException::class)
+	@Throws(
+		EmptyResponseBodyException::class,
+		HTTPException::class,
+		SocketTimeoutException::class,
+		UnknownHostException::class,
+	)
 	override suspend fun downloadAppUpdate(update: AppUpdateEntity): ByteArray {
 		okHttpClient.quickie(update.archURL()).let { response ->
 			if (response.isSuccessful) {

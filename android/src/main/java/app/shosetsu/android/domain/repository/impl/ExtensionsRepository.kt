@@ -10,6 +10,8 @@ import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.lib.exceptions.HTTPException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 /*
  * This file is part of shosetsu.
@@ -142,7 +144,11 @@ class ExtensionsRepository(
 	override suspend fun insert(extensionEntity: InstalledExtensionEntity): Long =
 		installedDBSource.insert(extensionEntity)
 
-	@Throws(HTTPException::class)
+	@Throws(
+		HTTPException::class,
+		SocketTimeoutException::class,
+		UnknownHostException::class,
+	)
 	override suspend fun downloadExtension(
 		repositoryEntity: RepositoryEntity,
 		extension: GenericExtensionEntity

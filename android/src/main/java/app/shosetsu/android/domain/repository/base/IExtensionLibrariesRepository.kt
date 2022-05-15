@@ -2,6 +2,9 @@ package app.shosetsu.android.domain.repository.base
 
 import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.domain.model.local.ExtLibEntity
+import app.shosetsu.lib.exceptions.HTTPException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 /*
  * This file is part of shosetsu.
@@ -37,7 +40,12 @@ interface IExtensionLibrariesRepository {
 	/**
 	 * Installs an extension library by its repository
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(
+		GenericSQLiteException::class,
+		HTTPException::class,
+		SocketTimeoutException::class,
+		UnknownHostException::class,
+	)
 	suspend fun installExtLibrary(
 		repoURL: String,
 		extLibEntity: ExtLibEntity,
