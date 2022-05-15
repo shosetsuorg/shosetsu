@@ -834,7 +834,7 @@ inline fun ChapterReaderPagerContent(
 		LaunchedEffect(pagerState) {
 			snapshotFlow { pagerState.currentPage }.distinctUntilChanged().collect { newPage ->
 				onStopTTS()
-				val item = items[newPage]
+				val item = items.getOrNull(newPage) ?: return@collect
 
 				if (item is ReaderChapterUI) {
 					markChapterAsCurrent(item)
