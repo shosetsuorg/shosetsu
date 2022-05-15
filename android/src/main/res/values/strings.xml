@@ -736,6 +736,10 @@
         <item>@string/settings_backup_alert_location_external</item>
         <item>@string/settings_backup_alert_location_internal</item>
     </array>
+
+    <string name="controller_library_migrate_wait">
+        Migration is hard to code, Want to help? Check github/matrix.
+    </string>
 </resources>
 
 
