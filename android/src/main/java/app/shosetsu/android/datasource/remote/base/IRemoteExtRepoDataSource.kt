@@ -1,7 +1,9 @@
 package app.shosetsu.android.datasource.remote.base
 
 import app.shosetsu.android.domain.model.local.RepositoryEntity
+import app.shosetsu.lib.exceptions.HTTPException
 import app.shosetsu.lib.json.RepoIndex
+import java.net.UnknownHostException
 
 /*
  * This file is part of shosetsu.
@@ -25,8 +27,9 @@ import app.shosetsu.lib.json.RepoIndex
  * 13 / 05 / 2020
  */
 interface IRemoteExtRepoDataSource {
-    /**
-     * Download the current repository data
-     */
-    suspend fun downloadRepoData(repo: RepositoryEntity): RepoIndex
+	/**
+	 * Download the current repository data
+	 */
+	@Throws(UnknownHostException::class, HTTPException::class)
+	suspend fun downloadRepoData(repo: RepositoryEntity): RepoIndex
 }

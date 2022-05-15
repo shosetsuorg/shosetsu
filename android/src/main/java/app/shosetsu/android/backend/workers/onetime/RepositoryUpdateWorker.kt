@@ -28,14 +28,18 @@ import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.RemoveExtensionEntityUseCase
 import app.shosetsu.lib.Version
+import app.shosetsu.lib.exceptions.HTTPException
 import app.shosetsu.lib.json.RepoExtension
 import app.shosetsu.lib.json.RepoLibrary
 import com.github.doomsdayrs.apps.shosetsu.R
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
+import java.net.UnknownHostException
 
 /*
  * This file is part of Shosetsu.
@@ -273,10 +277,32 @@ class RepositoryUpdateWorker(
 				logI("Updating $repo")
 				// gets the latest list for the repo
 				val repoIndex = try {
-					extRepoRepo.getRepoData(repo)
+					withContext(Dispatchers.IO) {
+						extRepoRepo.getRepoData(repo)
+					}
+				} catch (e: UnknownHostException) {
+					notify(
+						"${e.message}",
+						notificationId = ID_REPOSITORY_UPDATE + 1 + repo.id
+					) {
+						removeProgress()
+						setContentTitle("${repo.name} failed to load")
+						setNotOngoing()
+					}
+					return@let
+				} catch (e: HTTPException) {
+					notify(
+						"${e.code}",
+						notificationId = ID_REPOSITORY_UPDATE + 1 + repo.id
+					) {
+						removeProgress()
+						setContentTitle("${repo.name} failed to load")
+						setNotOngoing()
+					}
+					return@let
 				} catch (e: Exception) {//TODO specify
 					notify(
-						": ${e.message}",
+						"${e.message}",
 						notificationId = ID_REPOSITORY_UPDATE + 1 + repo.id
 					) {
 						removeProgress()

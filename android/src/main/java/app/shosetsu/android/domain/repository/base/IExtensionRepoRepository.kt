@@ -2,8 +2,10 @@ package app.shosetsu.android.domain.repository.base
 
 import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.domain.model.local.RepositoryEntity
+import app.shosetsu.lib.exceptions.HTTPException
 import app.shosetsu.lib.json.RepoIndex
 import kotlinx.coroutines.flow.Flow
+import java.net.UnknownHostException
 
 /*
  * This file is part of shosetsu.
@@ -35,6 +37,7 @@ interface IExtensionRepoRepository {
 	/**
 	 * Loads repository data
 	 */
+	@Throws(UnknownHostException::class, HTTPException::class)
 	suspend fun getRepoData(entity: RepositoryEntity): RepoIndex
 
 	/**

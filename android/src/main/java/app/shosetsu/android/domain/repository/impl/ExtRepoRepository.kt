@@ -5,8 +5,10 @@ import app.shosetsu.android.datasource.local.database.base.IDBExtRepoDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteExtRepoDataSource
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.android.domain.repository.base.IExtensionRepoRepository
+import app.shosetsu.lib.exceptions.HTTPException
 import app.shosetsu.lib.json.RepoIndex
 import kotlinx.coroutines.flow.Flow
+import java.net.UnknownHostException
 
 /*
  * This file is part of shosetsu.
@@ -33,6 +35,7 @@ class ExtRepoRepository(
 	private val databaseSource: IDBExtRepoDataSource,
 	private val remoteSource: IRemoteExtRepoDataSource
 ) : IExtensionRepoRepository {
+	@Throws(UnknownHostException::class, HTTPException::class)
 	override suspend fun getRepoData(entity: RepositoryEntity): RepoIndex =
 		remoteSource.downloadRepoData(entity)
 
