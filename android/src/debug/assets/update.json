@@ -1,9 +1,10 @@
 {
-  "latestVersion": "2089",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r2089/shosetsu-r2089-universal.apk",
+  "latestVersion": "2129",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r2129/shosetsu-r2129-universal.apk",
   "releaseNotes": [
-    "- # Complete UI rewrite for Novel info & Reader",
-    "- Added scroll bar to novel info",
-    "- Removed super fast to bottom mechanic from novel info"
+    "- Compressed application codebase into only android",
+    "- Convert Catalog and Search to using android Paging",
+    "- Search view now can increment the query",
+    "- Handle more exceptions properly"
   ]
 }
