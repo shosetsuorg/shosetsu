@@ -5,6 +5,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import app.shosetsu.android.common.IncompatibleExtensionException
 import app.shosetsu.android.common.LuaException
+import app.shosetsu.android.common.MissingExtensionException
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.ext.convertTo
 import app.shosetsu.android.common.ext.logE
@@ -122,7 +123,8 @@ class GetCatalogueQueryDataUseCase(
 	@Throws(
 		SQLiteException::class,
 		IncompatibleExtensionException::class,
-		LuaException::class
+		LuaException::class,
+		MissingExtensionException::class
 	)
 	suspend operator fun invoke(
 		extID: Int,
@@ -130,7 +132,7 @@ class GetCatalogueQueryDataUseCase(
 		filters: Map<Int, Any>
 	): MyPagingSource = getExt(extID)?.let {
 		invoke(it, query, filters)
-	} ?: throw Exception("Ext missing")
+	} ?: throw MissingExtensionException(extID)
 
 	@Throws(LuaException::class)
 	operator fun invoke(
