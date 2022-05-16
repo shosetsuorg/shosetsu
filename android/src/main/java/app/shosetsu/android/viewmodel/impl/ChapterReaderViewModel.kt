@@ -17,10 +17,14 @@ import app.shosetsu.android.domain.model.local.ColorChoiceData
 import app.shosetsu.android.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.android.domain.repository.base.INovelReaderSettingsRepository
+import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.RecordChapterIsReadUseCase
 import app.shosetsu.android.domain.usecases.RecordChapterIsReadingUseCase
-import app.shosetsu.android.domain.usecases.get.*
+import app.shosetsu.android.domain.usecases.get.GetChapterPassageUseCase
+import app.shosetsu.android.domain.usecases.get.GetExtensionUseCase
+import app.shosetsu.android.domain.usecases.get.GetReaderChaptersUseCase
+import app.shosetsu.android.domain.usecases.get.GetReaderSettingUseCase
 import app.shosetsu.android.domain.usecases.load.LoadLiveAppThemeUseCase
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderChapterUI
@@ -28,6 +32,7 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderDivide
 import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
 import app.shosetsu.common.utils.asHtml
 import app.shosetsu.common.utils.copy
+import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -64,6 +69,7 @@ class ChapterReaderViewModel(
 	private val application: Application,
 	override val settingsRepo: ISettingsRepository,
 	private val chapterRepository: IChaptersRepository,
+	private val novelRepo: INovelsRepository,
 	private val readerSettingsRepo: INovelReaderSettingsRepository,
 	private var loadLiveAppThemeUseCase: LoadLiveAppThemeUseCase,
 	private val loadReaderChaptersUseCase: GetReaderChaptersUseCase,
@@ -71,7 +77,6 @@ class ChapterReaderViewModel(
 	private val getReaderSettingsUseCase: GetReaderSettingUseCase,
 	private val recordChapterIsReading: RecordChapterIsReadingUseCase,
 	private val recordChapterIsRead: RecordChapterIsReadUseCase,
-	private val getNovel: GetNovelUIUseCase,
 	private val getExt: GetExtensionUseCase
 ) : AChapterReaderViewModel() {
 	override val appThemeLiveData: Flow<AppThemes>
@@ -105,7 +110,7 @@ class ChapterReaderViewModel(
 	 *
 	 * To correct this,
 	 */
-	private val progressMap by lazy { MutableStateFlow(HashMap<Int, Double>()) }
+	private val progressMapFlow by lazy { MutableStateFlow(HashMap<Int, Double>()) }
 
 	private var _ttsPitch: Float = 0.0f
 
@@ -318,6 +323,13 @@ class ChapterReaderViewModel(
 		}.onIO()
 	}
 
+	private val extFlow: Flow<IExtension?> by lazy {
+		novelIDLive.mapLatest { id ->
+			val novel = novelRepo.getNovel(id) ?: return@mapLatest null
+			getExt(novel.extensionID)
+		}
+	}
+
 	/**
 	 * Specifies what chapter type the reader should render.
 	 *
@@ -325,13 +337,10 @@ class ChapterReaderViewModel(
 	 * not html, causing the content to regenerate.
 	 */
 	override val chapterType: Flow<Novel.ChapterType?> by lazy {
-		novelIDLive.transformLatest { id ->
+		extFlow.transformLatest { ext ->
 			emit(null)
 
-
-			val novel = getNovel(id).first() ?: return@transformLatest
-
-			val type = getExt(novel.extID)?.chapterType ?: return@transformLatest
+			val type = ext?.chapterType ?: return@transformLatest
 			var prevType: Novel.ChapterType? = null
 
 			emitAll(
@@ -418,10 +427,10 @@ class ChapterReaderViewModel(
 		}
 
 	private fun Flow<List<ReaderChapterUI>>.combineTempProgress(): Flow<List<ReaderChapterUI>> =
-		combine(progressMap) { list, progress ->
+		combine(progressMapFlow) { list, progressMap ->
 			list.map {
-				if (progress.containsKey(it.id)) {
-					val progress = progress[it.id]
+				if (progressMap.containsKey(it.id)) {
+					val progress = progressMap[it.id]
 					val copy = it.copy(
 						readingPosition = progress!!
 					)
@@ -589,7 +598,7 @@ class ChapterReaderViewModel(
 					 * and the chapter's readingStatus is read, save progress temporarily.
 					 */
 					if (!markReadAsReading && chapter.readingStatus == READ) {
-						progressMap.emit(progressMap.value.copy().apply {
+						progressMapFlow.emit(progressMapFlow.value.copy().apply {
 							put(chapter.id, readingPosition)
 						})
 						return@launchIO
@@ -604,7 +613,7 @@ class ChapterReaderViewModel(
 					}
 
 					// Remove temp progress
-					progressMap.emit(progressMap.value.copy().apply {
+					progressMapFlow.emit(progressMapFlow.value.copy().apply {
 						remove(chapter.id)
 					})
 
@@ -623,7 +632,7 @@ class ChapterReaderViewModel(
 				recordChapterIsRead(chapter)
 
 				// Temp remember the progress
-				progressMap.emit(progressMap.value.copy().apply {
+				progressMapFlow.emit(progressMapFlow.value.copy().apply {
 					put(chapter.id, readingPosition)
 				})
 
@@ -807,8 +816,13 @@ class ChapterReaderViewModel(
 		}
 	}
 
-	override fun getCurrentChapterURL(): Flow<String> {
-		TODO("Not yet implemented")
+	override fun getCurrentChapterURL(): Flow<String?> = flow {
+		val chapterId = currentChapterID.first()
+
+		val chapter = chaptersFlow.first().find { it.id == chapterId }
+		if (chapter == null)
+			emit(null)
+		else emit(extFlow.first()?.expandURL(chapter.link, IExtension.KEY_CHAPTER_URL))
 	}
 
 	companion object {

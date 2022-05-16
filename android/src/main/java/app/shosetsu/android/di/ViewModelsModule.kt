@@ -186,11 +186,11 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			instance(),
 			instance(),
 			instance(),
+			instance(),
 			loadReaderChaptersUseCase = instance(),
 			loadChapterPassageUseCase = instance(),
 
 			getReaderSettingsUseCase = instance(),
-			instance(),
 			instance(),
 			instance(),
 			instance(),

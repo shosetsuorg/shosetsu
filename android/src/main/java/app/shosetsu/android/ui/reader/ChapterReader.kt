@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.view.KeyEvent
+import android.view.Menu
 import android.view.MenuItem
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 import androidx.activity.compose.setContent
@@ -281,19 +282,24 @@ class ChapterReader
 		}
 		R.id.browser -> {
 			viewModel.getCurrentChapterURL().collectLA(this, catch = {}) { url ->
-				if (url.isNotEmpty())
+				if (!url.isNullOrEmpty())
 					openInBrowser(url)
 			}
 			true
 		}
 		R.id.webview -> {
 			viewModel.getCurrentChapterURL().collectLA(this, catch = {}) { url ->
-				if (url.isNotEmpty())
+				if (!url.isNullOrEmpty())
 					openInWebView(url)
 			}
 			true
 		}
 		else -> super.onOptionsItemSelected(item)
+	}
+
+	override fun onCreateOptionsMenu(menu: Menu): Boolean {
+		menuInflater.inflate(R.menu.toolbar_reader, menu)
+		return super.onCreateOptionsMenu(menu)
 	}
 
 	/**

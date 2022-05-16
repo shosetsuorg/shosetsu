@@ -163,5 +163,5 @@ abstract class AChapterReaderViewModel :
 	 *
 	 * TODO Implement
 	 */
-	abstract fun getCurrentChapterURL(): Flow<String>
+	abstract fun getCurrentChapterURL(): Flow<String?>
 }
