@@ -102,7 +102,7 @@ class LibraryFilterMenuBuilder constructor(
 						this.root.apply {
 							setText(item.filterKeyName)
 							state = item.inclusionState?.let {
-								val triStateState: TriStateState? = when (it) {
+								val triStateState: TriStateState = when (it) {
 									INCLUDE -> CHECKED
 									EXCLUDE -> UNCHECKED
 								}
