@@ -396,7 +396,6 @@ fun PreviewChapterReaderContent() {
  * @param getHTMLContent Get HTML content for web
  * @param getStringContent Get string content for text
  * @param onScroll Called when the content is scrolled
- * @param onViewed Called when a chapter has been viewed by the reader
  * @param isTTSCapable Is the system capable of TTS
  * @param isTTSPlaying Is TTS playing currently
  * @param onPlayTTS Play TTS of the current content
