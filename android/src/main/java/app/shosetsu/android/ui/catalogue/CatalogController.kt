@@ -240,7 +240,7 @@ class CatalogController(
 					COMPRESSED -> {
 						menu.findItem(R.id.view_type_comp)?.isChecked = true
 					}
-					NovelCardType.COZY -> TODO()
+					COZY -> TODO()
 				}
 			}
 

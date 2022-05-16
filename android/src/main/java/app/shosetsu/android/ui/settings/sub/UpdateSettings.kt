@@ -47,7 +47,7 @@ import com.google.android.material.composethemeadapter.MdcTheme
  * 20 / 06 / 2020
  */
 class UpdateSettings : ShosetsuController() {
-	override val viewTitleRes: Int = com.github.doomsdayrs.apps.shosetsu.R.string.settings_update
+	override val viewTitleRes: Int = R.string.settings_update
 	val viewModel: AUpdateSettingsViewModel by viewModel()
 
 	override fun onViewCreated(view: View) {
