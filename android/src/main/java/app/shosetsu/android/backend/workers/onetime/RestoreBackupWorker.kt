@@ -236,7 +236,6 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		val extensionID = backupExtensionEntity.id
 		val backupNovels = backupExtensionEntity.novels
 		logI("$extensionID")
-		// TODO Critical, Rework extensions to enable the below to work properly. DO NOT RELEASE.
 		extensionsRepo.getExtension(2, extensionID)?.let { extensionEntity ->
 			// Install the extension
 			if (!extensionsRepo.isExtensionInstalled(extensionEntity)) {
