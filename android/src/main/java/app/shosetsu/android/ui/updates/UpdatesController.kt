@@ -74,10 +74,6 @@ class ComposeUpdatesController : CollapsedToolBarController, ShosetsuController(
 
 	override fun onViewCreated(view: View) {}
 
-	@OptIn(
-		ExperimentalMaterialApi::class,
-		ExperimentalFoundationApi::class
-	)
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup,

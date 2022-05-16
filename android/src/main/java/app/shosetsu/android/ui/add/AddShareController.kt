@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
-import androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
@@ -235,7 +234,6 @@ fun PreviewAboutContent() {
 	}
 }
 
-@OptIn(ExperimentalAnimationGraphicsApi::class)
 @Composable
 fun AddShareContent(
 	isProcessing: Boolean,

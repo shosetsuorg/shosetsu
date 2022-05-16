@@ -183,7 +183,6 @@ class NovelController(bundle: Bundle) :
 		)
 	}
 
-	@OptIn(ExperimentalMaterialApi::class)
 	private fun openShare() {
 		openShareMenu(
 			activity!!,
@@ -665,7 +664,6 @@ fun PreviewNovelInfoContent() {
 	}
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun NovelInfoContent(
 	novelInfo: NovelUI?,
@@ -889,7 +887,7 @@ fun NovelInfoChaptersContent(
 	}
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NovelChapterContent(
 	chapter: ChapterUI,
