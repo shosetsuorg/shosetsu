@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -147,7 +148,14 @@ fun AdvancedSettingsContent(
 	onKillCycleWorkers: () -> Unit,
 	onClearCookies: () -> Unit
 ) {
-	LazyColumn(modifier = Modifier.padding(16.dp)) {
+	LazyColumn(
+		contentPadding = PaddingValues(
+			top = 16.dp,
+			start = 16.dp,
+			end = 16.dp,
+			bottom = 64.dp
+		)
+	) {
 		item {
 			val choice by viewModel.settingsRepo.getIntFlow(AppTheme)
 				.collectAsState(AppTheme.default)

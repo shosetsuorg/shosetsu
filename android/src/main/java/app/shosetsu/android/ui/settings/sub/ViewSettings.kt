@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -87,7 +88,14 @@ fun ViewSettingsContent(viewModel: AViewSettingsViewModel, finishActivity: () ->
 	val navStyle by viewModel.settingsRepo.getIntFlow(NavStyle).map { it == 1 }
 		.collectAsState(NavStyle.default == 1)
 
-	LazyColumn(modifier = Modifier.padding(16.dp)) {
+	LazyColumn(
+		contentPadding = PaddingValues(
+			top = 16.dp,
+			start = 16.dp,
+			end = 16.dp,
+			bottom = 64.dp
+		)
+	) {
 
 		item {
 			NumberPickerSettingContent(
