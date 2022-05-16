@@ -5,6 +5,7 @@ import app.shosetsu.android.common.enums.AppThemes
 import app.shosetsu.android.common.enums.NavigationStyle
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logV
+import app.shosetsu.android.common.utils.archURL
 import app.shosetsu.android.domain.model.local.AppUpdateEntity
 import app.shosetsu.android.domain.repository.base.IBackupRepository
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
@@ -18,7 +19,6 @@ import app.shosetsu.android.domain.usecases.settings.LoadNavigationStyleUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadRequireDoubleBackUseCase
 import app.shosetsu.android.domain.usecases.start.StartAppUpdateInstallWorkerUseCase
 import app.shosetsu.android.viewmodel.abstracted.AMainViewModel
-import app.shosetsu.common.utils.archURL
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow

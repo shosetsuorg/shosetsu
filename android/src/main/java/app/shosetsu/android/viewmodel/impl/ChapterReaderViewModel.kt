@@ -13,6 +13,8 @@ import app.shosetsu.android.common.enums.MarkingType.ONVIEW
 import app.shosetsu.android.common.enums.ReadingStatus.READ
 import app.shosetsu.android.common.enums.ReadingStatus.READING
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.utils.asHtml
+import app.shosetsu.android.common.utils.copy
 import app.shosetsu.android.domain.model.local.ColorChoiceData
 import app.shosetsu.android.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
@@ -30,8 +32,6 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderDividerUI
 import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
-import app.shosetsu.common.utils.asHtml
-import app.shosetsu.common.utils.copy
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import com.github.doomsdayrs.apps.shosetsu.R

@@ -25,6 +25,7 @@ import app.shosetsu.android.common.enums.InclusionState.INCLUDE
 import app.shosetsu.android.common.enums.NovelCardType
 import app.shosetsu.android.common.enums.NovelSortType
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.utils.copy
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.load.LoadLibraryUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUIColumnsHUseCase
@@ -35,7 +36,6 @@ import app.shosetsu.android.domain.usecases.start.StartUpdateWorkerUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateBookmarkedNovelUseCase
 import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
-import app.shosetsu.common.utils.copy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

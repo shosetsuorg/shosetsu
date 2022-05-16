@@ -1,4 +1,4 @@
-package app.shosetsu.common.utils
+package app.shosetsu.android.common.utils
 
 import app.shosetsu.android.domain.model.local.AppUpdateEntity
 

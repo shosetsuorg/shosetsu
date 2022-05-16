@@ -6,11 +6,11 @@ import app.shosetsu.android.common.consts.FILE_SCRIPT_DIR
 import app.shosetsu.android.common.consts.FILE_SOURCE_DIR
 import app.shosetsu.android.common.enums.InternalFileDir.FILES
 import app.shosetsu.android.common.ext.logV
+import app.shosetsu.android.common.utils.asIEntity
+import app.shosetsu.android.common.utils.fileExtension
 import app.shosetsu.android.datasource.file.base.IFileExtensionDataSource
 import app.shosetsu.android.domain.model.local.GenericExtensionEntity
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
-import app.shosetsu.common.utils.asIEntity
-import app.shosetsu.common.utils.fileExtension
 import app.shosetsu.lib.IExtension
 import java.io.IOException
 

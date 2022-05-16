@@ -3,13 +3,13 @@ package app.shosetsu.android.domain.usecases
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.ext.generify
+import app.shosetsu.android.common.utils.asIEntity
 import app.shosetsu.android.domain.model.local.GenericExtensionEntity
 import app.shosetsu.android.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.android.domain.repository.base.IExtensionEntitiesRepository
 import app.shosetsu.android.domain.repository.base.IExtensionRepoRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository.InstallExtensionFlags
-import app.shosetsu.common.utils.asIEntity
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.exceptions.HTTPException
 import java.io.IOException

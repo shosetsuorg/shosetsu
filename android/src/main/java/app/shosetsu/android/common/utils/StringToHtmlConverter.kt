@@ -1,4 +1,4 @@
-package app.shosetsu.common.utils
+package app.shosetsu.android.common.utils
 
 /*
  * This file is part of Shosetsu.

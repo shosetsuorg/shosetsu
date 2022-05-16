@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import app.shosetsu.android.common.enums.ChapterSortType
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.common.utils.copy
 import app.shosetsu.android.common.utils.share.toURL
 import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
@@ -25,7 +26,6 @@ import app.shosetsu.android.view.uimodels.NovelSettingUI
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
-import app.shosetsu.common.utils.copy
 import app.shosetsu.lib.share.ExtensionLink
 import app.shosetsu.lib.share.NovelLink
 import app.shosetsu.lib.share.RepositoryLink
