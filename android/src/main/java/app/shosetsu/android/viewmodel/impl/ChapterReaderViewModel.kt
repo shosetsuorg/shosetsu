@@ -133,11 +133,11 @@ class ChapterReaderViewModel(
 	/**
 	 * Trim out the strings present around the current page
 	 *
-	 * Ensures there is only 10~ flows at a time in memory
+	 * Ensures there is only 3~ flows at a time in memory
 	 */
-	private fun cleanMap(map: HashMap<Int, *>, currentIndex: Int) {
+	private fun cleanStringMap(currentIndex: Int) {
 		val excludedKeys = arrayListOf<Int>()
-		val keys = map.keys.toList()
+		val keys = stringMap.keys.toList()
 
 		excludedKeys.add(keys[currentIndex])
 
@@ -151,7 +151,7 @@ class ChapterReaderViewModel(
 		}
 
 		keys.filterNot { excludedKeys.contains(it) }.forEach { key ->
-			map.remove(key)
+			stringMap.remove(key)
 		}
 	}
 
@@ -228,7 +228,7 @@ class ChapterReaderViewModel(
 		if (cleanStringMapJob == null && stringMap.size > 10) {
 			cleanStringMapJob =
 				launchIO {
-					cleanMap(stringMap, stringMap.keys.indexOf(item.id))
+					cleanStringMap(stringMap.keys.indexOf(item.id))
 					cleanStringMapJob = null
 				}
 		}
@@ -298,7 +298,7 @@ class ChapterReaderViewModel(
 		if (cleanStringMapJob == null && stringMap.size > 10) {
 			cleanStringMapJob =
 				launchIO {
-					cleanMap(stringMap, stringMap.keys.indexOf(item.id))
+					cleanStringMap(stringMap.keys.indexOf(item.id))
 					cleanStringMapJob = null
 				}
 		}
@@ -378,9 +378,8 @@ class ChapterReaderViewModel(
 
 	private val chaptersFlow: Flow<List<ReaderChapterUI>> by lazy {
 		novelIDLive.transformLatest { nId ->
-			emitAll(
-				loadReaderChaptersUseCase(nId)
-			)
+			System.gc() // Run GC to try and mitigate OOM
+			emitAll(loadReaderChaptersUseCase(nId))
 		}.combineTempProgress()
 	}
 
