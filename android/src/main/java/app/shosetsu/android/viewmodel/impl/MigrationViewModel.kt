@@ -66,7 +66,7 @@ class MigrationViewModel(
 					)
 				}
 			)
-		}
+		}.onIO()
 	}
 
 
@@ -104,7 +104,7 @@ class MigrationViewModel(
 					}
 				}
 			)
-		}
+		}.onIO()
 	}
 
 	private val novelFlow: Flow<List<MigrationNovelUI>> by lazy {
@@ -134,10 +134,10 @@ class MigrationViewModel(
 			}
 			logV("New list: $result")
 			result
-		}
+		}.onIO()
 	}
 
-	override val novels: Flow<List<MigrationNovelUI>> by lazy { novelFlow }
+	override val novels: Flow<List<MigrationNovelUI>> by lazy { novelFlow.onIO() }
 
 	/**
 	 * Which novel is being worked on rn
@@ -149,7 +149,7 @@ class MigrationViewModel(
 	}
 
 	override val which: Flow<Int>
-		get() = whichFlow
+		get() = whichFlow.onIO()
 
 	override fun setWorkingOn(novelId: Int) {
 		logI("Now working on $novelId")

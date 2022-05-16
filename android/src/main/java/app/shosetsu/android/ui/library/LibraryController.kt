@@ -19,6 +19,7 @@ import app.shosetsu.android.common.enums.NovelCardType
 import app.shosetsu.android.common.enums.NovelCardType.*
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.library.listener.LibrarySearchQuery
+import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.controller.FastAdapterRefreshableRecyclerController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
@@ -294,8 +295,6 @@ class LibraryController
 				true
 			}
 			R.id.source_migrate -> {
-				makeSnackBar(R.string.controller_library_migrate_wait)?.show()
-				/*
 				router.pushController(
 					MigrationController(
 						bundleOf(
@@ -304,7 +303,6 @@ class LibraryController
 						)
 					).withFadeTransaction()
 				)
-				 */
 				true
 			}
 			R.id.view_type_normal -> {
