@@ -1,12 +1,14 @@
 package app.shosetsu.android.ui.reader
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -82,7 +84,9 @@ fun StringPageContent(
 		SelectionContainer(
 			modifier = Modifier.combinedClickable(
 				onDoubleClick = onDoubleClick,
-				onClick = onClick
+				onClick = onClick,
+				interactionSource = remember { MutableInteractionSource() },
+				indication = null,
 			)
 
 		) {
