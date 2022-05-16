@@ -40,6 +40,7 @@ class LoggingTest {
 		advancedLogV("This is a log")
 	}
 
+	@Suppress("unused")
 	inline fun <reified T> T.advancedLogV(message: String?) {
 		// TODO Fix enclosing name
 //		return Log.w(T::class.java.simpleName, "${enclosingName()}:\t$message", null)

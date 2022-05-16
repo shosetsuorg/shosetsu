@@ -33,6 +33,7 @@ fun writeT(t: Throwable? = null) {
 		fileOut?.println(t.stackTraceToString())
 }
 
+@Suppress("unused")
 inline fun <reified T> T.logI(message: String?, t: Throwable? = null): Int {
 	val name = Thread.currentThread().stackTrace[2].methodName ?: NULL_METHOD_NAME
 	val msg = "${name}:\t$message"
@@ -45,6 +46,7 @@ inline fun <reified T> T.logI(message: String?, t: Throwable? = null): Int {
 	return i(tag, msg, t)
 }
 
+@Suppress("unused")
 inline fun <reified T> T.logD(message: String?, t: Throwable? = null): Int {
 	val name = Thread.currentThread().stackTrace[2].methodName ?: NULL_METHOD_NAME
 	val msg = "${name}:\t$message"
@@ -57,6 +59,7 @@ inline fun <reified T> T.logD(message: String?, t: Throwable? = null): Int {
 	return d(tag, msg, t)
 }
 
+@Suppress("unused")
 inline fun <reified T> T.logE(message: String?, t: Throwable? = null): Int {
 	val name = Thread.currentThread().stackTrace[2].methodName ?: NULL_METHOD_NAME
 	val msg = "${name}:\t$message"
@@ -69,6 +72,7 @@ inline fun <reified T> T.logE(message: String?, t: Throwable? = null): Int {
 	return e(tag, msg, t)
 }
 
+@Suppress("unused")
 inline fun <reified T> T.logW(message: String?, t: Throwable? = null): Int {
 	val name = Thread.currentThread().stackTrace[2].methodName ?: NULL_METHOD_NAME
 	val msg = "${name}:\t$message"
@@ -81,6 +85,7 @@ inline fun <reified T> T.logW(message: String?, t: Throwable? = null): Int {
 	return w(tag, msg, t)
 }
 
+@Suppress("unused")
 inline fun <reified T> T.logV(message: String?, t: Throwable? = null): Int {
 	val name = Thread.currentThread().stackTrace[2].methodName ?: NULL_METHOD_NAME
 	val msg = "${name}:\t$message"
@@ -93,6 +98,7 @@ inline fun <reified T> T.logV(message: String?, t: Throwable? = null): Int {
 	return v(tag, msg, t)
 }
 
+@Suppress("unused")
 inline fun <reified T> T.logWTF(message: String?, t: Throwable? = null): Int {
 	val name = Thread.currentThread().stackTrace[2].methodName ?: NULL_METHOD_NAME
 	val msg = "${name}:\t$message"
