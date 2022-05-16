@@ -44,7 +44,6 @@ import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel.BackgroundNovelAddProgress.ADDED
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel.BackgroundNovelAddProgress.ADDING
-import app.shosetsu.lib.exceptions.HTTPException
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ComposeViewBinding
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -54,7 +53,6 @@ import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import kotlinx.coroutines.Job
 import org.acra.ACRA
-import java.net.SocketTimeoutException
 
 /*
  * This file is part of Shosetsu.
@@ -297,37 +295,6 @@ class CatalogController(
 			}
 			else -> false
 		}
-
-	fun handleRecyclerException(e: Throwable) {
-		logE("Error occurred", e)
-		val cause = e.cause
-
-		when {
-			e is HTTPException -> {
-				makeSnackBar(e.code.toString())?.show()
-			}
-			cause is HTTPException -> {
-				makeSnackBar(cause.code.toString())?.show()
-			}
-			e is SocketTimeoutException -> {
-				makeSnackBar(e.message.toString())?.show()
-			}
-			cause is SocketTimeoutException -> {
-				makeSnackBar(cause.message.toString())?.show()
-			}
-			else -> {
-				logE("Exception", e.cause)
-				makeSnackBar(
-					getString(
-						R.string.controller_library_error_recycler,
-						e.message ?: "Unknown exception"
-					)
-				)?.setAction(R.string.report) {
-					ACRA.errorReporter.handleSilentException(e)
-				}?.show()
-			}
-		}
-	}
 
 	private fun setupObservers() {
 		setViewTitle(getString(R.string.loading))
