@@ -47,31 +47,26 @@ class UpdateExtensionSettingUseCase(
 	@Throws(SQLiteException::class, IncompatibleExtensionException::class)
 	suspend operator fun invoke(extensionId: Int, settingId: Int, value: Int) {
 		logI("Updating setting($settingId) for extension($extensionId) with value $value")
-		return extSettingsRepo.setInt(extensionId, settingId, value).let {
-			update(extensionId, settingId, value)
-		}
+		extSettingsRepo.setInt(extensionId, settingId, value)
+		update(extensionId, settingId, value)
 	}
 
 	@Throws(SQLiteException::class, IncompatibleExtensionException::class)
 	suspend operator fun invoke(extensionId: Int, settingId: Int, value: String) {
 		logI("Updating setting($settingId) for extension($extensionId) with value $value")
-		return extSettingsRepo.setString(extensionId, settingId, value).let {
-			update(extensionId, settingId, value)
-		}
+		extSettingsRepo.setString(extensionId, settingId, value)
+		update(extensionId, settingId, value)
 	}
-
 
 	suspend operator fun invoke(extensionId: Int, settingId: Int, value: Boolean) {
 		logI("Updating setting($settingId) for extension($extensionId) with value $value")
-		return extSettingsRepo.setBoolean(extensionId, settingId, value).let {
-			update(extensionId, settingId, value)
-		}
+		extSettingsRepo.setBoolean(extensionId, settingId, value)
+		update(extensionId, settingId, value)
 	}
 
 	suspend operator fun invoke(extensionId: Int, settingId: Int, value: Float) {
 		logI("Updating setting($settingId) for extension($extensionId) with value $value")
-		return extSettingsRepo.setFloat(extensionId, settingId, value).let {
-			update(extensionId, settingId, value)
-		}
+		extSettingsRepo.setFloat(extensionId, settingId, value)
+		update(extensionId, settingId, value)
 	}
 }
