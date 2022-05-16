@@ -124,8 +124,8 @@ class BackupCycleWorker(
 						Constraints.Builder().apply {
 							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
 								setRequiresDeviceIdle(requiresBackupOnIdle())
-
-
+							setRequiresBatteryNotLow(!allowsBackupOnLowBattery())
+							setRequiresStorageNotLow(!allowsBackupOnLowStorage())
 						}.build()
 					).build()
 				)
