@@ -70,6 +70,7 @@ fun launchUI(block: suspend CoroutineScope.() -> Unit): Job =
 fun launchIO(block: suspend CoroutineScope.() -> Unit): Job =
 	GlobalScope.launch(Dispatchers.IO, CoroutineStart.DEFAULT, block)
 
+/*
 @ExperimentalCoroutinesApi
 fun launchAsync(block: suspend CoroutineScope.() -> Unit): Job =
 	GlobalScope.launch(Dispatchers.Default, CoroutineStart.UNDISPATCHED, block)
@@ -77,3 +78,4 @@ fun launchAsync(block: suspend CoroutineScope.() -> Unit): Job =
 @ExperimentalCoroutinesApi
 fun launchFree(block: suspend CoroutineScope.() -> Unit): Job =
 	GlobalScope.launch(Dispatchers.Unconfined, CoroutineStart.UNDISPATCHED, block)
+ */
