@@ -1,6 +1,6 @@
 package app.shosetsu.android.datasource.local.database.base
 
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -30,22 +30,22 @@ interface IDBExtRepoDataSource {
 	fun loadRepositoriesLive(): Flow<List<RepositoryEntity>>
 
 	/** Loads a list of the repositories */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun loadRepositories(): List<RepositoryEntity>
 
 	/** Loads a [RepositoryEntity] by its [repoID] */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun loadRepository(repoID: Int): RepositoryEntity?
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun addRepository(url: String, name: String): Long
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun remove(entity: RepositoryEntity)
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun update(entity: RepositoryEntity)
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun insert(entity: RepositoryEntity): Long
 }

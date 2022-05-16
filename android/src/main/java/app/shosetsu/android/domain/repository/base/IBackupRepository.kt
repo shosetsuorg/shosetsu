@@ -1,5 +1,6 @@
 package app.shosetsu.android.domain.repository.base
 
+import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.domain.model.local.BackupEntity
 import kotlinx.coroutines.flow.Flow
@@ -58,6 +59,7 @@ interface IBackupRepository {
 	 * @param path File name / Direct Path of a backup
 	 * @param isExternal, if true then [path] is a direct path
 	 */
+	@Throws(FilePermissionException::class, FileNotFoundException::class)
 	suspend fun loadBackup(path: String, isExternal: Boolean = false): BackupEntity?
 
 

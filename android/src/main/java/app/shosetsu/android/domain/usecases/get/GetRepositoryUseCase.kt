@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.domain.repository.base.IExtensionRepoRepository
 
 /*
@@ -29,6 +29,6 @@ import app.shosetsu.android.domain.repository.base.IExtensionRepoRepository
 class GetRepositoryUseCase(
 	private val repo: IExtensionRepoRepository
 ) {
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend operator fun invoke(id: Int) = repo.getRepo(id)
 }

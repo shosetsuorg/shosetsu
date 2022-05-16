@@ -15,7 +15,7 @@ package app.shosetsu.android.domain.repository.base
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.domain.model.local.UpdateEntity
 import kotlinx.coroutines.flow.Flow
@@ -31,7 +31,7 @@ interface IUpdatesRepository {
 	/**
 	 * Adds updates
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun addUpdates(list: List<UpdateEntity>): Array<Long>
 
 	/**

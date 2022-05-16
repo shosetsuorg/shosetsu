@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases
 
+import android.database.sqlite.SQLiteException
 import androidx.paging.PagingSource
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.domain.model.local.StrippedBookmarkedNovelEntity
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 
@@ -29,7 +29,7 @@ import app.shosetsu.android.domain.repository.base.INovelsRepository
 class SearchBookMarkedNovelsUseCase(
 	private val iNovelsRepository: INovelsRepository,
 ) {
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	operator fun invoke(p1: String): PagingSource<Int, StrippedBookmarkedNovelEntity> =
 		iNovelsRepository.searchBookmarked(p1)
 }

@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.repository.impl
 
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.datasource.local.database.base.IDBExtRepoDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteExtRepoDataSource
 import app.shosetsu.android.domain.model.local.RepositoryEntity
@@ -45,37 +45,37 @@ class ExtRepoRepository(
 	override suspend fun getRepoData(entity: RepositoryEntity): RepoIndex =
 		remoteSource.downloadRepoData(entity)
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun loadRepositories(): List<RepositoryEntity> =
 		databaseSource.loadRepositories()
 
 	/**
 	 * TODO Create a direct to database call that cuts out the kotlin filtering
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun loadEnabledRepos(): List<RepositoryEntity> =
 		loadRepositories().filter { it.isEnabled }
 
 	override fun loadRepositoriesLive(): Flow<List<RepositoryEntity>> =
 		databaseSource.loadRepositoriesLive()
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun addRepository(url: String, name: String): Long =
 		databaseSource.addRepository(url, name)
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun remove(entity: RepositoryEntity): Unit =
 		databaseSource.remove(entity)
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun update(entity: RepositoryEntity): Unit =
 		databaseSource.update(entity)
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun insert(entity: RepositoryEntity): Long =
 		databaseSource.insert(entity)
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun getRepo(id: Int): RepositoryEntity? =
 		databaseSource.loadRepository(id)
 }

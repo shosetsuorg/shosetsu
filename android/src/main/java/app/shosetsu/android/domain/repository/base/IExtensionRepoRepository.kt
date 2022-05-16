@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.repository.base
 
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.lib.exceptions.HTTPException
 import app.shosetsu.lib.json.RepoIndex
@@ -49,7 +49,7 @@ interface IExtensionRepoRepository {
 	/**
 	 * Loads all repositories present
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun loadRepositories(): List<RepositoryEntity>
 
 
@@ -58,7 +58,7 @@ interface IExtensionRepoRepository {
 	 *  where [RepositoryEntity.isEnabled]=false
 	 * @see loadRepositories
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun loadEnabledRepos(): List<RepositoryEntity>
 
 	/**
@@ -66,18 +66,18 @@ interface IExtensionRepoRepository {
 	 */
 	fun loadRepositoriesLive(): Flow<List<RepositoryEntity>>
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun addRepository(url: String, name: String): Long
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun remove(entity: RepositoryEntity)
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun update(entity: RepositoryEntity)
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun insert(entity: RepositoryEntity): Long
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun getRepo(id: Int): RepositoryEntity?
 }

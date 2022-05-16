@@ -1,6 +1,6 @@
 package app.shosetsu.android.datasource.local.database.base
 
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.lib.Novel
@@ -34,21 +34,21 @@ interface IDBChaptersDataSource {
 	/** Get the chapters of a novel */
 	suspend fun getChaptersFlow(novelID: Int): Flow<List<ChapterEntity>>
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun getChapters(novelID: Int): List<ChapterEntity>
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun getChaptersByExtension(extensionId: Int): List<ChapterEntity>
 
 	/** Loads a chapter by its ID */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun getChapter(chapterID: Int): ChapterEntity?
 
 	/** Loads chapters by novelID */
 	suspend fun getReaderChapters(novelID: Int): Flow<List<ReaderChapterEntity>>
 
 	/** Handles chapters from a remote source */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun handleChapters(
 		novelID: Int,
 		extensionID: Int,
@@ -56,7 +56,7 @@ interface IDBChaptersDataSource {
 	)
 
 	/** Handles chapters from a remote source, then returns the new chapters */
-	@Throws(IndexOutOfBoundsException::class, GenericSQLiteException::class)
+	@Throws(IndexOutOfBoundsException::class, SQLiteException::class)
 	suspend fun handleChapterReturn(
 		novelID: Int,
 		extensionID: Int,
@@ -64,13 +64,13 @@ interface IDBChaptersDataSource {
 	): List<ChapterEntity>
 
 	/** Updates a [chapterEntity] */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun updateChapter(chapterEntity: ChapterEntity)
 
 	/** Updates a [readerChapterEntity], a cut down version [updateChapter] */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity)
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun delete(entity: ChapterEntity)
 }

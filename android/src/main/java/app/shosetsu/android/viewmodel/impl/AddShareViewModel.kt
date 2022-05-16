@@ -1,9 +1,9 @@
 package app.shosetsu.android.viewmodel.impl
 
+import android.database.sqlite.SQLiteException
 import androidx.work.WorkInfo
 import app.shosetsu.android.backend.workers.onetime.ExtensionInstallWorker
 import app.shosetsu.android.backend.workers.onetime.RepositoryUpdateWorker
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.IncompatibleExtensionException
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.ext.generify
@@ -164,13 +164,13 @@ class AddShareViewModel(
 
 										entityUrl == repoLinkUrl
 									}
-								} catch (e: GenericSQLiteException) {
+								} catch (e: SQLiteException) {
 									null
 								}
 
 								extEntity = try {
 									extRepo.getInstalledExtension(ext.id)
-								} catch (e: GenericSQLiteException) {
+								} catch (e: SQLiteException) {
 									null
 								}
 
@@ -240,7 +240,7 @@ class AddShareViewModel(
 				val link = repoLink.value!!
 				try {
 					repoRepo.addRepository(link.url, link.name)
-				} catch (e: GenericSQLiteException) {
+				} catch (e: SQLiteException) {
 					exception.emit(e)
 					return@launchIO
 				}
@@ -263,7 +263,7 @@ class AddShareViewModel(
 				if (repoEntity == null)
 					repoEntity = try {
 						repoRepo.loadRepositories().first { it.url == link.repo.url }
-					} catch (e: GenericSQLiteException) {
+					} catch (e: SQLiteException) {
 						exception.emit(e)
 						return@launchIO
 					} catch (e: NoSuchElementException) {
@@ -304,7 +304,7 @@ class AddShareViewModel(
 				try {
 					if (extEntity == null)
 						extEntity = extRepo.getInstalledExtension(link.extensionQRCode.id)
-				} catch (e: GenericSQLiteException) {
+				} catch (e: SQLiteException) {
 					exception.emit(e)
 					return@launchIO
 				}
@@ -342,7 +342,7 @@ class AddShareViewModel(
 					}
 
 					isNovelOpenable.emit(true)
-				} catch (e: GenericSQLiteException) {
+				} catch (e: SQLiteException) {
 					exception.emit(e)
 					return@launchIO
 				}

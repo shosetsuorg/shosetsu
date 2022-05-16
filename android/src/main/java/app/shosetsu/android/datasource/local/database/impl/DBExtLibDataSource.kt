@@ -1,7 +1,6 @@
 package app.shosetsu.android.datasource.local.database.impl
 
 import android.database.sqlite.SQLiteException
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.datasource.local.database.base.IDBExtLibDataSource
 import app.shosetsu.android.domain.model.local.ExtLibEntity
@@ -32,26 +31,26 @@ import app.shosetsu.android.providers.database.dao.ExtensionLibraryDao
 class DBExtLibDataSource(
 	private val extensionLibraryDao: ExtensionLibraryDao,
 ) : IDBExtLibDataSource {
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun updateExtension(extLibEntity: ExtLibEntity): Unit = try {
 		(extensionLibraryDao.update(extLibEntity.toDB()))
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun updateOrInsert(extLibEntity: ExtLibEntity): Unit = try {
 		(extensionLibraryDao.insertOrUpdateScriptLib(extLibEntity.toDB()))
 	} catch (e: Exception) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun loadExtLibByRepo(
 		repoID: Int,
 	): List<ExtLibEntity> = try {
 		(extensionLibraryDao.loadLibByRepoID(repoID).convertList())
 	} catch (e: Exception) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 }

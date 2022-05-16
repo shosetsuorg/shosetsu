@@ -1,6 +1,6 @@
 package app.shosetsu.android.datasource.local.database.base
 
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.domain.model.local.GenericExtensionEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -32,24 +32,24 @@ interface IDBRepositoryExtensionsDataSource {
 	/** Loads LiveData of extensions */
 	fun loadExtensionsFlow(): Flow<List<GenericExtensionEntity>>
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun loadExtensions(): List<GenericExtensionEntity>
 
 	/** Updates [extensionEntity] */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun updateExtension(extensionEntity: GenericExtensionEntity)
 
 	/** Delete [extensionEntity] */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun deleteExtension(extensionEntity: GenericExtensionEntity)
 
 	/** Load an [GenericExtensionEntity] via its [formatterID]*/
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun loadExtension(repoId: Int, extId: Int): GenericExtensionEntity?
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun getExtensions(repoID: Int): List<GenericExtensionEntity>
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun insert(extensionEntity: GenericExtensionEntity): Long
 }

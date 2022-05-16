@@ -1,7 +1,6 @@
 package app.shosetsu.android.datasource.local.database.impl
 
 import android.database.sqlite.SQLiteException
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.datasource.local.database.base.IDBInstalledExtensionsDataSource
 import app.shosetsu.android.domain.model.local.InstalledExtensionEntity
@@ -45,41 +44,41 @@ class DBInstalledExtensionsDataSource(
 		emitAll(extensionsDao.getExtensionFlow(formatterID).map { it?.convertTo() })
 	}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun updateExtension(extensionEntity: InstalledExtensionEntity): Unit = try {
 		extensionsDao.update(extensionEntity.toDB())
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun deleteExtension(extensionEntity: InstalledExtensionEntity): Unit = try {
 		extensionsDao.delete(extensionEntity.toDB())
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun loadExtension(formatterID: Int): InstalledExtensionEntity? = try {
 		extensionsDao.getExtension(formatterID)?.convertTo()
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
 	override suspend fun getExtensions(repoID: Int): List<InstalledExtensionEntity> =
 		extensionsDao.getExtensions(repoID).convertList()
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun loadExtensions(): List<InstalledExtensionEntity> = try {
 		extensionsDao.loadExtensions().convertList()
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun insert(extensionEntity: InstalledExtensionEntity): Long = try {
 		extensionsDao.insertAbort(extensionEntity.toDB())
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 }

@@ -1,6 +1,6 @@
 package app.shosetsu.android.datasource.local.database.base
 
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.domain.model.local.ExtLibEntity
 
 /*
@@ -29,14 +29,14 @@ import app.shosetsu.android.domain.model.local.ExtLibEntity
  */
 interface IDBExtLibDataSource {
 	/** Updates an [extLibEntity] */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun updateExtension(extLibEntity: ExtLibEntity)
 
 	/** Update or insert an [extLibEntity] */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun updateOrInsert(extLibEntity: ExtLibEntity)
 
 	/** Loads a [List] of [ExtLibEntity] by its [repoID] */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun loadExtLibByRepo(repoID: Int): List<ExtLibEntity>
 }

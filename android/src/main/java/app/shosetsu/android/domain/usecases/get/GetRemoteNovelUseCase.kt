@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.model.local.ChapterEntity
@@ -46,7 +46,7 @@ class GetRemoteNovelUseCase(
 		val updatedChapters: List<ChapterEntity> = listOf()
 	)
 
-	@Throws(GenericSQLiteException::class, IndexOutOfBoundsException::class, LuaException::class)
+	@Throws(SQLiteException::class, IndexOutOfBoundsException::class, LuaException::class)
 	private suspend fun main(
 		novel: NovelEntity,
 		loadChapters: Boolean = true,
@@ -95,7 +95,7 @@ class GetRemoteNovelUseCase(
 		}
 	}
 
-	@Throws(GenericSQLiteException::class, IndexOutOfBoundsException::class, LuaException::class)
+	@Throws(SQLiteException::class, IndexOutOfBoundsException::class, LuaException::class)
 	suspend operator fun invoke(
 		novel: NovelEntity,
 		loadChapters: Boolean = true,
@@ -104,7 +104,7 @@ class GetRemoteNovelUseCase(
 		loadChapters = loadChapters
 	)
 
-	@Throws(GenericSQLiteException::class, IndexOutOfBoundsException::class, LuaException::class)
+	@Throws(SQLiteException::class, IndexOutOfBoundsException::class, LuaException::class)
 	suspend operator fun invoke(
 		novelID: Int,
 		loadChapters: Boolean = true,

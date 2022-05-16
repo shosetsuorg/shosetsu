@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.IncompatibleExtensionException
 import app.shosetsu.android.common.ext.generify
 import app.shosetsu.android.domain.repository.base.IExtensionEntitiesRepository
@@ -42,7 +42,7 @@ class GetExtensionUseCase(
 	private val extRepo: IExtensionsRepository,
 	private val extEntitiesRepo: IExtensionEntitiesRepository
 ) {
-	@Throws(GenericSQLiteException::class, IncompatibleExtensionException::class)
+	@Throws(SQLiteException::class, IncompatibleExtensionException::class)
 	suspend operator fun invoke(extensionId: Int): IExtension? {
 		if (extensionId == -1)
 			return null

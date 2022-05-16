@@ -2,7 +2,6 @@ package app.shosetsu.android.datasource.local.database.impl
 
 import android.database.sqlite.SQLiteException
 import androidx.paging.PagingSource
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.datasource.local.database.base.IDBNovelsDataSource
 import app.shosetsu.android.domain.model.local.LibraryNovelEntity
@@ -43,7 +42,7 @@ class DBNovelsDataSource(
 	override suspend fun loadBookmarkedNovels(): List<NovelEntity> = try {
 		(novelsDao.loadBookmarkedNovels().convertList())
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
 	override fun loadBookmarkedNovelsFlow(
@@ -51,28 +50,28 @@ class DBNovelsDataSource(
 		try {
 			emitAll(novelsDao.loadBookmarkedNovelsFlow())
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 	}
 
 	override suspend fun getNovel(novelID: Int): NovelEntity? = try {
 		novelsDao.getNovel(novelID)?.convertTo()
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
 	override suspend fun getNovelFlow(novelID: Int): Flow<NovelEntity?> = flow {
 		try {
 			emitAll(novelsDao.getNovelFlow(novelID).map { it?.convertTo() })
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 	}
 
 	override suspend fun update(novelEntity: NovelEntity): Unit = try {
 		(novelsDao.update(novelEntity.toDB()))
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
 	override suspend fun update(
@@ -80,7 +79,7 @@ class DBNovelsDataSource(
 	): Unit = try {
 		(novelsDao.update(list))
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
 	override suspend fun insertReturnStripped(
@@ -88,31 +87,31 @@ class DBNovelsDataSource(
 	): StrippedNovelEntity? = try {
 		novelsDao.insertReturnStripped(novelEntity.toDB())?.convertTo()
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
 	override suspend fun insert(novelEntity: NovelEntity): Long = try {
 		(novelsDao.insertAbort(novelEntity.toDB()))
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
 	override suspend fun clearUnBookmarkedNovels(): Unit = try {
 		(novelsDao.clearUnBookmarkedNovels())
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
 	override fun loadNovels(): List<NovelEntity> = try {
 		(novelsDao.loadNovels().convertList())
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
 	override fun searchBookmarked(query: String): PagingSource<Int, StrippedBookmarkedNovelEntity> =
 		try {
 			novelsDao.searchBookmarked(query)
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 }

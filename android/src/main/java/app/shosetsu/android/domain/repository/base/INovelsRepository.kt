@@ -15,8 +15,8 @@ package app.shosetsu.android.domain.repository.base
  * You should have received a copy of the GNU General Public License
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
+import android.database.sqlite.SQLiteException
 import androidx.paging.PagingSource
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.domain.model.local.LibraryNovelEntity
 import app.shosetsu.android.domain.model.local.NovelEntity
@@ -38,13 +38,13 @@ interface INovelsRepository {
 	/**
 	 * Loads all [NovelEntity]s that are bookmarked in a flow
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	fun loadLibraryNovelEntities(): Flow<List<LibraryNovelEntity>>
 
 	/**
 	 * Loads all [NovelEntity]s that are bookmarked
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun loadBookmarkedNovelEntities(): List<NovelEntity>
 
 	/**
@@ -55,13 +55,13 @@ interface INovelsRepository {
 	/**
 	 * Searches the bookmarked novels and returns a live data of them
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	fun searchBookmarked(string: String): PagingSource<Int, StrippedBookmarkedNovelEntity>
 
 	/**
 	 * Loads the [NovelEntity] by its [novelID]
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun getNovel(novelID: Int): NovelEntity?
 
 	/**
@@ -72,31 +72,31 @@ interface INovelsRepository {
 	/**
 	 * Inserts the [novelEntity] and returns a UI version of it
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun insertReturnStripped(novelEntity: NovelEntity): StrippedNovelEntity?
 
 	/**
 	 * Inserts the [novelEntity]
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun insert(novelEntity: NovelEntity): Long
 
 	/**
 	 * Updates the [novelEntity]
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun update(novelEntity: NovelEntity)
 
 	/**
 	 * Updates a novel entity with new data
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun updateNovelData(novelEntity: NovelEntity, novelInfo: Novel.Info)
 
 	/**
 	 * Updates a list of bookmarked novels
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun updateLibraryNovelEntity(list: List<LibraryNovelEntity>)
 
 	/**
@@ -114,7 +114,7 @@ interface INovelsRepository {
 	 *  Removes all novels that are not bookmarked
 	 *  This should cascade and delete all their chapters as well
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun clearUnBookmarkedNovels()
 
 

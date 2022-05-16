@@ -1,6 +1,7 @@
 package app.shosetsu.android.backend.workers.onetime
 
 import android.content.Context
+import android.database.sqlite.SQLiteException
 import android.os.Build
 import android.util.Base64
 import androidx.core.app.NotificationCompat
@@ -8,7 +9,6 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.SettingKey.*
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications
@@ -102,7 +102,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 		return bos.toByteArray()
 	}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	private suspend fun getBackupChapters(novelID: Int): List<BackupChapterEntity> {
 		if (backupChapters())
 			chaptersRepository.getChapters(novelID).let { list ->
@@ -142,7 +142,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 		val success = run {
 			val novels = try {
 				novelRepository.loadBookmarkedNovelEntities()
-			} catch (e: GenericSQLiteException) {
+			} catch (e: SQLiteException) {
 				ACRA.errorReporter.handleSilentException(e)
 				e.printStackTrace()
 				return@run false
@@ -163,7 +163,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 			extensions = novels.mapNotNull {
 				try {
 					extensionsRepository.getInstalledExtension(it.extensionID)
-				} catch (e: GenericSQLiteException) {
+				} catch (e: SQLiteException) {
 					ACRA.errorReporter.handleSilentException(e)
 					e.printStackTrace()
 					null

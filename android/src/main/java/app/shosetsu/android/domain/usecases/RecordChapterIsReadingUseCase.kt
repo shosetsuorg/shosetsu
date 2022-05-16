@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases
 
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.android.domain.repository.base.IChapterHistoryRepository
@@ -39,7 +39,7 @@ class RecordChapterIsReadingUseCase(
 		iChapterHistoryRepository.markChapterAsReading(chapter)
 	}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend operator fun invoke(readerChapter: ReaderChapterEntity) =
 		iChapterRepository.getChapter(readerChapter.id)?.let { invoke(it) }
 
@@ -47,7 +47,7 @@ class RecordChapterIsReadingUseCase(
 		invoke(chapter.convertTo())
 	}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend operator fun invoke(chapter: ReaderChapterUI) {
 		invoke(chapter.convertTo())
 	}

@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.utils.uifactory.NovelConversionFactory
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.repository.base.INovelsRepository
@@ -33,7 +33,7 @@ class GetNovelUIUseCase(
 	private val novelsRepository: INovelsRepository,
 	private val extensionRepository: IExtensionsRepository
 ) {
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	@OptIn(ExperimentalCoroutinesApi::class)
 	operator fun invoke(novelID: Int): Flow<NovelUI?> = flow {
 		if (novelID != -1)

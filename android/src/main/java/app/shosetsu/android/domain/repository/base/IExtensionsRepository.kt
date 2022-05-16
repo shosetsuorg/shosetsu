@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.repository.base
 
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.android.domain.model.local.GenericExtensionEntity
 import app.shosetsu.android.domain.model.local.InstalledExtensionEntity
@@ -37,7 +37,7 @@ import java.net.UnknownHostException
  */
 interface IExtensionsRepository {
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	fun loadBrowseExtensions(): Flow<List<BrowseExtensionEntity>>
 
 	/**
@@ -53,22 +53,22 @@ interface IExtensionsRepository {
 	/**
 	 * Gets the [GenericExtensionEntity] that has an [GenericExtensionEntity.id] matching the id
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun getExtension(repoId: Int, extId: Int): GenericExtensionEntity?
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun getInstalledExtension(id: Int): InstalledExtensionEntity?
 
 	/**
 	 * Loads all [GenericExtensionEntity] with an [GenericExtensionEntity.repoID] matching [repoID]
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun getRepositoryExtensions(repoID: Int): List<GenericExtensionEntity>
 
 	/**
 	 * Loads all [GenericExtensionEntity] present
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun loadRepositoryExtensions(): List<GenericExtensionEntity>
 
 	/**
@@ -87,34 +87,34 @@ interface IExtensionsRepository {
 	 * Updates the db that the [extensionEntity] is not installed
 	 *
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun uninstall(extensionEntity: InstalledExtensionEntity)
 
 	/**
 	 * Updates an [GenericExtensionEntity]
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun updateRepositoryExtension(extensionEntity: GenericExtensionEntity)
 
 	/**
 	 * Updates an [InstalledExtensionEntity]
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun updateInstalledExtension(extensionEntity: InstalledExtensionEntity)
 
 	/**
 	 * This removes the extension completely from the application
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun delete(extensionEntity: GenericExtensionEntity)
 
 	/**
 	 * Insert a new extension
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun insert(extensionEntity: GenericExtensionEntity): Long
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun insert(extensionEntity: InstalledExtensionEntity): Long
 
 	@Throws(
@@ -130,6 +130,6 @@ interface IExtensionsRepository {
 	/**
 	 * Check if a given extension is installed
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun isExtensionInstalled(extensionEntity: GenericExtensionEntity): Boolean
 }

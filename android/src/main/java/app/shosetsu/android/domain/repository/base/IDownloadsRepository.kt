@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.repository.base
 
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.domain.model.local.DownloadEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -37,36 +37,36 @@ interface IDownloadsRepository {
 	/**
 	 * Loads the first download
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun loadFirstDownload(): DownloadEntity?
 
 	/**
 	 * Queries for the download count
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun loadDownloadCount(): Int
 
 	/**
 	 * Gets a download entity by its ID
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun getDownload(chapterID: Int): DownloadEntity?
 
 	/**
 	 * Adds a new download to the repository
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun addDownload(download: DownloadEntity): Long
 
 	/**
 	 * Updates a download in repository
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun update(download: DownloadEntity)
 
 	/**
 	 * Removes the [download] from the repository
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun deleteEntity(download: DownloadEntity)
 }

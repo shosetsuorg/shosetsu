@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases.update
 
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.domain.model.local.NovelSettingEntity
 import app.shosetsu.android.domain.repository.base.INovelSettingsRepository
 import app.shosetsu.android.view.uimodels.NovelSettingUI
@@ -28,11 +28,11 @@ import app.shosetsu.android.view.uimodels.NovelSettingUI
 class UpdateNovelSettingUseCase(
 	private val novelSettingsRepository: INovelSettingsRepository
 ) {
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend operator fun invoke(novelSettingUI: NovelSettingUI) =
 		invoke(novelSettingUI.convertTo())
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend operator fun invoke(novelSettingEntity: NovelSettingEntity) =
 		novelSettingsRepository.update(novelSettingEntity)
 }

@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.repository.base
 
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
@@ -56,7 +56,7 @@ interface IChaptersRepository {
 	 * Will not save into any caches, as is assuming content retrieved from [getChapterPassage]
 	 *
 	 */
-	@Throws(FilePermissionException::class, IOException::class, GenericSQLiteException::class)
+	@Throws(FilePermissionException::class, IOException::class, SQLiteException::class)
 	suspend fun saveChapterPassageToStorage(
 		entity: ChapterEntity,
 		chapterType: Novel.ChapterType,
@@ -66,7 +66,7 @@ interface IChaptersRepository {
 	/**
 	 * Handles chapters for ze novel
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun handleChapters(
 		novelID: Int,
 		extensionID: Int,
@@ -76,7 +76,7 @@ interface IChaptersRepository {
 	/**
 	 * Handles chapters return, but returns the chapters that are new
 	 */
-	@Throws(IndexOutOfBoundsException::class, GenericSQLiteException::class)
+	@Throws(IndexOutOfBoundsException::class, SQLiteException::class)
 	suspend fun handleChaptersReturn(
 		novelID: Int,
 		extensionID: Int,
@@ -88,22 +88,22 @@ interface IChaptersRepository {
 	 */
 	suspend fun getChaptersLive(novelID: Int): Flow<List<ChapterEntity>>
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun getChapters(novelID: Int): List<ChapterEntity>
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun getChaptersByExtension(extensionId: Int): List<ChapterEntity>
 
 	/**
 	 * Loads a [ChapterEntity] by its [chapterID]
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun getChapter(chapterID: Int): ChapterEntity?
 
 	/**
 	 * Update [chapterEntity] in database
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun updateChapter(chapterEntity: ChapterEntity)
 
 	/**
@@ -114,7 +114,7 @@ interface IChaptersRepository {
 	/**
 	 * Update [readerChapterEntity] in database
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity)
 
 	/**
@@ -122,12 +122,12 @@ interface IChaptersRepository {
 	 *
 	 * Also deletes from memory and cache
 	 */
-	@Throws(GenericSQLiteException::class, FilePermissionException::class)
+	@Throws(SQLiteException::class, FilePermissionException::class)
 	suspend fun deleteChapterPassage(
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType
 	)
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun delete(entity: ChapterEntity)
 }

@@ -17,7 +17,7 @@ package app.shosetsu.android.domain.repository.impl
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.datasource.local.database.base.IDBDownloadsDataSource
 import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.domain.repository.base.IDownloadsRepository
@@ -35,27 +35,27 @@ class DownloadsRepository(
 	override fun loadDownloadsFlow(): Flow<List<DownloadEntity>> =
 		iLocalDownloadsDataSource.loadLiveDownloads()
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun loadFirstDownload(): DownloadEntity? =
 		iLocalDownloadsDataSource.loadFirstDownload()
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun loadDownloadCount(): Int =
 		iLocalDownloadsDataSource.loadDownloadCount()
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun getDownload(chapterID: Int): DownloadEntity? =
 		iLocalDownloadsDataSource.loadDownload(chapterID)
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun addDownload(download: DownloadEntity): Long =
 		iLocalDownloadsDataSource.insertDownload(download)
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun update(download: DownloadEntity): Unit =
 		iLocalDownloadsDataSource.updateDownload(download)
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun deleteEntity(download: DownloadEntity): Unit =
 		iLocalDownloadsDataSource.deleteDownload(download)
 }

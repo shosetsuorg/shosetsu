@@ -1,7 +1,6 @@
 package app.shosetsu.android.datasource.local.database.impl
 
 import android.database.sqlite.SQLiteException
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.datasource.local.database.base.IDBNovelSettingsDataSource
 import app.shosetsu.android.domain.model.database.DBNovelSettingsEntity
 import app.shosetsu.android.domain.model.local.NovelSettingEntity
@@ -39,7 +38,7 @@ class DBNovelSettingsDataSource(
 		try {
 			emitAll(dao.getFlow(novelID).map { it?.convertTo() })
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 	}
 
@@ -47,20 +46,20 @@ class DBNovelSettingsDataSource(
 		try {
 			(dao.update(novelSettingEntity.toDB()))
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 
 	override suspend fun get(novelID: Int): NovelSettingEntity? = try {
 		dao.get(novelID)?.convertTo()
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
 	override suspend fun insert(novelSettingEntity: NovelSettingEntity): Long =
 		try {
 			(dao.insertAbort(novelSettingEntity.toDB()))
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 
 	private fun NovelSettingEntity.toDB(): DBNovelSettingsEntity =

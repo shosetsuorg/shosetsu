@@ -1,6 +1,6 @@
 package app.shosetsu.android.datasource.local.database.base
 
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.domain.model.local.NovelSettingEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -29,12 +29,12 @@ import kotlinx.coroutines.flow.Flow
 interface IDBNovelSettingsDataSource {
 	fun getFlow(novelID: Int): Flow<NovelSettingEntity?>
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun update(novelSettingEntity: NovelSettingEntity)
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun get(novelID: Int): NovelSettingEntity?
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun insert(novelSettingEntity: NovelSettingEntity): Long
 }

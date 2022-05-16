@@ -1,7 +1,6 @@
 package app.shosetsu.android.datasource.local.database.impl
 
 import android.database.sqlite.SQLiteException
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.datasource.local.database.base.IDBUpdatesDataSource
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
@@ -41,14 +40,14 @@ class DBUpdatesDataSource(
 		try {
 			emitAll(updatesDao.loadUpdates().map { it.convertList() })
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 	}
 
 	override suspend fun insertUpdates(list: List<UpdateEntity>): Array<Long> = try {
 		(updatesDao.insertAllReplace(list.toDB()))
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
 	override suspend fun getCompleteUpdates(
@@ -56,7 +55,7 @@ class DBUpdatesDataSource(
 		try {
 			emitAll(updatesDao.loadCompleteUpdates())
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 	}
 }

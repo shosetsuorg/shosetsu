@@ -1,6 +1,7 @@
 package app.shosetsu.android.backend.workers.onetime
 
 import android.content.Context
+import android.database.sqlite.SQLiteException
 import android.graphics.Bitmap
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -9,7 +10,6 @@ import androidx.work.*
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
 import app.shosetsu.android.common.FilePermissionException
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.SettingKey.NotifyExtensionDownload
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.Notifications
@@ -125,7 +125,7 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 		// Notify progress
 		val extension = try {
 			extensionRepository.getExtension(repositoryId, extensionId)
-		} catch (e: GenericSQLiteException) {
+		} catch (e: SQLiteException) {
 			markExtensionDownloadAsError()
 
 			logE("SQLite exception", e)
@@ -232,7 +232,7 @@ class ExtensionInstallWorker(appContext: Context, params: WorkerParameters) : Co
 			)
 
 			return Result.failure()
-		} catch (e: GenericSQLiteException) {
+		} catch (e: SQLiteException) {
 			markExtensionDownloadAsError()
 
 			logE("SQLite exception", e)

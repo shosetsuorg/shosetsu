@@ -1,6 +1,6 @@
 package app.shosetsu.android.datasource.local.database.base
 
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.domain.model.local.InstalledExtensionEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -33,26 +33,26 @@ interface IDBInstalledExtensionsDataSource {
 	fun loadExtensionsFlow(): Flow<List<InstalledExtensionEntity>>
 
 	/** Updates [extensionEntity] */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun updateExtension(extensionEntity: InstalledExtensionEntity)
 
 	/** Delete [extensionEntity] */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun deleteExtension(extensionEntity: InstalledExtensionEntity)
 
 	/** Load an [InstalledExtensionEntity] via its [formatterID]*/
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun loadExtension(formatterID: Int): InstalledExtensionEntity?
 
 	/** Load an [InstalledExtensionEntity] via its [formatterID]*/
 	fun loadExtensionLive(formatterID: Int): Flow<InstalledExtensionEntity?>
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun getExtensions(repoID: Int): List<InstalledExtensionEntity>
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun loadExtensions(): List<InstalledExtensionEntity>
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun insert(extensionEntity: InstalledExtensionEntity): Long
 }

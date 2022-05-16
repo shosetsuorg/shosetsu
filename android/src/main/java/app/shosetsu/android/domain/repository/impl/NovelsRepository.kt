@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.repository.impl
 
+import android.database.sqlite.SQLiteException
 import androidx.paging.PagingSource
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.datasource.local.database.base.IDBNovelsDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteCatalogueDataSource
@@ -47,23 +47,23 @@ class NovelsRepository(
 	override fun loadLibraryNovelEntities(): Flow<List<LibraryNovelEntity>> =
 		database.loadBookmarkedNovelsFlow()
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun loadBookmarkedNovelEntities(): List<NovelEntity> =
 		database.loadBookmarkedNovels()
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun loadNovels(): List<NovelEntity> =
 		database.loadNovels()
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun update(novelEntity: NovelEntity): Unit =
 		database.update(novelEntity)
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun insertReturnStripped(novelEntity: NovelEntity): StrippedNovelEntity? =
 		database.insertReturnStripped(novelEntity)
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun insert(novelEntity: NovelEntity): Long =
 		database.insert(novelEntity)
 
@@ -71,19 +71,19 @@ class NovelsRepository(
 	/**
 	 * TODO this operation is resource intensive, create a low level DB object
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override fun searchBookmarked(string: String): PagingSource<Int, StrippedBookmarkedNovelEntity> =
 		database.searchBookmarked(string)
 
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun getNovel(novelID: Int): NovelEntity? =
 		database.getNovel(novelID)
 
 	override suspend fun getNovelFlow(novelID: Int): Flow<NovelEntity?> =
 		database.getNovelFlow(novelID)
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun updateNovelData(
 		novelEntity: NovelEntity,
 		novelInfo: Novel.Info
@@ -103,7 +103,7 @@ class NovelsRepository(
 			)
 		)
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun updateLibraryNovelEntity(list: List<LibraryNovelEntity>): Unit =
 		database.update(list)
 
@@ -120,7 +120,7 @@ class NovelsRepository(
 				)
 			}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun clearUnBookmarkedNovels(): Unit =
 		database.clearUnBookmarkedNovels()
 

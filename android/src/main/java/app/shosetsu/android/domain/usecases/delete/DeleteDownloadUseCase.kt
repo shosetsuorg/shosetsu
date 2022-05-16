@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases.delete
 
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.domain.repository.base.IDownloadsRepository
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 
@@ -28,7 +28,7 @@ import app.shosetsu.android.view.uimodels.model.DownloadUI
 class DeleteDownloadUseCase(
 	private val iDownloadsRepository: IDownloadsRepository,
 ) {
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend operator fun invoke(downloadUI: DownloadUI) {
 		iDownloadsRepository.deleteEntity(downloadUI.convertTo())
 	}

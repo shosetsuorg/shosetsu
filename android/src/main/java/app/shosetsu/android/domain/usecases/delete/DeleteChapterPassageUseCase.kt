@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases.delete
 
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.FilePermissionException
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.NoSuchExtensionException
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
@@ -38,7 +38,7 @@ class DeleteChapterPassageUseCase(
 	}
 
 	@Throws(
-		GenericSQLiteException::class,
+		SQLiteException::class,
 		NoSuchExtensionException::class,
 		FilePermissionException::class
 	)

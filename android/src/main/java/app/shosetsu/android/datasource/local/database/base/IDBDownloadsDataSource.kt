@@ -1,6 +1,6 @@
 package app.shosetsu.android.datasource.local.database.base
 
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.domain.model.local.DownloadEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -30,26 +30,26 @@ interface IDBDownloadsDataSource {
 	fun loadLiveDownloads(): Flow<List<DownloadEntity>>
 
 	/** Loads the download count */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun loadDownloadCount(): Int
 
 	/** Loads the first download that isn't paused or broken */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun loadFirstDownload(): DownloadEntity?
 
 	/** Inserts a new [DownloadEntity] */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun insertDownload(downloadEntity: DownloadEntity): Long
 
 	/** Updates a [DownloadEntity] */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun updateDownload(downloadEntity: DownloadEntity)
 
 	/** Deletes a [DownloadEntity] */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun deleteDownload(downloadEntity: DownloadEntity)
 
 	/** Loads a [DownloadEntity] via its [chapterID] */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun loadDownload(chapterID: Int): DownloadEntity?
 }

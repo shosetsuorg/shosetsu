@@ -1,6 +1,6 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.android.common.GenericSQLiteException
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.domain.model.local.NovelReaderSettingEntity
@@ -50,7 +50,7 @@ class GetReaderSettingUseCase(
 							settingsRepo.getFloat(SettingKey.ReaderParagraphSpacing),
 						)
 					)
-				} catch (e: GenericSQLiteException) {
+				} catch (e: SQLiteException) {
 					logE("Failed to insert reader settings, already inserted?", e)
 				}
 			}

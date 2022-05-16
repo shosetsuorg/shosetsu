@@ -1,8 +1,8 @@
 package app.shosetsu.android.viewmodel.impl
 
+import android.database.sqlite.SQLiteException
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.usecases.SearchBookMarkedNovelsUseCase
@@ -186,7 +186,7 @@ class SearchViewModel(
 							}
 						}
 					)
-				} catch (e: GenericSQLiteException) {
+				} catch (e: SQLiteException) {
 					exceptionFlow.emit(e)
 				}
 			}

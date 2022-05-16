@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.usecases.get
 
+import android.database.sqlite.SQLiteException
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.IncompatibleExtensionException
 import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.common.SettingKey
@@ -86,7 +86,7 @@ class GetCatalogueQueryDataUseCase(
 											novelsRepository.insertReturnStripped(ne)?.let { card ->
 												convertNCToCNUIUseCase(card, cardType)
 											}
-										} catch (e: GenericSQLiteException) {
+										} catch (e: SQLiteException) {
 											logE("Failed to load parse novel", e)
 											null
 										}
@@ -120,7 +120,7 @@ class GetCatalogueQueryDataUseCase(
 	}
 
 	@Throws(
-		GenericSQLiteException::class,
+		SQLiteException::class,
 		IncompatibleExtensionException::class,
 		LuaException::class
 	)

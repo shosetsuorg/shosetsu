@@ -1,7 +1,6 @@
 package app.shosetsu.android.datasource.local.database.impl
 
 import android.database.sqlite.SQLiteException
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.datasource.local.database.base.IDBChaptersDataSource
 import app.shosetsu.android.domain.model.local.ChapterEntity
@@ -41,37 +40,32 @@ class DBChaptersDataSource(
 	private val chaptersDao: ChaptersDao,
 ) : IDBChaptersDataSource {
 
-	@Throws(GenericSQLiteException::class)
 	override suspend fun getChaptersFlow(
 		novelID: Int,
 	): Flow<List<ChapterEntity>> = flow {
-		try {
 			emitAll(chaptersDao.getChaptersFlow(novelID).map { it.convertList() })
-		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
-		}
-	}
+			}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun getChapters(novelID: Int): List<ChapterEntity> = try {
 		(chaptersDao.getChapters(novelID).convertList())
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun getChaptersByExtension(extensionId: Int): List<ChapterEntity> =
 		try {
 			(chaptersDao.getChaptersByExtension(extensionId).convertList())
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun getChapter(chapterID: Int): ChapterEntity? = try {
 		chaptersDao.getChapter(chapterID)?.convertTo()
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
 	override suspend fun getReaderChapters(
@@ -80,10 +74,11 @@ class DBChaptersDataSource(
 		try {
 			emitAll(chaptersDao.getReaderChaptersFlow(novelID))
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 	}
 
+	@Throws(SQLiteException::class)
 	override suspend fun handleChapters(
 		novelID: Int,
 		extensionID: Int,
@@ -92,11 +87,11 @@ class DBChaptersDataSource(
 		try {
 			chaptersDao.handleNewData(novelID, extensionID, list)
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 
 
-	@Throws(IndexOutOfBoundsException::class, GenericSQLiteException::class)
+	@Throws(IndexOutOfBoundsException::class, SQLiteException::class)
 	override suspend fun handleChapterReturn(
 		novelID: Int,
 		extensionID: Int,
@@ -104,29 +99,30 @@ class DBChaptersDataSource(
 	): List<ChapterEntity> = try {
 		chaptersDao.handleNewDataReturn(novelID, extensionID, list).convertList()
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun updateChapter(chapterEntity: ChapterEntity): Unit = try {
 		chaptersDao.update(chapterEntity.toDB())
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
+	@Throws(SQLiteException::class)
 	override suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): Unit =
 		try {
 			chaptersDao.update(readerChapterEntity)
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun delete(entity: ChapterEntity): Unit =
 		try {
 			chaptersDao.delete(entity.toDB())
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 
 }

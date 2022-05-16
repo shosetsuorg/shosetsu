@@ -1,7 +1,6 @@
 package app.shosetsu.android.datasource.local.database.impl
 
 import android.database.sqlite.SQLiteException
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.datasource.local.database.base.IDBRepositoryExtensionsDataSource
 import app.shosetsu.android.domain.model.database.DBRepositoryExtensionEntity
 import app.shosetsu.android.domain.model.local.GenericExtensionEntity
@@ -45,7 +44,7 @@ class DBRepositoryExtensionsDataSource(
 		try {
 			return dao.loadExtensions().map { it.convertTo() }
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 	}
 
@@ -53,7 +52,7 @@ class DBRepositoryExtensionsDataSource(
 		try {
 			return dao.loadExtensionsFlow().map { it.convertList() }
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 	}
 
@@ -61,7 +60,7 @@ class DBRepositoryExtensionsDataSource(
 		try {
 			dao.update(extensionEntity.toDB())
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 	}
 
@@ -69,7 +68,7 @@ class DBRepositoryExtensionsDataSource(
 		try {
 			dao.delete(extensionEntity.toDB())
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 	}
 
@@ -77,7 +76,7 @@ class DBRepositoryExtensionsDataSource(
 		try {
 			return dao.getExtension(repoId, extId)?.convertTo()
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 	}
 
@@ -85,7 +84,7 @@ class DBRepositoryExtensionsDataSource(
 		try {
 			return dao.getExtensions(repoID).map { it.convertTo() }
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 	}
 
@@ -93,7 +92,7 @@ class DBRepositoryExtensionsDataSource(
 		try {
 			return dao.insertAbort(extensionEntity.toDB())
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 	}
 }

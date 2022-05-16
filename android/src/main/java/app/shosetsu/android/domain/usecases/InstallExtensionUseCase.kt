@@ -1,7 +1,7 @@
 package app.shosetsu.android.domain.usecases
 
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.FilePermissionException
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.ext.generify
 import app.shosetsu.android.domain.model.local.GenericExtensionEntity
 import app.shosetsu.android.domain.model.local.InstalledExtensionEntity
@@ -44,7 +44,7 @@ class InstallExtensionUseCase(
 ) {
 	@Throws(
 		HTTPException::class,
-		GenericSQLiteException::class,
+		SQLiteException::class,
 		FilePermissionException::class,
 		IOException::class
 	)

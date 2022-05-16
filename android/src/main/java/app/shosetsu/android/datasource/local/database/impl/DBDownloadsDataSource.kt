@@ -1,7 +1,6 @@
 package app.shosetsu.android.datasource.local.database.impl
 
 import android.database.sqlite.SQLiteException
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.datasource.local.database.base.IDBDownloadsDataSource
 import app.shosetsu.android.domain.model.local.DownloadEntity
@@ -40,49 +39,49 @@ class DBDownloadsDataSource(
 		try {
 			emitAll(downloadsDao.loadDownloadItems().map { it.convertList() })
 		} catch (e: SQLiteException) {
-			throw GenericSQLiteException(e)
+			throw e
 		}
 	}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun loadDownloadCount(): Int = try {
 		(downloadsDao.loadDownloadCount())
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun loadFirstDownload(): DownloadEntity? = try {
 		downloadsDao.loadFirstDownload()?.convertTo()
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun insertDownload(downloadEntity: DownloadEntity): Long = try {
 		(downloadsDao.insertIgnore(downloadEntity.toDB()))
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun updateDownload(downloadEntity: DownloadEntity): Unit = try {
 		(downloadsDao.update(downloadEntity.toDB()))
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun deleteDownload(downloadEntity: DownloadEntity): Unit = try {
 		(downloadsDao.delete(downloadEntity.toDB()))
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	override suspend fun loadDownload(chapterID: Int): DownloadEntity? = try {
 		downloadsDao.loadDownload(chapterID)?.convertTo()
 	} catch (e: SQLiteException) {
-		throw GenericSQLiteException(e)
+		throw e
 	}
 }

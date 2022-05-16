@@ -1,7 +1,7 @@
 package app.shosetsu.android.datasource.local.database.base
 
+import android.database.sqlite.SQLiteException
 import androidx.paging.PagingSource
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.domain.model.local.LibraryNovelEntity
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.model.local.StrippedBookmarkedNovelEntity
@@ -34,43 +34,43 @@ import kotlinx.coroutines.flow.Flow
  */
 interface IDBNovelsDataSource {
 	/** Loads a [List] of [NovelEntity]s present */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	fun loadNovels(): List<NovelEntity>
 
 	/** Load a [List] of [NovelEntity]s that are bookmarked */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun loadBookmarkedNovels(): List<NovelEntity>
 
 	/** Loads a [List] okf [LibraryNovelEntity] */
 	fun loadBookmarkedNovelsFlow(): Flow<List<LibraryNovelEntity>>
 
 	/** Loads a [NovelEntity] by its [novelID] */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun getNovel(novelID: Int): NovelEntity?
 
 	/** Loads a [Flow] of a [NovelEntity] by its [novelID] */
 	suspend fun getNovelFlow(novelID: Int): Flow<NovelEntity?>
 
 	/** Updates a [NovelEntity] */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun update(novelEntity: NovelEntity)
 
 	/** Updates a list of [LibraryNovelEntity] */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun update(list: List<LibraryNovelEntity>)
 
 	/** Inserts a [NovelEntity] then returns its [StrippedNovelEntity] */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun insertReturnStripped(novelEntity: NovelEntity): StrippedNovelEntity?
 
 	/** Inserts a [NovelEntity] */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun insert(novelEntity: NovelEntity): Long
 
 	/**
 	 * Clears out novels that have not been bookmarked
 	 */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	suspend fun clearUnBookmarkedNovels()
 
 	fun searchBookmarked(query: String): PagingSource<Int, StrippedBookmarkedNovelEntity>

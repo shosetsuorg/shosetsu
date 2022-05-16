@@ -1,8 +1,8 @@
 package app.shosetsu.android.domain.usecases.get
 
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderChapterUI
@@ -33,7 +33,7 @@ class GetChapterPassageUseCase(
 	private val getExt: GetExtensionUseCase,
 ) {
 	@Throws(
-		GenericSQLiteException::class,
+		SQLiteException::class,
 		FilePermissionException::class,
 		FileNotFoundException::class,
 		LuaException::class

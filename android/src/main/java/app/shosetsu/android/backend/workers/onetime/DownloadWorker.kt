@@ -3,6 +3,7 @@ package app.shosetsu.android.backend.workers.onetime
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.database.sqlite.SQLiteException
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import androidx.core.app.NotificationCompat
@@ -16,7 +17,6 @@ import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
 import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.common.SettingKey.*
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_DOWNLOAD
@@ -125,13 +125,13 @@ class DownloadWorker(
 		settingRepo.getBoolean(DownloadNotifyChapters)
 
 	/** Loads the download count that is present currently */
-	@Throws(GenericSQLiteException::class)
+	@Throws(SQLiteException::class)
 	private suspend fun getDownloadCount(): Int =
 		downloadsRepo.loadDownloadCount()
 
 	@Throws(
 		IOException::class,
-		GenericSQLiteException::class,
+		SQLiteException::class,
 		FilePermissionException::class,
 		FileNotFoundException::class,
 		LuaException::class

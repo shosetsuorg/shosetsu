@@ -1,6 +1,7 @@
 package app.shosetsu.android.backend.workers.onetime
 
 import android.content.Context
+import android.database.sqlite.SQLiteException
 import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Base64
@@ -10,7 +11,6 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.work.*
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
-import app.shosetsu.android.common.GenericSQLiteException
 import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.common.NullContentResolverException
 import app.shosetsu.android.common.SettingKey
@@ -201,7 +201,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 						url,
 						name,
 					)
-				} catch (e: GenericSQLiteException) {
+				} catch (e: SQLiteException) {
 					logE("Failed to add repo", e)
 					// its likely constraint, we can ignore it
 				}
