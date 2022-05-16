@@ -20,7 +20,7 @@ package app.shosetsu.android.common
 /**
  * Shosetsu
  *
- * @since 10 / 02 / 2022
+ * @since 16 / 05 / 2022
  * @author Doomsdayrs
  */
-class GenericSQLiteException(cause: Throwable) : Exception(cause)
+class CompressionException : Exception("Compression failed")

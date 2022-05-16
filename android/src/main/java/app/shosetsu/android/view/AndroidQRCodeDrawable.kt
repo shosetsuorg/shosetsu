@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Paint
 import androidx.core.graphics.applyCanvas
 import androidx.core.graphics.createBitmap
+import app.shosetsu.android.common.CompressionException
 import io.github.g0dkar.qrcode.render.QRCodeCanvas
 import java.io.OutputStream
 
@@ -142,10 +143,11 @@ class AndroidQRCodeDrawable(
 		}
 	}
 
+	@Throws(CompressionException::class)
 	override fun writeImage(outputStream: OutputStream) {
 		val result = image.compress(Bitmap.CompressFormat.PNG, 0, outputStream)
 		if (!result)
-			throw Exception("Failed to compress")
+			throw CompressionException()
 	}
 
 }
