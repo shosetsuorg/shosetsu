@@ -12,6 +12,7 @@ import androidx.work.NetworkType.UNMETERED
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
+import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.consts.ACTION_OPEN_APP_UPDATE
 import app.shosetsu.android.common.consts.LogConstants
@@ -21,11 +22,14 @@ import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.load.LoadRemoteAppUpdateUseCase
+import app.shosetsu.lib.exceptions.HTTPException
 import com.github.doomsdayrs.apps.shosetsu.R
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
+import java.io.IOException
+import java.net.UnknownHostException
 
 /*
  * This file is part of shosetsu.
@@ -80,7 +84,32 @@ class AppUpdateCheckWorker(
 		notify("Starting")
 		val entity = try {
 			loadRemoteAppUpdateUseCase()
-		} catch (e: Exception) { // TODO specify
+		} catch (e: HTTPException) {
+			logE("Error!", e)
+			notify("${e.code}") {
+				setOngoing(false)
+			}
+			return Result.failure()
+		} catch (e: UnknownHostException) {
+			logE("Error!", e)
+			notify("Error! ${e.message}") {
+				setOngoing(false)
+			}
+			return Result.failure()
+		} catch (e: IOException) {
+			logE("Error!", e)
+			notify("Error! ${e.message}") {
+				setOngoing(false)
+			}
+			return Result.failure()
+		} catch (e: FilePermissionException) {
+			logE("Error!", e)
+			notify("Error! ${e.message}") {
+				setOngoing(false)
+				addReportErrorAction(applicationContext, defaultNotificationID, e)
+			}
+			return Result.failure()
+		} catch (e: Exception) {
 			logE("Error!", e)
 			notify("Error! ${e.message}") {
 				setOngoing(false)
