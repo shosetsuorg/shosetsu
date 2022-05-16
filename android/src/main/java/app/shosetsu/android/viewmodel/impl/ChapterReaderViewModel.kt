@@ -395,7 +395,7 @@ class ChapterReaderViewModel(
 
 	private fun Flow<List<ReaderChapterUI>>.combineDividers(): Flow<List<ReaderUIItem>> =
 		combine(settingsRepo.getBooleanFlow(ReaderShowChapterDivider)) { list, value ->
-			if (value) {
+			if (value && list.isNotEmpty()) {
 				val modified = ArrayList<ReaderUIItem>(list)
 				// Adds the "No more chapters" marker
 				modified.add(modified.size, ReaderDividerUI(prev = list.last().title))
