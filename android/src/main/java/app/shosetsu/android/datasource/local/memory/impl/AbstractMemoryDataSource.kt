@@ -121,6 +121,7 @@ abstract class AbstractMemoryDataSource<K, V : Any> {
 		return false
 	}
 
+	@Throws(NoSuchElementException::class)
 	fun get(key: K): V? {
 		recycle()
 		return if (contains(key)) {

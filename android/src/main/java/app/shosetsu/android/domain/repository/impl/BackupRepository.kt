@@ -1,5 +1,6 @@
 package app.shosetsu.android.domain.repository.impl
 
+import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.datasource.file.base.IFileBackupDataSource
 import app.shosetsu.android.domain.model.local.BackupEntity
@@ -48,6 +49,7 @@ class BackupRepository(
 	override suspend fun loadBackups(): List<String> =
 		iFileBackupDataSource.loadBackups()
 
+	@Throws(FilePermissionException::class, FileNotFoundException::class)
 	override suspend fun loadBackup(path: String, isExternal: Boolean): BackupEntity =
 		iFileBackupDataSource.loadBackup(path, isExternal)
 
