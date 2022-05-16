@@ -84,7 +84,7 @@ interface IChaptersRepository {
 	): List<ChapterEntity>
 
 	/**
-	 * Loads [ChapterEntity]s matching [novelID] in a [Flow] of [HResult]
+	 * Loads [ChapterEntity]s matching [novelID] in a [Flow]
 	 */
 	suspend fun getChaptersLive(novelID: Int): Flow<List<ChapterEntity>>
 

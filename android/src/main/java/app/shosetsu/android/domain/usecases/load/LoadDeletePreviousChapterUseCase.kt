@@ -23,7 +23,7 @@ import app.shosetsu.android.domain.repository.base.ISettingsRepository
 /**
  * 30 / 01 / 2021
  *
- * @see [DeleteReadChapter]
+ * @see [app.shosetsu.android.common.SettingKey.DeleteReadChapter]
  */
 class LoadDeletePreviousChapterUseCase(
 	val iSettingsRepository: ISettingsRepository

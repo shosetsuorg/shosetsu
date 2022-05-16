@@ -35,7 +35,7 @@ sealed class ReaderUIItem {
 	 * @param readingPosition Where the user last left off while reading
 	 * @param readingStatus What is the reading status of the chapter
 	 * @param bookmarked Is the chapter bookmarked
-	 * @param chapterType What type of [ReaderChapterViewHolder] to use for loading,
+	 * @param chapterType What type of view to use for loading,
 	 * this is defined by the the extension first,
 	 * otherwise the user choice will dictate what reader is used
 	 *

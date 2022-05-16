@@ -34,7 +34,7 @@ interface IDBUpdatesDataSource {
 	/** Loads [Flow] of a [List] of [UpdateEntity] */
 	suspend fun getUpdates(): Flow<List<UpdateEntity>>
 
-	/** Insert a [List] of [UpdateEntity] and returns an [HResult] of [Array] of [Long] */
+	/** Insert a [List] of [UpdateEntity] and returns an [Array] of [Long] */
 	@Throws(SQLiteException::class)
 	suspend fun insertUpdates(list: List<UpdateEntity>): Array<Long>
 

@@ -4,7 +4,6 @@ import app.shosetsu.android.common.enums.MarkingType
 import app.shosetsu.android.domain.model.local.LibrarySortFilterEntity
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import java.util.*
 
 /*
  * This file is part of shosetsu.
@@ -154,7 +153,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	 *
 	 * If 0, then deletes the read chapter
 	 *
-	 * If 1+, deletes the chapter of READ CHAPTER - [deletePreviousChapter]
+	 * If 1+, deletes the chapter of READ CHAPTER - deletePreviousChapter
 	 */
 	object DeleteReadChapter : IntKey("deleteReadChapter", -1)
 

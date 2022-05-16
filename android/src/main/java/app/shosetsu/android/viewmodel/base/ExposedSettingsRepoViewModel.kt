@@ -23,7 +23,7 @@ import app.shosetsu.android.domain.repository.base.ISettingsRepository
  * 21 / 02 / 2021
  *
  * This is a view model that has extension functions for [ISettingsRepository]
- * for creating setting items that interact with [SettingKey]s
+ * for creating setting items that interact with [app.shosetsu.android.common.SettingKey]s
  */
 interface ExposedSettingsRepoViewModel {
 	val settingsRepo: ISettingsRepository

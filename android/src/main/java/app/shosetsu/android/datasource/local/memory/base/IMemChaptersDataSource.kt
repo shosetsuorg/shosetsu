@@ -32,7 +32,6 @@ interface IMemChaptersDataSource {
 
 	/**
 	 * Gets chapter passage via it's ID
-	 * @return [HResult.Empty] if passage not found, [HResult.Success] if found
 	 */
 	fun loadChapterFromCache(chapterID: Int): ByteArray?
 }

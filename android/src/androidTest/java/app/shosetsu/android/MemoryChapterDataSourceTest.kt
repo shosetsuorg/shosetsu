@@ -32,7 +32,7 @@ import kotlin.test.assertNull
 /**
  * 25 / 01 / 2021
  *
- * Tests the [IMemChaptersDataSource]
+ * Tests the [app.shosetsu.android.datasource.local.memory.base.IMemChaptersDataSource]
  */
 class MemoryChapterDataSourceTest {
 	private val memorySource by lazy { GenericMemChaptersDataSource() }

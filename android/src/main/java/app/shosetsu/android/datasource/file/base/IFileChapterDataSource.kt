@@ -40,7 +40,6 @@ interface IFileChapterDataSource {
 
 	/**
 	 * Gets chapter passage via it's ID
-	 * @return [HResult.Empty] if passage not found, [HResult.Success] if found
 	 */
 	@Throws(FilePermissionException::class, FileNotFoundException::class)
 	suspend fun load(

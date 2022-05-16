@@ -35,7 +35,6 @@ import kotlinx.coroutines.flow.Flow
  * always represents the full range of presentable items, because every event from
  * [PagingDataDiffer] will trigger a recomposition.
  *
- * @sample androidx.paging.compose.samples.ItemsIndexedDemo
  *
  * @param items the items received from a [Flow] of [PagingData].
  * @param key a factory of stable and unique keys representing the item. Using the same key
