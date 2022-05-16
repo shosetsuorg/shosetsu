@@ -131,6 +131,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 		viewModel.navigationStyle
 
 		onBackPressedDispatcher.addCallback(this) {
+			logI("Back pressed")
 			val backStackSize = router.backstackSize
 			logD("Back stack size: $backStackSize")
 			when {
@@ -197,7 +198,6 @@ class MainActivity : AppCompatActivity(), DIAware,
 		handleIntentAction(intent)
 		setupProcesses()
 	}
-
 
 	override fun onPostCreate(savedInstanceState: Bundle?) {
 		super.onPostCreate(savedInstanceState)
@@ -288,6 +288,10 @@ class MainActivity : AppCompatActivity(), DIAware,
 			R.string.navigation_drawer_open,
 			R.string.navigation_drawer_close
 		)
+
+		actionBarDrawerToggle?.setToolbarNavigationClickListener {
+			onBackPressed()
+		}
 
 		binding.drawerLayout.addDrawerListener(actionBarDrawerToggle!!)
 
@@ -497,7 +501,6 @@ class MainActivity : AppCompatActivity(), DIAware,
 			when (viewModel.navigationStyle) {
 				DRAWER_NAV -> {
 					logI("Sync activity view with controller for legacy")
-					supportActionBar?.setDisplayHomeAsUpEnabled(true)
 					actionBarDrawerToggle?.isDrawerIndicatorEnabled = true
 					binding.drawerLayout.setDrawerLockMode(
 						DrawerLayout.LOCK_MODE_UNLOCKED,
@@ -515,7 +518,6 @@ class MainActivity : AppCompatActivity(), DIAware,
 			when (viewModel.navigationStyle) {
 				DRAWER_NAV -> {
 					logI("Sync activity view with controller for legacy")
-					supportActionBar?.setDisplayHomeAsUpEnabled(false)
 					actionBarDrawerToggle?.isDrawerIndicatorEnabled = false
 					binding.drawerLayout.setDrawerLockMode(
 						DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
