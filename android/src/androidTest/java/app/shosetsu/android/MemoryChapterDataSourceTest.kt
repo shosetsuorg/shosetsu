@@ -1,16 +1,14 @@
 package app.shosetsu.android
 
-import app.shosetsu.common.consts.MEMORY_EXPIRE_CHAPTER_TIME
-import app.shosetsu.common.consts.MEMORY_MAX_CHAPTERS
-import app.shosetsu.common.datasource.memory.base.IMemChaptersDataSource
-import app.shosetsu.common.datasource.memory.impl.GenericMemChaptersDataSource
+import app.shosetsu.android.common.consts.MEMORY_EXPIRE_CHAPTER_TIME
+import app.shosetsu.android.common.consts.MEMORY_MAX_CHAPTERS
+import app.shosetsu.android.datasource.local.memory.impl.GenericMemChaptersDataSource
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.junit.Before
 import org.junit.Test
 import kotlin.system.measureTimeMillis
-import kotlin.test.assertNull
 
 /*
  * This file is part of Shosetsu.
@@ -99,7 +97,9 @@ class MemoryChapterDataSourceTest {
 				println("Delaying until time is sufficient for it to be deleted")
 
 				delay(expireTime + 1000)
-				assertNull(memorySource.loadChapterFromCache(CHAPTER_ID), "Did not delete")
+				assert(memorySource.loadChapterFromCache(CHAPTER_ID) == null) {
+					"Did not delete"
+				}
 				println("Test completed properly")
 			}
 			measureTimeMillis {
