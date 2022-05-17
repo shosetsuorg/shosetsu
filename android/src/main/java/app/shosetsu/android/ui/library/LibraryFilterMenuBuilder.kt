@@ -165,28 +165,28 @@ class LibraryFilterMenuBuilder constructor(
 				ListModel(
 					filterGenresLabel,
 					filterGenres,
-					viewModel.genresLiveData,
+					viewModel.genresFlow,
 					{ viewModel.getFilterGenres() },
 					{ s, b -> viewModel.addGenreToFilter(s, b) }
 				) { viewModel.removeGenreFromFilter(it) },
 				ListModel(
 					filterTagsLabel,
 					filterTags,
-					viewModel.tagsLiveData,
+					viewModel.tagsFlow,
 					{ viewModel.getFilterTags() },
 					{ s, b -> viewModel.addTagToFilter(s, b) }
 				) { viewModel.removeTagFromFilter(it) },
 				ListModel(
 					filterAuthorsLabel,
 					filterAuthors,
-					viewModel.authorsLiveData,
+					viewModel.authorsFlow,
 					{ viewModel.getFilterAuthors() },
 					{ s, b -> viewModel.addAuthorToFilter(s, b) }
 				) { viewModel.removeAuthorFromFilter(it) },
 				ListModel(
 					filterArtistsLabel,
 					filterArtists,
-					viewModel.artistsLiveData,
+					viewModel.artistsFlow,
 					{ viewModel.getFilterArtists() },
 					{ s, b -> viewModel.addArtistToFilter(s, b) }
 				) { viewModel.removeArtistFromFilter(it) }
