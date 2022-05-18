@@ -2,7 +2,6 @@ package app.shosetsu.android.view.compose
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
@@ -103,7 +102,6 @@ fun NovelCardNormalContent(
 				modifier = Modifier
 					.fillMaxSize()
 					.aspectRatio(.75f)
-					.clickable(onClick = onClick)
 					.placeholder(visible = isPlaceholder),
 				contentScale = ContentScale.Crop
 			)
@@ -216,7 +214,6 @@ fun NovelCardCompressedContent(
 						modifier = Modifier
 							.width(64.dp)
 							.aspectRatio(1.0f)
-							.clickable(onClick = onClick)
 							.placeholder(visible = isPlaceholder),
 						contentScale = ContentScale.Crop
 					)
