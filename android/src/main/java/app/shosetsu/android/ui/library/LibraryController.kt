@@ -138,7 +138,7 @@ class LibraryController
 	}
 
 	override fun onViewCreated(view: View) {
-
+		startObservation()
 	}
 
 	private fun startObservation() {
@@ -333,79 +333,80 @@ fun LibraryContent(
 				columns = GridCells.Adaptive(if (cardType != COMPRESSED) size else 400.dp),
 				contentPadding = PaddingValues(bottom = 200.dp)
 			) {
+				fun onClick(item: LibraryNovelUI) {
+					if (hasSelected)
+						toggleSelection(item)
+					else onOpen(item)
+				}
+
+				fun onLongClick(item: LibraryNovelUI) {
+					if (!hasSelected)
+						toggleSelection(item)
+				}
 				items(
 					items,
 					key = { it.hashCode() }
 				) { item ->
 					when (cardType) {
 						NORMAL -> {
-							if (item != null)
-								NovelCardNormalContent(
-									item.title,
-									item.imageURL,
-									onClick = {
-										if (hasSelected)
-											toggleSelection(item)
-										else onOpen(item)
-									},
-									onLongClick = {
-										logI("Has selection: $hasSelected")
-										if (!hasSelected)
-											toggleSelection(item)
-									},
-									overlay = {
-										if (item.unread > 0)
-											Chip(
-												onClick = {
-													toastNovel(item)
-												},
-												modifier = Modifier
-													.align(Alignment.TopStart)
-													.height(24.dp)
-											) {
-												Text(
-													item.unread.toString(),
-													modifier = Modifier.padding(2.dp),
-													fontSize = 14.sp
-												)
-											}
-									},
-									isSelected = item.isSelected
-								)
+							NovelCardNormalContent(
+								item.title,
+								item.imageURL,
+								onClick = {
+									onClick(item)
+								},
+								onLongClick = {
+									onLongClick(item)
+								},
+								overlay = {
+									if (item.unread > 0)
+										Chip(
+											onClick = {
+												toastNovel(item)
+											},
+											modifier = Modifier
+												.align(Alignment.TopStart)
+												.height(24.dp)
+										) {
+											Text(
+												item.unread.toString(),
+												modifier = Modifier.padding(2.dp),
+												fontSize = 14.sp
+											)
+										}
+								},
+								isSelected = item.isSelected
+							)
 						}
 						COMPRESSED -> {
-							if (item != null)
-								NovelCardCompressedContent(
-									item.title,
-									item.imageURL,
-									onClick = {
-										if (hasSelected)
-											toggleSelection(item)
-										else onOpen(item)
-									},
-									onLongClick = {
-										if (!hasSelected)
-											toggleSelection(item)
-									},
-									overlay = {
-										if (item.unread > 0)
-											Chip(
-												onClick = {
-													toastNovel(item)
-												},
-												modifier = Modifier
-													.padding(8.dp)
-													.height(24.dp)
-											) {
-												Text(
-													item.unread.toString(),
-													modifier = Modifier.padding(2.dp),
-													fontSize = 14.sp
-												)
-											}
-									},
-									isSelected = item.isSelected
-								)
+							NovelCardCompressedContent(
+								item.title,
+								item.imageURL,
+								onClick = {
+									onClick(item)
+								},
+								onLongClick = {
+									onLongClick(item)
+								},
+								overlay = {
+									if (item.unread > 0)
+										Chip(
+											onClick = {
+												toastNovel(item)
+											},
+											modifier = Modifier
+												.padding(8.dp)
+												.height(24.dp)
+										) {
+											Text(
+												item.unread.toString(),
+												modifier = Modifier.padding(2.dp),
+												fontSize = 14.sp
+											)
+										}
+								},
+								isSelected = item.isSelected
+							)
 						}
 						COZY -> {
 							TODO("Cozy Type type")
