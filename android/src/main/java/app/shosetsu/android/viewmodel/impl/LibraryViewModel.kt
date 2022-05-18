@@ -143,8 +143,8 @@ class LibraryViewModel(
 	}
 
 	override val hasSelectionFlow: Flow<Boolean> by lazy {
-		selectedNovels.mapLatest {
-			val b = it.isNotEmpty()
+		selectedNovels.mapLatest { map ->
+			val b = map.values.any { it }
 			hasSelection = b
 			b
 		}
