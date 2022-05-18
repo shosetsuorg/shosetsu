@@ -1,11 +1,5 @@
 package app.shosetsu.android.view.uimodels.model.catlog
 
-import android.view.View
-import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
-import app.shosetsu.android.view.uimodels.base.GetImageURL
-import app.shosetsu.android.view.uimodels.base.GetTitle
-import app.shosetsu.android.view.viewholders.TitleImageFViewHolder
-
 /*
  * This file is part of shosetsu.
  *
@@ -29,17 +23,9 @@ import app.shosetsu.android.view.viewholders.TitleImageFViewHolder
  *
  * This class represents novels listed by an extension in its catalogue
  */
-abstract class ACatalogNovelUI :
-	BaseRecyclerItem<TitleImageFViewHolder<ACatalogNovelUI>>(), GetImageURL, GetTitle {
-	abstract val id: Int
-	abstract val title: String
-	abstract val imageURL: String
-	abstract var bookmarked: Boolean
-
-	override fun getViewHolder(v: View): TitleImageFViewHolder<ACatalogNovelUI> =
-		TitleImageFViewHolder(v)
-
-	override fun getDataImageURL(): String = imageURL
-
-	override fun getDataTitle(): String = title
-}
+data class ACatalogNovelUI(
+	val id: Int,
+	val title: String,
+	val imageURL: String,
+	val bookmarked: Boolean
+)

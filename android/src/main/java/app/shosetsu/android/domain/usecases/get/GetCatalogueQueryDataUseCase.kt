@@ -6,12 +6,9 @@ import androidx.paging.PagingState
 import app.shosetsu.android.common.IncompatibleExtensionException
 import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.common.MissingExtensionException
-import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.ext.convertTo
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.domain.repository.base.INovelsRepository
-import app.shosetsu.android.domain.repository.base.ISettingsRepository
-import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
@@ -46,8 +43,6 @@ import java.io.IOException
 class GetCatalogueQueryDataUseCase(
 	private val getExt: GetExtensionUseCase,
 	private val novelsRepository: INovelsRepository,
-	private val convertNCToCNUIUseCase: ConvertNCToCNUIUseCase,
-	private val iSettingsRepository: ISettingsRepository
 ) {
 	inner class MyPagingSource(
 		val iExtension: IExtension,
@@ -78,21 +73,19 @@ class GetCatalogueQueryDataUseCase(
 							HashMap(data).also { it[PAGE_INDEX] = pageNumber }
 						).let {
 							val data: List<Novel.Listing> = it
-							iSettingsRepository.getInt(SettingKey.SelectedNovelCardType)
-								.let { cardType ->
-									(data.map { novelListing ->
-										novelListing.convertTo(iExtension)
-									}.mapNotNull { ne ->
-										try {
-											novelsRepository.insertReturnStripped(ne)?.let { card ->
-												convertNCToCNUIUseCase(card, cardType)
-											}
-										} catch (e: SQLiteException) {
-											logE("Failed to load parse novel", e)
-											null
+							(data.map { novelListing ->
+								novelListing.convertTo(iExtension)
+							}.mapNotNull { ne ->
+								try {
+									novelsRepository.insertReturnStripped(ne)
+										?.let { (id, title, imageURL, bookmarked) ->
+											ACatalogNovelUI(id, title, imageURL, bookmarked)
 										}
-									})
+								} catch (e: SQLiteException) {
+									logE("Failed to load parse novel", e)
+									null
 								}
+							})
 						}
 
 					// Since 0 is the lowest page number, return null to signify no more pages should

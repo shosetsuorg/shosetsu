@@ -10,7 +10,6 @@ import app.shosetsu.android.domain.usecases.get.GetCatalogueQueryDataUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtensionUseCase
 import app.shosetsu.android.domain.usecases.load.LoadSearchRowUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
-import app.shosetsu.android.view.uimodels.model.catlog.FullCatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ASearchViewModel
 import app.shosetsu.lib.PAGE_INDEX
@@ -182,7 +181,7 @@ class SearchViewModel(
 									true
 								}
 							}.map { (id, title, imageURL) ->
-								FullCatalogNovelUI(id, title, imageURL, false)
+								ACatalogNovelUI(id, title, imageURL, false)
 							}
 						}
 					)

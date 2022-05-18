@@ -4,13 +4,10 @@ import android.database.sqlite.SQLiteException
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import app.shosetsu.android.common.LuaException
-import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.ext.convertTo
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.domain.repository.base.IExtensionSettingsRepository
 import app.shosetsu.android.domain.repository.base.INovelsRepository
-import app.shosetsu.android.domain.repository.base.ISettingsRepository
-import app.shosetsu.android.domain.usecases.ConvertNCToCNUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.PAGE_INDEX
@@ -44,8 +41,6 @@ import javax.net.ssl.SSLException
  */
 class GetCatalogueListingDataUseCase(
 	private val novelsRepository: INovelsRepository,
-	private val convertNCToCNUIUseCase: ConvertNCToCNUIUseCase,
-	private val settingsRepo: ISettingsRepository,
 	private val extSettingsRepo: IExtensionSettingsRepository
 ) {
 	inner class MyPagingSource(
@@ -110,31 +105,31 @@ class GetCatalogueListingDataUseCase(
 		iExtension: IExtension,
 		data: Map<Int, Any>
 	): List<ACatalogNovelUI> =
-		settingsRepo.getInt(SettingKey.SelectedNovelCardType).let { cardType ->
-			extSettingsRepo.getSelectedListing(iExtension.formatterID)
-				.let { selectedListing ->
-					// Load catalogue data
+		extSettingsRepo.getSelectedListing(iExtension.formatterID)
+			.let { selectedListing ->
+				// Load catalogue data
 
-					novelsRepository.getCatalogueData(
-						iExtension,
-						selectedListing,
-						data
-					).let { list ->
-						list.map { novelListing ->
-							novelListing.convertTo(iExtension)
-						}.mapNotNull { ne ->
-							// For each, insert and return a stripped card
-							// This operation is to pre-cache URL and ID so loading occurs smoothly
-							try {
-								novelsRepository.insertReturnStripped(ne)?.let { result ->
-									convertNCToCNUIUseCase(result, cardType)
+				novelsRepository.getCatalogueData(
+					iExtension,
+					selectedListing,
+					data
+				).let { list ->
+					list.map { novelListing ->
+						novelListing.convertTo(iExtension)
+					}.mapNotNull { ne ->
+						// For each, insert and return a stripped card
+						// This operation is to pre-cache URL and ID so loading occurs smoothly
+						try {
+							novelsRepository.insertReturnStripped(ne)
+								?.let { (id, title, imageURL, bookmarked) ->
+									ACatalogNovelUI(id, title, imageURL, bookmarked)
 								}
-							} catch (e: SQLiteException) {
-								logE("Failed to load parse novel", e)
-								null
-							}
+						} catch (e: SQLiteException) {
+							logE("Failed to load parse novel", e)
+							null
 						}
 					}
 				}
-		}
+			}
+
 }
