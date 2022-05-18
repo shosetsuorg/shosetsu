@@ -359,14 +359,19 @@ class LibraryViewModel(
 
 	override fun removeSelectedFromLibrary() {
 		launchIO {
-			updateBookmarkedNovelUseCase(liveData.first().filter { it.isSelected }.onEach {
+			val selected = liveData.first().filter { it.isSelected }
+			clearSelectedSuspend()
+			updateBookmarkedNovelUseCase(selected.onEach {
 				it.bookmarked = false
 			})
 		}
 	}
 
 	override fun getSelectedIds(): Flow<IntArray> = flow {
-		emit(selectedNovels.first().keys.toIntArray())
+		val ints = selectedNovels.first().keys.toIntArray()
+		if (ints.isEmpty()) return@flow
+		clearSelectedSuspend()
+		emit(ints)
 	}
 
 	override fun deselectAll() {

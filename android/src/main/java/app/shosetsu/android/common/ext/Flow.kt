@@ -4,10 +4,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 /*
@@ -38,6 +35,19 @@ fun <T> Flow<T>.collectLA(
 	owner.lifecycleScope.launch {
 		owner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 			catch(catch).collect(onCollect)
+		}
+	}
+
+fun <T> Flow<T>.firstLa(
+	owner: LifecycleOwner,
+	catch: suspend FlowCollector<T>.(Throwable) -> Unit,
+	onCollect: (T) -> Unit
+) =
+	owner.lifecycleScope.launch {
+		owner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+			val value = catch(catch).firstOrNull()
+			if (value != null)
+				onCollect(value)
 		}
 	}
 

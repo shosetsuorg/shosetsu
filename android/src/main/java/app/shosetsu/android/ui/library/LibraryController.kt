@@ -227,13 +227,11 @@ class LibraryController
 				true
 			}
 			R.id.remove_from_library -> {
-				launchIO {
-					viewModel.removeSelectedFromLibrary()
-				}
+				viewModel.removeSelectedFromLibrary()
 				true
 			}
 			R.id.source_migrate -> {
-				viewModel.getSelectedIds().collectLA(this, catch = {}) {
+				viewModel.getSelectedIds().firstLa(this, catch = {}) {
 					router.pushController(
 						MigrationController(
 							bundleOf(MigrationController.TARGETS_BUNDLE_KEY to it)
