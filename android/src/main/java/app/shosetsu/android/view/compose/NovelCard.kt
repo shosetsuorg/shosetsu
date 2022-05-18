@@ -1,10 +1,12 @@
 package app.shosetsu.android.view.compose
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -69,14 +72,25 @@ fun NovelCardNormalContent(
 	imageURL: String,
 	onClick: () -> Unit,
 	onLongClick: () -> Unit,
-	overlay: (BoxScope.() -> Unit)? = null,
+	overlay: @Composable (BoxScope.() -> Unit)? = null,
 	isPlaceholder: Boolean = false,
+	isSelected: Boolean = false,
 ) {
 	Card(
-		modifier = Modifier.combinedClickable(
-			onClick = onClick,
-			onLongClick = onLongClick
-		).padding(4.dp)
+		modifier = Modifier
+			.combinedClickable(
+				onClick = onClick,
+				onLongClick = onLongClick
+			)
+			.padding(4.dp),
+		border = if (isSelected) {
+			BorderStroke(
+				width = (SELECTED_STROKE_WIDTH / 2).dp,
+				color = MaterialTheme.colors.primary
+			)
+		} else {
+			null
+		}
 	) {
 		Box {
 			AsyncImage(
@@ -95,8 +109,10 @@ fun NovelCardNormalContent(
 			)
 
 			Box(
-				modifier = Modifier.aspectRatio(.75f)
-					.fillMaxSize().drawWithCache {
+				modifier = Modifier
+					.aspectRatio(.75f)
+					.fillMaxSize()
+					.drawWithCache {
 						onDrawWithContent {
 
 							drawRect(
@@ -111,11 +127,13 @@ fun NovelCardNormalContent(
 								)
 							)
 						}
-					}.alpha(if (isPlaceholder) 0.0f else 1.0f)
+					}
+					.alpha(if (isPlaceholder) 0.0f else 1.0f)
 			)
 			Text(
 				title,
-				modifier = Modifier.align(Alignment.BottomCenter)
+				modifier = Modifier
+					.align(Alignment.BottomCenter)
 					.placeholder(visible = isPlaceholder),
 				textAlign = TextAlign.Center,
 				color = Color.White,
@@ -158,41 +176,59 @@ fun NovelCardCompressedContent(
 	imageURL: String,
 	onClick: () -> Unit,
 	onLongClick: () -> Unit,
-	overlay: (RowScope.() -> Unit)? = null,
+	overlay: @Composable (RowScope.() -> Unit)? = null,
 	isPlaceholder: Boolean = false,
+	isSelected: Boolean = false,
 ) {
 	Card(
-		modifier = Modifier.combinedClickable(
-			onClick = onClick,
-			onLongClick = onLongClick
-		).padding(4.dp)
-			.fillMaxWidth()
+		modifier = Modifier
+			.combinedClickable(
+				onClick = onClick,
+				onLongClick = onLongClick
+			)
+			.padding(4.dp),
+		border = if (isSelected) {
+			BorderStroke(
+				width = (SELECTED_STROKE_WIDTH / 2).dp,
+				color = MaterialTheme.colors.primary
+			)
+		} else {
+			null
+		}
 	) {
 		Box {
 			Row(
-				verticalAlignment = Alignment.CenterVertically
+				verticalAlignment = Alignment.CenterVertically,
+				horizontalArrangement = Arrangement.SpaceBetween,
+				modifier = Modifier.fillMaxWidth()
 			) {
-				AsyncImage(
-					ImageRequest.Builder(LocalContext.current)
-						.data(imageURL)
-						.placeholder(R.drawable.animated_refresh)
-						.error(R.drawable.broken_image)
-						.build(),
-					stringResource(R.string.controller_novel_info_image),
-					modifier = Modifier
-						.width(64.dp)
-						.aspectRatio(1.0f)
-						.clickable(onClick = onClick)
-						.placeholder(visible = isPlaceholder),
-					contentScale = ContentScale.Crop
-				)
+				Row(
+					verticalAlignment = Alignment.CenterVertically,
+					modifier = Modifier.fillMaxSize(.70f)
+				) {
+					AsyncImage(
+						ImageRequest.Builder(LocalContext.current)
+							.data(imageURL)
+							.placeholder(R.drawable.animated_refresh)
+							.error(R.drawable.broken_image)
+							.build(),
+						stringResource(R.string.controller_novel_info_image),
+						modifier = Modifier
+							.width(64.dp)
+							.aspectRatio(1.0f)
+							.clickable(onClick = onClick)
+							.placeholder(visible = isPlaceholder),
+						contentScale = ContentScale.Crop
+					)
 
-				Text(
-					title,
-					textAlign = TextAlign.Center,
-					modifier = Modifier
-						.placeholder(visible = isPlaceholder)
-				)
+					Text(
+						title,
+						modifier = Modifier
+							.placeholder(visible = isPlaceholder)
+							.padding(start = 8.dp)
+							.fillMaxSize()
+					)
+				}
 
 				if (overlay != null)
 					overlay()

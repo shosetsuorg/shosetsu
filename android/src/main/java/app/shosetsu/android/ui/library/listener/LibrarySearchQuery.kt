@@ -1,9 +1,7 @@
 package app.shosetsu.android.ui.library.listener
 
-import android.util.Log
 import android.widget.SearchView
-import app.shosetsu.android.common.ext.logID
-import app.shosetsu.android.ui.library.LibraryController
+import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
 
 /*
  * This file is part of shosetsu.
@@ -28,16 +26,15 @@ import app.shosetsu.android.ui.library.LibraryController
  *
  * @author github.com/doomsdayrs
  */
-class LibrarySearchQuery(private val libraryController: LibraryController) :
+class LibrarySearchQuery(private val viewModel: ALibraryViewModel) :
 	SearchView.OnQueryTextListener {
 	override fun onQueryTextSubmit(query: String): Boolean {
-		libraryController.itemAdapter.filter(query)
+		viewModel.setQuery(query)
 		return true
 	}
 
 	override fun onQueryTextChange(newText: String): Boolean {
-		Log.d(logID(), "Query:\t[$newText]")
-		libraryController.itemAdapter.filter(newText)
+		viewModel.setQuery(newText)
 		return true
 	}
 }

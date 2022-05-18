@@ -1,20 +1,27 @@
 package app.shosetsu.android.ui.library
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Bundle
 import android.view.*
 import android.widget.SearchView
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.Chip
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import app.shosetsu.android.common.SettingKey
@@ -30,7 +37,7 @@ import app.shosetsu.android.view.compose.NovelCardCompressedContent
 import app.shosetsu.android.view.compose.NovelCardNormalContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
-import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
+import app.shosetsu.android.view.uimodels.model.LibraryNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -38,8 +45,6 @@ import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.select.selectExtension
 
 /*
  * This file is part of Shosetsu.
@@ -80,51 +85,6 @@ class LibraryController
 		setHasOptionsMenu(true)
 	}
 
-
-	@SuppressLint("StringFormatInvalid")
-	override fun FastAdapter<ABookmarkedNovelUI>.setupFastAdapter() {
-		selectExtension {
-			isSelectable = true
-			multiSelect = true
-			selectOnLongClick = true
-			setSelectionListener { item, _ ->
-				// Recreates the item view
-				fastAdapter.notifyItemChanged(fastAdapter.getPosition(item))
-
-				// Swaps the options menu on top
-				val size = selectedItems.size
-				if (size == 0 || size == 1) activity?.invalidateOptionsMenu()
-			}
-		}
-		itemAdapter.itemFilter.filterPredicate = { item, constraint ->
-			item.title.contains(constraint.toString(), ignoreCase = true)
-		}
-		setOnPreClickListener FastAdapterClick@{ _, _, item, position ->
-			// Handles one click select when in selection mode
-			selectExtension {
-				if (selectedItems.isNotEmpty()) {
-					if (!item.isSelected)
-						select(
-							item = item,
-							considerSelectableFlag = true
-						)
-					else
-						deselect(position)
-					return@FastAdapterClick true
-				}
-			}
-			false
-		}
-
-		hookClickEvent<ABookmarkedNovelUI, ABookmarkedNovelUI.ViewHolder>(bind = { it.chip }) { v, p, a, item ->
-
-		}
-		setOnClickListener { _, _, item, _ ->
-
-			true
-		}
-	}
-
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup,
@@ -133,31 +93,34 @@ class LibraryController
 		setContent {
 			MdcTheme {
 				val items by viewModel.liveData.collectAsState(listOf())
+				val isEmpty by viewModel.isEmptyFlow.collectAsState(false)
+				val hasSelected by viewModel.hasSelectionFlow.collectAsState(false)
 				val type by viewModel.novelCardTypeFlow.collectAsState(NORMAL)
 
-				val columnsInV by viewModel.columnsInH.collectAsState(SettingKey.ChapterColumnsInPortait.default)
+				val columnsInV by viewModel.columnsInV.collectAsState(SettingKey.ChapterColumnsInPortait.default)
 				val columnsInH by viewModel.columnsInH.collectAsState(SettingKey.ChapterColumnsInLandscape.default)
 
 				LibraryContent(
 					items,
+					isEmpty = isEmpty,
 					type,
 					columnsInV,
 					columnsInH,
+					hasSelected = hasSelected,
 					onRefresh = {
 						onRefresh()
 					},
-					onClick = {
-
+					onOpen = { item ->
 						router.shosetsuPush(
 							NovelController(
 								bundleOf(BundleKeys.BUNDLE_NOVEL_ID to item.id)
 							)
 						)
 					},
-					onLongClick = {
-
+					toggleSelection = { item ->
+						viewModel.toggleSelection(item)
 					},
-					toastNovel = {
+					toastNovel = { item ->
 						try {
 							makeSnackBar(
 								resources!!.getQuantityString(
@@ -167,14 +130,8 @@ class LibraryController
 								)
 							)?.show()
 						} catch (e: Resources.NotFoundException) {
-							makeSnackBar(
-								resources!!.getString(
-									R.string.chapters_unread_label,
-									item.unread
-								)
-							)?.show()
 						}
-					}
+					},
 				)
 			}
 		}
@@ -190,10 +147,14 @@ class LibraryController
 		}) {
 			fab?.isVisible = it.isNotEmpty()
 		}
+
+		viewModel.hasSelectionFlow.collectLatestLA(this, catch = {}) {
+			activity?.invalidateOptionsMenu()
+		}
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-		if (viewModel.hasSelection) {
+		if (!viewModel.hasSelection) {
 			inflater.inflate(R.menu.toolbar_library, menu)
 		} else {
 			inflater.inflate(R.menu.toolbar_library_selected, menu)
@@ -206,22 +167,21 @@ class LibraryController
 		logI("Preparing options menu")
 		searchView = (menu.findItem(R.id.library_search)?.actionView as? SearchView)
 		searchView?.apply {
-			setOnQueryTextListener(LibrarySearchQuery(this@LibraryController))
+			setOnQueryTextListener(LibrarySearchQuery(viewModel))
 		}
-		viewModel.liveData.collectLA(this, catch = {
+		viewModel.queryFlow.collectLA(this, catch = {}) {
+			searchView?.setQuery(it, false)
+		}
+
+		viewModel.isEmptyFlow.collectLA(this, catch = {
 			// IGNORE, Main observer will handle
-		}) {
-			val visible = it.isNotEmpty()
+		}) { visible ->
 
-			menu.findItem(R.id.library_search)?.isVisible = visible
-			menu.findItem(R.id.view_type)?.isVisible = visible
-			menu.findItem(R.id.updater_now)?.isVisible = visible
+			menu.findItem(R.id.library_search)?.isVisible = !visible
+			menu.findItem(R.id.view_type)?.isVisible = !visible
+			menu.findItem(R.id.updater_now)?.isVisible = !visible
 		}
-		configureViewTypeMenu(menu)
-	}
 
-	private fun configureViewTypeMenu(menu: Menu, isRetry: Boolean = false) {
-		logI("Syncing menu")
 		viewModel.novelCardTypeFlow.collectLA(this, catch = {}) {
 			when (it) {
 				NORMAL -> {
@@ -296,7 +256,6 @@ class LibraryController
 			else -> false
 		}
 
-
 	private fun deselectAll() {
 		viewModel.deselectAll()
 	}
@@ -339,18 +298,21 @@ class LibraryController
 	}
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LibraryContent(
-	items: List<ABookmarkedNovelUI>,
+	items: List<LibraryNovelUI>,
+	isEmpty: Boolean,
 	cardType: NovelCardType,
 	columnsInV: Int,
 	columnsInH: Int,
+	hasSelected: Boolean,
 	onRefresh: () -> Unit,
-	onClick: (ABookmarkedNovelUI) -> Unit,
-	onLongClick: (ABookmarkedNovelUI) -> Unit,
-	toastNovel: (ABookmarkedNovelUI) -> Unit
+	onOpen: (LibraryNovelUI) -> Unit,
+	toggleSelection: (LibraryNovelUI) -> Unit,
+	toastNovel: (LibraryNovelUI) -> Unit
 ) {
-	if (items.size > 0) {
+	if (!isEmpty) {
 		SwipeRefresh(
 			state = SwipeRefreshState(false),
 			onRefresh = onRefresh
@@ -382,11 +344,33 @@ fun LibraryContent(
 									item.title,
 									item.imageURL,
 									onClick = {
-										onClick(item)
+										if (hasSelected)
+											toggleSelection(item)
+										else onOpen(item)
 									},
 									onLongClick = {
-										onLongClick(item)
-									}
+										logI("Has selection: $hasSelected")
+										if (!hasSelected)
+											toggleSelection(item)
+									},
+									overlay = {
+										if (item.unread > 0)
+											Chip(
+												onClick = {
+													toastNovel(item)
+												},
+												modifier = Modifier
+													.align(Alignment.TopStart)
+													.height(24.dp)
+											) {
+												Text(
+													item.unread.toString(),
+													modifier = Modifier.padding(2.dp),
+													fontSize = 14.sp
+												)
+											}
+									},
+									isSelected = item.isSelected
 								)
 						}
 						COMPRESSED -> {
@@ -395,11 +379,32 @@ fun LibraryContent(
 									item.title,
 									item.imageURL,
 									onClick = {
-										onClick(item)
+										if (hasSelected)
+											toggleSelection(item)
+										else onOpen(item)
 									},
 									onLongClick = {
-										onLongClick(item)
-									}
+										if (!hasSelected)
+											toggleSelection(item)
+									},
+									overlay = {
+										if (item.unread > 0)
+											Chip(
+												onClick = {
+													toastNovel(item)
+												},
+												modifier = Modifier
+													.padding(8.dp)
+													.height(24.dp)
+											) {
+												Text(
+													item.unread.toString(),
+													modifier = Modifier.padding(2.dp),
+													fontSize = 14.sp
+												)
+											}
+									},
+									isSelected = item.isSelected
 								)
 						}
 						COZY -> {
