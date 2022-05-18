@@ -1,16 +1,10 @@
 package app.shosetsu.android.domain.usecases.load
 
-import app.shosetsu.android.common.SettingKey
-import app.shosetsu.android.common.enums.NovelCardType
-import app.shosetsu.android.common.enums.NovelCardType.*
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.domain.repository.base.INovelsRepository
-import app.shosetsu.android.domain.repository.base.ISettingsRepository
-import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
-import app.shosetsu.android.view.uimodels.model.library.ComfyBookmarkedNovelUI
-import app.shosetsu.android.view.uimodels.model.library.CompressedBookmarkedNovelUI
-import app.shosetsu.android.view.uimodels.model.library.NormalBookmarkedNovelUI
+import app.shosetsu.android.view.uimodels.model.LibraryNovelUI
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapLatest
 
 /*
@@ -36,54 +30,23 @@ import kotlinx.coroutines.flow.mapLatest
  */
 class LoadLibraryUseCase(
 	private val novelsRepo: INovelsRepository,
-	private val settingsRepo: ISettingsRepository,
 ) {
-	operator fun invoke(): Flow<List<ABookmarkedNovelUI>> =
-		novelsRepo.loadLibraryNovelEntities()
-			.combine(settingsRepo.getIntFlow(SettingKey.SelectedNovelCardType).mapLatest {
-				NovelCardType.valueOf(it)
-			}) { origin, cardType ->
-				origin.let {
-					val list = it
-					val newList = list.map { (id, title, imageURL, bookmarked, unread,
-												 genres, authors, artists, tags) ->
-						when (cardType) {
-							NORMAL -> NormalBookmarkedNovelUI(
-								id = id,
-								title = title,
-								imageURL = imageURL,
-								bookmarked = bookmarked,
-								unread = unread,
-								genres = genres,
-								authors = authors,
-								artists = artists,
-								tags = tags
-							)
-							COMPRESSED -> CompressedBookmarkedNovelUI(
-								id = id,
-								title = title,
-								imageURL = imageURL,
-								bookmarked = bookmarked,
-								unread = unread,
-								genres = genres,
-								authors = authors,
-								artists = artists,
-								tags = tags
-							)
-							COZY -> ComfyBookmarkedNovelUI(
-								id = id,
-								title = title,
-								imageURL = imageURL,
-								bookmarked = bookmarked,
-								unread = unread,
-								genres = genres,
-								authors = authors,
-								artists = artists,
-								tags = tags
-							)
-						}
-					}
-					newList
-				}
+	@Throws(SQLiteException::class)
+	@OptIn(ExperimentalCoroutinesApi::class)
+	operator fun invoke(): Flow<List<LibraryNovelUI>> =
+		novelsRepo.loadLibraryNovelEntities().mapLatest { origin ->
+			origin.map { (id,
+							 title,
+							 imageURL,
+							 bookmarked,
+							 unread,
+							 genres,
+							 authors,
+							 artists,
+							 tags) ->
+				LibraryNovelUI(
+					id, title, imageURL, bookmarked, unread, genres, authors, artists, tags
+				)
 			}
+		}
 }

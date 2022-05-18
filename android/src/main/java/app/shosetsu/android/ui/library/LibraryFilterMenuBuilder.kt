@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.isVisible
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
@@ -15,6 +14,7 @@ import app.shosetsu.android.common.enums.InclusionState.INCLUDE
 import app.shosetsu.android.common.enums.NovelSortType.*
 import app.shosetsu.android.common.enums.TriStateState
 import app.shosetsu.android.common.enums.TriStateState.*
+import app.shosetsu.android.common.ext.collectLA
 import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
 import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
@@ -27,6 +27,7 @@ import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
 import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.calculateDiff
+import kotlinx.coroutines.flow.Flow
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL as LLM_VERTICAL
 
 /*
@@ -73,7 +74,7 @@ class LibraryFilterMenuBuilder constructor(
 		inner class ListModel(
 			val textView: AppCompatTextView,
 			val recyclerView: RecyclerView,
-			val liveData: LiveData<List<String>>,
+			val liveData: Flow<List<String>>,
 			val retrieveState: () -> HashMap<String, InclusionState>,
 			val setState: (String, InclusionState) -> Unit,
 			val removeState: (String) -> Unit
@@ -165,28 +166,28 @@ class LibraryFilterMenuBuilder constructor(
 				ListModel(
 					filterGenresLabel,
 					filterGenres,
-					viewModel.genresLiveData,
+					viewModel.genresFlow,
 					{ viewModel.getFilterGenres() },
 					{ s, b -> viewModel.addGenreToFilter(s, b) }
 				) { viewModel.removeGenreFromFilter(it) },
 				ListModel(
 					filterTagsLabel,
 					filterTags,
-					viewModel.tagsLiveData,
+					viewModel.tagsFlow,
 					{ viewModel.getFilterTags() },
 					{ s, b -> viewModel.addTagToFilter(s, b) }
 				) { viewModel.removeTagFromFilter(it) },
 				ListModel(
 					filterAuthorsLabel,
 					filterAuthors,
-					viewModel.authorsLiveData,
+					viewModel.authorsFlow,
 					{ viewModel.getFilterAuthors() },
 					{ s, b -> viewModel.addAuthorToFilter(s, b) }
 				) { viewModel.removeAuthorFromFilter(it) },
 				ListModel(
 					filterArtistsLabel,
 					filterArtists,
-					viewModel.artistsLiveData,
+					viewModel.artistsFlow,
 					{ viewModel.getFilterArtists() },
 					{ s, b -> viewModel.addArtistToFilter(s, b) }
 				) { viewModel.removeArtistFromFilter(it) }
@@ -197,7 +198,7 @@ class LibraryFilterMenuBuilder constructor(
 				val retrieve = listModel.retrieveState
 
 				val itemAdapter = ItemAdapter<ListModel.FilterModel>()
-				live.observe(controller) { originalList: List<String> ->
+				live.collectLA(controller, catch = {}) { originalList: List<String> ->
 					// Gets the current states
 					val r = retrieve()
 					// Converts and applies states into a newList

@@ -148,8 +148,6 @@
     <string name="default_reader">Default</string>
     <string name="markdown_reader">MarkDown reader</string>
 
-    <string name="chapters_unread_label">Chapters unread: %d</string>    <!-- Deprecated -->
-
     <plurals name="toast_unread_count">
         <item quantity="one">%d unread chapter.</item>
         <item quantity="zero">No unread chapters.</item>

@@ -3,7 +3,7 @@ package app.shosetsu.android.domain.usecases.update
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.dto.convertList
-import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
+import app.shosetsu.android.view.uimodels.model.LibraryNovelUI
 
 /*
  * This file is part of shosetsu.
@@ -30,6 +30,6 @@ class UpdateBookmarkedNovelUseCase(
 	private val novelsRepository: INovelsRepository,
 ) {
 	@Throws(SQLiteException::class)
-	suspend operator fun invoke(list: List<ABookmarkedNovelUI>) =
+	suspend operator fun invoke(list: List<LibraryNovelUI>) =
 		novelsRepository.updateLibraryNovelEntity(list.convertList())
 }

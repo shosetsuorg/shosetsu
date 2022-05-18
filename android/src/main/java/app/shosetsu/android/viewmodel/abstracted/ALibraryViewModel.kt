@@ -1,15 +1,14 @@
 package app.shosetsu.android.viewmodel.abstracted
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.enums.InclusionState
 import app.shosetsu.android.common.enums.NovelCardType
 import app.shosetsu.android.common.enums.NovelSortType
-import app.shosetsu.android.common.utils.ColumnCalculator
-import app.shosetsu.android.view.uimodels.model.library.ABookmarkedNovelUI
+import app.shosetsu.android.view.uimodels.model.LibraryNovelUI
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.StartUpdateManagerViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeViewModel
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -36,30 +35,31 @@ import app.shosetsu.android.viewmodel.base.SubscribeViewModel
  * @author github.com/doomsdayrs
  */
 abstract class ALibraryViewModel :
-	SubscribeViewModel<List<ABookmarkedNovelUI>>,
+	SubscribeViewModel<List<LibraryNovelUI>>,
 	ShosetsuViewModel(),
 	IsOnlineCheckViewModel,
-	StartUpdateManagerViewModel,
-	ColumnCalculator {
+	StartUpdateManagerViewModel {
 
-	/** All genres from all [ABookmarkedNovelUI] combined*/
-	abstract val genresLiveData: LiveData<List<String>>
+	abstract val isEmptyFlow: Flow<Boolean>
+	abstract val hasSelectionFlow: Flow<Boolean>
+	abstract val hasSelection: Boolean
 
-	/** All tags from all [ABookmarkedNovelUI] combined*/
-	abstract val tagsLiveData: LiveData<List<String>>
+	/** All genres from all [LibraryNovelUI] combined*/
+	abstract val genresFlow: Flow<List<String>>
 
-	/** All authors from all [ABookmarkedNovelUI] combined*/
-	abstract val authorsLiveData: LiveData<List<String>>
+	/** All tags from all [LibraryNovelUI] combined*/
+	abstract val tagsFlow: Flow<List<String>>
 
-	/** All artists from all [ABookmarkedNovelUI] combined*/
-	abstract val artistsLiveData: LiveData<List<String>>
+	/** All authors from all [LibraryNovelUI] combined*/
+	abstract val authorsFlow: Flow<List<String>>
 
-	abstract val novelCardTypeLiveData: LiveData<NovelCardType>
+	/** All artists from all [LibraryNovelUI] combined*/
+	abstract val artistsFlow: Flow<List<String>>
 
-	/**
-	 * Remove the following from the library
-	 */
-	abstract fun removeFromLibrary(list: List<ABookmarkedNovelUI>)
+	abstract val novelCardTypeFlow: Flow<NovelCardType>
+
+	abstract val columnsInH: Flow<Int>
+	abstract val columnsInV: Flow<Int>
 
 	abstract fun setUnreadFilter(inclusionState: InclusionState?)
 	abstract fun getUnreadFilter(): InclusionState?
@@ -88,5 +88,17 @@ abstract class ALibraryViewModel :
 
 	abstract fun resetSortAndFilters()
 	abstract fun setViewType(cardType: NovelCardType)
+
+	abstract fun removeSelectedFromLibrary()
+
+	abstract fun getSelectedIds(): Flow<IntArray>
+	abstract fun deselectAll()
+	abstract fun selectAll()
+	abstract fun invertSelection()
+	abstract fun selectBetween()
+	abstract fun toggleSelection(item: LibraryNovelUI)
+
+	abstract val queryFlow: Flow<String>
+	abstract fun setQuery(s: String)
 
 }
