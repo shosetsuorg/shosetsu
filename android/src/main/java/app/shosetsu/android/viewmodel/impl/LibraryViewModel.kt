@@ -24,7 +24,6 @@ import app.shosetsu.android.common.enums.NovelCardType
 import app.shosetsu.android.common.enums.NovelSortType
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.utils.copy
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.load.LoadLibraryUseCase
@@ -111,7 +110,6 @@ class LibraryViewModel(
 	}
 
 	override fun toggleSelection(item: LibraryNovelUI) {
-		logI("Toggle: $item")
 		launchIO {
 			val selection = copySelected()
 
