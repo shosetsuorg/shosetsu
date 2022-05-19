@@ -685,6 +685,8 @@
     <string name="controller_novel_info_open_web_text">Webview</string>
     <string name="controller_catalogue_no_more">No more content, Sorry!</string>
 
+    <string name="controller_repositories_action_remove">Remove repository</string>
+
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>
         <item quantity="zero">No new chapters.</item>

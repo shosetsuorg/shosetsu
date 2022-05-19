@@ -1,14 +1,7 @@
 package app.shosetsu.android.view.uimodels.model
 
-import android.view.View
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.android.dto.Convertible
-import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
-import app.shosetsu.android.view.uimodels.base.BindViewHolder
-import app.shosetsu.android.view.uimodels.model.RepositoryUI.ViewHolder
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerRepositoryInfoBinding
-import com.github.doomsdayrs.apps.shosetsu.databinding.RecyclerRepositoryInfoBinding.bind
 
 /*
  * This file is part of shosetsu.
@@ -38,36 +31,7 @@ data class RepositoryUI(
 	val url: String,
 	val name: String,
 	val isRepoEnabled: Boolean
-) : BaseRecyclerItem<ViewHolder>(), Convertible<RepositoryEntity> {
-	override val layoutRes: Int = R.layout.recycler_repository_info
-	override val type: Int = R.layout.recycler_repository_info
-	override var identifier: Long
-		get() = id.toLong()
-		set(_) {}
-
-	override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
-
-	class ViewHolder(view: View) :
-		BindViewHolder<RepositoryUI, RecyclerRepositoryInfoBinding>(view) {
-		override val binding: RecyclerRepositoryInfoBinding = bind(view)
-
-		override fun RecyclerRepositoryInfoBinding.bindView(
-			item: RepositoryUI,
-			payloads: List<Any>
-		) {
-			repoID.text = item.id.toString()
-			title.text = item.name
-			url.text = item.url
-			switchWidget.isChecked = item.isRepoEnabled
-		}
-
-		override fun RecyclerRepositoryInfoBinding.unbindView(item: RepositoryUI) {
-			repoID.setText(R.string.negative_one)
-			title.text = ""
-			url.text = ""
-			switchWidget.isChecked = false
-		}
-	}
+) : Convertible<RepositoryEntity> {
 
 	override fun convertTo(): RepositoryEntity = RepositoryEntity(id, url, name, isRepoEnabled)
 }

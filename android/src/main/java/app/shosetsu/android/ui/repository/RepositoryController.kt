@@ -1,20 +1,38 @@
 package app.shosetsu.android.ui.repository
 
+import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.view.controller.FastAdapterRefreshableRecyclerController
+import app.shosetsu.android.view.compose.ErrorContent
+import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.FABController
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.ARepositoryViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.RepositoryAddBinding
+import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.BaseTransientBottomBar.BaseCallback.DISMISS_EVENT_CONSECUTIVE
 import com.google.android.material.snackbar.Snackbar
-import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.listeners.addClickListener
 import org.acra.ACRA
 import androidx.appcompat.app.AlertDialog.Builder as AlertDialogBuilder
 
@@ -39,56 +57,50 @@ import androidx.appcompat.app.AlertDialog.Builder as AlertDialogBuilder
  * shosetsu
  * 16 / 09 / 2020
  */
-class RepositoryController : FastAdapterRefreshableRecyclerController<RepositoryUI>(),
+class RepositoryController : ShosetsuController(),
 	FABController {
 	private val viewModel: ARepositoryViewModel by viewModel()
 
 	override val viewTitleRes: Int = R.string.repositories
 
-	override fun showEmpty() {
-		super.showEmpty()
-		binding.emptyDataView.show(
-			R.string.empty_repositories_message,
-			EmptyDataView.Action(R.string.empty_repositories_action) { launchAddRepositoryDialog(it) }
-		)
-	}
+	override fun onCreateView(
+		inflater: LayoutInflater,
+		container: ViewGroup,
+		savedViewState: Bundle?
+	): View =
+		ComposeView(container.context).apply {
+			setContent {
+				MdcTheme {
+					val items by viewModel.liveData.collectAsState(listOf())
 
-	override fun setupRecyclerView() {
-		super.setupRecyclerView()
-		viewModel.liveData.observe(catch = {
-			handleRecyclerException(it)
-		}) { handleRecyclerUpdate(it) }
-	}
-
-	override fun handleRecyclerException(e: Throwable) {
-		logE("Error occurred", e)
-		makeSnackBar(
-			getString(
-				R.string.controller_repositories_error_recycler,
-				e.message ?: "Unknown exception"
-			)
-		)?.setAction(R.string.report) {
-			ACRA.errorReporter.handleSilentException(e)
-		}?.show()
-	}
-
-	override fun FastAdapter<RepositoryUI>.setupFastAdapter() {
-		hookClickEvent(
-			bind = { it: RepositoryUI.ViewHolder -> it.binding.removeButton }
-		) { _, _, _, item ->
-			AlertDialogBuilder(binding.root.context)
-				.setTitle(R.string.alert_dialog_title_warn_repo_removal)
-				.setMessage(R.string.alert_dialog_message_warn_repo_removal)
-				.setPositiveButton(android.R.string.ok) { _, _ ->
-					removeRepository(item)
-				}.setNegativeButton(android.R.string.cancel) { _, _ ->
-				}.show()
-
+					RepositoriesContent(
+						items = items,
+						toggleEnabled = {
+							toggleIsEnabled(it)
+						},
+						onRemove = {
+							onRemove(it, container.context)
+						},
+						addRepository = {
+							launchAddRepositoryDialog(container)
+						}
+					)
+				}
+			}
 		}
 
-		addClickListener<RepositoryUI.ViewHolder, RepositoryUI>({ it.binding.switchWidget }) { _, _, _, item ->
-			toggleIsEnabled(item)
-		}
+	override fun onViewCreated(view: View) {
+
+	}
+
+	private fun onRemove(item: RepositoryUI, context: Context) {
+		AlertDialogBuilder(context)
+			.setTitle(R.string.alert_dialog_title_warn_repo_removal)
+			.setMessage(R.string.alert_dialog_message_warn_repo_removal)
+			.setPositiveButton(android.R.string.ok) { _, _ ->
+				removeRepository(item)
+			}.setNegativeButton(android.R.string.cancel) { _, _ ->
+			}.show()
 	}
 
 	private fun undoRemoveRepository(item: RepositoryUI) {
@@ -229,9 +241,99 @@ class RepositoryController : FastAdapterRefreshableRecyclerController<Repository
 		fab.setOnClickListener { launchAddRepositoryDialog(it) }
 	}
 
-	override fun onRefresh() {
+	private fun onRefresh() {
 		if (viewModel.isOnline()) {
 			viewModel.updateRepositories()
 		} else displayOfflineSnackBar(R.string.controller_repositories_snackbar_offline_no_update)
+	}
+}
+
+@Composable
+fun RepositoriesContent(
+	items: List<RepositoryUI>,
+	toggleEnabled: (RepositoryUI) -> Unit,
+	onRemove: (RepositoryUI) -> Unit,
+	addRepository: () -> Unit
+) {
+	if (items.isNotEmpty()) {
+		LazyColumn(
+			contentPadding = PaddingValues(start = 8.dp, top = 8.dp, end = 8.dp, bottom = 64.dp)
+		) {
+			items(items, key = { it.id }) { item ->
+				RepositoryContent(
+					item,
+					onCheckedChange = {
+						toggleEnabled(item)
+					},
+					onRemove = {
+						onRemove(item)
+					}
+				)
+			}
+		}
+	} else {
+		ErrorContent(
+			stringResource(R.string.empty_repositories_message),
+			EmptyDataView.Action(R.string.empty_repositories_action) { addRepository() }
+		)
+	}
+}
+
+@Composable
+fun RepositoryContent(
+	item: RepositoryUI,
+	onCheckedChange: () -> Unit,
+	onRemove: () -> Unit
+) {
+	Card(Modifier.padding(bottom = 8.dp)) {
+		Row(
+			Modifier.padding(8.dp),
+			verticalAlignment = Alignment.CenterVertically
+		) {
+			Column(
+				Modifier.fillMaxWidth(.7f)
+			) {
+				Text(text = item.name)
+
+				Row(
+					modifier = Modifier.padding(start = 16.dp)
+				) {
+					Row {
+						Text(
+							text = stringResource(id = R.string.id_label),
+							style = MaterialTheme.typography.caption
+						)
+						Text(text = "${item.id}", style = MaterialTheme.typography.caption)
+					}
+					SelectionContainer {
+						Text(
+							text = item.url,
+							style = MaterialTheme.typography.caption,
+							modifier = Modifier.padding(start = 8.dp)
+						)
+					}
+				}
+			}
+
+			Row {
+				IconButton(onClick = onRemove) {
+					Icon(
+						painter = painterResource(R.drawable.close),
+						contentDescription =
+						stringResource(R.string.controller_repositories_action_remove)
+					)
+				}
+
+				Switch(
+					checked = item.isRepoEnabled,
+					onCheckedChange = {
+						onCheckedChange()
+					},
+					colors = SwitchDefaults.colors(
+						checkedThumbColor = colorResource(R.color.colorAccent)
+					)
+				)
+			}
+		}
 	}
 }
