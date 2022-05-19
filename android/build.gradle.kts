@@ -277,22 +277,6 @@ dependencies {
 	implementation(room("room-ktx"))
 	implementation(room("room-paging"))
 
-	// Fast Adapter
-	val latestFastAdapterRelease = "5.6.0"
-	fun fastadapter(module: String, version: String = latestFastAdapterRelease) =
-		"com.mikepenz:$module:$version"
-
-	implementation(fastadapter("fastadapter"))
-	//implementation(fastadapter("fastadapter-extensions-expandable"))
-	implementation(fastadapter("fastadapter-extensions-binding"))
-	implementation(fastadapter("fastadapter-extensions-diff"))
-	//implementation(fastadapter("fastadapter-extensions-drag"))
-	//implementation(fastadapter("fastadapter-extensions-paged"))
-	implementation(fastadapter("fastadapter-extensions-scroll"))
-	//implementation(fastadapter("fastadapter-extensions-swipe"))
-	//implementation(fastadapter("fastadapter-extensions-ui"))
-	implementation(fastadapter("fastadapter-extensions-utils"))
-
 	// Guava cache
 	implementation("com.google.guava:guava:31.0.1-android")
 
@@ -366,6 +350,7 @@ dependencies {
 	implementation(accompanist("accompanist-swiperefresh"))
 	implementation(accompanist("accompanist-webview", "0.24.6-alpha"))
 	implementation(accompanist("accompanist-placeholder-material"))
+	implementation(accompanist("accompanist-pager-indicators"))
 	//- Integration with observables
 	implementation("androidx.compose.runtime:runtime-livedata:1.1.1")
 
