@@ -21,11 +21,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.FABController
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
-import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.ARepositoryViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.RepositoryAddBinding
@@ -275,7 +275,7 @@ fun RepositoriesContent(
 	} else {
 		ErrorContent(
 			stringResource(R.string.empty_repositories_message),
-			EmptyDataView.Action(R.string.empty_repositories_action) { addRepository() }
+			ErrorAction(R.string.empty_repositories_action) { addRepository() }
 		)
 	}
 }

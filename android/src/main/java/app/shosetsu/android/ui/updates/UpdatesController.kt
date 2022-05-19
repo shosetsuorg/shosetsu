@@ -31,10 +31,10 @@ import app.shosetsu.android.common.ext.openChapter
 import app.shosetsu.android.common.ext.trimDate
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
+import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
-import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.AUpdatesViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -124,7 +124,7 @@ fun UpdatesContent(
 			Column {
 				ErrorContent(
 					R.string.empty_updates_message,
-					EmptyDataView.Action(R.string.empty_updates_refresh_action) {
+					ErrorAction(R.string.empty_updates_refresh_action) {
 						onRefresh()
 					}
 				)
@@ -177,7 +177,9 @@ fun PreviewUpdateItemContent() {
 @Composable
 fun UpdateItemContent(updateUI: UpdateCompleteEntity, onClick: () -> Unit) {
 	Card(
-		modifier = Modifier.fillMaxWidth().height(72.dp),
+		modifier = Modifier
+			.fillMaxWidth()
+			.height(72.dp),
 		shape = RectangleShape,
 		onClick = onClick
 	) {
@@ -189,7 +191,9 @@ fun UpdateItemContent(updateUI: UpdateCompleteEntity, onClick: () -> Unit) {
 					painterResource(R.drawable.broken_image)
 				},
 				null,
-				modifier = Modifier.aspectRatio(2f / 3f).height(IntrinsicSize.Min)
+				modifier = Modifier
+					.aspectRatio(2f / 3f)
+					.height(IntrinsicSize.Min)
 			)
 			Column(
 				verticalArrangement = Arrangement.Center,
@@ -232,6 +236,10 @@ fun UpdateHeaderItemContent(dateTime: DateTime) {
 				stringResource(R.string.yesterday)
 			else -> "${dateTime.dayOfMonth}/${dateTime.monthOfYear}/${dateTime.year}"
 		}
-		Text(text, modifier = Modifier.fillMaxWidth().padding(16.dp))
+		Text(
+			text, modifier = Modifier
+				.fillMaxWidth()
+				.padding(16.dp)
+		)
 	}
 }

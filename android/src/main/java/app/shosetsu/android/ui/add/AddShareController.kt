@@ -27,10 +27,10 @@ import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.novel.NovelController
+import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
-import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.AAddShareViewModel
 import app.shosetsu.lib.share.ExtensionLink
 import app.shosetsu.lib.share.NovelLink
@@ -275,7 +275,7 @@ fun AddShareContent(
 	} else if (!isQRCodeValid) {
 		ErrorContent(
 			R.string.controller_add_invalid,
-			EmptyDataView.Action(
+			ErrorAction(
 				R.string.retry,
 			) {
 				retry()
@@ -284,12 +284,12 @@ fun AddShareContent(
 	} else if (isNovelAlreadyPresent && novelLink != null) {
 		ErrorContent(
 			stringResource(R.string.controller_add_present_novel, novelLink.name),
-			EmptyDataView.Action(
+			ErrorAction(
 				android.R.string.ok,
 			) {
 				reject()
 			},
-			EmptyDataView.Action(
+			ErrorAction(
 				R.string.controller_add_open_novel,
 			) {
 				openNovel()
@@ -298,7 +298,7 @@ fun AddShareContent(
 	} else if (isStyleAlreadyPresent && styleLink != null) {
 		ErrorContent(
 			stringResource(R.string.controller_add_present_style, styleLink.name),
-			EmptyDataView.Action(
+			ErrorAction(
 				android.R.string.ok,
 			) {
 				reject()
@@ -307,7 +307,7 @@ fun AddShareContent(
 	} else if (isExtAlreadyPresent && extensionLink != null && novelLink == null && styleLink == null) {
 		ErrorContent(
 			stringResource(R.string.controller_add_present_ext, extensionLink.name),
-			EmptyDataView.Action(
+			ErrorAction(
 				android.R.string.ok,
 			) {
 				reject()
@@ -316,7 +316,7 @@ fun AddShareContent(
 	} else if (isRepoAlreadyPresent && repositoryLink != null && novelLink == null && styleLink == null && extensionLink == null) {
 		ErrorContent(
 			stringResource(R.string.controller_add_present_repo, repositoryLink.name),
-			EmptyDataView.Action(
+			ErrorAction(
 				android.R.string.ok,
 			) {
 				reject()

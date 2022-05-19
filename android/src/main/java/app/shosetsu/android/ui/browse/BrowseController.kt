@@ -62,10 +62,10 @@ import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.android.domain.model.local.ExtensionInstallOptionEntity
 import app.shosetsu.android.ui.catalogue.CatalogController
 import app.shosetsu.android.ui.extensionsConfigure.ConfigureExtension
+import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
-import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.lib.Version
 import coil.compose.rememberAsyncImagePainter
@@ -315,7 +315,7 @@ fun BrowseContent(
 		} else {
 			ErrorContent(
 				R.string.empty_browse_message,
-				EmptyDataView.Action(R.string.empty_browse_refresh_action) {
+				ErrorAction(R.string.empty_browse_refresh_action) {
 					refresh()
 				}
 			)

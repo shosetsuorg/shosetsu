@@ -34,12 +34,12 @@ import app.shosetsu.android.common.consts.READER_BAR_ALPHA
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.android.view.compose.DiscreteSlider
+import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.compose.setting.GenericBottomSettingLayout
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderChapterUI
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderDividerUI
-import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
 import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel.ChapterPassage
 import app.shosetsu.android.viewmodel.impl.settings.*
@@ -696,7 +696,7 @@ inline fun ChapterReaderStringContent(
 			ErrorContent(
 				(content as? ChapterPassage.Error)?.throwable!!.message
 					?: "Unknown error",
-				EmptyDataView.Action(R.string.retry) {
+				ErrorAction(R.string.retry) {
 					retryChapter(item)
 				}
 			)
@@ -766,7 +766,7 @@ inline fun ChapterReaderHTMLContent(
 			ErrorContent(
 				(html as? ChapterPassage.Error)?.throwable?.message
 					?: "Unknown error",
-				EmptyDataView.Action(R.string.retry) {
+				ErrorAction(R.string.retry) {
 					retryChapter(item)
 				}
 			)

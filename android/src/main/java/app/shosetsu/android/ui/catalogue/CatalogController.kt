@@ -33,14 +33,10 @@ import app.shosetsu.android.common.enums.NovelCardType.*
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.listeners.CatalogueSearchQuery
 import app.shosetsu.android.ui.novel.NovelController
-import app.shosetsu.android.view.compose.ErrorContent
-import app.shosetsu.android.view.compose.NovelCardCompressedContent
-import app.shosetsu.android.view.compose.NovelCardNormalContent
-import app.shosetsu.android.view.compose.itemsIndexed
+import app.shosetsu.android.view.compose.*
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
-import app.shosetsu.android.view.widget.EmptyDataView
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel.BackgroundNovelAddProgress.ADDED
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel.BackgroundNovelAddProgress.ADDING
@@ -396,7 +392,7 @@ fun CatalogContent(
 			is LoadState.Error ->
 				ErrorContent(
 					refreshState.error.message ?: "Unknown",
-					EmptyDataView.Action(R.string.retry) {
+					ErrorAction(R.string.retry) {
 						items.refresh()
 					}
 				)
@@ -489,7 +485,9 @@ fun CatalogContentNoMore() {
 	) {
 		Text(
 			stringResource(R.string.controller_catalogue_no_more),
-			modifier = Modifier.padding(32.dp).align(Alignment.Center)
+			modifier = Modifier
+				.padding(32.dp)
+				.align(Alignment.Center)
 		)
 	}
 }

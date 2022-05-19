@@ -15,8 +15,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.shosetsu.android.view.widget.EmptyDataView
 import com.github.doomsdayrs.apps.shosetsu.R
+import kotlin.random.Random
 
 /*
  * This file is part of shosetsu.
@@ -38,19 +38,59 @@ import com.github.doomsdayrs.apps.shosetsu.R
 @Preview
 @Composable
 fun PreviewErrorContent() {
-	ErrorContent(R.string.todo, EmptyDataView.Action(R.string.todo) {})
+	ErrorContent(R.string.todo, ErrorAction(R.string.todo) { })
 }
 
+private val ERROR_FACES = listOf(
+	"(･o･;)",
+	"Σ(ಠ_ಠ)",
+	"ಥ_ಥ",
+	"(˘･_･˘)",
+	"(；￣Д￣)",
+	"(･Д･。",
+	"(┳Д┳)",
+	"(☍﹏⁰)｡",
+	"(;Д;)",
+	"╥﹏╥",
+	"(இ﹏இ`｡)",
+	"༼ ༎ຶ ෴ ༎ຶ༽",
+	"(⋟﹏⋞)",
+	"(ノAヽ)",
+	"(つ﹏⊂)",
+	"（πーπ）",
+	"(⊙_◎)",
+	"(゜ロ゜)",
+	"（￣□￣；）",
+	"(_□_；)",
+	"(;Ⅲ□Ⅲ;)",
+	"( p_q)",
+	"Σ(￣ロ￣lll)",
+	"ヽ(´Д`;)ﾉ",
+	"╮(╯_╰)╭",
+	"┐(´д`)┌",
+	"-`д´-",
+	"(´-ι_-｀)",
+	"(・ω・｀)………..",
+	"〴⋋_⋌〵",
+	"（＞μ＜＃）"
+)
+
+fun getRandomErrorFace(): String {
+	return ERROR_FACES[Random.nextInt(ERROR_FACES.size)]
+}
+
+data class ErrorAction(val id: Int, val onClick: () -> Unit)
+
 @Composable
-fun ErrorContent(@StringRes messageRes: Int, vararg actions: EmptyDataView.Action) =
+fun ErrorContent(@StringRes messageRes: Int, vararg actions: ErrorAction) =
 	ErrorContent(stringResource(messageRes), *actions)
 
 /**
  * TODO add "more" button to display error description
  */
 @Composable
-fun ErrorContent(message: String, vararg actions: EmptyDataView.Action) {
-	val face = remember { EmptyDataView.getRandomErrorFace() }
+fun ErrorContent(message: String, vararg actions: ErrorAction) {
+	val face = remember { getRandomErrorFace() }
 	Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 		Column(
 			horizontalAlignment = Alignment.CenterHorizontally,
@@ -69,10 +109,10 @@ fun ErrorContent(message: String, vararg actions: EmptyDataView.Action) {
 			LazyRow {
 				items(actions) {
 					TextButton(
-						onClick = { it.listener.onClick(null) },
+						onClick = { it.onClick() },
 						contentPadding = PaddingValues(16.dp)
 					) {
-						Text(stringResource(it.resId))
+						Text(stringResource(it.id))
 					}
 				}
 			}
