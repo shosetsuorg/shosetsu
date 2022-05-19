@@ -1,10 +1,10 @@
 package app.shosetsu.android.viewmodel.abstracted
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeViewModel
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -35,7 +35,8 @@ abstract class ADownloadsViewModel :
 	ShosetsuViewModel(),
 	IsOnlineCheckViewModel {
 
-	abstract val isDownloadPaused: LiveData<Boolean>
+	abstract val isDownloadPaused: Flow<Boolean>
+	abstract val hasSelectedFlow: Flow<Boolean>
 
 	/**
 	 * Toggles paused downloads
@@ -44,30 +45,23 @@ abstract class ADownloadsViewModel :
 	 */
 	abstract fun togglePause()
 
-	/** Deletes a download */
-	abstract fun delete(downloadUI: DownloadUI)
-
-	/** Pauses a download */
-	abstract fun pause(downloadUI: DownloadUI)
-
-	/** Starts a download */
-	abstract fun start(downloadUI: DownloadUI)
-
-	/** Marks all as pending */
-	abstract fun startAll(list: List<DownloadUI>)
-
-	/** Marks all as paused*/
-	abstract fun pauseAll(list: List<DownloadUI>)
-
 	/**
 	 * Delete all downloads that are not download
 	 */
 	abstract fun deleteAll()
 
-	abstract fun deleteAll(list: List<DownloadUI>)
-
 	/**
 	 * Pauses downloads, waits for downloads to pause, then sets all to pending
 	 */
 	abstract fun setAllPending()
+
+	abstract fun selectBetween()
+	abstract fun invertSelection()
+	abstract fun selectAll()
+	abstract fun deleteSelected()
+	abstract fun pauseSelection()
+	abstract fun restartFailedSelection()
+	abstract fun startSelection()
+	abstract fun toggleSelection(entity: DownloadUI)
+	abstract fun deselectAll()
 }

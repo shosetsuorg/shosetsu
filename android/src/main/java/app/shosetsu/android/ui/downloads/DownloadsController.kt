@@ -17,20 +17,36 @@ package app.shosetsu.android.ui.downloads
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import android.os.Bundle
 import android.view.*
-import androidx.recyclerview.widget.RecyclerView
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.BiasAlignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.common.enums.DownloadStatus.*
-import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.view.controller.BottomMenuBasicFastAdapterRecyclerController
+import app.shosetsu.android.common.ext.collectLA
+import app.shosetsu.android.common.ext.displayOfflineSnackBar
+import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.view.compose.ErrorContent
+import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.ADownloadsViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.select.getSelectExtension
-import com.mikepenz.fastadapter.select.selectExtension
-import org.acra.ACRA
 
 /**
  * Shosetsu
@@ -38,7 +54,7 @@ import org.acra.ACRA
  *
  * @author github.com/doomsdayrs
  */
-class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<DownloadUI>(),
+class DownloadsController : ShosetsuController(),
 	ExtendedFABController {
 
 	override val viewTitleRes: Int = R.string.downloads
@@ -50,9 +66,35 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 		setHasOptionsMenu(true)
 	}
 
-	override fun showEmpty() {
-		super.showEmpty()
-		binding.emptyDataView.show(R.string.empty_downloads_message)
+	override fun onCreateView(
+		inflater: LayoutInflater,
+		container: ViewGroup,
+		savedViewState: Bundle?
+	): View = ComposeView(container.context).apply {
+		setContent {
+			MdcTheme {
+				val items by viewModel.liveData.collectAsState(listOf())
+				val hasSelected by viewModel.hasSelectedFlow.collectAsState(false)
+				val isDownloadPaused by viewModel.isDownloadPaused.collectAsState(false)
+
+				DownloadsContent(
+					items = items,
+					hasSelected = hasSelected,
+					isPaused = isDownloadPaused,
+					pauseSelection = {
+						pauseSelection()
+					},
+					startSelection = { startSelection() },
+					startFailedSelection = { startFailedSelection() },
+					deleteSelected = {
+						deleteSelected()
+					},
+					toggleSelection = {
+						viewModel.toggleSelection(it)
+					}
+				)
+			}
+		}
 	}
 
 	private fun startSelectionAction(): Boolean {
@@ -60,65 +102,6 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 		hideFAB(fab!!)
 		actionMode = activity?.startActionMode(SelectionActionMode())
 		return true
-	}
-
-	private fun calculateBottomSelectionMenuChanges() {
-		val selectedDownloads =
-			fastAdapter.getSelectExtension().selectedItems.toList()
-
-		binding.bottomMenu.findItem(R.id.pause)?.isVisible = selectedDownloads.any {
-			it.status == PENDING
-		}
-
-		binding.bottomMenu.findItem(R.id.restart)?.isVisible = selectedDownloads.any {
-			it.status == ERROR
-		}
-
-		binding.bottomMenu.findItem(R.id.start)?.isVisible = selectedDownloads.any {
-			it.status == PAUSED
-		}
-
-		val isPaused = viewModel.isDownloadPaused.value == true
-
-		binding.bottomMenu.findItem(R.id.delete)?.isVisible = selectedDownloads.any {
-			it.status == PAUSED || it.status == PENDING || it.status == ERROR || (isPaused && it.status == DOWNLOADING)
-		}
-	}
-
-	override fun FastAdapter<DownloadUI>.setupFastAdapter() {
-		selectExtension {
-			isSelectable = true
-			multiSelect = true
-			selectOnLongClick = true
-			setSelectionListener { item, _ ->
-				// Recreates the item view
-				fastAdapter.notifyItemChanged(fastAdapter.getPosition(item))
-
-				// Updates action mode
-				calculateBottomSelectionMenuChanges()
-
-				// Swaps the options menu on top
-				val size = selectedItems.size
-				if (size == 1) startSelectionAction() else if (size == 0) actionMode?.finish()
-			}
-		}
-		setOnPreClickListener FastAdapterClick@{ _, _, item, position ->
-			// Handles one click select when in selection mode
-			selectExtension {
-				if (selectedItems.isNotEmpty()) {
-					if (!item.isSelected) {
-						select(
-							item = item,
-							considerSelectableFlag = true
-						)
-					} else {
-						deselect(position)
-					}
-					return@FastAdapterClick true
-				}
-			}
-			false
-		}
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -144,8 +127,7 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 	}
 
 	override fun onViewCreated(view: View) {
-		viewModel.liveData.observe(catch = {}) { handleRecyclerUpdate(it) }
-		viewModel.isDownloadPaused.observe(this) {
+		viewModel.isDownloadPaused.collectLA(this, catch = {}) {
 			fab?.setText(
 				if (it)
 					R.string.resume
@@ -157,37 +139,13 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 				else R.drawable.ic_pause_circle_outline_24dp
 			)
 		}
-	}
-
-	override fun handleRecyclerException(e: Throwable) {
-		logE("Error occurred", e)
-		makeSnackBar(
-			getString(
-				R.string.controller_downloads_error_list,
-				e.message ?: "Unknown exception"
-			)
-		)?.setAction(R.string.report) {
-			ACRA.errorReporter.handleSilentException(e)
-		}?.show()
-	}
-
-	override fun setupRecyclerView() {
-		recyclerView.setHasFixedSize(false)
-		recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-			override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-				when (newState) {
-					RecyclerView.SCROLL_STATE_DRAGGING -> {
-						fab?.let { hideFAB(it) }
-					}
-					RecyclerView.SCROLL_STATE_SETTLING -> {
-					}
-					RecyclerView.SCROLL_STATE_IDLE -> {
-						fab?.let { showFAB(it) }
-					}
-				}
+		viewModel.hasSelectedFlow.collectLA(this, catch = {}) {
+			if (it) {
+				startSelectionAction()
+			} else {
+				actionMode?.finish()
 			}
-		})
-		super.setupRecyclerView()
+		}
 	}
 
 	override fun onDestroy() {
@@ -207,44 +165,31 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 	}
 
 	private fun startSelection() {
-		fastAdapter.getSelectExtension().selectedItems.filter {
-			it.status == PAUSED || it.status == ERROR
-		}.let {
-			viewModel.startAll(it)
-		}
+		viewModel.startSelection()
 	}
 
 	private fun startFailedSelection() {
-		fastAdapter.getSelectExtension().selectedItems.filter {
-			it.status == ERROR
-		}.let {
-			viewModel.startAll(it)
-		}
+		viewModel.restartFailedSelection()
 	}
 
 	private fun pauseSelection() {
-		fastAdapter.getSelectExtension().selectedItems.let {
-			viewModel.pauseAll(it.toList())
-		}
+		viewModel.pauseSelection()
 	}
 
 	private fun deleteSelected() {
-		fastAdapter.getSelectExtension().selectedItems.let {
-			viewModel.deleteAll(it.toList())
-		}
+		viewModel.deleteSelected()
 	}
 
 	private fun selectAll() {
-		fastAdapter.getSelectExtension().select(true)
+		viewModel.selectAll()
 	}
 
 	private fun invertSelection() {
-		fastAdapter.invertSelection()
+		viewModel.invertSelection()
 	}
 
-
 	private fun selectBetween() {
-		fastAdapter.selectBetween(itemAdapter)
+		viewModel.selectBetween()
 	}
 
 	private inner class SelectionActionMode : ActionMode.Callback {
@@ -254,35 +199,8 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 
 			mode.menuInflater.inflate(R.menu.toolbar_downloads_selected, menu)
 			mode.setTitle(R.string.selection)
-			binding.bottomMenu.show(mode, R.menu.toolbar_downloads_selected_bottom) {
-				when (it.itemId) {
-					R.id.pause -> {
-						pauseSelection()
-						actionMode?.finish()
-						true
-					}
-					R.id.start -> {
-						startSelection()
-						actionMode?.finish()
-						true
-					}
-					R.id.restart -> {
-						startFailedSelection()
-						actionMode?.finish()
-						true
-					}
-					R.id.delete -> {
-						deleteSelected()
-						actionMode?.finish()
-						true
-					}
-					else -> false
-				}
-			}
-			calculateBottomSelectionMenuChanges()
 			return true
 		}
-
 
 		override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean = false
 
@@ -304,11 +222,210 @@ class DownloadsController : BottomMenuBasicFastAdapterRecyclerController<Downloa
 			}
 
 		override fun onDestroyActionMode(mode: ActionMode) {
-			binding.bottomMenu.hide()
-			binding.bottomMenu.clear()
 			actionMode = null
 			showFAB(fab!!)
-			fastAdapter.getSelectExtension().deselect()
+			viewModel.deselectAll()
+		}
+	}
+}
+
+@Composable
+fun DownloadsContent(
+	items: List<DownloadUI>,
+	hasSelected: Boolean,
+	isPaused: Boolean,
+	pauseSelection: () -> Unit,
+	startSelection: () -> Unit,
+	startFailedSelection: () -> Unit,
+	deleteSelected: () -> Unit,
+	toggleSelection: (DownloadUI) -> Unit
+) {
+	if (items.isNotEmpty()) {
+		Box(
+			modifier = Modifier.fillMaxSize()
+		) {
+			LazyColumn(
+				modifier = Modifier.fillMaxSize(),
+				contentPadding = PaddingValues(bottom = 140.dp)
+			) {
+				items(items, key = { it.chapterID }) {
+					DownloadContent(
+						it,
+						onClick = {
+							if (hasSelected)
+								toggleSelection(it)
+						},
+						onLongClick = {
+							toggleSelection(it)
+						}
+					)
+				}
+			}
+
+			if (hasSelected) {
+				val selectedDownloads: List<DownloadUI> by remember {
+					derivedStateOf {
+						items.filter { it.isSelected }
+					}
+				}
+
+				val pauseVisible by remember {
+					derivedStateOf {
+						selectedDownloads.any {
+							it.status == PENDING
+						}
+					}
+				}
+
+				val restartVisible by remember {
+					derivedStateOf {
+						selectedDownloads.any {
+							it.status == ERROR
+						}
+					}
+				}
+
+
+				val startVisible by remember {
+					derivedStateOf {
+						selectedDownloads.any {
+							it.status == PAUSED
+						}
+					}
+				}
+
+				val deleteVisible by remember {
+					derivedStateOf {
+						selectedDownloads.any {
+							it.status == PAUSED || it.status == PENDING || it.status == ERROR || (isPaused && it.status == DOWNLOADING)
+						}
+					}
+				}
+
+				Card(
+					modifier = Modifier
+						.align(BiasAlignment(0f, 0.7f))
+				) {
+					Row {
+						IconButton(
+							onClick = pauseSelection,
+							enabled = pauseVisible
+						) {
+							Icon(
+								painterResource(R.drawable.pause),
+								stringResource(R.string.pause)
+							)
+						}
+						IconButton(
+							onClick = startSelection,
+							enabled = startVisible
+						) {
+							Icon(
+								painterResource(R.drawable.play_arrow),
+								stringResource(R.string.start)
+							)
+						}
+						IconButton(
+							onClick = startFailedSelection,
+							enabled = restartVisible
+						) {
+							Icon(
+								painterResource(R.drawable.refresh),
+								stringResource(R.string.restart)
+							)
+						}
+						IconButton(
+							onClick = deleteSelected,
+							enabled = deleteVisible
+						) {
+							Icon(
+								painterResource(R.drawable.trash),
+								stringResource(R.string.delete)
+							)
+						}
+					}
+				}
+			}
+		}
+	} else {
+		ErrorContent(
+			stringResource(R.string.empty_downloads_message)
+		)
+	}
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun DownloadContent(
+	item: DownloadUI,
+	onClick: () -> Unit,
+	onLongClick: () -> Unit,
+) {
+	Card(
+		border = if (item.isSelected) {
+			BorderStroke(
+				width = (SELECTED_STROKE_WIDTH / 2).dp,
+				color = MaterialTheme.colors.primary
+			)
+		} else {
+			null
+		},
+		modifier = Modifier
+			.combinedClickable(
+				onClick = onClick,
+				onLongClick = onLongClick
+			)
+			.fillMaxWidth()
+	) {
+		Column(
+			Modifier
+				.padding(16.dp)
+				.fillMaxWidth()
+		) {
+			Text(text = item.novelName, modifier = Modifier.fillMaxWidth())
+			Text(text = item.chapterName, modifier = Modifier.fillMaxWidth())
+
+			Row(
+				Modifier
+					.padding(top = 8.dp)
+					.fillMaxWidth()
+			) {
+				val status = item.status
+				if (status == DOWNLOADING || status == WAITING) {
+					LinearProgressIndicator()
+				} else {
+					LinearProgressIndicator(0.0f)
+				}
+
+				Text(
+					text = stringResource(
+						id = when (status) {
+							PENDING -> {
+								R.string.pending
+							}
+							DOWNLOADING -> {
+								R.string.downloading
+							}
+							PAUSED -> {
+								R.string.paused
+							}
+							ERROR -> {
+								R.string.error
+							}
+							WAITING -> {
+								R.string.waiting
+							}
+							else -> {
+								R.string.completed
+							}
+						}
+					),
+					textAlign = TextAlign.End,
+					modifier = Modifier
+						.padding(start = 8.dp)
+						.width(100.dp)
+				)
+			}
 		}
 	}
 }

@@ -785,7 +785,7 @@ fun NovelInfoContent(
 
 			Card(
 				modifier = Modifier
-					.align(BiasAlignment(0f, 0.8f))
+					.align(BiasAlignment(0f, 0.7f))
 			) {
 				Row {
 					IconButton(
@@ -1016,7 +1016,8 @@ fun NovelInfoCoverContent(
 		modifier = modifier
 			.aspectRatio(.75f)
 			.padding(top = 8.dp)
-			.clickable(onClick = onClick).clip(RoundedCornerShape(16.dp)),
+			.clickable(onClick = onClick)
+			.clip(RoundedCornerShape(16.dp)),
 	)
 }
 
@@ -1065,7 +1066,9 @@ fun NovelInfoHeaderContent(
 				modifier = Modifier.fillMaxWidth(),
 			) {
 				Row(
-					modifier = Modifier.fillMaxWidth().padding(end = 8.dp),
+					modifier = Modifier
+						.fillMaxWidth()
+						.padding(end = 8.dp),
 					verticalAlignment = Alignment.CenterVertically
 				) {
 					NovelInfoCoverContent(
@@ -1186,7 +1189,9 @@ fun NovelInfoHeaderContent(
 				}
 
 				LazyRow(
-					modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+					modifier = Modifier
+						.fillMaxWidth()
+						.padding(bottom = 8.dp),
 					horizontalArrangement = Arrangement.Center,
 					contentPadding = PaddingValues(start = 8.dp, end = 8.dp)
 				) {
@@ -1230,7 +1235,9 @@ fun NovelInfoHeaderContent(
 
 			Row(
 				verticalAlignment = Alignment.CenterVertically,
-				modifier = Modifier.padding(8.dp).height(34.dp)
+				modifier = Modifier
+					.padding(8.dp)
+					.height(34.dp)
 			) {
 				Card(
 					onClick = openChapterJump,
@@ -1244,7 +1251,9 @@ fun NovelInfoHeaderContent(
 
 				Card(
 					onClick = openFilter,
-					modifier = Modifier.padding(start = 8.dp).fillMaxHeight()
+					modifier = Modifier
+						.padding(start = 8.dp)
+						.fillMaxHeight()
 				) {
 					Row(
 						verticalAlignment = Alignment.CenterVertically,
