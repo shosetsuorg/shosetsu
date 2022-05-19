@@ -71,6 +71,7 @@ class DownloadsController : ShosetsuController(),
 		container: ViewGroup,
 		savedViewState: Bundle?
 	): View = ComposeView(container.context).apply {
+		setViewTitle()
 		setContent {
 			MdcTheme {
 				val items by viewModel.liveData.collectAsState(listOf())

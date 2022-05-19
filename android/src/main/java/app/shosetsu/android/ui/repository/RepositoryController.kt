@@ -69,6 +69,7 @@ class RepositoryController : ShosetsuController(),
 		savedViewState: Bundle?
 	): View =
 		ComposeView(container.context).apply {
+			setViewTitle()
 			setContent {
 				MdcTheme {
 					val items by viewModel.liveData.collectAsState(listOf())
