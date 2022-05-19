@@ -2,33 +2,32 @@ package app.shosetsu.android.ui.library
 
 import android.content.Context
 import android.view.View
-import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.core.view.isVisible
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.PagerAdapter
-import app.shosetsu.android.common.enums.InclusionState
-import app.shosetsu.android.common.enums.InclusionState.EXCLUDE
-import app.shosetsu.android.common.enums.InclusionState.INCLUDE
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.state.ToggleableState
+import androidx.compose.ui.state.ToggleableState.Off
+import androidx.compose.ui.unit.dp
+import app.shosetsu.android.common.enums.NovelSortType
 import app.shosetsu.android.common.enums.NovelSortType.*
-import app.shosetsu.android.common.enums.TriStateState
-import app.shosetsu.android.common.enums.TriStateState.*
-import app.shosetsu.android.common.ext.collectLA
-import app.shosetsu.android.view.uimodels.base.BaseRecyclerItem
-import app.shosetsu.android.view.uimodels.base.BindViewHolder
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerLibraryBottomMenu0Binding
-import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerLibraryBottomMenu1Binding
-import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottomMenuBinding
-import com.github.doomsdayrs.apps.shosetsu.databinding.TriStateCheckboxBinding
-import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.adapters.ItemAdapter
-import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil
-import com.mikepenz.fastadapter.diff.FastAdapterDiffUtil.calculateDiff
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.pagerTabIndicatorOffset
+import com.google.accompanist.pager.rememberPagerState
+import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.flow.Flow
-import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL as LLM_VERTICAL
+import kotlinx.coroutines.launch
 
 /*
  * This file is part of Shosetsu.
@@ -54,251 +53,309 @@ import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL as LLM_VERTICAL
  * Creates the bottom menu for Novel Controller
  */
 class LibraryFilterMenuBuilder constructor(
-	private val controller: LibraryController,
+	private val context: Context,
 	private val viewModel: ALibraryViewModel
 ) {
-	@Suppress("ProtectedInFinal")
-	protected val layoutInflater = controller.activity!!.layoutInflater
-
+	@OptIn(ExperimentalPagerApi::class)
 	fun build(): View =
-		ControllerNovelInfoBottomMenuBinding.inflate(
-			layoutInflater
-		).also { binding ->
-			binding.viewPager.apply {
-				this.adapter = MenuAdapter(binding.root.context)
-			}
-		}.root
+		ComposeView(
+			context
+		).apply {
+			setContent {
+				MdcTheme {
+					val pagerState = rememberPagerState()
+					val pages =
+						listOf(stringResource(R.string.filter), stringResource(R.string.sort))
+					val scope = rememberCoroutineScope()
 
-	/** Creates the first menu */
-	private inner class Menu0 {
-		inner class ListModel(
-			val textView: AppCompatTextView,
-			val recyclerView: RecyclerView,
-			val liveData: Flow<List<String>>,
-			val retrieveState: () -> HashMap<String, InclusionState>,
-			val setState: (String, InclusionState) -> Unit,
-			val removeState: (String) -> Unit
-		) {
-			/**
-			 * Represents the checkbox to toggle with
-			 * @param inclusionState, The initial state this should start with
-			 */
-			inner class FilterModel(
-				val filterKeyName: String,
-				val inclusionState: InclusionState?
-			) : BaseRecyclerItem<FilterModel.ViewHolder>() {
-				override var identifier: Long
-					get() = filterKeyName.hashCode().toLong()
-					set(_) {}
-
-				inner class ViewHolder(view: View) :
-					BindViewHolder<FilterModel, TriStateCheckboxBinding>(view) {
-
-					override val binding = TriStateCheckboxBinding.bind(view)
-
-					override fun TriStateCheckboxBinding.bindView(
-						item: FilterModel,
-						payloads: List<Any>
-					) {
-						this.root.apply {
-							setText(item.filterKeyName)
-							state = item.inclusionState?.let {
-								val triStateState: TriStateState = when (it) {
-									INCLUDE -> CHECKED
-									EXCLUDE -> UNCHECKED
+					Column {
+						TabRow(
+							// Our selected tab is our current page
+							selectedTabIndex = pagerState.currentPage,
+							// Override the indicator, using the provided pagerTabIndicatorOffset modifier
+							indicator = { tabPositions ->
+								TabRowDefaults.Indicator(
+									Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
+								)
+							}
+						) {
+							// Add tabs for all of our pages
+							pages.forEachIndexed { index, title ->
+								androidx.compose.material.Tab(
+									text = { Text(title) },
+									selected = pagerState.currentPage == index,
+									onClick = {
+										scope.launch {
+											pagerState.scrollToPage(index)
+										}
+									},
+								)
+							}
+						}
+						HorizontalPager(count = pages.size, state = pagerState) {
+							when (it) {
+								0 -> {
+									Menu0Content()
 								}
-								triStateState
-							} ?: IGNORED
-							onStateChangeListeners.add {
-								when (it) {
-									CHECKED -> setState(item.filterKeyName, INCLUDE)
-									UNCHECKED -> setState(item.filterKeyName, EXCLUDE)
-									IGNORED -> removeState(item.filterKeyName)
+								1 -> {
+									Menu1Content()
 								}
 							}
 						}
 					}
-
-					override fun TriStateCheckboxBinding.unbindView(item: FilterModel) {
-						this.root.apply {
-							onStateChangeListeners.clear()
-							clearOnClickListeners()
-							setText(null)
-							state = IGNORED
-						}
-					}
 				}
-
-				override val layoutRes: Int = R.layout.tri_state_checkbox
-				override val type: Int = R.layout.tri_state_checkbox
-				override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
-
-				override fun toString(): String =
-					"FilterModel(key='$filterKeyName', state=$inclusionState, id=$identifier)"
 			}
 		}
 
-		operator fun invoke(container: ViewGroup): View =
-			ControllerLibraryBottomMenu0Binding.inflate(
-				layoutInflater,
-				container,
-				false
-			).apply {
-				buildView()
-			}.root
+	@Composable
+	private fun Menu0Content() {
+		val genres by viewModel.genresFlow.collectAsState(listOf())
+		val genresIsNotEmpty by remember { derivedStateOf { genres.isNotEmpty() } }
+		var genresIsExpanded by remember { mutableStateOf(false) }
 
-		private fun ControllerLibraryBottomMenu0Binding.buildView() {
-			unreadStatus.apply {
-				state = when (viewModel.getUnreadFilter()) {
-					INCLUDE -> CHECKED
-					EXCLUDE -> UNCHECKED
-					null -> IGNORED
-				}
-				onStateChangeListeners.add {
-					when (it) {
-						IGNORED -> viewModel.setUnreadFilter(null)
-						CHECKED -> viewModel.setUnreadFilter(INCLUDE)
-						UNCHECKED -> viewModel.setUnreadFilter(EXCLUDE)
-					}
-				}
+		val tags by viewModel.tagsFlow.collectAsState(listOf())
+		val tagsIsNotEmpty by remember { derivedStateOf { tags.isNotEmpty() } }
+		var tagsIsExpanded by remember { mutableStateOf(false) }
+
+		val authors by viewModel.authorsFlow.collectAsState(listOf())
+		val authorsIsNotEmpty by remember { derivedStateOf { authors.isNotEmpty() } }
+		var authorsIsExpanded by remember { mutableStateOf(false) }
+
+		val artists by viewModel.artistsFlow.collectAsState(listOf())
+		val artistsIsNotEmpty by remember { derivedStateOf { artists.isNotEmpty() } }
+		var artistsIsExpanded by remember { mutableStateOf(false) }
+
+		LazyColumn(
+			modifier = Modifier.fillMaxSize(),
+			contentPadding = PaddingValues(8.dp)
+		) {
+			item {
+				UnreadStatusFilter()
 			}
-			arrayListOf(
-				ListModel(
-					filterGenresLabel,
-					filterGenres,
-					viewModel.genresFlow,
-					{ viewModel.getFilterGenres() },
-					{ s, b -> viewModel.addGenreToFilter(s, b) }
-				) { viewModel.removeGenreFromFilter(it) },
-				ListModel(
-					filterTagsLabel,
-					filterTags,
-					viewModel.tagsFlow,
-					{ viewModel.getFilterTags() },
-					{ s, b -> viewModel.addTagToFilter(s, b) }
-				) { viewModel.removeTagFromFilter(it) },
-				ListModel(
-					filterAuthorsLabel,
-					filterAuthors,
-					viewModel.authorsFlow,
-					{ viewModel.getFilterAuthors() },
-					{ s, b -> viewModel.addAuthorToFilter(s, b) }
-				) { viewModel.removeAuthorFromFilter(it) },
-				ListModel(
-					filterArtistsLabel,
-					filterArtists,
-					viewModel.artistsFlow,
-					{ viewModel.getFilterArtists() },
-					{ s, b -> viewModel.addArtistToFilter(s, b) }
-				) { viewModel.removeArtistFromFilter(it) }
-			).forEach { listModel ->
-				val textView = listModel.textView
-				val recycler = listModel.recyclerView
-				val live = listModel.liveData
-				val retrieve = listModel.retrieveState
 
-				val itemAdapter = ItemAdapter<ListModel.FilterModel>()
-				live.collectLA(controller, catch = {}) { originalList: List<String> ->
-					// Gets the current states
-					val r = retrieve()
-					// Converts and applies states into a newList
-					val newItems = originalList.sorted().map { key ->
-						listModel.FilterModel(
-							key,
-							r[key]
-						)
-					}
-					// Passes update to itemAdapter
-					FastAdapterDiffUtil[itemAdapter] = calculateDiff(itemAdapter, newItems)
-				}
-				recycler.layoutManager = LinearLayoutManager(recycler.context, LLM_VERTICAL, false)
-				recycler.adapter = FastAdapter.with(itemAdapter)
-
-				textView.setOnClickListener {
-					recycler.isVisible = !recycler.isVisible
-					textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
-						if (recycler.isVisible)
-							R.drawable.expand_less
-						else R.drawable.expand_more,
-						0,
-						0,
-						0
-					)
-				}
-
-			}
-		}
-	}
-
-	/** Creates the second menu */
-	private inner class Menu1 {
-		operator fun invoke(container: ViewGroup): View =
-			ControllerLibraryBottomMenu1Binding.inflate(
-				layoutInflater,
-				container,
-				false
-			).apply {
-				buildView()
-			}.root
-
-		private fun ControllerLibraryBottomMenu1Binding.buildView() {
-			val reversed = viewModel.isSortReversed()
-
-			when (viewModel.getSortType()) {
-				BY_TITLE -> byTitle::state
-				BY_UNREAD_COUNT -> byUnreadCount::state
-				BY_ID -> byId::state
-			}.set(if (!reversed) CHECKED else UNCHECKED)
-
-			triStateGroup.addOnStateChangeListener { id, state ->
-				viewModel.setSortType(
-					when (id) {
-						R.id.by_title -> BY_TITLE
-						R.id.by_unread_count -> BY_UNREAD_COUNT
-						R.id.by_id -> BY_ID
-						else -> BY_TITLE
+			if (genresIsNotEmpty)
+				FilterContent(
+					R.string.genres,
+					genres,
+					genresIsExpanded,
+					toggleExpansion = {
+						genresIsExpanded = !genresIsExpanded
+					},
+					getState = {
+						viewModel.getFilterGenreState(it)
+					},
+					cycleState = { name, state ->
+						viewModel.cycleFilterGenreState(name, state)
 					}
 				)
-				viewModel.setIsSortReversed(state != CHECKED)
+
+			if (tagsIsNotEmpty)
+				FilterContent(
+					R.string.tags,
+					tags,
+					tagsIsExpanded,
+					toggleExpansion = {
+						tagsIsExpanded = !tagsIsExpanded
+					},
+					getState = {
+						viewModel.getFilterTagState(it)
+					},
+					cycleState = { name, state ->
+						viewModel.cycleFilterTagState(name, state)
+					}
+				)
+
+			if (authorsIsNotEmpty)
+				FilterContent(
+					R.string.authors,
+					authors,
+					authorsIsExpanded,
+					toggleExpansion = {
+						authorsIsExpanded = !authorsIsExpanded
+					},
+					getState = {
+						viewModel.getFilterAuthorState(it)
+					},
+					cycleState = { name, state ->
+						viewModel.cycleFilterAuthorState(name, state)
+					}
+				)
+
+			if (artistsIsNotEmpty)
+				FilterContent(
+					R.string.artists,
+					artists,
+					artistsIsExpanded,
+					toggleExpansion = {
+						artistsIsExpanded = !artistsIsExpanded
+					},
+					getState = {
+						viewModel.getFilterArtistState(it)
+					},
+					cycleState = { name, state ->
+						viewModel.cycleFilterArtistState(name, state)
+					}
+				)
+		}
+	}
+
+	@Composable
+	private fun UnreadStatusFilter() {
+		SimpleFilter(
+			name = stringResource(R.string.unread_status),
+			getState = {
+				viewModel.getUnreadFilter()
+			},
+			cycleState = { state ->
+				viewModel.cycleUnreadFilter(state)
+			}
+		)
+	}
+
+	@Composable
+	private fun SimpleFilter(
+		name: String,
+		getState: () -> Flow<ToggleableState>,
+		cycleState: (ToggleableState) -> Unit
+	) {
+		Box {
+			val state by getState().collectAsState(Off)
+			Row(
+				verticalAlignment = Alignment.CenterVertically,
+				modifier = Modifier
+					.fillMaxWidth()
+					.clickable {
+						cycleState(state)
+					}
+					.padding(8.dp)
+			) {
+
+				TriStateCheckbox(state = state, null)
+
+				Text(name, modifier = Modifier.padding(start = 8.dp))
 			}
 		}
 	}
 
-	/**
-	 * Menu adapter for the filter menu
-	 */
-	private inner class MenuAdapter(
-		private val context: Context
-	) : PagerAdapter() {
-		override fun getCount(): Int = 2
-		override fun getPageTitle(position: Int): CharSequence? = when (position) {
-			0 -> context.getString(R.string.filter)
-			1 -> context.getString(R.string.sort)
-			else -> null
-		}
-
-		override fun isViewFromObject(view: View, obj: Any): Boolean = view == obj
-
-		override fun instantiateItem(container: ViewGroup, position: Int): Any {
-			when (position) {
-				0 -> {
-					return Menu0().invoke(container).also {
-						container.addView(it)
-					}
-				}
-				1 -> {
-					return Menu1().invoke(container).also {
-						container.addView(it)
-					}
+	@OptIn(ExperimentalMaterialApi::class)
+	private fun LazyListScope.FilterContent(
+		name: Int,
+		items: List<String>,
+		isExpanded: Boolean,
+		toggleExpansion: () -> Unit,
+		getState: (String) -> Flow<ToggleableState>,
+		cycleState: (String, ToggleableState) -> Unit
+	) {
+		item {
+			Card(
+				onClick = toggleExpansion
+			) {
+				Row(
+					modifier = Modifier
+						.fillMaxWidth()
+						.padding(8.dp)
+				) {
+					Icon(
+						painterResource(if (isExpanded) R.drawable.expand_less else R.drawable.expand_more),
+						null
+					)
+					Text(stringResource(name), modifier = Modifier.padding(start = 8.dp))
 				}
 			}
-			return super.instantiateItem(container, position)
 		}
 
-		override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
-			(obj as? View)?.let {
-				container.removeView(it)
+		if (isExpanded) {
+			items(items) { item ->
+				SimpleFilter(
+					name = item,
+					getState = {
+						getState(item)
+					},
+					cycleState = {
+						cycleState(item, it)
+					}
+				)
 			}
 		}
 	}
+
+	@OptIn(ExperimentalMaterialApi::class)
+	@Composable
+	private fun Menu1Item(
+		name: Int,
+		state: NovelSortType,
+		expectedState: NovelSortType,
+		reversed: Boolean
+	) {
+		val isExpected = state == expectedState
+		Box(
+			modifier = Modifier
+				.padding(bottom = 8.dp)
+				.clickable {
+					if (isExpected)
+						viewModel.setIsSortReversed(!reversed)
+					else viewModel.setSortType(expectedState)
+				}
+		) {
+			Row(
+				verticalAlignment = Alignment.CenterVertically,
+				modifier = Modifier
+					.padding(8.dp)
+					.fillMaxWidth()
+			) {
+				Box(modifier = Modifier.size(32.dp)) {
+					if (isExpected)
+						Icon(
+							painterResource(
+								if (reversed) {
+									R.drawable.expand_less
+								} else {
+									R.drawable.expand_more
+								}
+							),
+							null,
+							modifier = Modifier.align(Alignment.Center)
+						)
+				}
+				Text(stringResource(name), modifier = Modifier.padding(start = 8.dp))
+			}
+		}
+	}
+
+	@Composable
+	private fun Menu1Content() {
+		val state by viewModel.getSortType().collectAsState(BY_TITLE)
+		val reversed by viewModel.isSortReversed().collectAsState(false)
+
+		LazyColumn(
+			modifier = Modifier.fillMaxSize(),
+			contentPadding = PaddingValues(8.dp)
+		) {
+			item {
+				Menu1Item(
+					R.string.controller_library_menu_tri_by_title,
+					state,
+					BY_TITLE,
+					reversed
+				)
+			}
+			item {
+				Menu1Item(
+					R.string.controller_library_menu_tri_by_unread,
+					state,
+					BY_UNREAD_COUNT,
+					reversed
+				)
+			}
+			item {
+				Menu1Item(
+					R.string.controller_library_menu_tri_by_id,
+					state,
+					BY_ID,
+					reversed
+				)
+			}
+		}
+	}
+
 }

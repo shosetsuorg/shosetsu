@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.consts.BundleKeys
 import app.shosetsu.android.common.enums.NovelCardType
@@ -32,6 +33,7 @@ import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.library.listener.LibrarySearchQuery
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.novel.NovelController
+import app.shosetsu.android.view.ComposeBottomSheetDialog
 import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.compose.NovelCardCompressedContent
 import app.shosetsu.android.view.compose.NovelCardNormalContent
@@ -275,19 +277,18 @@ class LibraryController
 		fab.setOnClickListener {
 			//bottomMenuRetriever.invoke()?.show()
 			if (bsg == null)
-				bsg = BottomSheetDialog(view!!.context)
+				bsg = ComposeBottomSheetDialog(view!!.context, this, activity as MainActivity)
 			if (bsg?.isShowing == false) {
 				bsg?.apply {
-					setContentView(getBottomMenuView())
+					setContentView(
+						LibraryFilterMenuBuilder(this.context, viewModel).build()
+					)
 				}?.show()
 			}
 		}
 		fab.setText(R.string.filter)
 		fab.setIconResource(R.drawable.filter)
 	}
-
-	private fun getBottomMenuView(): View =
-		LibraryFilterMenuBuilder(this, viewModel).build()
 
 	fun onRefresh() {
 		if (viewModel.isOnline())

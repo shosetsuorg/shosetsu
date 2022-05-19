@@ -17,6 +17,7 @@ package app.shosetsu.android.viewmodel.impl
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import androidx.compose.ui.state.ToggleableState
 import app.shosetsu.android.common.enums.InclusionState
 import app.shosetsu.android.common.enums.InclusionState.EXCLUDE
 import app.shosetsu.android.common.enums.InclusionState.INCLUDE
@@ -380,73 +381,74 @@ class LibraryViewModel(
 		}
 	}
 
-	override fun getSortType(): NovelSortType = novelSortTypeFlow.value
+	override fun getSortType(): Flow<NovelSortType> = novelSortTypeFlow
 
 	override fun setSortType(novelSortType: NovelSortType) {
 		novelSortTypeFlow.value = novelSortType
+		areNovelsReversedFlow.value = false
 	}
 
-	override fun isSortReversed(): Boolean = areNovelsReversedFlow.value
+	override fun isSortReversed(): Flow<Boolean> = areNovelsReversedFlow
 
 	override fun setIsSortReversed(reversed: Boolean) {
 		areNovelsReversedFlow.value = reversed
 	}
 
-	override fun addGenreToFilter(genre: String, inclusionState: InclusionState) {
-		val map = genreFilterFlow.value.copy()
-		map[genre] = inclusionState
-		genreFilterFlow.tryEmit(map)
+	override fun cycleFilterGenreState(genre: String, currentState: ToggleableState) {
+		launchIO {
+			val map = genreFilterFlow.value.copy()
+			currentState.toInclusionState().cycle()?.let {
+				map[genre] = it
+			} ?: map.remove(genre)
+			genreFilterFlow.emit(map)
+		}
 	}
 
-	override fun removeGenreFromFilter(genre: String) {
-		val map = genreFilterFlow.value.copy()
-		map.remove(genre)
-		genreFilterFlow.tryEmit(map.copy())
+	override fun getFilterGenreState(name: String): Flow<ToggleableState> = genreFilterFlow.map {
+		it[name].toToggleableState()
 	}
 
-	override fun getFilterGenres(): HashMap<String, InclusionState> = genreFilterFlow.value
-
-	override fun addAuthorToFilter(author: String, inclusionState: InclusionState) {
-		val map = authorFilterFlow.value.copy()
-		map[author] = inclusionState
-		authorFilterFlow.tryEmit(map)
+	override fun cycleFilterAuthorState(author: String, currentState: ToggleableState) {
+		launchIO {
+			val map = authorFilterFlow.value.copy()
+			currentState.toInclusionState().cycle()?.let {
+				map[author] = it
+			} ?: map.remove(author)
+			authorFilterFlow.emit(map)
+		}
 	}
 
-	override fun removeAuthorFromFilter(author: String) {
-		val map = authorFilterFlow.value.copy()
-		map.remove(author)
-		authorFilterFlow.tryEmit(map.copy())
+	override fun getFilterAuthorState(name: String): Flow<ToggleableState> = authorFilterFlow.map {
+		it[name].toToggleableState()
 	}
 
-	override fun getFilterAuthors(): HashMap<String, InclusionState> = authorFilterFlow.value
-
-	override fun addArtistToFilter(artist: String, inclusionState: InclusionState) {
-		val map = artistFilterFlow.value.copy()
-		map[artist] = inclusionState
-		artistFilterFlow.tryEmit(map)
+	override fun cycleFilterArtistState(artist: String, currentState: ToggleableState) {
+		launchIO {
+			val map = artistFilterFlow.value.copy()
+			currentState.toInclusionState().cycle()?.let {
+				map[artist] = it
+			} ?: map.remove(artist)
+			artistFilterFlow.emit(map)
+		}
 	}
 
-	override fun removeArtistFromFilter(artist: String) {
-		val map = artistFilterFlow.value.copy()
-		map.remove(artist)
-		artistFilterFlow.tryEmit(map.copy())
+	override fun getFilterArtistState(name: String): Flow<ToggleableState> = artistFilterFlow.map {
+		it[name].toToggleableState()
 	}
 
-	override fun getFilterArtists(): HashMap<String, InclusionState> = artistFilterFlow.value
-
-	override fun addTagToFilter(tag: String, inclusionState: InclusionState) {
-		val map = tagFilterFlow.value.copy()
-		map[tag] = inclusionState
-		tagFilterFlow.tryEmit(map)
+	override fun cycleFilterTagState(tag: String, currentState: ToggleableState) {
+		launchIO {
+			val map = tagFilterFlow.value.copy()
+			currentState.toInclusionState().cycle()?.let {
+				map[tag] = it
+			} ?: map.remove(tag)
+			tagFilterFlow.emit(map)
+		}
 	}
 
-	override fun removeTagFromFilter(tag: String) {
-		val map = tagFilterFlow.value.copy()
-		map.remove(tag)
-		tagFilterFlow.tryEmit(map.copy())
+	override fun getFilterTagState(name: String): Flow<ToggleableState> = tagFilterFlow.map {
+		it[name].toToggleableState()
 	}
-
-	override fun getFilterTags(): HashMap<String, InclusionState> = tagFilterFlow.value
 
 	override fun resetSortAndFilters() {
 		genreFilterFlow.value = hashMapOf()
@@ -462,12 +464,30 @@ class LibraryViewModel(
 		launchIO { setNovelUITypeUseCase(cardType) }
 	}
 
-	override fun setUnreadFilter(inclusionState: InclusionState?) {
-		unreadStatusFlow.value = inclusionState
+	override fun cycleUnreadFilter(currentState: ToggleableState) {
+		unreadStatusFlow.value = currentState.toInclusionState().cycle()
 	}
 
-	override fun getUnreadFilter(): InclusionState? = unreadStatusFlow.value
+	override fun getUnreadFilter(): Flow<ToggleableState> =
+		unreadStatusFlow.map { it.toToggleableState() }
 
+	fun ToggleableState.toInclusionState(): InclusionState? = when (this) {
+		ToggleableState.On -> INCLUDE
+		ToggleableState.Off -> null
+		ToggleableState.Indeterminate -> EXCLUDE
+	}
+
+	fun InclusionState?.toToggleableState(): ToggleableState = when (this) {
+		INCLUDE -> ToggleableState.On
+		EXCLUDE -> ToggleableState.Indeterminate
+		null -> ToggleableState.Off
+	}
+
+	fun InclusionState?.cycle(): InclusionState? = when (this) {
+		INCLUDE -> EXCLUDE
+		EXCLUDE -> null
+		null -> INCLUDE
+	}
 
 	override val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
 

@@ -1,6 +1,6 @@
 package app.shosetsu.android.viewmodel.abstracted
 
-import app.shosetsu.android.common.enums.InclusionState
+import androidx.compose.ui.state.ToggleableState
 import app.shosetsu.android.common.enums.NovelCardType
 import app.shosetsu.android.common.enums.NovelSortType
 import app.shosetsu.android.view.uimodels.model.LibraryNovelUI
@@ -61,30 +61,26 @@ abstract class ALibraryViewModel :
 	abstract val columnsInH: Flow<Int>
 	abstract val columnsInV: Flow<Int>
 
-	abstract fun setUnreadFilter(inclusionState: InclusionState?)
-	abstract fun getUnreadFilter(): InclusionState?
+	abstract fun cycleUnreadFilter(currentState: ToggleableState)
+	abstract fun getUnreadFilter(): Flow<ToggleableState>
 
-	abstract fun getSortType(): NovelSortType
+	abstract fun getSortType(): Flow<NovelSortType>
 	abstract fun setSortType(novelSortType: NovelSortType)
 
-	abstract fun isSortReversed(): Boolean
+	abstract fun isSortReversed(): Flow<Boolean>
 	abstract fun setIsSortReversed(reversed: Boolean)
 
-	abstract fun addGenreToFilter(genre: String, inclusionState: InclusionState)
-	abstract fun removeGenreFromFilter(genre: String)
-	abstract fun getFilterGenres(): HashMap<String, InclusionState>
+	abstract fun cycleFilterGenreState(genre: String, currentState: ToggleableState)
+	abstract fun getFilterGenreState(name: String): Flow<ToggleableState>
 
-	abstract fun addAuthorToFilter(author: String, inclusionState: InclusionState)
-	abstract fun removeAuthorFromFilter(author: String)
-	abstract fun getFilterAuthors(): HashMap<String, InclusionState>
+	abstract fun cycleFilterAuthorState(author: String, currentState: ToggleableState)
+	abstract fun getFilterAuthorState(name: String): Flow<ToggleableState>
 
-	abstract fun addArtistToFilter(artist: String, inclusionState: InclusionState)
-	abstract fun removeArtistFromFilter(artist: String)
-	abstract fun getFilterArtists(): HashMap<String, InclusionState>
+	abstract fun cycleFilterArtistState(artist: String, currentState: ToggleableState)
+	abstract fun getFilterArtistState(name: String): Flow<ToggleableState>
 
-	abstract fun addTagToFilter(tag: String, inclusionState: InclusionState)
-	abstract fun removeTagFromFilter(tag: String)
-	abstract fun getFilterTags(): HashMap<String, InclusionState>
+	abstract fun cycleFilterTagState(tag: String, currentState: ToggleableState)
+	abstract fun getFilterTagState(name: String): Flow<ToggleableState>
 
 	abstract fun resetSortAndFilters()
 	abstract fun setViewType(cardType: NovelCardType)
