@@ -34,7 +34,6 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderDivide
 import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
-import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
@@ -358,23 +357,6 @@ class ChapterReaderViewModel(
 
 						prevType = type
 						emit(type)
-					}
-				}
-			)
-		}.onIO()
-	}
-
-	override val currentTitle: Flow<String?> by lazy {
-		flow {
-			emit(null)
-			emitAll(
-				currentPage.transformLatest { page ->
-					liveData.first()[page].let {
-						if (it is ReaderChapterUI)
-							emit(it.title)
-						else if (it is ReaderDividerUI) {
-							emit(application.getString(R.string.next_chapter))
-						}
 					}
 				}
 			)

@@ -25,6 +25,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowInsetsCompat.Type
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
@@ -108,15 +111,9 @@ class ChapterReader
 		TextToSpeech(this, ttsInitListener)
 	}
 
-	override fun onResume() {
-		window.hideBar() // resumes fullscreen when returning to the view
-		super.onResume()
-	}
-
 	/** On Create */
 	public override fun onCreate(savedInstanceState: Bundle?) {
 		logV("")
-		window.hideBar()
 		viewModel.apply {
 			setNovelID(intent.getIntExtra(BUNDLE_NOVEL_ID, -1))
 			viewModel.setCurrentChapterID(intent.getIntExtra(BUNDLE_CHAPTER_ID, -1), true)
@@ -128,8 +125,10 @@ class ChapterReader
 			setTheme(it)
 		}
 		super.onCreate(savedInstanceState)
+		val insetsController = WindowInsetsControllerCompat(window, window.decorView)
+		insetsController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+
 		setContent {
-			val currentTitle by viewModel.currentTitle.collectAsState(null)
 			val items by viewModel.liveData.collectAsState(emptyList())
 			val isHorizontalReading by viewModel.isHorizontalReading.collectAsState(false)
 			val isBookmarked by viewModel.isCurrentChapterBookmarked.collectAsState(false)
@@ -149,7 +148,6 @@ class ChapterReader
 
 			MdcTheme {
 				ChapterReaderContent(
-					currentTitle ?: stringResource(R.string.loading),
 					exit = {
 						finish()
 					},
@@ -237,12 +235,21 @@ class ChapterReader
 					isFocused = isFocused,
 					toggleFocus = viewModel::toggleFocus,
 					onFocusClick = viewModel::onFocusClick,
-					onFocusDoubleClick = viewModel::onFocusDoubleClick
+					onFocusDoubleClick = viewModel::onFocusDoubleClick,
+					onShowNavigation = {
+						insetsController.show(Type.systemBars())
+					}
 					//isTapToScroll = isTapToScroll
 				)
 			}
 		}
 
+		viewModel.isFocused.collectLA(this, catch = {
+		}) {
+			if (it) {
+				insetsController.hide(Type.systemBars())
+			}
+		}
 		viewModel.liveIsScreenRotationLocked.collectLA(this, catch = {}) {
 			if (it)
 				lockRotation()
@@ -333,7 +340,6 @@ class ChapterReader
 fun PreviewChapterReaderContent() {
 	MdcTheme {
 		ChapterReaderContent(
-			title = "Chapter 1",
 			exit = {},
 			items = emptyList(),
 			isHorizontal = false,
@@ -367,7 +373,8 @@ fun PreviewChapterReaderContent() {
 			isFocused = false,
 			onFocusClick = {},
 			onFocusDoubleClick = {},
-			toggleFocus = {}
+			toggleFocus = {},
+			onShowNavigation = {}
 			//isTapToScroll = false
 		)
 	}
@@ -406,7 +413,6 @@ fun PreviewChapterReaderContent() {
 @OptIn(ExperimentalMaterialApi::class, ExperimentalPagerApi::class)
 @Composable
 fun ChapterReaderContent(
-	title: String,
 	exit: () -> Unit,
 	items: List<ReaderUIItem>,
 	isHorizontal: Boolean,
@@ -453,7 +459,8 @@ fun ChapterReaderContent(
 	isFocused: Boolean,
 	toggleFocus: () -> Unit,
 	onFocusClick: () -> Unit,
-	onFocusDoubleClick: () -> Unit
+	onFocusDoubleClick: () -> Unit,
+	onShowNavigation: () -> Unit
 ) {
 
 	val scaffoldState = rememberBottomSheetScaffoldState()
@@ -518,7 +525,7 @@ fun ChapterReaderContent(
 							)
 						}
 
-						if (isTTSCapable)
+						if (isTTSCapable && !isTTSPlaying)
 							IconButton(onClick = onPlayTTS) {
 								Icon(
 									painterResource(R.drawable.ic_baseline_audiotrack_24),
@@ -533,6 +540,13 @@ fun ChapterReaderContent(
 									null
 								)
 							}
+
+						IconButton(onClick = onShowNavigation) {
+							Icon(
+								painterResource(R.drawable.unfold_less),
+								null
+							)
+						}
 					}
 
 					IconButton(onClick = {

@@ -64,8 +64,6 @@ abstract class AChapterReaderViewModel :
 
 	abstract val chapterType: Flow<Novel.ChapterType?>
 
-	abstract val currentTitle: Flow<String?>
-
 	abstract val ttsSpeed: Float
 	abstract val ttsPitch: Float
 
