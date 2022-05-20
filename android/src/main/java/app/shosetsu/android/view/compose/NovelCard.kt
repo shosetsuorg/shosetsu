@@ -20,6 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
@@ -145,9 +146,12 @@ fun NovelCardNormalContent(
 				title,
 				modifier = Modifier
 					.align(Alignment.BottomCenter)
-					.placeholder(visible = isPlaceholder),
+					.placeholder(visible = isPlaceholder)
+					.padding(4.dp),
 				textAlign = TextAlign.Center,
 				color = Color.White,
+				overflow = TextOverflow.Ellipsis,
+				maxLines = 3
 			)
 			if (overlay != null)
 				overlay()
