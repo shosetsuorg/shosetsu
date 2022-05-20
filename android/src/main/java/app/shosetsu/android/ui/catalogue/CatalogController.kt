@@ -424,13 +424,13 @@ fun CatalogContent(
 				(w / when (o) {
 					Configuration.ORIENTATION_LANDSCAPE -> columnsInH
 					else -> columnsInV
-				}).dp
+				}).dp - 8.dp
 
 			val state = rememberLazyGridState()
 			syncFABWithCompose(state, fab)
 			LazyVerticalGrid(
 				columns = GridCells.Adaptive(if (cardType != COMPRESSED) size else 400.dp),
-				contentPadding = PaddingValues(bottom = 200.dp),
+				contentPadding = PaddingValues(bottom = 200.dp, start = 4.dp, end = 4.dp),
 				state = state
 			) {
 				itemsIndexed(
