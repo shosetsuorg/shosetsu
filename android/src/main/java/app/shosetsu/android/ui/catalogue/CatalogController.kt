@@ -237,7 +237,7 @@ class CatalogController(
 					COMPRESSED -> {
 						menu.findItem(R.id.view_type_comp)?.isChecked = true
 					}
-					COZY -> TODO()
+					COZY -> menu.findItem(R.id.view_type_cozy)?.isChecked = true
 				}
 			}
 
@@ -273,6 +273,11 @@ class CatalogController(
 			R.id.view_type_comp -> {
 				item.isChecked = true
 				viewModel.setViewType(COMPRESSED)
+				true
+			}
+			R.id.view_type_cozy -> {
+				item.isChecked = true
+				viewModel.setViewType(COZY)
 				true
 			}
 			R.id.web_view -> {
@@ -459,7 +464,17 @@ fun CatalogContent(
 								)
 						}
 						COZY -> {
-							TODO("Cozy Type type")
+							if (item != null)
+								NovelCardCozyContent(
+									item.title,
+									item.imageURL,
+									onClick = {
+										onClick(item)
+									},
+									onLongClick = {
+										onLongClick(item)
+									}
+								)
 						}
 					}
 				}

@@ -37,6 +37,7 @@ import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.ComposeBottomSheetDialog
 import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.compose.NovelCardCompressedContent
+import app.shosetsu.android.view.compose.NovelCardCozyContent
 import app.shosetsu.android.view.compose.NovelCardNormalContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
@@ -196,7 +197,7 @@ class LibraryController
 				COMPRESSED -> {
 					menu.findItem(R.id.view_type_comp)?.isChecked = true
 				}
-				COZY -> logE("Not cozy card implemented")
+				COZY -> menu.findItem(R.id.view_type_cozy)?.isChecked = true
 			}
 		}
 	}
@@ -255,6 +256,11 @@ class LibraryController
 			R.id.view_type_comp -> {
 				item.isChecked = !item.isChecked
 				viewModel.setViewType(COMPRESSED)
+				true
+			}
+			R.id.view_type_cozy -> {
+				item.isChecked = !item.isChecked
+				viewModel.setViewType(COZY)
 				true
 			}
 			else -> false
@@ -418,7 +424,35 @@ fun LibraryContent(
 							)
 						}
 						COZY -> {
-							TODO("Cozy Type type")
+							this
+							NovelCardCozyContent(
+								item.title,
+								item.imageURL,
+								onClick = {
+									onClick(item)
+								},
+								onLongClick = {
+									onLongClick(item)
+								},
+								overlay = {
+									if (item.unread > 0)
+										Chip(
+											onClick = {
+												toastNovel(item)
+											},
+											modifier = Modifier
+												.align(Alignment.TopStart)
+												.height(24.dp)
+										) {
+											Text(
+												item.unread.toString(),
+												modifier = Modifier.padding(2.dp),
+												fontSize = 14.sp
+											)
+										}
+								},
+								isSelected = item.isSelected
+							)
 						}
 					}
 				}

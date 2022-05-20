@@ -64,6 +64,19 @@ fun PlaceholderNovelCardNormalContent() {
 	)
 }
 
+@Preview
+@Composable
+fun PreviewNovelCardNormalContent() {
+	MdcTheme {
+		NovelCardNormalContent(
+			"Test",
+			"",
+			onClick = {},
+			onLongClick = {}
+		)
+	}
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NovelCardNormalContent(
@@ -142,6 +155,78 @@ fun NovelCardNormalContent(
 	}
 }
 
+@Preview
+@Composable
+fun PreviewNovelCardCozyContent() {
+	MdcTheme {
+		NovelCardCozyContent(
+			"Test",
+			"",
+			onClick = {},
+			onLongClick = {}
+		)
+	}
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun NovelCardCozyContent(
+	title: String,
+	imageURL: String,
+	onClick: () -> Unit,
+	onLongClick: () -> Unit,
+	overlay: @Composable (BoxScope.() -> Unit)? = null,
+	isPlaceholder: Boolean = false,
+	isSelected: Boolean = false,
+) {
+	Card(
+		modifier = Modifier
+			.combinedClickable(
+				onClick = onClick,
+				onLongClick = onLongClick
+			)
+			.padding(4.dp),
+		border = if (isSelected) {
+			BorderStroke(
+				width = (SELECTED_STROKE_WIDTH / 2).dp,
+				color = MaterialTheme.colors.primary
+			)
+		} else {
+			null
+		}
+	) {
+		Box {
+			Column {
+				AsyncImage(
+					ImageRequest.Builder(LocalContext.current)
+						.data(imageURL)
+						.placeholder(R.drawable.animated_refresh)
+						.error(R.drawable.broken_image)
+						.build(),
+					stringResource(R.string.controller_novel_info_image),
+					modifier = Modifier
+						.fillMaxSize()
+						.aspectRatio(.75f)
+						.placeholder(visible = isPlaceholder),
+					contentScale = ContentScale.Crop
+				)
+
+				Text(
+					title,
+					modifier = Modifier
+						.placeholder(visible = isPlaceholder)
+						.padding(4.dp),
+					textAlign = TextAlign.Center,
+					color = Color.White,
+				)
+
+			}
+			if (overlay != null)
+				overlay()
+		}
+	}
+}
+
 
 @Preview
 @Composable
@@ -154,17 +239,6 @@ fun PreviewNovelCardCompressedContent() {
 			onLongClick = {}
 		)
 	}
-}
-
-@Composable
-fun PlaceholderNovelCardCompressedContent() {
-	NovelCardCompressedContent(
-		"",
-		"",
-		onClick = {},
-		onLongClick = {},
-		isPlaceholder = true
-	)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
