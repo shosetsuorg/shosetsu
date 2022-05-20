@@ -16,6 +16,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.RectangleShape
@@ -34,7 +35,6 @@ import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.controller.ShosetsuController
-import app.shosetsu.android.view.controller.base.CollapsedToolBarController
 import app.shosetsu.android.viewmodel.abstracted.AUpdatesViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -67,7 +67,7 @@ import java.util.*
  * @since 09 / 10 / 2021
  * @author Doomsdayrs
  */
-class ComposeUpdatesController : CollapsedToolBarController, ShosetsuController() {
+class ComposeUpdatesController : ShosetsuController() {
 	override val viewTitleRes: Int = R.string.updates
 
 	private val viewModel: AUpdatesViewModel by viewModel()
@@ -82,9 +82,14 @@ class ComposeUpdatesController : CollapsedToolBarController, ShosetsuController(
 		setViewTitle()
 		setContent {
 			MdcTheme {
+				val items: Map<DateTime, List<UpdateCompleteEntity>> by viewModel.items.collectAsState(
+					emptyMap()
+				)
+				val isRefreshing by viewModel.isRefreshing.collectAsState(false)
+
 				UpdatesContent(
-					this@ComposeUpdatesController,
-					viewModel,
+					items = items,
+					isRefreshing = isRefreshing,
 					onRefresh = this@ComposeUpdatesController::onRefresh
 				) { (chapterID, novelID) ->
 					activity?.openChapter(chapterID, novelID)
@@ -103,24 +108,16 @@ class ComposeUpdatesController : CollapsedToolBarController, ShosetsuController(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UpdatesContent(
-	parent: ComposeUpdatesController,
-	viewModel: AUpdatesViewModel,
+	items: Map<DateTime, List<UpdateCompleteEntity>>,
+	isRefreshing: Boolean,
 	onRefresh: () -> Unit,
 	openChapter: (UpdateCompleteEntity) -> Unit
 ) {
-	val result: Map<DateTime, List<UpdateCompleteEntity>> by viewModel.items.collectAsState(emptyMap())
-	val isRefreshing by viewModel.isRefreshing.collectAsState(false)
-
-	// 		parent.logE("Error on handling result in updates", it.exception)
-	//
-	//				ACRA.errorReporter.handleException(it.exception, false)
-	//
-
 	SwipeRefresh(
 		state = SwipeRefreshState(isRefreshing),
 		onRefresh = onRefresh
 	) {
-		if (result.isEmpty()) {
+		if (items.isEmpty()) {
 			Column {
 				ErrorContent(
 					R.string.empty_updates_message,
@@ -129,23 +126,23 @@ fun UpdatesContent(
 					}
 				)
 			}
-		}
+		} else
+			LazyColumn(
+				contentPadding = PaddingValues(bottom = 112.dp, top = 4.dp),
+				verticalArrangement = Arrangement.spacedBy(4.dp)
+			) {
+				items.forEach { (header, updateItems) ->
+					stickyHeader {
+						UpdateHeaderItemContent(header)
+					}
 
-		LazyColumn(
-			contentPadding = PaddingValues(bottom = 112.dp)
-		) {
-			result.forEach { (header, updateItems) ->
-				stickyHeader {
-					UpdateHeaderItemContent(header)
-				}
-
-				items(updateItems, key = { it.chapterID }) {
-					UpdateItemContent(it) {
-						openChapter(it)
+					items(updateItems, key = { it.chapterID }) {
+						UpdateItemContent(it) {
+							openChapter(it)
+						}
 					}
 				}
 			}
-		}
 	}
 }
 
@@ -179,11 +176,13 @@ fun UpdateItemContent(updateUI: UpdateCompleteEntity, onClick: () -> Unit) {
 	Card(
 		modifier = Modifier
 			.fillMaxWidth()
-			.height(72.dp),
-		shape = RectangleShape,
+			.height(72.dp)
+			.padding(start = 8.dp, end = 8.dp),
 		onClick = onClick
 	) {
-		Row {
+		Row(
+			verticalAlignment = Alignment.CenterVertically
+		) {
 			Image(
 				if (updateUI.novelImageURL.isNotEmpty()) {
 					rememberAsyncImagePainter(updateUI.novelImageURL)
@@ -197,7 +196,9 @@ fun UpdateItemContent(updateUI: UpdateCompleteEntity, onClick: () -> Unit) {
 			)
 			Column(
 				verticalArrangement = Arrangement.Center,
-				modifier = Modifier.fillMaxWidth(),
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(4.dp),
 			) {
 				Text(
 					updateUI.chapterName,
@@ -227,7 +228,7 @@ fun UpdateHeaderItemContent(dateTime: DateTime) {
 	Card(
 		modifier = Modifier.fillMaxWidth(),
 		shape = RectangleShape,
-		elevation = 0.dp
+		elevation = 2.dp
 	) {
 		val text = when (dateTime) {
 			DateTime(System.currentTimeMillis()).trimDate() ->
