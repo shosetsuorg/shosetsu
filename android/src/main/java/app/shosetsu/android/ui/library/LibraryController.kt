@@ -15,7 +15,9 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.Chip
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -330,14 +332,12 @@ fun LibraryContent(
 			val w = LocalConfiguration.current.screenWidthDp
 			val o = LocalConfiguration.current.orientation
 
-			val size by remember {
-				derivedStateOf {
-					(w / when (o) {
-						Configuration.ORIENTATION_LANDSCAPE -> columnsInH
-						else -> columnsInV
-					}).dp
-				}
-			}
+			val size =
+				(w / when (o) {
+					Configuration.ORIENTATION_LANDSCAPE -> columnsInH
+					else -> columnsInV
+				}).dp
+
 
 			val state = rememberLazyGridState()
 			if (fab != null)
