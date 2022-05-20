@@ -28,12 +28,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.common.enums.DownloadStatus.*
@@ -363,6 +365,27 @@ fun DownloadsContent(
 	}
 }
 
+@Preview
+@Composable
+fun PreviewDownloadContent() {
+	MdcTheme {
+		DownloadContent(
+			DownloadUI(
+				0,
+				0,
+				"aaa",
+				"Chpater",
+				"Novel",
+				0,
+				DOWNLOADING,
+				false
+			),
+			{},
+			{}
+		)
+	}
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DownloadContent(
@@ -384,26 +407,33 @@ fun DownloadContent(
 				onClick = onClick,
 				onLongClick = onLongClick
 			)
-			.fillMaxWidth()
 	) {
 		Column(
 			Modifier
 				.padding(16.dp)
 				.fillMaxWidth()
 		) {
-			Text(text = item.novelName, modifier = Modifier.fillMaxWidth())
-			Text(text = item.chapterName, modifier = Modifier.fillMaxWidth())
+			Text(
+				text = item.novelName,
+				style = MaterialTheme.typography.body1
+			)
+			Text(
+				text = item.chapterName,
+				style = MaterialTheme.typography.body2
+			)
 
 			Row(
 				Modifier
 					.padding(top = 8.dp)
-					.fillMaxWidth()
+					.fillMaxWidth(),
+				horizontalArrangement = Arrangement.SpaceBetween,
+				verticalAlignment = Alignment.CenterVertically
 			) {
 				val status = item.status
 				if (status == DOWNLOADING || status == WAITING) {
-					LinearProgressIndicator()
+					LinearProgressIndicator(modifier = Modifier.fillMaxWidth(.7f))
 				} else {
-					LinearProgressIndicator(0.0f)
+					LinearProgressIndicator(0.0f, modifier = Modifier.fillMaxWidth(.7f))
 				}
 
 				Text(
@@ -430,9 +460,10 @@ fun DownloadContent(
 						}
 					),
 					textAlign = TextAlign.End,
+					style = MaterialTheme.typography.caption,
 					modifier = Modifier
 						.padding(start = 8.dp)
-						.width(100.dp)
+						.fillMaxWidth()
 				)
 			}
 		}

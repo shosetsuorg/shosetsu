@@ -311,8 +311,11 @@ fun RepositoryContent(
 ) {
 	Card(Modifier.padding(bottom = 8.dp)) {
 		Row(
-			Modifier.padding(8.dp),
-			verticalAlignment = Alignment.CenterVertically
+			Modifier
+				.padding(8.dp)
+				.fillMaxWidth(),
+			verticalAlignment = Alignment.CenterVertically,
+			horizontalArrangement = Arrangement.SpaceBetween
 		) {
 			Column(
 				Modifier.fillMaxWidth(.7f)
