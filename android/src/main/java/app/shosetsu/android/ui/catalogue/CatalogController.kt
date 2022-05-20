@@ -18,16 +18,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
-import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
@@ -37,6 +34,7 @@ import app.shosetsu.android.common.enums.NovelCardType.*
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.listeners.CatalogueSearchQuery
 import app.shosetsu.android.ui.novel.NovelController
+import app.shosetsu.android.view.ComposeBottomSheetDialog
 import app.shosetsu.android.view.compose.*
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
@@ -339,7 +337,11 @@ class CatalogController(
 		fab.setOnClickListener {
 			//bottomMenuRetriever.invoke()?.show()
 			if (bsg == null)
-				bsg = BottomSheetDialog(this.view!!.context)
+				bsg = ComposeBottomSheetDialog(
+					this.view!!.context,
+					this,
+					activity as MainActivity
+				)
 			if (bsg?.isShowing == false) {
 				bsg?.apply {
 					val binding = ComposeViewBinding.inflate(
@@ -348,30 +350,20 @@ class CatalogController(
 						false
 					)
 
-					this.window?.decorView?.let {
-						ViewTreeLifecycleOwner.set(it, this@CatalogController)
-						ViewTreeSavedStateRegistryOwner.set(it, activity as MainActivity)
-					}
-
-					binding.root.apply {
-						setViewCompositionStrategy(
-							ViewCompositionStrategy.DisposeOnLifecycleDestroyed(this@CatalogController)
-						)
-						setContent {
-							MdcTheme(view!!.context) {
-								val items by viewModel.filterItemsLive.collectAsState(emptyList())
-								CatalogFilterMenu(
-									items = items,
-									getBoolean = viewModel::getFilterBooleanState,
-									setBoolean = viewModel::setFilterBooleanState,
-									getInt = viewModel::getFilterIntState,
-									setInt = viewModel::setFilterIntState,
-									getString = viewModel::getFilterStringState,
-									setString = viewModel::setFilterStringState,
-									applyFilter = viewModel::applyFilter,
-									resetFilter = viewModel::resetFilter
-								)
-							}
+					binding.root.setContent {
+						MdcTheme(view!!.context) {
+							val items by viewModel.filterItemsLive.collectAsState(emptyList())
+							CatalogFilterMenu(
+								items = items,
+								getBoolean = viewModel::getFilterBooleanState,
+								setBoolean = viewModel::setFilterBooleanState,
+								getInt = viewModel::getFilterIntState,
+								setInt = viewModel::setFilterIntState,
+								getString = viewModel::getFilterStringState,
+								setString = viewModel::setFilterStringState,
+								applyFilter = viewModel::applyFilter,
+								resetFilter = viewModel::resetFilter
+							)
 						}
 					}
 
