@@ -40,7 +40,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -50,8 +49,6 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
-import androidx.lifecycle.ViewTreeLifecycleOwner
-import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.consts.REPOSITORY_HELP_URL
@@ -63,6 +60,7 @@ import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.android.domain.model.local.ExtensionInstallOptionEntity
 import app.shosetsu.android.ui.catalogue.CatalogController
 import app.shosetsu.android.ui.extensionsConfigure.ConfigureExtension
+import app.shosetsu.android.view.ComposeBottomSheetDialog
 import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.controller.ShosetsuController
@@ -72,7 +70,6 @@ import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.lib.Version
 import coil.compose.rememberAsyncImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.databinding.ComposeViewBinding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -210,32 +207,22 @@ class BrowseController : ShosetsuController(),
 		fab.setOnClickListener {
 			//bottomMenuRetriever.invoke()?.show()
 			if (bsg == null)
-				bsg = BottomSheetDialog(this.view!!.context)
+				bsg = ComposeBottomSheetDialog(
+					this.view!!.context,
+					this,
+					activity as MainActivity
+				)
 			if (bsg?.isShowing == false) {
 				bsg?.apply {
-					val binding = ComposeViewBinding.inflate(
-						this@BrowseController.activity!!.layoutInflater,
-						null,
-						false
-					)
-
-					this.window?.decorView?.let {
-						ViewTreeLifecycleOwner.set(it, this@BrowseController)
-						ViewTreeSavedStateRegistryOwner.set(it, activity as MainActivity)
-					}
-
-					binding.root.apply {
-						setViewCompositionStrategy(
-							ViewCompositionStrategy.DisposeOnLifecycleDestroyed(this@BrowseController)
-						)
-						setContent {
-							MdcTheme(view!!.context) {
-								BrowseControllerFilterMenu(viewModel)
+					setContentView(
+						ComposeView(view!!.context).apply {
+							setContent {
+								MdcTheme {
+									BrowseControllerFilterMenu(viewModel)
+								}
 							}
 						}
-					}
-
-					setContentView(binding.root)
+					)
 
 				}?.show()
 			}
@@ -297,8 +284,14 @@ fun BrowseContent(
 				syncFABWithCompose(state, fab)
 			LazyColumn(
 				modifier = Modifier.fillMaxSize(),
-				contentPadding = PaddingValues(bottom = 198.dp),
-				state = state
+				contentPadding = PaddingValues(
+					bottom = 198.dp,
+					top = 4.dp,
+					start = 8.dp,
+					end = 8.dp
+				),
+				state = state,
+				verticalArrangement = Arrangement.spacedBy(4.dp)
 			) {
 				items(entities, key = { it.id }) { entity ->
 					BrowseExtensionContent(
@@ -376,7 +369,6 @@ fun BrowseExtensionContent(
 ) {
 	Card(
 		onClick = openCatalogue,
-		modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp),
 		shape = RoundedCornerShape(16.dp)
 	) {
 		Column {
