@@ -29,6 +29,8 @@ import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.android.viewmodel.abstracted.ARepositoryViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.RepositoryAddBinding
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.BaseTransientBottomBar.BaseCallback.DISMISS_EVENT_CONSECUTIVE
@@ -84,6 +86,9 @@ class RepositoryController : ShosetsuController(),
 						},
 						addRepository = {
 							launchAddRepositoryDialog(container)
+						},
+						onRefresh = {
+							onRefresh()
 						}
 					)
 				}
@@ -254,22 +259,25 @@ fun RepositoriesContent(
 	items: List<RepositoryUI>,
 	toggleEnabled: (RepositoryUI) -> Unit,
 	onRemove: (RepositoryUI) -> Unit,
-	addRepository: () -> Unit
+	addRepository: () -> Unit,
+	onRefresh: () -> Unit
 ) {
 	if (items.isNotEmpty()) {
-		LazyColumn(
-			contentPadding = PaddingValues(start = 8.dp, top = 8.dp, end = 8.dp, bottom = 64.dp)
-		) {
-			items(items, key = { it.id }) { item ->
-				RepositoryContent(
-					item,
-					onCheckedChange = {
-						toggleEnabled(item)
-					},
-					onRemove = {
-						onRemove(item)
-					}
-				)
+		SwipeRefresh(SwipeRefreshState(false), onRefresh) {
+			LazyColumn(
+				contentPadding = PaddingValues(start = 8.dp, top = 8.dp, end = 8.dp, bottom = 64.dp)
+			) {
+				items(items, key = { it.id }) { item ->
+					RepositoryContent(
+						item,
+						onCheckedChange = {
+							toggleEnabled(item)
+						},
+						onRemove = {
+							onRemove(item)
+						}
+					)
+				}
 			}
 		}
 	} else {
