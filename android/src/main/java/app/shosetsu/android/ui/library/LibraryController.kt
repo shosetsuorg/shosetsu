@@ -5,6 +5,7 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.view.*
 import android.widget.SearchView
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -336,7 +337,7 @@ fun LibraryContent(
 				(w / when (o) {
 					Configuration.ORIENTATION_LANDSCAPE -> columnsInH
 					else -> columnsInV
-				}).dp - 8.dp
+				}).dp - 16.dp
 
 
 			val state = rememberLazyGridState()
@@ -345,8 +346,15 @@ fun LibraryContent(
 
 			LazyVerticalGrid(
 				columns = GridCells.Adaptive(if (cardType != COMPRESSED) size else 400.dp),
-				contentPadding = PaddingValues(bottom = 200.dp, start = 4.dp, end = 4.dp),
-				state = state
+				contentPadding = PaddingValues(
+					bottom = 200.dp,
+					start = 8.dp,
+					end = 8.dp,
+					top = 4.dp
+				),
+				state = state,
+				horizontalArrangement = Arrangement.spacedBy(4.dp),
+				verticalArrangement = Arrangement.spacedBy(4.dp)
 			) {
 				fun onClick(item: LibraryNovelUI) {
 					if (hasSelected)

@@ -292,7 +292,9 @@ fun SearchRowContent(
 	exception: @Composable () -> Unit,
 ) {
 	Column(
-		modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(top = 8.dp),
 	) {
 		Row(
 			modifier = Modifier.padding(8.dp),
@@ -311,7 +313,9 @@ fun SearchRowContent(
 		}
 		loadingBar()
 
-		LazyRow {
+		LazyRow(
+			horizontalArrangement = Arrangement.spacedBy(4.dp)
+		) {
 			items()
 		}
 

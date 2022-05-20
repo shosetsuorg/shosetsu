@@ -44,7 +44,6 @@ import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel.BackgroundNovelAddProgress.ADDED
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel.BackgroundNovelAddProgress.ADDING
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.databinding.ComposeViewBinding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -344,30 +343,26 @@ class CatalogController(
 				)
 			if (bsg?.isShowing == false) {
 				bsg?.apply {
-					val binding = ComposeViewBinding.inflate(
-						this@CatalogController.activity!!.layoutInflater,
-						null,
-						false
-					)
-
-					binding.root.setContent {
-						MdcTheme(view!!.context) {
-							val items by viewModel.filterItemsLive.collectAsState(emptyList())
-							CatalogFilterMenu(
-								items = items,
-								getBoolean = viewModel::getFilterBooleanState,
-								setBoolean = viewModel::setFilterBooleanState,
-								getInt = viewModel::getFilterIntState,
-								setInt = viewModel::setFilterIntState,
-								getString = viewModel::getFilterStringState,
-								setString = viewModel::setFilterStringState,
-								applyFilter = viewModel::applyFilter,
-								resetFilter = viewModel::resetFilter
-							)
+					setContentView(
+						ComposeView(view!!.context).apply {
+							setContent {
+								MdcTheme(view!!.context) {
+									val items by viewModel.filterItemsLive.collectAsState(emptyList())
+									CatalogFilterMenu(
+										items = items,
+										getBoolean = viewModel::getFilterBooleanState,
+										setBoolean = viewModel::setFilterBooleanState,
+										getInt = viewModel::getFilterIntState,
+										setInt = viewModel::setFilterIntState,
+										getString = viewModel::getFilterStringState,
+										setString = viewModel::setFilterStringState,
+										applyFilter = viewModel::applyFilter,
+										resetFilter = viewModel::resetFilter
+									)
+								}
+							}
 						}
-					}
-
-					setContentView(binding.root)
+					)
 
 				}?.show()
 			}
@@ -422,8 +417,15 @@ fun CatalogContent(
 			syncFABWithCompose(state, fab)
 			LazyVerticalGrid(
 				columns = GridCells.Adaptive(if (cardType != COMPRESSED) size else 400.dp),
-				contentPadding = PaddingValues(bottom = 200.dp, start = 4.dp, end = 4.dp),
-				state = state
+				contentPadding = PaddingValues(
+					bottom = 200.dp,
+					start = 8.dp,
+					end = 8.dp,
+					top = 4.dp
+				),
+				state = state,
+				horizontalArrangement = Arrangement.spacedBy(4.dp),
+				verticalArrangement = Arrangement.spacedBy(4.dp)
 			) {
 				itemsIndexed(
 					items,

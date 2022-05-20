@@ -94,8 +94,7 @@ fun NovelCardNormalContent(
 			.combinedClickable(
 				onClick = onClick,
 				onLongClick = onLongClick
-			)
-			.padding(4.dp),
+			),
 		border = if (isSelected) {
 			BorderStroke(
 				width = (SELECTED_STROKE_WIDTH / 2).dp,
@@ -189,8 +188,7 @@ fun NovelCardCozyContent(
 				.combinedClickable(
 					onClick = onClick,
 					onLongClick = onLongClick
-				)
-				.padding(4.dp),
+				),
 			border = if (isSelected) {
 				BorderStroke(
 					width = (SELECTED_STROKE_WIDTH / 2).dp,
@@ -262,8 +260,7 @@ fun NovelCardCompressedContent(
 			.combinedClickable(
 				onClick = onClick,
 				onLongClick = onLongClick
-			)
-			.padding(4.dp),
+			),
 		border = if (isSelected) {
 			BorderStroke(
 				width = (SELECTED_STROKE_WIDTH / 2).dp,
