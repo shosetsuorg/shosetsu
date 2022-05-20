@@ -688,6 +688,13 @@
 
     <string name="controller_repositories_action_remove">Remove repository</string>
 
+    <string name="backup_restore_low_storage">Backup on low storage</string>
+    <string name="backup_restore_low_storage_desc">Allows backups to occur on low storage, also effects cycle worker</string>
+    <string name="backup_restore_low_battery">Backup on low battery</string>
+    <string name="backup_restore_low_battery_desc">Allows backups to occur on low battery, also effects cycle worker</string>
+    <string name="backup_restore_only_idle">Backup only when idle</string>
+    <string name="backup_restore_only_idle_desc">Forces backups to occur when device is idle, also effects cycle worker</string>
+
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>
         <item quantity="zero">No new chapters.</item>

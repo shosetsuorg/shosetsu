@@ -1,6 +1,7 @@
 package app.shosetsu.android.ui.backup
 
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -132,7 +133,6 @@ class BackupSettings : ShosetsuController() {
 	}
 
 
-
 	private fun performExportSelection() {
 		val backupFileName = viewModel.getBackupToExport()
 
@@ -183,7 +183,8 @@ fun BackupSelectionDialog(
 				)
 
 				LazyColumn(
-					modifier = Modifier.padding(bottom = 8.dp, start = 24.dp, end = 24.dp)
+					modifier = Modifier
+						.padding(bottom = 8.dp, start = 24.dp, end = 24.dp)
 						.fillMaxWidth()
 				) {
 					items(options) { option ->
@@ -223,7 +224,7 @@ fun BackupSettingsContent(
 	export: (String) -> Unit
 ) {
 	LazyColumn(
-		contentPadding = PaddingValues(16.dp)
+		contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 64.dp)
 	) {
 
 		item {
@@ -232,7 +233,9 @@ fun BackupSettingsContent(
 				stringResource(R.string.backup_chapters_option_description),
 				viewModel.settingsRepo,
 				SettingKey.ShouldBackupChapters,
-				modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth()
+				modifier = Modifier
+					.padding(bottom = 8.dp)
+					.fillMaxWidth()
 			)
 		}
 
@@ -242,7 +245,9 @@ fun BackupSettingsContent(
 				stringResource(R.string.backup_settings_option_desc),
 				viewModel.settingsRepo,
 				SettingKey.ShouldBackupSettings,
-				modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth()
+				modifier = Modifier
+					.padding(bottom = 8.dp)
+					.fillMaxWidth()
 			)
 		}
 
@@ -252,7 +257,9 @@ fun BackupSettingsContent(
 				stringResource(R.string.backup_only_modified_desc),
 				viewModel.settingsRepo,
 				SettingKey.BackupOnlyModifiedChapters,
-				modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth()
+				modifier = Modifier
+					.padding(bottom = 8.dp)
+					.fillMaxWidth()
 			)
 		}
 
@@ -262,16 +269,57 @@ fun BackupSettingsContent(
 				stringResource(R.string.backup_restore_print_chapters_desc),
 				viewModel.settingsRepo,
 				SettingKey.RestorePrintChapters,
-				modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth()
+				modifier = Modifier
+					.padding(bottom = 8.dp)
+					.fillMaxWidth()
 			)
 		}
+
+		item {
+			SwitchSettingContent(
+				stringResource(R.string.backup_restore_low_storage),
+				stringResource(R.string.backup_restore_low_storage_desc),
+				viewModel.settingsRepo,
+				SettingKey.BackupOnLowStorage,
+				modifier = Modifier
+					.padding(bottom = 8.dp)
+					.fillMaxWidth()
+			)
+		}
+
+		item {
+			SwitchSettingContent(
+				stringResource(R.string.backup_restore_low_battery),
+				stringResource(R.string.backup_restore_low_battery_desc),
+				viewModel.settingsRepo,
+				SettingKey.BackupOnLowBattery,
+				modifier = Modifier
+					.padding(bottom = 8.dp)
+					.fillMaxWidth()
+			)
+		}
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+			item {
+				SwitchSettingContent(
+					stringResource(R.string.backup_restore_only_idle),
+					stringResource(R.string.backup_restore_only_idle_desc),
+					viewModel.settingsRepo,
+					SettingKey.BackupOnlyWhenIdle,
+					modifier = Modifier
+						.padding(bottom = 8.dp)
+						.fillMaxWidth()
+				)
+			}
 
 		item {
 			ButtonSettingContent(
 				stringResource(R.string.backup_now),
 				"",
 				stringResource(R.string.backup_now),
-				onClick = backupNow, modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth()
+				onClick = backupNow, modifier = Modifier
+					.padding(bottom = 8.dp)
+					.fillMaxWidth()
 			)
 		}
 
@@ -283,7 +331,9 @@ fun BackupSettingsContent(
 				stringResource(R.string.restore_now),
 				"",
 				stringResource(R.string.restore_now),
-				modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth()
+				modifier = Modifier
+					.padding(bottom = 8.dp)
+					.fillMaxWidth()
 			) {
 				isDialogShowing = true
 			}
@@ -336,7 +386,9 @@ fun BackupSettingsContent(
 				onClick = {
 					isExportShowing = true
 				},
-				modifier = Modifier.padding(bottom = 8.dp).fillMaxWidth()
+				modifier = Modifier
+					.padding(bottom = 8.dp)
+					.fillMaxWidth()
 			)
 		}
 
