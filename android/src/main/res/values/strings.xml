@@ -379,6 +379,7 @@
     <string name="toast_repository_remove_fail">Failed to remove repository!</string>
     <string name="controller_repositories_snackbar_repo_changed">Refresh the repositories?</string>
     <string name="controller_repositories_snackbar_repo_removed">Repository removed.</string>
+    <string name="controller_repositories_action_add">Add</string>
 
 
     <string name="text_alignment_start">Start</string>

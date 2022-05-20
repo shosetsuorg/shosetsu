@@ -25,7 +25,7 @@ import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.controller.ShosetsuController
-import app.shosetsu.android.view.controller.base.FABController
+import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.android.viewmodel.abstracted.ARepositoryViewModel
@@ -34,7 +34,7 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.RepositoryAddBinding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.composethemeadapter.MdcTheme
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.snackbar.BaseTransientBottomBar.BaseCallback.DISMISS_EVENT_CONSECUTIVE
 import com.google.android.material.snackbar.Snackbar
 import org.acra.ACRA
@@ -62,7 +62,7 @@ import androidx.appcompat.app.AlertDialog.Builder as AlertDialogBuilder
  * 16 / 09 / 2020
  */
 class RepositoryController : ShosetsuController(),
-	FABController {
+	ExtendedFABController {
 	private val viewModel: ARepositoryViewModel by viewModel()
 
 	override val viewTitleRes: Int = R.string.repositories
@@ -243,10 +243,11 @@ class RepositoryController : ShosetsuController(),
 			}?.show()
 	}
 
-	private lateinit var fab: FloatingActionButton
-	override fun manipulateFAB(fab: FloatingActionButton) {
+	private lateinit var fab: ExtendedFloatingActionButton
+	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
 		this.fab = fab
-		fab.setImageResource(R.drawable.add_circle_outline)
+		fab.setIconResource(R.drawable.add_circle_outline)
+		fab.setText(R.string.controller_repositories_action_add)
 
 		// When the FAB is clicked, open a alert dialog to input a new repository
 		fab.setOnClickListener { launchAddRepositoryDialog(it) }
@@ -266,7 +267,7 @@ fun RepositoriesContent(
 	onRemove: (RepositoryUI) -> Unit,
 	addRepository: () -> Unit,
 	onRefresh: () -> Unit,
-	fab: FloatingActionButton
+	fab: ExtendedFloatingActionButton
 ) {
 	if (items.isNotEmpty()) {
 		SwipeRefresh(SwipeRefreshState(false), onRefresh) {

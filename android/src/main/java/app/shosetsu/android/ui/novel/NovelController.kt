@@ -40,7 +40,7 @@ import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
 import app.shosetsu.android.view.compose.LazyColumnScrollbar
 import app.shosetsu.android.view.controller.ShosetsuController
-import app.shosetsu.android.view.controller.base.FABController
+import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.view.openQRCodeShareDialog
 import app.shosetsu.android.view.openShareMenu
@@ -57,7 +57,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.composethemeadapter.MdcTheme
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -90,7 +90,7 @@ import javax.security.auth.DestroyFailedException
  */
 class NovelController(bundle: Bundle) :
 	ShosetsuController(bundle),
-	FABController {
+	ExtendedFABController {
 
 	/*
 	/** Fixes invalid adapter postion errors */
@@ -105,7 +105,7 @@ class NovelController(bundle: Bundle) :
 	override val viewTitle: String
 		get() = ""
 
-	private var resume: FloatingActionButton? = null
+	private var resume: ExtendedFloatingActionButton? = null
 
 	private var actionMode: ActionMode? = null
 
@@ -149,11 +149,11 @@ class NovelController(bundle: Bundle) :
 		}
 	}
 
-	override fun showFAB(fab: FloatingActionButton) {
+	override fun showFAB(fab: ExtendedFloatingActionButton) {
 		if (actionMode == null) super.showFAB(fab)
 	}
 
-	override fun manipulateFAB(fab: FloatingActionButton) {
+	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
 		resume = fab
 		fab.setOnClickListener {
 			viewModel.openLastRead().observe(catch = {
@@ -166,7 +166,8 @@ class NovelController(bundle: Bundle) :
 				}
 			}
 		}
-		fab.setImageResource(R.drawable.play_arrow)
+		fab.setIconResource(R.drawable.play_arrow)
+		fab.setText(R.string.resume)
 	}
 
 	@ExperimentalMaterialApi
