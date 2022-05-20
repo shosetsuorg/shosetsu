@@ -96,6 +96,7 @@ class LibraryController
 	): View = ComposeView(container.context).apply {
 		setContent {
 			MdcTheme {
+				setViewTitle()
 				val items by viewModel.liveData.collectAsState(listOf())
 				val isEmpty by viewModel.isEmptyFlow.collectAsState(false)
 				val hasSelected by viewModel.hasSelectionFlow.collectAsState(false)
