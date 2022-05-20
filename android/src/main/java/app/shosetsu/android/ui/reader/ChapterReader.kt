@@ -19,7 +19,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
@@ -29,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_CHAPTER_ID
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_NOVEL_ID
-import app.shosetsu.android.common.consts.READER_BAR_ALPHA
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.android.view.compose.DiscreteSlider
@@ -475,21 +473,6 @@ fun ChapterReaderContent(
 	}
 
 	BottomSheetScaffold(
-		topBar = {
-			if (!isFocused)
-				TopAppBar(
-					navigationIcon = {
-						IconButton(onClick = exit) {
-							Icon(Icons.Filled.ArrowBack, null)
-						}
-					},
-					title = {
-						Text(title, maxLines = 2, modifier = Modifier.padding(end = 16.dp))
-					},
-					modifier = Modifier.alpha(READER_BAR_ALPHA),
-					backgroundColor = MaterialTheme.colors.background
-				)
-		},
 		scaffoldState = scaffoldState,
 		sheetContent = {
 			Column {
@@ -500,14 +483,17 @@ fun ChapterReaderContent(
 					horizontalArrangement = Arrangement.SpaceBetween,
 					verticalAlignment = Alignment.CenterVertically
 				) {
-					IconButton(onClick = toggleFocus) {
-						Icon(
-							painterResource(R.drawable.ic_baseline_visibility_off_24),
-							null
-						)
+					IconButton(onClick = exit) {
+						Icon(Icons.Filled.ArrowBack, null)
 					}
 
 					Row {
+						IconButton(onClick = toggleFocus) {
+							Icon(
+								painterResource(R.drawable.ic_baseline_visibility_off_24),
+								null
+							)
+						}
 						IconButton(onClick = toggleBookmark) {
 							Icon(
 								painterResource(
