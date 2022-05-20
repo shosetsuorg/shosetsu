@@ -32,6 +32,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -66,6 +67,7 @@ import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
+import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.lib.Version
 import coil.compose.rememberAsyncImagePainter
@@ -146,7 +148,8 @@ class BrowseController : ShosetsuController(),
 					openCatalogue = ::openCatalogue,
 					openSettings = ::openSettings,
 					cancelInstall = viewModel::cancelInstall,
-					isRefreshing = isRefreshing
+					isRefreshing = isRefreshing,
+					fab
 				)
 			}
 		}
@@ -268,7 +271,8 @@ fun PreviewBrowseContent() {
 		{},
 		{},
 		{},
-		false
+		false,
+		fab = null
 	)
 }
 
@@ -281,15 +285,20 @@ fun BrowseContent(
 	openCatalogue: (BrowseExtensionEntity) -> Unit,
 	openSettings: (BrowseExtensionEntity) -> Unit,
 	cancelInstall: (BrowseExtensionEntity) -> Unit,
-	isRefreshing: Boolean
+	isRefreshing: Boolean,
+	fab: ExtendedFloatingActionButton?
 ) {
 	SwipeRefresh(
 		state = SwipeRefreshState(isRefreshing), refresh, modifier = Modifier.fillMaxSize()
 	) {
 		if (entities.isNotEmpty()) {
+			val state = rememberLazyListState()
+			if (fab != null)
+				syncFABWithCompose(state, fab)
 			LazyColumn(
 				modifier = Modifier.fillMaxSize(),
-				contentPadding = PaddingValues(bottom = 198.dp)
+				contentPadding = PaddingValues(bottom = 198.dp),
+				state = state
 			) {
 				items(entities, key = { it.id }) { entity ->
 					BrowseExtensionContent(

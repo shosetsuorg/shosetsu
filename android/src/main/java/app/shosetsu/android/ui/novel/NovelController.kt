@@ -41,6 +41,7 @@ import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_B
 import app.shosetsu.android.view.compose.LazyColumnScrollbar
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.FABController
+import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.view.openQRCodeShareDialog
 import app.shosetsu.android.view.openShareMenu
 import app.shosetsu.android.view.uimodels.model.ChapterUI
@@ -370,6 +371,8 @@ class NovelController(bundle: Bundle) :
 	): View = ComposeView(container.context).apply {
 		setViewTitle()
 		setContent {
+			if (resume != null)
+				syncFABWithCompose(state, resume!!)
 			val novelInfo by viewModel.novelLive.collectAsState(null)
 			val chapters by viewModel.chaptersLive.collectAsState(emptyList())
 			val isRefreshing by viewModel.isRefreshing.collectAsState(false)

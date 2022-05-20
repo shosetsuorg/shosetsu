@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.Chip
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
@@ -39,6 +40,7 @@ import app.shosetsu.android.view.compose.NovelCardCompressedContent
 import app.shosetsu.android.view.compose.NovelCardNormalContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
+import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.view.uimodels.model.LibraryNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -134,6 +136,7 @@ class LibraryController
 						} catch (e: Resources.NotFoundException) {
 						}
 					},
+					fab
 				)
 			}
 		}
@@ -309,7 +312,8 @@ fun LibraryContent(
 	onRefresh: () -> Unit,
 	onOpen: (LibraryNovelUI) -> Unit,
 	toggleSelection: (LibraryNovelUI) -> Unit,
-	toastNovel: (LibraryNovelUI) -> Unit
+	toastNovel: (LibraryNovelUI) -> Unit,
+	fab: ExtendedFloatingActionButton?
 ) {
 	if (!isEmpty) {
 		SwipeRefresh(
@@ -328,9 +332,14 @@ fun LibraryContent(
 				}
 			}
 
+			val state = rememberLazyGridState()
+			if (fab != null)
+				syncFABWithCompose(state, fab)
+
 			LazyVerticalGrid(
 				columns = GridCells.Adaptive(if (cardType != COMPRESSED) size else 400.dp),
-				contentPadding = PaddingValues(bottom = 200.dp)
+				contentPadding = PaddingValues(bottom = 200.dp),
+				state = state
 			) {
 				fun onClick(item: LibraryNovelUI) {
 					if (hasSelected)

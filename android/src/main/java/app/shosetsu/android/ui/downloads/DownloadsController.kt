@@ -25,6 +25,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.BiasAlignment
@@ -42,6 +43,7 @@ import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
+import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.ADownloadsViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -92,7 +94,8 @@ class DownloadsController : ShosetsuController(),
 					},
 					toggleSelection = {
 						viewModel.toggleSelection(it)
-					}
+					},
+					fab
 				)
 			}
 		}
@@ -239,15 +242,20 @@ fun DownloadsContent(
 	startSelection: () -> Unit,
 	startFailedSelection: () -> Unit,
 	deleteSelected: () -> Unit,
-	toggleSelection: (DownloadUI) -> Unit
+	toggleSelection: (DownloadUI) -> Unit,
+	fab: ExtendedFloatingActionButton?
 ) {
 	if (items.isNotEmpty()) {
 		Box(
 			modifier = Modifier.fillMaxSize()
 		) {
+			val state = rememberLazyListState()
+			if (fab != null)
+				syncFABWithCompose(state, fab)
 			LazyColumn(
 				modifier = Modifier.fillMaxSize(),
-				contentPadding = PaddingValues(bottom = 140.dp)
+				contentPadding = PaddingValues(bottom = 140.dp),
+				state = state
 			) {
 				items(items, key = { it.chapterID }) {
 					DownloadContent(

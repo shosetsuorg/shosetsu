@@ -7,6 +7,7 @@ import android.widget.SearchView
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -36,6 +37,7 @@ import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.compose.*
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
+import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel.BackgroundNovelAddProgress.ADDED
@@ -158,7 +160,8 @@ class CatalogController(
 					},
 					onLongClick = {
 						itemLongClicked(it)
-					}
+					},
+					fab
 				)
 			}
 		}
@@ -321,7 +324,9 @@ class CatalogController(
 		}
 	}
 
+	private lateinit var fab: ExtendedFloatingActionButton
 	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
+		this.fab = fab
 		fab.setIconResource(R.drawable.filter)
 		fab.setOnClickListener {
 			//bottomMenuRetriever.invoke()?.show()
@@ -377,7 +382,8 @@ fun CatalogContent(
 	columnsInV: Int,
 	columnsInH: Int,
 	onClick: (ACatalogNovelUI) -> Unit,
-	onLongClick: (ACatalogNovelUI) -> Unit
+	onLongClick: (ACatalogNovelUI) -> Unit,
+	fab: ExtendedFloatingActionButton
 ) {
 	Column(
 		modifier = Modifier.fillMaxSize(),
@@ -414,10 +420,12 @@ fun CatalogContent(
 					}).dp
 				}
 			}
-
+			val state = rememberLazyGridState()
+			syncFABWithCompose(state, fab)
 			LazyVerticalGrid(
 				columns = GridCells.Adaptive(if (cardType != COMPRESSED) size else 400.dp),
-				contentPadding = PaddingValues(bottom = 200.dp)
+				contentPadding = PaddingValues(bottom = 200.dp),
+				state = state
 			) {
 				itemsIndexed(
 					items,

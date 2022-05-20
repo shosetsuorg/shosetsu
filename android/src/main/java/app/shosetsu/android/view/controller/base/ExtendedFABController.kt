@@ -2,10 +2,15 @@ package app.shosetsu.android.view.controller.base
 
 import android.util.Log
 import androidx.annotation.CallSuper
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.percentageScrolled
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import kotlinx.coroutines.launch
 
 /*
  * This file is part of shosetsu.
@@ -88,4 +93,41 @@ fun ExtendedFABController.syncFABWithRecyclerView(
 		}
 	})
 
+@Composable
+fun syncFABWithCompose(
+	state: LazyListState,
+	fab: ExtendedFloatingActionButton
+) {
+	LaunchedEffect(state.isScrollInProgress) {
+		launch {
+			if (state.isScrollInProgress) {
+				fab.hide()
+			} else {
+				fab.show()
+				if (state.firstVisibleItemIndex > 1)
+					fab.shrink()
+				else fab.extend()
+			}
+		}
+	}
+}
+
+@Composable
+fun syncFABWithCompose(
+	state: LazyGridState,
+	fab: ExtendedFloatingActionButton
+) {
+	LaunchedEffect(state.isScrollInProgress) {
+		launch {
+			if (state.isScrollInProgress) {
+				fab.hide()
+			} else {
+				fab.show()
+				if (state.firstVisibleItemIndex > 1)
+					fab.shrink()
+				else fab.extend()
+			}
+		}
+	}
+}
 

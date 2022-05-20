@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -25,6 +26,7 @@ import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.FABController
+import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.android.viewmodel.abstracted.ARepositoryViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -89,7 +91,8 @@ class RepositoryController : ShosetsuController(),
 						},
 						onRefresh = {
 							onRefresh()
-						}
+						},
+						fab
 					)
 				}
 			}
@@ -240,7 +243,9 @@ class RepositoryController : ShosetsuController(),
 			}?.show()
 	}
 
+	private lateinit var fab: FloatingActionButton
 	override fun manipulateFAB(fab: FloatingActionButton) {
+		this.fab = fab
 		fab.setImageResource(R.drawable.add_circle_outline)
 
 		// When the FAB is clicked, open a alert dialog to input a new repository
@@ -260,12 +265,21 @@ fun RepositoriesContent(
 	toggleEnabled: (RepositoryUI) -> Unit,
 	onRemove: (RepositoryUI) -> Unit,
 	addRepository: () -> Unit,
-	onRefresh: () -> Unit
+	onRefresh: () -> Unit,
+	fab: FloatingActionButton
 ) {
 	if (items.isNotEmpty()) {
 		SwipeRefresh(SwipeRefreshState(false), onRefresh) {
+			val state = rememberLazyListState()
+			syncFABWithCompose(state, fab)
 			LazyColumn(
-				contentPadding = PaddingValues(start = 8.dp, top = 8.dp, end = 8.dp, bottom = 64.dp)
+				contentPadding = PaddingValues(
+					start = 8.dp,
+					top = 8.dp,
+					end = 8.dp,
+					bottom = 64.dp
+				),
+				state = state
 			) {
 				items(items, key = { it.id }) { item ->
 					RepositoryContent(

@@ -2,9 +2,12 @@ package app.shosetsu.android.view.controller.base
 
 import android.util.Log
 import androidx.annotation.CallSuper
-import androidx.recyclerview.widget.RecyclerView
+import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import app.shosetsu.android.common.ext.logID
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.launch
 
 /*
  * This file is part of shosetsu.
@@ -62,15 +65,18 @@ interface FABController {
 	fun manipulateFAB(fab: FloatingActionButton)
 }
 
-/**
- * Syncs the FAB with the recyclerview, hiding it when scrolling and showing again when idle
- */
-fun FABController.syncFABWithRecyclerView(recyclerView: RecyclerView, fab: FloatingActionButton) =
-	recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-		override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-			when (newState) {
-				RecyclerView.SCROLL_STATE_DRAGGING -> hideFAB(fab)
-				RecyclerView.SCROLL_STATE_IDLE -> showFAB(fab)
+@Composable
+fun syncFABWithCompose(
+	state: ScrollableState,
+	fab: FloatingActionButton
+) {
+	LaunchedEffect(state.isScrollInProgress) {
+		launch {
+			if (state.isScrollInProgress) {
+				fab.hide()
+			} else {
+				fab.show()
 			}
 		}
-	})
+	}
+}
