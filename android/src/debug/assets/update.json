@@ -1,10 +1,16 @@
 {
-  "latestVersion": "2129",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r2129/shosetsu-r2129-universal.apk",
+  "latestVersion": "2184",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r2184/shosetsu-r2184-universal.apk",
   "releaseNotes": [
-    "- Compressed application codebase into only android",
-    "- Convert Catalog and Search to using android Paging",
-    "- Search view now can increment the query",
-    "- Handle more exceptions properly"
+    "- Fix padding in Advanced & View settings",
+    "- Fix back button not working in legacy navigation",
+    "- Remove indication of click from string chapter reader",
+    "- Add more exception handling",
+    "- Fix migration controller crashing",
+    "- Convert Library to compose",
+    "- Convert Downloads to compose",
+    "- Convert Repositories to compose",
+    "- Sync all FABs again",
+    "- Add new settings for backup"
   ]
 }
