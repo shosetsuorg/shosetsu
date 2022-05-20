@@ -41,7 +41,10 @@ import app.shosetsu.android.ui.library.LibraryController
 import app.shosetsu.android.ui.more.ComposeMoreController
 import app.shosetsu.android.ui.search.SearchController
 import app.shosetsu.android.ui.updates.ComposeUpdatesController
-import app.shosetsu.android.view.controller.base.*
+import app.shosetsu.android.view.controller.base.CollapsedToolBarController
+import app.shosetsu.android.view.controller.base.ExtendedFABController
+import app.shosetsu.android.view.controller.base.LiftOnScrollToolBarController
+import app.shosetsu.android.view.controller.base.TabbedController
 import app.shosetsu.android.viewmodel.abstracted.AMainViewModel
 import com.bluelinelabs.conductor.Conductor.attachRouter
 import com.bluelinelabs.conductor.Controller
@@ -531,17 +534,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 			}
 		}
 
-		val fab = binding.fab
 		val eFab = binding.efab
-		if (from is FABController) {
-			from.hideFAB(fab)
-			from.resetFAB(fab)
-		}
-
-		if (to is FABController) {
-			to.manipulateFAB(fab)
-			to.showFAB(fab)
-		}
 
 		if (from is ExtendedFABController) {
 			from.hideFAB(eFab)
@@ -599,7 +592,6 @@ class MainActivity : AppCompatActivity(), DIAware,
 	): Snackbar =
 		Snackbar.make(binding.coordinator, string, length).apply {
 			when {
-				binding.fab.isVisible -> anchorView = binding.fab
 				binding.efab.isVisible -> anchorView = binding.efab
 				binding.bottomNavigationView.isVisible -> anchorView = binding.bottomNavigationView
 			}

@@ -76,19 +76,6 @@
             tools:text="Test"
             tools:visibility="visible" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="16dp"
-            android:contentDescription="@string/todo"
-            android:foregroundGravity="right"
-            android:visibility="gone"
-            app:layout_anchorGravity="bottom|right|end"
-            tools:text="Test"
-            tools:visibility="visible" />
-
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationView"
             style="?attr/bottomNavigationStyle"
