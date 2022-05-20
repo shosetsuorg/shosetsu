@@ -5,7 +5,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.view.KeyEvent
-import android.view.Menu
 import android.view.MenuItem
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 import androidx.activity.compose.setContent
@@ -295,11 +294,6 @@ class ChapterReader
 			true
 		}
 		else -> super.onOptionsItemSelected(item)
-	}
-
-	override fun onCreateOptionsMenu(menu: Menu): Boolean {
-		menuInflater.inflate(R.menu.toolbar_reader, menu)
-		return super.onCreateOptionsMenu(menu)
 	}
 
 	/**
