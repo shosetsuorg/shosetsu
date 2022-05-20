@@ -183,24 +183,24 @@ fun NovelCardCozyContent(
 	isPlaceholder: Boolean = false,
 	isSelected: Boolean = false,
 ) {
-	Card(
-		modifier = Modifier
-			.combinedClickable(
-				onClick = onClick,
-				onLongClick = onLongClick
-			)
-			.padding(4.dp),
-		border = if (isSelected) {
-			BorderStroke(
-				width = (SELECTED_STROKE_WIDTH / 2).dp,
-				color = MaterialTheme.colors.primary
-			)
-		} else {
-			null
-		}
-	) {
-		Box {
-			Column {
+	Column {
+		Card(
+			modifier = Modifier
+				.combinedClickable(
+					onClick = onClick,
+					onLongClick = onLongClick
+				)
+				.padding(4.dp),
+			border = if (isSelected) {
+				BorderStroke(
+					width = (SELECTED_STROKE_WIDTH / 2).dp,
+					color = MaterialTheme.colors.primary
+				)
+			} else {
+				null
+			}
+		) {
+			Box {
 				AsyncImage(
 					ImageRequest.Builder(LocalContext.current)
 						.data(imageURL)
@@ -215,19 +215,20 @@ fun NovelCardCozyContent(
 					contentScale = ContentScale.Crop
 				)
 
-				Text(
-					title,
-					modifier = Modifier
-						.placeholder(visible = isPlaceholder)
-						.padding(4.dp),
-					textAlign = TextAlign.Center,
-					color = Color.White,
-				)
+				if (overlay != null)
+					overlay()
 
 			}
-			if (overlay != null)
-				overlay()
 		}
+
+		Text(
+			title,
+			modifier = Modifier
+				.placeholder(visible = isPlaceholder)
+				.padding(4.dp),
+			textAlign = TextAlign.Center,
+			color = Color.White,
+		)
 	}
 }
 
