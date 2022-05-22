@@ -217,6 +217,10 @@ class CatalogController(
 		setupObservers()
 	}
 
+	override fun onDestroy() {
+		viewModel.destroy()
+	}
+
 	/***/
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		menu.clear()

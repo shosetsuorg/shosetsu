@@ -7,6 +7,7 @@ import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
 import kotlinx.coroutines.flow.Flow
+import javax.security.auth.Destroyable
 
 /*
  * This file is part of shosetsu.
@@ -31,7 +32,7 @@ import kotlinx.coroutines.flow.Flow
  * Used for showing the specific listing of a novel
  */
 abstract class ACatalogViewModel :
-	ShosetsuViewModel() {
+	ShosetsuViewModel(), Destroyable {
 
 	/**
 	 * What is currently being displayed to the user

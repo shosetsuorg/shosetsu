@@ -64,8 +64,8 @@ class CatalogViewModel(
 
 	private val filterDataFlow by lazy { MutableStateFlow<Map<Int, Any>>(hashMapOf()) }
 
-	private val iExtensionFlow: Flow<IExtension> by lazy {
-		extensionIDFlow.mapNotNull { extensionID ->
+	private val iExtensionFlow: Flow<IExtension?> by lazy {
+		extensionIDFlow.map { extensionID ->
 			getExtensionUseCase(extensionID)
 		}.distinctUntilChanged()
 	}
@@ -75,32 +75,38 @@ class CatalogViewModel(
 	 */
 	private val extensionIDFlow: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
 
-	private val pagerFlow: Flow<Pager<Int, ACatalogNovelUI>> by lazy {
+	private val pagerFlow: Flow<Pager<Int, ACatalogNovelUI>?> by lazy {
 		iExtensionFlow.transformLatest { ext ->
-			emitAll(queryFlow.transformLatest { query ->
-				emitAll(filterDataFlow.transformLatest { data ->
-					emit(
-						Pager(
-							PagingConfig(10)
-						) {
-							if (query == null)
-								getCatalogueListingData(ext, data)
-							else loadCatalogueQueryDataUseCase(
-								ext,
-								query,
-								data
-							)
-						}
+			if (ext == null) {
+				emit(null)
+			} else {
+				emitAll(queryFlow.transformLatest { query ->
+					emitAll(filterDataFlow.transformLatest { data ->
+						emit(
+							Pager(
+								PagingConfig(10)
+							) {
+								if (query == null)
+									getCatalogueListingData(ext, data)
+								else loadCatalogueQueryDataUseCase(
+									ext,
+									query,
+									data
+								)
+							}
+						)
+					}
 					)
-				}
-				)
-			})
+				})
+			}
 		}.onIO()
 	}
 
 	override val itemsLive: Flow<PagingData<ACatalogNovelUI>> by lazy {
 		pagerFlow.transformLatest {
-			emitAll(it.flow)
+			if (it != null)
+				emitAll(it.flow)
+			else emit(PagingData.empty())
 		}.catch {
 			exceptionFlow.emit(it)
 		}.cachedIn(viewModelScope)
@@ -110,9 +116,9 @@ class CatalogViewModel(
 		MutableStateFlow(null)
 	}
 
-	private val filterItemsFlow by lazy {
+	private val filterItemsFlow: Flow<List<Filter<*>>> by lazy {
 		iExtensionFlow.mapLatest {
-			it.searchFiltersModel.toList()
+			it?.searchFiltersModel?.toList() ?: emptyList()
 		}.onIO()
 	}
 
@@ -124,16 +130,17 @@ class CatalogViewModel(
 	}
 
 	override val hasSearchLive: Flow<Boolean> by lazy {
-		iExtensionFlow.mapLatest { it.hasSearch }.onIO()
+		iExtensionFlow.mapLatest { it?.hasSearch ?: false }.onIO()
 	}
 
 	override val extensionName: Flow<String> by lazy {
-		iExtensionFlow.mapLatest { it.name }.onIO()
+		iExtensionFlow.mapLatest { it?.name ?: "" }.onIO()
 	}
 
 	override fun getBaseURL(): Flow<String> =
 		flow {
-			emitAll(iExtensionFlow.mapLatest { it.baseURL })
+			val ext = iExtensionFlow.first() ?: return@flow
+			emit(ext.baseURL)
 		}.onIO()
 
 	override fun setExtensionID(extensionID: Int) {
@@ -268,6 +275,13 @@ class CatalogViewModel(
 	override val columnsInV: Flow<Int> by lazy {
 		loadNovelUIColumnsPUseCase().onIO()
 	}
+
+	override fun destroy() {
+		extensionIDFlow.tryEmit(-1)
+		resetView()
+		System.gc()
+	}
+
 
 	/**
 	 * @param [V] Value type of the hash map
