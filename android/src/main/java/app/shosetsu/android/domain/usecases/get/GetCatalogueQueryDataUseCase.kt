@@ -56,6 +56,8 @@ class GetCatalogueQueryDataUseCase(
 			}
 		}
 
+		private var lastPage: List<ACatalogNovelUI> = emptyList()
+
 		override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ACatalogNovelUI> {
 			return withContext(Dispatchers.IO) {
 				try {
@@ -94,7 +96,12 @@ class GetCatalogueQueryDataUseCase(
 
 					// This API defines that it's out of data when a page returns empty. When out of
 					// data, we return `null` to signify no more pages should be loaded
-					val nextKey = if (response.isNotEmpty()) pageNumber + 1 else null
+					val nextKey = if (response.isNotEmpty() && lastPage != response) {
+						lastPage = response
+						pageNumber + 1
+					} else {
+						null
+					}
 					LoadResult.Page(
 						data = response,
 						prevKey = prevKey,
