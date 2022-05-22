@@ -152,10 +152,8 @@ class LibraryController
 	}
 
 	private fun startObservation() {
-		viewModel.liveData.collectLA(this, catch = {
-			// IGNORE, main observation will handle
-		}) {
-			fab?.isVisible = it.isNotEmpty()
+		viewModel.isEmptyFlow.collectLA(this, catch = {}) {
+			fab?.isVisible = !it
 		}
 
 		viewModel.hasSelectionFlow.collectLatestLA(this, catch = {}) {
