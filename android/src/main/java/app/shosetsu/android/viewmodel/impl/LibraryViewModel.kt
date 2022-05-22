@@ -38,6 +38,7 @@ import app.shosetsu.android.view.uimodels.model.LibraryNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.runBlocking
 import java.util.Locale.getDefault as LGD
 
 /**
@@ -492,6 +493,8 @@ class LibraryViewModel(
 	override val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
 
 	override fun setQuery(s: String) {
-		queryFlow.tryEmit(s)
+		runBlocking {
+			queryFlow.emit(s)
+		}
 	}
 }
