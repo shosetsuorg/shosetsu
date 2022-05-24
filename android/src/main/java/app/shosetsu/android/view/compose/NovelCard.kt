@@ -158,6 +158,17 @@ fun NovelCardNormalContent(
 	}
 }
 
+@Composable
+fun PlaceholderNovelCardCozyContent() {
+	NovelCardCozyContent(
+		"",
+		"",
+		onClick = {},
+		onLongClick = {},
+		isPlaceholder = true
+	)
+}
+
 @Preview
 @Composable
 fun PreviewNovelCardCozyContent() {

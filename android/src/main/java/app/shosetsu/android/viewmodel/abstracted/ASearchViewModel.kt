@@ -37,6 +37,8 @@ abstract class ASearchViewModel : ShosetsuViewModel(), Destroyable {
 
 	abstract val listings: Flow<List<SearchRowUI>>
 
+	abstract val isCozy: Flow<Boolean>
+
 	abstract fun initQuery(string: String)
 	abstract fun setQuery(query: String)
 	abstract fun applyQuery(query: String)

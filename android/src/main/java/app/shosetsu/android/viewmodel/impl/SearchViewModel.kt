@@ -3,11 +3,13 @@ package app.shosetsu.android.viewmodel.impl
 import android.database.sqlite.SQLiteException
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
+import app.shosetsu.android.common.enums.NovelCardType
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.usecases.SearchBookMarkedNovelsUseCase
 import app.shosetsu.android.domain.usecases.get.GetCatalogueQueryDataUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtensionUseCase
+import app.shosetsu.android.domain.usecases.load.LoadNovelUITypeUseCase
 import app.shosetsu.android.domain.usecases.load.LoadSearchRowUIUseCase
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
@@ -40,6 +42,7 @@ import kotlinx.coroutines.flow.*
  */
 class SearchViewModel(
 	private val searchBookMarkedNovelsUseCase: SearchBookMarkedNovelsUseCase,
+	private val loadNovelUITypeUseCase: LoadNovelUITypeUseCase,
 	private val loadSearchRowUIUseCase: LoadSearchRowUIUseCase,
 	private val loadCatalogueQueryDataUseCase: GetCatalogueQueryDataUseCase,
 	private val getExtensionUseCase: GetExtensionUseCase
@@ -85,6 +88,10 @@ class SearchViewModel(
 		}.map { list ->
 			list.sortedBy { it.name }.sortedBy { it.extensionID != -1 }.sortedBy { it.hasError }
 		}.onIO()
+	}
+
+	override val isCozy: Flow<Boolean> by lazy {
+		loadNovelUITypeUseCase().map { it == NovelCardType.COZY }.onIO()
 	}
 
 	override fun initQuery(string: String) {

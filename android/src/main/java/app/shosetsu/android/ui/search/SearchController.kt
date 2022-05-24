@@ -32,7 +32,9 @@ import androidx.paging.compose.itemsIndexed
 import app.shosetsu.android.common.consts.BundleKeys
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.novel.NovelController
+import app.shosetsu.android.view.compose.NovelCardCozyContent
 import app.shosetsu.android.view.compose.NovelCardNormalContent
+import app.shosetsu.android.view.compose.PlaceholderNovelCardCozyContent
 import app.shosetsu.android.view.compose.PlaceholderNovelCardNormalContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
@@ -87,8 +89,11 @@ class SearchController(bundle: Bundle) : ShosetsuController(bundle) {
 		setContent {
 			MdcTheme {
 				val rows by viewModel.listings.collectAsState(listOf())
+				val isCozy by viewModel.isCozy.collectAsState(false)
+
 				SearchContent(
 					rows = rows,
+					isCozy = isCozy,
 					getChildren = {
 						if (it == -1)
 							viewModel.searchLibrary()
@@ -181,6 +186,7 @@ fun PreviewSearchContent() {
 @Composable
 fun SearchContent(
 	rows: List<SearchRowUI>,
+	isCozy: Boolean = false,
 	getChildren: (id: Int) -> Flow<PagingData<ACatalogNovelUI>>,
 	getException: (id: Int) -> Flow<Throwable?>,
 	onClick: (ACatalogNovelUI) -> Unit,
@@ -215,15 +221,24 @@ fun SearchContent(
 								modifier = Modifier.width(105.dp)
 							) {
 								if (novelUI != null)
-									NovelCardNormalContent(
+									if (!isCozy)
+										NovelCardNormalContent(
+											novelUI.title,
+											novelUI.imageURL,
+											onClick = {
+												onClick(novelUI)
+											},
+											onLongClick = {},
+										)
+									else NovelCardCozyContent(
 										novelUI.title,
 										novelUI.imageURL,
 										onClick = {
 											onClick(novelUI)
 										},
-										onLongClick = {},
+										onLongClick = {}
 									)
-								else PlaceholderNovelCardNormalContent()
+								else if (!isCozy) PlaceholderNovelCardNormalContent() else PlaceholderNovelCardCozyContent()
 							}
 						}
 					},
