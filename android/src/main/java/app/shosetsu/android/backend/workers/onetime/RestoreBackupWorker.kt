@@ -46,7 +46,6 @@ import org.kodein.di.instance
 import org.luaj.vm2.LuaError
 import java.io.BufferedInputStream
 import java.io.IOException
-import java.net.UnknownHostException
 import java.util.zip.GZIPInputStream
 
 /*
@@ -308,68 +307,67 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 						throw e.cause!!
 					else throw e
 				}
+			} catch (e: HTTPException) {
+				logE("Failed to load novel from website", e)
+
+				notify(
+					getString(
+						R.string.restore_notification_content_novel_fail_parse_http,
+						"${e.code}"
+					),
+					2000 + bNovelURL.hashCode()
+				) {
+					setContentTitle(name)
+					setLargeIcon(bitmap)
+					setNotOngoing()
+				}
+				delay(5000)
+				return
+			} catch (e: IOException) {
+				logE("Failed to locate website", e)
+
+				notify(
+					getString(
+						R.string.restore_notification_content_novel_fail_io,
+						"${e.message}"
+					),
+					2000 + bNovelURL.hashCode()
+				) {
+					setContentTitle(name)
+					setLargeIcon(bitmap)
+					setNotOngoing()
+				}
+				delay(5000)
+				return
+			} catch (e: LuaError) {
+				logE("Lua error occurred", e)
+
+				notify(
+					getString(
+						R.string.restore_notification_content_novel_fail_lua,
+						"${e.message}"
+					),
+					2000 + bNovelURL.hashCode()
+				) {
+					setContentTitle(name)
+					setLargeIcon(bitmap)
+					setNotOngoing()
+				}
+				delay(5000)
+				return
 			} catch (e: Exception) {
-				when (e) {
-					is HTTPException -> {
-						logE("Failed to load novel from website", e)
+				logE("Failed to parse novel while loading backup", e)
 
-						notify(
-							getString(
-								R.string.restore_notification_content_novel_fail_parse_http,
-								"${e.code}"
-							),
-							2000 + bNovelURL.hashCode()
-						) {
-							setContentTitle(name)
-							setLargeIcon(bitmap)
-							setNotOngoing()
-						}
+				ACRA.errorReporter.handleException(e, false)
 
-					}
-					is UnknownHostException -> {
-						logE("Failed to locate website", e)
-
-						notify(
-							getString(
-								R.string.restore_notification_content_novel_fail_parse_host,
-								"${e.message}"
-							),
-							2000 + bNovelURL.hashCode()
-						) {
-							setContentTitle(name)
-							setLargeIcon(bitmap)
-							setNotOngoing()
-						}
-					}
-					is LuaError -> {
-						logE("Lua error occurred", e)
-
-						notify(
-							getString(
-								R.string.restore_notification_content_novel_fail_lua,
-								"${e.message}"
-							),
-							2000 + bNovelURL.hashCode()
-						) {
-							setContentTitle(name)
-							setLargeIcon(bitmap)
-							setNotOngoing()
-						}
-					}
-					else -> {
-						logE("Failed to parse novel while loading backup", e)
-
-						ACRA.errorReporter.handleException(e, false)
-
-						notify(
-							R.string.restore_notification_content_novel_fail_parse,
-							2000 + bNovelURL.hashCode()
-						) {
-							setContentTitle(name)
-							setLargeIcon(bitmap)
-							setNotOngoing()
-						}
-					}
+				notify(
+					R.string.restore_notification_content_novel_fail_parse,
+					2000 + bNovelURL.hashCode()
+				) {
+					setContentTitle(name)
+					setLargeIcon(bitmap)
+					setNotOngoing()
+					addReportErrorAction(applicationContext, 2000 + bNovelURL.hashCode(), e)
 				}
 				delay(5000)
 				return
@@ -422,10 +420,12 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 			return
 		}
 
-		notify(R.string.restore_notification_content_chapters_load) {
+		notify(R.string.restore_notification_content_chapters_load)
+		{
 			setContentTitle(name)
 			setLargeIcon(bitmap)
 		}
+
 		// get the chapters
 		val repoChapters = chaptersRepo.getChapters(targetNovelID)
 
@@ -441,7 +441,8 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 			)
 		}
 
-		notify(R.string.restore_notification_content_settings_restore) {
+		notify(R.string.restore_notification_content_settings_restore)
+		{
 			setContentTitle(name)
 			setLargeIcon(bitmap)
 			removeProgress()
