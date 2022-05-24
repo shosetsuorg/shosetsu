@@ -157,23 +157,11 @@ dependencies {
 	implementation("com.google.android.material:material:1.6.0")
 
 	// Androidx
-	//implementation("androidx.constraintlayout:constraintlayout:2.1.3")
 	implementation("androidx.work:work-runtime:2.7.1")
 	implementation("androidx.work:work-runtime-ktx:2.7.1")
-	implementation("androidx.gridlayout:gridlayout:1.0.0")
-	//implementation("androidx.preference:preference-ktx:1.2.0")
-	//implementation("androidx.recyclerview:recyclerview:1.2.1")
-	//implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
 	implementation("androidx.appcompat:appcompat:1.4.1")
-	//implementation("androidx.multidex:multidex:2.0.1")
-	//implementation("androidx.biometric:biometric:1.1.0") TODO biometric unlocking
 	implementation("androidx.annotation:annotation:1.3.0")
-	//implementation("androidx.cardview:cardview:1.0.0")
-	//implementation("androidx.browser:browser:1.4.0")
 	implementation("androidx.core:core-ktx:1.7.0")
-
-
-
 	implementation("androidx.collection:collection-ktx:1.2.0")
 	implementation("androidx.core:core-splashscreen:1.0.0-rc01")
 
@@ -194,7 +182,6 @@ dependencies {
 	implementation("org.jetbrains:annotations:23.0.0")
 
 	// Core libraries
-	//val shosetsuLibVersion: String by extra
 	implementation("org.luaj:luaj-jse:3.0.1")
 	implementation("com.github.shosetsuorg:kotlin-lib:76c4750")
 	implementation("org.jsoup:jsoup:1.14.3")
@@ -202,12 +189,6 @@ dependencies {
 
 	// Image loading
 	implementation("io.coil-kt:coil-compose:2.0.0")
-
-	//TODO GITHUB sign in to save backup data to cloud
-	//implementation "com.github.kohsuke:github-api:github-api-1.95"
-
-	// Markdown view
-	//implementation("us.feras.mdv:markdownview:1.1.0")
 
 	// Time control
 	implementation("joda-time:joda-time:2.10.14")
@@ -224,24 +205,13 @@ dependencies {
 
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1")
 
-	// Showcase
-	//implementation("com.github.deano2390:MaterialShowcaseView:1.3.4")
-
-	// A cuter view
-	//implementation("com.github.shosetsuorg:DiscreteScrollView:1.5.1")
-
 	// Error logging
 	val acraVersion = "5.8.3"
 	fun acra(module: String, version: String = acraVersion) =
 		"ch.acra:$module:$version"
 
 	implementation(acra("acra-http"))
-	//implementation(acra("acra-mail"))
 	implementation(acra("acra-dialog"))
-
-	// Auto service
-	//kapt("com.google.auto.service:auto-service:+")
-	//compileOnly("com.google.auto.service:auto-service-annotations:1.0")
 
 	// Conductor
 	val conductorVersion = "3.1.4"
@@ -249,22 +219,11 @@ dependencies {
 		"com.bluelinelabs:$module:$version"
 
 	implementation(conductor("conductor"))
-	implementation(conductor("conductor-support", "3.0.0-rc2"))
 	implementation(conductor("conductor-androidx-transition"))
 	implementation(conductor("conductor-archlifecycle"))
 
-	// FastScroll
-	//implementation("com.github.turing-tech:MaterialScrollBar:13.3.4")
-
 	// Material Intro https://github.com/heinrichreimer/material-intro#standard-slide-simpleslide
 	implementation("com.heinrichreimersoftware:material-intro:2.0.0")
-
-	// Color Picker
-	//implementation("com.github.skydoves:colorpickerview:2.2.3")
-
-	// Seek bar
-//	implementation(project(mapOf("path" to ":bubbleseekbar")))
-//	implementation("com.github.shosetsuorg:Bubbleseekbar:2dae010baf")
 
 	// Room
 	val roomVersion = "2.5.0-alpha01"
@@ -278,7 +237,7 @@ dependencies {
 	implementation(room("room-paging"))
 
 	// Guava cache
-	implementation("com.google.guava:guava:31.0.1-android")
+	implementation("com.google.guava:guava:31.1-android")
 
 	// kode-in
 	val kodeinVersion = "7.6.0"
@@ -307,10 +266,6 @@ dependencies {
 		kapt("com.github.MatrixDev.Roomigrant:RoomigrantCompiler:$roomigrantVersion")
 	}
 
-	// Banner
-	//implementation("com.github.shosetsuorg:MaterialBanner:2.0.7")
-
-
 	// Compose
 	val androidxCompose = "1.1.1"
 	fun androidxCompose(
@@ -333,12 +288,7 @@ dependencies {
 	implementation(androidxCompose("animation-core", "animation"))
 
 	// - Material
-	implementation("androidx.compose.material:material:1.1.1")
-	//implementation("androidx.compose.material:material-ripple:1.0.2")
-
-	//- Material design icons
-	//implementation("androidx.compose.material:material-icons-core:1.0.2")
-	//implementation("androidx.compose.material:material-icons-extended:1.0.2")
+	implementation(androidxCompose("material"))
 
 	// - accompanist
 	val accompanistVersion = "0.23.1"
@@ -353,9 +303,6 @@ dependencies {
 	implementation(accompanist("accompanist-pager-indicators"))
 	//- Integration with observables
 	implementation("androidx.compose.runtime:runtime-livedata:1.1.1")
-
-	//- UI Tests
-	//androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.2")
 
 	// MDC Adapter
 	implementation("com.google.android.material:compose-theme-adapter:1.1.10")
@@ -382,6 +329,4 @@ dependencies {
 	implementation(paging("paging-runtime"))
 	implementation(paging("paging-compose", "1.0.0-alpha14"))
 	implementation(kotlin("reflect"))
-
-
 }
