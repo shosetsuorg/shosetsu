@@ -303,6 +303,22 @@ class DownloadWorker(
 		}
 	}
 
+	/**
+	 * Delay maintainer. Handles a progressively increasing delay.
+	 */
+	class ProgressiveDelayer {
+		private var count: Int = 0
+
+		suspend fun delay() {
+			count + 1
+			delay(count * 100L)
+		}
+
+		fun reset() {
+			count = 0
+		}
+	}
+
 	override suspend fun doWork(): Result {
 		logI("Starting loop")
 		if (isDownloadPaused())
@@ -314,6 +330,12 @@ class DownloadWorker(
 				addCancelAction()
 			}
 
+			/**
+			 * Maintains delay between each app launch, ensuring there is breathing room before
+			 * each call.
+			 */
+			val launcherDelayer = ProgressiveDelayer()
+
 			// Will not run if there are no downloads to complete or if the download is paused
 			while (getDownloadCount() >= 1 && !isDownloadPaused()) {
 				/*
@@ -321,8 +343,13 @@ class DownloadWorker(
 				* Otherwise will continue, and the while loop will keep repeating until
 				* there is space to launch another thread for downloading.
 				* */
-				if (activeJobs <= getDownloadThreads())
+				if (activeJobs <= getDownloadThreads()) {
 					launchDownload()
+					launcherDelayer.reset() // Reset delay, starting the cycle over again
+				}
+
+				// Delay the process, progressively longer to lower system usage
+				launcherDelayer.delay()
 			}
 
 			// Wait untill there are no more jobs
