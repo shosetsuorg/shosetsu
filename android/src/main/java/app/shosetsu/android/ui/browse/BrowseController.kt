@@ -515,7 +515,7 @@ fun BrowseExtensionContent(
 					) {
 						Text(
 							stringResource(R.string.obsolete_extension),
-							color = colorResource(R.color.design_default_color_on_primary),
+							color = colorResource(com.google.android.material.R.color.design_default_color_on_primary),
 							modifier = Modifier
 								.padding(8.dp)
 								.align(Alignment.Center)
