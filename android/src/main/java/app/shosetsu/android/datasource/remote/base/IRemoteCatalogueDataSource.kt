@@ -2,8 +2,9 @@ package app.shosetsu.android.datasource.remote.base
 
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
+import app.shosetsu.lib.exceptions.HTTPException
 import org.luaj.vm2.LuaError
-import javax.net.ssl.SSLException
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -31,7 +32,7 @@ interface IRemoteCatalogueDataSource {
 	/**
 	 * Runs a search on an extension
 	 */
-	@Throws(LuaError::class)
+	@Throws(HTTPException::class, IOException::class, LuaError::class)
 	suspend fun search(
 		ext: IExtension,
 		query: String,
@@ -42,7 +43,7 @@ interface IRemoteCatalogueDataSource {
 	/**
 	 * Loads a listings data from an extension
 	 */
-	@Throws(SSLException::class, LuaError::class)
+	@Throws(HTTPException::class, LuaError::class, IOException::class)
 	suspend fun loadListing(
 		ext: IExtension,
 		listingIndex: Int,

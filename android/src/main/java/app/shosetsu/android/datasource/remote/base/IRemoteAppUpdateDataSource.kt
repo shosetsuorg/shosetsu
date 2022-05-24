@@ -3,8 +3,7 @@ package app.shosetsu.android.datasource.remote.base
 import app.shosetsu.android.common.EmptyResponseBodyException
 import app.shosetsu.android.domain.model.local.AppUpdateEntity
 import app.shosetsu.lib.exceptions.HTTPException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -34,8 +33,7 @@ interface IRemoteAppUpdateDataSource {
 	@Throws(
 		EmptyResponseBodyException::class,
 		HTTPException::class,
-		SocketTimeoutException::class,
-		UnknownHostException::class,
+		IOException::class
 	)
 	suspend fun loadAppUpdate(): AppUpdateEntity
 
@@ -47,8 +45,7 @@ interface IRemoteAppUpdateDataSource {
 		@Throws(
 			EmptyResponseBodyException::class,
 			HTTPException::class,
-			SocketTimeoutException::class,
-			UnknownHostException::class,
+			IOException::class
 		)
 		suspend fun downloadAppUpdate(update: AppUpdateEntity): ByteArray
 	}
