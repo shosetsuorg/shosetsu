@@ -297,6 +297,7 @@ class DownloadWorker(
 					toast { e.message ?: "Download error" }
 				}
 			} finally {
+				delay(500) // Runtime delay
 				activeJobs-- // Drops active job count once completed task
 				activeExtensions.remove(downloadEntity.extensionID)
 			}
