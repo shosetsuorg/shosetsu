@@ -329,7 +329,8 @@ fun SearchRowContent(
 		loadingBar()
 
 		LazyRow(
-			horizontalArrangement = Arrangement.spacedBy(4.dp)
+			horizontalArrangement = Arrangement.spacedBy(4.dp),
+			contentPadding = PaddingValues(start = 4.dp)
 		) {
 			items()
 		}
