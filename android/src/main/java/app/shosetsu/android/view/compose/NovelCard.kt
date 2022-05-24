@@ -236,7 +236,8 @@ fun NovelCardCozyContent(
 				.placeholder(visible = isPlaceholder)
 				.padding(4.dp),
 			textAlign = TextAlign.Center,
-			color = Color.White,
+			overflow = TextOverflow.Ellipsis,
+			maxLines = 3
 		)
 	}
 }
