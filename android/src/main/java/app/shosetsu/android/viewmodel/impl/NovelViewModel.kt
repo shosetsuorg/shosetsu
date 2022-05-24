@@ -596,7 +596,6 @@ class NovelViewModel(
 			list.filter { it.isSelected }.forEach {
 				updateChapterUseCase(it.copy(bookmarked = false))
 			}
-			selectAll()
 			clearSelectedSuspend()
 		}
 	}
