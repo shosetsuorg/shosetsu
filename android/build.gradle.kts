@@ -183,9 +183,8 @@ dependencies {
 
 	// Core libraries
 	implementation("org.luaj:luaj-jse:3.0.1")
-	implementation("com.github.shosetsuorg:kotlin-lib:76c4750")
-	implementation("org.jsoup:jsoup:1.14.3")
-
+	implementation("com.github.shosetsuorg:kotlin-lib:eab1ed7")
+	implementation("org.jsoup:jsoup:1.15.1")
 
 	// Image loading
 	implementation("io.coil-kt:coil-compose:2.0.0")
