@@ -1,4 +1,566 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Shosetsu</string>
+    <string name="catalogue">Catálogo</string>
+    <string name="website">Sitio web</string>
+    <string name="patreon">Apoya al desarrollador en Patreon</string>
+    <string name="header_text">¡Lectura de novelas directamente en su teléfono!</string>
+    <string name="todo">HACER</string>
+    <string name="navigation_drawer_open">Cajón de navegación abierto</string>
+    <string name="navigation_drawer_close">Cerrar el cajón de navegación</string>
+    <string name="search">Buscar</string>
+    <string name="configure_parsers">configure_parsers</string>
+    <string name="filter">Filtrar</string>
+    <!-- View Titles -->
+    <string name="my_library">Mi biblioteca</string>
+    <string name="updates">Actualizaciones</string>
+    <string name="catalogues">Catálogos</string>
+    <string name="extensions">Extensiones</string>
+    <string name="downloads">Descargas</string>
+    <string name="configure_extensions">Configurar extensiones</string>
+    <string name="migration_view">Vista de migración</string>
+    <string name="settings">Ajustes</string>
+    <string name="settings_download">Configuración > Descargar</string>
+    <string name="settings_update">Configuración > Actualizar</string>
+    <string name="settings_view">Configuración > Vista</string>
+    <string name="settings_reader">Configuración > Lector</string>
+    <string name="settings_advanced">Configuración > Avanzado</string>
+    <string name="settings_info">Configuración > Información</string>
+    <string name="settings_backup">Configuración > Copia de seguridad</string>
+    <!-- Reader Settings -->
+    <string name="reader_theme">Tema del lector</string>
+    <string name="text_size">Tamaño del texto</string>
+    <string name="paragraph_spacing">Espaciado de párrafos</string>
+    <string name="paragraph_indent">Sangría de párrafo</string>
+    <string name="novel_title">Título:</string>
+    <string name="novel_author">Autor(es):</string>
+    <string name="novel_description">Descripción</string>
+    <string name="download">Descargar</string>
+    <string name="download_directory">Directorio de descargas</string>
+    <string name="position">Posición:</string>
+    <string name="backup_now">Copia ahora</string>
+    <string name="pending">Pendiente</string>
+    <string name="downloaded">Descargado</string>
+    <string name="bookmark">Marcador</string>
+    <string name="large">Grande</string>
+    <string name="medium">Medio</string>
+    <string name="small">Pequeña</string>
+    <string name="none">Ninguno</string>
+    <string name="select_all">Seleccionar todo</string>
+    <string name="delete_selected">Eliminar seleccionado</string>
+    <string name="deselect_all">Deseleccionar todo</string>
+    <string name="download_selected">Descargar seleccionados</string>
+    <string name="retry">Reintentar</string>
+    <string name="mark_as">Marcar como</string>
+    <string name="read">Leer</string>
+    <string name="unread">No leído</string>
+    <string name="reading">Leyendo</string>
+    <string name="no_change">Ningún cambio</string>
+    <string name="download_speed">Velocidad de Descarga</string>
+    <!-- Migration View -->
+    <string name="starting">A partir de</string>
+    <!-- Settings Info -->
+    <string name="version">Versión</string>
+    <string name="report_bug">Reportar un error</string>
+    <string name="author">Autor</string>
+    <string name="disclaimer">Descargo de responsabilidad</string>
+    <string name="license">Licencia</string>
+    <string name="theme">Tema:</string>
+    <string name="select_between">Seleccionar entre</string>
+    <string name="selection_options">Opciones de seleccion</string>
+    <string name="remove">Eliminar</string>
+    <string name="no_results_found">¡No se han encontrado resultados!</string>
+    <string name="library_updates">Actualizaciones de la biblioteca</string>
+    <string name="update_now">Actualizar ahora</string>
+    <string name="migrate_sources">Migrar fuentes</string>
+    <string name="confirm">Confirmar</string>
+    <string name="selection">Selección</string>
+    <string name="map_to">Mapa para</string>
+    <string name="migrate_source">Migrar fuente</string>
+    <string name="site">Sitio:</string>
+    <string name="artist_s">Artista(s):</string>
+    <string name="reading_status">Estado de lectura</string>
+    <string name="publishing_state">Estado de publicación:</string>
+    <string name="marking_mode">Método de marcado</string>
+    <string-array name="marking_names">
+        <item>En vista seleccionado</item>
+        <item>On View Scrolled</item>
+    </string-array>
+    <string-array name="sizes_no_none">
+        <item>@string/small</item>
+        <item>@string/medium</item>
+        <item>@string/large</item>
+    </string-array>
+    <string-array name="sizes_with_none">
+        <item>@string/none</item>
+        <item>@string/small</item>
+        <item>@string/medium</item>
+        <item>@string/large</item>
+    </string-array>
+    <!-- Publishing status-->
+    <string name="paused">Pausado</string>
+    <string name="completed">Terminado</string>
+    <string name="publishing">Publicación</string>
+    <string name="unknown">Desconocido</string>
+    <string name="restore_now">Restaurar ahora</string>
+    <!-- Backup and restore -->
+    <string name="reading_file">Leyendo</string>
+    <string name="settings_reader_tap_to_scroll_title">Toque para desplazarse</string>
+    <string name="inverted_swipe">Deslizamiento de capítulo invertido</string>
+    <string name="press_to_continue_to_next_chapter">Presione para continuar con el siguiente capítulo.</string>
+    <string name="open_in_webview">Abrir en WebView</string>
+    <string name="open_in_browser">Abrir en el navegador</string>
+    <string name="open_in">Abrir en</string>
+    <string name="browser">Navegador</string>
+    <string name="reader">Lector</string>
+    <string name="default_reader">Lector por defecto</string>
+    <string name="markdown_reader">Lector MarkDown</string>
+    <string name="chapters_unread_label">Capítulos no leídos: %d</string>    <!-- Deprecated -->
+    <plurals name="toast_unread_count">
+        <item quantity="one">%d capítulo no leído.</item>
+        <item quantity="other">%d capítulos sin leer.</item>
+    </plurals>
+    <string name="remove_novel_cache">Eliminar caché de las novelas</string>
+    <!-- App Update -->
+    <string name="notification_app_update_check">Buscar actualizaciones</string>
+    <string name="notification_app_update_available">Actualización de la aplicación disponible</string>
+    <string name="notification_app_update_available_version">%s actualización disponible</string>
+    <string name="notification_app_update_install_title">Instalación de la actualización de la aplicación</string>
+    <string name="notification_app_update_loading">Cargando actualización de la aplicación</string>
+    <string name="notification_app_update_downloading">Descargando la actualización de la aplicación</string>
+    <string name="notification_app_update_install">Instalar la actualización de la aplicación</string>
+    <string name="check_out_latest_app">¡Vea la última versión disponible de la aplicación!</string>
+    <string name="app_update_unavaliable">Actualización de la aplicación no disponible</string>
+    <string name="check_updates_later">Actualización no disponible. ¡Vuelva a buscar actualizaciones más tarde!</string>
+    <string name="update_app_now_question">¿Actualizar la aplicación ahora?</string>
+    <string name="update_dismiss">Quizás mas tarde</string>
+    <string name="update_not_interested">Eh, no me interesa</string>
+    <!-- Theme -->
+    <string name="night">Noche</string>
+    <string name="light">Claro</string>
+    <string name="sepia">Sepia</string>
+    <string name="dark">Oscuro</string>
+    <string name="light_dark">Gris</string>
+    <string name="custom">Personalizado</string>
+    <string-array name="reader_themes">
+        <item>@string/night</item>
+        <item>@string/light</item>
+        <item>@string/sepia</item>
+        <item>@string/dark</item>
+        <item>@string/light_dark</item>
+        <item>@string/custom</item>
+    </string-array>
+    <!-- Shortcuts -->
+    <string name="refresh_shortcut">Buscar actualizaciones</string>
+    <string name="action_global_search_hint">Búsqueda global…</string>
+    <!-- Download options -->
+    <string name="download_next_chapter">Descargar el próximo capítulo</string>
+    <string name="download_next_5_chapters">Descargar los próximos 5 capítulos</string>
+    <string name="download_next_10_chapters">Descargar los próximos 10 capítulos</string>
+    <string name="download_custom_chapters">Descarga personalizada</string>
+    <string name="download_all_chapters">Descargar todo</string>
+    <string name="download_unread_chapters">Descargar capítulos sin leer</string>
+    <string-array name="chapters_download_options">
+        <item>@string/download_all_chapters</item>
+        <item>@string/download_unread_chapters</item>
+        <item>@string/download_custom_chapters</item>
+        <item>@string/download_next_10_chapters</item>
+        <item>@string/download_next_5_chapters</item>
+        <item>@string/download_next_chapter</item>
+    </string-array>
+    <string name="processing_data">Procesando datos</string>
+    <string name="update_complete">Actualización completada</string>
+    <string name="update_not_found">No se encontraron actualizaciones</string>
+    <string name="download_fail_delete">No se pudo eliminar, la próxima descarga se corregirá</string>
+    <string name="you_not_online">No estás conectado</string>
+    <string name="download_chapter_updates">Descargar actualizaciones de capítulos</string>
+    <string name="update_list">Lista de actualizacion</string>
+    <string name="updated_extensions_list">Lista actualizada!</string>
+    <string name="uninstall">Desinstalar</string>
+    <string name="install">Instalar</string>
+    <string name="update">Actualizar</string>
+    <string name="sus_scripts">Estos scripts parecen sospechosos. Confirme acciones. La cancelación desinstalará todo</string>
+    <string name="accept">Aceptar</string>
+    <string name="disable">Desactivar</string>
+    <string name="accept_temp">Temporal</string>
+    <string name="sus_script_title">Secuencias de comandos sospechosas</string>
+    <string name="action">Acción</string>
+    <string name="accept_all">Aceptar todo</string>
+    <string name="temp_all">Temp todo</string>
+    <string name="disable_all">Desactivar todo</string>
+    <string name="uninstall_all">Desinstalar todo</string>
+    <string name="enabled">Activado</string>
+    <string name="disabled">Deshabilitado</string>
+    <string name="reload_list">Recargar lista</string>
+    <string name="chapters">Capítulos</string>
+    <string name="results">Resultados</string>
+    <string name="today">Hoy</string>
+    <string name="yesterday">Ayer</string>
+    <string name="view">Vista</string>
+    <string name="advanced">Avanzado</string>
+    <string name="info">Información</string>
+    <string name="backup">Copia de Seguridad</string>
+    <string name="loading">Cargando…</string>
+    <string name="amoled">Amoled</string>
+    <string name="crashCommentPromt">Informe del accidente</string>
+    <string name="crashDialogText">La aplicación ha fallado. ¿Enviar un informe a los desarrolladores?</string>
+    <string name="columns_of_novel_listing_p">Columnas de novelas en modo retrato</string>
+    <string name="columns_of_novel_listing_h">Columnas de novelas en modo paisaje</string>
+    <string name="columns_zero_automatic">0 significa automático</string>
+    <string name="normal">Normal</string>
+    <string name="compressed">Comprimido</string>
+    <string name="comfy">Confortable</string>
+    <string name="novel_card_type_selector_title">Tipo de tarjeta nuevo</string>
+    <string name="novel_card_type_selector_desc">Cambiar entre una cuadrícula o una lista para mostrar novelas</string>
+    <string name="library_update">Actualización de la biblioteca</string>
+    <string name="catalogue_default_load">Página de inicio predeterminada</string>
+    <string name="catalogue_default_load_desc">Cuando se selecciona un catálogo, esto es lo que carga</string>
+    <string name="invalid_selection">Selección invalida</string>
+    <string name="set_to">Ajustado a:</string>
+    <string name="suggest_token">En la configuración avanzada, aplique un token de github para la vista elegante uwu</string>
+    <string name="no_empty_key">¡No puedo aceptar una llave vacía!</string>
+    <string name="github_token_input_desc">Habilite Shosetsu para acceder a Github con un token de Github</string>
+    <string name="github_token_input_title">GitHub Oauth</string>
+    <string name="apply">Solicitar</string>
+    <string name="reset">Reiniciar</string>
+    <string name="listings">Listados</string>
+    <string name="search_filters">Buscar</string>
+    <string name="updating">Actualizando</string>
+    <!-- Introduction -->
+    <string name="intro_title_greet">¡Bienvenido a Shosetsu!</string>
+    <string name="intro_what_is_app">¿Qué es Shosetsu?</string>
+    <string name="intro_what_is_app_desc">Shosetsu es una aplicación Android gratuita y de código abierto para leer novelas.</string>
+    <string name="intro_perm_title">Permisos</string>
+    <string name="intro_perm_desc">Shosetsu necesita permisos de lectura / escritura para descargar capítulos</string>
+    <string name="intro_happy_end">¡Maravilloso!</string>
+    <string name="intro_happy_end_desc">Eso es todo para una introducción, ¡Lee bien!</string>
+    <string name="text_custom_color">Color de texto</string>
+    <string name="text_custom_background_color">Color de fondo</string>
+    <string name="custom_theme_warn">Solo para tema personalizado</string>
+    <string name="backup_settings_option">¿Configuración de copia de seguridad?</string>
+    <string name="backup_chapters_option">¿Capítulos de respaldo?</string>
+    <string name="backup_chapters_option_description">Por defecto activado, desactivado no guardará su progreso</string>
+    <string name="backup_settings_option_desc">El valor predeterminado es desactivado, lo que no guardará su configuración</string>
+    <string name="backup_quick_option">Copia de seguridad rápida</string>
+    <string name="backup_quick_option_desc">Realiza copias de seguridad de URL y datos simples únicamente. Requerirá recargar la red en la restauración</string>
+    <string name="accept_all_catalogue_choice_hint">Presione esto para confirmar el catálogo para todos</string>
+    <string name="regret">Esta función aún no se ha reintroducido debido a limitaciones de tiempo :(</string>
+    <string name="installing">Instalando</string>
+    <string name="toggle_bookmark">Alternar marcador</string>
+    <string name="mark_read">Marcar como leído</string>
+    <string name="mark_unread">Marcar como no leído</string>
+    <string name="mark_reading">Marcar lectura</string>
+    <string name="delete">Borrar</string>
+    <string name="pause">Pausa</string>
+    <string name="start">Comienzo</string>
+    <string name="extension_language_desc">Idioma de esta extensión</string>
+    <string name="extension_id_desc">Número de identificación de esta extensión</string>
+    <string name="extension_filename_desc">Nombre de archivo de esta extensión</string>
+    <string name="extension_name_desc">Título de esta extensión</string>
+    <string name="extension_image_desc">Imagen de esta extensión</string>
+    <string name="extension_settings_desc">Configuración de esta extensión</string>
+    <string name="share">Compartir</string>
+    <string name="browse">Navegar</string>
+    <string name="more">Más</string>
+    <string name="sources">Fuentes</string>
+    <string name="restart">Reiniciar</string>
+    <string name="need_restart">La actividad debe reiniciarse</string>
+    <string name="never_mind">No importa</string>
+    <string name="in_library">En biblioteca</string>
+    <string name="add_to_library">Agregar a la biblioteca</string>
+    <string name="obsolete_extension">¡Extensión obsoleta! Desinstale.</string>
+    <string name="ext_not_installed">Extensión no instalada</string>
+    <string name="id_label">IDENTIFICACIÓN:</string>
+    <string name="negative_one">-1</string>
+    <string name="repositories">Repositorios</string>
+    <string name="chapter_select_between_error_empty_adapter">AdapterList devuelto vacío, ¿intentarlo de nuevo?</string>
+    <string name="settings_reader_volume_scroll_title">Desplazamiento de volumen</string>
+    <string name="all">Todos</string>
+    <string name="about">Sobre</string>
+    <string name="check_for_app_update">Verifique la actualización de la aplicación</string>
+    <string name="source_licenses">Licencias de origen</string>
+    <string name="inverse_selection">Selección inversa</string>
+    <string name="remove_bookmark">Eliminar marcador</string>
+    <string name="downloading">Descargando</string>
+    <string name="error">Error</string>
+    <string name="resume">Reanudar</string>
+    <string name="waiting">Esperando</string>
+    <string name="settings_reader_title_mark_read_as_reading">Marcar leído como lectura</string>
+    <string name="settings_reader_desc_mark_read_as_reading">Permite al lector marcar un capítulo leído como leído cuando se abre.</string>
+    <string name="no_more_chapters">No más capítulos</string>
+    <string name="next_chapter">Siguiente capítulo…</string>
+    <string name="follow_system_theme">Seguir el sistema</string>
+    <string name="sort">Ordenar</string>
+    <string name="bookmarked">Marcado como favorito</string>
+    <string name="genres">Géneros</string>
+    <string name="tags">Etiquetas</string>
+    <string name="authors">Autores</string>
+    <string name="artists">Artistas</string>
+    <string name="unread_status">Estado no leído</string>
+    <string name="message_backup_warning">Mientras se ejecuta la copia de seguridad, no utilice la aplicación</string>
+    <string name="update_novel">Actualizar novela</string>
+    <string name="settings_backup_alert_select_location_title">Seleccionar ubicación</string>
+    <string name="settings_backup_alert_location_external">Externa</string>
+    <string name="settings_backup_alert_location_internal">Interna</string>
+    <string name="settings_backup_alert_internal_title">Seleccione una copia de seguridad</string>
+    <string name="restore_notification_content_text_outdated">La copia de seguridad está desactualizada</string>
+    <string name="restore_notification_content_missing_key">La copia de seguridad no contiene la clave \'versión\'</string>
+    <string name="restore_notification_content_decoding_string">Descodificación</string>
+    <string name="restore_notification_content_unzipping_bytes">Descomprimiendo</string>
+    <string name="restore_notification_content_unexpected_empty">Recibido vacío, no debería suceder</string>
+    <string name="restore_notification_content_impossible_loading">Recibido carga, imposible</string>
+    <string name="restore_notification_content_starting">Comenzando la restauración</string>
+    <string name="restore_notification_title_adding_repos">Agregar repositorios</string>
+    <string name="restore_notification_content_novel_load">Cargando datos de las novelas</string>
+    <string name="restore_notification_content_novel_save">Guardar datos de las novelas</string>
+    <string name="restore_notification_content_novel_chapters_save">Guardar capítulos de novelas</string>
+    <string name="restore_notification_content_chapters_load">Cargando capítulos de la base de datos</string>
+    <string name="restore_notification_content_completed">¡Terminado!</string>
+    <string name="restore_notification_subtitle">Restaurar</string>
+    <string name="toast_repository_removed">Repositorio eliminado!</string>
+    <string name="repository_add_name_hint">Nombre del repositorio</string>
+    <string name="repository_add_url_hint">URL del repositorio</string>
+    <string name="repository_add_title">Agregar repositorio</string>
+    <string name="toast_repository_added">Repositorio agregado</string>
+    <string name="toast_repository_add_fail">No se pudo agregar el repositorio</string>
+    <string name="toast_repository_remove_fail">¡No se pudo eliminar el repositorio!</string>
+    <string name="controller_repositories_snackbar_repo_changed">¿Actualizar los repositorios?</string>
+    <string name="controller_repositories_snackbar_repo_removed">Repositorio eliminado.</string>
+    <string name="text_alignment_start">Comienzo</string>
+    <string name="text_alignment_center">Centrar</string>
+    <string name="text_alignment_justified">Justificado</string>
+    <string name="text_alignment_end">Fin</string>
+    <string name="settings_reader_title_string_to_html">Convertir cadena a html</string>
+    <string name="settings_reader_desc_string_to_html">Todas las extensiones basadas en cadenas se representan como html</string>
+    <string name="settings_reader_title_horizontal_option">Paginación horizontal</string>
+    <string name="settings_reader_desc_horizontal_option">Desliza el dedo hacia la izquierda y hacia la derecha para moverte entre capítulos</string>
+    <string name="settings_reader_title_html_css">CSS HTML</string>
+    <string name="settings_reader_desc_html_css">CSS inyectado en el lector html</string>
+    <string name="settings_reader_title_continous_scroll">Desplazamiento continuo</string>
+    <string name="settings_reader_desc_continous_scroll">Desplácese suavemente entre capítulos</string>
+    <!-- Notification channel names -->
+    <string name="notification_channel_name_novel_update">Actualizaciones novedosas</string>
+    <string name="notification_channel_name_download">Descarga del capítulo</string>
+    <string name="notification_channel_name_app_update">Actualización de la aplicación</string>
+    <string name="notification_channel_name_backup">Copia de seguridad y restaurar</string>
+    <string name="notification_channel_name_repository_update">Actualización del repositorio</string>
+    <!-- Empty View Messages -->
+    <string name="empty_browse_message">No hay extensiones, actualice esta página o revise sus repositorios</string>
+    <string name="empty_library_message">No tienes ninguna novela, ve a \"Examinar\" y agrega algunas.</string>
+    <string name="empty_updates_message">No hay actualizaciones. Busquemos algunas \ n (Actualice o presione a continuación)</string>
+    <string name="empty_downloads_message">No hay descargas pendientes, ve a descargar algunos capítulos</string>
+    <string name="empty_repositories_message">No tienes repositorios, esta aplicación es inútil sin ellos</string>
+    <!-- Empty View Actions -->
+    <string name="empty_updates_refresh_action">Actualizar</string>
+    <string name="empty_browse_refresh_action">Actualizar</string>
+    <string name="empty_repositories_action">Agregar repositorio</string>
+    <string name="controller_catalogue_toast_background_add">Agregar a la biblioteca en segundo plano</string>
+    <string name="jump_to_chapter">Ir al capítulo</string>
+    <string name="controller_novel_jump_dialog_hint_chapter_number">Número de capítulo</string>
+    <string name="controller_novel_jump_dialog_hint_chapter_title">Título del capítulo</string>
+    <string name="alert_dialog_jump_positive">Salto</string>
+    <string name="help">Ayudar</string>
+    <string name="settings_advanced_verify_checksum_title">Verificar la suma de verificación de la extensión</string>
+    <string name="settings_advanced_verify_checksum_desc">Verifique si el contenido de la extensión coincide con la suma de comprobación del índice</string>
+    <string name="toast_error_repository_toggle_enabled_failed">No se pudo cambiar el estado habilitado del repositorio</string>
+    <string name="toast_success_repository_toggled_enabled">El repositorio se ha habilitado</string>
+    <string name="toast_success_repository_toggled_disabled">El repositorio ha sido inhabilitado</string>
+    <string name="alert_dialog_title_warn_repo_removal">Advertencia de eliminación de repositorio</string>
+    <string name="alert_dialog_message_warn_repo_removal">¿Estás seguro de eliminar este repositorio?</string>
+    <string name="double_back_message">Haga clic de nuevo para salir</string>
+    <string name="settings_advanced_require_double_back_title">Requiere doble toque para salir</string>
+    <string name="settings_advanced_require_double_back_desc">Si está habilitado, requerirá que el usuario realice la acción de retroceso 2x para salir de la aplicación</string>
+    <string name="settings_reader_keep_screen_on">Mantener la pantalla encendida</string>
+    <string name="settings_reader_keep_screen_on_desc">El lector de capítulos mantendrá la pantalla encendida mientras esté abierto</string>
+    <string name="toast_error_chapter_jump_invalid_target">No se encontró ningún capítulo</string>
+    <string name="controller_novel_jum_dialog_by_title">Buscar por título de capítulo</string>
+    <string name="toast_error_chapter_jump_invalid_number">Número de capítulo requerido</string>
+    <string name="toast_error_chapter_jump_empty_title">Se necesita el título del capítulo</string>
+    <string name="controller_browse_option_Import">Importar novela</string>
+    <string name="toast_error_select_between_needs_two">Seleccione entre las necesidades de al menos 2 elementos seleccionados</string>
+    <string name="controller_repositories_action_repo_update">Actualizar</string>
+    <string name="generic_undo">Deshacer</string>
+    <string name="generic_question_retry">¿Rever?</string>
+    <string name="controller_repositories_snackbar_fail_undo_repo_removal">No se pudo deshacer la eliminación del repositorio</string>
+    <string name="generic_wifi_settings">Configuraciones de Wi-Fi</string>
+    <string name="controller_browse_snackbar_not_installed">La extensión no está instalada</string>
+    <string name="controller_browse_snackbar_offline_no_extension">Las extensiones no se pueden usar sin conexión</string>
+    <string name="controller_browse_snackbar_offline_no_update_extension">No se puede actualizar sin conexión</string>
+    <string name="controller_browse_snackbar_offline_no_install_extension">No se puede instalar sin conexión</string>
+    <string name="generic_error_cannot_update_library_offline">Las novelas no se pueden actualizar sin conexión</string>
+    <string name="controller_downloads_snackbar_offline_no_download">No se puede descargar sin conexión</string>
+    <string name="controller_repositories_snackbar_offline_no_update">No se pueden actualizar los repositorios sin conexión</string>
+    <string name="controller_configure_extension_empty_settings">¡Esta extensión no tiene configuración!</string>
+    <string name="controller_configure_extension_empty_settings_rety">¿Volver a cargar la extensión?</string>
+    <string name="notification_content_title_extension_download">Descargador de extensiones</string>
+    <string name="notification_content_text_extension_download">Descargando %s</string>
+    <string name="notification_content_text_extension_installed">%s instalado</string>
+    <string name="notification_content_text_extension_installed_failed">Error al instalar %s</string>
+    <string name="notification_content_text_extension_load_error">No se pudo cargar la extensión desde la base de datos %d</string>
+    <string name="settings_reader_inverted_swipe_title">Invertir deslizamiento de capítulo</string>
+    <string name="settings_reader_inverted_swipe_desc">Invertir el deslizamiento de capítulo al paginar horizontalmente</string>
+    <string name="settings_download_notify_extension_install_title">Notificar la descarga de la extensión</string>
+    <string name="settings_download_notify_extension_install_desc">Cree una notificación que muestre el progreso cuando se descarga / instala una extensión.</string>
+    <string name="restore_notification_content_settings_restore">Restaurar configuraciones novedosas</string>
+    <string name="controller_novel_snackbar_refresh_empty_result">Error: se recibió un resultado vacío mientras se recargaba</string>
+    <string name="controller_novel_snackbar_cannot_inital_load_offline">No se puede cargar contenido nuevo sin conexión</string>
+    <string name="controller_novel_snackbar_finished_reading">Has leído todos los capítulos.</string>
+    <string name="worker_title_download">Descargador de capítulos</string>
+    <string name="controller_settings_restart_worker">Reinicia %s para aplicar nuevas configuraciones</string>
+    <string name="settings_update_header_repositories">Repositorios</string>
+    <string name="settings_update_header_novel">Novelas</string>
+    <string name="settings_update_worker_id_novel_updaters">Actualizadores novedosos</string>
+    <string name="worker_title_update_repository">Actualizador de repositorio</string>
+    <string name="settings_advanced_purge_button">PURGA</string>
+    <string name="controller_settings_advanced_snackbar_purge_failure">No se pudo purgar</string>
+    <string name="controller_settings_advanced_snackbar_purge_success">Novelas sin marcadores purgadas</string>
+    <string name="worker_novel_update_load_failure">Error al actualizar %s</string>
+    <string name="controller_settings_advanced_snackbar_ui_change">Presione aplicar para cambiar la interfaz de usuario</string>
+    <string name="controller_catalogue_toast_background_add_success">Se agregó \"%s\" a la biblioteca</string>
+    <string name="jump_to_chapter_short">Saltar</string>
+    <string name="worker_novel_update_updated_novel">Nuevos capítulos disponibles para \"%s\"</string>
+    <string name="worker_novel_updating_silent">Actualizando novelas…</string>
+    <string name="activity_webview_null_url">La URL para cargar era nula. ¡Lo sentimos!</string>
+    <string name="settings_reader_show_divider">Mostrar divisor entre capítulos</string>
+    <string name="settings_reader_show_divider_desc">Muestra una página entre capítulos que le indica en qué capítulo se encuentra y cuál es el siguiente</string>
+    <string name="languages">Idiomas</string>
+    <string name="controller_browse_filter_only_installed">Mostrar solo instalados</string>
+    <string name="activity_main_backup_in_progress">Respaldo en proceso</string>
+    <string name="activity_main_backup_in_progress_warning">Evite cambiar los datos</string>
+    <string name="settings_update_repo_disable_on_fail_title">Desactivar en caso de fallo</string>
+    <string name="settings_update_repo_disable_on_fail_desc">Deshabilite un repositorio si no se actualiza, principalmente para realizar pruebas.</string>
+    <string name="settings_backup_export">Exportar copia de seguridad</string>
+    <string name="export_backup_notification_subtext">Exportar copia de seguridad</string>
+    <string name="export_backup_notification_content_starting">Exportación comenzando</string>
+    <string name="logo_desc">Este es el icono de Shosetsu</string>
+    <string name="settings_advanced_kill_cycle_workers_title">Matar a los trabajadores del ciclo</string>
+    <string name="settings_advanced_kill_cycle_workers_desc">Mata a todos los trabajadores cíclicos para reiniciarlos.</string>
+    <string name="settings_advanced_snackbar_cycle_kill_success">Trabajadores cíclicos muertos, ¿reiniciar?</string>
+    <string name="settings_advanced_cycle_start_success">Trabajadores cíclicos reiniciados</string>
+    <string name="settings_update_novel_frequency_title">Frecuencia de actualización</string>
+    <string name="settings_update_novel_frequency_desc">¿Con qué frecuencia se ejecuta el actualizador de la novela?</string>
+    <string name="settings_update_novel_on_update_title">Descargar al actualizar</string>
+    <string name="settings_update_novel_only_ongoing_title">Solo actualización en curso</string>
+    <string name="settings_update_novel_on_update_desc">Descargar nuevos capítulos automáticamente</string>
+    <string name="settings_update_novel_only_ongoing_desc">Actualice solo las novelas que están en curso</string>
+    <string name="settings_update_novel_on_metered_title">Permitir la actualización en una conexión medida</string>
+    <string name="settings_update_novel_on_metered_desc">Si está activado, permite que las novelas se actualicen mientras el dispositivo está en una conexión medida</string>
+    <string name="settings_update_novel_on_low_bat_title">Actualización con batería baja</string>
+    <string name="settings_update_novel_on_low_bat_desc">Si está activado, permite que las novelas se actualicen mientras el dispositivo tiene un nivel de batería bajo</string>
+    <string name="settings_update_novel_on_low_sto_title">Permitir la actualización con poco almacenamiento</string>
+    <string name="settings_update_novel_on_low_sto_desc">Si está activado, permite que las novelas se actualicen mientras el dispositivo se está quedando sin espacio de almacenamiento</string>
+    <string name="settings_update_novel_only_idle_title">Actualizar solo cuando esté inactivo</string>
+    <string name="settings_update_novel_only_idle_desc">Si está activado, Novels solo se actualizará cuando el dispositivo esté inactivo</string>
+    <string name="settings_update_novel_notification_style_title">Estilo de notificación</string>
+    <string name="settings_update_novel_notification_style_desc">Cambia entre dos tipos de notificaciones. Échales un vistazo :D</string>
+    <string name="settings_update_novel_show_progress_title">Notificar el progreso de la actualización</string>
+    <string name="settings_update_novel_show_progress_desc">Si está activado, no tendrá idea de qué novelas se están actualizando.</string>
+    <string name="settings_update_novel_classic_notification_title">Finalización de notificación clásica</string>
+    <string name="settings_update_novel_classic_notification_desc">En lugar de mostrarte cuántos capítulos hay en cada novela, simplemente dice \"Actualización completada\"</string>
+    <string name="settings_update_repo_on_metered_title">Permitir la actualización en una conexión medida</string>
+    <string name="settings_update_repo_on_low_bat_title">Actualización con batería baja</string>
+    <string name="settings_update_repo_on_low_sto_title">Actualización sobre almacenamiento bajo</string>
+    <string name="settings_update_repo_only_idle_title">Actualizar solo cuando esté inactivo</string>
+    <string name="settings_update_repo_on_metered_desc">Si está activado, permite que los repositorios se actualicen mientras el dispositivo está en una conexión medida</string>
+    <string name="settings_update_repo_on_low_bat_desc">Si está activado, permite que los repositorios se actualicen mientras el dispositivo tiene un nivel de batería bajo</string>
+    <string name="settings_update_repo_on_low_sto_desc">Si está activado, permite que los repositorios se actualicen mientras el dispositivo se está quedando sin espacio de almacenamiento</string>
+    <string name="restore_notification_content_novel_fail_parse">No se pudo analizar la novela</string>
+    <string name="controller_browse_filter_name_label">Nombre de extensión</string>
+    <string name="settings_view_legacy_nav_title">Usar navegación heredada</string>
+    <string name="settings_view_legacy_nav_desc">Usar navegación de cajón heredada</string>
+    <string name="settings_reader_text_alignment_title">Alineación del texto</string>
+    <string name="settings_reader_text_alignment_desc">Cómo se alinea el texto en el lector</string>
+    <string name="settings_reader_tap_to_scroll_desc">Toque las partes superior e inferior de la pantalla para desplazarse</string>
+    <string name="settings_reader_volume_scroll_desc">Use los botones de volumen para desplazarse</string>
+    <string name="settings_reader_marking_mode_desc">Cómo se marcan los capítulos como leídos</string>
+    <string name="settings_reader_resume_behavior_title">Reanudar primero sin leer</string>
+    <string name="settings_reader_resume_behavior_desc">Al hacer clic en el botón de reanudar en la vista de información novedosa, ignorará el estado de lectura para abrir primero sin leer</string>
+    <string name="activity_css_export">Exportar CSS</string>
+    <string name="activity_css_paste">Pegar portapapeles</string>
+    <string name="activity_css_redo">Rehacer</string>
+    <string name="activity_css_undo">Deshacer</string>
+    <string name="activity_css_id_fail">Identificación de CSS no válida</string>
+    <string name="activity_css_save">Guardar CSS</string>
+    <string name="activity_css_example"><![CDATA[
+    <!DOCTYPE html>
+    <html>
+        <head>
+        </head>
+        <body>
+            <h1>Encabezado 1</h1>
+            <h2>Encabezado 2</h2>
+            <h3>Encabezado 3</h3>
+            <h4>Encabezado 4</h4>
+            <h5>Encabezado 5</h5>
+            <h6>Encabezado 6</h6>
+            <blockquote>Cotización en bloque</blockquote>
+            <dd>Descripción</dd>
+            <div>Div</div>
+            <dl>
+                <dt>Elemento de descripción</dt>
+            </dl>
+            <hr>… Rotura …</hr>
+            <ol>
+                <li>elemento de lista ordenado</li>
+            </ol>
+            <ul>
+                <li>elemento de lista desordenado</li>
+            </ul>
+            <p>Párrafo</p>
+            <pre>Preformateado</pre>
+        </body>
+    </html>
+]]></string>
+    <string name="activity_main_app_update_download">Descargando la actualización de la aplicación</string>
+    <string name="settings_advanced_clear_cookies_title">Eliminar cookies</string>
+    <string name="settings_advanced_clear_cookies_desc">Borrar todas las cookies que tiene shosetsu para sitios web</string>
+    <string name="settings_advanced_clear_cookies_button">Claro</string>
+    <string name="settings_advanced_clear_cookies_complete">Cookies eliminadas</string>
+    <string name="settings_download_delete_on_read_title">Eliminar capítulos al leer</string>
+    <string name="settings_download_delete_on_read_desc">Qué capítulo eliminar cuando se lee un capítulo</string>
+    <string name="settings_advanced_theme_desc">Cambiar el tema que usa la aplicación</string>
+    <string name="settings_advanced_purge_novel_cache"><![CDATA[Elimina cualquier novela e información sin marcar de Shosetsu]]></string>
+    <string name="settings_advanced_kill_cycle_workers_button">Matar</string>
+    <string name="controller_configure_extension_listing_desc">¿Qué lista de novelas debe mostrarse cuando el usuario abre la extensión para navegar?</string>
+    <string name="controller_downloads_set_all_pending_title">Establecer todo pendiente</string>
+    <string name="controller_downloads_delete_all_title">Eliminar todos</string>
+    <plurals name="worker_novel_update_updated_novel_count">
+        <item quantity="one">%d capítulo nuevo.</item>
+        <item quantity="other">%d capítulos nuevos.</item>
+    </plurals>
+    <!-- Error Key Messages -->
+    <array name="text_alignments">
+        <item>@string/text_alignment_start</item>
+        <item>@string/text_alignment_center</item>
+        <item>@string/text_alignment_justified</item>
+        <item>@string/text_alignment_end</item>
+    </array>
+    <array name="application_themes">
+        <item>@string/follow_system_theme</item>
+        <item>@string/light</item>
+        <item>@string/dark</item>
+    </array>
+    <array name="sus_array_actions">
+        <item>@string/accept</item>
+        <item>@string/accept_temp</item>
+        <item>@string/disable</item>
+        <item>@string/uninstall</item>
+    </array>
+    <array name="browse_tab_names">
+        <item>@string/sources</item>
+        <item>@string/extensions</item>
+    </array>
+    <array name="novel_fragment_names">
+        <item>@string/info</item>
+        <item>@string/chapters</item>
+    </array>
+    <array name="novel_card_types">
+        <item>@string/normal</item>
+        <item>@string/compressed</item>
+        <item>@string/comfy</item>
+    </array>
+    <array name="settings_backup_alert_location_array">
+        <item>@string/settings_backup_alert_location_external</item>
+        <item>@string/settings_backup_alert_location_internal</item>
+    </array>
 </resources>
