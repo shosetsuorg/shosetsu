@@ -552,6 +552,7 @@ class NovelViewModel(
 				downloadChapterPassageUseCase(it)
 			}
 			clearSelectedSuspend()
+			startDownloadWorkerUseCase()
 		}
 	}
 
