@@ -175,7 +175,7 @@ dependencies {
 
 
 	implementation("androidx.collection:collection-ktx:1.2.0")
-	implementation("androidx.core:core-splashscreen:1.0.0-beta02")
+	implementation("androidx.core:core-splashscreen:1.0.0-rc01")
 
 	// - Life Cycle
 	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
@@ -196,7 +196,7 @@ dependencies {
 	// Core libraries
 	//val shosetsuLibVersion: String by extra
 	implementation("org.luaj:luaj-jse:3.0.1")
-	implementation("com.github.shosetsuorg:kotlin-lib:2e27ebb")
+	implementation("com.github.shosetsuorg:kotlin-lib:76c4750")
 	implementation("org.jsoup:jsoup:1.14.3")
 
 
@@ -358,7 +358,7 @@ dependencies {
 	//androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.2")
 
 	// MDC Adapter
-	implementation("com.google.android.material:compose-theme-adapter:1.1.8")
+	implementation("com.google.android.material:compose-theme-adapter:1.1.10")
 
 	val androidxActivity = "1.4.0"
 	fun androidxActivity(module: String, version: String = androidxActivity) =

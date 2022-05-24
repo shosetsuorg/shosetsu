@@ -25,5 +25,4 @@ import app.shosetsu.lib.lua.LuaExtension
 fun GenericExtensionEntity.asIEntity(data: ByteArray): IExtension =
 	when (type) {
 		ExtensionType.LuaScript -> LuaExtension(data.decodeToString(), fileName)
-		ExtensionType.KotlinScript -> throw Exception("Stud")
 	}

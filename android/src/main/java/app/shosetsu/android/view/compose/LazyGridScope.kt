@@ -2,6 +2,7 @@ package app.shosetsu.android.view.compose
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.runtime.Composable
 import androidx.paging.PagingData
@@ -50,7 +51,7 @@ import kotlinx.coroutines.flow.Flow
 fun <T : Any> LazyGridScope.itemsIndexed(
 	items: LazyPagingItems<T>,
 	key: ((index: Int, item: T) -> Any)? = null,
-	itemContent: @Composable LazyGridScope.(index: Int, value: T?) -> Unit
+	itemContent: @Composable LazyGridItemScope.(index: Int, value: T?) -> Unit
 ) {
 	items(
 		count = items.itemCount,

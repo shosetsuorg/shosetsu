@@ -22,5 +22,4 @@ import app.shosetsu.lib.ExtensionType
 val ExtensionType.fileExtension: String
 	get() = when (this) {
 		ExtensionType.LuaScript -> "lua"
-		ExtensionType.KotlinScript -> "kts"
 	}

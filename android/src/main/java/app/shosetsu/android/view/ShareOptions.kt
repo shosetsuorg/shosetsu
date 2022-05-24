@@ -14,13 +14,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.savedstate.SavedStateRegistryOwner
-import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.launchUI
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.delay
 
@@ -56,12 +53,7 @@ fun openShareMenu(
 	shareBasicURL: () -> Unit,
 	shareQRCode: () -> Unit
 ) {
-	BottomSheetDialog(context).apply bottomSheet@{
-		this.window?.decorView?.let { view ->
-			ViewTreeLifecycleOwner.set(view, owner)
-			ViewTreeSavedStateRegistryOwner.set(view, stateOwner)
-		}
-
+	ComposeBottomSheetDialog(context, owner, stateOwner).apply bottomSheet@{
 		setContentView(ComposeView(context).apply {
 			setViewCompositionStrategy(
 				ViewCompositionStrategy.DisposeOnLifecycleDestroyed(owner)
@@ -93,7 +85,9 @@ fun openShareMenu(
 								}
 								this@bottomSheet.dismiss()
 							},
-							modifier = Modifier.height(56.dp).fillMaxWidth(),
+							modifier = Modifier
+								.height(56.dp)
+								.fillMaxWidth(),
 							shape = RectangleShape,
 							backgroundColor = Color.Transparent,
 							elevation = 0.dp
@@ -124,7 +118,9 @@ fun openShareMenu(
 								}
 								this@bottomSheet.dismiss()
 							},
-							modifier = Modifier.height(56.dp).fillMaxWidth(),
+							modifier = Modifier
+								.height(56.dp)
+								.fillMaxWidth(),
 							shape = RectangleShape,
 							backgroundColor = Color.Transparent,
 							elevation = 0.dp
