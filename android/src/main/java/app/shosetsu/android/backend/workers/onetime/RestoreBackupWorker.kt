@@ -11,7 +11,6 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.work.*
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
-import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.common.NullContentResolverException
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.consts.LogConstants
@@ -307,7 +306,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 				} catch (e: LuaError) {
 					if (e.cause != null)
 						throw e.cause!!
-					else throw LuaException(e)
+					else throw e
 				}
 			} catch (e: Exception) {
 				when (e) {

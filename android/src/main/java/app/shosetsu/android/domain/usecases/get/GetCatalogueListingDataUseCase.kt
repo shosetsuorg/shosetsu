@@ -3,7 +3,6 @@ package app.shosetsu.android.domain.usecases.get
 import android.database.sqlite.SQLiteException
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.common.ext.convertTo
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.domain.repository.base.IExtensionSettingsRepository
@@ -15,6 +14,7 @@ import app.shosetsu.lib.exceptions.HTTPException
 import coil.network.HttpException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.luaj.vm2.LuaError
 import java.io.IOException
 import javax.net.ssl.SSLException
 
@@ -94,20 +94,20 @@ class GetCatalogueListingDataUseCase(
 					LoadResult.Error(e)
 				} catch (e: HttpException) {
 					LoadResult.Error(e)
-				} catch (e: LuaException) {
+				} catch (e: LuaError) {
 					LoadResult.Error(e)
 				}
 			}
 		}
 	}
 
-	@Throws(SSLException::class, LuaException::class)
+	@Throws(SSLException::class, LuaError::class)
 	operator fun invoke(
 		iExtension: IExtension,
 		data: Map<Int, Any>
 	) = MyPagingSource(iExtension, data)
 
-	@Throws(SSLException::class, LuaException::class)
+	@Throws(SSLException::class, LuaError::class)
 	suspend fun search(
 		iExtension: IExtension,
 		data: Map<Int, Any>

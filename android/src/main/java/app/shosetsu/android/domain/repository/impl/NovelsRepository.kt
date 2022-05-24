@@ -2,7 +2,6 @@ package app.shosetsu.android.domain.repository.impl
 
 import android.database.sqlite.SQLiteException
 import androidx.paging.PagingSource
-import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.datasource.local.database.base.IDBNovelsDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteCatalogueDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteNovelDataSource
@@ -14,6 +13,7 @@ import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
+import org.luaj.vm2.LuaError
 import javax.net.ssl.SSLException
 
 /*
@@ -107,7 +107,7 @@ class NovelsRepository(
 	override suspend fun updateLibraryNovelEntity(list: List<LibraryNovelEntity>): Unit =
 		database.update(list)
 
-	@Throws(LuaException::class)
+	@Throws(LuaError::class)
 	override suspend fun retrieveNovelInfo(
 		extension: IExtension,
 		novelEntity: NovelEntity,
@@ -124,14 +124,14 @@ class NovelsRepository(
 	override suspend fun clearUnBookmarkedNovels(): Unit =
 		database.clearUnBookmarkedNovels()
 
-	@Throws(LuaException::class)
+	@Throws(LuaError::class)
 	override suspend fun getCatalogueSearch(
 		ext: IExtension,
 		query: String,
 		data: Map<Int, Any>
 	): List<Novel.Listing> = remoteCatalogueDataSource.search(ext, query, data)
 
-	@Throws(SSLException::class, LuaException::class)
+	@Throws(SSLException::class, LuaError::class)
 	override suspend fun getCatalogueData(
 		ext: IExtension,
 		listing: Int,

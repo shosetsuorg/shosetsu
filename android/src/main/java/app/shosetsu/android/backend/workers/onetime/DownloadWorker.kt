@@ -17,7 +17,6 @@ import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
 import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
-import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.common.SettingKey.*
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_DOWNLOAD
 import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_DOWNLOAD
@@ -36,6 +35,7 @@ import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
+import org.luaj.vm2.LuaError
 import java.io.IOException
 
 /*
@@ -134,7 +134,7 @@ class DownloadWorker(
 		SQLiteException::class,
 		FilePermissionException::class,
 		FileNotFoundException::class,
-		LuaException::class
+		LuaError::class
 	)
 	private suspend fun download(downloadEntity: DownloadEntity) =
 		chapRepo.getChapter(downloadEntity.chapterID)!!.let { chapterEntity ->

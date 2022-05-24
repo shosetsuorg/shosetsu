@@ -3,9 +3,9 @@ package app.shosetsu.android.domain.usecases.get
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
-import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderChapterUI
+import org.luaj.vm2.LuaError
 
 /*
  * This file is part of shosetsu.
@@ -36,7 +36,7 @@ class GetChapterPassageUseCase(
 		SQLiteException::class,
 		FilePermissionException::class,
 		FileNotFoundException::class,
-		LuaException::class
+		LuaError::class
 	)
 	suspend operator fun invoke(readerChapterUI: ReaderChapterUI): ByteArray? =
 		iChaptersRepository.getChapter(readerChapterUI.id)?.let { chapterEntity ->

@@ -4,7 +4,6 @@ import android.database.sqlite.SQLiteException
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import app.shosetsu.android.common.IncompatibleExtensionException
-import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.common.MissingExtensionException
 import app.shosetsu.android.common.ext.convertTo
 import app.shosetsu.android.common.ext.logE
@@ -17,6 +16,7 @@ import app.shosetsu.lib.exceptions.HTTPException
 import coil.network.HttpException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.luaj.vm2.LuaError
 import java.io.IOException
 
 /*
@@ -113,7 +113,7 @@ class GetCatalogueQueryDataUseCase(
 					LoadResult.Error(e)
 				} catch (e: HTTPException) {
 					LoadResult.Error(e)
-				} catch (e: LuaException) {
+				} catch (e: LuaError) {
 					LoadResult.Error(e)
 				}
 			}
@@ -123,7 +123,7 @@ class GetCatalogueQueryDataUseCase(
 	@Throws(
 		SQLiteException::class,
 		IncompatibleExtensionException::class,
-		LuaException::class,
+		LuaError::class,
 		MissingExtensionException::class
 	)
 	suspend operator fun invoke(
@@ -134,7 +134,7 @@ class GetCatalogueQueryDataUseCase(
 		invoke(it, query, filters)
 	} ?: throw MissingExtensionException(extID)
 
-	@Throws(LuaException::class)
+	@Throws(LuaError::class)
 	operator fun invoke(
 		ext: IExtension,
 		query: String,

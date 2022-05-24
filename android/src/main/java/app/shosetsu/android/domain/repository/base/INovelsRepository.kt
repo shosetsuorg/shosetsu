@@ -17,7 +17,6 @@ package app.shosetsu.android.domain.repository.base
  */
 import android.database.sqlite.SQLiteException
 import androidx.paging.PagingSource
-import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.domain.model.local.LibraryNovelEntity
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.model.local.StrippedBookmarkedNovelEntity
@@ -25,6 +24,7 @@ import app.shosetsu.android.domain.model.local.StrippedNovelEntity
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
+import org.luaj.vm2.LuaError
 import javax.net.ssl.SSLException
 
 
@@ -102,7 +102,7 @@ interface INovelsRepository {
 	/**
 	 * Retrieves NovelInfo from it's source
 	 */
-	@Throws(LuaException::class)
+	@Throws(LuaError::class)
 	suspend fun retrieveNovelInfo(
 		extension: IExtension,
 		novelEntity: NovelEntity,
@@ -121,7 +121,7 @@ interface INovelsRepository {
 	/**
 	 * Queries the [IExtension] for a search result
 	 */
-	@Throws(LuaException::class)
+	@Throws(LuaError::class)
 	suspend fun getCatalogueSearch(
 		ext: IExtension,
 		query: String,
@@ -131,7 +131,7 @@ interface INovelsRepository {
 	/**
 	 * Loads catalogue data of an [IExtension]
 	 */
-	@Throws(SSLException::class, LuaException::class)
+	@Throws(SSLException::class, LuaError::class)
 	suspend fun getCatalogueData(
 		ext: IExtension,
 		listing: Int,

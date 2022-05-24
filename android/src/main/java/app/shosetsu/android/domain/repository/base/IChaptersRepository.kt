@@ -3,12 +3,12 @@ package app.shosetsu.android.domain.repository.base
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
-import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
+import org.luaj.vm2.LuaError
 import java.io.IOException
 
 /*
@@ -44,7 +44,7 @@ interface IChaptersRepository {
 	 * Saves successful passages into caches
 	 *
 	 */
-	@Throws(FilePermissionException::class, FileNotFoundException::class, LuaException::class)
+	@Throws(FilePermissionException::class, FileNotFoundException::class, LuaError::class)
 	suspend fun getChapterPassage(
 		formatter: IExtension,
 		entity: ChapterEntity,
