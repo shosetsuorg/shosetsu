@@ -1,7 +1,9 @@
 package app.shosetsu.android.datasource.remote.base
 
-import app.shosetsu.android.common.LuaException
 import app.shosetsu.lib.IExtension
+import app.shosetsu.lib.exceptions.HTTPException
+import org.luaj.vm2.LuaError
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -30,6 +32,6 @@ interface IRemoteChaptersDataSource {
 	 * Loads the chapter passage from network
 	 * @return chapter content
 	 */
-	@Throws(LuaException::class)
+	@Throws(HTTPException::class, IOException::class, LuaError::class)
 	suspend fun loadChapterPassage(formatter: IExtension, chapterURL: String): ByteArray
 }

@@ -4,8 +4,7 @@ import app.shosetsu.lib.exceptions.HTTPException
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -29,10 +28,6 @@ import java.net.UnknownHostException
  * 13 / 05 / 2020
  * A stupid quick way to use a URL -> Response
  */
-@Throws(
-	HTTPException::class,
-	SocketTimeoutException::class,
-	UnknownHostException::class,
-)
+@Throws(HTTPException::class, IOException::class)
 fun OkHttpClient.quickie(url: String): Response =
 	newCall(Request.Builder().url(url).build()).execute()

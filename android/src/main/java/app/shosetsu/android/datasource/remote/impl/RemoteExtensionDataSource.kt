@@ -7,8 +7,7 @@ import app.shosetsu.android.domain.model.local.GenericExtensionEntity
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.lib.exceptions.HTTPException
 import okhttp3.OkHttpClient
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -38,11 +37,7 @@ class RemoteExtensionDataSource(
 	private fun makeExtensionURL(repo: RepositoryEntity, fe: GenericExtensionEntity): String =
 		"${repo.url}$REPO_SOURCE_DIR/${fe.lang}/${fe.fileName}.lua"
 
-	@Throws(
-		HTTPException::class,
-		SocketTimeoutException::class,
-		UnknownHostException::class,
-	)
+	@Throws(HTTPException::class, IOException::class)
 	override suspend fun downloadExtension(
 		repositoryEntity: RepositoryEntity,
 		extensionEntity: GenericExtensionEntity,

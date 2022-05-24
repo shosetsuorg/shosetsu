@@ -1,14 +1,14 @@
 package app.shosetsu.android.datasource.remote.impl
 
-import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.datasource.remote.base.IRemoteCatalogueDataSource
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.PAGE_INDEX
 import app.shosetsu.lib.QUERY_INDEX
+import app.shosetsu.lib.exceptions.HTTPException
 import org.luaj.vm2.LuaError
-import javax.net.ssl.SSLException
+import java.io.IOException
 
 /*
  * This file is part of Shosetsu.
@@ -34,7 +34,7 @@ import javax.net.ssl.SSLException
  */
 class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 
-	@Throws(LuaException::class)
+	@Throws(HTTPException::class, IOException::class, LuaError::class)
 	override suspend fun search(
 		ext: IExtension,
 		query: String,
@@ -48,12 +48,12 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 			} catch (e: LuaError) {
 				if (e.cause != null)
 					throw e.cause!!
-				else throw LuaException(e)
+				else throw e
 			}
 		} else emptyList()
 	}
 
-	@Throws(SSLException::class, LuaException::class)
+	@Throws(HTTPException::class, LuaError::class, IOException::class)
 	override suspend fun loadListing(
 		ext: IExtension,
 		listingIndex: Int,
@@ -70,7 +70,7 @@ class RemoteCatalogueDataSource : IRemoteCatalogueDataSource {
 		} catch (e: LuaError) {
 			if (e.cause != null)
 				throw e.cause!!
-			else throw LuaException(e)
+			else throw e
 		}
 	}
 }

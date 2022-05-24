@@ -1,8 +1,10 @@
 package app.shosetsu.android.datasource.remote.base
 
-import app.shosetsu.android.common.LuaException
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
+import app.shosetsu.lib.exceptions.HTTPException
+import org.luaj.vm2.LuaError
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -30,7 +32,7 @@ interface IRemoteNovelDataSource {
 	/**
 	 * Loads novel info
 	 */
-	@Throws(LuaException::class)
+	@Throws(HTTPException::class, IOException::class, LuaError::class)
 	suspend fun loadNovel(
 		formatter: IExtension,
 		novelURL: String,

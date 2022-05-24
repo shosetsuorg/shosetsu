@@ -5,10 +5,8 @@ import app.shosetsu.android.datasource.remote.base.IRemoteExtRepoDataSource
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.lib.exceptions.HTTPException
 import app.shosetsu.lib.json.RepoIndex
-import kotlinx.serialization.ExperimentalSerializationApi
 import okhttp3.OkHttpClient
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -34,12 +32,8 @@ import java.net.UnknownHostException
 class RemoteExtRepoDataSource(
 	private val client: OkHttpClient,
 ) : IRemoteExtRepoDataSource {
-	@OptIn(ExperimentalSerializationApi::class)
-	@Throws(
-		HTTPException::class,
-		SocketTimeoutException::class,
-		UnknownHostException::class,
-	)
+
+	@Throws(HTTPException::class, IOException::class)
 	override suspend fun downloadRepoData(
 		repo: RepositoryEntity,
 	): RepoIndex =

@@ -1,6 +1,8 @@
 package app.shosetsu.android.datasource.remote.base
 
 import app.shosetsu.android.domain.model.local.ExtLibEntity
+import app.shosetsu.lib.exceptions.HTTPException
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -30,6 +32,7 @@ interface IRemoteExtLibDataSource {
 	 * @param repoURL URL of the repository
 	 * @param extLibEntity The library to download
 	 */
+	@Throws(HTTPException::class, IOException::class)
 	fun downloadLibrary(
 		repoURL: String,
 		extLibEntity: ExtLibEntity,

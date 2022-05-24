@@ -1,9 +1,10 @@
 package app.shosetsu.android.datasource.remote.impl
 
-import app.shosetsu.android.common.LuaException
 import app.shosetsu.android.datasource.remote.base.IRemoteChaptersDataSource
 import app.shosetsu.lib.IExtension
+import app.shosetsu.lib.exceptions.HTTPException
 import org.luaj.vm2.LuaError
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -28,7 +29,7 @@ import org.luaj.vm2.LuaError
  */
 class RemoteChaptersDataSource : IRemoteChaptersDataSource {
 
-	@Throws(LuaException::class)
+	@Throws(HTTPException::class, IOException::class, LuaError::class)
 	override suspend fun loadChapterPassage(
 		formatter: IExtension,
 		chapterURL: String,
@@ -37,6 +38,6 @@ class RemoteChaptersDataSource : IRemoteChaptersDataSource {
 	} catch (e: LuaError) {
 		if (e.cause != null)
 			throw e.cause!!
-		else throw LuaException(e)
+		else throw e
 	}
 }
