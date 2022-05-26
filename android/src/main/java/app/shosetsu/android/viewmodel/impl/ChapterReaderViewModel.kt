@@ -77,8 +77,9 @@ class ChapterReaderViewModel(
 	private val recordChapterIsRead: RecordChapterIsReadUseCase,
 	private val getExt: GetExtensionUseCase
 ) : AChapterReaderViewModel() {
-	override val appThemeLiveData: Flow<AppThemes>
-		get() = loadLiveAppThemeUseCase()
+	override val appThemeLiveData: Flow<AppThemes> by lazy {
+		loadLiveAppThemeUseCase()
+	}
 
 	private val isHorizontalPageSwapping by lazy {
 		settingsRepo.getBooleanFlow(ReaderHorizontalPageSwap)
@@ -110,10 +111,8 @@ class ChapterReaderViewModel(
 	 */
 	private val progressMapFlow by lazy { MutableStateFlow(HashMap<Int, Double>()) }
 
-	private var _ttsPitch: Float = 0.0f
 
-	override val ttsPitch: Float
-		get() = _ttsPitch
+	override var ttsPitch: Float = 0.0f
 
 	private val stringMap by lazy { HashMap<Int, MutableStateFlow<ChapterPassage>>() }
 	private val refreshMap by lazy { HashMap<Int, MutableStateFlow<Boolean>>() }
@@ -362,9 +361,7 @@ class ChapterReaderViewModel(
 		}.onIO()
 	}
 
-	private var _ttsSpeed = 0.0f
-	override val ttsSpeed: Float
-		get() = _ttsSpeed
+	override var ttsSpeed: Float = 0.0f
 
 	private val chaptersFlow: Flow<List<ReaderChapterUI>> by lazy {
 		novelIDLive.transformLatest { nId ->
@@ -737,12 +734,12 @@ class ChapterReaderViewModel(
 		}
 		launchIO {
 			settingsRepo.getFloatFlow(ReaderPitch).collect {
-				_ttsPitch = it
+				ttsPitch = it
 			}
 		}
 		launchIO {
 			settingsRepo.getFloatFlow(ReaderSpeed).collect {
-				_ttsSpeed = it
+				ttsSpeed = it
 			}
 		}
 	}
