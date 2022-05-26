@@ -17,7 +17,6 @@ package app.shosetsu.android.viewmodel.impl.extension
  * along with shosetsu.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.SettingKey.BrowseFilteredLanguages
 import app.shosetsu.android.common.ext.launchIO
@@ -34,7 +33,6 @@ import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.android.domain.usecases.load.LoadBrowseExtensionsUseCase
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
@@ -81,7 +79,7 @@ class ExtensionsViewModel(
 	}
 
 	private val extensionFlow by lazy {
-		getBrowseExtensions().flowOn(Dispatchers.IO)
+		getBrowseExtensions()
 	}
 
 	private val languageListFlow by lazy {
@@ -92,7 +90,7 @@ class ExtensionsViewModel(
 
 	private val searchTermFlow: MutableStateFlow<String> by lazy { MutableStateFlow("") }
 
-	override val filteredLanguagesLive: LiveData<FilteredLanguages> by lazy {
+	override val filteredLanguagesLive: Flow<FilteredLanguages> by lazy {
 		languageListFlow.combine(settingsRepo.getStringSetFlow(BrowseFilteredLanguages)) { languageResult, filteredLanguages ->
 
 			val map = HashMap<String, Boolean>().apply {
@@ -101,7 +99,7 @@ class ExtensionsViewModel(
 				}
 			}
 			FilteredLanguages(languageResult, map)
-		}.asIOLiveData()
+		}.onIO()
 	}
 
 	private val onlyInstalledFlow by lazy {
@@ -109,8 +107,8 @@ class ExtensionsViewModel(
 	}
 
 
-	override val onlyInstalledLive: LiveData<Boolean> by lazy {
-		onlyInstalledFlow.asIOLiveData()
+	override val onlyInstalledLive: Flow<Boolean> by lazy {
+		onlyInstalledFlow.onIO()
 	}
 
 	override fun setLanguageFiltered(language: String, state: Boolean) {
@@ -161,8 +159,8 @@ class ExtensionsViewModel(
 		searchTermFlow.tryEmit("")
 	}
 
-	override val searchTermLive: LiveData<String> by lazy {
-		searchTermFlow.asIOLiveData()
+	override val searchTermLive: Flow<String> by lazy {
+		searchTermFlow.onIO()
 	}
 
 	override val liveData: Flow<List<BrowseExtensionEntity>> by lazy {
@@ -189,7 +187,7 @@ class ExtensionsViewModel(
 							.sortedBy { !it.isUpdateAvailable }
 							.toList()
 					})
-		}
+		}.onIO()
 	}
 
 	override fun isOnline(): Boolean = isOnlineUseCase()

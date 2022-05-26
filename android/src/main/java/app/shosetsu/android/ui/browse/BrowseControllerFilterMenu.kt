@@ -5,7 +5,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -44,16 +43,18 @@ import com.google.android.material.composethemeadapter.MdcTheme
 
 @Composable
 fun BrowseControllerFilterMenu(viewModel: ABrowseViewModel) {
-	val showOnlyInstalled by viewModel.onlyInstalledLive.observeAsState(initial = false)
-	val languageList: FilteredLanguages by viewModel.filteredLanguagesLive.observeAsState(
+	val showOnlyInstalled by viewModel.onlyInstalledLive.collectAsState(initial = false)
+	val languageList: FilteredLanguages by viewModel.filteredLanguagesLive.collectAsState(
 		initial = FilteredLanguages(emptyList(), emptyMap())
 	)
 
 	var hideLanguageFilter by remember { mutableStateOf(false) }
 
-	val searchTerm by viewModel.searchTermLive.observeAsState("")
+	val searchTerm by viewModel.searchTermLive.collectAsState("")
 
-	Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+	Column(modifier = Modifier
+		.fillMaxWidth()
+		.padding(16.dp)) {
 		BrowseControllerNameFilter(searchTerm) {
 			viewModel.setSearch(it)
 		}
@@ -86,7 +87,8 @@ fun BrowseControllerNameFilter(searchTerm: String, setSearchTerm: (newTerm: Stri
 	TextField(
 		value = searchTerm,
 		onValueChange = setSearchTerm,
-		modifier = Modifier.padding(bottom = 8.dp)
+		modifier = Modifier
+			.padding(bottom = 8.dp)
 			.fillMaxWidth(),
 		label = {
 			Text(stringResource(R.string.controller_browse_filter_name_label))
@@ -112,7 +114,9 @@ fun BrowseControllerLanguagesFilter(
 	setLanguageFilterState: (language: String, newState: Boolean) -> Unit,
 	setHidden: (newValue: Boolean) -> Unit
 ) {
-	Column(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
+	Column(modifier = Modifier
+		.fillMaxWidth()
+		.padding(bottom = 8.dp)) {
 		Row(
 			modifier = Modifier.fillMaxWidth(),
 			horizontalArrangement = Arrangement.SpaceBetween,

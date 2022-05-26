@@ -1,11 +1,11 @@
 package app.shosetsu.android.viewmodel.abstracted
 
-import androidx.lifecycle.LiveData
 import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.android.domain.model.local.ExtensionInstallOptionEntity
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeViewModel
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -63,7 +63,7 @@ abstract class ABrowseViewModel :
 	 * First value is a list of possible strings
 	 * Second value is if it is filtered or not
 	 */
-	abstract val filteredLanguagesLive: LiveData<FilteredLanguages>
+	abstract val filteredLanguagesLive: Flow<FilteredLanguages>
 
 	/**
 	 * Set if a language is filtered or not
@@ -71,7 +71,7 @@ abstract class ABrowseViewModel :
 	abstract fun setLanguageFiltered(language: String, state: Boolean)
 
 
-	abstract val onlyInstalledLive: LiveData<Boolean>
+	abstract val onlyInstalledLive: Flow<Boolean>
 
 	/**
 	 * Set if to only show installed or not
@@ -79,7 +79,7 @@ abstract class ABrowseViewModel :
 	abstract fun showOnlyInstalled(state: Boolean)
 
 
-	abstract val searchTermLive: LiveData<String>
+	abstract val searchTermLive: Flow<String>
 
 	/**
 	 * Filter the extension list to only display extensions matching [name]
