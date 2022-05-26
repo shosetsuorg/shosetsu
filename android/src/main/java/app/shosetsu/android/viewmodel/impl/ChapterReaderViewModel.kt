@@ -516,7 +516,7 @@ class ChapterReaderViewModel(
 		}
 	}
 
-	override fun updateChapter(
+	private fun updateChapter(
 		chapter: ReaderChapterUI,
 	) {
 		launchIO {

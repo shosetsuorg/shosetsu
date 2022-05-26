@@ -121,9 +121,6 @@ abstract class AChapterReaderViewModel :
 	 */
 	abstract fun toggleBookmark()
 
-	/** Update a [chapter] */
-	abstract fun updateChapter(chapter: ReaderChapterUI)
-
 	/** Update [chapter] as Read, this will also clear all reading progress */
 	abstract fun updateChapterAsRead(chapter: ReaderChapterUI)
 
