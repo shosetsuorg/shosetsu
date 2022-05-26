@@ -1,6 +1,5 @@
 package app.shosetsu.android.viewmodel.impl
 
-import android.app.Application
 import android.graphics.Color
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
@@ -13,6 +12,7 @@ import app.shosetsu.android.common.enums.MarkingType.ONVIEW
 import app.shosetsu.android.common.enums.ReadingStatus.READ
 import app.shosetsu.android.common.enums.ReadingStatus.READING
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.utils.asHtml
 import app.shosetsu.android.common.utils.copy
 import app.shosetsu.android.domain.model.local.ColorChoiceData
@@ -65,7 +65,6 @@ import org.jsoup.nodes.Element
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class ChapterReaderViewModel(
-	private val application: Application,
 	override val settingsRepo: ISettingsRepository,
 	private val chapterRepository: IChaptersRepository,
 	private val novelRepo: INovelsRepository,
@@ -326,7 +325,7 @@ class ChapterReaderViewModel(
 		novelIDLive.mapLatest { id ->
 			val novel = novelRepo.getNovel(id) ?: return@mapLatest null
 			getExt(novel.extensionID)
-		}
+		}.distinctUntilChanged()
 	}
 
 	/**
@@ -377,7 +376,7 @@ class ChapterReaderViewModel(
 	override val liveData: Flow<List<ReaderUIItem>> by lazy {
 		chaptersFlow
 			.combineDividers() // Add dividers
-
+			.distinctUntilChanged()
 			.onIO()
 	}
 
@@ -642,7 +641,6 @@ class ChapterReaderViewModel(
 
 	private val isScreenRotationLockedFlow = MutableStateFlow(false)
 
-
 	override val tapToScroll: Flow<Boolean> by lazy {
 		settingsRepo.getBooleanFlow(ReaderIsTapToScroll).onIO()
 	}
@@ -805,6 +803,51 @@ class ChapterReaderViewModel(
 		if (chapter == null)
 			emit(null)
 		else emit(extFlow.first()?.expandURL(chapter.link, IExtension.KEY_CHAPTER_URL))
+	}
+
+	override fun clearMemory() {
+		logV("Application called to clear memory")
+		launchIO {
+			run {
+				val excludedKeys = arrayListOf<Int>()
+				val keys = stringMap.keys.toList()
+				val currentChapter = currentChapterID.value
+
+				excludedKeys.add(currentChapter)
+
+				keys.filterNot { excludedKeys.contains(it) }.forEach { key ->
+					stringMap.remove(key)
+				}
+			}
+
+			run {
+				val excludedKeys = arrayListOf<Int>()
+				val map = progressMapFlow.value
+				val keys = map.keys.toList()
+				val currentChapter = currentChapterID.value
+
+				excludedKeys.add(currentChapter)
+
+				keys.filterNot { excludedKeys.contains(it) }.forEach { key ->
+					map.remove(key)
+				}
+
+				progressMapFlow.emit(map)
+			}
+
+			run {
+				val excludedKeys = arrayListOf<Int>()
+				val map = refreshMap
+				val keys = map.keys.toList()
+				val currentChapter = currentChapterID.value
+
+				excludedKeys.add(currentChapter)
+
+				keys.filterNot { excludedKeys.contains(it) }.forEach { key ->
+					map.remove(key)
+				}
+			}
+		}
 	}
 
 	companion object {
