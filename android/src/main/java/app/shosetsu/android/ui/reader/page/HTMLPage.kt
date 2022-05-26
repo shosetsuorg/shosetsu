@@ -1,4 +1,4 @@
-package app.shosetsu.android.ui.reader
+package app.shosetsu.android.ui.reader.page
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
