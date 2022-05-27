@@ -160,7 +160,6 @@ class ChapterReader
 		}
 		super.onCreate(savedInstanceState)
 		val insetsController = WindowInsetsControllerCompat(window, window.decorView)
-		insetsController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
 		setContent {
 			val items by viewModel.liveData.collectAsState(emptyList())
@@ -323,10 +322,13 @@ class ChapterReader
 			}
 		}
 
+		insetsController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+
 		viewModel.isFocused.collectLA(this, catch = {
 		}) {
 			if (it) {
 				insetsController.hide(Type.systemBars())
+				insetsController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 			}
 		}
 		viewModel.liveIsScreenRotationLocked.collectLA(this, catch = {}) {
