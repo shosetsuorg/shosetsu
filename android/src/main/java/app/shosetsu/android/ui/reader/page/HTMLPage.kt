@@ -66,8 +66,14 @@ fun WebViewPageContent(
 			captureBackPresses = false,
 			onCreated = { webView ->
 				webView.setBackgroundColor(Color.BLACK)
-				@SuppressLint("SetJavaScriptEnabled")
-				webView.settings.javaScriptEnabled = true
+				webView.settings.apply {
+					@SuppressLint("SetJavaScriptEnabled")
+					javaScriptEnabled = true
+					blockNetworkLoads = false
+					blockNetworkImage = false
+					loadsImagesAutomatically = true
+					allowFileAccess = true
+				}
 
 				val inter = ShosetsuScript(
 					onClickMethod = onClick,
