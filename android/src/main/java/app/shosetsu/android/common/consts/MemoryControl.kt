@@ -20,7 +20,7 @@ package app.shosetsu.android.common.consts
 // Control memory parameters
 
 /** How many chapters allowed in memory at once */
-const val MEMORY_MAX_CHAPTERS = 100L
+const val MEMORY_MAX_CHAPTERS = 10L
 
 /** How long can a chapter can remain in memory (minutes) */
 const val MEMORY_EXPIRE_CHAPTER_TIME = 10L
