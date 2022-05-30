@@ -187,7 +187,7 @@ dependencies {
 	implementation("org.jsoup:jsoup:1.15.1")
 
 	// Image loading
-	implementation("io.coil-kt:coil-compose:2.0.0")
+	implementation("io.coil-kt:coil-compose:2.1.0")
 
 	// Time control
 	implementation("joda-time:joda-time:2.10.14")
@@ -202,7 +202,7 @@ dependencies {
 	implementation(kotlin("stdlib-jdk8"))
 	//implementation(kotlin("reflect"))
 
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.2")
 
 	// Error logging
 	val acraVersion = "5.8.3"
@@ -251,7 +251,7 @@ dependencies {
 
 	// KTX
 
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.1")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.2")
 
 	// KTX - Serialization
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
@@ -316,7 +316,7 @@ dependencies {
 	implementation("com.chargemap.compose:numberpicker:1.0.3")
 
 	// QR Code
-	implementation("io.github.g00fy2.quickie:quickie-bundled:1.4.1")
+	implementation("io.github.g00fy2.quickie:quickie-bundled:1.4.2")
 
 	implementation("com.github.doomsdayrs:qrcode-kotlin:513d290b")
 
