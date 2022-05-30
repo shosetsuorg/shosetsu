@@ -108,7 +108,6 @@ fun NovelCardNormalContent(
 			AsyncImage(
 				ImageRequest.Builder(LocalContext.current)
 					.data(imageURL)
-					.placeholder(R.drawable.animated_refresh)
 					.error(R.drawable.broken_image)
 					.build(),
 				stringResource(R.string.controller_novel_info_image),
@@ -213,7 +212,6 @@ fun NovelCardCozyContent(
 				AsyncImage(
 					ImageRequest.Builder(LocalContext.current)
 						.data(imageURL)
-						.placeholder(R.drawable.animated_refresh)
 						.error(R.drawable.broken_image)
 						.build(),
 					stringResource(R.string.controller_novel_info_image),
@@ -295,7 +293,6 @@ fun NovelCardCompressedContent(
 					AsyncImage(
 						ImageRequest.Builder(LocalContext.current)
 							.data(imageURL)
-							.placeholder(R.drawable.animated_refresh)
 							.error(R.drawable.broken_image)
 							.build(),
 						stringResource(R.string.controller_novel_info_image),
