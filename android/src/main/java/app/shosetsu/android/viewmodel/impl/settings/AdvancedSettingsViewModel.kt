@@ -1,8 +1,11 @@
 package app.shosetsu.android.viewmodel.impl.settings
 
+import androidx.work.await
+import app.shosetsu.android.backend.workers.onetime.RepositoryUpdateWorker
 import app.shosetsu.android.backend.workers.perodic.AppUpdateCheckCycleWorker
 import app.shosetsu.android.backend.workers.perodic.BackupCycleWorker
 import app.shosetsu.android.backend.workers.perodic.NovelUpdateCycleWorker
+import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.PurgeNovelCacheUseCase
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
@@ -35,7 +38,8 @@ class AdvancedSettingsViewModel(
 	private val purgeNovelCacheUseCase: PurgeNovelCacheUseCase,
 	private val backupCycleManager: BackupCycleWorker.Manager,
 	private val appUpdateCycleManager: AppUpdateCheckCycleWorker.Manager,
-	private val novelUpdateCycleManager: NovelUpdateCycleWorker.Manager
+	private val novelUpdateCycleManager: NovelUpdateCycleWorker.Manager,
+	private val repoManager: RepositoryUpdateWorker.Manager,
 ) : AAdvancedSettingsViewModel(iSettingsRepository) {
 	override fun purgeUselessData(): Flow<Unit> =
 		flow {
@@ -52,5 +56,15 @@ class AdvancedSettingsViewModel(
 		backupCycleManager.start()
 		appUpdateCycleManager.start()
 		novelUpdateCycleManager.start()
+	}
+
+	override fun forceRepoSync() {
+		launchIO {
+			try {
+				repoManager.stop().await()
+			} finally {
+				repoManager.start(force = true)
+			}
+		}
 	}
 }

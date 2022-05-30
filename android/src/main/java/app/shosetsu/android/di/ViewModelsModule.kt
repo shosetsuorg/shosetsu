@@ -217,6 +217,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			purgeNovelCacheUseCase = instance(),
 			instance(),
 			instance(),
+			instance(),
 			instance()
 		)
 	}

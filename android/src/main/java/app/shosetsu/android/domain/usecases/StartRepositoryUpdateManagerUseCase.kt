@@ -30,10 +30,10 @@ import app.shosetsu.android.common.ext.launchIO
 class StartRepositoryUpdateManagerUseCase(
 	private val manager: RepositoryUpdateWorker.Manager
 ) {
-	operator fun invoke() {
+	operator fun invoke(force: Boolean = false) {
 		launchIO {
 			if (!manager.isRunning())
-				manager.start()
+				manager.start(force = force)
 		}
 	}
 

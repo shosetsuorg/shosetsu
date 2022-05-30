@@ -131,7 +131,10 @@ class AdvancedSettings : ShosetsuController() {
 					onPurgeNovelCache = ::purgeNovelCache,
 					onPurgeChapterCache = {},
 					onKillCycleWorkers = ::killCycleWorkers,
-					onClearCookies = ::clearWebCookies
+					onClearCookies = ::clearWebCookies,
+					onForceRepoSync = {
+						viewModel.forceRepoSync()
+					}
 				)
 			}
 		}
@@ -146,6 +149,7 @@ fun AdvancedSettingsContent(
 	onPurgeNovelCache: () -> Unit,
 	onPurgeChapterCache: () -> Unit,
 	onKillCycleWorkers: () -> Unit,
+	onForceRepoSync: () -> Unit,
 	onClearCookies: () -> Unit
 ) {
 	LazyColumn(
@@ -164,7 +168,9 @@ fun AdvancedSettingsContent(
 				title = stringResource(R.string.theme),
 				description = stringResource(R.string.settings_advanced_theme_desc),
 				choices = stringArrayResource(R.array.application_themes),
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp),
 				selection = choice,
 				onSelection = onThemeSelected
 			)
@@ -175,7 +181,9 @@ fun AdvancedSettingsContent(
 				title = stringResource(R.string.remove_novel_cache),
 				description = stringResource(R.string.settings_advanced_purge_novel_cache),
 				buttonText = stringResource(R.string.settings_advanced_purge_button),
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp),
 				onClick = onPurgeNovelCache
 			)
 		}
@@ -184,7 +192,9 @@ fun AdvancedSettingsContent(
 			SwitchSettingContent(
 				title = stringResource(R.string.settings_advanced_verify_checksum_title),
 				description = stringResource(R.string.settings_advanced_verify_checksum_desc),
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp),
 				repo = viewModel.settingsRepo,
 				key = VerifyCheckSum
 			)
@@ -194,7 +204,9 @@ fun AdvancedSettingsContent(
 			SwitchSettingContent(
 				title = stringResource(R.string.settings_advanced_require_double_back_title),
 				description = stringResource(R.string.settings_advanced_require_double_back_desc),
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp),
 				repo = viewModel.settingsRepo,
 				key = RequireDoubleBackToExit
 			)
@@ -205,8 +217,22 @@ fun AdvancedSettingsContent(
 				title = stringResource(R.string.settings_advanced_kill_cycle_workers_title),
 				description = stringResource(R.string.settings_advanced_kill_cycle_workers_desc),
 				buttonText = stringResource(R.string.settings_advanced_kill_cycle_workers_button),
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp),
 				onClick = onKillCycleWorkers
+			)
+		}
+
+		item {
+			ButtonSettingContent(
+				title = stringResource(R.string.settings_advanced_force_repo_update_title),
+				description = stringResource(R.string.settings_advanced_force_repo_update_desc),
+				buttonText = stringResource(R.string.force),
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp),
+				onClick = onForceRepoSync
 			)
 		}
 
@@ -215,7 +241,9 @@ fun AdvancedSettingsContent(
 				title = stringResource(R.string.settings_advanced_clear_cookies_title),
 				description = stringResource(R.string.settings_advanced_clear_cookies_desc),
 				buttonText = stringResource(R.string.settings_advanced_clear_cookies_button),
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp),
 				onClick = onClearCookies
 			)
 		}
@@ -224,7 +252,9 @@ fun AdvancedSettingsContent(
 			SwitchSettingContent(
 				title = stringResource(R.string.settings_advanced_true_chapter_delete_title),
 				description = stringResource(R.string.settings_advanced_true_chapter_delete_desc),
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp),
 				repo = viewModel.settingsRepo,
 				key = ExposeTrueChapterDelete
 			)
@@ -234,7 +264,9 @@ fun AdvancedSettingsContent(
 			SwitchSettingContent(
 				title = stringResource(R.string.settings_advanced_log_title),
 				description = stringResource(R.string.settings_advanced_log_desc),
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp),
 				repo = viewModel.settingsRepo,
 				key = LogToFile
 			)
@@ -244,7 +276,9 @@ fun AdvancedSettingsContent(
 			SwitchSettingContent(
 				title = stringResource(R.string.settings_advanced_auto_bookmark_title),
 				description = stringResource(R.string.settings_advanced_auto_bookmark_desc),
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp),
 				repo = viewModel.settingsRepo,
 				key = AutoBookmarkFromQR
 			)

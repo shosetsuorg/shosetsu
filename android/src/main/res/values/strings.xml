@@ -696,6 +696,9 @@
     <string name="backup_restore_only_idle">Backup only when idle</string>
     <string name="backup_restore_only_idle_desc">Forces backups to occur when device is idle, also effects cycle worker</string>
     <string name="cozy">Cozy</string>
+    <string name="settings_advanced_force_repo_update_title">Force repo sync</string>
+    <string name="settings_advanced_force_repo_update_desc">Sometimes, Repo sync does not load properly. This will force the repo to update.</string>
+    <string name="force">Force</string>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

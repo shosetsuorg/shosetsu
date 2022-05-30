@@ -35,4 +35,5 @@ abstract class AAdvancedSettingsViewModel(iSettingsRepository: ISettingsReposito
 
 	abstract fun killCycleWorkers()
 	abstract fun startCycleWorkers()
+	abstract fun forceRepoSync()
 }

@@ -390,11 +390,7 @@ class RepositoryUpdateWorker(
 		override suspend fun getCount(): Int =
 			getWorkerInfoList().size
 
-		/**
-		 * Starts the service. It will be started only if there isn't another instance already
-		 * running.
-		 */
-		override fun start(data: Data) {
+		fun start(data: Data = Data.EMPTY, force: Boolean) {
 			launchIO {
 				logI(LogConstants.SERVICE_NEW)
 				workerManager.enqueueUniqueWork(
@@ -403,13 +399,15 @@ class RepositoryUpdateWorker(
 					OneTimeWorkRequestBuilder<RepositoryUpdateWorker>().setInputData(data)
 						.setConstraints(
 							Constraints.Builder().apply {
-								setRequiredNetworkType(
-									if (updateOnMetered()) {
-										NetworkType.CONNECTED
-									} else NetworkType.UNMETERED
-								)
-								setRequiresStorageNotLow(!updateOnLowStorage())
-								setRequiresBatteryNotLow(!updateOnLowBattery())
+								if (!force) {
+									setRequiredNetworkType(
+										if (updateOnMetered()) {
+											NetworkType.CONNECTED
+										} else NetworkType.UNMETERED
+									)
+									setRequiresStorageNotLow(!updateOnLowStorage())
+									setRequiresBatteryNotLow(!updateOnLowBattery())
+								}
 							}.build()
 						).build()
 				)
@@ -420,6 +418,14 @@ class RepositoryUpdateWorker(
 					}"
 				)
 			}
+		}
+
+		/**
+		 * Starts the service. It will be started only if there isn't another instance already
+		 * running.
+		 */
+		override fun start(data: Data) {
+			start(data, false)
 		}
 
 		/**
