@@ -345,7 +345,7 @@ fun LibraryContent(
 			LazyVerticalGrid(
 				columns = GridCells.Adaptive(if (cardType != COMPRESSED) size else 400.dp),
 				contentPadding = PaddingValues(
-					bottom = 200.dp,
+					bottom = 300.dp,
 					start = 8.dp,
 					end = 8.dp,
 					top = 4.dp
@@ -430,7 +430,6 @@ fun LibraryContent(
 							)
 						}
 						COZY -> {
-							this
 							NovelCardCozyContent(
 								item.title,
 								item.imageURL,
