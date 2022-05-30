@@ -35,11 +35,10 @@ import org.joda.time.DateTime
  */
 abstract class AUpdatesViewModel
 	: ShosetsuViewModel(),
-	SubscribeViewModel<List<UpdateCompleteEntity>>,
+	SubscribeViewModel<Map<DateTime, List<UpdateCompleteEntity>>>,
 	StartUpdateManagerViewModel, IsOnlineCheckViewModel {
 
 	abstract val isRefreshing: Flow<Boolean>
-	abstract val items: Flow<Map<DateTime, List<UpdateCompleteEntity>>>
 
 	abstract suspend fun updateChapter(updateUI: UpdateCompleteEntity, readingStatus: ReadingStatus)
 }

@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.enums.ChapterSortType
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.*
@@ -31,8 +32,10 @@ import app.shosetsu.lib.share.NovelLink
 import app.shosetsu.lib.share.RepositoryLink
 import io.github.g0dkar.qrcode.QRCode
 import io.github.g0dkar.qrcode.render.QRCodeCanvasFactory
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 
 /*
@@ -111,6 +114,7 @@ class NovelViewModel(
 		novelIDLive.transformLatest { id: Int ->
 			emitAll(
 				getChapterUIsUseCase(id)
+					.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Lazily, 1)
 					.combineBookmarked()
 					.combineDownloaded()
 					.combineStatus()

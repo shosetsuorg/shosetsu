@@ -82,7 +82,7 @@ class ComposeUpdatesController : ShosetsuController() {
 		setViewTitle()
 		setContent {
 			MdcTheme {
-				val items: Map<DateTime, List<UpdateCompleteEntity>> by viewModel.items.collectAsState(
+				val items: Map<DateTime, List<UpdateCompleteEntity>> by viewModel.liveData.collectAsState(
 					emptyMap()
 				)
 				val isRefreshing by viewModel.isRefreshing.collectAsState(false)

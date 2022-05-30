@@ -1,5 +1,6 @@
 package app.shosetsu.android.viewmodel.impl
 
+import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.trimDate
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
@@ -8,11 +9,10 @@ import app.shosetsu.android.domain.usecases.load.LoadUpdatesUseCase
 import app.shosetsu.android.domain.usecases.start.StartUpdateWorkerUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateChapterUseCase
 import app.shosetsu.android.viewmodel.abstracted.AUpdatesViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.transformLatest
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.plus
 import org.joda.time.DateTime
 
 /*
@@ -46,16 +46,16 @@ class UpdatesViewModel(
 	private val isOnlineUseCase: IsOnlineUseCase,
 	private val updateChapterUseCase: UpdateChapterUseCase
 ) : AUpdatesViewModel() {
-	private val updatesFlow by lazy {
+	override val liveData: Flow<Map<DateTime, List<UpdateCompleteEntity>>> by lazy {
 		getUpdatesUseCase().transformLatest {
 			isRefreshing.emit(true)
 			emit(it.ifEmpty { emptyList() }.sortedByDescending { it.time })
 			isRefreshing.emit(false)
-		}
-	}
-
-	override val liveData: Flow<List<UpdateCompleteEntity>> by lazy {
-		updatesFlow
+		}.mapLatest { result ->
+			result.groupBy {
+				DateTime(it.time).trimDate()
+			}
+		}.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Lazily, 1)
 	}
 
 	override fun startUpdateManager() = startUpdateWorkerUseCase()
@@ -63,14 +63,6 @@ class UpdatesViewModel(
 	override fun isOnline(): Boolean = isOnlineUseCase()
 
 	override val isRefreshing: MutableStateFlow<Boolean> by lazy { MutableStateFlow(false) }
-
-	override val items: Flow<Map<DateTime, List<UpdateCompleteEntity>>> by lazy {
-		updatesFlow.mapLatest { result ->
-			result.groupBy {
-				DateTime(it.time).trimDate()
-			}
-		}
-	}
 
 	override suspend fun updateChapter(
 		updateUI: UpdateCompleteEntity,
