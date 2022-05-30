@@ -44,7 +44,7 @@ class DeleteChapterPassageUseCase(
 	)
 	suspend operator fun invoke(chapterUI: ChapterEntity) {
 		val ext = iExtensionsRepository.getInstalledExtension(chapterUI.extensionID)
-			?: throw NoSuchExtensionException(chapterUI.extensionID.toString())
+			?: throw NoSuchExtensionException(chapterUI.extensionID)
 
 		iChaptersRepository.deleteChapterPassage(
 			chapterUI,

@@ -78,7 +78,7 @@ abstract class ANovelViewModel
 	abstract fun getChapterURL(chapterUI: ChapterUI): Flow<String?>
 
 	/** Deletes the previous chapter */
-	abstract fun deletePrevious()
+	abstract fun deletePrevious(): Flow<Boolean>
 
 	/**
 	 * Will return the next chapter to read & scroll to said chapter

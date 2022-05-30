@@ -1,5 +1,6 @@
 package app.shosetsu.android.ui.novel
 
+import android.database.sqlite.SQLiteException
 import android.os.Bundle
 import android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
 import android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
@@ -33,6 +34,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.os.bundleOf
 import app.shosetsu.android.activity.MainActivity
+import app.shosetsu.android.common.FilePermissionException
+import app.shosetsu.android.common.NoSuchExtensionException
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.*
@@ -58,6 +61,7 @@ import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -121,7 +125,7 @@ class NovelController(bundle: Bundle) :
 	}
 
 	override fun onAttach(view: View) {
-		if (viewModel.isFromChapterReader) viewModel.deletePrevious()
+		if (viewModel.isFromChapterReader) viewModel.deletePrevious().collectDeletePrevious()
 		super.onAttach(view)
 	}
 
@@ -436,9 +440,39 @@ class NovelController(bundle: Bundle) :
 		}
 	}
 
+	private fun Flow<Boolean>.collectDeletePrevious() {
+		collectLA(this@NovelController, catch = {
+			when (it) {
+				is SQLiteException ->
+					makeSnackBar(
+						getString(
+							R.string.controller_novel_delete_previous_fail,
+							it.message ?: ""
+						)
+					)?.show()
+				is FilePermissionException ->
+					makeSnackBar(
+						getString(
+							R.string.controller_novel_delete_previous_fail,
+							it.message ?: ""
+						)
+					)?.show()
+				is NoSuchExtensionException ->
+					makeSnackBar(
+						getString(
+							R.string.missing_extension,
+							it.extensionId
+						)
+					)?.show()
+			}
+			emit(false)
+		}) {
+		}
+	}
+
 	override fun onViewCreated(view: View) {
 		viewModel.setNovelID(args.getNovelID())
-		if (viewModel.isFromChapterReader) viewModel.deletePrevious()
+		if (viewModel.isFromChapterReader) viewModel.deletePrevious().collectDeletePrevious()
 
 		viewModel.hasSelected.collectLatestLA(this, catch = {}) { hasSelected ->
 			if (hasSelected) {

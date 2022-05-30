@@ -23,4 +23,4 @@ package app.shosetsu.android.common
  * @since 12 / 02 / 2022
  * @author Doomsdayrs
  */
-class NoSuchExtensionException(message: String) : Exception(message)
+class NoSuchExtensionException(val extensionId: Int) : Exception("Missing extension: $extensionId")

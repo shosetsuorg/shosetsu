@@ -290,9 +290,12 @@ class NovelViewModel(
 			}
 		}
 
-	override fun deletePrevious() {
+	/**
+	 * TODO Account for the fact that multiple chapters have to be deleted
+	 */
+	override fun deletePrevious(): Flow<Boolean> {
 		logI("Deleting previous chapters")
-		launchIO {
+		return flow {
 			loadDeletePreviousChapterUseCase().let { chaptersBackToDelete ->
 				if (chaptersBackToDelete != -1) {
 					val lastUnread =
@@ -300,7 +303,8 @@ class NovelViewModel(
 
 					if (lastUnread == null) {
 						logE("Received empty when trying to get lastUnreadResult")
-						return@launchIO
+						emit(false)
+						return@flow
 					}
 
 					val chapters = chaptersFlow.first().sortedBy { it.order }
@@ -309,17 +313,19 @@ class NovelViewModel(
 
 					if (indexOfLast == -1) {
 						logE("Index of last read chapter turned up negative")
-						return@launchIO
+						emit(false)
+						return@flow
 					}
 
 					if (indexOfLast - chaptersBackToDelete < 0) {
-						return@launchIO
+						emit(false)
+						return@flow
 					}
 
 					deleteChapterPassageUseCase(chapters[indexOfLast - chaptersBackToDelete])
+					emit(true)
 				}
 			}
-
 		}
 	}
 
