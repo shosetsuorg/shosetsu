@@ -18,6 +18,7 @@ import app.shosetsu.lib.PAGE_INDEX
 import app.shosetsu.lib.mapify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.runBlocking
 
 /*
  * This file is part of shosetsu.
@@ -213,19 +214,20 @@ class SearchViewModel(
 						if (query == null) return@transformLatest
 						exceptionFlow.emit(null)
 
-						val source = loadCatalogueQueryDataUseCase(
-							extensionID,
-							query,
-							HashMap<Int, Any>().apply {
-								putAll(ext.searchFiltersModel.mapify())
-								this[PAGE_INDEX] = ext.startIndex
-							}
-						)
 						emitAll(
 							Pager(
 								PagingConfig(10)
 							) {
-								source
+								runBlocking {
+									loadCatalogueQueryDataUseCase(
+										extensionID,
+										query,
+										HashMap<Int, Any>().apply {
+											putAll(ext.searchFiltersModel.mapify())
+											this[PAGE_INDEX] = ext.startIndex
+										}
+									)
+								}
 							}.flow
 						)
 
