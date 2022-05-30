@@ -24,7 +24,7 @@ We appreciate any help in improving the app, so let us know by [opening an issue
 
 | Matrix | Discord |
 |--------|---------|
-| <a href="https://matrix.to/#/#shosetsu:matrix.org"><img src="https://raw.githubusercontent.com/shosetsuorg/shosetsu/dev/matrix%20logo.svg" alt="Matrix Space" width=240px></a> | <a href="https://discord.gg/ttSX7gB"><img src="https://discordapp.com/assets/e4923594e694a21542a489471ecffa50.svg" alt="Discord Channel" width=240px></a> |
+| <a href="https://matrix.to/#/#shosetsu:matrix.org"><img src="https://raw.githubusercontent.com/shosetsuorg/shosetsu/development/matrix%20logo.svg" alt="Matrix Space" width=240px></a> | <a href="https://discord.gg/ttSX7gB"><img src="https://discordapp.com/assets/e4923594e694a21542a489471ecffa50.svg" alt="Discord Channel" width=240px></a> |
 
 ## Screenshots:
 
