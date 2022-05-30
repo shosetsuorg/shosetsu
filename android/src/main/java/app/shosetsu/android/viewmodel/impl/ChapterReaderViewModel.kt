@@ -4,6 +4,7 @@ import android.graphics.Color
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.SettingKey.*
 import app.shosetsu.android.common.enums.AppThemes
 import app.shosetsu.android.common.enums.MarkingType
@@ -34,9 +35,11 @@ import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderDivide
 import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.plus
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 
@@ -367,7 +370,7 @@ class ChapterReaderViewModel(
 		novelIDLive.transformLatest { nId ->
 			System.gc() // Run GC to try and mitigate OOM
 			emitAll(loadReaderChaptersUseCase(nId))
-		}.combineTempProgress()
+		}.combineTempProgress().shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Lazily, 1)
 	}
 
 	override val liveData: Flow<List<ReaderUIItem>> by lazy {
