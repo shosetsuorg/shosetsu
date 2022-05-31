@@ -6,7 +6,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.view.KeyEvent
-import android.view.MenuItem
 import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -27,7 +26,6 @@ import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel
 import app.shosetsu.android.viewmodel.abstracted.AChapterReaderViewModel.ChapterPassage
 import app.shosetsu.android.viewmodel.impl.settings.*
 import app.shosetsu.lib.Novel.ChapterType
-import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -290,7 +288,10 @@ class ChapterReader
 													backgroundColorFlow = { viewModel.backgroundColor },
 													onScroll = viewModel::onScroll,
 													onClick = viewModel::onFocusClick,
-													onDoubleClick = viewModel::onFocusDoubleClick
+													onDoubleClick = viewModel::onFocusDoubleClick,
+													progressFlow = {
+														viewModel.getChapterProgress(item)
+													}
 												)
 											}
 											ChapterType.HTML -> {
@@ -300,7 +301,10 @@ class ChapterReader
 													retryChapter = viewModel::retryChapter,
 													onScroll = viewModel::onScroll,
 													onClick = viewModel::onFocusClick,
-													onDoubleClick = viewModel::onFocusDoubleClick
+													onDoubleClick = viewModel::onFocusDoubleClick,
+													progressFlow = {
+														viewModel.getChapterProgress(item)
+													}
 												)
 											}
 											else -> {
@@ -352,34 +356,6 @@ class ChapterReader
 		tts.stop()
 		tts.shutdown()
 		super.onDestroy()
-	}
-
-	/**
-	 * What to do when an menu item is selected
-	 *
-	 * @param item item selected
-	 * @return true if processed
-	 */
-	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-		android.R.id.home -> {
-			finish()
-			true
-		}
-		R.id.browser -> {
-			viewModel.getCurrentChapterURL().collectLA(this, catch = {}) { url ->
-				if (!url.isNullOrEmpty())
-					openInBrowser(url)
-			}
-			true
-		}
-		R.id.webview -> {
-			viewModel.getCurrentChapterURL().collectLA(this, catch = {}) { url ->
-				if (!url.isNullOrEmpty())
-					openInWebView(url)
-			}
-			true
-		}
-		else -> super.onOptionsItemSelected(item)
 	}
 
 	/**

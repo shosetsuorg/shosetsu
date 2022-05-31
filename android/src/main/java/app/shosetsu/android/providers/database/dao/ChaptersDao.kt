@@ -58,7 +58,7 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 	 * Gets a flow of chapters as [ReaderChapterEntity]
 	 */
 	@Throws(SQLiteException::class)
-	@Query("SELECT id, url, title, readingPosition, readingStatus, bookmarked FROM chapters WHERE novelID = :novelID")
+	@Query("SELECT id, title FROM chapters WHERE novelID = :novelID")
 	fun getReaderChaptersFlow(novelID: Int): Flow<List<ReaderChapterEntity>>
 
 
@@ -79,23 +79,6 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 	suspend fun getChapter(rowId: Long): DBChapterEntity?
 
 	//# Transactions
-
-	/**
-	 * Updates a [DBChapterEntity] via its [ReaderChapterEntity]
-	 */
-	@Transaction
-	@Throws(SQLiteException::class)
-	suspend fun update(entity: ReaderChapterEntity) {
-		val updatedChapter: DBChapterEntity? =
-			getChapter(entity.id)?.copy(
-				readingPosition = entity.readingPosition,
-				readingStatus = entity.readingStatus,
-				bookmarked = entity.bookmarked
-			)
-		updatedChapter?.let {
-			update(it)
-		}
-	}
 
 	/**
 	 * Handle new data. Update's chapters that already exist, and insert any new chapters.
@@ -227,4 +210,10 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 
 	@Query("SELECT * FROM chapters WHERE formatterID = :extensionId")
 	fun getChaptersByExtension(extensionId: Int): List<DBChapterEntity>
+
+	@Query("SELECT readingPosition FROM chapters WHERE id = :chapterId")
+	fun getChapterProgress(chapterId: Int): Flow<Double>
+
+	@Query("SELECT bookmarked FROM chapters WHERE id = :id LIMIT 1")
+	fun getChapterBookmarkedFlow(id: Int): Flow<Boolean?>
 }

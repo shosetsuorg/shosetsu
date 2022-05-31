@@ -43,8 +43,8 @@ class DBChaptersDataSource(
 	override suspend fun getChaptersFlow(
 		novelID: Int,
 	): Flow<List<ChapterEntity>> = flow {
-			emitAll(chaptersDao.getChaptersFlow(novelID).map { it.convertList() })
-			}
+		emitAll(chaptersDao.getChaptersFlow(novelID).map { it.convertList() })
+	}
 
 	@Throws(SQLiteException::class)
 	override suspend fun getChapters(novelID: Int): List<ChapterEntity> = try {
@@ -110,19 +110,29 @@ class DBChaptersDataSource(
 	}
 
 	@Throws(SQLiteException::class)
-	override suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): Unit =
-		try {
-			chaptersDao.update(readerChapterEntity)
-		} catch (e: SQLiteException) {
-			throw e
-		}
-
-	@Throws(SQLiteException::class)
 	override suspend fun delete(entity: ChapterEntity): Unit =
 		try {
 			chaptersDao.delete(entity.toDB())
 		} catch (e: SQLiteException) {
 			throw e
+		}
+
+	override fun getChapterProgress(chapterId: Int): Flow<Double> =
+		flow {
+			try {
+				emitAll(chaptersDao.getChapterProgress(chapterId))
+			} catch (e: SQLiteException) {
+				throw e
+			}
+		}
+
+	override fun getChapterBookmarkedFlow(id: Int): Flow<Boolean?> =
+		flow {
+			try {
+				emitAll(chaptersDao.getChapterBookmarkedFlow(id))
+			} catch (e: SQLiteException) {
+				throw e
+			}
 		}
 
 }

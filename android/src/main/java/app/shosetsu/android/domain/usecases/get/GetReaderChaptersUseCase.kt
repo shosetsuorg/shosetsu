@@ -51,14 +51,10 @@ class GetReaderChaptersUseCase(
 								extRepo.getInstalledExtension(novel.extensionID)
 
 							if (extensionEntity != null) {
-								list.map { (id, url, title, readingPosition, readingStatus, bookmarked) ->
+								list.map { (id, title) ->
 									ReaderChapterUI(
 										id,
-										url,
 										title,
-										readingPosition,
-										readingStatus,
-										bookmarked,
 										extensionEntity.chapterType,
 										convertToHtml
 									)

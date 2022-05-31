@@ -1,5 +1,6 @@
 package app.shosetsu.android.viewmodel.impl
 
+import android.database.sqlite.SQLiteException
 import android.graphics.Color
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
@@ -13,6 +14,7 @@ import app.shosetsu.android.common.enums.MarkingType.ONVIEW
 import app.shosetsu.android.common.enums.ReadingStatus.READ
 import app.shosetsu.android.common.enums.ReadingStatus.READING
 import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.utils.asHtml
 import app.shosetsu.android.common.utils.copy
@@ -40,6 +42,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.plus
+import org.acra.ACRA
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 
@@ -117,7 +120,7 @@ class ChapterReaderViewModel(
 
 	override var ttsPitch: Float = 0.0f
 
-	private val stringMap by lazy { HashMap<Int, MutableStateFlow<ChapterPassage>>() }
+	private val stringMap by lazy { HashMap<Int, Flow<ChapterPassage>>() }
 	private val refreshMap by lazy { HashMap<Int, MutableStateFlow<Boolean>>() }
 
 	override val isFirstFocusFlow: Flow<Boolean> by lazy {
@@ -183,51 +186,50 @@ class ChapterReaderViewModel(
 	override fun getChapterStringPassage(item: ReaderChapterUI): Flow<ChapterPassage> {
 		//logV("$item")
 		val mutableFlow = stringMap.getOrPut(item.id) {
-			MutableStateFlow<ChapterPassage>(ChapterPassage.Loading).also { mutableFlow ->
-				launchIO {
-					mutableFlow.emitAll(
-						getRefreshFlow(item).transformLatest {
+			flow {
+				emit(ChapterPassage.Loading)
+				emitAll(
+					getRefreshFlow(item).transformLatest {
 
-							val bytes = try {
-								getChapterPassage(item)
-							} catch (e: Exception) {
-								emit(ChapterPassage.Error(e))
-								return@transformLatest
-							}
-
-							if (bytes == null) {
-								emit(ChapterPassage.Error(Exception("No content received")))
-								return@transformLatest
-							}
-
-							emitAll(
-								indentSizeFlow.combine(
-									paragraphSpacingFlow
-								) { indentSize, paragraphSpacing ->
-									val unformattedText = bytes.decodeToString()
-
-									val replaceSpacing = StringBuilder("\n")
-									// Calculate changes to \n
-									for (x in 0 until paragraphSpacing.toInt())
-										replaceSpacing.append("\n")
-
-									// Calculate changes to \t
-									for (x in 0 until indentSize)
-										replaceSpacing.append("\t")
-
-									// Set new text formatted
-									ChapterPassage.Success(
-										unformattedText.replace(
-											"\n".toRegex(),
-											replaceSpacing.toString()
-										)
-									)
-								}
-							)
+						val bytes = try {
+							getChapterPassage(item)
+						} catch (e: Exception) {
+							emit(ChapterPassage.Error(e))
+							return@transformLatest
 						}
-					)
-				}
-			}
+
+						if (bytes == null) {
+							emit(ChapterPassage.Error(Exception("No content received")))
+							return@transformLatest
+						}
+
+						emitAll(
+							indentSizeFlow.combine(
+								paragraphSpacingFlow
+							) { indentSize, paragraphSpacing ->
+								val unformattedText = bytes.decodeToString()
+
+								val replaceSpacing = StringBuilder("\n")
+								// Calculate changes to \n
+								for (x in 0 until paragraphSpacing.toInt())
+									replaceSpacing.append("\n")
+
+								// Calculate changes to \t
+								for (x in 0 until indentSize)
+									replaceSpacing.append("\t")
+
+								// Set new text formatted
+								ChapterPassage.Success(
+									unformattedText.replace(
+										"\n".toRegex(),
+										replaceSpacing.toString()
+									)
+								)
+							}
+						)
+					}
+				)
+			}.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Lazily, 1)
 		}
 
 		if (cleanStringMapJob == null && stringMap.size > 10) {
@@ -243,61 +245,60 @@ class ChapterReaderViewModel(
 
 	override fun getChapterHTMLPassage(item: ReaderChapterUI): Flow<ChapterPassage> {
 		val mutableFlow = stringMap.getOrPut(item.id) {
-			MutableStateFlow<ChapterPassage>(ChapterPassage.Loading).also { mutableFlow ->
-				launchIO {
-					mutableFlow.emitAll(
-						getRefreshFlow(item).transformLatest {
-							val bytes = try {
-								getChapterPassage(item)
-							} catch (e: Exception) {
-								emit(ChapterPassage.Error(e))
-								return@transformLatest
-							}
+			flow {
+				emit(ChapterPassage.Loading)
+				emitAll(
+					getRefreshFlow(item).transformLatest {
+						val bytes = try {
+							getChapterPassage(item)
+						} catch (e: Exception) {
+							emit(ChapterPassage.Error(e))
+							return@transformLatest
+						}
 
-							if (bytes == null) {
-								emit(ChapterPassage.Error(Exception("No content received")))
-								return@transformLatest
-							}
+						if (bytes == null) {
+							emit(ChapterPassage.Error(Exception("No content received")))
+							return@transformLatest
+						}
 
-							var result = bytes.decodeToString()
+						var result = bytes.decodeToString()
 
-							@Suppress("DEPRECATION")
-							if (item.chapterType == Novel.ChapterType.STRING && item.convertStringToHtml) {
-								result = asHtml(result, item.title)
-							}
+						@Suppress("DEPRECATION")
+						if (item.chapterType == Novel.ChapterType.STRING && item.convertStringToHtml) {
+							result = asHtml(result, item.title)
+						}
 
-							val document = Jsoup.parse(result)
+						val document = Jsoup.parse(result)
 
-							emitAll(
-								shosetsuCss.combine(userCssFlow) { shoCSS, useCSS ->
-									fun update(id: String, css: String) {
-										var style: Element? = document.getElementById(id)
+						emitAll(
+							shosetsuCss.combine(userCssFlow) { shoCSS, useCSS ->
+								fun update(id: String, css: String) {
+									var style: Element? = document.getElementById(id)
 
-										if (style == null) {
-											style =
-												document.createElement("style") ?: return
+									if (style == null) {
+										style =
+											document.createElement("style") ?: return
 
-											style.id(id)
-											style.attr("type", "text/css")
+										style.id(id)
+										style.attr("type", "text/css")
 
-											document.head().appendChild(style)
-										}
-
-										style.text(css)
+										document.head().appendChild(style)
 									}
 
-									update("shosetsu-style", shoCSS)
-									update("user-style", useCSS)
-
-									ChapterPassage.Success(
-										document.toString()
-									)
+									style.text(css)
 								}
-							)
-						}
-					)
-				}
-			}
+
+								update("shosetsu-style", shoCSS)
+								update("user-style", useCSS)
+
+								ChapterPassage.Success(
+									document.toString()
+								)
+							}
+						)
+					}
+				)
+			}.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Lazily, 1)
 		}
 
 		if (cleanStringMapJob == null && stringMap.size > 10) {
@@ -312,12 +313,10 @@ class ChapterReaderViewModel(
 	}
 
 	override val isCurrentChapterBookmarked: Flow<Boolean> by lazy {
-		chaptersFlow.transformLatest { items ->
+		currentChapterID.transformLatest { id ->
 			emitAll(
-				currentChapterID.transformLatest { id ->
-					items.find { it.id == id }?.let {
-						emit(it.bookmarked)
-					}
+				chapterRepository.getChapterBookmarkedFlow(id).map {
+					it ?: false
 				}
 			)
 		}.onIO()
@@ -370,8 +369,20 @@ class ChapterReaderViewModel(
 		novelIDLive.transformLatest { nId ->
 			System.gc() // Run GC to try and mitigate OOM
 			emitAll(loadReaderChaptersUseCase(nId))
-		}.combineTempProgress().shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Lazily, 1)
+		}.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Lazily, 1)
 	}
+
+	override fun getChapterProgress(chapter: ReaderChapterUI): Flow<Double> =
+		flow {
+			emitAll(
+				progressMapFlow.transformLatest { progressMap ->
+					if (progressMap.containsKey(chapter.id))
+						emit(progressMap[chapter.id]!!)
+					else
+						emitAll(chapterRepository.getChapterProgress(chapter.convertTo()))
+				}
+			)
+		}.onIO()
 
 	override val liveData: Flow<List<ReaderUIItem>> by lazy {
 		chaptersFlow
@@ -404,22 +415,6 @@ class ChapterReaderViewModel(
 				modified
 			} else {
 				list
-			}
-		}
-
-	private fun Flow<List<ReaderChapterUI>>.combineTempProgress(): Flow<List<ReaderChapterUI>> =
-		combine(progressMapFlow) { list, progressMap ->
-			list.map {
-				if (progressMap.containsKey(it.id)) {
-					val progress = progressMap[it.id]
-					val copy = it.copy(
-						readingPosition = progress!!
-					)
-					//logD("Progress map contains temp key for $it=$progress, result: $copy")
-					copy
-				} else {
-					it
-				}
 			}
 		}
 
@@ -508,34 +503,32 @@ class ChapterReaderViewModel(
 	override fun toggleBookmark() {
 		launchIO {
 			val id = currentChapterID.first()
-			val items = chaptersFlow.first()
-			items.find { it.id == id }?.let {
-				updateChapter(
-					it.copy(
-						bookmarked = !it.bookmarked
-					)
-				)
-			}
-		}
-	}
+			val chapter = chapterRepository.getChapter(id) ?: return@launchIO
 
-	private fun updateChapter(
-		chapter: ReaderChapterUI,
-	) {
-		launchIO {
-			chapterRepository.updateReaderChapter(chapter.convertTo())
+			chapterRepository.updateChapter(
+				chapter.copy(
+					bookmarked = !chapter.bookmarked
+				)
+			)
 		}
 	}
 
 	override fun updateChapterAsRead(chapter: ReaderChapterUI) {
 		launchIO {
 			recordChapterIsRead(chapter)
-			updateChapter(
-				chapter.copy(
-					readingStatus = READ,
-					readingPosition = 0.0
-				)
-			)
+			try {
+				chapterRepository.getChapter(chapter.id)?.let {
+					chapterRepository.updateChapter(
+						it.copy(
+							readingStatus = READ,
+							readingPosition = 0.0
+						)
+					)
+				}
+			} catch (e: SQLiteException) {
+				logE("Failed to update chapter as read", e)
+				ACRA.errorReporter.handleSilentException(e)
+			}
 		}
 	}
 
@@ -549,11 +542,12 @@ class ChapterReaderViewModel(
 		//logV("$chapter")
 		launchIO {
 			settingsRepo.getBoolean(ReaderMarkReadAsReading).let { markReadAsReading ->
+				val chapterEntity = chapterRepository.getChapter(chapter.id) ?: return@launchIO
 				/*
 				 * If marking chapters that are read as reading is disabled
 				 * and the chapter's readingStatus is read, return to prevent further IO.
 				 */
-				if (!markReadAsReading && chapter.readingStatus == READ) return@launchIO
+				if (!markReadAsReading && chapterEntity.readingStatus == READ) return@launchIO
 
 				/*
 				 * If the reading marking type does not equal on view, then return
@@ -562,8 +556,8 @@ class ChapterReaderViewModel(
 
 				recordChapterIsReading(chapter)
 
-				updateChapter(
-					chapter.copy(readingStatus = READING)
+				chapterRepository.updateChapter(
+					chapterEntity.copy(readingStatus = READING)
 				)
 			}
 		}
@@ -571,6 +565,8 @@ class ChapterReaderViewModel(
 
 	override fun onScroll(chapter: ReaderChapterUI, readingPosition: Double) {
 		launchIO {
+			val chapterEntity = chapterRepository.getChapter(chapter.id) ?: return@launchIO
+
 			// If the chapter reaches 90% read, we can assume the reader already sees it all :P
 			if (readingPosition <= 0.90) {
 				settingsRepo.getBoolean(ReaderMarkReadAsReading).let { markReadAsReading ->
@@ -578,7 +574,7 @@ class ChapterReaderViewModel(
 					 * If marking chapters that are read as reading is disabled
 					 * and the chapter's readingStatus is read, save progress temporarily.
 					 */
-					if (!markReadAsReading && chapter.readingStatus == READ) {
+					if (!markReadAsReading && chapterEntity.readingStatus == READ) {
 						progressMapFlow.emit(progressMapFlow.value.copy().apply {
 							put(chapter.id, readingPosition)
 						})
@@ -598,11 +594,11 @@ class ChapterReaderViewModel(
 						remove(chapter.id)
 					})
 
-					updateChapter(
-						chapter.copy(
+					chapterRepository.updateChapter(
+						chapterEntity.copy(
 							readingStatus = if (markingType == ONSCROLL) {
 								READING
-							} else chapter.readingStatus,
+							} else chapterEntity.readingStatus,
 							readingPosition = readingPosition
 						)
 					)
@@ -617,8 +613,8 @@ class ChapterReaderViewModel(
 					put(chapter.id, readingPosition)
 				})
 
-				updateChapter(
-					chapter.copy(
+				chapterRepository.updateChapter(
+					chapterEntity.copy(
 						readingStatus = READ,
 						readingPosition = 0.0
 					)
@@ -770,15 +766,17 @@ class ChapterReaderViewModel(
 
 	override fun incrementProgress() {
 		launchIO {
+
 			val chapterId = currentChapterID.first()
 
 			val chapter = chaptersFlow.first().find { it.id == chapterId } ?: return@launchIO
+			val chapterEntity = chapterRepository.getChapter(chapter.id) ?: return@launchIO
 
 			/*
 			 * Increment 5% at a time, let us hope this does not back fire
 			 */
-			if ((chapter.readingPosition + INCREMENT_PERCENTAGE) < 1)
-				onScroll(chapter, chapter.readingPosition + INCREMENT_PERCENTAGE)
+			if ((chapterEntity.readingPosition + INCREMENT_PERCENTAGE) < 1)
+				onScroll(chapter, chapterEntity.readingPosition + INCREMENT_PERCENTAGE)
 		}
 	}
 
@@ -787,22 +785,14 @@ class ChapterReaderViewModel(
 			val chapterId = currentChapterID.first()
 
 			val chapter = chaptersFlow.first().find { it.id == chapterId } ?: return@launchIO
+			val chapterEntity = chapterRepository.getChapter(chapter.id) ?: return@launchIO
 
 			/*
 			 * Increment 5% at a time, let us hope this does not back fire
 			 */
-			if ((chapter.readingPosition - INCREMENT_PERCENTAGE) > 0)
-				onScroll(chapter, chapter.readingPosition - INCREMENT_PERCENTAGE)
+			if ((chapterEntity.readingPosition - INCREMENT_PERCENTAGE) > 0)
+				onScroll(chapter, chapterEntity.readingPosition - INCREMENT_PERCENTAGE)
 		}
-	}
-
-	override fun getCurrentChapterURL(): Flow<String?> = flow {
-		val chapterId = currentChapterID.first()
-
-		val chapter = chaptersFlow.first().find { it.id == chapterId }
-		if (chapter == null)
-			emit(null)
-		else emit(extFlow.first()?.expandURL(chapter.link, IExtension.KEY_CHAPTER_URL))
 	}
 
 	override fun clearMemory() {

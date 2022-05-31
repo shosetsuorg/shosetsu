@@ -1,7 +1,5 @@
 package app.shosetsu.android.domain.model.local
 
-import app.shosetsu.android.common.enums.ReadingStatus
-
 /*
  * This file is part of shosetsu.
  *
@@ -27,13 +25,5 @@ import app.shosetsu.android.common.enums.ReadingStatus
 data class ReaderChapterEntity(
 	val id: Int,
 
-	val url: String,
-
 	val title: String,
-
-	var readingPosition: Double = 0.0,
-
-	var readingStatus: ReadingStatus = ReadingStatus.UNREAD,
-
-	var bookmarked: Boolean = false,
 )

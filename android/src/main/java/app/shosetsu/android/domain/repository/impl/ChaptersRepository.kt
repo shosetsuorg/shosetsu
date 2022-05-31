@@ -157,10 +157,6 @@ class ChaptersRepository(
 		novelID: Int,
 	): Flow<List<ReaderChapterEntity>> = dbSource.getReaderChapters(novelID)
 
-	@Throws(SQLiteException::class)
-	override suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity): Unit =
-		dbSource.updateReaderChapter(readerChapterEntity)
-
 	@Throws(SQLiteException::class, FilePermissionException::class)
 	override suspend fun deleteChapterPassage(
 		chapterEntity: ChapterEntity,
@@ -179,4 +175,9 @@ class ChaptersRepository(
 	override suspend fun delete(entity: ChapterEntity) =
 		dbSource.delete(entity)
 
+	override fun getChapterProgress(chapter: ReaderChapterEntity): Flow<Double> =
+		dbSource.getChapterProgress(chapter.id)
+
+	override fun getChapterBookmarkedFlow(id: Int): Flow<Boolean?> =
+		dbSource.getChapterBookmarkedFlow(id)
 }
