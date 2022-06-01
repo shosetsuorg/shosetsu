@@ -65,9 +65,37 @@ class CatalogViewModel(
 	private val filterDataFlow by lazy { MutableStateFlow<Map<Int, Any>>(hashMapOf()) }
 
 	private val iExtensionFlow: Flow<IExtension?> by lazy {
-		extensionIDFlow.map { extensionID ->
-			getExtensionUseCase(extensionID)
+		extensionIDFlow.transformLatest { extensionID ->
+			val ext = getExtensionUseCase(extensionID)
+
+			// Ensure filter is initialized
+			ext?.searchFiltersModel?.toList()?.init()
+			_applyFilter()
+			emit(ext)
 		}.distinctUntilChanged()
+	}
+
+	private fun List<Filter<*>>.init() {
+		forEach { filter ->
+			when (filter) {
+				is Filter.Text -> getFilterStringState(filter)
+				is Filter.Switch -> getFilterBooleanState(filter)
+				is Filter.Checkbox -> getFilterBooleanState(filter)
+				is Filter.TriState -> getFilterIntState(filter)
+				is Filter.Dropdown -> getFilterIntState(filter)
+				is Filter.RadioGroup -> getFilterIntState(filter)
+				is Filter.List -> {
+					filter.filters.toList().init()
+				}
+				is Filter.Group<*> -> {
+					filter.filters.toList().init()
+				}
+				is Filter.Header -> {
+				}
+				is Filter.Separator -> {
+				}
+			}
+		}
 	}
 
 	/**
@@ -198,7 +226,6 @@ class CatalogViewModel(
 
 	private suspend fun _applyFilter() {
 		filterDataFlow.emit(filterDataState.mapValues { it.value.value })
-
 	}
 
 	override fun applyFilter() {
