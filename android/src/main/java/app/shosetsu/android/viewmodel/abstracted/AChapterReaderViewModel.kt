@@ -56,6 +56,8 @@ abstract class AChapterReaderViewModel :
 	abstract val isFirstFocusFlow: Flow<Boolean>
 	abstract val isSwipeInverted: Flow<Boolean>
 
+	abstract fun getChapterProgress(chapter: ReaderChapterUI): Flow<Double>
+
 	abstract fun onFirstFocus()
 
 	abstract val currentPage: Flow<Int>
@@ -153,11 +155,5 @@ abstract class AChapterReaderViewModel :
 	abstract fun incrementProgress()
 	abstract fun depleteProgress()
 
-	/**
-	 * Allow user to open current chapter in web view
-	 *
-	 * TODO Implement
-	 */
-	abstract fun getCurrentChapterURL(): Flow<String?>
 	abstract fun clearMemory()
 }

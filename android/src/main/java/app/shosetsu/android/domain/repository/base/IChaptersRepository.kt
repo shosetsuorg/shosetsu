@@ -112,12 +112,6 @@ interface IChaptersRepository {
 	suspend fun getReaderChaptersFlow(novelID: Int): Flow<List<ReaderChapterEntity>>
 
 	/**
-	 * Update [readerChapterEntity] in database
-	 */
-	@Throws(SQLiteException::class)
-	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity)
-
-	/**
 	 * Delete the chapter passage from storage
 	 *
 	 * Also deletes from memory and cache
@@ -130,4 +124,8 @@ interface IChaptersRepository {
 
 	@Throws(SQLiteException::class)
 	suspend fun delete(entity: ChapterEntity)
+
+	fun getChapterProgress(chapter: ReaderChapterEntity): Flow<Double>
+
+	fun getChapterBookmarkedFlow(id: Int): Flow<Boolean?>
 }

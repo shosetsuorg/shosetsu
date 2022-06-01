@@ -67,10 +67,9 @@ interface IDBChaptersDataSource {
 	@Throws(SQLiteException::class)
 	suspend fun updateChapter(chapterEntity: ChapterEntity)
 
-	/** Updates a [readerChapterEntity], a cut down version [updateChapter] */
-	@Throws(SQLiteException::class)
-	suspend fun updateReaderChapter(readerChapterEntity: ReaderChapterEntity)
-
 	@Throws(SQLiteException::class)
 	suspend fun delete(entity: ChapterEntity)
+
+	fun getChapterProgress(chapterId: Int): Flow<Double>
+	fun getChapterBookmarkedFlow(id: Int): Flow<Boolean?>
 }

@@ -1,6 +1,5 @@
 package app.shosetsu.android.view.uimodels.model.reader
 
-import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.android.dto.Convertible
 import app.shosetsu.lib.Novel
@@ -43,22 +42,14 @@ sealed class ReaderUIItem {
 	 */
 	data class ReaderChapterUI(
 		val id: Int,
-		val link: String,
 		val title: String,
-		val readingPosition: Double,
-		val readingStatus: ReadingStatus,
-		val bookmarked: Boolean,
 		val chapterType: Novel.ChapterType,
 		val convertStringToHtml: Boolean = false
 	) : Convertible<ReaderChapterEntity>, ReaderUIItem() {
 
 		override fun convertTo(): ReaderChapterEntity = ReaderChapterEntity(
 			id,
-			link,
-			title,
-			readingPosition,
-			readingStatus,
-			bookmarked
+			title
 		)
 	}
 

@@ -51,8 +51,10 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun ChapterReaderStringContent(
 	item: ReaderUIItem.ReaderChapterUI,
+
 	getStringContent: (item: ReaderUIItem.ReaderChapterUI) -> Flow<AChapterReaderViewModel.ChapterPassage>,
 	retryChapter: (item: ReaderUIItem.ReaderChapterUI) -> Unit,
+	progressFlow: () -> Flow<Double>,
 	textSizeFlow: () -> Flow<Float>,
 	textColorFlow: () -> Flow<Int>,
 	backgroundColorFlow: () -> Flow<Int>,
@@ -90,6 +92,7 @@ fun ChapterReaderStringContent(
 		is AChapterReaderViewModel.ChapterPassage.Success -> {
 			val textSize by textSizeFlow().collectAsState(SettingKey.ReaderTextSize.default)
 			val textColor by textColorFlow().collectAsState(Color.White.toArgb())
+			val progress by progressFlow().collectAsState(0.0)
 			val backgroundColor by backgroundColorFlow().collectAsState(
 				Color.Gray.toArgb()
 			)
@@ -97,7 +100,7 @@ fun ChapterReaderStringContent(
 
 			StringPageContent(
 				(content as? AChapterReaderViewModel.ChapterPassage.Success)?.content ?: "",
-				item.readingPosition,
+				progress,
 				textSize = textSize,
 				onScroll = {
 					onScroll(item, it)

@@ -49,6 +49,7 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 inline fun ChapterReaderHTMLContent(
 	item: ReaderUIItem.ReaderChapterUI,
+	progressFlow: () -> Flow<Double>,
 	getHTMLContent: (item: ReaderUIItem.ReaderChapterUI) -> Flow<AChapterReaderViewModel.ChapterPassage>,
 	crossinline retryChapter: (item: ReaderUIItem.ReaderChapterUI) -> Unit,
 	crossinline onScroll: (item: ReaderUIItem.ReaderChapterUI, perc: Double) -> Unit,
@@ -78,9 +79,10 @@ inline fun ChapterReaderHTMLContent(
 			}
 		}
 		is AChapterReaderViewModel.ChapterPassage.Success -> {
+			val progress by progressFlow().collectAsState(0.0)
 			WebViewPageContent(
 				html = (html as AChapterReaderViewModel.ChapterPassage.Success).content,
-				progress = item.readingPosition,
+				progress = progress,
 				onScroll = {
 					onScroll(item, it)
 				},
