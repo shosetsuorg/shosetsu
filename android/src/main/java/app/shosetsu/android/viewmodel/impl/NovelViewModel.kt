@@ -330,7 +330,7 @@ class NovelViewModel(
 					emit(true)
 				}
 			}
-		}
+		}.onIO()
 	}
 
 	override fun destroy() {
