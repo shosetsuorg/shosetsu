@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.repository.impl
 
 import app.shosetsu.android.common.SettingKey
+import app.shosetsu.android.common.ext.onIO
 import app.shosetsu.android.datasource.file.base.IFileSettingsDataSource
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import kotlinx.coroutines.flow.Flow
@@ -31,61 +32,61 @@ class SettingsRepository(
 ) : ISettingsRepository {
 
 	override fun getLongFlow(key: SettingKey<Long>): Flow<Long> =
-		iLocalSettingsDataSource.observeLong(DEFAULT_NAME, key)
+		iLocalSettingsDataSource.observeLong(DEFAULT_NAME, key).onIO()
 
 	override fun getStringFlow(key: SettingKey<String>): Flow<String> =
-		iLocalSettingsDataSource.observeString(DEFAULT_NAME, key)
+		iLocalSettingsDataSource.observeString(DEFAULT_NAME, key).onIO()
 
 	override fun getIntFlow(key: SettingKey<Int>): Flow<Int> =
-		iLocalSettingsDataSource.observeInt(DEFAULT_NAME, key)
+		iLocalSettingsDataSource.observeInt(DEFAULT_NAME, key).onIO()
 
 	override fun getBooleanFlow(key: SettingKey<Boolean>): Flow<Boolean> =
-		iLocalSettingsDataSource.observeBoolean(DEFAULT_NAME, key)
+		iLocalSettingsDataSource.observeBoolean(DEFAULT_NAME, key).onIO()
 
 	override fun getStringSetFlow(key: SettingKey<Set<String>>): Flow<Set<String>> =
-		iLocalSettingsDataSource.observeStringSet(DEFAULT_NAME, key)
+		iLocalSettingsDataSource.observeStringSet(DEFAULT_NAME, key).onIO()
 
 	override fun getFloatFlow(key: SettingKey<Float>): Flow<Float> =
-		iLocalSettingsDataSource.observeFloat(DEFAULT_NAME, key)
+		iLocalSettingsDataSource.observeFloat(DEFAULT_NAME, key).onIO()
 
 	override suspend fun getLong(key: SettingKey<Long>): Long =
-		iLocalSettingsDataSource.getLong(DEFAULT_NAME, key)
+		onIO { iLocalSettingsDataSource.getLong(DEFAULT_NAME, key) }
 
 	override suspend fun getString(key: SettingKey<String>): String =
-		iLocalSettingsDataSource.getString(DEFAULT_NAME, key)
+		onIO { iLocalSettingsDataSource.getString(DEFAULT_NAME, key) }
 
 	override suspend fun getInt(key: SettingKey<Int>): Int =
-		iLocalSettingsDataSource.getInt(DEFAULT_NAME, key)
+		onIO { iLocalSettingsDataSource.getInt(DEFAULT_NAME, key) }
 
 	override suspend fun getBoolean(key: SettingKey<Boolean>): Boolean =
-		iLocalSettingsDataSource.getBoolean(DEFAULT_NAME, key)
+		onIO { iLocalSettingsDataSource.getBoolean(DEFAULT_NAME, key) }
 
 	override suspend fun getStringSet(key: SettingKey<Set<String>>): Set<String> =
-		iLocalSettingsDataSource.getStringSet(DEFAULT_NAME, key)
+		onIO { iLocalSettingsDataSource.getStringSet(DEFAULT_NAME, key) }
 
 	override suspend fun getFloat(key: SettingKey<Float>) =
-		iLocalSettingsDataSource.getFloat(DEFAULT_NAME, key)
+		onIO { iLocalSettingsDataSource.getFloat(DEFAULT_NAME, key) }
 
 	override suspend fun setLong(key: SettingKey<Long>, value: Long): Unit =
-		iLocalSettingsDataSource.setLong(DEFAULT_NAME, key, value)
+		onIO { iLocalSettingsDataSource.setLong(DEFAULT_NAME, key, value) }
 
 	override suspend fun setString(key: SettingKey<String>, value: String): Unit =
-		iLocalSettingsDataSource.setString(DEFAULT_NAME, key, value)
+		onIO { iLocalSettingsDataSource.setString(DEFAULT_NAME, key, value) }
 
 	override suspend fun setInt(key: SettingKey<Int>, value: Int): Unit =
-		iLocalSettingsDataSource.setInt(DEFAULT_NAME, key, value)
+		onIO { iLocalSettingsDataSource.setInt(DEFAULT_NAME, key, value) }
 
 	override suspend fun setBoolean(key: SettingKey<Boolean>, value: Boolean): Unit =
-		iLocalSettingsDataSource.setBoolean(DEFAULT_NAME, key, value)
+		onIO { iLocalSettingsDataSource.setBoolean(DEFAULT_NAME, key, value) }
 
 	override suspend fun setStringSet(
 		key: SettingKey<Set<String>>,
 		value: Set<String>
 	): Unit =
-		iLocalSettingsDataSource.setStringSet(DEFAULT_NAME, key, value)
+		onIO { iLocalSettingsDataSource.setStringSet(DEFAULT_NAME, key, value) }
 
 	override suspend fun setFloat(key: SettingKey<Float>, value: Float): Unit =
-		iLocalSettingsDataSource.setFloat(DEFAULT_NAME, key, value)
+		onIO { iLocalSettingsDataSource.setFloat(DEFAULT_NAME, key, value) }
 
 	companion object {
 		private const val DEFAULT_NAME = "settings"

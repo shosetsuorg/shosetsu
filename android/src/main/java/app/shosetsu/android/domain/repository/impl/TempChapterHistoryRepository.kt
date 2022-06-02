@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.repository.impl
 
 import app.shosetsu.android.common.enums.ReadingStatus
+import app.shosetsu.android.common.ext.onIO
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.ChapterHistoryEntity
 import app.shosetsu.android.domain.repository.base.IChapterHistoryRepository
@@ -64,6 +65,6 @@ class TempChapterHistoryRepository : IChapterHistoryRepository {
 	}
 
 	override val history: Flow<List<ChapterHistoryEntity>> by lazy {
-		chapterHistory
+		chapterHistory.onIO()
 	}
 }

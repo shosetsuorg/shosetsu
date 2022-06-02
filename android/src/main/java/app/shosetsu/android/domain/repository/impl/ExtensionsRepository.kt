@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.repository.impl
 
 import android.database.sqlite.SQLiteException
+import app.shosetsu.android.common.ext.onIO
 import app.shosetsu.android.datasource.local.database.base.IDBExtRepoDataSource
 import app.shosetsu.android.datasource.local.database.base.IDBInstalledExtensionsDataSource
 import app.shosetsu.android.datasource.local.database.base.IDBRepositoryExtensionsDataSource
@@ -87,62 +88,64 @@ class ExtensionsRepository(
 			}
 
 			emitAll(combine(browseExtensions) { it.toList() })
-		}
-
+		}.onIO()
 	}
 
 	override fun loadExtensionsFLow(): Flow<List<InstalledExtensionEntity>> =
-		installedDBSource.loadExtensionsFlow()
+		installedDBSource.loadExtensionsFlow().onIO()
 
 	override fun getInstalledExtensionFlow(id: Int): Flow<InstalledExtensionEntity?> =
-		installedDBSource.loadExtensionLive(id)
+		installedDBSource.loadExtensionLive(id).onIO()
 
 	@Throws(SQLiteException::class)
 	override suspend fun getExtension(repoId: Int, extId: Int): GenericExtensionEntity? =
-		repoDBSource.loadExtension(repoId, extId)
+		onIO { repoDBSource.loadExtension(repoId, extId) }
 
 	@Throws(SQLiteException::class)
 	override suspend fun getInstalledExtension(id: Int): InstalledExtensionEntity? =
-		installedDBSource.loadExtension(id)
+		onIO { installedDBSource.loadExtension(id) }
 
 	@Throws(SQLiteException::class)
 	override suspend fun getRepositoryExtensions(repoID: Int): List<GenericExtensionEntity> =
-		repoDBSource.getExtensions(repoID)
+		onIO { repoDBSource.getExtensions(repoID) }
 
 	@Throws(SQLiteException::class)
 	override suspend fun loadRepositoryExtensions(): List<GenericExtensionEntity> =
-		repoDBSource.loadExtensions()
+		onIO { repoDBSource.loadExtensions() }
 
 	@Throws(SQLiteException::class)
 	override suspend fun uninstall(extensionEntity: InstalledExtensionEntity) {
-		installedDBSource.deleteExtension(extensionEntity)
+		onIO { installedDBSource.deleteExtension(extensionEntity) }
 	}
 
 	@Throws(SQLiteException::class)
-	override suspend fun updateRepositoryExtension(extensionEntity: GenericExtensionEntity): Unit =
-		repoDBSource.updateExtension(extensionEntity)
+	override suspend fun updateRepositoryExtension(extensionEntity: GenericExtensionEntity) {
+		onIO { repoDBSource.updateExtension(extensionEntity) }
+	}
 
 	@Throws(SQLiteException::class)
 	override suspend fun updateInstalledExtension(extensionEntity: InstalledExtensionEntity) {
-		installedDBSource.updateExtension(extensionEntity)
+		onIO { installedDBSource.updateExtension(extensionEntity) }
 	}
 
 	@Throws(SQLiteException::class)
 	override suspend fun delete(extensionEntity: GenericExtensionEntity) {
-		installedDBSource.loadExtension(extensionEntity.id)?.let {
-			installedDBSource.deleteExtension(it)
-		}
+		onIO {
+			installedDBSource.loadExtension(extensionEntity.id)?.let {
+				installedDBSource.deleteExtension(it)
+			}
 
-		repoDBSource.deleteExtension(extensionEntity)
+			repoDBSource.deleteExtension(extensionEntity)
+		}
 	}
 
 	@Throws(SQLiteException::class)
 	override suspend fun insert(extensionEntity: GenericExtensionEntity): Long =
-		repoDBSource.insert(extensionEntity)
+		onIO { repoDBSource.insert(extensionEntity) }
 
 	@Throws(SQLiteException::class)
 	override suspend fun insert(extensionEntity: InstalledExtensionEntity): Long =
-		installedDBSource.insert(extensionEntity)
+		onIO { installedDBSource.insert(extensionEntity) }
 
 	@Throws(
 		HTTPException::class,
@@ -153,9 +156,9 @@ class ExtensionsRepository(
 		repositoryEntity: RepositoryEntity,
 		extension: GenericExtensionEntity
 	): ByteArray =
-		remoteSource.downloadExtension(repositoryEntity, extension)
+		onIO { remoteSource.downloadExtension(repositoryEntity, extension) }
 
 	@Throws(SQLiteException::class)
 	override suspend fun isExtensionInstalled(extensionEntity: GenericExtensionEntity): Boolean =
-		installedDBSource.loadExtension(extensionEntity.id) != null
+		onIO { installedDBSource.loadExtension(extensionEntity.id) != null }
 }

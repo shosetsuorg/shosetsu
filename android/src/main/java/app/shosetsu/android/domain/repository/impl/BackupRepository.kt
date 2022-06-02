@@ -2,6 +2,7 @@ package app.shosetsu.android.domain.repository.impl
 
 import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
+import app.shosetsu.android.common.ext.onIO
 import app.shosetsu.android.datasource.file.base.IFileBackupDataSource
 import app.shosetsu.android.domain.model.local.BackupEntity
 import app.shosetsu.android.domain.repository.base.IBackupRepository
@@ -40,20 +41,20 @@ class BackupRepository(
 	}
 
 	override val backupProgress: Flow<BackupProgress>
-		get() = _backupProgress
+		get() = _backupProgress.onIO()
 
 	override fun updateProgress(result: BackupProgress) {
 		_backupProgress.tryEmit(result)
 	}
 
 	override suspend fun loadBackups(): List<String> =
-		iFileBackupDataSource.loadBackups()
+		onIO { iFileBackupDataSource.loadBackups() }
 
 	@Throws(FilePermissionException::class, FileNotFoundException::class)
 	override suspend fun loadBackup(path: String, isExternal: Boolean): BackupEntity =
-		iFileBackupDataSource.loadBackup(path, isExternal)
+		onIO { iFileBackupDataSource.loadBackup(path, isExternal) }
 
 	@Throws(FilePermissionException::class, IOException::class)
 	override suspend fun saveBackup(backupEntity: BackupEntity): String =
-		iFileBackupDataSource.saveBackup(backupEntity)
+		onIO { iFileBackupDataSource.saveBackup(backupEntity) }
 }

@@ -3,6 +3,7 @@ package app.shosetsu.android.domain.repository.impl
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.IncompatibleExtensionException
 import app.shosetsu.android.common.SettingKey
+import app.shosetsu.android.common.ext.onIO
 import app.shosetsu.android.datasource.file.base.IFileExtensionDataSource
 import app.shosetsu.android.datasource.file.base.IFileSettingsDataSource
 import app.shosetsu.android.datasource.local.memory.base.IMemExtensionsDataSource
@@ -42,8 +43,8 @@ class ExtensionEntitiesRepository(
 ) : IExtensionEntitiesRepository {
 
 	@Throws(IncompatibleExtensionException::class)
-	override suspend fun get(extensionEntity: GenericExtensionEntity): IExtension {
-		return try {
+	override suspend fun get(extensionEntity: GenericExtensionEntity): IExtension = onIO {
+		try {
 			memorySource.loadExtensionFromMemory(extensionEntity.id)!!
 		} catch (e: Exception) {
 			val it = fileSource.loadExtension(extensionEntity)
@@ -54,11 +55,9 @@ class ExtensionEntitiesRepository(
 			memorySource.putExtensionInMemory(it)
 			it
 		}
-
-
 	}
 
-	override suspend fun uninstall(extensionEntity: GenericExtensionEntity) {
+	override suspend fun uninstall(extensionEntity: GenericExtensionEntity) = onIO {
 		memorySource.removeExtensionFromMemory(extensionEntity.id)
 		fileSource.deleteExtension(extensionEntity)
 	}
@@ -68,7 +67,7 @@ class ExtensionEntitiesRepository(
 		extensionEntity: GenericExtensionEntity,
 		iExt: IExtension,
 		extensionContent: ByteArray
-	) {
+	) = onIO {
 		memorySource.putExtensionInMemory(iExt)
 
 		fileSource.writeExtension(extensionEntity, extensionContent)

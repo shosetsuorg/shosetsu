@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.repository.impl
 
 import app.shosetsu.android.common.enums.DownloadStatus
+import app.shosetsu.android.common.ext.onIO
 import app.shosetsu.android.domain.repository.base.IExtensionDownloadRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,23 +36,23 @@ class ExtensionDownloadRepository : IExtensionDownloadRepository {
 		getOrPut(extension) { MutableStateFlow(DownloadStatus.WAITING) }
 
 	override suspend fun add(extension: Int) {
-		statusMap.iGet(extension).emit(DownloadStatus.PENDING)
+		onIO { statusMap.iGet(extension).emit(DownloadStatus.PENDING) }
 	}
 
 	override suspend fun remove(extension: Int) {
-		statusMap.iGet(extension).emit(DownloadStatus.WAITING)
+		onIO { statusMap.iGet(extension).emit(DownloadStatus.WAITING) }
 	}
 
 	override suspend fun getStatus(extension: Int): DownloadStatus =
-		statusMap.iGet(extension).value
+		onIO { statusMap.iGet(extension).value }
 
 	override suspend fun getStatusFlow(extension: Int): Flow<DownloadStatus> =
-		statusMap.iGet(extension)
+		statusMap.iGet(extension).onIO()
 
 	override suspend fun updateStatus(
 		extension: Int,
 		status: DownloadStatus
 	) {
-		statusMap.iGet(extension).emit(status)
+		onIO { statusMap.iGet(extension).emit(status) }
 	}
 }

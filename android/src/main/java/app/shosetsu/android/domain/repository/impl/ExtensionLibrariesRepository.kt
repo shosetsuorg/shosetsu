@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.repository.impl
 
 import android.database.sqlite.SQLiteException
+import app.shosetsu.android.common.ext.onIO
 import app.shosetsu.android.datasource.file.base.IFileExtLibDataSource
 import app.shosetsu.android.datasource.local.database.base.IDBExtLibDataSource
 import app.shosetsu.android.datasource.local.memory.base.IMemExtLibDataSource
@@ -47,7 +48,7 @@ class ExtensionLibrariesRepository(
 	override suspend fun loadExtLibByRepo(
 		repoID: Int,
 	): List<ExtLibEntity> =
-		databaseSource.loadExtLibByRepo(repoID)
+		onIO { databaseSource.loadExtLibByRepo(repoID) }
 
 	@Throws(
 		SQLiteException::class,
@@ -58,7 +59,7 @@ class ExtensionLibrariesRepository(
 	override suspend fun installExtLibrary(
 		repoURL: String,
 		extLibEntity: ExtLibEntity,
-	) {
+	) = onIO {
 		val data = remoteSource.downloadLibrary(repoURL, extLibEntity)
 		val json =
 			Json.parseToJsonElement(data.substring(0, data.indexOf("\n")).replace("--", "").trim())

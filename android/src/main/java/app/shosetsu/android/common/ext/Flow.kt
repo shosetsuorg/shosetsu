@@ -4,8 +4,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /*
  * This file is part of shosetsu.
@@ -62,3 +65,14 @@ fun <T> Flow<T>.collectLatestLA(
 		}
 	}
 }
+
+/**
+ * Run the flow on the IO dispatcher
+ */
+fun <T> Flow<T>.onIO() = flowOn(Dispatchers.IO)
+
+/**
+ * Run the following suspend code on the IO dispatcher
+ */
+suspend fun <T> onIO(block: suspend CoroutineScope.() -> T) =
+	withContext(Dispatchers.IO, block)

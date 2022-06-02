@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.repository.impl
 
 import android.database.sqlite.SQLiteException
+import app.shosetsu.android.common.ext.onIO
 import app.shosetsu.android.datasource.local.database.base.IDBExtRepoDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteExtRepoDataSource
 import app.shosetsu.android.domain.model.local.RepositoryEntity
@@ -43,39 +44,39 @@ class ExtRepoRepository(
 		UnknownHostException::class,
 	)
 	override suspend fun getRepoData(entity: RepositoryEntity): RepoIndex =
-		remoteSource.downloadRepoData(entity)
+		onIO { remoteSource.downloadRepoData(entity) }
 
 	@Throws(SQLiteException::class)
 	override suspend fun loadRepositories(): List<RepositoryEntity> =
-		databaseSource.loadRepositories()
+		onIO { databaseSource.loadRepositories() }
 
 	/**
 	 * TODO Create a direct to database call that cuts out the kotlin filtering
 	 */
 	@Throws(SQLiteException::class)
 	override suspend fun loadEnabledRepos(): List<RepositoryEntity> =
-		loadRepositories().filter { it.isEnabled }
+		onIO { loadRepositories().filter { it.isEnabled } }
 
 	override fun loadRepositoriesLive(): Flow<List<RepositoryEntity>> =
-		databaseSource.loadRepositoriesLive()
+		databaseSource.loadRepositoriesLive().onIO()
 
 	@Throws(SQLiteException::class)
 	override suspend fun addRepository(url: String, name: String): Long =
-		databaseSource.addRepository(url, name)
+		onIO { databaseSource.addRepository(url, name) }
 
 	@Throws(SQLiteException::class)
 	override suspend fun remove(entity: RepositoryEntity): Unit =
-		databaseSource.remove(entity)
+		onIO { databaseSource.remove(entity) }
 
 	@Throws(SQLiteException::class)
 	override suspend fun update(entity: RepositoryEntity): Unit =
-		databaseSource.update(entity)
+		onIO { databaseSource.update(entity) }
 
 	@Throws(SQLiteException::class)
 	override suspend fun insert(entity: RepositoryEntity): Long =
-		databaseSource.insert(entity)
+		onIO { databaseSource.insert(entity) }
 
 	@Throws(SQLiteException::class)
 	override suspend fun getRepo(id: Int): RepositoryEntity? =
-		databaseSource.loadRepository(id)
+		onIO { databaseSource.loadRepository(id) }
 }

@@ -18,6 +18,7 @@ package app.shosetsu.android.domain.repository.impl
  */
 
 import android.database.sqlite.SQLiteException
+import app.shosetsu.android.common.ext.onIO
 import app.shosetsu.android.datasource.local.database.base.IDBDownloadsDataSource
 import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.domain.repository.base.IDownloadsRepository
@@ -33,29 +34,31 @@ class DownloadsRepository(
 	private val iLocalDownloadsDataSource: IDBDownloadsDataSource,
 ) : IDownloadsRepository {
 	override fun loadDownloadsFlow(): Flow<List<DownloadEntity>> =
-		iLocalDownloadsDataSource.loadLiveDownloads()
+		iLocalDownloadsDataSource.loadLiveDownloads().onIO()
 
 	@Throws(SQLiteException::class)
 	override suspend fun loadFirstDownload(): DownloadEntity? =
-		iLocalDownloadsDataSource.loadFirstDownload()
+		onIO { iLocalDownloadsDataSource.loadFirstDownload() }
 
 	@Throws(SQLiteException::class)
 	override suspend fun loadDownloadCount(): Int =
-		iLocalDownloadsDataSource.loadDownloadCount()
+		onIO { iLocalDownloadsDataSource.loadDownloadCount() }
 
 	@Throws(SQLiteException::class)
 	override suspend fun getDownload(chapterID: Int): DownloadEntity? =
-		iLocalDownloadsDataSource.loadDownload(chapterID)
+		onIO { iLocalDownloadsDataSource.loadDownload(chapterID) }
 
 	@Throws(SQLiteException::class)
 	override suspend fun addDownload(download: DownloadEntity): Long =
-		iLocalDownloadsDataSource.insertDownload(download)
+		onIO { iLocalDownloadsDataSource.insertDownload(download) }
 
 	@Throws(SQLiteException::class)
-	override suspend fun update(download: DownloadEntity): Unit =
+	override suspend fun update(download: DownloadEntity) = onIO {
 		iLocalDownloadsDataSource.updateDownload(download)
+	}
 
 	@Throws(SQLiteException::class)
-	override suspend fun deleteEntity(download: DownloadEntity): Unit =
+	override suspend fun deleteEntity(download: DownloadEntity) = onIO {
 		iLocalDownloadsDataSource.deleteDownload(download)
+	}
 }

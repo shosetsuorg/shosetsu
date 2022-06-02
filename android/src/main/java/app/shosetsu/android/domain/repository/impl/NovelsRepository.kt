@@ -2,6 +2,7 @@ package app.shosetsu.android.domain.repository.impl
 
 import android.database.sqlite.SQLiteException
 import androidx.paging.PagingSource
+import app.shosetsu.android.common.ext.onIO
 import app.shosetsu.android.datasource.local.database.base.IDBNovelsDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteCatalogueDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteNovelDataSource
@@ -45,27 +46,27 @@ class NovelsRepository(
 	private val remoteCatalogueDataSource: IRemoteCatalogueDataSource,
 ) : INovelsRepository {
 	override fun loadLibraryNovelEntities(): Flow<List<LibraryNovelEntity>> =
-		database.loadBookmarkedNovelsFlow()
+		database.loadBookmarkedNovelsFlow().onIO()
 
 	@Throws(SQLiteException::class)
 	override suspend fun loadBookmarkedNovelEntities(): List<NovelEntity> =
-		database.loadBookmarkedNovels()
+		onIO { database.loadBookmarkedNovels() }
 
 	@Throws(SQLiteException::class)
 	override suspend fun loadNovels(): List<NovelEntity> =
-		database.loadNovels()
+		onIO { database.loadNovels() }
 
 	@Throws(SQLiteException::class)
 	override suspend fun update(novelEntity: NovelEntity): Unit =
-		database.update(novelEntity)
+		onIO { database.update(novelEntity) }
 
 	@Throws(SQLiteException::class)
 	override suspend fun insertReturnStripped(novelEntity: NovelEntity): StrippedNovelEntity? =
-		database.insertReturnStripped(novelEntity)
+		onIO { database.insertReturnStripped(novelEntity) }
 
 	@Throws(SQLiteException::class)
 	override suspend fun insert(novelEntity: NovelEntity): Long =
-		database.insert(novelEntity)
+		onIO { database.insert(novelEntity) }
 
 
 	/**
@@ -78,34 +79,38 @@ class NovelsRepository(
 
 	@Throws(SQLiteException::class)
 	override suspend fun getNovel(novelID: Int): NovelEntity? =
-		database.getNovel(novelID)
+		onIO { database.getNovel(novelID) }
 
 	override suspend fun getNovelFlow(novelID: Int): Flow<NovelEntity?> =
-		database.getNovelFlow(novelID)
+		database.getNovelFlow(novelID).onIO()
 
 	@Throws(SQLiteException::class)
 	override suspend fun updateNovelData(
 		novelEntity: NovelEntity,
 		novelInfo: Novel.Info
-	): Unit =
-		database.update(
-			novelEntity.copy(
-				title = novelInfo.title,
-				imageURL = novelInfo.imageURL,
-				language = novelInfo.language,
-				loaded = true,
-				status = novelInfo.status,
-				description = novelInfo.description,
-				genres = novelInfo.genres.toList(),
-				tags = novelInfo.tags.toList(),
-				authors = novelInfo.authors.toList(),
-				artists = novelInfo.artists.toList()
+	) {
+		onIO {
+			database.update(
+				novelEntity.copy(
+					title = novelInfo.title,
+					imageURL = novelInfo.imageURL,
+					language = novelInfo.language,
+					loaded = true,
+					status = novelInfo.status,
+					description = novelInfo.description,
+					genres = novelInfo.genres.toList(),
+					tags = novelInfo.tags.toList(),
+					authors = novelInfo.authors.toList(),
+					artists = novelInfo.artists.toList()
+				)
 			)
-		)
+		}
+	}
 
 	@Throws(SQLiteException::class)
-	override suspend fun updateLibraryNovelEntity(list: List<LibraryNovelEntity>): Unit =
-		database.update(list)
+	override suspend fun updateLibraryNovelEntity(list: List<LibraryNovelEntity>) {
+		onIO { database.update(list) }
+	}
 
 	@Throws(LuaError::class)
 	override suspend fun retrieveNovelInfo(
@@ -113,29 +118,32 @@ class NovelsRepository(
 		novelEntity: NovelEntity,
 		loadChapters: Boolean,
 	): Novel.Info =
-		remoteSource.loadNovel(extension, novelEntity.url, loadChapters)
-			.let { info ->
-				info.copy(
-					chapters = info.chapters.distinctBy { it.link }
-				)
-			}
+		onIO {
+			remoteSource.loadNovel(extension, novelEntity.url, loadChapters)
+				.let { info ->
+					info.copy(
+						chapters = info.chapters.distinctBy { it.link }
+					)
+				}
+		}
 
 	@Throws(SQLiteException::class)
-	override suspend fun clearUnBookmarkedNovels(): Unit =
-		database.clearUnBookmarkedNovels()
+	override suspend fun clearUnBookmarkedNovels() {
+		onIO { database.clearUnBookmarkedNovels() }
+	}
 
 	@Throws(LuaError::class)
 	override suspend fun getCatalogueSearch(
 		ext: IExtension,
 		query: String,
 		data: Map<Int, Any>
-	): List<Novel.Listing> = remoteCatalogueDataSource.search(ext, query, data)
+	): List<Novel.Listing> = onIO { remoteCatalogueDataSource.search(ext, query, data) }
 
 	@Throws(SSLException::class, LuaError::class)
 	override suspend fun getCatalogueData(
 		ext: IExtension,
 		listing: Int,
 		data: Map<Int, Any>,
-	): List<Novel.Listing> = remoteCatalogueDataSource.loadListing(ext, listing, data)
+	): List<Novel.Listing> = onIO { remoteCatalogueDataSource.loadListing(ext, listing, data) }
 
 }

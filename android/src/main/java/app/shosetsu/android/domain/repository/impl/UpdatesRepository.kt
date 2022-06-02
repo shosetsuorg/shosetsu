@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.repository.impl
 
 import android.database.sqlite.SQLiteException
+import app.shosetsu.android.common.ext.onIO
 import app.shosetsu.android.datasource.local.database.base.IDBUpdatesDataSource
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.domain.model.local.UpdateEntity
@@ -37,11 +38,11 @@ class UpdatesRepository(
 
 	@Throws(SQLiteException::class)
 	override suspend fun addUpdates(list: List<UpdateEntity>): Array<Long> =
-		IDBUpdatesDataSource.insertUpdates(list)
+		onIO { IDBUpdatesDataSource.insertUpdates(list) }
 
 	override suspend fun getUpdatesFlow(): Flow<List<UpdateEntity>> =
-		IDBUpdatesDataSource.getUpdates()
+		IDBUpdatesDataSource.getUpdates().onIO()
 
 	override suspend fun getCompleteUpdatesFlow(): Flow<List<UpdateCompleteEntity>> =
-		IDBUpdatesDataSource.getCompleteUpdates()
+		IDBUpdatesDataSource.getCompleteUpdates().onIO()
 }

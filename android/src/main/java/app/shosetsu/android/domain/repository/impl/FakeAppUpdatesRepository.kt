@@ -4,6 +4,7 @@ import app.shosetsu.android.common.EmptyResponseBodyException
 import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.MissingFeatureException
+import app.shosetsu.android.common.ext.onIO
 import app.shosetsu.android.datasource.local.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.android.domain.model.local.AppUpdateEntity
@@ -41,12 +42,12 @@ class FakeAppUpdatesRepository(
 	private val _appUpdateFlow = MutableStateFlow<AppUpdateEntity?>(null)
 
 	override fun loadAppUpdateFlow(): Flow<AppUpdateEntity?> =
-		_appUpdateFlow
+		_appUpdateFlow.onIO()
 
 	override suspend fun loadRemoteUpdate(): AppUpdateEntity =
-		loadAppUpdate()
+		onIO { loadAppUpdate() }
 
-	override suspend fun loadAppUpdate(): AppUpdateEntity {
+	override suspend fun loadAppUpdate(): AppUpdateEntity = onIO {
 		val entity = AppUpdateEntity(
 			"v3.0.0",
 			999,
@@ -57,7 +58,7 @@ class FakeAppUpdatesRepository(
 
 		_appUpdateFlow.emit(entity)
 
-		return entity
+		entity
 	}
 
 	override fun canSelfUpdate(): Boolean =
@@ -71,7 +72,7 @@ class FakeAppUpdatesRepository(
 		FileNotFoundException::class,
 		MissingFeatureException::class
 	)
-	override suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): String =
+	override suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): String = onIO {
 		if (iRemoteAppUpdateDataSource is IRemoteAppUpdateDataSource.Downloadable)
 			iRemoteAppUpdateDataSource.downloadAppUpdate(appUpdateEntity).let { response ->
 				iFileAppUpdateDataSource.saveAPK(appUpdateEntity, response).also {
@@ -80,4 +81,5 @@ class FakeAppUpdatesRepository(
 				}
 			}
 		else throw MissingFeatureException("self update")
+	}
 }

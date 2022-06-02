@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.repository.impl
 
 import android.database.sqlite.SQLiteException
+import app.shosetsu.android.common.ext.onIO
 import app.shosetsu.android.datasource.local.database.base.IDBNovelReaderSettingsDataSource
 import app.shosetsu.android.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.android.domain.repository.base.INovelReaderSettingsRepository
@@ -32,16 +33,16 @@ class NovelReaderSettingsRepository(
 
 	@Throws(SQLiteException::class)
 	override suspend fun get(novelID: Int): NovelReaderSettingEntity? =
-		database.get(novelID)
+		onIO { database.get(novelID) }
 
 	override fun getFlow(novelID: Int): Flow<NovelReaderSettingEntity?> =
-		database.getFlow(novelID)
+		database.getFlow(novelID).onIO()
 
 	@Throws(SQLiteException::class)
 	override suspend fun insert(novelReaderSettingEntity: NovelReaderSettingEntity): Long =
-		database.insert(novelReaderSettingEntity)
+		onIO { database.insert(novelReaderSettingEntity) }
 
 	@Throws(SQLiteException::class)
 	override suspend fun update(novelReaderSettingEntity: NovelReaderSettingEntity): Unit =
-		database.update(novelReaderSettingEntity)
+		onIO { database.update(novelReaderSettingEntity) }
 }

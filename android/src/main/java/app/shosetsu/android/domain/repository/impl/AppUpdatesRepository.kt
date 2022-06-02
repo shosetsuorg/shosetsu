@@ -5,6 +5,7 @@ import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.MissingFeatureException
 import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.onIO
 import app.shosetsu.android.datasource.local.file.base.IFileCachedAppUpdateDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.android.domain.model.local.AppUpdateEntity
@@ -41,7 +42,7 @@ class AppUpdatesRepository(
 ) : IAppUpdatesRepository {
 
 	override fun loadAppUpdateFlow(): Flow<AppUpdateEntity?> =
-		iFileAppUpdateDataSource.updateAvaLive
+		iFileAppUpdateDataSource.updateAvaLive.onIO()
 
 	private fun compareVersion(newVersion: AppUpdateEntity): Int {
 		val currentV: Int
@@ -74,12 +75,12 @@ class AppUpdatesRepository(
 	}
 
 	@Throws(FilePermissionException::class, IOException::class, HTTPException::class)
-	override suspend fun loadRemoteUpdate(): AppUpdateEntity? {
+	override suspend fun loadRemoteUpdate(): AppUpdateEntity? = onIO {
 		val appUpdateEntity = try {
 			iRemoteAppUpdateDataSource.loadAppUpdate()
 		} catch (e: EmptyResponseBodyException) {
 			logE(e.message!!, e)
-			return null
+			return@onIO null
 		}
 
 		val compared = compareVersion(appUpdateEntity)
@@ -89,15 +90,16 @@ class AppUpdatesRepository(
 				appUpdateEntity,
 				true
 			)
-			return appUpdateEntity
+			return@onIO appUpdateEntity
 		}
 
-		return null
+		return@onIO null
 	}
+
 
 	@Throws(FileNotFoundException::class, FilePermissionException::class)
 	override suspend fun loadAppUpdate(): AppUpdateEntity =
-		iFileAppUpdateDataSource.loadCachedAppUpdate()
+		onIO { iFileAppUpdateDataSource.loadCachedAppUpdate() }
 
 	override fun canSelfUpdate(): Boolean =
 		iRemoteAppUpdateDataSource is IRemoteAppUpdateDataSource.Downloadable
@@ -110,7 +112,7 @@ class AppUpdatesRepository(
 		EmptyResponseBodyException::class,
 		HTTPException::class
 	)
-	override suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): String =
+	override suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): String = onIO {
 		if (iRemoteAppUpdateDataSource is IRemoteAppUpdateDataSource.Downloadable)
 			iRemoteAppUpdateDataSource.downloadAppUpdate(appUpdateEntity).let { response ->
 				iFileAppUpdateDataSource.saveAPK(appUpdateEntity, response).also {
@@ -120,4 +122,5 @@ class AppUpdatesRepository(
 
 			}
 		else throw MissingFeatureException("self update")
+	}
 }

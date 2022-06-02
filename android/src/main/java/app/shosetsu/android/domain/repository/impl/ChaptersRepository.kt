@@ -3,6 +3,7 @@ package app.shosetsu.android.domain.repository.impl
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
+import app.shosetsu.android.common.ext.onIO
 import app.shosetsu.android.datasource.file.base.IFileCachedChapterDataSource
 import app.shosetsu.android.datasource.file.base.IFileChapterDataSource
 import app.shosetsu.android.datasource.local.database.base.IDBChaptersDataSource
@@ -63,8 +64,8 @@ class ChaptersRepository(
 	override suspend fun getChapterPassage(
 		formatter: IExtension,
 		entity: ChapterEntity,
-	): ByteArray {
-		return try {
+	): ByteArray = onIO {
+		return@onIO try {
 			memorySource.loadChapterFromCache(entity.id!!)!!
 		} catch (e: Exception) {
 			try {
@@ -90,8 +91,10 @@ class ChaptersRepository(
 		chapterType: Novel.ChapterType,
 		passage: ByteArray,
 	) {
-		memorySource.saveChapterInCache(chapterEntity.id!!, passage)
-		cacheSource.saveChapterInCache(chapterEntity.id!!, chapterType, passage)
+		onIO {
+			memorySource.saveChapterInCache(chapterEntity.id!!, passage)
+			cacheSource.saveChapterInCache(chapterEntity.id!!, chapterType, passage)
+		}
 	}
 
 
@@ -113,55 +116,57 @@ class ChaptersRepository(
 		chapterType: Novel.ChapterType,
 		passage: ByteArray,
 	) {
-		saveChapterPassageToMemory(entity, chapterType, passage)
+		onIO {
+			saveChapterPassageToMemory(entity, chapterType, passage)
 
-		fileSource.save(entity, chapterType, passage)
+			fileSource.save(entity, chapterType, passage)
 
-		dbSource.updateChapter(entity.copy(isSaved = true))
+			dbSource.updateChapter(entity.copy(isSaved = true))
+		}
 	}
 
 	@Throws(SQLiteException::class)
 	override suspend fun handleChapters(
 		novelID: Int,
 		extensionID: Int, list: List<Novel.Chapter>,
-	): Unit =
-		dbSource.handleChapters(novelID, extensionID, list)
+	) = onIO { dbSource.handleChapters(novelID, extensionID, list) }
 
 	@Throws(IndexOutOfBoundsException::class, SQLiteException::class)
 	override suspend fun handleChaptersReturn(
 		novelID: Int,
 		extensionID: Int, list: List<Novel.Chapter>,
-	): List<ChapterEntity> =
+	): List<ChapterEntity> = onIO {
 		dbSource.handleChapterReturn(novelID, extensionID, list)
+	}
 
 	override suspend fun getChaptersLive(novelID: Int): Flow<List<ChapterEntity>> =
-		dbSource.getChaptersFlow(novelID)
+		dbSource.getChaptersFlow(novelID).onIO()
 
 	@Throws(SQLiteException::class)
 	override suspend fun getChapters(novelID: Int): List<ChapterEntity> =
-		dbSource.getChapters(novelID)
+		onIO { dbSource.getChapters(novelID) }
 
 	@Throws(SQLiteException::class)
 	override suspend fun getChaptersByExtension(extensionId: Int): List<ChapterEntity> =
-		dbSource.getChaptersByExtension(extensionId)
+		onIO { dbSource.getChaptersByExtension(extensionId) }
 
 	@Throws(SQLiteException::class)
 	override suspend fun updateChapter(chapterEntity: ChapterEntity): Unit =
-		dbSource.updateChapter(chapterEntity)
+		onIO { dbSource.updateChapter(chapterEntity) }
 
 	@Throws(SQLiteException::class)
 	override suspend fun getChapter(chapterID: Int): ChapterEntity? =
-		dbSource.getChapter(chapterID)
+		onIO { dbSource.getChapter(chapterID) }
 
 	override suspend fun getReaderChaptersFlow(
 		novelID: Int,
-	): Flow<List<ReaderChapterEntity>> = dbSource.getReaderChapters(novelID)
+	): Flow<List<ReaderChapterEntity>> = dbSource.getReaderChapters(novelID).onIO()
 
 	@Throws(SQLiteException::class, FilePermissionException::class)
 	override suspend fun deleteChapterPassage(
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType
-	) {
+	) = onIO {
 		dbSource.updateChapter(
 			chapterEntity.copy(
 				isSaved = false
@@ -173,11 +178,11 @@ class ChaptersRepository(
 
 	@Throws(SQLiteException::class)
 	override suspend fun delete(entity: ChapterEntity) =
-		dbSource.delete(entity)
+		onIO { dbSource.delete(entity) }
 
 	override fun getChapterProgress(chapter: ReaderChapterEntity): Flow<Double> =
-		dbSource.getChapterProgress(chapter.id)
+		dbSource.getChapterProgress(chapter.id).onIO()
 
 	override fun getChapterBookmarkedFlow(id: Int): Flow<Boolean?> =
-		dbSource.getChapterBookmarkedFlow(id)
+		dbSource.getChapterBookmarkedFlow(id).onIO()
 }
