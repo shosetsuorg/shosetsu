@@ -313,8 +313,8 @@ class ChapterReader
 									}
 									is ReaderDividerUI -> {
 										DividierPageContent(
-											item.prev,
-											item.next
+											item.prev.title,
+											item.next?.title
 										)
 									}
 								}

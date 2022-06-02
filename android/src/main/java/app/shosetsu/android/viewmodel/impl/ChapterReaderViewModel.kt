@@ -398,7 +398,7 @@ class ChapterReaderViewModel(
 			if (value && list.isNotEmpty()) {
 				val modified = ArrayList<ReaderUIItem>(list)
 				// Adds the "No more chapters" marker
-				modified.add(modified.size, ReaderDividerUI(prev = list.last().title))
+				modified.add(modified.size, ReaderDividerUI(prev = list.last()))
 
 				/**
 				 * Loops down the list, adding in the seperators
@@ -407,8 +407,8 @@ class ChapterReaderViewModel(
 				for (index in startPoint downTo 1)
 					modified.add(
 						index, ReaderDividerUI(
-							(modified[index - 1] as ReaderChapterUI).title,
-							(modified[index] as ReaderChapterUI).title
+							(modified[index - 1] as ReaderChapterUI),
+							(modified[index] as ReaderChapterUI)
 						)
 					)
 

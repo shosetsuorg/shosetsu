@@ -59,7 +59,7 @@ sealed class ReaderUIItem {
 	 * Will appear after the last chapter, but stating there are no more chapters
 	 */
 	data class ReaderDividerUI(
-		val prev: String,
-		val next: String? = null
+		val prev: ReaderChapterUI,
+		val next: ReaderChapterUI? = null
 	) : ReaderUIItem()
 }

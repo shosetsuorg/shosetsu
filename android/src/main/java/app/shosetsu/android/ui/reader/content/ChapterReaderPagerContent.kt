@@ -70,18 +70,22 @@ fun ChapterReaderPagerContent(
 	val pagerState = rememberPagerState(currentPage)
 
 	var curChapter: ReaderUIItem.ReaderChapterUI? by remember { mutableStateOf(null) }
-
 	if (items.isNotEmpty())
 		LaunchedEffect(pagerState) {
 			snapshotFlow { pagerState.currentPage }.distinctUntilChanged().collect { newPage ->
 				onStopTTS()
 				val item = items.getOrNull(newPage) ?: return@collect
 
-				if (item is ReaderUIItem.ReaderChapterUI) {
-					markChapterAsCurrent(item)
-					curChapter = item
-				} else {
-					curChapter?.let(onChapterRead)
+				when (item) {
+					is ReaderUIItem.ReaderChapterUI -> {
+						markChapterAsCurrent(item)
+						curChapter = item
+					}
+					is ReaderUIItem.ReaderDividerUI -> {
+						// Do not mark read backwards
+						if (item.next?.id != curChapter?.id)
+							item.prev.let(onChapterRead)
+					}
 				}
 				onPageChanged(newPage)
 			}
