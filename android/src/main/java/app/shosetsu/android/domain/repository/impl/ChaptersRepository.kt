@@ -4,9 +4,9 @@ import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.ext.onIO
-import app.shosetsu.android.datasource.file.base.IFileCachedChapterDataSource
-import app.shosetsu.android.datasource.file.base.IFileChapterDataSource
 import app.shosetsu.android.datasource.local.database.base.IDBChaptersDataSource
+import app.shosetsu.android.datasource.local.file.base.IFileCachedChapterDataSource
+import app.shosetsu.android.datasource.local.file.base.IFileChapterDataSource
 import app.shosetsu.android.datasource.local.memory.base.IMemChaptersDataSource
 import app.shosetsu.android.datasource.remote.base.IRemoteChaptersDataSource
 import app.shosetsu.android.domain.model.local.ChapterEntity

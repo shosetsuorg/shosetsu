@@ -4,8 +4,8 @@ import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.IncompatibleExtensionException
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.ext.onIO
-import app.shosetsu.android.datasource.file.base.IFileExtensionDataSource
-import app.shosetsu.android.datasource.file.base.IFileSettingsDataSource
+import app.shosetsu.android.datasource.local.file.base.IFileExtensionDataSource
+import app.shosetsu.android.datasource.local.file.base.IFileSettingsDataSource
 import app.shosetsu.android.datasource.local.memory.base.IMemExtensionsDataSource
 import app.shosetsu.android.domain.model.local.GenericExtensionEntity
 import app.shosetsu.android.domain.repository.base.IExtensionEntitiesRepository

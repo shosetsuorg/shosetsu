@@ -8,7 +8,7 @@ import app.shosetsu.android.common.enums.InternalFileDir.FILES
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.utils.asIEntity
 import app.shosetsu.android.common.utils.fileExtension
-import app.shosetsu.android.datasource.file.base.IFileExtensionDataSource
+import app.shosetsu.android.datasource.local.file.base.IFileExtensionDataSource
 import app.shosetsu.android.domain.model.local.GenericExtensionEntity
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
 import app.shosetsu.lib.IExtension

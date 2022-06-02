@@ -1,4 +1,4 @@
-package app.shosetsu.android.datasource.file.base
+package app.shosetsu.android.datasource.local.file.base
 
 import app.shosetsu.android.common.SettingKey
 import kotlinx.coroutines.flow.Flow

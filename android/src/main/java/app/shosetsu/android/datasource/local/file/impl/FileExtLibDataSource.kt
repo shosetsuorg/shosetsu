@@ -7,7 +7,7 @@ import app.shosetsu.android.common.consts.FILE_SOURCE_DIR
 import app.shosetsu.android.common.enums.InternalFileDir.FILES
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logV
-import app.shosetsu.android.datasource.file.base.IFileExtLibDataSource
+import app.shosetsu.android.datasource.local.file.base.IFileExtLibDataSource
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
 import java.io.IOException
 

@@ -1,8 +1,7 @@
-package app.shosetsu.android.datasource.file.base
+package app.shosetsu.android.datasource.local.file.base
 
+import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
-import app.shosetsu.android.domain.model.local.GenericExtensionEntity
-import app.shosetsu.lib.IExtension
 import java.io.IOException
 
 /*
@@ -26,12 +25,17 @@ import java.io.IOException
  * shosetsu
  * 12 / 05 / 2020
  */
-interface IFileExtensionDataSource {
-	/** Loads the formatter from file system */
-	suspend fun loadExtension(entity: GenericExtensionEntity): IExtension
+interface IFileExtLibDataSource {
 
 	@Throws(FilePermissionException::class, IOException::class)
-	suspend fun writeExtension(entity: GenericExtensionEntity, data: ByteArray)
+	suspend fun writeExtLib(fileName: String, data: String)
 
-	suspend fun deleteExtension(entity: GenericExtensionEntity)
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
+	suspend fun loadExtLib(fileName: String): String
+
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
+	fun blockingLoadLib(fileName: String): String
+
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
+	suspend fun deleteExtLib(fileName: String)
 }

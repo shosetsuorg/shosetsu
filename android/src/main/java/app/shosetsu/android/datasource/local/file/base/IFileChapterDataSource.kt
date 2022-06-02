@@ -1,7 +1,10 @@
-package app.shosetsu.android.datasource.file.base
+package app.shosetsu.android.datasource.local.file.base
 
 import app.shosetsu.android.common.FileNotFoundException
+import app.shosetsu.android.common.FilePermissionException
+import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.lib.Novel
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -22,21 +25,15 @@ import app.shosetsu.lib.Novel
 
 /**
  * shosetsu
- * 17 / 08 / 2020
- *
- * This is the secondary cache system for the app, where chapters are saved to the applications
- * cache directory.
- *
- * Files should not be stored for more then 10 minutes.
+ * 12 / 05 / 2020
  */
-interface IFileCachedChapterDataSource {
+interface IFileChapterDataSource {
 	/**
-	 * Puts a chapter passage into cache, if cache exists this overwrites
-	 *
-	 * Will launch a second coroutine that will clear out old content
+	 * Save the chapter passage to storage
 	 */
-	suspend fun saveChapterInCache(
-		chapterID: Int,
+	@Throws(FilePermissionException::class, IOException::class)
+	suspend fun save(
+		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType,
 		passage: ByteArray
 	)
@@ -44,9 +41,16 @@ interface IFileCachedChapterDataSource {
 	/**
 	 * Gets chapter passage via it's ID
 	 */
-	@Throws(FileNotFoundException::class)
-	suspend fun loadChapterPassage(
-		chapterID: Int,
+	@Throws(FilePermissionException::class, FileNotFoundException::class)
+	suspend fun load(
+		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType
 	): ByteArray
+
+	/** Deletes a chapter from the filesystem */
+	@Throws(FilePermissionException::class)
+	suspend fun delete(
+		chapterEntity: ChapterEntity,
+		chapterType: Novel.ChapterType
+	)
 }

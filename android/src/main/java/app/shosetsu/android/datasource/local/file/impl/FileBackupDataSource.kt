@@ -6,7 +6,7 @@ import app.shosetsu.android.common.enums.ExternalFileDir.APP
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
-import app.shosetsu.android.datasource.file.base.IFileBackupDataSource
+import app.shosetsu.android.datasource.local.file.base.IFileBackupDataSource
 import app.shosetsu.android.domain.model.local.BackupEntity
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
 import java.io.IOException

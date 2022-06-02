@@ -2,7 +2,7 @@ package app.shosetsu.android.domain.repository.impl
 
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.ext.onIO
-import app.shosetsu.android.datasource.file.base.IFileSettingsDataSource
+import app.shosetsu.android.datasource.local.file.base.IFileSettingsDataSource
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import kotlinx.coroutines.flow.Flow
 

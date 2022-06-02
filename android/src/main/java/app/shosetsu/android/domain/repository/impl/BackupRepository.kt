@@ -3,7 +3,7 @@ package app.shosetsu.android.domain.repository.impl
 import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.ext.onIO
-import app.shosetsu.android.datasource.file.base.IFileBackupDataSource
+import app.shosetsu.android.datasource.local.file.base.IFileBackupDataSource
 import app.shosetsu.android.domain.model.local.BackupEntity
 import app.shosetsu.android.domain.repository.base.IBackupRepository
 import app.shosetsu.android.domain.repository.base.IBackupRepository.BackupProgress
