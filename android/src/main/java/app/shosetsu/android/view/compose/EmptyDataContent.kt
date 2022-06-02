@@ -4,12 +4,13 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,7 +39,7 @@ import kotlin.random.Random
 @Preview
 @Composable
 fun PreviewErrorContent() {
-	ErrorContent(R.string.todo, ErrorAction(R.string.todo) { })
+	ErrorContent(R.string.todo, ErrorAction(R.string.todo) { }, stackTrace = "l\nl\nl\nl\nl\n")
 }
 
 private val ERROR_FACES = listOf(
@@ -82,16 +83,23 @@ fun getRandomErrorFace(): String {
 data class ErrorAction(val id: Int, val onClick: () -> Unit)
 
 @Composable
-fun ErrorContent(@StringRes messageRes: Int, vararg actions: ErrorAction) =
-	ErrorContent(stringResource(messageRes), *actions)
+fun ErrorContent(
+	@StringRes messageRes: Int,
+	vararg actions: ErrorAction,
+	stackTrace: String? = null,
+) =
+	ErrorContent(
+		message = stringResource(id = messageRes),
+		stackTrace = stackTrace,
+		actions = *actions
+	)
 
-/**
- * TODO add "more" button to display error description
- */
 @Composable
-fun ErrorContent(message: String, vararg actions: ErrorAction) {
+fun ErrorContent(message: String, vararg actions: ErrorAction, stackTrace: String? = null) {
 	val face = remember { getRandomErrorFace() }
-	Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+	Box(modifier = Modifier
+		.fillMaxSize()
+		.padding(16.dp), contentAlignment = Alignment.Center) {
 		Column(
 			horizontalAlignment = Alignment.CenterHorizontally,
 		) {
@@ -115,6 +123,36 @@ fun ErrorContent(message: String, vararg actions: ErrorAction) {
 						Text(stringResource(it.id))
 					}
 				}
+			}
+
+			if (stackTrace != null) {
+				var isStacktraceVisible by remember { mutableStateOf(false) }
+
+				IconToggleButton(
+					isStacktraceVisible,
+					onCheckedChange = {
+						isStacktraceVisible = it
+					}
+				) {
+					Icon(
+						if (!isStacktraceVisible)
+							painterResource(R.drawable.expand_more)
+						else painterResource(R.drawable.expand_less),
+						if (!isStacktraceVisible)
+							stringResource(R.string.more)
+						else stringResource(R.string.less)
+					)
+				}
+
+				Text(
+					if (isStacktraceVisible) {
+						stackTrace
+					} else {
+						""
+					},
+					style = MaterialTheme.typography.body2,
+					modifier = Modifier.verticalScroll(rememberScrollState())
+				)
 			}
 		}
 	}

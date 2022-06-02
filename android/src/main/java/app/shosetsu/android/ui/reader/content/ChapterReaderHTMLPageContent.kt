@@ -60,12 +60,14 @@ inline fun ChapterReaderHTMLContent(
 
 	when (html) {
 		is AChapterReaderViewModel.ChapterPassage.Error -> {
+			val throwable = (html as? AChapterReaderViewModel.ChapterPassage.Error)?.throwable
 			ErrorContent(
-				(html as? AChapterReaderViewModel.ChapterPassage.Error)?.throwable?.message
+				throwable?.message
 					?: "Unknown error",
 				ErrorAction(R.string.retry) {
 					retryChapter(item)
-				}
+				},
+				stackTrace = throwable?.stackTraceToString()
 			)
 		}
 		AChapterReaderViewModel.ChapterPassage.Loading -> {

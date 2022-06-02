@@ -66,12 +66,14 @@ fun ChapterReaderStringContent(
 
 	when (content) {
 		is AChapterReaderViewModel.ChapterPassage.Error -> {
+			val throwable = (content as? AChapterReaderViewModel.ChapterPassage.Error)?.throwable
 			ErrorContent(
-				(content as? AChapterReaderViewModel.ChapterPassage.Error)?.throwable!!.message
+				throwable?.message
 					?: "Unknown error",
 				ErrorAction(R.string.retry) {
 					retryChapter(item)
-				}
+				},
+				stackTrace = throwable?.stackTraceToString()
 			)
 		}
 		is AChapterReaderViewModel.ChapterPassage.Loading -> {

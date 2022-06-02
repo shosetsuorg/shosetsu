@@ -399,7 +399,8 @@ fun CatalogContent(
 					refreshState.error.message ?: "Unknown",
 					ErrorAction(R.string.retry) {
 						items.refresh()
-					}
+					},
+					stackTrace = refreshState.error.stackTraceToString()
 				)
 		}
 		SwipeRefresh(
