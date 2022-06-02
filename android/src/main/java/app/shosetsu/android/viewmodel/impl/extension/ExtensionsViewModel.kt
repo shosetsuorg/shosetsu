@@ -187,7 +187,7 @@ class ExtensionsViewModel(
 							.sortedBy { !it.isUpdateAvailable }
 							.toList()
 					})
-		}
+		}.onIO()
 	}
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
