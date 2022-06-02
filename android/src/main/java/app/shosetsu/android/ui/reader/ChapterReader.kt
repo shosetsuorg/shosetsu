@@ -329,9 +329,12 @@ class ChapterReader
 		}) {
 			if (!it) {
 				insetsController.hide(Type.systemBars())
+				insetsController.hide(Type.displayCutout())
 				insetsController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-			} else
+			} else {
 				insetsController.show(Type.systemBars())
+				insetsController.show(Type.displayCutout())
+			}
 		}
 
 		viewModel.liveIsScreenRotationLocked.collectLA(this, catch = {}) {
