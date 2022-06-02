@@ -5,10 +5,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -70,6 +67,7 @@ fun StringPageContent(
 //isTapToScroll: Boolean
 ) {
 	val state = rememberScrollState()
+	var first by remember { mutableStateOf(true) }
 
 	if (state.isScrollInProgress)
 		DisposableEffect(Unit) {
@@ -103,10 +101,14 @@ fun StringPageContent(
 	}
 
 	// Avoid scrolling when the state has not fully loaded
-	if (state.maxValue != 0 && state.maxValue != Int.MAX_VALUE)
-		LaunchedEffect(progress) {
-			launch {
-				state.scrollTo((state.maxValue * progress).toInt())
+	if (state.maxValue != 0 && state.maxValue != Int.MAX_VALUE) {
+		if (first) {
+			LaunchedEffect(progress) {
+				launch {
+					state.scrollTo((state.maxValue * progress).toInt())
+					first = false
+				}
 			}
 		}
+	}
 }

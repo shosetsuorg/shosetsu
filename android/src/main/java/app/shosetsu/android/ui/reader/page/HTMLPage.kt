@@ -9,9 +9,7 @@ import android.webkit.WebView
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.view.compose.ScrollStateBar
@@ -50,6 +48,7 @@ fun WebViewPageContent(
 ) {
 	val scrollState = rememberScrollState()
 	val state = rememberWebViewStateWithHTMLData(html)
+	var first by remember { mutableStateOf(true) }
 
 	if (scrollState.isScrollInProgress)
 		DisposableEffect(Unit) {
@@ -109,13 +108,17 @@ fun WebViewPageContent(
 	}
 
 	// Avoid scrolling when the state has not fully loaded
-	if (scrollState.maxValue != 0 && scrollState.maxValue != Int.MAX_VALUE && !state.isLoading)
-		LaunchedEffect(progress) {
-			launch {
-				val result = (scrollState.maxValue * progress).toInt()
-				scrollState.scrollTo(result)
+	if (scrollState.maxValue != 0 && scrollState.maxValue != Int.MAX_VALUE && !state.isLoading) {
+		if (first) {
+			LaunchedEffect(progress) {
+				launch {
+					val result = (scrollState.maxValue * progress).toInt()
+					scrollState.scrollTo(result)
+					first = false
+				}
 			}
 		}
+	}
 }
 
 class ShosetsuScript(
