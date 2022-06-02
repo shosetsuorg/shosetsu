@@ -103,6 +103,10 @@ class ChapterReaderViewModel(
 		}
 	}
 
+	private val doubleTapSystemFlow: Flow<Boolean> by lazy {
+		settingsRepo.getBooleanFlow(ReaderDoubleTapSystem)
+	}
+
 	/**
 	 * Lets explain what goes on here
 	 *
@@ -646,22 +650,38 @@ class ChapterReaderViewModel(
 	}
 
 	override val isFocused: MutableStateFlow<Boolean> = MutableStateFlow(false)
+	override val isSystemVisible: MutableStateFlow<Boolean> = MutableStateFlow(true)
 
 	override fun toggleFocus() {
 		isFocused.tryEmit(!isFocused.value)
 	}
 
-	override fun onFocusClick() {
+	override fun toggleSystemVisible() {
+		isFocused.tryEmit(isSystemVisible.value)
+		isSystemVisible.tryEmit(!isSystemVisible.value)
+	}
+
+	override fun onReaderClicked() {
 		launchIO {
-			if (!doubleTapFocus.first())
-				isFocused.emit(!isFocused.value)
+			if (!doubleTapFocus.first()) {
+				val newValue = !isFocused.value
+				isFocused.emit(newValue)
+				if (newValue)
+					isSystemVisible.emit(false)
+			}
 		}
 	}
 
-	override fun onFocusDoubleClick() {
+	override fun onReaderDoubleClicked() {
 		launchIO {
-			if (doubleTapFocus.first())
-				isFocused.emit(!isFocused.value)
+			if (doubleTapFocus.first()) {
+				val newValue = !isFocused.value
+				isFocused.emit(newValue)
+				if (newValue)
+					isSystemVisible.emit(false)
+			} else if (doubleTapSystemFlow.first()) {
+				toggleSystemVisible()
+			}
 		}
 	}
 

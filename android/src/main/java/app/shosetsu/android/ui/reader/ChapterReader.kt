@@ -201,14 +201,13 @@ class ChapterReader
 								item { viewModel.showReaderDivider() }
 								item { viewModel.stringAsHtmlOption() }
 								item { viewModel.doubleTapFocus() }
+								item { viewModel.doubleTapSystem() }
 							},
 							setting = setting,
 							updateSetting = viewModel::updateSetting,
 							isBookmarked = isBookmarked,
 							isRotationLocked = isRotationLocked,
-							onShowNavigation = {
-								insetsController.show(Type.systemBars())
-							},
+							onShowNavigation = viewModel::toggleSystemVisible,
 							toggleFocus = viewModel::toggleFocus,
 							onPlayTTS = {
 								if (chapterType == null) return@ChapterReaderBottomSheetContent
@@ -287,8 +286,8 @@ class ChapterReader
 													textColorFlow = { viewModel.textColor },
 													backgroundColorFlow = { viewModel.backgroundColor },
 													onScroll = viewModel::onScroll,
-													onClick = viewModel::onFocusClick,
-													onDoubleClick = viewModel::onFocusDoubleClick,
+													onClick = viewModel::onReaderClicked,
+													onDoubleClick = viewModel::onReaderDoubleClicked,
 													progressFlow = {
 														viewModel.getChapterProgress(item)
 													}
@@ -300,8 +299,8 @@ class ChapterReader
 													getHTMLContent = viewModel::getChapterHTMLPassage,
 													retryChapter = viewModel::retryChapter,
 													onScroll = viewModel::onScroll,
-													onClick = viewModel::onFocusClick,
-													onDoubleClick = viewModel::onFocusDoubleClick,
+													onClick = viewModel::onReaderClicked,
+													onDoubleClick = viewModel::onReaderDoubleClicked,
 													progressFlow = {
 														viewModel.getChapterProgress(item)
 													}
@@ -326,15 +325,15 @@ class ChapterReader
 			}
 		}
 
-		insetsController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-
-		viewModel.isFocused.collectLA(this, catch = {
+		viewModel.isSystemVisible.collectLA(this, catch = {
 		}) {
-			if (it) {
+			if (!it) {
 				insetsController.hide(Type.systemBars())
 				insetsController.systemBarsBehavior = BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-			}
+			} else
+				insetsController.show(Type.systemBars())
 		}
+
 		viewModel.liveIsScreenRotationLocked.collectLA(this, catch = {}) {
 			if (it)
 				lockRotation()

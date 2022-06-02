@@ -60,7 +60,9 @@ fun ExposedSettingsRepoViewModel.stringAsHtmlOption() {
 		stringResource(R.string.settings_reader_title_string_to_html),
 		stringResource(R.string.settings_reader_desc_string_to_html),
 		settingsRepo,
-		ReaderStringToHtml, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+		ReaderStringToHtml, modifier = Modifier
+			.fillMaxWidth()
+			.padding(bottom = 8.dp)
 	)
 }
 
@@ -70,7 +72,9 @@ fun ExposedSettingsRepoViewModel.horizontalSwitchOption() {
 		stringResource(R.string.settings_reader_title_horizontal_option),
 		stringResource(R.string.settings_reader_desc_horizontal_option),
 		settingsRepo,
-		ReaderHorizontalPageSwap, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+		ReaderHorizontalPageSwap, modifier = Modifier
+			.fillMaxWidth()
+			.padding(bottom = 8.dp)
 	)
 }
 
@@ -80,7 +84,9 @@ fun ExposedSettingsRepoViewModel.invertChapterSwipeOption() {
 		stringResource(R.string.settings_reader_inverted_swipe_title),
 		stringResource(R.string.settings_reader_inverted_swipe_desc),
 		settingsRepo,
-		ReaderIsInvertedSwipe, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+		ReaderIsInvertedSwipe, modifier = Modifier
+			.fillMaxWidth()
+			.padding(bottom = 8.dp)
 	)
 }
 
@@ -90,7 +96,9 @@ fun ExposedSettingsRepoViewModel.showReaderDivider() {
 		stringResource(R.string.settings_reader_show_divider),
 		stringResource(R.string.settings_reader_show_divider_desc),
 		settingsRepo,
-		ReaderShowChapterDivider, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+		ReaderShowChapterDivider, modifier = Modifier
+			.fillMaxWidth()
+			.padding(bottom = 8.dp)
 	)
 }
 
@@ -100,9 +108,24 @@ fun ExposedSettingsRepoViewModel.doubleTapFocus() {
 		stringResource(R.string.settings_reader_double_tap),
 		stringResource(R.string.settings_reader_double_tap_desc),
 		settingsRepo,
-		ReaderDoubleTapFocus, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+		ReaderDoubleTapFocus, modifier = Modifier
+			.fillMaxWidth()
+			.padding(bottom = 8.dp)
 	)
 }
+
+@Composable
+fun ExposedSettingsRepoViewModel.doubleTapSystem() {
+	SwitchSettingContent(
+		stringResource(R.string.settings_reader_double_tap_system),
+		stringResource(R.string.settings_reader_double_tap_system_desc),
+		settingsRepo,
+		ReaderDoubleTapSystem, modifier = Modifier
+			.fillMaxWidth()
+			.padding(bottom = 8.dp)
+	)
+}
+
 
 @Composable
 fun ExposedSettingsRepoViewModel.continuousScrollOption() {
@@ -110,7 +133,9 @@ fun ExposedSettingsRepoViewModel.continuousScrollOption() {
 		stringResource(R.string.settings_reader_title_continous_scroll),
 		stringResource(R.string.settings_reader_desc_continous_scroll),
 		settingsRepo,
-		ReaderContinuousScroll, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+		ReaderContinuousScroll, modifier = Modifier
+			.fillMaxWidth()
+			.padding(bottom = 8.dp)
 	)
 }
 
@@ -120,7 +145,9 @@ fun ExposedSettingsRepoViewModel.tapToScrollOption() {
 		stringResource(R.string.settings_reader_tap_to_scroll_title),
 		"",
 		settingsRepo,
-		ReaderIsTapToScroll, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+		ReaderIsTapToScroll, modifier = Modifier
+			.fillMaxWidth()
+			.padding(bottom = 8.dp)
 	)
 }
 
@@ -130,7 +157,9 @@ fun ExposedSettingsRepoViewModel.readerKeepScreenOnOption() {
 		stringResource(R.string.settings_reader_keep_screen_on),
 		stringResource(R.string.settings_reader_keep_screen_on_desc),
 		settingsRepo,
-		ReaderKeepScreenOn, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+		ReaderKeepScreenOn, modifier = Modifier
+			.fillMaxWidth()
+			.padding(bottom = 8.dp)
 	)
 }
 
@@ -140,7 +169,9 @@ fun ExposedSettingsRepoViewModel.volumeScrollingOption() {
 		stringResource(R.string.settings_reader_volume_scroll_title),
 		"",
 		settingsRepo,
-		ReaderVolumeScroll, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+		ReaderVolumeScroll, modifier = Modifier
+			.fillMaxWidth()
+			.padding(bottom = 8.dp)
 	)
 }
 
@@ -155,7 +186,9 @@ fun ExposedSettingsRepoViewModel.textSizeOption() {
 		ReaderTextSize,
 		haveSteps = false,
 		flip = true,
-		modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(bottom = 8.dp)
 	)
 }
 
@@ -167,7 +200,9 @@ fun ExposedSettingsRepoViewModel.paragraphIndentOption() {
 		0..10,
 		{ "$it" },
 		settingsRepo,
-		ReaderIndentSize, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+		ReaderIndentSize, modifier = Modifier
+			.fillMaxWidth()
+			.padding(bottom = 8.dp)
 	)
 }
 
@@ -181,6 +216,8 @@ fun ExposedSettingsRepoViewModel.paragraphSpacingOption() {
 		settingsRepo,
 		ReaderParagraphSpacing,
 		flip = true,
-		modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(bottom = 8.dp)
 	)
 }

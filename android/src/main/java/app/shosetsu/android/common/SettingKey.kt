@@ -101,6 +101,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object ReaderStringToHtml : BooleanKey("convertStringToHtml", false)
 	object ReaderIsFirstFocus : BooleanKey("reader_first_focus", true)
 	object ReaderDoubleTapFocus : BooleanKey("reader_double_tap_focus", false)
+	object ReaderDoubleTapSystem : BooleanKey("reader_double_tap_system", false)
 
 	/**
 	 * User customization for CSS in html reader

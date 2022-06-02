@@ -684,6 +684,8 @@
     <string name="controller_novel_selected_unbookmark">Unbookmark selected chapters</string>
     <string name="settings_reader_double_tap">Double tap to toggle focus</string>
     <string name="settings_reader_double_tap_desc">Instead of a single tap, require a double tap to toggle the focus in the reader.</string>
+    <string name="settings_reader_double_tap_system">Double tap to toggle system UI</string>
+    <string name="settings_reader_double_tap_system_desc">By double tapping, one can toggle the system UI in the reader.\nDoes not work with double tap to toggle focus.</string>
     <string name="controller_novel_info_open_web_text">Webview</string>
     <string name="controller_catalogue_no_more">No more content, Sorry!</string>
 

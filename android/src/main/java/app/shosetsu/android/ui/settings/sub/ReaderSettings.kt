@@ -125,7 +125,9 @@ fun ReaderSettingsContent(
 				title = stringResource(R.string.settings_reader_text_alignment_title),
 				description = stringResource(R.string.settings_reader_text_alignment_desc),
 				choices = stringArrayResource(R.array.text_alignments),
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp),
 				repo = viewModel.settingsRepo,
 				ReaderTextAlignment
 			)
@@ -172,7 +174,9 @@ fun ReaderSettingsContent(
 								Text(
 									"T",
 									color = Color(themeItem.textColor),
-									modifier = Modifier.size(64.dp).padding(8.dp),
+									modifier = Modifier
+										.size(64.dp)
+										.padding(8.dp),
 									textAlign = TextAlign.Center,
 									fontSize = 32.sp
 								)
@@ -193,7 +197,9 @@ fun ReaderSettingsContent(
 								Image(
 									painterResource(R.drawable.add_circle_outline),
 									stringResource(R.string.style_add),
-									modifier = Modifier.size(64.dp).padding(8.dp)
+									modifier = Modifier
+										.size(64.dp)
+										.padding(8.dp)
 								)
 							}
 
@@ -220,7 +226,9 @@ fun ReaderSettingsContent(
 				stringResource(R.string.settings_reader_desc_mark_read_as_reading),
 				viewModel.settingsRepo,
 				ReaderMarkReadAsReading,
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -234,7 +242,9 @@ fun ReaderSettingsContent(
 				stringResource(R.string.settings_reader_desc_html_css),
 				stringResource(R.string.open_in),
 				onClick = openHTMLEditor,
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -248,7 +258,9 @@ fun ReaderSettingsContent(
 				stringResource(R.string.settings_reader_desc_continous_scroll),
 				viewModel.settingsRepo,
 				ReaderContinuousScroll,
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -275,7 +287,9 @@ fun ReaderSettingsContent(
 						}
 					}
 				},
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -285,7 +299,9 @@ fun ReaderSettingsContent(
 				stringResource(R.string.settings_reader_resume_behavior_desc),
 				viewModel.settingsRepo,
 				ChaptersResumeFirstUnread,
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -295,7 +311,9 @@ fun ReaderSettingsContent(
 				stringResource(R.string.settings_reader_keep_screen_on_desc),
 				viewModel.settingsRepo,
 				ReaderKeepScreenOn,
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -303,9 +321,8 @@ fun ReaderSettingsContent(
 			viewModel.showReaderDivider()
 		}
 
-		item {
-			viewModel.doubleTapFocus()
-		}
+		item { viewModel.doubleTapFocus() }
+		item { viewModel.doubleTapSystem() }
 	}
 
 }
