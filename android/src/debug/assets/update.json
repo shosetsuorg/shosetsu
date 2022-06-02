@@ -1,16 +1,23 @@
 {
-  "latestVersion": "2184",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r2184/shosetsu-r2184-universal.apk",
+  "latestVersion": "2258",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r2258/shosetsu-r2258-universal.apk",
   "releaseNotes": [
-    "- Fix padding in Advanced & View settings",
-    "- Fix back button not working in legacy navigation",
-    "- Remove indication of click from string chapter reader",
-    "- Add more exception handling",
-    "- Fix migration controller crashing",
-    "- Convert Library to compose",
-    "- Convert Downloads to compose",
-    "- Convert Repositories to compose",
-    "- Sync all FABs again",
-    "- Add new settings for backup"
+    "- Added cozy card type",
+    "- Constrain card titles",
+    "- Various UI Improvements",
+    "- Removed top bar from reader",
+    "- Fix catalog controller not clearing",
+    "- Fix library query filter lagging",
+    "- Upgrade to java 11",
+    "- Exception handling improvements",
+    "- Add delay to downloading",
+    "- Fix chapter scroll via resume going to the wrong chapter",
+    "- Fix all out of memory issues in chapter reader",
+    "- Remove animated image from novel card",
+    "- Add force repo sync button in advanced settings",
+    "- Solve reader jumping around",
+    "- Fix reader marking the wrong chapters as read",
+    "- Add double tap to show system UI button",
+    "- Add stack trace to error views"
   ]
 }
