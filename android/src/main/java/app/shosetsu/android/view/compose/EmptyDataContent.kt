@@ -97,9 +97,11 @@ fun ErrorContent(
 @Composable
 fun ErrorContent(message: String, vararg actions: ErrorAction, stackTrace: String? = null) {
 	val face = remember { getRandomErrorFace() }
-	Box(modifier = Modifier
-		.fillMaxSize()
-		.padding(16.dp), contentAlignment = Alignment.Center) {
+	Box(
+		modifier = Modifier
+			.fillMaxSize()
+			.padding(16.dp), contentAlignment = Alignment.Center
+	) {
 		Column(
 			horizontalAlignment = Alignment.CenterHorizontally,
 		) {
