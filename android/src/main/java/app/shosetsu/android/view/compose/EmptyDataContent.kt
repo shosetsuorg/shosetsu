@@ -152,7 +152,7 @@ fun ErrorContent(message: String, vararg actions: ErrorAction, stackTrace: Strin
 					} else {
 						""
 					},
-					style = MaterialTheme.typography.body2,
+					style = MaterialTheme.typography.caption,
 					modifier = Modifier.verticalScroll(rememberScrollState())
 				)
 			}
