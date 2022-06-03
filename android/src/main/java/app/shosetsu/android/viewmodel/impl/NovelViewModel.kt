@@ -658,7 +658,7 @@ class NovelViewModel(
 	override fun trueDeleteSelected() {
 		launchIO {
 			val list = chaptersFlow.first()
-			list.filter { it.isSelected && it.isSaved }.forEach {
+			list.filter { it.isSelected }.forEach {
 				trueDeleteChapter(it)
 			}
 			clearSelectedSuspend()
