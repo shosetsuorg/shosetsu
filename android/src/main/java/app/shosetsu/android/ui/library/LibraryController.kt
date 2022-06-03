@@ -179,6 +179,9 @@ class LibraryController
 		}
 		viewModel.queryFlow.collectLA(this, catch = {}) {
 			searchView?.setQuery(it, false)
+			if (it.isNotEmpty()) {
+				searchView?.isIconified = false
+			}
 		}
 
 		viewModel.isEmptyFlow.collectLA(this, catch = {
