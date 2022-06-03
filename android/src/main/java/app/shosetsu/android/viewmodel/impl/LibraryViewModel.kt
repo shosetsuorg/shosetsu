@@ -213,7 +213,6 @@ class LibraryViewModel(
 	 */
 	override val liveData: Flow<List<LibraryNovelUI>> by lazy {
 		librarySourceFlow
-			.combineFilter()
 			.combineSelection()
 			.combineArtistFilter()
 			.combineAuthorFilter()
@@ -222,6 +221,7 @@ class LibraryViewModel(
 			.combineUnreadStatus()
 			.combineSortType()
 			.combineSortReverse()
+			.combineFilter().onIO()
 	}
 
 	override val columnsInH by lazy {
