@@ -316,7 +316,7 @@ class LibraryViewModel(
 	private fun Flow<List<LibraryNovelUI>>.combineFilter() =
 		combine(queryFlow) { list, query ->
 			list.filter {
-				it.title.contains(query)
+				it.title.contains(query, ignoreCase = true)
 			}
 		}
 
