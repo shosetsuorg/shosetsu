@@ -44,7 +44,7 @@ object Migration2To3 : Migration(2, 3) {
 			database.execSQL("CREATE TABLE IF NOT EXISTS `${tableName}_new` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `url` TEXT NOT NULL UNIQUE, `name` TEXT NOT NULL, `isEnabled` INTEGER NOT NULL)")
 
 			// Migrate
-			database.execSQL("INSERT INTO `${tableName}_new` SELECT `url`, `url` as `name`, 1 as isEnabled FROM `tableName`")
+			database.execSQL("INSERT INTO `${tableName}_new` SELECT `url`, `url` as `name`, 1 as isEnabled FROM `$tableName`")
 
 			// Drop
 			database.execSQL("DROP TABLE $tableName")
