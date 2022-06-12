@@ -32,6 +32,7 @@ import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerAfterUpdateUseCase
 import app.shosetsu.android.domain.usecases.get.GetRemoteNovelUseCase
 import app.shosetsu.lib.Novel
+import app.shosetsu.lib.exceptions.HTTPException
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -40,6 +41,7 @@ import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
+import java.io.IOException
 import kotlin.coroutines.cancellation.CancellationException
 
 /*
@@ -172,6 +174,44 @@ class NovelUpdateWorker(
 
 				val it = try {
 					loadRemoteNovelUseCase(nE, true)
+				} catch (e: HTTPException) {
+					logE("Failed to load novel: $nE", e)
+					notify(
+						"${e.message}",
+						10000 + nE.id!!
+					) {
+						setContentTitle(
+							getString(
+								R.string.worker_novel_update_load_failure,
+								nE.title
+							)
+						)
+
+						setNotOngoing()
+						removeProgress()
+						addCancelAction()
+						this.priority = NotificationCompat.PRIORITY_HIGH
+					}
+					continue
+				} catch (e: IOException) {
+					logE("Failed to load novel: $nE", e)
+					notify(
+						"${e.message}",
+						10000 + nE.id!!
+					) {
+						setContentTitle(
+							getString(
+								R.string.worker_novel_update_load_failure,
+								nE.title
+							)
+						)
+
+						setNotOngoing()
+						removeProgress()
+						addCancelAction()
+						this.priority = NotificationCompat.PRIORITY_HIGH
+					}
+					continue
 				} catch (e: Exception) {
 					if (e is CancellationException) {
 						logE("Job was canceled", e)
