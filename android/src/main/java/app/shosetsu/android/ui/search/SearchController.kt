@@ -30,7 +30,10 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import app.shosetsu.android.common.consts.BundleKeys
-import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.makeSnackBar
+import app.shosetsu.android.common.ext.shosetsuPush
+import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.compose.NovelCardCozyContent
 import app.shosetsu.android.view.compose.NovelCardNormalContent
@@ -46,7 +49,9 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
 import org.acra.ACRA
 import javax.security.auth.DestroyFailedException
 
@@ -129,13 +134,15 @@ class SearchController(bundle: Bundle) : ShosetsuController(bundle) {
 		val searchView = menu.findItem(R.id.search).actionView as SearchView
 		searchView.setOnQueryTextListener(InternalQuery())
 		searchView.setIconifiedByDefault(false)
-		viewModel.query.collectLA(this, catch = {
-			makeSnackBar(it.message ?: "Unknown error loading app theme")
-				?.setAction(R.string.report) { _ ->
-					ACRA.errorReporter.handleSilentException(it)
-				}?.show()
-		}) {
-			searchView.setQuery(it, false)
+		runBlocking {
+			try {
+				searchView.setQuery(viewModel.query.first(), false)
+			} catch (e: Exception) {
+				makeSnackBar(e.message ?: "Failed to restore search query")
+					?.setAction(R.string.report) { _ ->
+						ACRA.errorReporter.handleSilentException(e)
+					}?.show()
+			}
 		}
 	}
 

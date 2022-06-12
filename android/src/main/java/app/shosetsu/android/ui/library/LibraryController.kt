@@ -53,6 +53,8 @@ import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 /*
  * This file is part of Shosetsu.
@@ -177,9 +179,10 @@ class LibraryController
 		searchView?.apply {
 			setOnQueryTextListener(LibrarySearchQuery(viewModel))
 		}
-		viewModel.queryFlow.collectLA(this, catch = {}) {
-			searchView?.setQuery(it, false)
-			if (it.isNotEmpty()) {
+		runBlocking {
+			val string = viewModel.queryFlow.first()
+			searchView?.setQuery(string, false)
+			if (string.isNotEmpty()) {
 				searchView?.isIconified = false
 			}
 		}
