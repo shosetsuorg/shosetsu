@@ -1,5 +1,6 @@
 package app.shosetsu.android.ui.novel
 
+import android.content.res.Resources
 import android.database.sqlite.SQLiteException
 import android.os.Bundle
 import android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
@@ -369,6 +370,30 @@ class NovelController(bundle: Bundle) :
 
 	private var state = LazyListState(0)
 
+	private fun toggleBookmark() {
+		viewModel.toggleNovelBookmark().firstLa(this@NovelController, catch = {}) {
+			when (it) {
+				is ANovelViewModel.ToggleBookmarkResponse.DeleteChapters -> {
+					makeSnackBar(
+						try {
+							resources!!.getQuantityString(
+								R.plurals.controller_novel_toggle_delete_chapters,
+								it.chapters,
+								it.chapters
+							)
+						} catch (e: Resources.NotFoundException) {
+							"Delete ${it.chapters} chapters?"
+						}
+					)?.setAction(R.string.delete) {
+						viewModel.deleteChapters()
+					}?.show()
+				}
+				ANovelViewModel.ToggleBookmarkResponse.Nothing -> {
+				}
+			}
+		}
+	}
+
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup,
@@ -407,7 +432,7 @@ class NovelController(bundle: Bundle) :
 						else displayOfflineSnackBar()
 					},
 					openWebView = ::openWebView,
-					toggleBookmark = viewModel::toggleNovelBookmark,
+					toggleBookmark = ::toggleBookmark,
 					openFilter = ::openFilterMenu,
 					openChapterJump = ::openChapterJumpDialog,
 					chapterContent = {

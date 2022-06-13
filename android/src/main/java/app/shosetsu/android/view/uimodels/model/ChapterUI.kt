@@ -26,6 +26,7 @@ import app.shosetsu.android.dto.Convertible
  * 24 / 04 / 2020
  *
  * @author github.com/doomsdayrs
+ * @param isSaved the chapters is downloaded
  */
 data class ChapterUI(
 	val id: Int,

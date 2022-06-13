@@ -57,8 +57,28 @@ abstract class ANovelViewModel
 	/** Set's the value to be loaded */
 	abstract fun setNovelID(novelID: Int)
 
-	/** Toggles the bookmark of this ui */
-	abstract fun toggleNovelBookmark()
+	/**
+	 * Toggles the bookmark of this ui
+	 * @return ToggleBookmarkResponse of what the UI should react with
+	 */
+	abstract fun toggleNovelBookmark(): Flow<ToggleBookmarkResponse>
+
+	/**
+	 * Response to toggling the novel bookmark
+	 */
+	sealed class ToggleBookmarkResponse {
+		/**
+		 * UI can ignore response
+		 */
+		object Nothing : ToggleBookmarkResponse()
+
+		/**
+		 * The user should be informed that chapters can be deleted
+		 * @param chapters how many chapters to delete
+		 */
+		data class DeleteChapters(val chapters: Int) : ToggleBookmarkResponse()
+		// TODO Possibly warn if a matching novel is in the library or not
+	}
 
 	/**
 	 * Return the novelURL to utilize in some way
@@ -150,4 +170,9 @@ abstract class ANovelViewModel
 
 	abstract fun toggleSelection(it: ChapterUI)
 	abstract fun getChapterCount(): Flow<Int>
+
+	/**
+	 * Delete downloaded chapters
+	 */
+	abstract fun deleteChapters()
 }

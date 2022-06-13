@@ -703,6 +703,11 @@
     <string name="force">Force</string>
     <string name="controller_novel_delete_previous_fail">Failed to delete previous chapter: %s</string>
     <string name="missing_extension">Extension is missing %i</string>
+    <plurals name="controller_novel_toggle_delete_chapters">
+        <!-- Ignore zero-->
+        <item quantity="one">Delete %d chapter?</item>
+        <item quantity="other">Delete %d chapters?</item>
+    </plurals>
 
     <plurals name="worker_novel_update_updated_novel_count">
         <item quantity="one">%d new chapter.</item>

@@ -424,11 +424,20 @@ class NovelViewModel(
 		novelIDLive.tryEmit(novelID)
 	}
 
-	override fun toggleNovelBookmark() {
-		launchIO {
+	override fun toggleNovelBookmark(): Flow<ToggleBookmarkResponse> {
+		return flow {
 			val novel = novelFlow.first { it != null }!!
-			updateNovelUseCase(novel.copy(bookmarked = !novel.bookmarked))
-		}
+			val newState = !novel.bookmarked
+			updateNovelUseCase(novel.copy(bookmarked = newState))
+
+			if (!newState) {
+				val chapters = chaptersFlow.first().filter { it.isSaved }.size
+				if (chapters != 0)
+					emit(ToggleBookmarkResponse.DeleteChapters(chapters))
+				return@flow
+			}
+			emit(ToggleBookmarkResponse.Nothing)
+		}.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Eagerly)
 	}
 
 	override fun isBookmarked(): Flow<Boolean> = flow {
@@ -654,5 +663,13 @@ class NovelViewModel(
 		flow {
 			emit(chaptersFlow.first().size)
 		}
+
+	override fun deleteChapters() {
+		launchIO {
+			chaptersFlow.first().filter { it.isSaved }.forEach {
+				deleteChapterPassageUseCase(it)
+			}
+		}
+	}
 
 }
