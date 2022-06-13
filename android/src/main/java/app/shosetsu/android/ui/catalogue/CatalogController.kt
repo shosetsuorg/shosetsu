@@ -341,16 +341,16 @@ class CatalogController(
 			//bottomMenuRetriever.invoke()?.show()
 			if (bsg == null)
 				bsg = ComposeBottomSheetDialog(
-					this.view!!.context,
+					(this.view ?: return@setOnClickListener).context,
 					this,
 					activity as MainActivity
 				)
 			if (bsg?.isShowing == false) {
 				bsg?.apply {
 					setContentView(
-						ComposeView(view!!.context).apply {
+						ComposeView((view ?: return@apply).context).apply {
 							setContent {
-								MdcTheme(view!!.context) {
+								MdcTheme((view ?: return@setContent).context) {
 									val items by viewModel.filterItemsLive.collectAsState(emptyList())
 									CatalogFilterMenu(
 										items = items,

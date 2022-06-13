@@ -20,8 +20,10 @@ import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
 import app.shosetsu.lib.Filter
 import app.shosetsu.lib.IExtension
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.plus
 
 /*
  * This file is part of shosetsu.
@@ -154,7 +156,7 @@ class CatalogViewModel(
 		filterItemsFlow.transformLatest {
 			filterDataState.clear() // Reset filter state so no data conflicts occur
 			emit(it)
-		}
+		}.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Eagerly, 2)
 	}
 
 	override val hasSearchLive: Flow<Boolean> by lazy {
