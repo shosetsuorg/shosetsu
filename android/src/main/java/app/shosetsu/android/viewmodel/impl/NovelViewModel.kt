@@ -435,36 +435,6 @@ class NovelViewModel(
 		emit(novelFlow.first()?.bookmarked ?: false)
 	}.onIO()
 
-	private fun markChapterAsRead(chapterUI: ChapterUI) {
-		launchIO {
-			updateChapterUseCase(
-				chapterUI.copy(
-					readingStatus = ReadingStatus.READ
-				)
-			)
-		}
-	}
-
-	private fun markChapterAsReading(chapterUI: ChapterUI) {
-		launchIO {
-			updateChapterUseCase(
-				chapterUI.copy(
-					readingStatus = ReadingStatus.READING
-				)
-			)
-		}
-	}
-
-	private fun markChapterAsUnread(chapterUI: ChapterUI) {
-		launchIO {
-			updateChapterUseCase(
-				chapterUI.copy(
-					readingStatus = ReadingStatus.UNREAD
-				)
-			)
-		}
-	}
-
 	override fun downloadNextChapter() {
 		launchIO {
 			val array = chaptersFlow.first().sortedBy { it.order }
@@ -583,20 +553,15 @@ class NovelViewModel(
 		launchIO {
 			val list =
 				chaptersFlow.first().filter { it.isSelected && it.readingStatus != readingStatus }
-			when (readingStatus) {
-				ReadingStatus.UNREAD -> list.forEach {
-					markChapterAsUnread(it)
-				}
-				ReadingStatus.READING -> list.forEach {
-					markChapterAsReading(it)
-				}
-				ReadingStatus.READ -> list.forEach {
-					markChapterAsRead(it)
-				}
-				else -> {
-					logE("Invalid input")
-				}
+
+			list.forEach {
+				updateChapterUseCase(
+					it.copy(
+						readingStatus = readingStatus
+					)
+				)
 			}
+
 			clearSelectedSuspend()
 		}
 	}
