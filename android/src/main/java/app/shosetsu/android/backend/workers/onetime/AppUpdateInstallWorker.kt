@@ -31,7 +31,6 @@ import org.kodein.di.android.closestDI
 import org.kodein.di.instance
 import java.io.File
 import java.io.IOException
-import java.net.UnknownHostException
 
 /*
  * This file is part of Shosetsu.
@@ -117,23 +116,17 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 			notify("How does the app lack the ability to download its apk\n ${e.message} ") {
 				setNotOngoing()
 				removeProgress()
+				addReportErrorAction(applicationContext, defaultNotificationID, e)
 			}
 
-			ACRA.errorReporter.handleSilentException(e)
-			return Result.failure()
-		} catch (e: UnknownHostException) {
-			notify("${e.message}") {
-				setNotOngoing()
-				removeProgress()
-			}
 			return Result.failure()
 		} catch (e: FileNotFoundException) {
 			notify("How does the app lack the ability to download its apk\n ${e.message} ") {
 				setNotOngoing()
 				removeProgress()
+				addReportErrorAction(applicationContext, defaultNotificationID, e)
 			}
 
-			ACRA.errorReporter.handleSilentException(e)
 			return Result.failure()
 		} catch (e: MissingFeatureException) {
 			notify("This version of the app cannot self update") {
@@ -145,6 +138,7 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 			notify("Failed to get update content from the internet") {
 				setNotOngoing()
 				removeProgress()
+				addReportErrorAction(applicationContext, defaultNotificationID, e)
 			}
 			return Result.failure()
 		} catch (e: IOException) {
@@ -153,7 +147,6 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 				removeProgress()
 			}
 
-			ACRA.errorReporter.handleSilentException(e)
 			return Result.failure()
 		} catch (e: HTTPException) {
 			notify("Failed due to HTTP code :${e.code}") {
@@ -165,9 +158,8 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 			notify("Exception occurred \n ${e.message} ") {
 				setNotOngoing()
 				removeProgress()
+				addReportErrorAction(applicationContext, defaultNotificationID, e)
 			}
-
-			ACRA.errorReporter.handleException(e)
 
 			return Result.failure()
 		}
