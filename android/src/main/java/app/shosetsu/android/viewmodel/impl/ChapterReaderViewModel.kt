@@ -330,7 +330,7 @@ class ChapterReaderViewModel(
 		novelIDLive.mapLatest { id ->
 			val novel = novelRepo.getNovel(id) ?: return@mapLatest null
 			getExt(novel.extensionID)
-		}.distinctUntilChanged()
+		}
 	}
 
 	/**
@@ -391,7 +391,7 @@ class ChapterReaderViewModel(
 	override val liveData: Flow<List<ReaderUIItem>> by lazy {
 		chaptersFlow
 			.combineDividers() // Add dividers
-			.distinctUntilChanged()
+			.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Lazily, 1)
 			.onIO()
 	}
 
