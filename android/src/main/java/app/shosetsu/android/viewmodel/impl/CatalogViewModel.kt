@@ -156,7 +156,7 @@ class CatalogViewModel(
 		filterItemsFlow.transformLatest {
 			filterDataState.clear() // Reset filter state so no data conflicts occur
 			emit(it)
-		}.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Eagerly, 2)
+		}.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Eagerly, 1)
 	}
 
 	override val hasSearchLive: Flow<Boolean> by lazy {
