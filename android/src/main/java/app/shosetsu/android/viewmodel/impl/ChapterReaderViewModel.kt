@@ -268,7 +268,10 @@ class ChapterReaderViewModel(
 						var result = bytes.decodeToString()
 
 						@Suppress("DEPRECATION")
-						if (item.chapterType == Novel.ChapterType.STRING && item.convertStringToHtml) {
+						val convert = convertStringToHtml.firstOrNull() ?: false
+						val chapterType = extensionChapterTypeFlow.firstOrNull()
+
+						if (chapterType == Novel.ChapterType.STRING && convert) {
 							result = asHtml(result, item.title)
 						}
 
@@ -333,6 +336,15 @@ class ChapterReaderViewModel(
 		}
 	}
 
+	private val convertStringToHtml by lazy {
+		settingsRepo.getBooleanFlow(ReaderStringToHtml).onIO()
+	}
+
+	private val extensionChapterTypeFlow: Flow<Novel.ChapterType?> by lazy {
+		extFlow.map { it?.chapterType }
+			.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Lazily, 1)
+	}
+
 	/**
 	 * Specifies what chapter type the reader should render.
 	 *
@@ -340,14 +352,13 @@ class ChapterReaderViewModel(
 	 * not html, causing the content to regenerate.
 	 */
 	override val chapterType: Flow<Novel.ChapterType?> by lazy {
-		extFlow.transformLatest { ext ->
+		extensionChapterTypeFlow.transformLatest { type ->
 			emit(null)
-
-			val type = ext?.chapterType ?: return@transformLatest
+			if (type == null) return@transformLatest
 			var prevType: Novel.ChapterType? = null
 
 			emitAll(
-				settingsRepo.getBooleanFlow(ReaderStringToHtml).transformLatest { convert ->
+				convertStringToHtml.transformLatest { convert ->
 					@Suppress("DEPRECATION")
 					if (convert && type == Novel.ChapterType.STRING) {
 						if (prevType != Novel.ChapterType.HTML)
@@ -364,7 +375,7 @@ class ChapterReaderViewModel(
 					}
 				}
 			)
-		}.onIO()
+		}.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Lazily, 1)
 	}
 
 	override var ttsSpeed: Float = 0.0f

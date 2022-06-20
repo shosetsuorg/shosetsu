@@ -1,15 +1,9 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
-import app.shosetsu.android.domain.repository.base.IExtensionsRepository
-import app.shosetsu.android.domain.repository.base.INovelsRepository
-import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem.ReaderChapterUI
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 /*
  * This file is part of shosetsu.
@@ -34,34 +28,11 @@ import kotlinx.coroutines.flow.flow
  */
 class GetReaderChaptersUseCase(
 	private val chapterRepo: IChaptersRepository,
-	private val settingsRepo: ISettingsRepository,
-	private val extRepo: IExtensionsRepository,
-	private val novelRepo: INovelsRepository
 ) {
 	operator fun invoke(novelID: Int): Flow<List<ReaderChapterUI>> =
-		flow {
-			emitAll(
-				novelRepo.getNovelFlow(novelID)
-					.combine(chapterRepo.getReaderChaptersFlow(novelID)) { novel, chapters ->
-						novel to chapters
-					}
-					.combine(settingsRepo.getBooleanFlow(SettingKey.ReaderStringToHtml)) { (novel, list), convertToHtml ->
-						if (novel != null) {
-							val extensionEntity =
-								extRepo.getInstalledExtension(novel.extensionID)
-
-							if (extensionEntity != null) {
-								list.map { (id, title) ->
-									ReaderChapterUI(
-										id,
-										title,
-										extensionEntity.chapterType,
-										convertToHtml
-									)
-								}
-							} else emptyList()
-						} else emptyList()
-					}
-			)
+		chapterRepo.getReaderChaptersFlow(novelID).map { chapters ->
+			chapters.map {
+				ReaderChapterUI(it)
+			}
 		}
 }

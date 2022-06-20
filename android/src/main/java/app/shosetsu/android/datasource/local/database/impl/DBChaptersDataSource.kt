@@ -68,7 +68,7 @@ class DBChaptersDataSource(
 		throw e
 	}
 
-	override suspend fun getReaderChapters(
+	override fun getReaderChapters(
 		novelID: Int,
 	): Flow<List<ReaderChapterEntity>> = flow {
 		try {

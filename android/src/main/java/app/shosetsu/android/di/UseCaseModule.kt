@@ -98,9 +98,6 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 	bind<GetReaderChaptersUseCase>() with provider {
 		GetReaderChaptersUseCase(
 			instance(),
-			instance(),
-			instance(),
-			instance()
 		)
 	}
 

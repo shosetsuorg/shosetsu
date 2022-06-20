@@ -109,7 +109,7 @@ interface IChaptersRepository {
 	/**
 	 * Loads [ReaderChapterEntity]s by it's [novelID]
 	 */
-	suspend fun getReaderChaptersFlow(novelID: Int): Flow<List<ReaderChapterEntity>>
+	fun getReaderChaptersFlow(novelID: Int): Flow<List<ReaderChapterEntity>>
 
 	/**
 	 * Delete the chapter passage from storage

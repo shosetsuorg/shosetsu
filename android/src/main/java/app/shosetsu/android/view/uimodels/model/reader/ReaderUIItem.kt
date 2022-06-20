@@ -2,7 +2,6 @@ package app.shosetsu.android.view.uimodels.model.reader
 
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.android.dto.Convertible
-import app.shosetsu.lib.Novel
 
 /*
  * This file is part of Shosetsu.
@@ -28,29 +27,16 @@ import app.shosetsu.lib.Novel
 sealed class ReaderUIItem {
 	/**
 	 * Data class that holds each chapter and its data (not including text content)
-	 *
-	 * @param id Id of the chapter in shosetsu db
-	 * @param link URL of the chapter
-	 * @param readingPosition Where the user last left off while reading
-	 * @param readingStatus What is the reading status of the chapter
-	 * @param bookmarked Is the chapter bookmarked
-	 * @param chapterType What type of view to use for loading,
-	 * this is defined by the the extension first,
-	 * otherwise the user choice will dictate what reader is used
-	 *
-	 * @param convertStringToHtml Convert a string chapter to an html chapter
 	 */
 	data class ReaderChapterUI(
-		val id: Int,
-		val title: String,
-		val chapterType: Novel.ChapterType,
-		val convertStringToHtml: Boolean = false
+		val chapter: ReaderChapterEntity
 	) : Convertible<ReaderChapterEntity>, ReaderUIItem() {
+		val id: Int
+			get() = chapter.id
+		val title: String
+			get() = chapter.title
 
-		override fun convertTo(): ReaderChapterEntity = ReaderChapterEntity(
-			id,
-			title
-		)
+		override fun convertTo(): ReaderChapterEntity = chapter
 	}
 
 	/**

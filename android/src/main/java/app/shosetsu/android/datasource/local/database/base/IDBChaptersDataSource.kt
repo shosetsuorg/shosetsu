@@ -45,7 +45,7 @@ interface IDBChaptersDataSource {
 	suspend fun getChapter(chapterID: Int): ChapterEntity?
 
 	/** Loads chapters by novelID */
-	suspend fun getReaderChapters(novelID: Int): Flow<List<ReaderChapterEntity>>
+	fun getReaderChapters(novelID: Int): Flow<List<ReaderChapterEntity>>
 
 	/** Handles chapters from a remote source */
 	@Throws(SQLiteException::class)

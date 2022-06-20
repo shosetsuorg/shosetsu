@@ -158,7 +158,7 @@ class ChaptersRepository(
 	override suspend fun getChapter(chapterID: Int): ChapterEntity? =
 		onIO { dbSource.getChapter(chapterID) }
 
-	override suspend fun getReaderChaptersFlow(
+	override fun getReaderChaptersFlow(
 		novelID: Int,
 	): Flow<List<ReaderChapterEntity>> = dbSource.getReaderChapters(novelID).onIO()
 
