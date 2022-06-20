@@ -98,14 +98,6 @@ class AppUpdateInstallWorker(appContext: Context, params: WorkerParameters) : Co
 			return Result.failure()
 		}
 
-		if (update == null) {
-			notify("Empty result, Recieved empty return, Was there even an update?") {
-				setNotOngoing()
-				removeProgress()
-			}
-			return Result.failure()
-		}
-
 
 		notify(R.string.notification_app_update_downloading)
 
