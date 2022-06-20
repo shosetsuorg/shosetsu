@@ -124,7 +124,7 @@ class NovelViewModel(
 			)
 		}.catch {
 			chaptersException.emit(it)
-		}
+		}.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Lazily, 1)
 	}
 
 	override val novelSettingFlow: Flow<NovelSettingUI?> by lazy {
@@ -202,7 +202,7 @@ class NovelViewModel(
 			emitAll(loadNovelUIUseCase(it))
 		}.catch {
 			novelException.emit(it)
-		}
+		}.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Lazily, 1)
 	}
 
 	override val novelLive: Flow<NovelUI?> by lazy {
@@ -217,6 +217,7 @@ class NovelViewModel(
 
 	private val novelSettingsFlow: Flow<NovelSettingUI?> by lazy {
 		novelIDLive.transformLatest { emitAll(getNovelSettingFlowUseCase(it)) }
+			.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Eagerly, 1)
 	}
 
 	private val novelIDLive: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
