@@ -7,6 +7,7 @@ import app.shosetsu.android.domain.model.local.NovelSettingEntity
 import app.shosetsu.android.domain.repository.base.INovelSettingsRepository
 import app.shosetsu.android.view.uimodels.NovelSettingUI
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.transform
 
 /*
@@ -34,8 +35,11 @@ import kotlinx.coroutines.flow.transform
 class GetNovelSettingFlowUseCase(
 	private val novelSettingsRepository: INovelSettingsRepository,
 ) {
-	operator fun invoke(novelID: Int): Flow<NovelSettingUI?> =
-		novelSettingsRepository.getFlow(novelID).transform { settings ->
+	operator fun invoke(novelID: Int): Flow<NovelSettingUI?> {
+		if (novelID == -1)
+			return flow { emit(null) }
+
+		return novelSettingsRepository.getFlow(novelID).transform { settings ->
 			settings?.let {
 				emit(NovelSettingConversionFactory(it).convertTo())
 			} ?: run {
@@ -46,4 +50,5 @@ class GetNovelSettingFlowUseCase(
 				}
 			}
 		}
+	}
 }
