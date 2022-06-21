@@ -194,4 +194,11 @@ class ChaptersRepository(
 		dbSource.updateChapterReadingStatus(chapterIds, readingStatus)
 	}
 
+	override suspend fun updateChapterBookmark(
+		chapterIds: List<Int>,
+		bookmarked: Boolean
+	) = onIO {
+		dbSource.updateChapterBookmark(chapterIds, bookmarked)
+	}
+
 }

@@ -227,4 +227,13 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 	)
 	suspend fun updateChapterReadingStatus(chapterIds: List<Int>, readingStatus: ReadingStatus)
 
+	@Query(
+		"""
+		UPDATE chapters
+		SET bookmarked = :bookmarked
+		WHERE id in (:chapterIds)
+		"""
+	)
+	suspend fun updateChapterBookmark(chapterIds: List<Int>, bookmarked: Boolean)
+
 }

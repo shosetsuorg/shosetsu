@@ -522,10 +522,8 @@ class NovelViewModel(
 
 	override fun bookmarkSelected() {
 		launchIO {
-			val list = chaptersFlow.first()
-			list.filter { it.isSelected }.forEach {
-				updateChapterUseCase(it.copy(bookmarked = true))
-			}
+			chapterRepo.updateChapterBookmark(getSelectedIds(), true)
+
 			clearSelectedSuspend()
 		}
 	}
@@ -574,10 +572,7 @@ class NovelViewModel(
 
 	override fun removeBookmarkFromSelected() {
 		launchIO {
-			val list = chaptersFlow.first()
-			list.filter { it.isSelected }.forEach {
-				updateChapterUseCase(it.copy(bookmarked = false))
-			}
+			chapterRepo.updateChapterBookmark(getSelectedIds(), false)
 			clearSelectedSuspend()
 		}
 	}

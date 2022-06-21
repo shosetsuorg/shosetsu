@@ -75,4 +75,5 @@ interface IDBChaptersDataSource {
 	fun getChapterBookmarkedFlow(id: Int): Flow<Boolean?>
 
 	suspend fun updateChapterReadingStatus(chapterIds: List<Int>, readingStatus: ReadingStatus)
+	suspend fun updateChapterBookmark(chapterIds: List<Int>, bookmarked: Boolean)
 }
