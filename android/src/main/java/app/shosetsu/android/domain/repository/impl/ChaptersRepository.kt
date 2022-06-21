@@ -193,6 +193,10 @@ class ChaptersRepository(
 	override suspend fun delete(entity: ChapterEntity) =
 		onIO { dbSource.delete(entity) }
 
+	override suspend fun delete(entity: List<ChapterEntity>) {
+		onIO { dbSource.delete(entity) }
+	}
+
 	override fun getChapterProgress(chapter: ReaderChapterEntity): Flow<Double> =
 		dbSource.getChapterProgress(chapter.id).onIO()
 

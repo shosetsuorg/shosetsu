@@ -5,6 +5,7 @@ import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.NoSuchExtensionException
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
+import app.shosetsu.android.dto.convertList
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 
 /*
@@ -36,6 +37,13 @@ class TrueDeleteChapterUseCase(
 ) {
 	suspend operator fun invoke(chapterUI: ChapterUI) {
 		this(chapterUI.convertTo())
+	}
+
+	suspend operator fun invoke(chapterUIs: List<ChapterUI>) {
+		val chapters = chapterUIs.convertList()
+
+		deleteChapter(chapters.toTypedArray())
+		repo.delete(chapters)
 	}
 
 	@Throws(

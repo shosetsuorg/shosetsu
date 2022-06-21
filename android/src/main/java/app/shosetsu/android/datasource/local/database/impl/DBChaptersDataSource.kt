@@ -118,6 +118,11 @@ class DBChaptersDataSource(
 			throw e
 		}
 
+	@Throws(SQLiteException::class)
+	override suspend fun delete(entity: List<ChapterEntity>) {
+		chaptersDao.delete(entity.toDB())
+	}
+
 	override fun getChapterProgress(chapterId: Int): Flow<Double> =
 		flow {
 			try {

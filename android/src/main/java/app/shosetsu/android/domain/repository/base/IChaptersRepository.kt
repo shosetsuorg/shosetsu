@@ -137,6 +137,9 @@ interface IChaptersRepository {
 	@Throws(SQLiteException::class)
 	suspend fun delete(entity: ChapterEntity)
 
+	@Throws(SQLiteException::class)
+	suspend fun delete(entity: List<ChapterEntity>)
+
 	fun getChapterProgress(chapter: ReaderChapterEntity): Flow<Double>
 
 	fun getChapterBookmarkedFlow(id: Int): Flow<Boolean?>
