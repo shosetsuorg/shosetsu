@@ -146,4 +146,8 @@ class DBChaptersDataSource(
 	override suspend fun updateChapterBookmark(chapterIds: List<Int>, bookmarked: Boolean) {
 		chaptersDao.updateChapterBookmark(chapterIds, bookmarked)
 	}
+
+	override suspend fun markChaptersDeleted(chapterIds: List<Int>) {
+		chaptersDao.markChaptersDeleted(chapterIds)
+	}
 }

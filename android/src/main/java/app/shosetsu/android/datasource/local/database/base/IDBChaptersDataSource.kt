@@ -76,4 +76,9 @@ interface IDBChaptersDataSource {
 
 	suspend fun updateChapterReadingStatus(chapterIds: List<Int>, readingStatus: ReadingStatus)
 	suspend fun updateChapterBookmark(chapterIds: List<Int>, bookmarked: Boolean)
+
+	/**
+	 * Mark the chapters as deleted
+	 */
+	suspend fun markChaptersDeleted(chapterIds: List<Int>)
 }

@@ -84,4 +84,9 @@ class DBDownloadsDataSource(
 	} catch (e: SQLiteException) {
 		throw e
 	}
+
+	@Throws(SQLiteException::class)
+	override suspend fun insertDownloads(downloads: List<DownloadEntity>) {
+		downloadsDao.insertAllAbort(downloads.map { it.toDB() })
+	}
 }

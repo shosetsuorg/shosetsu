@@ -1,11 +1,10 @@
 kotlin.also block
-kotlin.also block
-kotlin.apply block
-kotlin.apply block
-kotlin.collections.forEach action
-kotlin.let block
-kotlin.io.use block
-app.shosetsu.common.dto.handle onLoading
 app.shosetsu.common.dto.handle onSuccess
+app.shosetsu.android.common.ext.onIO block
+kotlin.collections.forEach action
+app.shosetsu.common.dto.handle onLoading
 kotlin.run block
+kotlin.io.use block
+kotlin.apply block
 app.shosetsu.android.view.uimodels.settings.dsl.spinnerSettingData action
+kotlin.let block

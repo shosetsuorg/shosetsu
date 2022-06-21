@@ -53,4 +53,11 @@ interface IFileChapterDataSource {
 		chapterEntity: ChapterEntity,
 		chapterType: Novel.ChapterType
 	)
+
+	/** Deletes chapters from the filesystem */
+	@Throws(FilePermissionException::class)
+	suspend fun delete(
+		chapterEntities: Array<ChapterEntity>,
+		chapterType: Novel.ChapterType
+	)
 }

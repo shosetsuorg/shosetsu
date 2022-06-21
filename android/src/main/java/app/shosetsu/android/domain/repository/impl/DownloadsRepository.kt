@@ -31,34 +31,39 @@ import kotlinx.coroutines.flow.Flow
  * @author github.com/doomsdayrs
  */
 class DownloadsRepository(
-	private val iLocalDownloadsDataSource: IDBDownloadsDataSource,
+	private val database: IDBDownloadsDataSource,
 ) : IDownloadsRepository {
 	override fun loadDownloadsFlow(): Flow<List<DownloadEntity>> =
-		iLocalDownloadsDataSource.loadLiveDownloads().onIO()
+		database.loadLiveDownloads().onIO()
 
 	@Throws(SQLiteException::class)
 	override suspend fun loadFirstDownload(): DownloadEntity? =
-		onIO { iLocalDownloadsDataSource.loadFirstDownload() }
+		onIO { database.loadFirstDownload() }
 
 	@Throws(SQLiteException::class)
 	override suspend fun loadDownloadCount(): Int =
-		onIO { iLocalDownloadsDataSource.loadDownloadCount() }
+		onIO { database.loadDownloadCount() }
 
 	@Throws(SQLiteException::class)
 	override suspend fun getDownload(chapterID: Int): DownloadEntity? =
-		onIO { iLocalDownloadsDataSource.loadDownload(chapterID) }
+		onIO { database.loadDownload(chapterID) }
 
 	@Throws(SQLiteException::class)
 	override suspend fun addDownload(download: DownloadEntity): Long =
-		onIO { iLocalDownloadsDataSource.insertDownload(download) }
+		onIO { database.insertDownload(download) }
+
+	@Throws(SQLiteException::class)
+	override suspend fun addDownload(downloads: List<DownloadEntity>) {
+		onIO { database.insertDownloads(downloads) }
+	}
 
 	@Throws(SQLiteException::class)
 	override suspend fun update(download: DownloadEntity) = onIO {
-		iLocalDownloadsDataSource.updateDownload(download)
+		database.updateDownload(download)
 	}
 
 	@Throws(SQLiteException::class)
 	override suspend fun deleteEntity(download: DownloadEntity) = onIO {
-		iLocalDownloadsDataSource.deleteDownload(download)
+		database.deleteDownload(download)
 	}
 }

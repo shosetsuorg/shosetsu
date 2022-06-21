@@ -2,7 +2,6 @@ package app.shosetsu.android.domain.usecases
 
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.SettingKey
-import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.domain.repository.base.IDownloadsRepository
@@ -40,17 +39,19 @@ class DownloadChapterPassageUseCase(
 	private var iSettingsRepository: ISettingsRepository
 ) {
 	@Throws(SQLiteException::class)
-	suspend operator fun invoke(chapterUI: ChapterEntity) {
-		novelRepo.getNovel(chapterUI.novelID)?.let { novel ->
+	suspend operator fun invoke(chapters: List<ChapterEntity>) {
+		novelRepo.getNovel(chapters.first().novelID)?.let { novel ->
 			downloadsRepository.addDownload(
-				DownloadEntity(
-					chapterUI.id!!,
-					chapterUI.novelID,
-					chapterUI.url,
-					chapterUI.title,
-					novel.title,
-					chapterUI.extensionID
-				)
+				chapters.map { (id, url, novelID, extensionID, title) ->
+					DownloadEntity(
+						id!!,
+						novelID,
+						url,
+						title,
+						novel.title,
+						extensionID
+					)
+				}
 			)
 
 			if (!novel.bookmarked)
@@ -65,14 +66,10 @@ class DownloadChapterPassageUseCase(
 	}
 
 	@Throws(SQLiteException::class)
-	suspend operator fun invoke(chapterUI: ChapterUI) = invoke(chapterUI.convertTo())
+	suspend operator fun invoke(chapterUI: ChapterUI) = invoke(listOf(chapterUI.convertTo()))
 
 	@Throws(SQLiteException::class)
-	operator fun invoke(vararg chapterUI: ChapterUI) {
-		launchIO {
-			chapterUI.forEach {
-				invoke(it)
-			}
-		}
+	suspend operator fun invoke(chapterUI: Array<ChapterUI>) {
+		invoke(chapterUI.map { it.convertTo() })
 	}
 }

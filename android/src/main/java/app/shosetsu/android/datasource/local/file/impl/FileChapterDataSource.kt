@@ -83,4 +83,13 @@ class FileChapterDataSource(
 	) {
 		iFileSystemProvider.deleteFile(DOWNLOADS, makePath(chapterEntity, chapterType))
 	}
+
+	override suspend fun delete(
+		chapterEntities: Array<ChapterEntity>,
+		chapterType: Novel.ChapterType
+	) {
+		chapterEntities.map { chapterEntity ->
+			iFileSystemProvider.deleteFile(DOWNLOADS, makePath(chapterEntity, chapterType))
+		}
+	}
 }

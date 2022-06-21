@@ -43,8 +43,8 @@ class TrueDeleteChapterUseCase(
 		NoSuchExtensionException::class,
 		FilePermissionException::class
 	)
-	suspend operator fun invoke(chapterUI: ChapterEntity) {
-		deleteChapter(chapterUI)
-		repo.delete(chapterUI)
+	suspend operator fun invoke(chapter: ChapterEntity) {
+		deleteChapter(chapter)
+		repo.delete(chapter)
 	}
 }

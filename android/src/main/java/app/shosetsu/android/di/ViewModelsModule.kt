@@ -161,7 +161,6 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			updateNovelUseCase = instance(),
 			loadRemoteNovel = instance(),
 			isOnlineUseCase = instance(),
-			updateChapterUseCase = instance(),
 			downloadChapterPassageUseCase = instance(),
 			deleteChapterPassageUseCase = instance(),
 			isChaptersResumeFirstUnread = instance(),

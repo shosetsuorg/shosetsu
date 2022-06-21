@@ -59,6 +59,12 @@ interface IDownloadsRepository {
 	suspend fun addDownload(download: DownloadEntity): Long
 
 	/**
+	 * Adds downloads to the repository
+	 */
+	@Throws(SQLiteException::class)
+	suspend fun addDownload(downloads: List<DownloadEntity>)
+
+	/**
 	 * Updates a download in repository
 	 */
 	@Throws(SQLiteException::class)

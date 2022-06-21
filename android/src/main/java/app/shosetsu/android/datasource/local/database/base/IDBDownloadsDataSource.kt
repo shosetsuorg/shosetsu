@@ -52,4 +52,10 @@ interface IDBDownloadsDataSource {
 	/** Loads a [DownloadEntity] via its [chapterID] */
 	@Throws(SQLiteException::class)
 	suspend fun loadDownload(chapterID: Int): DownloadEntity?
+
+	/**
+	 * Insert all [downloads] into the database
+	 */
+	@Throws(SQLiteException::class)
+	suspend fun insertDownloads(downloads: List<DownloadEntity>)
 }

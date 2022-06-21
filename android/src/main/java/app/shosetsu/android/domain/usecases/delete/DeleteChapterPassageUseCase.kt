@@ -6,6 +6,7 @@ import app.shosetsu.android.common.NoSuchExtensionException
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
+import app.shosetsu.android.dto.convertList
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 
 /*
@@ -34,7 +35,11 @@ class DeleteChapterPassageUseCase(
 	private val iExtensionsRepository: IExtensionsRepository
 ) {
 	suspend operator fun invoke(chapterUI: ChapterUI) {
-		this(chapterUI.convertTo())
+		this(arrayOf(chapterUI.convertTo()))
+	}
+
+	suspend operator fun invoke(chapter: ChapterEntity) {
+		this(arrayOf(chapter))
 	}
 
 	@Throws(
@@ -42,12 +47,21 @@ class DeleteChapterPassageUseCase(
 		NoSuchExtensionException::class,
 		FilePermissionException::class
 	)
-	suspend operator fun invoke(chapterUI: ChapterEntity) {
-		val ext = iExtensionsRepository.getInstalledExtension(chapterUI.extensionID)
-			?: throw NoSuchExtensionException(chapterUI.extensionID)
+	suspend operator fun invoke(chapters: List<ChapterUI>) {
+		invoke(chapters.convertList().toTypedArray())
+	}
+
+	@Throws(
+		SQLiteException::class,
+		NoSuchExtensionException::class,
+		FilePermissionException::class
+	)
+	suspend operator fun invoke(chapters: Array<ChapterEntity>) {
+		val ext = iExtensionsRepository.getInstalledExtension(chapters.first().extensionID)
+			?: throw NoSuchExtensionException(chapters.first().extensionID)
 
 		iChaptersRepository.deleteChapterPassage(
-			chapterUI,
+			chapters,
 			ext.chapterType
 		)
 	}

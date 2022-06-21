@@ -20,7 +20,6 @@ import app.shosetsu.android.domain.usecases.get.*
 import app.shosetsu.android.domain.usecases.load.LoadDeletePreviousChapterUseCase
 import app.shosetsu.android.domain.usecases.settings.LoadChaptersResumeFirstUnreadUseCase
 import app.shosetsu.android.domain.usecases.start.StartDownloadWorkerUseCase
-import app.shosetsu.android.domain.usecases.update.UpdateChapterUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateNovelSettingUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
 import app.shosetsu.android.view.AndroidQRCodeDrawable
@@ -71,7 +70,6 @@ class NovelViewModel(
 	private val loadRemoteNovel: GetRemoteNovelUseCase,
 	private var isOnlineUseCase: IsOnlineUseCase,
 	private val chapterRepo: IChaptersRepository,
-	private val updateChapterUseCase: UpdateChapterUseCase,
 	private val downloadChapterPassageUseCase: DownloadChapterPassageUseCase,
 	private val deleteChapterPassageUseCase: DeleteChapterPassageUseCase,
 	private val isChaptersResumeFirstUnread: LoadChaptersResumeFirstUnreadUseCase,
@@ -352,14 +350,11 @@ class NovelViewModel(
 		}
 	}
 
-	private fun downloadChapter(vararg chapterUI: ChapterUI, startManager: Boolean = false) {
-		launchIO {
-			downloadChapterPassageUseCase(*chapterUI)
+	private suspend fun downloadChapter(chapters: Array<ChapterUI>, startManager: Boolean = false) {
+		downloadChapterPassageUseCase(chapters)
 
-			if (startManager)
-				startDownloadWorkerUseCase()
-
-		}
+		if (startManager)
+			startDownloadWorkerUseCase()
 	}
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
@@ -454,7 +449,7 @@ class NovelViewModel(
 		launchIO {
 			val array = chaptersFlow.first().sortedBy { it.order }
 			val r = array.indexOfFirst { it.readingStatus != ReadingStatus.READ }
-			if (r != -1) downloadChapter(array[r])
+			if (r != -1) downloadChapter(arrayOf(array[r]))
 			startDownloadWorkerUseCase()
 		}
 	}
@@ -471,7 +466,7 @@ class NovelViewModel(
 					list.add(array[r + count])
 					count++
 				}
-				downloadChapter(*list.toTypedArray())
+				downloadChapter(list.toTypedArray())
 			}
 			startDownloadWorkerUseCase()
 		}
@@ -484,7 +479,7 @@ class NovelViewModel(
 	override fun downloadAllUnreadChapters() {
 		launchIO {
 			downloadChapter(
-				*chaptersFlow.first().filter { it.readingStatus == ReadingStatus.UNREAD }
+				chaptersFlow.first().filter { it.readingStatus == ReadingStatus.UNREAD }
 					.toTypedArray())
 			startDownloadWorkerUseCase()
 		}
@@ -492,7 +487,7 @@ class NovelViewModel(
 
 	override fun downloadAllChapters() {
 		launchIO {
-			downloadChapter(*chaptersFlow.first().toTypedArray())
+			downloadChapter(chaptersFlow.first().toTypedArray())
 			startDownloadWorkerUseCase()
 		}
 	}
@@ -530,20 +525,16 @@ class NovelViewModel(
 
 	override fun deleteSelected() {
 		launchIO {
-			val list = chaptersFlow.first()
-			list.filter { it.isSelected && it.isSaved }.forEach {
-				deleteChapterPassageUseCase(it)
-			}
+			val list = chaptersFlow.first().filter { it.isSelected && it.isSaved }
+			deleteChapterPassageUseCase(list)
 			clearSelectedSuspend()
 		}
 	}
 
 	override fun downloadSelected() {
 		launchIO {
-			val list = chaptersFlow.first()
-			list.filter { it.isSelected && !it.isSaved }.forEach {
-				downloadChapterPassageUseCase(it)
-			}
+			val list = chaptersFlow.first().filter { it.isSelected && !it.isSaved }
+			downloadChapterPassageUseCase(list.toTypedArray())
 			clearSelectedSuspend()
 			startDownloadWorkerUseCase()
 		}
@@ -658,9 +649,7 @@ class NovelViewModel(
 
 	override fun deleteChapters() {
 		launchIO {
-			chaptersFlow.first().filter { it.isSaved }.forEach {
-				deleteChapterPassageUseCase(it)
-			}
+			deleteChapterPassageUseCase(chaptersFlow.first().filter { it.isSaved })
 		}
 	}
 

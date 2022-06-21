@@ -123,6 +123,17 @@ interface IChaptersRepository {
 		chapterType: Novel.ChapterType
 	)
 
+	/**
+	 * Delete the chapter passages from storage
+	 *
+	 * Also deletes from memory and cache
+	 */
+	@Throws(SQLiteException::class, FilePermissionException::class)
+	suspend fun deleteChapterPassage(
+		chapters: Array<ChapterEntity>,
+		chapterType: Novel.ChapterType
+	)
+
 	@Throws(SQLiteException::class)
 	suspend fun delete(entity: ChapterEntity)
 

@@ -42,7 +42,7 @@ class StartDownloadWorkerAfterUpdateUseCase(
 	suspend operator fun invoke(chapters: List<ChapterEntity>): Boolean =
 		sR.getBoolean(SettingKey.DownloadNewNovelChapters).let { isDownloadOnUpdate ->
 			if (isDownloadOnUpdate) {
-				chapters.forEach { download(it) }
+				download(chapters)
 				startDownloadWorker()
 				true
 			} else

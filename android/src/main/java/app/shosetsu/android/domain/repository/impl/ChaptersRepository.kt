@@ -176,6 +176,18 @@ class ChaptersRepository(
 		fileSource.delete(chapterEntity, chapterType)
 	}
 
+	override suspend fun deleteChapterPassage(
+		chapters: Array<ChapterEntity>,
+		chapterType: Novel.ChapterType
+	) {
+		onIO {
+			try {
+				fileSource.delete(chapters, chapterType)
+			} finally {
+				dbSource.markChaptersDeleted(chapters.map { it.id!! })
+			}
+		}
+	}
 
 	@Throws(SQLiteException::class)
 	override suspend fun delete(entity: ChapterEntity) =
