@@ -10,6 +10,7 @@ import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.copy
 import app.shosetsu.android.common.utils.share.toURL
+import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerAfterUpdateUseCase
@@ -69,6 +70,7 @@ class NovelViewModel(
 	private val getContentURL: GetURLUseCase,
 	private val loadRemoteNovel: GetRemoteNovelUseCase,
 	private var isOnlineUseCase: IsOnlineUseCase,
+	private val chapterRepo: IChaptersRepository,
 	private val updateChapterUseCase: UpdateChapterUseCase,
 	private val downloadChapterPassageUseCase: DownloadChapterPassageUseCase,
 	private val deleteChapterPassageUseCase: DeleteChapterPassageUseCase,
@@ -99,6 +101,9 @@ class NovelViewModel(
 
 	private suspend fun copySelected(): HashMap<Int, Boolean> =
 		selectedChapters.first().copy()
+
+	private suspend fun getSelectedIds(): List<Int> =
+		selectedChapters.first().filter { it.value }.map { it.key }
 
 	override fun clearSelection() {
 		launchIO {
@@ -561,16 +566,7 @@ class NovelViewModel(
 
 	override fun markSelectedAs(readingStatus: ReadingStatus) {
 		launchIO {
-			val list =
-				chaptersFlow.first().filter { it.isSelected && it.readingStatus != readingStatus }
-
-			list.forEach {
-				updateChapterUseCase(
-					it.copy(
-						readingStatus = readingStatus
-					)
-				)
-			}
+			chapterRepo.updateChapterReadingStatus(getSelectedIds(), readingStatus)
 
 			clearSelectedSuspend()
 		}

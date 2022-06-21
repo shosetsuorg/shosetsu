@@ -3,6 +3,7 @@ package app.shosetsu.android.domain.repository.base
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
+import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.lib.IExtension
@@ -128,4 +129,5 @@ interface IChaptersRepository {
 	fun getChapterProgress(chapter: ReaderChapterEntity): Flow<Double>
 
 	fun getChapterBookmarkedFlow(id: Int): Flow<Boolean?>
+	suspend fun updateChapterReadingStatus(chapterIds: List<Int>, readingStatus: ReadingStatus)
 }

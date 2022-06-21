@@ -3,6 +3,7 @@ package app.shosetsu.android.domain.repository.impl
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
+import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.onIO
 import app.shosetsu.android.datasource.local.database.base.IDBChaptersDataSource
 import app.shosetsu.android.datasource.local.file.base.IFileCachedChapterDataSource
@@ -185,4 +186,12 @@ class ChaptersRepository(
 
 	override fun getChapterBookmarkedFlow(id: Int): Flow<Boolean?> =
 		dbSource.getChapterBookmarkedFlow(id).onIO()
+
+	override suspend fun updateChapterReadingStatus(
+		chapterIds: List<Int>,
+		readingStatus: ReadingStatus
+	) = onIO {
+		dbSource.updateChapterReadingStatus(chapterIds, readingStatus)
+	}
+
 }

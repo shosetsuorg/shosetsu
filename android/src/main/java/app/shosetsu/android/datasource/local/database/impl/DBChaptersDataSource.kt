@@ -1,6 +1,7 @@
 package app.shosetsu.android.datasource.local.database.impl
 
 import android.database.sqlite.SQLiteException
+import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.datasource.local.database.base.IDBChaptersDataSource
 import app.shosetsu.android.domain.model.local.ChapterEntity
@@ -135,4 +136,10 @@ class DBChaptersDataSource(
 			}
 		}
 
+	override suspend fun updateChapterReadingStatus(
+		chapterIds: List<Int>,
+		readingStatus: ReadingStatus
+	) {
+		chaptersDao.updateChapterReadingStatus(chapterIds, readingStatus)
+	}
 }

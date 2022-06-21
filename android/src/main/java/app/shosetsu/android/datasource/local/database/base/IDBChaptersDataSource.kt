@@ -1,6 +1,7 @@
 package app.shosetsu.android.datasource.local.database.base
 
 import android.database.sqlite.SQLiteException
+import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.lib.Novel
@@ -72,4 +73,6 @@ interface IDBChaptersDataSource {
 
 	fun getChapterProgress(chapterId: Int): Flow<Double>
 	fun getChapterBookmarkedFlow(id: Int): Flow<Boolean?>
+
+	suspend fun updateChapterReadingStatus(chapterIds: List<Int>, readingStatus: ReadingStatus)
 }

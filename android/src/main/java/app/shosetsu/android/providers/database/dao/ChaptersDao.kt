@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteException
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
+import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.entity
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.domain.model.database.DBChapterEntity
@@ -216,4 +217,14 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 
 	@Query("SELECT bookmarked FROM chapters WHERE id = :id LIMIT 1")
 	fun getChapterBookmarkedFlow(id: Int): Flow<Boolean?>
+
+	@Query(
+		"""
+		UPDATE chapters
+		SET readingStatus = :readingStatus
+		WHERE id in (:chapterIds)
+		"""
+	)
+	suspend fun updateChapterReadingStatus(chapterIds: List<Int>, readingStatus: ReadingStatus)
+
 }
