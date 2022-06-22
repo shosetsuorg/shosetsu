@@ -223,7 +223,7 @@ dependencies {
 	implementation(conductor("conductor-archlifecycle"))
 
 	// Material Intro https://github.com/heinrichreimer/material-intro#standard-slide-simpleslide
-	implementation("com.github.shosetsuorg:material-intro:2.0.2")
+	implementation("com.github.shosetsuorg:material-intro:0c2f0b2772")
 
 	// Room
 	val roomVersion = "2.5.0-alpha01"
