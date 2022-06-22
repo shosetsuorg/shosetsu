@@ -36,7 +36,7 @@ if (acraPropertiesFile.exists())
 	acraProperties.load(FileInputStream(acraPropertiesFile))
 
 android {
-	compileSdk = 31
+	compileSdk = 32
 	defaultConfig {
 		applicationId = "com.github.doomsdayrs.apps.shosetsu"
 		minSdk = 22
@@ -120,6 +120,7 @@ android {
 	}
 	kotlinOptions {
 		jvmTarget = "11"
+		freeCompilerArgs = freeCompilerArgs + "-Xjvm-default=enable"
 	}
 	buildToolsVersion = "30.0.3"
 
@@ -154,14 +155,14 @@ dependencies {
 	implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
 	// Google view things
-	implementation("com.google.android.material:material:1.6.0")
+	implementation("com.google.android.material:material:1.6.1")
 
 	// Androidx
 	implementation("androidx.work:work-runtime:2.7.1")
 	implementation("androidx.work:work-runtime-ktx:2.7.1")
-	implementation("androidx.appcompat:appcompat:1.4.1")
-	implementation("androidx.annotation:annotation:1.3.0")
-	implementation("androidx.core:core-ktx:1.7.0")
+	implementation("androidx.appcompat:appcompat:1.4.2")
+	implementation("androidx.annotation:annotation:1.4.0")
+	implementation("androidx.core:core-ktx:1.8.0")
 	implementation("androidx.collection:collection-ktx:1.2.0")
 	implementation("androidx.core:core-splashscreen:1.0.0-rc01")
 
@@ -202,10 +203,10 @@ dependencies {
 	implementation(kotlin("stdlib-jdk8"))
 	//implementation(kotlin("reflect"))
 
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.2")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.3")
 
 	// Error logging
-	val acraVersion = "5.8.3"
+	val acraVersion = "5.9.3"
 	fun acra(module: String, version: String = acraVersion) =
 		"ch.acra:$module:$version"
 
@@ -213,7 +214,7 @@ dependencies {
 	implementation(acra("acra-dialog"))
 
 	// Conductor
-	val conductorVersion = "3.1.4"
+	val conductorVersion = "3.1.5"
 	fun conductor(module: String, version: String = conductorVersion) =
 		"com.bluelinelabs:$module:$version"
 
@@ -239,7 +240,7 @@ dependencies {
 	implementation("com.google.guava:guava:31.1-android")
 
 	// kode-in
-	val kodeinVersion = "7.6.0"
+	val kodeinVersion = "7.12.0"
 	fun kodein(module: String, version: String = kodeinVersion) =
 		"org.kodein.di:$module:$version"
 
@@ -251,7 +252,7 @@ dependencies {
 
 	// KTX
 
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.2")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.3")
 
 	// KTX - Serialization
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
@@ -290,21 +291,21 @@ dependencies {
 	implementation(androidxCompose("material"))
 
 	// - accompanist
-	val accompanistVersion = "0.23.1"
+	val accompanistVersion = "0.24.11-rc"
 	fun accompanist(module: String, version: String = accompanistVersion) =
 		"com.google.accompanist:$module:$version"
 
 	implementation(accompanist("accompanist-appcompat-theme"))
 	implementation(accompanist("accompanist-pager"))
 	implementation(accompanist("accompanist-swiperefresh"))
-	implementation(accompanist("accompanist-webview", "0.24.6-alpha"))
+	implementation(accompanist("accompanist-webview"))
 	implementation(accompanist("accompanist-placeholder-material"))
 	implementation(accompanist("accompanist-pager-indicators"))
 	//- Integration with observables
 	implementation("androidx.compose.runtime:runtime-livedata:1.1.1")
 
 	// MDC Adapter
-	implementation("com.google.android.material:compose-theme-adapter:1.1.10")
+	implementation("com.google.android.material:compose-theme-adapter:1.1.12")
 
 	val androidxActivity = "1.4.0"
 	fun androidxActivity(module: String, version: String = androidxActivity) =
