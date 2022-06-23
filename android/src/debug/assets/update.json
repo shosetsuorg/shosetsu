@@ -1,25 +1,19 @@
 {
-  "latestVersion": "2270",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r2270/shosetsu-r2270-universal.apk",
+  "latestVersion": "2286",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r2286/shosetsu-r2286-universal.apk",
   "releaseNotes": [
-    "Trying to iron things out.",
-    "I am aware of people experiencing lag, I am trying to improve things for all.",
-    "",
-    "New:",
-    "- Added snackbar asking to delete downloaded chapters when removing bookmark",
-    "",
     "Fixes:",
-    "- Fix automatic columns",
-    "- Fix true delete not deleting",
-    "- Fix broken database migration from version 2 - 3",
-    "- Fix catalog query resetting",
+    "- Crashing on tablets due to outdated material-intro library",
     "",
     "Misc:",
-    "- Ignore case in library query",
-    "- Attempt to improve filtering speed in library",
-    "- Keep library query as field through rotation",
-    "- Remove report error button for HTTP exceptions when updating novels",
-    "- Optimize updating chapter reading status in novel info",
-    "- Change ACRA policy"
+    "- Improve error handling with app update install worker",
+    "- Lower replay of flow of filter items in CatalogViewModel",
+    "- Remove redundant checks",
+    "- Add more state saving in NovelViewModel",
+    "- Fix errors when novelId == -1 when fetching settings",
+    "- Replace distinct with shareIn in reader view model",
+    "- Lower memory footprint of ReaderChapterUI",
+    "- Flatten selection operations in NovelViewModel, hopefully improving performance",
+    "- Update dependencies"
   ]
 }
