@@ -11,6 +11,7 @@ import app.shosetsu.android.common.enums.InternalFileDir
 import app.shosetsu.android.providers.file.base.IFileSystemProvider
 import java.io.File
 import java.io.IOException
+import java.io.InputStream
 
 /*
  * This file is part of Shosetsu.
@@ -163,6 +164,23 @@ class AndroidFileSystemProvider(
 			throw FilePermissionException(file.path, PermissionType.WRITE)
 
 		return file.writeBytes(content)
+	}
+
+	override fun writeFile(internalFileDir: InternalFileDir, path: String, content: InputStream) {
+		val file = File(internalFileDir.path() + path)
+
+		//	logV("Writing $path in ${internalFileDir.path()} to $file")
+
+		if (!file.exists()) file.createNewFile()
+
+		if (!file.canWrite())
+			throw FilePermissionException(file.path, PermissionType.WRITE)
+
+		content.use { iS ->
+			file.outputStream().use { oS ->
+				iS.copyTo(oS)
+			}
+		}
 	}
 
 	@Throws(FilePermissionException::class, IOException::class)

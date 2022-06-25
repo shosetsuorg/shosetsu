@@ -4,6 +4,7 @@ import app.shosetsu.android.common.EmptyResponseBodyException
 import app.shosetsu.android.domain.model.local.AppUpdateEntity
 import app.shosetsu.lib.exceptions.HTTPException
 import java.io.IOException
+import java.io.InputStream
 
 /*
  * This file is part of shosetsu.
@@ -47,6 +48,6 @@ interface IRemoteAppUpdateDataSource {
 			HTTPException::class,
 			IOException::class
 		)
-		suspend fun downloadAppUpdate(update: AppUpdateEntity): ByteArray
+		suspend fun downloadAppUpdate(update: AppUpdateEntity): InputStream
 	}
 }

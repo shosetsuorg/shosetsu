@@ -115,11 +115,7 @@ class AppUpdatesRepository(
 	override suspend fun downloadAppUpdate(appUpdateEntity: AppUpdateEntity): String = onIO {
 		if (iRemoteAppUpdateDataSource is IRemoteAppUpdateDataSource.Downloadable)
 			iRemoteAppUpdateDataSource.downloadAppUpdate(appUpdateEntity).let { response ->
-				iFileAppUpdateDataSource.saveAPK(appUpdateEntity, response).also {
-					// Call GC to clean up the chunky objects
-					System.gc()
-				}
-
+				iFileAppUpdateDataSource.saveAPK(appUpdateEntity, response)
 			}
 		else throw MissingFeatureException("self update")
 	}

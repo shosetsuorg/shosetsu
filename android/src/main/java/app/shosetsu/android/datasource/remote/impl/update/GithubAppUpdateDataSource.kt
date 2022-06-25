@@ -13,6 +13,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import okhttp3.OkHttpClient
 import java.io.IOException
+import java.io.InputStream
 
 /*
  * This file is part of shosetsu.
@@ -79,11 +80,11 @@ class GithubAppUpdateDataSource(
 		HTTPException::class,
 		IOException::class
 	)
-	override suspend fun downloadAppUpdate(update: AppUpdateEntity): ByteArray {
+	override suspend fun downloadAppUpdate(update: AppUpdateEntity): InputStream {
 		okHttpClient.quickie(update.archURL()).let { response ->
 			if (response.isSuccessful) {
-				// TODO One day have kotlin IO to handle this right here
-				return response.body?.bytes() ?: throw EmptyResponseBodyException(update.archURL())
+				return response.body?.byteStream()
+					?: throw EmptyResponseBodyException(update.archURL())
 			} else throw HTTPException(response.code)
 		}
 	}

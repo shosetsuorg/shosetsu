@@ -5,6 +5,7 @@ import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.domain.model.local.AppUpdateEntity
 import kotlinx.coroutines.flow.Flow
 import java.io.IOException
+import java.io.InputStream
 
 /*
  * This file is part of shosetsu.
@@ -49,5 +50,5 @@ interface IFileCachedAppUpdateDataSource {
 	 * @return the path to the APK
 	 */
 	@Throws(IOException::class, FilePermissionException::class, FileNotFoundException::class)
-	fun saveAPK(appUpdate: AppUpdateEntity, bytes: ByteArray): String
+	fun saveAPK(appUpdate: AppUpdateEntity, bytes: InputStream): String
 }

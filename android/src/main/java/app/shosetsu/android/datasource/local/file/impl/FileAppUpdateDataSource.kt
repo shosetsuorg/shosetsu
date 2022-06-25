@@ -15,6 +15,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.IOException
+import java.io.InputStream
 
 /*
  * This file is part of shosetsu.
@@ -80,7 +81,7 @@ class FileAppUpdateDataSource(
 	@Throws(IOException::class, FilePermissionException::class, FileNotFoundException::class)
 	override fun saveAPK(
 		appUpdate: AppUpdateEntity,
-		bytes: ByteArray
+		bytes: InputStream
 	): String {
 		if (iFileSystemProvider.doesFileExist(CACHE, updatesCPath))
 			iFileSystemProvider.deleteFile(CACHE, updatesCPath)

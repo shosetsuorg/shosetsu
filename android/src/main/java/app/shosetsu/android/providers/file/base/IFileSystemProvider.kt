@@ -5,6 +5,7 @@ import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.enums.ExternalFileDir
 import app.shosetsu.android.common.enums.InternalFileDir
 import java.io.IOException
+import java.io.InputStream
 
 /*
  * This file is part of Shosetsu.
@@ -83,6 +84,16 @@ interface IFileSystemProvider {
 		internalFileDir: InternalFileDir,
 		path: String,
 		content: ByteArray
+	)
+
+	/**
+	 * Writes a file to the internal file directory
+	 */
+	@Throws(FilePermissionException::class, IOException::class)
+	fun writeFile(
+		internalFileDir: InternalFileDir,
+		path: String,
+		content: InputStream
 	)
 
 	/**
