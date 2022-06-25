@@ -1,14 +1,11 @@
 package app.shosetsu.android.datasource.local.database.impl
 
-import android.database.sqlite.SQLiteException
 import app.shosetsu.android.datasource.local.database.base.IDBExtRepoDataSource
 import app.shosetsu.android.domain.model.database.DBRepositoryEntity
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.android.dto.convertList
 import app.shosetsu.android.providers.database.dao.RepositoryDao
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 /*
@@ -35,50 +32,26 @@ import kotlinx.coroutines.flow.map
 class DBExtRepoDataSource(
 	private val repositoryDao: RepositoryDao,
 ) : IDBExtRepoDataSource {
-	override fun loadRepositoriesLive(): Flow<List<RepositoryEntity>> = flow {
-		try {
-			emitAll(repositoryDao.loadRepositoriesLive().map { it.convertList() })
-		} catch (e: SQLiteException) {
-			throw e
-		}
-	}
+	override fun loadRepositoriesLive(): Flow<List<RepositoryEntity>> =
+		repositoryDao.loadRepositoriesLive().map { it.convertList() }
 
-	override suspend fun loadRepositories(): List<RepositoryEntity> = try {
+	override suspend fun loadRepositories(): List<RepositoryEntity> =
 		(repositoryDao.loadRepositories().convertList())
-	} catch (e: SQLiteException) {
-		throw e
-	}
 
-	override suspend fun loadRepository(repoID: Int): RepositoryEntity? = try {
+	override suspend fun loadRepository(repoID: Int): RepositoryEntity? =
 		repositoryDao.loadRepositoryFromID(repoID)?.convertTo()
-	} catch (e: SQLiteException) {
-		throw e
-	}
 
 	override suspend fun addRepository(url: String, name: String): Long =
-		try {
-			(repositoryDao.insertAbort(DBRepositoryEntity(null, url, name, true)))
-		} catch (e: SQLiteException) {
-			throw e
-		}
+		(repositoryDao.insertAbort(DBRepositoryEntity(null, url, name, true)))
 
-	override suspend fun remove(entity: RepositoryEntity): Unit = try {
+	override suspend fun remove(entity: RepositoryEntity): Unit =
 		(repositoryDao.delete(entity.toDB()))
-	} catch (e: SQLiteException) {
-		throw e
-	}
 
-	override suspend fun update(entity: RepositoryEntity): Unit = try {
+	override suspend fun update(entity: RepositoryEntity): Unit =
 		(repositoryDao.update(entity.toDB()))
-	} catch (e: SQLiteException) {
-		throw e
-	}
 
-	override suspend fun insert(entity: RepositoryEntity): Long = try {
+	override suspend fun insert(entity: RepositoryEntity): Long =
 		(repositoryDao.insertReplace(entity.toDB()))
-	} catch (e: SQLiteException) {
-		throw e
-	}
 
 	fun RepositoryEntity.toDB() = DBRepositoryEntity(id, url, name, isEnabled)
 

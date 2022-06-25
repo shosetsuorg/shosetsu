@@ -1,6 +1,5 @@
 package app.shosetsu.android.datasource.local.database.impl
 
-import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.datasource.local.database.base.IDBUpdatesDataSource
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
@@ -8,8 +7,6 @@ import app.shosetsu.android.domain.model.local.UpdateEntity
 import app.shosetsu.android.dto.convertList
 import app.shosetsu.android.providers.database.dao.UpdatesDao
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 /*
@@ -36,19 +33,11 @@ import kotlinx.coroutines.flow.map
 class DBUpdatesDataSource(
 	private val updatesDao: UpdatesDao,
 ) : IDBUpdatesDataSource {
-	override suspend fun getUpdates(): Flow<List<UpdateEntity>> = flow {
-		try {
-			emitAll(updatesDao.loadUpdates().map { it.convertList() })
-		} catch (e: SQLiteException) {
-			throw e
-		}
-	}
+	override suspend fun getUpdates(): Flow<List<UpdateEntity>> =
+		updatesDao.loadUpdates().map { it.convertList() }
 
-	override suspend fun insertUpdates(list: List<UpdateEntity>): Array<Long> = try {
+	override suspend fun insertUpdates(list: List<UpdateEntity>): Array<Long> =
 		(updatesDao.insertAllReplace(list.toDB()))
-	} catch (e: SQLiteException) {
-		throw e
-	}
 
 	override suspend fun getCompleteUpdates(
 	): Flow<List<UpdateCompleteEntity>> =

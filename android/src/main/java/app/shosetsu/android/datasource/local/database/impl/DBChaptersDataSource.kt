@@ -10,8 +10,6 @@ import app.shosetsu.android.dto.convertList
 import app.shosetsu.android.providers.database.dao.ChaptersDao
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 /*
@@ -43,31 +41,20 @@ class DBChaptersDataSource(
 
 	override suspend fun getChaptersFlow(
 		novelID: Int,
-	): Flow<List<ChapterEntity>> = flow {
-		emitAll(chaptersDao.getChaptersFlow(novelID).map { it.convertList() })
-	}
+	): Flow<List<ChapterEntity>> =
+		chaptersDao.getChaptersFlow(novelID).map { it.convertList() }
 
 	@Throws(SQLiteException::class)
-	override suspend fun getChapters(novelID: Int): List<ChapterEntity> = try {
+	override suspend fun getChapters(novelID: Int): List<ChapterEntity> =
 		(chaptersDao.getChapters(novelID).convertList())
-	} catch (e: SQLiteException) {
-		throw e
-	}
 
 	@Throws(SQLiteException::class)
 	override suspend fun getChaptersByExtension(extensionId: Int): List<ChapterEntity> =
-		try {
-			(chaptersDao.getChaptersByExtension(extensionId).convertList())
-		} catch (e: SQLiteException) {
-			throw e
-		}
+		(chaptersDao.getChaptersByExtension(extensionId).convertList())
 
 	@Throws(SQLiteException::class)
-	override suspend fun getChapter(chapterID: Int): ChapterEntity? = try {
+	override suspend fun getChapter(chapterID: Int): ChapterEntity? =
 		chaptersDao.getChapter(chapterID)?.convertTo()
-	} catch (e: SQLiteException) {
-		throw e
-	}
 
 	override fun getReaderChapters(
 		novelID: Int,
@@ -80,11 +67,7 @@ class DBChaptersDataSource(
 		extensionID: Int,
 		list: List<Novel.Chapter>,
 	): Unit =
-		try {
-			chaptersDao.handleNewData(novelID, extensionID, list)
-		} catch (e: SQLiteException) {
-			throw e
-		}
+		chaptersDao.handleNewData(novelID, extensionID, list)
 
 
 	@Throws(IndexOutOfBoundsException::class, SQLiteException::class)
@@ -92,26 +75,16 @@ class DBChaptersDataSource(
 		novelID: Int,
 		extensionID: Int,
 		list: List<Novel.Chapter>,
-	): List<ChapterEntity> = try {
+	): List<ChapterEntity> =
 		chaptersDao.handleNewDataReturn(novelID, extensionID, list).convertList()
-	} catch (e: SQLiteException) {
-		throw e
-	}
 
 	@Throws(SQLiteException::class)
-	override suspend fun updateChapter(chapterEntity: ChapterEntity): Unit = try {
+	override suspend fun updateChapter(chapterEntity: ChapterEntity): Unit =
 		chaptersDao.update(chapterEntity.toDB())
-	} catch (e: SQLiteException) {
-		throw e
-	}
 
 	@Throws(SQLiteException::class)
 	override suspend fun delete(entity: ChapterEntity): Unit =
-		try {
-			chaptersDao.delete(entity.toDB())
-		} catch (e: SQLiteException) {
-			throw e
-		}
+		chaptersDao.delete(entity.toDB())
 
 	@Throws(SQLiteException::class)
 	override suspend fun delete(entity: List<ChapterEntity>) {
@@ -119,22 +92,10 @@ class DBChaptersDataSource(
 	}
 
 	override fun getChapterProgress(chapterId: Int): Flow<Double> =
-		flow {
-			try {
-				emitAll(chaptersDao.getChapterProgress(chapterId))
-			} catch (e: SQLiteException) {
-				throw e
-			}
-		}
+		chaptersDao.getChapterProgress(chapterId)
 
 	override fun getChapterBookmarkedFlow(id: Int): Flow<Boolean?> =
-		flow {
-			try {
-				emitAll(chaptersDao.getChapterBookmarkedFlow(id))
-			} catch (e: SQLiteException) {
-				throw e
-			}
-		}
+		chaptersDao.getChapterBookmarkedFlow(id)
 
 	override suspend fun updateChapterReadingStatus(
 		chapterIds: List<Int>,

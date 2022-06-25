@@ -1,13 +1,10 @@
 package app.shosetsu.android.datasource.local.database.impl
 
-import android.database.sqlite.SQLiteException
 import app.shosetsu.android.datasource.local.database.base.IDBNovelReaderSettingsDataSource
 import app.shosetsu.android.domain.model.database.DBNovelReaderSettingEntity
 import app.shosetsu.android.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.android.providers.database.dao.NovelReaderSettingsDao
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapLatest
 
 /*
@@ -33,33 +30,20 @@ import kotlinx.coroutines.flow.mapLatest
 class DBNovelReaderSettingsDataSource(
 	private val dao: NovelReaderSettingsDao
 ) : IDBNovelReaderSettingsDataSource {
-	override suspend fun get(novelID: Int): NovelReaderSettingEntity? = try {
+	override suspend fun get(novelID: Int): NovelReaderSettingEntity? =
 		dao.get(novelID)
-	} catch (e: SQLiteException) {
-		throw e
-	}
 
-	override fun getFlow(novelID: Int): Flow<NovelReaderSettingEntity?> = flow {
-		try {
-			emitAll(dao.getFlow(novelID).mapLatest { it?.convertTo() })
-		} catch (e: SQLiteException) {
-			throw e
-		}
-	}
+	override fun getFlow(novelID: Int): Flow<NovelReaderSettingEntity?> =
+		dao.getFlow(novelID).mapLatest { it?.convertTo() }
+
 
 	override suspend fun insert(novelReaderSettingEntity: NovelReaderSettingEntity): Long =
-		try {
-			(dao.insertAbort(novelReaderSettingEntity.toDB()))
-		} catch (e: SQLiteException) {
-			throw e
-		}
+		(dao.insertAbort(novelReaderSettingEntity.toDB()))
+
 
 	override suspend fun update(novelReaderSettingEntity: NovelReaderSettingEntity): Unit =
-		try {
-			(dao.update(novelReaderSettingEntity.toDB()))
-		} catch (e: SQLiteException) {
-			throw e
-		}
+		(dao.update(novelReaderSettingEntity.toDB()))
+
 
 	fun NovelReaderSettingEntity.toDB() =
 		DBNovelReaderSettingEntity(

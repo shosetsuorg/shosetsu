@@ -32,25 +32,16 @@ class DBExtLibDataSource(
 	private val extensionLibraryDao: ExtensionLibraryDao,
 ) : IDBExtLibDataSource {
 	@Throws(SQLiteException::class)
-	override suspend fun updateExtension(extLibEntity: ExtLibEntity): Unit = try {
+	override suspend fun updateExtension(extLibEntity: ExtLibEntity): Unit =
 		(extensionLibraryDao.update(extLibEntity.toDB()))
-	} catch (e: SQLiteException) {
-		throw e
-	}
 
 	@Throws(SQLiteException::class)
-	override suspend fun updateOrInsert(extLibEntity: ExtLibEntity): Unit = try {
+	override suspend fun updateOrInsert(extLibEntity: ExtLibEntity): Unit =
 		(extensionLibraryDao.insertOrUpdateScriptLib(extLibEntity.toDB()))
-	} catch (e: Exception) {
-		throw e
-	}
 
 	@Throws(SQLiteException::class)
 	override suspend fun loadExtLibByRepo(
 		repoID: Int,
-	): List<ExtLibEntity> = try {
+	): List<ExtLibEntity> =
 		(extensionLibraryDao.loadLibByRepoID(repoID).convertList())
-	} catch (e: Exception) {
-		throw e
-	}
 }

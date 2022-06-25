@@ -7,8 +7,6 @@ import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.dto.convertList
 import app.shosetsu.android.providers.database.dao.DownloadsDao
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 /*
@@ -35,55 +33,32 @@ import kotlinx.coroutines.flow.map
 class DBDownloadsDataSource(
 	private val downloadsDao: DownloadsDao,
 ) : IDBDownloadsDataSource {
-	override fun loadLiveDownloads(): Flow<List<DownloadEntity>> = flow {
-		try {
-			emitAll(downloadsDao.loadDownloadItems().map { it.convertList() })
-		} catch (e: SQLiteException) {
-			throw e
-		}
-	}
+	override fun loadLiveDownloads(): Flow<List<DownloadEntity>> =
+		downloadsDao.loadDownloadItems().map { it.convertList() }
 
 	@Throws(SQLiteException::class)
-	override suspend fun loadDownloadCount(): Int = try {
+	override suspend fun loadDownloadCount(): Int =
 		(downloadsDao.loadDownloadCount())
-	} catch (e: SQLiteException) {
-		throw e
-	}
 
 	@Throws(SQLiteException::class)
-	override suspend fun loadFirstDownload(): DownloadEntity? = try {
+	override suspend fun loadFirstDownload(): DownloadEntity? =
 		downloadsDao.loadFirstDownload()?.convertTo()
-	} catch (e: SQLiteException) {
-		throw e
-	}
 
 	@Throws(SQLiteException::class)
-	override suspend fun insertDownload(downloadEntity: DownloadEntity): Long = try {
+	override suspend fun insertDownload(downloadEntity: DownloadEntity): Long =
 		(downloadsDao.insertIgnore(downloadEntity.toDB()))
-	} catch (e: SQLiteException) {
-		throw e
-	}
 
 	@Throws(SQLiteException::class)
-	override suspend fun updateDownload(downloadEntity: DownloadEntity): Unit = try {
+	override suspend fun updateDownload(downloadEntity: DownloadEntity): Unit =
 		(downloadsDao.update(downloadEntity.toDB()))
-	} catch (e: SQLiteException) {
-		throw e
-	}
 
 	@Throws(SQLiteException::class)
-	override suspend fun deleteDownload(downloadEntity: DownloadEntity): Unit = try {
+	override suspend fun deleteDownload(downloadEntity: DownloadEntity): Unit =
 		(downloadsDao.delete(downloadEntity.toDB()))
-	} catch (e: SQLiteException) {
-		throw e
-	}
 
 	@Throws(SQLiteException::class)
-	override suspend fun loadDownload(chapterID: Int): DownloadEntity? = try {
+	override suspend fun loadDownload(chapterID: Int): DownloadEntity? =
 		downloadsDao.loadDownload(chapterID)?.convertTo()
-	} catch (e: SQLiteException) {
-		throw e
-	}
 
 	@Throws(SQLiteException::class)
 	override suspend fun insertDownloads(downloads: List<DownloadEntity>) {
