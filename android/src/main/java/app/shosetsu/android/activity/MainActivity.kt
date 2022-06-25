@@ -482,14 +482,15 @@ class MainActivity : AppCompatActivity(), DIAware,
 					ACRA.errorReporter.handleSilentException(it)
 				}.show()
 		}) {
-			when (it) {
-				AMainViewModel.AppUpdateAction.SelfUpdate -> {
-					makeSnackBar(R.string.activity_main_app_update_download)
+			if (it != null)
+				when (it) {
+					AMainViewModel.AppUpdateAction.SelfUpdate -> {
+						makeSnackBar(R.string.activity_main_app_update_download)
+					}
+					is AMainViewModel.AppUpdateAction.UserUpdate -> {
+						openShare(it.updateURL, it.updateTitle)
+					}
 				}
-				is AMainViewModel.AppUpdateAction.UserUpdate -> {
-					openShare(it.updateURL, it.updateTitle)
-				}
-			}
 		}
 	}
 
