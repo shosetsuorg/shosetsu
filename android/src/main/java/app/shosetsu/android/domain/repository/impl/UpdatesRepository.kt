@@ -7,6 +7,7 @@ import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.domain.model.local.UpdateEntity
 import app.shosetsu.android.domain.repository.base.IUpdatesRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 /*
  * This file is part of shosetsu.
@@ -44,5 +45,5 @@ class UpdatesRepository(
 		IDBUpdatesDataSource.getUpdates().onIO()
 
 	override suspend fun getCompleteUpdatesFlow(): Flow<List<UpdateCompleteEntity>> =
-		IDBUpdatesDataSource.getCompleteUpdates().onIO()
+		IDBUpdatesDataSource.getCompleteUpdates().distinctUntilChanged().onIO()
 }

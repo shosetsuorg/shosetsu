@@ -88,7 +88,7 @@ class ExtensionsRepository(
 			}
 
 			emitAll(combine(browseExtensions) { it.toList() })
-		}.onIO()
+		}.distinctUntilChanged().onIO()
 	}
 
 	override fun loadExtensionsFLow(): Flow<List<InstalledExtensionEntity>> =

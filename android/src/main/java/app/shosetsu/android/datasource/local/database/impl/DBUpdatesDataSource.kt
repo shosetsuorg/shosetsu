@@ -51,11 +51,6 @@ class DBUpdatesDataSource(
 	}
 
 	override suspend fun getCompleteUpdates(
-	): Flow<List<UpdateCompleteEntity>> = flow {
-		try {
-			emitAll(updatesDao.loadCompleteUpdates())
-		} catch (e: SQLiteException) {
-			throw e
-		}
-	}
+	): Flow<List<UpdateCompleteEntity>> =
+		updatesDao.loadCompleteUpdates()
 }

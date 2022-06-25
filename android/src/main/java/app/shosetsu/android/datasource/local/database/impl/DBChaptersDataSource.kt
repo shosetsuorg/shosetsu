@@ -71,13 +71,8 @@ class DBChaptersDataSource(
 
 	override fun getReaderChapters(
 		novelID: Int,
-	): Flow<List<ReaderChapterEntity>> = flow {
-		try {
-			emitAll(chaptersDao.getReaderChaptersFlow(novelID))
-		} catch (e: SQLiteException) {
-			throw e
-		}
-	}
+	): Flow<List<ReaderChapterEntity>> =
+		chaptersDao.getReaderChaptersFlow(novelID)
 
 	@Throws(SQLiteException::class)
 	override suspend fun handleChapters(

@@ -14,6 +14,7 @@ import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import org.luaj.vm2.LuaError
 import javax.net.ssl.SSLException
 
@@ -46,7 +47,7 @@ class NovelsRepository(
 	private val remoteCatalogueDataSource: IRemoteCatalogueDataSource,
 ) : INovelsRepository {
 	override fun loadLibraryNovelEntities(): Flow<List<LibraryNovelEntity>> =
-		database.loadBookmarkedNovelsFlow().onIO()
+		database.loadBookmarkedNovelsFlow().distinctUntilChanged().onIO()
 
 	@Throws(SQLiteException::class)
 	override suspend fun loadBookmarkedNovelEntities(): List<NovelEntity> =

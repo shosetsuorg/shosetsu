@@ -16,6 +16,7 @@ import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import org.luaj.vm2.LuaError
 import java.io.IOException
 
@@ -141,7 +142,7 @@ class ChaptersRepository(
 	}
 
 	override suspend fun getChaptersLive(novelID: Int): Flow<List<ChapterEntity>> =
-		dbSource.getChaptersFlow(novelID).onIO()
+		dbSource.getChaptersFlow(novelID).distinctUntilChanged().onIO()
 
 	@Throws(SQLiteException::class)
 	override suspend fun getChapters(novelID: Int): List<ChapterEntity> =
@@ -161,7 +162,8 @@ class ChaptersRepository(
 
 	override fun getReaderChaptersFlow(
 		novelID: Int,
-	): Flow<List<ReaderChapterEntity>> = dbSource.getReaderChapters(novelID).onIO()
+	): Flow<List<ReaderChapterEntity>> =
+		dbSource.getReaderChapters(novelID).distinctUntilChanged().onIO()
 
 	@Throws(SQLiteException::class, FilePermissionException::class)
 	override suspend fun deleteChapterPassage(
@@ -198,10 +200,10 @@ class ChaptersRepository(
 	}
 
 	override fun getChapterProgress(chapter: ReaderChapterEntity): Flow<Double> =
-		dbSource.getChapterProgress(chapter.id).onIO()
+		dbSource.getChapterProgress(chapter.id).distinctUntilChanged().onIO()
 
 	override fun getChapterBookmarkedFlow(id: Int): Flow<Boolean?> =
-		dbSource.getChapterBookmarkedFlow(id).onIO()
+		dbSource.getChapterBookmarkedFlow(id).distinctUntilChanged().onIO()
 
 	override suspend fun updateChapterReadingStatus(
 		chapterIds: List<Int>,
