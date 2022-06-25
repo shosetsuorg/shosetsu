@@ -73,7 +73,7 @@ abstract class AbstractMemoryDataSource<K, V : Any> {
 
 		for (i in keys) {
 			// Gets the time for entry `i`, If `i` no longer exists, continue
-			val (time) = _hashMap[i] ?: continue
+			val (time, _) = _hashMap[i] ?: continue
 
 			if (time + expireTime <= compareTime) {
 				_hashMap.remove(i)
