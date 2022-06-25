@@ -4,6 +4,7 @@ import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.datasource.remote.base.IRemoteExtLibDataSource
 import app.shosetsu.android.domain.model.local.ExtLibEntity
 import app.shosetsu.lib.exceptions.HTTPException
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import java.io.IOException
 
@@ -40,10 +41,12 @@ class RemoteExtLibDataSource(
 		repoURL: String,
 		extLibEntity: ExtLibEntity,
 	): String =
-		client.quickie(
-			makeLibraryURL(
-				repoURL,
-				extLibEntity
-			)
-		).body!!.string()
+		runBlocking {
+			client.quickie(
+				makeLibraryURL(
+					repoURL,
+					extLibEntity
+				)
+			).body!!.string()
+		}
 }
