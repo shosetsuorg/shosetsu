@@ -212,6 +212,7 @@ class CatalogViewModel(
 			is Filter.RadioGroup -> _setFilterIntState(filter, filter.state)
 			is Filter.List -> filter.filters.forEach { resetFilter(it) }
 			is Filter.Group<*> -> filter.filters.forEach { resetFilter(it) }
+			else -> {}
 		}
 	}
 

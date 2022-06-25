@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import app.shosetsu.android.common.SettingKey
-import app.shosetsu.android.ui.reader.StringPageContent
+import app.shosetsu.android.ui.reader.page.StringPageContent
 import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem

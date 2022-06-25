@@ -1,4 +1,4 @@
-package app.shosetsu.android.ui.reader
+package app.shosetsu.android.ui.reader.page
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -49,12 +49,16 @@ fun DividierPageContent(
 	next: String?
 ) {
 	Box(
-		modifier = Modifier.fillMaxSize().background(Color.Black),
+		modifier = Modifier
+			.fillMaxSize()
+			.background(Color.Black),
 	) {
 		Column(
 			horizontalAlignment = Alignment.CenterHorizontally,
 			verticalArrangement = Arrangement.Center,
-			modifier = Modifier.fillMaxSize().padding(16.dp)
+			modifier = Modifier
+				.fillMaxSize()
+				.padding(16.dp)
 		) {
 
 			if (next != null) {

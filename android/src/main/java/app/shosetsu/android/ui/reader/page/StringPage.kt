@@ -1,4 +1,4 @@
-package app.shosetsu.android.ui.reader
+package app.shosetsu.android.ui.reader.page
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
