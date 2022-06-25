@@ -8,8 +8,9 @@ import app.shosetsu.android.domain.model.local.AppUpdateEntity
 import app.shosetsu.android.domain.model.remote.AppUpdateDTO
 import app.shosetsu.lib.exceptions.HTTPException
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig.DEBUG
-import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
 import okhttp3.OkHttpClient
 import java.io.IOException
 
@@ -53,6 +54,7 @@ class GithubAppUpdateDataSource(
 		}
 	}
 
+	@OptIn(ExperimentalSerializationApi::class)
 	@Throws(
 		EmptyResponseBodyException::class,
 		HTTPException::class,
@@ -63,7 +65,9 @@ class GithubAppUpdateDataSource(
 			.use { gitResponse ->
 				if (gitResponse.isSuccessful) {
 					return gitResponse.body?.use { responseBody ->
-						json.decodeFromString<AppUpdateDTO>(responseBody.string()).convertTo()
+						responseBody.byteStream().use {
+							json.decodeFromStream<AppUpdateDTO>(it).convertTo()
+						}
 					} ?: throw EmptyResponseBodyException(shosetsuGitUpdateURL)
 				}
 				throw HTTPException(gitResponse.code)
