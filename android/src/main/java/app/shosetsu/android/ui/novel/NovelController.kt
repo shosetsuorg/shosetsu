@@ -51,6 +51,7 @@ import app.shosetsu.android.view.openShareMenu
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
+import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel.SelectedChaptersState
 import app.shosetsu.lib.Novel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -65,6 +66,7 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.acra.ACRA
@@ -423,6 +425,7 @@ class NovelController(bundle: Bundle) :
 				NovelInfoContent(
 					novelInfo,
 					chapters,
+					selectedChaptersStateFlow = viewModel.selectedChaptersState,
 					itemAt,
 					updateItemAt = viewModel::setItemAt,
 					isRefreshing,
@@ -700,6 +703,7 @@ fun PreviewNovelInfoContent() {
 		NovelInfoContent(
 			novelInfo = info,
 			chapters = chapters,
+			selectedChaptersStateFlow = flow { },
 			itemAt = 0,
 			{},
 			isRefreshing = false,
@@ -731,6 +735,7 @@ fun PreviewNovelInfoContent() {
 fun NovelInfoContent(
 	novelInfo: NovelUI?,
 	chapters: List<ChapterUI>?,
+	selectedChaptersStateFlow: Flow<SelectedChaptersState>,
 	itemAt: Int,
 	updateItemAt: (Int) -> Unit,
 	isRefreshing: Boolean,
@@ -822,30 +827,9 @@ fun NovelInfoContent(
 		}
 
 		if (chapters != null && hasSelected) {
-			// If any chapters are bookmarked, show the remove bookmark logo
-			val showRemoveBookmark =
-				chapters.any { it.bookmarked }
-
-			// If any chapters are not bookmarked, show bookmark
-			val showBookmark =
-				chapters.any { !it.bookmarked }
-
-			// If any are downloaded, show delete
-			val showDelete =
-				chapters.any { it.isSaved }
-
-			// If any are not downloaded, show download option
-			val showDownload =
-				chapters.any { !it.isSaved }
-
-			// If any are unread, show read option
-			val showMarkAsRead =
-				chapters.any { it.readingStatus != ReadingStatus.READ }
-
-			// If any are read, show unread option
-			val showMarkAsUnread =
-				chapters.any { it.readingStatus != ReadingStatus.UNREAD }
-
+			val selectedChaptersState by selectedChaptersStateFlow.collectAsState(
+				SelectedChaptersState()
+			)
 			Card(
 				modifier = Modifier
 					.align(BiasAlignment(0f, 0.7f))
@@ -853,7 +837,7 @@ fun NovelInfoContent(
 				Row {
 					IconButton(
 						onClick = downloadSelected,
-						enabled = showDownload
+						enabled = selectedChaptersState.showDownload
 					) {
 						Icon(
 							painterResource(R.drawable.download),
@@ -862,7 +846,7 @@ fun NovelInfoContent(
 					}
 					IconButton(
 						onClick = deleteSelected,
-						enabled = showDelete
+						enabled = selectedChaptersState.showDelete
 					) {
 						Icon(
 							painterResource(R.drawable.trash),
@@ -871,7 +855,7 @@ fun NovelInfoContent(
 					}
 					IconButton(
 						onClick = markSelectedAsRead,
-						enabled = showMarkAsRead
+						enabled = selectedChaptersState.showMarkAsRead
 					) {
 						Icon(
 							painterResource(R.drawable.read_mark),
@@ -880,7 +864,7 @@ fun NovelInfoContent(
 					}
 					IconButton(
 						onClick = markSelectedAsUnread,
-						enabled = showMarkAsUnread
+						enabled = selectedChaptersState.showMarkAsUnread
 					) {
 						Icon(
 							painterResource(R.drawable.unread_mark),
@@ -889,7 +873,7 @@ fun NovelInfoContent(
 					}
 					IconButton(
 						onClick = bookmarkSelected,
-						enabled = showBookmark
+						enabled = selectedChaptersState.showBookmark
 					) {
 						Icon(
 							painterResource(R.drawable.ic_outline_bookmark_add_24),
@@ -898,7 +882,7 @@ fun NovelInfoContent(
 					}
 					IconButton(
 						onClick = unbookmarkSelected,
-						enabled = showRemoveBookmark
+						enabled = selectedChaptersState.showRemoveBookmark
 					) {
 						Icon(
 							painterResource(R.drawable.ic_baseline_bookmark_remove_24),

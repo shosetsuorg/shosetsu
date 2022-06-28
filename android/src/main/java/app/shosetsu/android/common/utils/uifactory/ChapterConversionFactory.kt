@@ -30,17 +30,17 @@ import kotlinx.coroutines.flow.mapLatest
 class ChapterConversionFactory(data: ChapterEntity) :
 	UIConversionFactory<ChapterEntity, ChapterUI>(data) {
 	override fun ChapterEntity.convertTo(): ChapterUI = ChapterUI(
-		id!!,
-		novelID,
-		url,
-		extensionID,
-		title,
-		releaseDate,
-		order,
-		readingPosition,
-		readingStatus,
-		bookmarked,
-		isSaved
+		id = id!!,
+		novelID = novelID,
+		link = url,
+		extensionID = extensionID,
+		title = title,
+		releaseDate = releaseDate,
+		order = order,
+		readingPosition = readingPosition,
+		readingStatus = readingStatus,
+		bookmarked = bookmarked,
+		isSaved = isSaved
 	)
 }
 

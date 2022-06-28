@@ -95,6 +95,20 @@ class NovelViewModel(
 		chaptersFlow.onIO()
 	}
 
+	override val selectedChaptersState: Flow<SelectedChaptersState> by lazy {
+		chaptersFlow.map { rawChapters ->
+			val chapters = rawChapters.filter { it.isSelected }
+			SelectedChaptersState(
+				showRemoveBookmark = chapters.any { it.bookmarked },
+				showBookmark = chapters.any { !it.bookmarked },
+				showDelete = chapters.any { it.isSaved },
+				showDownload = chapters.any { !it.isSaved },
+				showMarkAsRead = chapters.any { it.readingStatus != ReadingStatus.READ },
+				showMarkAsUnread = chapters.any { it.readingStatus != ReadingStatus.UNREAD }
+			)
+		}.onIO()
+	}
+
 	private val selectedChapters = MutableStateFlow<Map<Int, Boolean>>(mapOf())
 
 	private suspend fun copySelected(): HashMap<Int, Boolean> =

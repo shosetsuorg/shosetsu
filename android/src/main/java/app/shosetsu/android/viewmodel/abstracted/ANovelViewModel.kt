@@ -47,6 +47,7 @@ abstract class ANovelViewModel
 
 	abstract val novelLive: Flow<NovelUI?>
 	abstract val chaptersLive: Flow<List<ChapterUI>>
+	abstract val selectedChaptersState: Flow<SelectedChaptersState>
 
 	abstract val otherException: Flow<Throwable?>
 	abstract val novelException: Flow<Throwable?>
@@ -175,4 +176,21 @@ abstract class ANovelViewModel
 	 * Delete downloaded chapters
 	 */
 	abstract fun deleteChapters()
+
+	/**
+	 * @param showRemoveBookmark If any chapters are bookmarked, show the remove bookmark logo
+	 * @param showBookmark If any chapters are not bookmarked, show bookmark
+	 * @param showDelete  If any are downloaded, show delete
+	 * @param showDownload  If any are not downloaded, show download option
+	 * @param showMarkAsRead If any are unread, show read option
+	 * @param showMarkAsUnread If any are read, show unread option
+	 */
+	data class SelectedChaptersState(
+		val showRemoveBookmark: Boolean = false,
+		val showBookmark: Boolean = false,
+		val showDelete: Boolean = false,
+		val showDownload: Boolean = false,
+		val showMarkAsRead: Boolean = false,
+		val showMarkAsUnread: Boolean = false
+	)
 }
