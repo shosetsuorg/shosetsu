@@ -3,9 +3,11 @@ package app.shosetsu.android.view.compose
 import android.content.Context
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import com.google.android.material.composethemeadapter.MdcTheme
 
 /*
@@ -31,6 +33,7 @@ import com.google.android.material.composethemeadapter.MdcTheme
  * @since 28 / 06 / 2022
  * @author Doomsdayrs
  */
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ShosetsuCompose(
 	context: Context = LocalContext.current,
@@ -40,7 +43,7 @@ fun ShosetsuCompose(
 		context = context
 	) {
 		Surface(
-			modifier = Modifier.nestedScroll(rememberViewInteropNestedScrollConnection()),
+			modifier = Modifier.nestedScroll(rememberNestedScrollInteropConnection()),
 			content = content
 		)
 	}
