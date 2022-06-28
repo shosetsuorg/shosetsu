@@ -40,6 +40,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.android.material.composethemeadapter.MdcTheme
 import org.joda.time.DateTime
 import java.util.*
@@ -126,23 +127,26 @@ fun UpdatesContent(
 					}
 				)
 			}
-		} else
-			LazyColumn(
-				contentPadding = PaddingValues(bottom = 112.dp, top = 4.dp),
-				verticalArrangement = Arrangement.spacedBy(4.dp)
-			) {
-				items.forEach { (header, updateItems) ->
-					stickyHeader {
-						UpdateHeaderItemContent(header)
-					}
+		} else {
+			SwipeRefresh(rememberSwipeRefreshState(false), onRefresh) {
+				LazyColumn(
+					contentPadding = PaddingValues(bottom = 112.dp, top = 4.dp),
+					verticalArrangement = Arrangement.spacedBy(4.dp)
+				) {
+					items.forEach { (header, updateItems) ->
+						stickyHeader {
+							UpdateHeaderItemContent(header)
+						}
 
-					items(updateItems, key = { it.chapterID }) {
-						UpdateItemContent(it) {
-							openChapter(it)
+						items(updateItems, key = { it.chapterID }) {
+							UpdateItemContent(it) {
+								openChapter(it)
+							}
 						}
 					}
 				}
 			}
+		}
 	}
 }
 
