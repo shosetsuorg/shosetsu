@@ -2,6 +2,7 @@ package app.shosetsu.android.domain.usecases
 
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.SettingKey
+import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.domain.repository.base.IDownloadsRepository
@@ -40,29 +41,36 @@ class DownloadChapterPassageUseCase(
 ) {
 	@Throws(SQLiteException::class)
 	suspend operator fun invoke(chapters: List<ChapterEntity>) {
-		novelRepo.getNovel(chapters.first().novelID)?.let { novel ->
-			downloadsRepository.addDownload(
-				chapters.map { (id, url, novelID, extensionID, title) ->
-					DownloadEntity(
-						id!!,
-						novelID,
-						url,
-						title,
-						novel.title,
-						extensionID
-					)
-				}
-			)
+		val first = chapters.first()
+		val novel = novelRepo.getNovel(first.novelID)
 
-			if (!novel.bookmarked)
-				if (iSettingsRepository.getBoolean(SettingKey.BookmarkOnDownload)) {
-					novelRepo.update(
-						novel.copy(
-							bookmarked = true
-						)
-					)
-				}
+		if (novel == null) {
+			logE("Null novel for id ${first.novelID}")
+			return
 		}
+
+		downloadsRepository.addDownload(
+			chapters.map { (id, url, novelID, extensionID, title) ->
+				DownloadEntity(
+					id!!,
+					novelID,
+					url,
+					title,
+					novel.title,
+					extensionID
+				)
+			}
+		)
+
+		if (!novel.bookmarked)
+			if (iSettingsRepository.getBoolean(SettingKey.BookmarkOnDownload)) {
+				novelRepo.update(
+					novel.copy(
+						bookmarked = true
+					)
+				)
+			}
+
 	}
 
 	@Throws(SQLiteException::class)
