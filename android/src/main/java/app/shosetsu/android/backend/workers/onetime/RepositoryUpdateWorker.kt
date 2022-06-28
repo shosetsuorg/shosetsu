@@ -32,14 +32,12 @@ import app.shosetsu.lib.exceptions.HTTPException
 import app.shosetsu.lib.json.RepoExtension
 import app.shosetsu.lib.json.RepoLibrary
 import com.github.doomsdayrs.apps.shosetsu.R
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
-import java.net.UnknownHostException
+import java.io.IOException
 
 /*
  * This file is part of Shosetsu.
@@ -277,10 +275,8 @@ class RepositoryUpdateWorker(
 				logI("Updating $repo")
 				// gets the latest list for the repo
 				val repoIndex = try {
-					withContext(Dispatchers.IO) {
-						extRepoRepo.getRepoData(repo)
-					}
-				} catch (e: UnknownHostException) {
+					extRepoRepo.getRepoData(repo)
+				} catch (e: IOException) {
 					notify(
 						"${e.message}",
 						notificationId = ID_REPOSITORY_UPDATE + 1 + repo.id
@@ -300,7 +296,7 @@ class RepositoryUpdateWorker(
 						setNotOngoing()
 					}
 					return@let
-				} catch (e: Exception) {//TODO specify
+				} catch (e: Exception) {
 					notify(
 						"${e.message}",
 						notificationId = ID_REPOSITORY_UPDATE + 1 + repo.id

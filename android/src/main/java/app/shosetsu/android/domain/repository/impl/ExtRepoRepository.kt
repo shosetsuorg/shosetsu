@@ -9,8 +9,7 @@ import app.shosetsu.android.domain.repository.base.IExtensionRepoRepository
 import app.shosetsu.lib.exceptions.HTTPException
 import app.shosetsu.lib.json.RepoIndex
 import kotlinx.coroutines.flow.Flow
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -38,10 +37,8 @@ class ExtRepoRepository(
 	private val remoteSource: IRemoteExtRepoDataSource
 ) : IExtensionRepoRepository {
 	@Throws(
-		UnknownHostException::class,
 		HTTPException::class,
-		SocketTimeoutException::class,
-		UnknownHostException::class,
+		IOException::class,
 	)
 	override suspend fun getRepoData(entity: RepositoryEntity): RepoIndex =
 		onIO { remoteSource.downloadRepoData(entity) }
