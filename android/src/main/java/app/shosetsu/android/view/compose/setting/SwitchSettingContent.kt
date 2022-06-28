@@ -1,17 +1,14 @@
 package app.shosetsu.android.view.compose.setting
 
 import androidx.compose.material.Switch
-import androidx.compose.material.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
-import com.github.doomsdayrs.apps.shosetsu.R
 
 @Preview
 @Composable
@@ -31,9 +28,6 @@ fun SwitchSettingContent(
 		Switch(
 			isChecked,
 			onCheckChange,
-			colors = SwitchDefaults.colors(
-				checkedThumbColor = colorResource(R.color.colorAccent)
-			)
 		)
 	}
 }

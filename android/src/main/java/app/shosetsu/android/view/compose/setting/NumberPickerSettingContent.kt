@@ -3,11 +3,11 @@ package app.shosetsu.android.view.compose.setting
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -16,7 +16,6 @@ import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import com.chargemap.compose.numberpicker.NumberPicker
-import com.github.doomsdayrs.apps.shosetsu.R
 
 @Composable
 fun NumberPickerSettingContent(
@@ -51,7 +50,7 @@ fun NumberPickerSettingContent(
 		IconButton({
 			openDialog = true
 		}) {
-			Text("$value", color = colorResource(R.color.colorAccent))
+			Text("$value", color = MaterialTheme.colors.secondary)
 		}
 	}
 
@@ -87,7 +86,7 @@ fun NumberPickerSettingDialogContent(
 				value = value,
 				onValueChange = onValueChanged,
 				range = range,
-				dividersColor = colorResource(R.color.colorPrimary),
+				dividersColor = MaterialTheme.colors.secondary,
 				modifier = Modifier
 					.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
 			)

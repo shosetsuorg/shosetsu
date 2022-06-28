@@ -1,7 +1,7 @@
 <resources>
 
     <style name="AppTheme.Widget.AppBarLayout" parent="Widget.MaterialComponents.AppBarLayout.Surface">
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">?colorPrimary</item>
         <item name="android:elevation">@dimen/app_bar_layout_elevation</item>
         <item name="tabStyle">@style/Widget.MaterialComponents.TabLayout.Colored</item>
     </style>
@@ -22,7 +22,7 @@
         <item name="android:colorPrimary">?attr/colorPrimary</item>
         <item name="android:colorAccent">?attr/colorAccent</item>
 
-        <item name="android:backgroundTint">@color/colorPrimary</item>
+        <item name="android:backgroundTint">?colorPrimary</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="iconTint">?attr/colorOnPrimary</item>
 
@@ -44,7 +44,7 @@
         <item name="android:colorPrimary">?attr/colorPrimary</item>
         <item name="android:colorAccent">?attr/colorAccent</item>
 
-        <item name="android:backgroundTint">@color/colorPrimary</item>
+        <item name="android:backgroundTint">?colorPrimary</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="iconTint">?attr/colorOnPrimary</item>
 

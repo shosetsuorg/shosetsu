@@ -7,10 +7,7 @@ import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -89,7 +86,7 @@ fun SettingMenuItem(@StringRes title: Int, @DrawableRes drawableRes: Int, onClic
 				modifier = Modifier
 					.padding(start = 16.dp, top = 16.dp, bottom = 16.dp, end = 24.dp)
 					.size(24.dp),
-				tint = colorResource(R.color.colorAccent)
+				tint = MaterialTheme.colors.primary
 			)
 			Text(stringResource(title))
 		}

@@ -198,7 +198,7 @@ fun MigrationExtensionItemContent(
 		shape = RoundedCornerShape(16.dp),
 		border =
 		if (item.isSelected) {
-			BorderStroke(2.dp, colorResource(id = R.color.colorPrimary))
+			BorderStroke(2.dp, MaterialTheme.colors.primary)
 		} else {
 			null
 		},
@@ -304,7 +304,7 @@ fun MigrationNovelItemContent(item: MigrationNovelUI, onClick: (MigrationNovelUI
 		onClick = { onClick(item) },
 		border =
 		if (item.isSelected) {
-			BorderStroke(2.dp, colorResource(id = R.color.colorPrimary))
+			BorderStroke(2.dp, MaterialTheme.colors.primary)
 		} else {
 			null
 		},

@@ -219,7 +219,7 @@ fun CSSEditorContent(
 			Column {
 				if (!isCSSInvalid && cssInvalidReason != null)
 					Card(
-						border = BorderStroke(1.dp, colorResource(R.color.colorPrimary)),
+						border = BorderStroke(1.dp, MaterialTheme.colors.primary),
 						modifier = Modifier
 							.align(Alignment.CenterHorizontally)
 							.fillMaxWidth()

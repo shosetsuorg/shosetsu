@@ -414,7 +414,7 @@ fun BrowseExtensionContent(
 										),
 										modifier = Modifier.padding(start = 8.dp),
 										fontSize = TextUnit(14f, TextUnitType.Sp),
-										color = colorResource(R.color.colorAccent)
+										color = MaterialTheme.colors.secondary
 									)
 							}
 						}
@@ -469,7 +469,7 @@ fun BrowseExtensionContent(
 								painterResource(R.drawable.download),
 								stringResource(R.string.update),
 								modifier = Modifier.rotate(180f),
-								tint = colorResource(R.color.colorAccent)
+								tint = MaterialTheme.colors.secondary
 							)
 						}
 					}
@@ -510,7 +510,7 @@ fun BrowseExtensionContent(
 				if (item.updateVersion == Version(-9, -9, -9)) {
 					Box(
 						modifier = Modifier
-							.background(colorResource(R.color.colorAccent))
+							.background(MaterialTheme.colors.secondary)
 							.fillMaxWidth()
 					) {
 						Text(

@@ -2,7 +2,7 @@
 <resources>
 
     <style name="AppTheme.Widget.AppBarLayout" parent="Widget.MaterialComponents.AppBarLayout.Surface">
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">?colorPrimary</item>
         <item name="android:elevation">@dimen/app_bar_layout_elevation</item>
         <item name="android:colorBackground">@color/grey_B_15</item>
         <item name="android:colorPrimaryDark">@color/grey_B_15</item>

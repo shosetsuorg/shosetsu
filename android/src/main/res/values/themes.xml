@@ -18,7 +18,7 @@
     </style>
 
     <style name="AppTheme.Main" parent="AppTheme">
-        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:statusBarColor">?colorPrimary</item>
         <item name="colorPrimaryDark">@color/black_trans</item>
         <item name="appBarLayoutStyle">@style/AppTheme.Widget.AppBarLayout</item>
         <item name="floatingActionButtonStyle">@style/AppTheme.Widget.FAB</item>

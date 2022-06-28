@@ -17,7 +17,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -357,7 +356,7 @@ fun RepositoryContent(
 						onCheckedChange()
 					},
 					colors = SwitchDefaults.colors(
-						checkedThumbColor = colorResource(R.color.colorAccent)
+						checkedThumbColor = MaterialTheme.colors.secondary
 					)
 				)
 			}
