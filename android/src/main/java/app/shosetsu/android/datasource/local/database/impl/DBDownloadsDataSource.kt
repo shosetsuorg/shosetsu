@@ -62,6 +62,6 @@ class DBDownloadsDataSource(
 
 	@Throws(SQLiteException::class)
 	override suspend fun insertDownloads(downloads: List<DownloadEntity>) {
-		downloadsDao.insertAllAbort(downloads.map { it.toDB() })
+		downloadsDao.insertAllIgnore(downloads.map { it.toDB() })
 	}
 }
