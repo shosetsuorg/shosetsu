@@ -27,7 +27,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
@@ -48,9 +50,11 @@ import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.ADownloadsViewModel
+import app.shosetsu.android.viewmodel.abstracted.ADownloadsViewModel.SelectedDownloadsState
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Shosetsu
@@ -84,6 +88,7 @@ class DownloadsController : ShosetsuController(),
 
 				DownloadsContent(
 					items = items,
+					selectedDownloadStateFlow = viewModel.selectedDownloadState,
 					hasSelected = hasSelected,
 					isPaused = isDownloadPaused,
 					pauseSelection = {
@@ -238,6 +243,7 @@ class DownloadsController : ShosetsuController(),
 @Composable
 fun DownloadsContent(
 	items: List<DownloadUI>,
+	selectedDownloadStateFlow: Flow<SelectedDownloadsState>,
 	hasSelected: Boolean,
 	isPaused: Boolean,
 	pauseSelection: () -> Unit,
@@ -274,45 +280,9 @@ fun DownloadsContent(
 			}
 
 			if (hasSelected) {
-				val selectedDownloads: List<DownloadUI> by remember {
-					derivedStateOf {
-						items.filter { it.isSelected }
-					}
-				}
-
-				val pauseVisible by remember {
-					derivedStateOf {
-						selectedDownloads.any {
-							it.status == PENDING
-						}
-					}
-				}
-
-				val restartVisible by remember {
-					derivedStateOf {
-						selectedDownloads.any {
-							it.status == ERROR
-						}
-					}
-				}
-
-
-				val startVisible by remember {
-					derivedStateOf {
-						selectedDownloads.any {
-							it.status == PAUSED
-						}
-					}
-				}
-
-				val deleteVisible by remember {
-					derivedStateOf {
-						selectedDownloads.any {
-							it.status == PAUSED || it.status == PENDING || it.status == ERROR || (isPaused && it.status == DOWNLOADING)
-						}
-					}
-				}
-
+				val selectedDownloadState by selectedDownloadStateFlow.collectAsState(
+					SelectedDownloadsState()
+				)
 				Card(
 					modifier = Modifier
 						.align(BiasAlignment(0f, 0.7f))
@@ -320,7 +290,7 @@ fun DownloadsContent(
 					Row {
 						IconButton(
 							onClick = pauseSelection,
-							enabled = pauseVisible
+							enabled = selectedDownloadState.pauseVisible
 						) {
 							Icon(
 								painterResource(R.drawable.pause),
@@ -329,7 +299,7 @@ fun DownloadsContent(
 						}
 						IconButton(
 							onClick = startSelection,
-							enabled = startVisible
+							enabled = selectedDownloadState.startVisible
 						) {
 							Icon(
 								painterResource(R.drawable.play_arrow),
@@ -338,7 +308,7 @@ fun DownloadsContent(
 						}
 						IconButton(
 							onClick = startFailedSelection,
-							enabled = restartVisible
+							enabled = selectedDownloadState.restartVisible
 						) {
 							Icon(
 								painterResource(R.drawable.refresh),
@@ -347,7 +317,7 @@ fun DownloadsContent(
 						}
 						IconButton(
 							onClick = deleteSelected,
-							enabled = deleteVisible
+							enabled = selectedDownloadState.deleteVisible
 						) {
 							Icon(
 								painterResource(R.drawable.trash),

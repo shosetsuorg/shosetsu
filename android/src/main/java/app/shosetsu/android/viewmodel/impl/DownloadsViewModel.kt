@@ -82,6 +82,30 @@ class DownloadsViewModel(
 		}
 	}
 
+	override val selectedDownloadState: Flow<SelectedDownloadsState> by lazy {
+		downloadsFlow.map { downloads ->
+			val selectedDownloads = downloads.filter { it.isSelected }
+
+			SelectedDownloadsState(
+				pauseVisible = selectedDownloads.any {
+					it.status == DownloadStatus.PENDING
+				},
+				restartVisible = selectedDownloads.any {
+					it.status == DownloadStatus.ERROR
+				},
+				startVisible = selectedDownloads.any {
+					it.status == DownloadStatus.PAUSED
+				},
+				deleteVisible = selectedDownloads.any {
+					it.status == DownloadStatus.PAUSED ||
+							it.status == DownloadStatus.PENDING ||
+							it.status == DownloadStatus.ERROR ||
+							(isDownloadPaused.first() && it.status == DownloadStatus.DOWNLOADING)
+				}
+			)
+		}.onIO()
+	}
+
 	override val liveData: Flow<List<DownloadUI>> by lazy {
 		downloadsFlow
 	}

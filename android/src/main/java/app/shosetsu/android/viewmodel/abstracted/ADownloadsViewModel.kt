@@ -35,6 +35,7 @@ abstract class ADownloadsViewModel :
 	ShosetsuViewModel(),
 	IsOnlineCheckViewModel {
 
+	abstract val selectedDownloadState: Flow<SelectedDownloadsState>
 	abstract val isDownloadPaused: Flow<Boolean>
 	abstract val hasSelectedFlow: Flow<Boolean>
 
@@ -64,4 +65,17 @@ abstract class ADownloadsViewModel :
 	abstract fun startSelection()
 	abstract fun toggleSelection(entity: DownloadUI)
 	abstract fun deselectAll()
+
+	/**
+	 * @param pauseVisible Show the pause button
+	 * @param restartVisible Show the restart button
+	 * @param startVisible Show the start button
+	 * @param deleteVisible Show the delete button
+	 */
+	data class SelectedDownloadsState(
+		val pauseVisible: Boolean = false,
+		val restartVisible: Boolean = false,
+		val startVisible: Boolean = false,
+		val deleteVisible: Boolean = false,
+	)
 }
