@@ -1,6 +1,7 @@
 package app.shosetsu.android.domain.repository.base
 
 import android.database.sqlite.SQLiteException
+import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.domain.model.local.DownloadEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -75,4 +76,22 @@ interface IDownloadsRepository {
 	 */
 	@Throws(SQLiteException::class)
 	suspend fun deleteEntity(download: DownloadEntity)
+
+	/**
+	 * Removes the [downloads] from the repository
+	 */
+	@Throws(SQLiteException::class)
+	suspend fun deleteEntity(downloads: List<DownloadEntity>)
+
+	/**
+	 * Update the download statuses
+	 */
+	@Throws(SQLiteException::class)
+	suspend fun updateStatus(downloads: List<DownloadEntity>, status: DownloadStatus)
+
+	/**
+	 * Set all downloads pending
+	 */
+	@Throws(SQLiteException::class)
+	suspend fun setAllPending()
 }

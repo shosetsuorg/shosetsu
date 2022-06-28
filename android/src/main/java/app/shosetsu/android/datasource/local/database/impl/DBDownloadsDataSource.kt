@@ -1,6 +1,7 @@
 package app.shosetsu.android.datasource.local.database.impl
 
 import android.database.sqlite.SQLiteException
+import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.common.ext.toDB
 import app.shosetsu.android.datasource.local.database.base.IDBDownloadsDataSource
 import app.shosetsu.android.domain.model.local.DownloadEntity
@@ -63,5 +64,20 @@ class DBDownloadsDataSource(
 	@Throws(SQLiteException::class)
 	override suspend fun insertDownloads(downloads: List<DownloadEntity>) {
 		downloadsDao.insertAllIgnore(downloads.map { it.toDB() })
+	}
+
+	@Throws(SQLiteException::class)
+	override suspend fun deleteDownload(downloads: List<DownloadEntity>) {
+		downloadsDao.delete(downloads.map { it.toDB() })
+	}
+
+	@Throws(SQLiteException::class)
+	override suspend fun updateStatus(chapterIds: List<Int>, status: DownloadStatus) {
+		downloadsDao.updateStatus(chapterIds, status)
+	}
+
+	@Throws(SQLiteException::class)
+	override suspend fun setAllPending() {
+		downloadsDao.setAllPending()
 	}
 }

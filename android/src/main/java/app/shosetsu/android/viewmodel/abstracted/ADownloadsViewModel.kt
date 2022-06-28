@@ -61,7 +61,7 @@ abstract class ADownloadsViewModel :
 	abstract fun selectAll()
 	abstract fun deleteSelected()
 	abstract fun pauseSelection()
-	abstract fun restartFailedSelection()
+	abstract fun restartSelection()
 	abstract fun startSelection()
 	abstract fun toggleSelection(entity: DownloadUI)
 	abstract fun deselectAll()

@@ -1,6 +1,7 @@
 package app.shosetsu.android.datasource.local.database.base
 
 import android.database.sqlite.SQLiteException
+import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.domain.model.local.DownloadEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -49,6 +50,10 @@ interface IDBDownloadsDataSource {
 	@Throws(SQLiteException::class)
 	suspend fun deleteDownload(downloadEntity: DownloadEntity)
 
+	/** Deletes [DownloadEntity]s */
+	@Throws(SQLiteException::class)
+	suspend fun deleteDownload(downloads: List<DownloadEntity>)
+
 	/** Loads a [DownloadEntity] via its [chapterID] */
 	@Throws(SQLiteException::class)
 	suspend fun loadDownload(chapterID: Int): DownloadEntity?
@@ -58,4 +63,16 @@ interface IDBDownloadsDataSource {
 	 */
 	@Throws(SQLiteException::class)
 	suspend fun insertDownloads(downloads: List<DownloadEntity>)
+
+	/**
+	 * Update the status of downloads via chapter ids
+	 */
+	@Throws(SQLiteException::class)
+	suspend fun updateStatus(chapterIds: List<Int>, status: DownloadStatus)
+
+	/**
+	 * Set all downloads as pending
+	 */
+	@Throws(SQLiteException::class)
+	suspend fun setAllPending()
 }

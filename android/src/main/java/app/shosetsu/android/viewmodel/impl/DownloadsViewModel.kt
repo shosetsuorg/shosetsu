@@ -1,16 +1,17 @@
 package app.shosetsu.android.viewmodel.impl
 
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.SettingKey.IsDownloadPaused
 import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.utils.copy
+import app.shosetsu.android.domain.repository.base.IDownloadsRepository
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
-import app.shosetsu.android.domain.usecases.delete.DeleteDownloadUseCase
 import app.shosetsu.android.domain.usecases.load.LoadDownloadsUseCase
 import app.shosetsu.android.domain.usecases.start.StartDownloadWorkerUseCase
-import app.shosetsu.android.domain.usecases.update.UpdateDownloadUseCase
+import app.shosetsu.android.dto.convertList
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.ADownloadsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -44,11 +45,30 @@ import kotlinx.coroutines.flow.*
 class DownloadsViewModel(
 	private val getDownloadsUseCase: LoadDownloadsUseCase,
 	private val startDownloadWorkerUseCase: StartDownloadWorkerUseCase,
-	private val updateDownloadUseCase: UpdateDownloadUseCase,
-	private val deleteDownloadUseCase: DeleteDownloadUseCase,
+	private val downloadsRepository: IDownloadsRepository,
 	private val settings: ISettingsRepository,
 	private var isOnlineUseCase: IsOnlineUseCase,
 ) : ADownloadsViewModel() {
+
+	@Throws(SQLiteException::class)
+	private suspend fun updateDownloadStatus(downloads: List<DownloadUI>, status: DownloadStatus) {
+		downloadsRepository.updateStatus(downloads.convertList(), status)
+	}
+
+	@Throws(SQLiteException::class)
+	private suspend fun updateDownloadUseCase(downloadUI: DownloadUI) {
+		downloadsRepository.update(downloadUI.convertTo())
+	}
+
+	@Throws(SQLiteException::class)
+	private suspend fun deleteDownloadUseCase(downloadUI: DownloadUI) {
+		downloadsRepository.deleteEntity(downloadUI.convertTo())
+	}
+
+	@Throws(SQLiteException::class)
+	private suspend fun deleteDownloadUseCase(downloadUI: List<DownloadUI>) {
+		downloadsRepository.deleteEntity(downloadUI.convertList())
+	}
 
 	private val selectedDownloads = MutableStateFlow<Map<Int, Boolean>>(mapOf())
 	private suspend fun copySelected(): HashMap<Int, Boolean> =
@@ -151,9 +171,8 @@ class DownloadsViewModel(
 	override fun setAllPending() {
 		launchIO {
 			pauseAndWait()
-			downloadsFlow.first { it.isNotEmpty() }.let { list ->
-				list.forEach { updateDownloadUseCase(it.copy(status = DownloadStatus.PENDING)) }
-			}
+
+			downloadsRepository.setAllPending()
 		}
 	}
 
@@ -217,38 +236,48 @@ class DownloadsViewModel(
 	override fun deleteSelected() {
 		launchIO {
 			val selected = liveData.first().filter { it.isSelected }
+
+			deleteDownloadUseCase(selected)
+
 			clearSelectedSuspend()
-			selected.forEach { deleteDownloadUseCase(it) }
 		}
 	}
 
 	override fun pauseSelection() {
 		launchIO {
 			val selected = liveData.first().filter { it.isSelected }
+
+			updateDownloadStatus(selected, DownloadStatus.PAUSED)
+
 			clearSelectedSuspend()
-			selected.forEach { updateDownloadUseCase(it.copy(status = DownloadStatus.PAUSED)) }
 		}
 	}
 
-	override fun restartFailedSelection() {
+	override fun restartSelection() {
 		launchIO {
-			val selected = liveData.first().filter { it.isSelected }
+			val selected = liveData.first()
+				.filter { it.isSelected }
 				.filter {
 					it.status == DownloadStatus.PAUSED || it.status == DownloadStatus.ERROR
 				}
+
+			updateDownloadStatus(selected, DownloadStatus.PENDING)
+
 			clearSelectedSuspend()
-			selected.forEach { updateDownloadUseCase(it.copy(status = DownloadStatus.PENDING)) }
 		}
 	}
 
 	override fun startSelection() {
 		launchIO {
-			val selected = liveData.first().filter { it.isSelected }
+			val selected = liveData.first()
+				.filter { it.isSelected }
 				.filter {
 					it.status == DownloadStatus.PAUSED || it.status == DownloadStatus.ERROR
 				}
+
+			updateDownloadStatus(selected, DownloadStatus.PENDING)
+
 			clearSelectedSuspend()
-			selected.forEach { deleteDownloadUseCase(it) }
 		}
 	}
 
@@ -262,8 +291,7 @@ class DownloadsViewModel(
 
 	override fun deselectAll() {
 		launchIO {
-			if (selectedDownloads.value.values.any { it })
-				clearSelectedSuspend()
+			clearSelectedSuspend()
 		}
 	}
 }

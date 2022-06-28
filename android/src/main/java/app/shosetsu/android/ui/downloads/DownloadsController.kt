@@ -84,24 +84,16 @@ class DownloadsController : ShosetsuController(),
 			MdcTheme {
 				val items by viewModel.liveData.collectAsState(listOf())
 				val hasSelected by viewModel.hasSelectedFlow.collectAsState(false)
-				val isDownloadPaused by viewModel.isDownloadPaused.collectAsState(false)
 
 				DownloadsContent(
 					items = items,
 					selectedDownloadStateFlow = viewModel.selectedDownloadState,
 					hasSelected = hasSelected,
-					isPaused = isDownloadPaused,
-					pauseSelection = {
-						pauseSelection()
-					},
-					startSelection = { startSelection() },
-					startFailedSelection = { startFailedSelection() },
-					deleteSelected = {
-						deleteSelected()
-					},
-					toggleSelection = {
-						viewModel.toggleSelection(it)
-					},
+					pauseSelection = viewModel::pauseSelection,
+					startSelection = viewModel::startSelection,
+					startFailedSelection = viewModel::restartSelection,
+					deleteSelected = viewModel::deleteSelected,
+					toggleSelection = viewModel::toggleSelection,
 					fab
 				)
 			}
@@ -175,34 +167,6 @@ class DownloadsController : ShosetsuController(),
 		if (actionMode == null) super.showFAB(fab)
 	}
 
-	private fun startSelection() {
-		viewModel.startSelection()
-	}
-
-	private fun startFailedSelection() {
-		viewModel.restartFailedSelection()
-	}
-
-	private fun pauseSelection() {
-		viewModel.pauseSelection()
-	}
-
-	private fun deleteSelected() {
-		viewModel.deleteSelected()
-	}
-
-	private fun selectAll() {
-		viewModel.selectAll()
-	}
-
-	private fun invertSelection() {
-		viewModel.invertSelection()
-	}
-
-	private fun selectBetween() {
-		viewModel.selectBetween()
-	}
-
 	private inner class SelectionActionMode : ActionMode.Callback {
 		override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
 			// Hides the original action bar
@@ -218,15 +182,15 @@ class DownloadsController : ShosetsuController(),
 		override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean =
 			when (item.itemId) {
 				R.id.chapter_select_all -> {
-					selectAll()
+					viewModel.selectAll()
 					true
 				}
 				R.id.chapter_select_between -> {
-					selectBetween()
+					viewModel.selectBetween()
 					true
 				}
 				R.id.chapter_inverse -> {
-					invertSelection()
+					viewModel.invertSelection()
 					true
 				}
 				else -> false
@@ -245,7 +209,6 @@ fun DownloadsContent(
 	items: List<DownloadUI>,
 	selectedDownloadStateFlow: Flow<SelectedDownloadsState>,
 	hasSelected: Boolean,
-	isPaused: Boolean,
 	pauseSelection: () -> Unit,
 	startSelection: () -> Unit,
 	startFailedSelection: () -> Unit,

@@ -18,6 +18,7 @@ package app.shosetsu.android.domain.repository.impl
  */
 
 import android.database.sqlite.SQLiteException
+import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.common.ext.onIO
 import app.shosetsu.android.datasource.local.database.base.IDBDownloadsDataSource
 import app.shosetsu.android.domain.model.local.DownloadEntity
@@ -65,5 +66,26 @@ class DownloadsRepository(
 	@Throws(SQLiteException::class)
 	override suspend fun deleteEntity(download: DownloadEntity) = onIO {
 		database.deleteDownload(download)
+	}
+
+	@Throws(SQLiteException::class)
+	override suspend fun deleteEntity(downloads: List<DownloadEntity>) {
+		onIO {
+			database.deleteDownload(downloads)
+		}
+	}
+
+	@Throws(SQLiteException::class)
+	override suspend fun updateStatus(downloads: List<DownloadEntity>, status: DownloadStatus) {
+		onIO {
+			database.updateStatus(downloads.map { it.chapterID }, status)
+		}
+	}
+
+	@Throws(SQLiteException::class)
+	override suspend fun setAllPending() {
+		onIO {
+			database.setAllPending()
+		}
 	}
 }

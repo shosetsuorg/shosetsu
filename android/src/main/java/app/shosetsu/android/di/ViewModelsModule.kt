@@ -69,10 +69,9 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 		DownloadsViewModel(
 			getDownloadsUseCase = instance(),
 			startDownloadWorkerUseCase = instance(),
-			updateDownloadUseCase = instance(),
-			deleteDownloadUseCase = instance(),
 			settings = instance(),
 			isOnlineUseCase = instance(),
+			downloadsRepository = instance()
 		)
 	}
 	bind<ASearchViewModel>() with provider {

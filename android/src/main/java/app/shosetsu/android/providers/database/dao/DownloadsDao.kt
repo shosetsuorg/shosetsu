@@ -3,6 +3,7 @@ package app.shosetsu.android.providers.database.dao
 import android.database.sqlite.SQLiteException
 import androidx.room.Dao
 import androidx.room.Query
+import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.domain.model.database.DBDownloadEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import kotlinx.coroutines.flow.Flow
@@ -59,4 +60,20 @@ interface DownloadsDao : BaseDao<DBDownloadEntity> {
 	@Query("SELECT * FROM downloads WHERE chapterID = :chapterID LIMIT 1")
 	suspend fun loadDownload(chapterID: Int): DBDownloadEntity?
 
+	@Query(
+		"""
+			UPDATE downloads
+				SET status = :status
+			WHERE chapterID IN (:chapterIds)
+		"""
+	)
+	suspend fun updateStatus(chapterIds: List<Int>, status: DownloadStatus)
+
+	@Query(
+		"""
+			UPDATE downloads
+				SET status = 0
+		"""
+	)
+	suspend fun setAllPending()
 }

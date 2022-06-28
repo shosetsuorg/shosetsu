@@ -2,7 +2,6 @@ package app.shosetsu.android.di
 
 import app.shosetsu.android.domain.usecases.*
 import app.shosetsu.android.domain.usecases.delete.DeleteChapterPassageUseCase
-import app.shosetsu.android.domain.usecases.delete.DeleteDownloadUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteRepositoryUseCase
 import app.shosetsu.android.domain.usecases.delete.TrueDeleteChapterUseCase
 import app.shosetsu.android.domain.usecases.get.*
@@ -123,9 +122,6 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 	}
 
 	bind<LoadRemoteAppUpdateUseCase>() with provider { LoadRemoteAppUpdateUseCase(instance()) }
-	bind<UpdateDownloadUseCase>() with provider { UpdateDownloadUseCase(instance()) }
-	bind<DeleteDownloadUseCase>() with provider { DeleteDownloadUseCase(instance()) }
-
 
 	bind<UpdateBookmarkedNovelUseCase>() with provider { UpdateBookmarkedNovelUseCase(instance()) }
 
