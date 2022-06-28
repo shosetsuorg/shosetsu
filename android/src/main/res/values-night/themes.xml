@@ -20,8 +20,6 @@
         <item name="buttonStyle">@style/AppTheme.Widget.Button</item>
         <item name="android:statusBarColor">@color/grey_B_15</item>
 
-        <item name="android:spinnerStyle">@style/AppTheme.Widget.Spinner</item>
-        <item name="spinnerDropDownItemStyle">@style/AppTheme.Widget.SpinnerItem</item>
     </style>
 
     <style name="SplashScreen" parent="Theme.SplashScreen">

@@ -53,6 +53,7 @@ import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityMainBinding
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.color.DynamicColors
 import com.google.android.material.snackbar.BaseTransientBottomBar.Duration
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
@@ -153,6 +154,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 		runBlocking {
 			setTheme(viewModel.appThemeLiveData.first())
 		}
+		DynamicColors.applyToActivityIfAvailable(this)
 		viewModel.appThemeLiveData.collectLA(this, catch = {
 			makeSnackBar(
 				getString(
@@ -164,6 +166,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 			}.show()
 		}) {
 			setTheme(it)
+			DynamicColors.applyToActivityIfAvailable(this)
 		}
 		this.requestPerms()
 		super.onCreate(savedInstanceState)
