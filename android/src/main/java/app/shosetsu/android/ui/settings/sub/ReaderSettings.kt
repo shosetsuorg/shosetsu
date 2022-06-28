@@ -37,6 +37,7 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.makeSnackBar
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.css.CSSEditorActivity
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.compose.setting.ButtonSettingContent
 import app.shosetsu.android.view.compose.setting.DropdownSettingContent
 import app.shosetsu.android.view.compose.setting.GenericBottomSettingLayout
@@ -45,7 +46,6 @@ import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.settings.AReaderSettingsViewModel
 import app.shosetsu.android.viewmodel.impl.settings.*
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.composethemeadapter.MdcTheme
 
 /*
  * This file is part of shosetsu.
@@ -84,7 +84,7 @@ class ReaderSettings : ShosetsuController() {
 	): View = ComposeView(container.context).apply {
 		setViewTitle()
 		setContent {
-			MdcTheme {
+			ShosetsuCompose {
 				ReaderSettingsContent(
 					viewModel,
 					openHTMLEditor = {

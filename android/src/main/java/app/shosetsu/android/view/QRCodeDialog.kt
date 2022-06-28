@@ -23,8 +23,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
 import androidx.savedstate.SavedStateRegistryOwner
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -69,9 +69,11 @@ fun openQRCodeShareDialog(
 
 
 			setContent {
-				MdcTheme {
+				ShosetsuCompose {
 					Card(
-						modifier = Modifier.fillMaxWidth().fillMaxHeight(.4f)
+						modifier = Modifier
+							.fillMaxWidth()
+							.fillMaxHeight(.4f)
 					) {
 						val map by flow.collectAsState(null)
 
@@ -83,7 +85,8 @@ fun openQRCodeShareDialog(
 								Image(
 									map!!,
 									"",
-									modifier = Modifier.background(androidx.compose.ui.graphics.Color.White)
+									modifier = Modifier
+										.background(androidx.compose.ui.graphics.Color.White)
 										.padding(16.dp)
 								)
 							} else {

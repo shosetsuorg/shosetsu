@@ -17,8 +17,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.savedstate.SavedStateRegistryOwner
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.launchUI
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.delay
 
 /*
@@ -60,7 +60,7 @@ fun openShareMenu(
 			)
 
 			setContent {
-				MdcTheme {
+				ShosetsuCompose {
 					Column(
 						modifier = Modifier.padding(start = 16.dp)
 					) {

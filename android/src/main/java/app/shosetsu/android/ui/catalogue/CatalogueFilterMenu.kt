@@ -16,9 +16,9 @@ import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.lib.Filter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -43,7 +43,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 @Preview
 @Composable
-fun CatalogFilterMenuPreview() = MdcTheme {
+fun CatalogFilterMenuPreview() = ShosetsuCompose {
 	CatalogFilterMenu(
 		listOf(
 			Filter.Header("This is a header"),
@@ -162,7 +162,7 @@ fun CatalogFilterMenuFilterListContent(
 
 @Preview
 @Composable
-fun PreviewCatalogFilterMenuFilterListContent() = MdcTheme {
+fun PreviewCatalogFilterMenuFilterListContent() = ShosetsuCompose {
 	CatalogFilterMenuFilterListContent(
 		list = listOf(
 			Filter.Switch(7, "Switch"),
@@ -294,7 +294,7 @@ fun CatalogFilterMenuFilterListContent(
 @Preview
 @Composable
 fun PreviewCatalogFilterMenuTextContent() =
-	MdcTheme {
+	ShosetsuCompose {
 		CatalogFilterMenuTextContent(
 			filter = Filter.Text(0, "This is a text input"),
 			{ MutableStateFlow("") },
@@ -325,7 +325,7 @@ fun CatalogFilterMenuTextContent(
 
 @Preview
 @Composable
-fun PreviewCatalogFilterMenuSwitchContent() = MdcTheme {
+fun PreviewCatalogFilterMenuSwitchContent() = ShosetsuCompose {
 	CatalogFilterMenuSwitchContent(
 		Filter.Switch(0, "Switch"),
 		{ MutableStateFlow(false) },
@@ -356,7 +356,7 @@ fun CatalogFilterMenuSwitchContent(
 
 @Preview
 @Composable
-fun PreviewCatalogFilterMenuCheckboxContent() = MdcTheme {
+fun PreviewCatalogFilterMenuCheckboxContent() = ShosetsuCompose {
 	CatalogFilterMenuCheckboxContent(Filter.Checkbox(0, "Checkbox"),
 		{ MutableStateFlow(false) },
 		{ _, _ -> })
@@ -385,7 +385,7 @@ fun CatalogFilterMenuCheckboxContent(
 
 @Preview
 @Composable
-fun PreviewCatalogFilterMenuTriStateContent() = MdcTheme {
+fun PreviewCatalogFilterMenuTriStateContent() = ShosetsuCompose {
 	CatalogFilterMenuTriStateContent(Filter.TriState(0, "Tristate"),
 		{ MutableStateFlow(1) },
 		{ _, _ -> })
@@ -431,7 +431,7 @@ fun CatalogFilterMenuTriStateContent(
 
 @Preview
 @Composable
-fun PreviewCatalogFilterMenuDropDownContent() = MdcTheme {
+fun PreviewCatalogFilterMenuDropDownContent() = ShosetsuCompose {
 	CatalogFilterMenuDropDownContent(
 		Filter.Dropdown(0, "Dropdown", arrayOf("A", "B", "C")),
 		{ MutableStateFlow(1) },
@@ -501,7 +501,7 @@ fun CatalogFilterMenuDropDownContent(
 
 @Preview
 @Composable
-fun PreviewCatalogFilterMenuRadioGroupContent() = MdcTheme {
+fun PreviewCatalogFilterMenuRadioGroupContent() = ShosetsuCompose {
 	CatalogFilterMenuRadioGroupContent(
 		Filter.RadioGroup(0, "Dropdown", arrayOf("A", "B", "C")),
 		{ MutableStateFlow(1) },

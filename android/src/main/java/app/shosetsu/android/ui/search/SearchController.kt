@@ -35,10 +35,7 @@ import app.shosetsu.android.common.ext.makeSnackBar
 import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.novel.NovelController
-import app.shosetsu.android.view.compose.NovelCardCozyContent
-import app.shosetsu.android.view.compose.NovelCardNormalContent
-import app.shosetsu.android.view.compose.PlaceholderNovelCardCozyContent
-import app.shosetsu.android.view.compose.PlaceholderNovelCardNormalContent
+import app.shosetsu.android.view.compose.*
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
@@ -47,7 +44,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -92,7 +88,7 @@ class SearchController(bundle: Bundle) : ShosetsuController(bundle) {
 		savedViewState: Bundle?
 	): View = ComposeView(container.context).apply {
 		setContent {
-			MdcTheme {
+			ShosetsuCompose {
 				val rows by viewModel.listings.collectAsState(listOf())
 				val isCozy by viewModel.isCozy.collectAsState(false)
 

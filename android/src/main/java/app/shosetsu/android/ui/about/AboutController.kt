@@ -32,11 +32,11 @@ import app.shosetsu.android.common.enums.TextAsset
 import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.settings.sub.TextAssetReader
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.AAboutViewModel
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.composethemeadapter.MdcTheme
 
 /*
  * This file is part of shosetsu.
@@ -76,7 +76,7 @@ class AboutController : ShosetsuController() {
 	): View = ComposeView(container.context).apply {
 		setViewTitle()
 		setContent {
-			MdcTheme {
+			ShosetsuCompose {
 				AboutContent(
 					currentVersion = BuildConfig.VERSION_NAME,
 					onCheckForAppUpdate = viewModel::appUpdateCheck,
@@ -127,7 +127,7 @@ class AboutController : ShosetsuController() {
 @Preview
 @Composable
 fun PreviewAboutContent() {
-	MdcTheme {
+	ShosetsuCompose {
 		AboutContent(
 			currentVersion = BuildConfig.VERSION_NAME,
 			onCheckForAppUpdate = {},

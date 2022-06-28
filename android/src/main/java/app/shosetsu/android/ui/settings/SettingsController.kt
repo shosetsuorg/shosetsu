@@ -19,10 +19,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.ui.settings.sub.*
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.composethemeadapter.MdcTheme
 
 /*
  * This file is part of shosetsu.
@@ -60,7 +60,7 @@ class ComposeSettingsController : ShosetsuController() {
 	): View = ComposeView(container.context).apply {
 		setViewTitle()
 		setContent {
-			MdcTheme {
+			ShosetsuCompose {
 				SettingsContent { router.shosetsuPush(it) }
 			}
 		}

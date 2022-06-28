@@ -43,6 +43,7 @@ import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
 import app.shosetsu.android.view.compose.LazyColumnScrollbar
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
@@ -61,7 +62,6 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelJumpDialog
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -421,7 +421,7 @@ class NovelController(bundle: Bundle) :
 				}
 			}
 
-			MdcTheme {
+			ShosetsuCompose {
 				NovelInfoContent(
 					novelInfo,
 					chapters,
@@ -699,7 +699,7 @@ fun PreviewNovelInfoContent() {
 
 	}
 
-	MdcTheme {
+	ShosetsuCompose {
 		NovelInfoContent(
 			novelInfo = info,
 			chapters = chapters,
@@ -912,7 +912,7 @@ fun PreviewChapterContent() {
 		isSaved = true
 	)
 
-	MdcTheme {
+	ShosetsuCompose {
 		NovelChapterContent(
 			chapter,
 			openChapter = {},
@@ -1035,7 +1035,7 @@ fun PreviewHeaderContent() {
 		status = Novel.Status.COMPLETED
 	)
 
-	MdcTheme {
+	ShosetsuCompose {
 		NovelInfoHeaderContent(
 			info,
 			chapterCount = 0,

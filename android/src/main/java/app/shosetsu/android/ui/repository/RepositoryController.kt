@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
@@ -32,7 +33,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.RepositoryAddBinding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
-import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.snackbar.BaseTransientBottomBar.BaseCallback.DISMISS_EVENT_CONSECUTIVE
 import com.google.android.material.snackbar.Snackbar
@@ -74,7 +74,7 @@ class RepositoryController : ShosetsuController(),
 		ComposeView(container.context).apply {
 			setViewTitle()
 			setContent {
-				MdcTheme {
+				ShosetsuCompose {
 					val items by viewModel.liveData.collectAsState(listOf())
 
 					RepositoriesContent(

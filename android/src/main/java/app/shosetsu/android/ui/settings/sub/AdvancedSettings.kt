@@ -19,13 +19,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.SettingKey.*
 import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.compose.setting.ButtonSettingContent
 import app.shosetsu.android.view.compose.setting.DropdownSettingContent
 import app.shosetsu.android.view.compose.setting.SwitchSettingContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.settings.AAdvancedSettingsViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 
@@ -124,7 +124,7 @@ class AdvancedSettings : ShosetsuController() {
 	): View = ComposeView(container.context).apply {
 		setViewTitle()
 		setContent {
-			MdcTheme {
+			ShosetsuCompose {
 				AdvancedSettingsContent(
 					viewModel,
 					onThemeSelected = ::themeSelected,

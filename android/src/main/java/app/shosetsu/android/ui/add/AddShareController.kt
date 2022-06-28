@@ -29,6 +29,7 @@ import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
 import app.shosetsu.android.viewmodel.abstracted.AAddShareViewModel
@@ -39,7 +40,6 @@ import app.shosetsu.lib.share.StyleLink
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.composethemeadapter.MdcTheme
 import io.github.g00fy2.quickie.QRResult
 import io.github.g00fy2.quickie.ScanQRCode
 import io.github.g00fy2.quickie.content.QRContent
@@ -92,7 +92,7 @@ class AddShareController : ShosetsuController(), CollapsedToolBarController {
 	): View = ComposeView(container.context).apply {
 		setViewTitle()
 		setContent {
-			MdcTheme {
+			ShosetsuCompose {
 				val isProcessing by viewModel.isProcessing.collectAsState(true)
 				val isQRCodeValid by viewModel.isQRCodeValid.collectAsState(true)
 				val isAdding by viewModel.isAdding.collectAsState(false)
@@ -210,7 +210,7 @@ fun PreviewAboutContent() {
 	)
 
 
-	MdcTheme {
+	ShosetsuCompose {
 
 		AddShareContent(
 			isProcessing = false,

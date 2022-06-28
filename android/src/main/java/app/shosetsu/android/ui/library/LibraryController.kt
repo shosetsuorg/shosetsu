@@ -38,10 +38,7 @@ import app.shosetsu.android.ui.library.listener.LibrarySearchQuery
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.ComposeBottomSheetDialog
-import app.shosetsu.android.view.compose.ErrorContent
-import app.shosetsu.android.view.compose.NovelCardCompressedContent
-import app.shosetsu.android.view.compose.NovelCardCozyContent
-import app.shosetsu.android.view.compose.NovelCardNormalContent
+import app.shosetsu.android.view.compose.*
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
@@ -51,7 +48,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -101,7 +97,7 @@ class LibraryController
 		savedViewState: Bundle?
 	): View = ComposeView(container.context).apply {
 		setContent {
-			MdcTheme {
+			ShosetsuCompose {
 				setViewTitle()
 				val items by viewModel.liveData.collectAsState(listOf())
 				val isEmpty by viewModel.isEmptyFlow.collectAsState(false)

@@ -11,13 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.sp
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.composethemeadapter.MdcTheme
 
 
 @Composable
 fun PreviewGenericRightSetting() {
-	MdcTheme {
+	ShosetsuCompose {
 		GenericRightSettingLayout(
 			"Test",
 			"Description",

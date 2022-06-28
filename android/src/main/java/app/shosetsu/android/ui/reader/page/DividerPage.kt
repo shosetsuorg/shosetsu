@@ -10,8 +10,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.composethemeadapter.MdcTheme
 
 /*
  * This file is part of shosetsu.
@@ -35,7 +35,7 @@ import com.google.android.material.composethemeadapter.MdcTheme
 @Preview
 @Composable
 fun PreviewDividerPageContent() {
-	MdcTheme {
+	ShosetsuCompose {
 		DividierPageContent(
 			"The first",
 			"The second"

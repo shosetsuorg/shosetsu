@@ -19,13 +19,13 @@ import androidx.compose.ui.state.ToggleableState.Off
 import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.enums.NovelSortType
 import app.shosetsu.android.common.enums.NovelSortType.*
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
-import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -62,7 +62,7 @@ class LibraryFilterMenuBuilder constructor(
 			context
 		).apply {
 			setContent {
-				MdcTheme {
+				ShosetsuCompose {
 					val pagerState = rememberPagerState()
 					val pages =
 						listOf(stringResource(R.string.filter), stringResource(R.string.sort))

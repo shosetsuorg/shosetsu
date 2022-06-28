@@ -22,13 +22,13 @@ import app.shosetsu.android.common.SettingKey.*
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.compose.setting.DropdownSettingContent
 import app.shosetsu.android.view.compose.setting.NumberPickerSettingContent
 import app.shosetsu.android.view.compose.setting.SwitchSettingContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.settings.AViewSettingsViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.flow.map
 
 /*
@@ -68,7 +68,7 @@ class ComposeViewSettings : ShosetsuController() {
 	): View = ComposeView(container.context).apply {
 		setViewTitle()
 		setContent {
-			MdcTheme {
+			ShosetsuCompose {
 				ViewSettingsContent(
 					viewModel,
 					finishActivity = {
@@ -104,7 +104,9 @@ fun ViewSettingsContent(viewModel: AViewSettingsViewModel, finishActivity: () ->
 				range = 0..10,
 				repo = viewModel.settingsRepo,
 				key = ChapterColumnsInPortait,
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -115,7 +117,9 @@ fun ViewSettingsContent(viewModel: AViewSettingsViewModel, finishActivity: () ->
 				range = 0..10,
 				repo = viewModel.settingsRepo,
 				key = ChapterColumnsInLandscape,
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -126,7 +130,9 @@ fun ViewSettingsContent(viewModel: AViewSettingsViewModel, finishActivity: () ->
 				choices = stringArrayResource(R.array.novel_card_types),
 				repo = viewModel.settingsRepo,
 				key = SelectedNovelCardType,
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp)
 			)
 		}
 

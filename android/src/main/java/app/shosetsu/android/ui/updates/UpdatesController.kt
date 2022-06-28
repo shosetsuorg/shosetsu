@@ -34,6 +34,7 @@ import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.AUpdatesViewModel
 import coil.compose.rememberAsyncImagePainter
@@ -41,7 +42,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.google.android.material.composethemeadapter.MdcTheme
 import org.joda.time.DateTime
 import java.util.*
 
@@ -82,7 +82,7 @@ class ComposeUpdatesController : ShosetsuController() {
 	): View = ComposeView(container.context).apply {
 		setViewTitle()
 		setContent {
-			MdcTheme {
+			ShosetsuCompose {
 				val items: Map<DateTime, List<UpdateCompleteEntity>> by viewModel.liveData.collectAsState(
 					emptyMap()
 				)

@@ -13,14 +13,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.composethemeadapter.MdcTheme
 import kotlin.math.roundToInt
 
 @Preview
 @Composable
 fun PreviewSeekBar() {
 	var value by remember { mutableStateOf(1) }
-	MdcTheme {
+	ShosetsuCompose {
 		Box(
 			modifier = Modifier
 				.fillMaxSize()
@@ -121,7 +120,8 @@ fun DiscreteSlider(
 							keyboardOptions = KeyboardOptions(
 								keyboardType = KeyboardType.Number
 							),
-							modifier = Modifier.padding(bottom = 8.dp, start = 24.dp, end = 24.dp)
+							modifier = Modifier
+								.padding(bottom = 8.dp, start = 24.dp, end = 24.dp)
 								.fillMaxWidth()
 						)
 
@@ -256,7 +256,8 @@ fun DiscreteSlider(
 							keyboardOptions = KeyboardOptions(
 								keyboardType = KeyboardType.Number
 							),
-							modifier = Modifier.padding(bottom = 8.dp, start = 24.dp, end = 24.dp)
+							modifier = Modifier
+								.padding(bottom = 8.dp, start = 24.dp, end = 24.dp)
 								.fillMaxWidth()
 						)
 

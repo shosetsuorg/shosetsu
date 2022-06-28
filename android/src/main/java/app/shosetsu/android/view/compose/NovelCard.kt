@@ -28,7 +28,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.placeholder.material.placeholder
-import com.google.android.material.composethemeadapter.MdcTheme
 
 /*
  * This file is part of shosetsu.
@@ -68,7 +67,7 @@ fun PlaceholderNovelCardNormalContent() {
 @Preview
 @Composable
 fun PreviewNovelCardNormalContent() {
-	MdcTheme {
+	ShosetsuCompose {
 		NovelCardNormalContent(
 			"Test",
 			"",
@@ -171,7 +170,7 @@ fun PlaceholderNovelCardCozyContent() {
 @Preview
 @Composable
 fun PreviewNovelCardCozyContent() {
-	MdcTheme {
+	ShosetsuCompose {
 		NovelCardCozyContent(
 			"Test",
 			"",
@@ -244,7 +243,7 @@ fun NovelCardCozyContent(
 @Preview
 @Composable
 fun PreviewNovelCardCompressedContent() {
-	MdcTheme {
+	ShosetsuCompose {
 		NovelCardCompressedContent(
 			"Test",
 			"",

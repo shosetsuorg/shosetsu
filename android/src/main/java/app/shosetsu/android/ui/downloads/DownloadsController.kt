@@ -45,6 +45,7 @@ import app.shosetsu.android.common.ext.collectLA
 import app.shosetsu.android.common.ext.displayOfflineSnackBar
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.compose.ErrorContent
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
@@ -52,7 +53,6 @@ import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.ADownloadsViewModel
 import app.shosetsu.android.viewmodel.abstracted.ADownloadsViewModel.SelectedDownloadsState
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import kotlinx.coroutines.flow.Flow
 
@@ -81,7 +81,7 @@ class DownloadsController : ShosetsuController(),
 	): View = ComposeView(container.context).apply {
 		setViewTitle()
 		setContent {
-			MdcTheme {
+			ShosetsuCompose {
 				val items by viewModel.liveData.collectAsState(listOf())
 				val hasSelected by viewModel.hasSelectedFlow.collectAsState(false)
 
@@ -301,7 +301,7 @@ fun DownloadsContent(
 @Preview
 @Composable
 fun PreviewDownloadContent() {
-	MdcTheme {
+	ShosetsuCompose {
 		DownloadContent(
 			DownloadUI(
 				0,

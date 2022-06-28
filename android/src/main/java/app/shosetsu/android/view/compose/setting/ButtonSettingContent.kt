@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.android.material.composethemeadapter.MdcTheme
+import app.shosetsu.android.view.compose.ShosetsuCompose
 
 /*
  * This file is part of shosetsu.
@@ -54,12 +54,14 @@ fun ButtonSettingContent(
 @Preview
 @Composable
 fun PreviewButtonSettingContent() {
-	MdcTheme {
+	ShosetsuCompose {
 		ButtonSettingContent(
 			"This is a button",
 			"Press me now now now now now",
 			"Button",
-			modifier = Modifier.width(300.dp).height(75.dp)
+			modifier = Modifier
+				.width(300.dp)
+				.height(75.dp)
 		) {
 		}
 	}

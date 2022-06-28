@@ -11,10 +11,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel.FilteredLanguages
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.composethemeadapter.MdcTheme
 
 /*
  * This file is part of shosetsu.
@@ -159,7 +159,7 @@ fun BrowseControllerLanguagesFilter(
 @Preview
 @Composable
 fun PreviewBrowseControllerLanguages() {
-	MdcTheme {
+	ShosetsuCompose {
 		BrowseControllerLanguagesContent(
 			languages = listOf("en", "ch", "ru", "fr"),
 			state = mapOf("en" to false, "ch" to false, "ru" to true, "fr" to false),

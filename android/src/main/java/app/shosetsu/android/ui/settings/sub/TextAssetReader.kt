@@ -20,9 +20,9 @@ import androidx.core.os.bundleOf
 import app.shosetsu.android.common.enums.TextAsset
 import app.shosetsu.android.common.ext.getString
 import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.ATextAssetReaderViewModel
-import com.google.android.material.composethemeadapter.MdcTheme
 
 /*
  * This file is part of Shosetsu.
@@ -62,7 +62,7 @@ class TextAssetReader(bundleI: Bundle) : ShosetsuController(bundleI) {
 	): View = ComposeView(container.context).apply {
 		setContent {
 			val content by viewModel.liveData.collectAsState(initial = null)
-			MdcTheme {
+			ShosetsuCompose {
 				TextAssetReaderContent(content)
 			}
 		}

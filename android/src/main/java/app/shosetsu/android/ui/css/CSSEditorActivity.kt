@@ -53,9 +53,9 @@ import androidx.core.content.getSystemService
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.openInWebView
 import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.viewmodel.abstracted.ACSSEditorViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.composethemeadapter.MdcTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.kodein.di.DI
@@ -93,7 +93,7 @@ class CSSEditorActivity : AppCompatActivity(), DIAware {
 			val isCSSInvalid by viewModel.isCSSValid.collectAsState(true)
 			val cssInvalidReason by viewModel.cssInvalidReason.collectAsState(null)
 
-			MdcTheme {
+			ShosetsuCompose {
 				CSSEditorContent(
 					cssTitle = cssTitle,
 					cssContentLive = viewModel.cssContent,
@@ -143,7 +143,7 @@ class CSSEditorActivity : AppCompatActivity(), DIAware {
 @Preview
 @Composable
 fun PreviewCSSEditorContent() {
-	MdcTheme {
+	ShosetsuCompose {
 		CSSEditorContent(
 			"TestCSS",
 			flow { emit("") },

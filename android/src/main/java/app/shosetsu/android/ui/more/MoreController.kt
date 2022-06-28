@@ -31,11 +31,11 @@ import app.shosetsu.android.ui.backup.BackupSettings
 import app.shosetsu.android.ui.downloads.DownloadsController
 import app.shosetsu.android.ui.repository.RepositoryController
 import app.shosetsu.android.ui.settings.ComposeSettingsController
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
 import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.composethemeadapter.MdcTheme
 
 /*
  * This file is part of Shosetsu.
@@ -75,7 +75,7 @@ class ComposeMoreController
 	): View = ComposeView(container.context).apply {
 		setViewTitle()
 		setContent {
-			MdcTheme {
+			ShosetsuCompose {
 				MoreContent(
 					{
 						makeSnackBar(R.string.style_wait)?.show()

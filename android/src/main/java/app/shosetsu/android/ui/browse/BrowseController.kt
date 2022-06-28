@@ -63,6 +63,7 @@ import app.shosetsu.android.ui.extensionsConfigure.ConfigureExtension
 import app.shosetsu.android.view.ComposeBottomSheetDialog
 import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
@@ -73,7 +74,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 
 /**
@@ -130,7 +130,7 @@ class BrowseController : ShosetsuController(),
 	): View = ComposeView(container.context).apply {
 		setViewTitle()
 		setContent {
-			MdcTheme {
+			ShosetsuCompose {
 				val entites by viewModel.liveData.collectAsState(listOf())
 				var isRefreshing by remember { mutableStateOf(false) }
 				BrowseContent(
@@ -217,7 +217,7 @@ class BrowseController : ShosetsuController(),
 					setContentView(
 						ComposeView(view!!.context).apply {
 							setContent {
-								MdcTheme {
+								ShosetsuCompose {
 									BrowseControllerFilterMenu(viewModel)
 								}
 							}

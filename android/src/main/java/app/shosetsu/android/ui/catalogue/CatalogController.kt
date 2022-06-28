@@ -47,7 +47,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import kotlinx.coroutines.Job
 import org.acra.ACRA
@@ -97,7 +96,7 @@ class CatalogController(
 	): View = ComposeView(container.context).apply {
 		setViewTitle()
 		setContent {
-			MdcTheme {
+			ShosetsuCompose {
 				val type by viewModel.novelCardTypeLive.collectAsState(NORMAL)
 
 				val columnsInV by viewModel.columnsInV.collectAsState(SettingKey.ChapterColumnsInPortait.default)
@@ -350,7 +349,7 @@ class CatalogController(
 					setContentView(
 						ComposeView((view ?: return@apply).context).apply {
 							setContent {
-								MdcTheme((view ?: return@setContent).context) {
+								ShosetsuCompose((view ?: return@setContent).context) {
 									val items by viewModel.filterItemsLive.collectAsState(emptyList())
 									CatalogFilterMenu(
 										items = items,
@@ -496,7 +495,7 @@ fun CatalogContent(
 @Preview
 @Composable
 fun PreviewCatalogContentNoMore() {
-	MdcTheme {
+	ShosetsuCompose {
 		CatalogContentNoMore()
 	}
 }

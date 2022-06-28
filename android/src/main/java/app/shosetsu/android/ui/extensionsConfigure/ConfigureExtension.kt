@@ -26,6 +26,7 @@ import app.shosetsu.android.common.enums.TriStateState
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.domain.model.local.FilterEntity
 import app.shosetsu.android.domain.model.local.InstalledExtensionEntity
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.compose.setting.DropdownSettingContent
 import app.shosetsu.android.view.compose.setting.StringSettingContent
 import app.shosetsu.android.view.compose.setting.SwitchSettingContent
@@ -37,7 +38,6 @@ import app.shosetsu.lib.Novel
 import app.shosetsu.lib.Version
 import coil.compose.rememberAsyncImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.composethemeadapter.MdcTheme
 import kotlin.random.Random
 
 /*
@@ -78,7 +78,7 @@ class ConfigureExtension(bundle: Bundle) : ShosetsuController(bundle),
 	): View = ComposeView(container.context).apply {
 		setViewTitle()
 		setContent {
-			MdcTheme {
+			ShosetsuCompose {
 				ConfigureExtensionContent(viewModel, onExit = { activity?.onBackPressed() })
 			}
 		}

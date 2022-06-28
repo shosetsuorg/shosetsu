@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.android.material.composethemeadapter.MdcTheme
+import app.shosetsu.android.view.compose.ShosetsuCompose
 
 /*
  * This file is part of shosetsu.
@@ -36,7 +36,7 @@ import com.google.android.material.composethemeadapter.MdcTheme
 @Preview
 @Composable
 fun PreviewHeaderSettingContent() {
-	MdcTheme {
+	ShosetsuCompose {
 		HeaderSettingContent("Test", modifier = Modifier.padding(16.dp))
 	}
 }

@@ -25,13 +25,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.uimodels.model.MigrationExtensionUI
 import app.shosetsu.android.view.uimodels.model.MigrationNovelUI
 import app.shosetsu.android.viewmodel.abstracted.AMigrationViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.composethemeadapter.MdcTheme
 
 /*
  * This file is part of Shosetsu.
@@ -76,7 +76,7 @@ class MigrationController(bundle: Bundle) : ShosetsuController(bundle) {
 		savedViewState: Bundle?
 	): View = ComposeView(container.context).apply {
 		setContent {
-			MdcTheme {
+			ShosetsuCompose {
 				MigrationContent(viewModel)
 			}
 		}
@@ -178,7 +178,7 @@ fun PreviewMigrationExtensionItemContent() {
 			)
 		)
 	}
-	MdcTheme {
+	ShosetsuCompose {
 		Box(modifier = Modifier.height(200.dp)) {
 			MigrationExtensionItemContent(item = item) {
 				println("Test")
@@ -258,7 +258,7 @@ fun PreviewMigrationNovelItemRowContent() {
 			)
 		)
 	}
-	MdcTheme {
+	ShosetsuCompose {
 		Row(
 			modifier = Modifier
 				.height(200.dp)
@@ -288,7 +288,7 @@ fun PreviewMigrationNovelItemContent() {
 			)
 		)
 	}
-	MdcTheme {
+	ShosetsuCompose {
 		Box(modifier = Modifier.height(200.dp)) {
 			MigrationNovelItemContent(item = item) {
 				println("Test")

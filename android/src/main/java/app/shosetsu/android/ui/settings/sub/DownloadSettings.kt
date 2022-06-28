@@ -21,13 +21,13 @@ import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.consts.ActivityRequestCodes.REQUEST_CODE_DIRECTORY
 import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.compose.setting.SliderSettingContent
 import app.shosetsu.android.view.compose.setting.SwitchSettingContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.settings.ADownloadSettingsViewModel
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.snackbar.Snackbar
 
 /*
@@ -65,7 +65,7 @@ class DownloadSettings : ShosetsuController() {
 	): View = ComposeView(container.context).apply {
 		setViewTitle()
 		setContent {
-			MdcTheme {
+			ShosetsuCompose {
 				DownloadSettingsContent(
 					viewModel,
 					::performFileSearch
@@ -139,7 +139,9 @@ fun DownloadSettingsContent(
 				{ "$it" },
 				viewModel.settingsRepo,
 				SettingKey.DownloadThreadPool,
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -151,7 +153,9 @@ fun DownloadSettingsContent(
 				{ "$it" },
 				viewModel.settingsRepo,
 				SettingKey.DownloadExtThreads,
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -162,7 +166,9 @@ fun DownloadSettingsContent(
 				stringResource(R.string.download_chapter_updates_desc),
 				viewModel.settingsRepo,
 				SettingKey.DownloadNewNovelChapters,
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -172,7 +178,9 @@ fun DownloadSettingsContent(
 				"",//TODO Description
 				viewModel.settingsRepo,
 				SettingKey.DownloadOnMeteredConnection,
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp)
 			)
 		}
 		item {
@@ -181,7 +189,9 @@ fun DownloadSettingsContent(
 				"",//TODO Description
 				viewModel.settingsRepo,
 				SettingKey.DownloadOnLowBattery,
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp)
 			)
 		}
 		item {
@@ -190,7 +200,9 @@ fun DownloadSettingsContent(
 				"",//TODO Description
 				viewModel.settingsRepo,
 				SettingKey.DownloadOnLowStorage,
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -201,7 +213,9 @@ fun DownloadSettingsContent(
 					"",//TODO Description
 					viewModel.settingsRepo,
 					SettingKey.DownloadOnlyWhenIdle,
-					modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+					modifier = Modifier
+						.fillMaxWidth()
+						.padding(bottom = 8.dp)
 				)
 			}
 
@@ -211,7 +225,9 @@ fun DownloadSettingsContent(
 				"If a novel is not bookmarked when a chapter is downloaded, this will",
 				viewModel.settingsRepo,
 				SettingKey.BookmarkOnDownload,
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp)
 			)
 		}
 		item {
@@ -220,7 +236,9 @@ fun DownloadSettingsContent(
 				stringResource(R.string.settings_download_notify_extension_install_desc),
 				viewModel.settingsRepo,
 				SettingKey.NotifyExtensionDownload,
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -241,7 +259,9 @@ fun DownloadSettingsContent(
 				},
 				viewModel.settingsRepo,
 				SettingKey.DeleteReadChapter,
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp),
 				maxHeaderSize = 80.dp
 			)
 		}
@@ -252,7 +272,9 @@ fun DownloadSettingsContent(
 				"Create a notification for each chapters status when downloading",
 				viewModel.settingsRepo,
 				SettingKey.DownloadNotifyChapters,
-				modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp)
 			)
 		}
 	}
