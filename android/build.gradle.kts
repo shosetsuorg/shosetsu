@@ -168,10 +168,10 @@ dependencies {
 	implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
 
 	// - Life Cycle
-	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
-	implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1")
-	implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
-	implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.1")
+	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0")
+	implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0")
+	implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.0")
+	implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.0")
 	implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
 
 	// Test classes
