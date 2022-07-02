@@ -612,6 +612,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 		}
 
 		if (from is ExtendedFABController) {
+			binding.navRail.headerView?.isVisible = false
 			from.hideFAB(eFabMaintainer)
 			from.resetFAB(eFabMaintainer)
 		}
@@ -619,6 +620,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 		if (to is ExtendedFABController) {
 			to.manipulateFAB(eFabMaintainer)
 			to.showFAB(eFabMaintainer)
+			binding.navRail.headerView?.isVisible = true
 		}
 
 		val tabLayout = binding.tabLayout
