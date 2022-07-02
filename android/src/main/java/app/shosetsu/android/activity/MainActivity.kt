@@ -457,22 +457,6 @@ class MainActivity : AppCompatActivity(), DIAware,
 		}
 	}
 
-	private val holdingAtBottom = hashMapOf<View, AppBarLayout.OnOffsetChangedListener>()
-
-	fun holdAtBottom(view: View) {
-		AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-			val maxAbsOffset = appBarLayout.measuredHeight - binding.tabLayout.measuredHeight
-			view.translationY = -maxAbsOffset - verticalOffset.toFloat() + appBarLayout.marginTop
-		}.let {
-			binding.elevatedAppBarLayout.addOnOffsetChangedListener(it)
-			holdingAtBottom[view] = it
-		}
-	}
-
-	fun removeHoldAtBottom(view: View) {
-		binding.elevatedAppBarLayout.removeOnOffsetChangedListener(holdingAtBottom.remove(view))
-	}
-
 	private fun handleAppUpdate() {
 		viewModel.handleAppUpdate().collectLA(this, catch = {
 			makeSnackBar(
