@@ -30,7 +30,7 @@ import kotlinx.coroutines.withContext
  * @author Doomsdayrs
  */
 
-fun <T> Flow<T>.collectLA(
+fun <T : Any?> Flow<T>.collectLA(
 	owner: LifecycleOwner,
 	catch: suspend FlowCollector<T>.(Throwable) -> Unit,
 	onCollect: FlowCollector<T>

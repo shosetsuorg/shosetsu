@@ -166,6 +166,7 @@ dependencies {
 	implementation("androidx.collection:collection-ktx:1.2.0")
 	implementation("androidx.core:core-splashscreen:1.0.0-rc01")
 	implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
+	implementation("androidx.window:window:1.0.0")
 
 	// - Life Cycle
 	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0")
