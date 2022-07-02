@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="app.shosetsu.android.activity.MainActivity">
+    tools:context="app.shosetsu.android.activity.MainActivity"
+    tools:theme="@style/AppTheme.Main">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator"
