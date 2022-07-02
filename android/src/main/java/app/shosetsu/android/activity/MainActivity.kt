@@ -242,12 +242,12 @@ class MainActivity : AppCompatActivity(), DIAware,
 		if (!isFinishing) {
 			when (viewModel.navigationStyle) {
 				BOTTOM_NAV -> {
-					binding.bottomNavigationView.selectedItemId = id
-					binding.bottomNavigationView.menu.performIdentifierAction(id, 0)
+					binding.navBottom.selectedItemId = id
+					binding.navBottom.menu.performIdentifierAction(id, 0)
 				}
 				DRAWER_NAV -> {
-					binding.navView.setCheckedItem(id)
-					binding.navView.menu.performIdentifierAction(id, 0)
+					binding.navDrawer.setCheckedItem(id)
+					binding.navDrawer.menu.performIdentifierAction(id, 0)
 				}
 			}
 		}
@@ -268,13 +268,13 @@ class MainActivity : AppCompatActivity(), DIAware,
 
 		when (viewModel.navigationStyle) {
 			BOTTOM_NAV -> {
-				binding.bottomNavigationView.visibility = VISIBLE
-				binding.navView.visibility = GONE
+				binding.navBottom.visibility = VISIBLE
+				binding.navDrawer.visibility = GONE
 				setupBottomNavigationDrawer()
 			}
 			DRAWER_NAV -> {
-				binding.navView.visibility = VISIBLE
-				binding.bottomNavigationView.visibility = GONE
+				binding.navDrawer.visibility = VISIBLE
+				binding.navBottom.visibility = GONE
 				setupNavigationDrawer()
 			}
 		}
@@ -304,7 +304,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 
 		// Navigation view
 		//nav_view.setNavigationItemSelectedListener(NavigationSwapListener(this))
-		binding.navView.setNavigationItemSelectedListener {
+		binding.navDrawer.setNavigationItemSelectedListener {
 			logI("Navigation item selected: $it")
 			val id = it.itemId
 			val currentRoot = router.backstack.firstOrNull()
@@ -322,10 +322,10 @@ class MainActivity : AppCompatActivity(), DIAware,
 		logV("Setting up modern navigation")
 		binding.drawerLayout.setDrawerLockMode(
 			DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
-			binding.navView
+			binding.navDrawer
 		)
 
-		binding.bottomNavigationView.setOnItemSelectedListener {
+		binding.navBottom.setOnItemSelectedListener {
 			val id = it.itemId
 			val currentRoot = router.backstack.firstOrNull()
 			if (currentRoot?.tag()?.toIntOrNull() != id) handleNavigationSelected(id)
@@ -511,12 +511,12 @@ class MainActivity : AppCompatActivity(), DIAware,
 					actionBarDrawerToggle?.isDrawerIndicatorEnabled = true
 					binding.drawerLayout.setDrawerLockMode(
 						DrawerLayout.LOCK_MODE_UNLOCKED,
-						binding.navView
+						binding.navDrawer
 					)
 				}
 				BOTTOM_NAV -> {
 					supportActionBar?.setDisplayHomeAsUpEnabled(false)
-					binding.bottomNavigationView.visibility = VISIBLE
+					binding.navBottom.visibility = VISIBLE
 				}
 			}
 		} else {
@@ -528,12 +528,12 @@ class MainActivity : AppCompatActivity(), DIAware,
 					actionBarDrawerToggle?.isDrawerIndicatorEnabled = false
 					binding.drawerLayout.setDrawerLockMode(
 						DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
-						binding.navView
+						binding.navDrawer
 					)
 				}
 				BOTTOM_NAV -> {
 					supportActionBar?.setDisplayHomeAsUpEnabled(true)
-					binding.bottomNavigationView.visibility = GONE
+					binding.navBottom.visibility = GONE
 				}
 			}
 		}
@@ -597,7 +597,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 		Snackbar.make(binding.coordinator, string, length).apply {
 			when {
 				binding.efab.isVisible -> anchorView = binding.efab
-				binding.bottomNavigationView.isVisible -> anchorView = binding.bottomNavigationView
+				binding.navBottom.isVisible -> anchorView = binding.navBottom
 			}
 		}
 
