@@ -26,12 +26,12 @@ package app.shosetsu.android.common.enums
 enum class NavigationStyle {
 
 	/**
-	 * Material 2 compliant style
+	 * Material compliant style
 	 */
-	BOTTOM_NAV,
+	MATERIAL,
 
 	/**
 	 * Legacy navigation for older users
 	 */
-	DRAWER_NAV
+	LEGACY
 }

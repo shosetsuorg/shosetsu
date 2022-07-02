@@ -29,8 +29,8 @@ import androidx.core.view.marginTop
 import androidx.drawerlayout.widget.DrawerLayout
 import app.shosetsu.android.common.consts.*
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
-import app.shosetsu.android.common.enums.NavigationStyle.BOTTOM_NAV
-import app.shosetsu.android.common.enums.NavigationStyle.DRAWER_NAV
+import app.shosetsu.android.common.enums.NavigationStyle.LEGACY
+import app.shosetsu.android.common.enums.NavigationStyle.MATERIAL
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.collapse
 import app.shosetsu.android.common.utils.expand
@@ -241,11 +241,11 @@ class MainActivity : AppCompatActivity(), DIAware,
 	private fun setSelectedDrawerItem(id: Int) {
 		if (!isFinishing) {
 			when (viewModel.navigationStyle) {
-				BOTTOM_NAV -> {
+				MATERIAL -> {
 					binding.navBottom.selectedItemId = id
 					binding.navBottom.menu.performIdentifierAction(id, 0)
 				}
-				DRAWER_NAV -> {
+				LEGACY -> {
 					binding.navDrawer.setCheckedItem(id)
 					binding.navDrawer.menu.performIdentifierAction(id, 0)
 				}
@@ -260,22 +260,22 @@ class MainActivity : AppCompatActivity(), DIAware,
 		binding.toolbar.setNavigationOnClickListener {
 			logV("Navigation item clicked")
 			if (router.backstackSize == 1) {
-				if (viewModel.navigationStyle == DRAWER_NAV) {
+				if (viewModel.navigationStyle == LEGACY) {
 					binding.drawerLayout.openDrawer(GravityCompat.START)
 				} else onBackPressed()
 			} else onBackPressed()
 		}
 
 		when (viewModel.navigationStyle) {
-			BOTTOM_NAV -> {
+			MATERIAL -> {
 				binding.navBottom.visibility = VISIBLE
 				binding.navDrawer.visibility = GONE
-				setupBottomNavigationDrawer()
+				setupMaterialNavigation()
 			}
-			DRAWER_NAV -> {
+			LEGACY -> {
 				binding.navDrawer.visibility = VISIBLE
 				binding.navBottom.visibility = GONE
-				setupNavigationDrawer()
+				setupLegacyNavigation()
 			}
 		}
 	}
@@ -283,7 +283,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 	/**
 	 * Setup the navigation drawer
 	 */
-	private fun setupNavigationDrawer() {
+	private fun setupLegacyNavigation() {
 		logV("Setting up legacy navigation")
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -318,7 +318,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 	/**
 	 * Setup the bottom navigation
 	 */
-	private fun setupBottomNavigationDrawer() {
+	private fun setupMaterialNavigation() {
 		logV("Setting up modern navigation")
 		binding.drawerLayout.setDrawerLockMode(
 			DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
@@ -506,7 +506,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 		if (showHamburger) {
 			// Shows navigation
 			when (viewModel.navigationStyle) {
-				DRAWER_NAV -> {
+				LEGACY -> {
 					logI("Sync activity view with controller for legacy")
 					actionBarDrawerToggle?.isDrawerIndicatorEnabled = true
 					binding.drawerLayout.setDrawerLockMode(
@@ -514,7 +514,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 						binding.navDrawer
 					)
 				}
-				BOTTOM_NAV -> {
+				MATERIAL -> {
 					supportActionBar?.setDisplayHomeAsUpEnabled(false)
 					binding.navBottom.visibility = VISIBLE
 				}
@@ -523,7 +523,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 
 			// Hides navigation
 			when (viewModel.navigationStyle) {
-				DRAWER_NAV -> {
+				LEGACY -> {
 					logI("Sync activity view with controller for legacy")
 					actionBarDrawerToggle?.isDrawerIndicatorEnabled = false
 					binding.drawerLayout.setDrawerLockMode(
@@ -531,7 +531,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 						binding.navDrawer
 					)
 				}
-				BOTTOM_NAV -> {
+				MATERIAL -> {
 					supportActionBar?.setDisplayHomeAsUpEnabled(true)
 					binding.navBottom.visibility = GONE
 				}

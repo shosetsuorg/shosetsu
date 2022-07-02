@@ -56,7 +56,7 @@ class MainViewModel(
 	private val loadBackupProgress: LoadBackupProgressFlowUseCase,
 	private val settingsRepository: ISettingsRepository
 ) : AMainViewModel() {
-	private var _navigationStyle = NavigationStyle.BOTTOM_NAV
+	private var _navigationStyle = NavigationStyle.MATERIAL
 	private var _requireDoubleBackToExit = SettingKey.RequireDoubleBackToExit.default
 
 	override val requireDoubleBackToExit: Boolean
