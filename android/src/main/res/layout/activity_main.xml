@@ -17,7 +17,8 @@
         <app.shosetsu.android.view.widget.ElevatedAppBarLayout
             android:id="@+id/elevatedAppBarLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_insetEdge="top">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
