@@ -10,10 +10,8 @@ import android.content.Intent
 import android.content.Intent.ACTION_MAIN
 import android.content.Intent.ACTION_SEARCH
 import android.content.IntentFilter
+import android.content.res.Configuration
 import android.os.Bundle
-import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
@@ -25,8 +23,8 @@ import androidx.core.os.bundleOf
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
-import androidx.core.view.marginTop
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.window.layout.WindowMetricsCalculator
 import app.shosetsu.android.common.consts.*
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
 import app.shosetsu.android.common.enums.NavigationStyle.LEGACY
@@ -52,8 +50,8 @@ import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityMainBinding
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.color.DynamicColors
+import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.snackbar.BaseTransientBottomBar.Duration
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
@@ -170,6 +168,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 		}
 		this.requestPerms()
 		super.onCreate(savedInstanceState)
+
 		// Do not let the launcher create a new activity http://stackoverflow.com/questions/16283079
 		if (!isTaskRoot) {
 			logI("Broadcasting intent ${intent.action}")
@@ -197,12 +196,55 @@ class MainActivity : AppCompatActivity(), DIAware,
 					)
 				)
 		}
-		setContentView(ActivityMainBinding.inflate(layoutInflater).also { binding = it }.root)
-
-		setupView()
+		binding = ActivityMainBinding.inflate(layoutInflater)
+		computeWindowSizeClasses()
 		setupRouter(savedInstanceState)
+		setContentView(binding.root)
 		handleIntentAction(intent)
 		setupProcesses()
+	}
+
+	private var isTablet = false
+
+	/**
+	 * Observe configuration changed
+	 */
+	override fun onConfigurationChanged(newConfig: Configuration) {
+		super.onConfigurationChanged(newConfig)
+		computeWindowSizeClasses()
+	}
+
+	/**
+	 * Compute the dimensions of the display and morph the UI to match
+	 */
+	private fun computeWindowSizeClasses() {
+		val metrics = WindowMetricsCalculator.getOrCreate()
+			.computeCurrentWindowMetrics(this)
+
+		val metricsWidth = metrics.bounds.width() / resources.displayMetrics.density
+
+		isTablet = metricsWidth > 600
+		logD("Is tablet?: $isTablet $metricsWidth")
+
+		if (viewModel.navigationStyle == MATERIAL) {
+			binding.navRail.isVisible = isTablet
+			binding.navBottom.isVisible = !isTablet
+
+		}
+
+		setupView()
+	}
+
+
+	/**
+	 * Get the current navigation bar view
+	 *
+	 * If [isTablet] true, then the nav rail will be provided, else the bottom nav
+	 */
+	private fun getMaterialNav(): NavigationBarView {
+		return if (isTablet)
+			binding.navRail
+		else binding.navBottom
 	}
 
 	override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -237,13 +279,12 @@ class MainActivity : AppCompatActivity(), DIAware,
 				viewModel.requireDoubleBackToExit &&
 				!inProtectingBack
 
-	// From tachiyomi
 	private fun setSelectedDrawerItem(id: Int) {
 		if (!isFinishing) {
 			when (viewModel.navigationStyle) {
 				MATERIAL -> {
-					binding.navBottom.selectedItemId = id
-					binding.navBottom.menu.performIdentifierAction(id, 0)
+					getMaterialNav().selectedItemId = id
+					getMaterialNav().menu.performIdentifierAction(id, 0)
 				}
 				LEGACY -> {
 					binding.navDrawer.setCheckedItem(id)
@@ -268,13 +309,13 @@ class MainActivity : AppCompatActivity(), DIAware,
 
 		when (viewModel.navigationStyle) {
 			MATERIAL -> {
-				binding.navBottom.visibility = VISIBLE
-				binding.navDrawer.visibility = GONE
+				getMaterialNav().isVisible = true
+				binding.navDrawer.isVisible = false
 				setupMaterialNavigation()
 			}
 			LEGACY -> {
-				binding.navDrawer.visibility = VISIBLE
-				binding.navBottom.visibility = GONE
+				getMaterialNav().isVisible = false
+				binding.navDrawer.isVisible = true
 				setupLegacyNavigation()
 			}
 		}
@@ -284,7 +325,6 @@ class MainActivity : AppCompatActivity(), DIAware,
 	 * Setup the navigation drawer
 	 */
 	private fun setupLegacyNavigation() {
-		logV("Setting up legacy navigation")
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 		actionBarDrawerToggle = ActionBarDrawerToggle(
@@ -319,13 +359,12 @@ class MainActivity : AppCompatActivity(), DIAware,
 	 * Setup the bottom navigation
 	 */
 	private fun setupMaterialNavigation() {
-		logV("Setting up modern navigation")
 		binding.drawerLayout.setDrawerLockMode(
 			DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
 			binding.navDrawer
 		)
 
-		binding.navBottom.setOnItemSelectedListener {
+		getMaterialNav().setOnItemSelectedListener {
 			val id = it.itemId
 			val currentRoot = router.backstack.firstOrNull()
 			if (currentRoot?.tag()?.toIntOrNull() != id) handleNavigationSelected(id)
@@ -500,7 +539,8 @@ class MainActivity : AppCompatActivity(), DIAware,
 				}
 				MATERIAL -> {
 					supportActionBar?.setDisplayHomeAsUpEnabled(false)
-					binding.navBottom.visibility = VISIBLE
+					if (!isTablet)
+						binding.navBottom.isVisible = true
 				}
 			}
 		} else {
@@ -517,7 +557,8 @@ class MainActivity : AppCompatActivity(), DIAware,
 				}
 				MATERIAL -> {
 					supportActionBar?.setDisplayHomeAsUpEnabled(true)
-					binding.navBottom.visibility = GONE
+					if (!isTablet)
+						binding.navBottom.isVisible = false
 				}
 			}
 		}
