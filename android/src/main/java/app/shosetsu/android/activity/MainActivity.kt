@@ -12,6 +12,7 @@ import android.content.Intent.ACTION_SEARCH
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
@@ -22,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.window.layout.WindowMetricsCalculator
@@ -226,10 +228,19 @@ class MainActivity : AppCompatActivity(), DIAware,
 		isTablet = metricsWidth > 600
 		logD("Is tablet?: $isTablet $metricsWidth")
 
+		binding.navRail.removeHeaderView()
+		binding.coordinator.removeView(binding.efab)
+		binding.coordinator.addView(binding.efab)
+
 		if (viewModel.navigationStyle == MATERIAL) {
 			binding.navRail.isVisible = isTablet
 			binding.navBottom.isVisible = !isTablet
 
+			if (isTablet) {
+				binding.coordinator.removeView(binding.efab)
+				binding.navRail.addHeaderView(binding.efab)
+				binding.efab.shrink()
+			}
 		}
 
 		setupView()
@@ -520,6 +531,43 @@ class MainActivity : AppCompatActivity(), DIAware,
 		}
 	}
 
+	private val eFabMaintainer by lazy {
+		object : ExtendedFABController.EFabMaintainer {
+			override fun hide() {
+				if (!isTablet)
+					binding.efab.hide()
+			}
+
+			override fun show() {
+				binding.efab.show()
+			}
+
+			override fun setOnClickListener(onClick: ((View) -> Unit)?) {
+				binding.efab.setOnClickListener(onClick)
+			}
+
+			override fun shrink() {
+				binding.efab.shrink()
+			}
+
+			override fun extend() {
+				if (!isTablet)
+					binding.efab.extend()
+			}
+
+			override fun setText(textRes: Int) {
+				if (!isTablet)
+					binding.efab.setText(textRes)
+				ViewCompat.setTooltipText(binding.efab, getString(textRes))
+			}
+
+			override fun setIconResource(iconRes: Int) {
+				binding.efab.setIconResource(iconRes)
+			}
+
+		}
+	}
+
 	@SuppressLint("ObjectAnimatorBinding")
 	internal fun syncActivityViewWithController(to: Controller?, from: Controller? = null) {
 		val showHamburger = router.backstackSize == 1 // Show hamburg means this is home
@@ -563,16 +611,14 @@ class MainActivity : AppCompatActivity(), DIAware,
 			}
 		}
 
-		val eFab = binding.efab
-
 		if (from is ExtendedFABController) {
-			from.hideFAB(eFab)
-			from.resetFAB(eFab)
+			from.hideFAB(eFabMaintainer)
+			from.resetFAB(eFabMaintainer)
 		}
 
 		if (to is ExtendedFABController) {
-			to.manipulateFAB(eFab)
-			to.showFAB(eFab)
+			to.manipulateFAB(eFabMaintainer)
+			to.showFAB(eFabMaintainer)
 		}
 
 		val tabLayout = binding.tabLayout

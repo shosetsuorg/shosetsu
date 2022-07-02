@@ -1,7 +1,10 @@
 package app.shosetsu.android.view.controller.base
 
 import android.util.Log
+import android.view.View
 import androidx.annotation.CallSuper
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.Composable
@@ -9,7 +12,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ext.logID
 import app.shosetsu.android.common.ext.percentageScrolled
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import kotlinx.coroutines.launch
 
 /*
@@ -36,10 +38,21 @@ import kotlinx.coroutines.launch
  * For views with an FAB, to provide proper transition support
  */
 interface ExtendedFABController {
+	interface EFabMaintainer {
+		fun hide()
+		fun show()
+		fun setOnClickListener(onClick: ((View) -> Unit)?)
+		fun shrink()
+		fun extend()
+		fun setText(@StringRes textRes: Int)
+		fun setIconResource(@DrawableRes iconRes: Int)
+
+	}
+
 	/**
 	 * Hide the FAB
 	 */
-	fun hideFAB(fab: ExtendedFloatingActionButton) {
+	fun hideFAB(fab: EFabMaintainer) {
 		Log.d(logID(), "Hiding FAB")
 		fab.hide()
 	}
@@ -47,7 +60,7 @@ interface ExtendedFABController {
 	/**
 	 * Show the FAB
 	 */
-	fun showFAB(fab: ExtendedFloatingActionButton) {
+	fun showFAB(fab: EFabMaintainer) {
 		Log.d(logID(), "Showing FAB")
 		fab.show()
 	}
@@ -56,7 +69,7 @@ interface ExtendedFABController {
 	 * Reset the fab to its original state
 	 */
 	@CallSuper
-	fun resetFAB(fab: ExtendedFloatingActionButton) {
+	fun resetFAB(fab: EFabMaintainer) {
 		Log.d(logID(), "Resetting FAB listeners")
 		fab.setOnClickListener(null)
 		manipulateFAB(fab)
@@ -65,7 +78,7 @@ interface ExtendedFABController {
 	/**
 	 * Change FAB for your use case
 	 */
-	fun manipulateFAB(fab: ExtendedFloatingActionButton)
+	fun manipulateFAB(fab: EFabMaintainer)
 }
 
 
@@ -74,7 +87,7 @@ interface ExtendedFABController {
  */
 fun ExtendedFABController.syncFABWithRecyclerView(
 	recyclerView: RecyclerView,
-	fab: ExtendedFloatingActionButton
+	fab: ExtendedFABController.EFabMaintainer
 ) =
 	recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 		override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -96,7 +109,7 @@ fun ExtendedFABController.syncFABWithRecyclerView(
 @Composable
 fun syncFABWithCompose(
 	state: LazyListState,
-	fab: ExtendedFloatingActionButton
+	fab: ExtendedFABController.EFabMaintainer
 ) {
 	LaunchedEffect(state.isScrollInProgress) {
 		launch {
@@ -115,7 +128,7 @@ fun syncFABWithCompose(
 @Composable
 fun syncFABWithCompose(
 	state: LazyGridState,
-	fab: ExtendedFloatingActionButton
+	fab: ExtendedFABController.EFabMaintainer
 ) {
 	LaunchedEffect(state.isScrollInProgress) {
 		launch {

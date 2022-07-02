@@ -48,12 +48,12 @@ import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
+import app.shosetsu.android.view.controller.base.ExtendedFABController.EFabMaintainer
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.abstracted.ADownloadsViewModel
 import app.shosetsu.android.viewmodel.abstracted.ADownloadsViewModel.SelectedDownloadsState
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -67,7 +67,7 @@ class DownloadsController : ShosetsuController(),
 
 	override val viewTitleRes: Int = R.string.downloads
 	private val viewModel: ADownloadsViewModel by viewModel()
-	private var fab: ExtendedFloatingActionButton? = null
+	private var fab: EFabMaintainer? = null
 	private var actionMode: ActionMode? = null
 
 	init {
@@ -156,14 +156,14 @@ class DownloadsController : ShosetsuController(),
 		super.onDestroy()
 	}
 
-	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
+	override fun manipulateFAB(fab: EFabMaintainer) {
 		this.fab = fab
 		fab.setOnClickListener { togglePause() }
 		fab.setText(R.string.paused)
 		fab.setIconResource(R.drawable.ic_pause_circle_outline_24dp)
 	}
 
-	override fun showFAB(fab: ExtendedFloatingActionButton) {
+	override fun showFAB(fab: EFabMaintainer) {
 		if (actionMode == null) super.showFAB(fab)
 	}
 
@@ -214,7 +214,7 @@ fun DownloadsContent(
 	startFailedSelection: () -> Unit,
 	deleteSelected: () -> Unit,
 	toggleSelection: (DownloadUI) -> Unit,
-	fab: ExtendedFloatingActionButton?
+	fab: EFabMaintainer?
 ) {
 	if (items.isNotEmpty()) {
 		Box(

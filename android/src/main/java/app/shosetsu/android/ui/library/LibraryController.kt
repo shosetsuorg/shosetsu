@@ -27,7 +27,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.consts.BundleKeys
@@ -41,6 +40,7 @@ import app.shosetsu.android.view.ComposeBottomSheetDialog
 import app.shosetsu.android.view.compose.*
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
+import app.shosetsu.android.view.controller.base.ExtendedFABController.EFabMaintainer
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.view.uimodels.model.LibraryNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
@@ -48,7 +48,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
@@ -79,7 +78,7 @@ import kotlinx.coroutines.runBlocking
 class LibraryController
 	: ShosetsuController(), ExtendedFABController {
 
-	private var fab: ExtendedFloatingActionButton? = null
+	private var fab: EFabMaintainer? = null
 	private var bsg: BottomSheetDialog? = null
 
 	override val viewTitleRes: Int = R.string.my_library
@@ -151,7 +150,9 @@ class LibraryController
 
 	private fun startObservation() {
 		viewModel.isEmptyFlow.collectLA(this, catch = {}) {
-			fab?.isVisible = !it
+			if (it)
+				fab?.hide()
+			else fab?.show()
 		}
 
 		viewModel.hasSelectionFlow.collectLatestLA(this, catch = {}) {
@@ -285,7 +286,7 @@ class LibraryController
 		viewModel.selectBetween()
 	}
 
-	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
+	override fun manipulateFAB(fab: EFabMaintainer) {
 		this.fab = fab
 		fab.setOnClickListener {
 			//bottomMenuRetriever.invoke()?.show()
@@ -323,7 +324,7 @@ fun LibraryContent(
 	onOpen: (LibraryNovelUI) -> Unit,
 	toggleSelection: (LibraryNovelUI) -> Unit,
 	toastNovel: (LibraryNovelUI) -> Unit,
-	fab: ExtendedFloatingActionButton?
+	fab: EFabMaintainer?
 ) {
 	if (!isEmpty) {
 		SwipeRefresh(

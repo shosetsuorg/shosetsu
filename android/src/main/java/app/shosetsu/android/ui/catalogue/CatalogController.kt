@@ -38,6 +38,7 @@ import app.shosetsu.android.view.ComposeBottomSheetDialog
 import app.shosetsu.android.view.compose.*
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
+import app.shosetsu.android.view.controller.base.ExtendedFABController.EFabMaintainer
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
@@ -47,7 +48,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import kotlinx.coroutines.Job
 import org.acra.ACRA
 
@@ -332,8 +332,8 @@ class CatalogController(
 		}
 	}
 
-	private lateinit var fab: ExtendedFloatingActionButton
-	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
+	private lateinit var fab: EFabMaintainer
+	override fun manipulateFAB(fab: EFabMaintainer) {
 		this.fab = fab
 		fab.setIconResource(R.drawable.filter)
 		fab.setOnClickListener {
@@ -381,7 +381,7 @@ fun CatalogContent(
 	columnsInH: Int,
 	onClick: (ACatalogNovelUI) -> Unit,
 	onLongClick: (ACatalogNovelUI) -> Unit,
-	fab: ExtendedFloatingActionButton
+	fab: EFabMaintainer
 ) {
 	Column(
 		modifier = Modifier.fillMaxSize(),

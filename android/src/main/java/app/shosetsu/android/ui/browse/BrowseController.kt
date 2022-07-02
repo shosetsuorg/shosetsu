@@ -66,6 +66,7 @@ import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
+import app.shosetsu.android.view.controller.base.ExtendedFABController.EFabMaintainer
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.lib.Version
@@ -74,7 +75,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 
 /**
  * shosetsu
@@ -97,7 +97,7 @@ class BrowseController : ShosetsuController(),
 	/***/
 	val viewModel: ABrowseViewModel by viewModel()
 
-	private var fab: ExtendedFloatingActionButton? = null
+	private var fab: EFabMaintainer? = null
 
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_browse, menu)
@@ -202,7 +202,7 @@ class BrowseController : ShosetsuController(),
 		else displayOfflineSnackBar(R.string.controller_browse_snackbar_offline_no_update_extension)
 	}
 
-	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
+	override fun manipulateFAB(fab: EFabMaintainer) {
 		this.fab = fab
 		fab.setOnClickListener {
 			//bottomMenuRetriever.invoke()?.show()
@@ -273,7 +273,7 @@ fun BrowseContent(
 	openSettings: (BrowseExtensionEntity) -> Unit,
 	cancelInstall: (BrowseExtensionEntity) -> Unit,
 	isRefreshing: Boolean,
-	fab: ExtendedFloatingActionButton?
+	fab: EFabMaintainer?
 ) {
 	SwipeRefresh(
 		state = SwipeRefreshState(isRefreshing), refresh, modifier = Modifier.fillMaxSize()

@@ -26,6 +26,7 @@ import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
+import app.shosetsu.android.view.controller.base.ExtendedFABController.EFabMaintainer
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.android.viewmodel.abstracted.ARepositoryViewModel
@@ -33,7 +34,6 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.RepositoryAddBinding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.snackbar.BaseTransientBottomBar.BaseCallback.DISMISS_EVENT_CONSECUTIVE
 import com.google.android.material.snackbar.Snackbar
 import org.acra.ACRA
@@ -242,8 +242,8 @@ class RepositoryController : ShosetsuController(),
 			}?.show()
 	}
 
-	private lateinit var fab: ExtendedFloatingActionButton
-	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
+	private lateinit var fab: EFabMaintainer
+	override fun manipulateFAB(fab: EFabMaintainer) {
 		this.fab = fab
 		fab.setIconResource(R.drawable.add_circle_outline)
 		fab.setText(R.string.controller_repositories_action_add)
@@ -266,7 +266,7 @@ fun RepositoriesContent(
 	onRemove: (RepositoryUI) -> Unit,
 	addRepository: () -> Unit,
 	onRefresh: () -> Unit,
-	fab: ExtendedFloatingActionButton
+	fab: EFabMaintainer
 ) {
 	if (items.isNotEmpty()) {
 		SwipeRefresh(SwipeRefreshState(false), onRefresh) {

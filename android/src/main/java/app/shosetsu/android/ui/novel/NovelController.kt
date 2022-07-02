@@ -46,6 +46,7 @@ import app.shosetsu.android.view.compose.LazyColumnScrollbar
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
+import app.shosetsu.android.view.controller.base.ExtendedFABController.EFabMaintainer
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.view.openQRCodeShareDialog
 import app.shosetsu.android.view.openShareMenu
@@ -62,7 +63,6 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelJumpDialog
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
@@ -112,7 +112,7 @@ class NovelController(bundle: Bundle) :
 	override val viewTitle: String
 		get() = ""
 
-	private var resume: ExtendedFloatingActionButton? = null
+	private var resume: EFabMaintainer? = null
 
 	private var actionMode: ActionMode? = null
 
@@ -156,11 +156,11 @@ class NovelController(bundle: Bundle) :
 		}
 	}
 
-	override fun showFAB(fab: ExtendedFloatingActionButton) {
+	override fun showFAB(fab: EFabMaintainer) {
 		if (actionMode == null) super.showFAB(fab)
 	}
 
-	override fun manipulateFAB(fab: ExtendedFloatingActionButton) {
+	override fun manipulateFAB(fab: EFabMaintainer) {
 		resume = fab
 		fab.setOnClickListener {
 			viewModel.openLastRead().observe(catch = {
