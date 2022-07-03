@@ -30,7 +30,7 @@ import app.shosetsu.android.ui.add.AddShareController
 import app.shosetsu.android.ui.backup.BackupSettings
 import app.shosetsu.android.ui.downloads.DownloadsController
 import app.shosetsu.android.ui.repository.RepositoryController
-import app.shosetsu.android.ui.settings.ComposeSettingsController
+import app.shosetsu.android.ui.settings.SettingsController
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
@@ -60,7 +60,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
  *
  * Option for download queue
  */
-class ComposeMoreController
+class MoreController
 	: ShosetsuController(), CollapsedToolBarController {
 
 	override val viewTitleRes: Int = R.string.more
@@ -183,7 +183,7 @@ fun MoreContent(
 
 			item {
 				MoreItemContent(R.string.settings, R.drawable.settings) {
-					pushController(ComposeSettingsController())
+					pushController(SettingsController())
 				}
 			}
 

@@ -54,7 +54,7 @@ import kotlinx.coroutines.flow.map
  * @since 02 / 10 / 2021
  * @author Doomsdayrs
  */
-class ComposeViewSettings : ShosetsuController() {
+class ViewSettings : ShosetsuController() {
 	private val viewModel: AViewSettingsViewModel by viewModel()
 
 	override val viewTitleRes: Int = R.string.settings_view

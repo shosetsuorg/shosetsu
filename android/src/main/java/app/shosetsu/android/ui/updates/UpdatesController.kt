@@ -68,7 +68,7 @@ import java.util.*
  * @since 09 / 10 / 2021
  * @author Doomsdayrs
  */
-class ComposeUpdatesController : ShosetsuController() {
+class UpdatesController : ShosetsuController() {
 	override val viewTitleRes: Int = R.string.updates
 
 	private val viewModel: AUpdatesViewModel by viewModel()
@@ -91,7 +91,7 @@ class ComposeUpdatesController : ShosetsuController() {
 				UpdatesContent(
 					items = items,
 					isRefreshing = isRefreshing,
-					onRefresh = this@ComposeUpdatesController::onRefresh
+					onRefresh = this@UpdatesController::onRefresh
 				) { (chapterID, novelID) ->
 					activity?.openChapter(chapterID, novelID)
 				}

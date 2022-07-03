@@ -47,7 +47,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * @since 06 / 10 / 2021
  * @author Doomsdayrs
  */
-class ComposeSettingsController : ShosetsuController() {
+class SettingsController : ShosetsuController() {
 
 	override val viewTitleRes: Int = R.string.settings
 
@@ -97,7 +97,7 @@ fun SettingMenuItem(@StringRes title: Int, @DrawableRes drawableRes: Int, onClic
 fun SettingsContent(pushController: (Controller) -> Unit) {
 	Column {
 		SettingMenuItem(R.string.view, R.drawable.view_module) {
-			pushController(ComposeViewSettings())
+			pushController(ViewSettings())
 		}
 
 		SettingMenuItem(R.string.reader, R.drawable.book) {

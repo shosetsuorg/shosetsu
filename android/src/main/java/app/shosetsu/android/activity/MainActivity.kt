@@ -38,9 +38,9 @@ import app.shosetsu.android.domain.repository.base.IBackupRepository
 import app.shosetsu.android.ui.browse.BrowseController
 import app.shosetsu.android.ui.intro.IntroductionActivity
 import app.shosetsu.android.ui.library.LibraryController
-import app.shosetsu.android.ui.more.ComposeMoreController
+import app.shosetsu.android.ui.more.MoreController
 import app.shosetsu.android.ui.search.SearchController
-import app.shosetsu.android.ui.updates.ComposeUpdatesController
+import app.shosetsu.android.ui.updates.UpdatesController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.LiftOnScrollToolBarController
@@ -386,9 +386,9 @@ class MainActivity : AppCompatActivity(), DIAware,
 	private fun handleNavigationSelected(id: Int) {
 		when (id) {
 			R.id.nav_library -> setRoot(LibraryController(), R.id.nav_library)
-			R.id.nav_updates -> setRoot(ComposeUpdatesController(), R.id.nav_updates)
+			R.id.nav_updates -> setRoot(UpdatesController(), R.id.nav_updates)
 			R.id.nav_browse -> setRoot(BrowseController(), R.id.nav_browse)
-			R.id.nav_more -> setRoot(ComposeMoreController(), R.id.nav_more)
+			R.id.nav_more -> setRoot(MoreController(), R.id.nav_more)
 		}
 	}
 
