@@ -59,22 +59,22 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * @author github.com/doomsdayrs
  * yes, a THIRD ONE
  */
-class MigrationController(bundle: Bundle) : ShosetsuController(bundle) {
+class MigrationController() : ShosetsuController() {
 	companion object {
 		const val TARGETS_BUNDLE_KEY: String = "targets"
 	}
 
 	private val viewModel: AMigrationViewModel by viewModel()
 
-	override fun onViewCreated(view: View) {
-		viewModel.setNovels(args.getIntArray(TARGETS_BUNDLE_KEY)!!)
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		viewModel.setNovels(arguments!!.getIntArray(TARGETS_BUNDLE_KEY)!!)
 	}
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
-		container: ViewGroup,
+		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(container.context).apply {
+	): View = ComposeView(requireContext()).apply {
 		setContent {
 			ShosetsuCompose {
 				MigrationContent(viewModel)

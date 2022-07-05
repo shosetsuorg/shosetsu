@@ -1,17 +1,14 @@
 package app.shosetsu.android.view.controller
 
-import android.content.Context
 import android.os.Bundle
-import android.view.View
 import androidx.activity.result.ActivityResultRegistry
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import app.shosetsu.android.common.ext.*
-import com.bluelinelabs.conductor.Controller
-import com.bluelinelabs.conductor.archlifecycle.LifecycleController
+import app.shosetsu.android.common.ext.collectLA
+import app.shosetsu.android.common.ext.collectLatestLA
+import app.shosetsu.android.common.ext.logI
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -41,7 +38,7 @@ import org.kodein.di.DIAware
  * @since 04 / 08 / 2021
  * @author Doomsdayrs
  */
-abstract class ShosetsuController : LifecycleController, DIAware {
+abstract class ShosetsuController : Fragment(), DIAware {
 	/** Title of this view, Applies to the app system */
 	@StringRes
 	open val viewTitleRes: Int = -1
@@ -53,45 +50,12 @@ abstract class ShosetsuController : LifecycleController, DIAware {
 		else getString(R.string.app_name)
 	}
 
-	constructor()
-	constructor(args: Bundle) : super(args)
+	override val di: DI by lazy { (activity as DIAware).di }
 
-	override val di: DI by lazy { (applicationContext as DIAware).di }
-
-	init {
-		addLifecycleListener(object : LifecycleListener() {
-			override fun postCreateView(controller: Controller, view: View) {
-				logV("Manipulate view for ${controller.instance()}")
-				onViewCreated(view)
-			}
-
-			override fun preCreateView(controller: Controller) {
-				logV("Create view for ${controller.instance()}")
-			}
-
-			override fun preAttach(controller: Controller, view: View) {
-				logV("Attach view for ${controller.instance()}")
-			}
-
-			override fun preDetach(controller: Controller, view: View) {
-				logV("Detach view for ${controller.instance()}")
-			}
-
-			override fun preDestroyView(controller: Controller, view: View) {
-				logV("Destroy view for ${controller.instance()}")
-			}
-		})
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		onLifecycleCreate(this, (activity as AppCompatActivity).activityResultRegistry)
 	}
-
-	private fun Controller.instance(): String =
-		"${javaClass.simpleName}@${Integer.toHexString(hashCode())}"
-
-	/**
-	 * What to do once the view is created
-	 * Called by the [lifecycleListeners] via [LifecycleListener.postCreateView]
-	 */
-	@Suppress("KDocUnresolvedReference")
-	abstract fun onViewCreated(view: View)
 
 	/**
 	 * Set the title of the view
@@ -100,12 +64,6 @@ abstract class ShosetsuController : LifecycleController, DIAware {
 		logI("Activity title $viewTitle")
 		activity?.title = viewTitle
 	}
-
-	/**
-	 * Convenience method to observe [LiveData] without having to pass the owner argument
-	 */
-	fun <T> LiveData<T>.observe(observer: (T) -> Unit) =
-		observe(this@ShosetsuController, observer)
 
 	fun <T> Flow<T>.observe(
 		catch: suspend FlowCollector<T>.(Throwable) -> Unit,
@@ -121,22 +79,5 @@ abstract class ShosetsuController : LifecycleController, DIAware {
 
 
 	open fun onLifecycleCreate(owner: LifecycleOwner, registry: ActivityResultRegistry) {}
-
-	inner class Observer(private val registry: ActivityResultRegistry) :
-		DefaultLifecycleObserver {
-
-
-		override fun onCreate(owner: LifecycleOwner) {
-			onLifecycleCreate(owner, registry)
-		}
-	}
-
-	private val observer by lazy {
-		Observer((activity as AppCompatActivity).activityResultRegistry)
-	}
-
-	override fun onContextAvailable(context: Context) {
-		lifecycle.addObserver(observer)
-	}
 
 }

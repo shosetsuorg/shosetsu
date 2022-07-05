@@ -76,9 +76,9 @@ class DownloadsController : ShosetsuController(),
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
-		container: ViewGroup,
+		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(container.context).apply {
+	): View = ComposeView(requireContext()).apply {
 		setViewTitle()
 		setContent {
 			ShosetsuCompose {
@@ -107,10 +107,12 @@ class DownloadsController : ShosetsuController(),
 		return true
 	}
 
+	@Deprecated("Deprecated in Java")
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_downloads, menu)
 	}
 
+	@Deprecated("Deprecated in Java")
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.set_all_pending -> {
@@ -129,7 +131,7 @@ class DownloadsController : ShosetsuController(),
 		if (viewModel.isOnline()) viewModel.togglePause() else displayOfflineSnackBar(R.string.controller_downloads_snackbar_offline_no_download)
 	}
 
-	override fun onViewCreated(view: View) {
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		viewModel.isDownloadPaused.collectLA(this, catch = {}) {
 			fab?.setText(
 				if (it)

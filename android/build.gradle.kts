@@ -216,6 +216,7 @@ dependencies {
 	implementation(acra("acra-dialog"))
 
 	// Conductor
+	/*
 	val conductorVersion = "3.1.5"
 	fun conductor(module: String, version: String = conductorVersion) =
 		"com.bluelinelabs:$module:$version"
@@ -223,7 +224,7 @@ dependencies {
 	implementation(conductor("conductor"))
 	implementation(conductor("conductor-androidx-transition"))
 	implementation(conductor("conductor-archlifecycle"))
-
+	 */
 	// Material Intro https://github.com/heinrichreimer/material-intro#standard-slide-simpleslide
 	implementation("com.github.shosetsuorg:material-intro:0c2f0b2772")
 
@@ -331,4 +332,12 @@ dependencies {
 	implementation(paging("paging-runtime"))
 	implementation(paging("paging-compose", "1.0.0-alpha14"))
 	implementation(kotlin("reflect"))
+
+	val navVersion = "2.5.0"
+	fun navigation(module: String, version: String = navVersion) =
+		"androidx.navigation:navigation-$module:$version"
+
+	implementation(navigation("fragment-ktx"))
+	implementation(navigation("ui-ktx"))
+
 }

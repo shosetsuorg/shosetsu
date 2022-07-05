@@ -2,9 +2,9 @@ package app.shosetsu.android.ui.browse
 
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
+import androidx.navigation.NavController
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
-import app.shosetsu.android.ui.search.SearchController
-import com.bluelinelabs.conductor.Controller
+import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
  * This file is part of Shosetsu.
@@ -30,11 +30,14 @@ import com.bluelinelabs.conductor.Controller
  * @author github.com/doomsdayrs
  */
 class BrowseSearchQuery(
-	private val pushController: (Controller) -> Unit
+	private val navController: NavController
 ) :
 	SearchView.OnQueryTextListener {
 	override fun onQueryTextSubmit(s: String): Boolean = true.also {
-		pushController(SearchController(bundleOf(BUNDLE_QUERY to s)))
+		navController.navigate(
+			R.id.action_browseController_to_searchController,
+			bundleOf(BUNDLE_QUERY to s)
+		)
 	}
 
 	override fun onQueryTextChange(s: String): Boolean = false

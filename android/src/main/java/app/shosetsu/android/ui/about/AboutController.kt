@@ -27,11 +27,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.fragment.findNavController
 import app.shosetsu.android.common.consts.*
 import app.shosetsu.android.common.enums.TextAsset
-import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.common.ext.viewModel
-import app.shosetsu.android.ui.settings.sub.TextAssetReader
+import app.shosetsu.android.ui.settings.sub.TextAssetReader.Companion.bundle
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.AAboutViewModel
@@ -67,13 +67,11 @@ class AboutController : ShosetsuController() {
 
 	private val viewModel: AAboutViewModel by viewModel()
 
-	override fun onViewCreated(view: View) {}
-
 	override fun onCreateView(
 		inflater: LayoutInflater,
-		container: ViewGroup,
+		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(container.context).apply {
+	): View = ComposeView(requireContext()).apply {
 		setViewTitle()
 		setContent {
 			ShosetsuCompose {
@@ -93,11 +91,19 @@ class AboutController : ShosetsuController() {
 		}
 	}
 
-	private fun onClickLicense() =
-		router.shosetsuPush(TextAssetReader(TextAsset.LICENSE))
+	private fun onClickLicense() {
+		findNavController().navigate(
+			R.id.action_aboutController_to_textAssetReader,
+			TextAsset.LICENSE.bundle
+		)
+	}
 
-	private fun onClickDisclaimer() =
-		router.shosetsuPush(TextAssetReader(TextAsset.DISCLAIMER))
+	private fun onClickDisclaimer() {
+		findNavController().navigate(
+			R.id.action_aboutController_to_textAssetReader,
+			TextAsset.DISCLAIMER.bundle
+		)
+	}
 
 	private fun openSite(url: String) {
 		startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))

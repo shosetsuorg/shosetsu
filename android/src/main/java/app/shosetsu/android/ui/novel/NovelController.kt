@@ -1,5 +1,6 @@
 package app.shosetsu.android.ui.novel
 
+import android.content.Context
 import android.content.res.Resources
 import android.database.sqlite.SQLiteException
 import android.os.Bundle
@@ -34,13 +35,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.os.bundleOf
+import androidx.navigation.fragment.findNavController
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.NoSuchExtensionException
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
 import app.shosetsu.android.view.compose.LazyColumnScrollbar
 import app.shosetsu.android.view.compose.ShosetsuCompose
@@ -58,7 +59,7 @@ import app.shosetsu.lib.Novel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.R.id
+import com.github.doomsdayrs.apps.shosetsu.R.*
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelJumpDialogBinding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
@@ -95,8 +96,7 @@ import javax.security.auth.DestroyFailedException
  *
  * The page you see when you select a novel
  */
-class NovelController(bundle: Bundle) :
-	ShosetsuController(bundle),
+class NovelController() : ShosetsuController(),
 	ExtendedFABController {
 
 	/*
@@ -127,9 +127,9 @@ class NovelController(bundle: Bundle) :
 		setHasOptionsMenu(true)
 	}
 
-	override fun onAttach(view: View) {
+	override fun onAttach(context: Context) {
 		if (viewModel.isFromChapterReader) viewModel.deletePrevious().collectDeletePrevious()
-		super.onAttach(view)
+		super.onAttach(context)
 	}
 
 	private fun startSelectionAction() {
@@ -169,26 +169,25 @@ class NovelController(bundle: Bundle) :
 				if (chapterUI != null) {
 					activity?.openChapter(chapterUI)
 				} else {
-					makeSnackBar(R.string.controller_novel_snackbar_finished_reading)?.show()
+					makeSnackBar(string.controller_novel_snackbar_finished_reading)?.show()
 				}
 			}
 		}
-		fab.setIconResource(R.drawable.play_arrow)
-		fab.setText(R.string.resume)
+		fab.setIconResource(drawable.play_arrow)
+		fab.setText(string.resume)
 	}
 
 	@ExperimentalMaterialApi
 	@Suppress("unused")
 	fun migrateOpen() {
-		parentController?.router?.pushController(
-			MigrationController(
-				bundleOf(
-					Pair(
-						TARGETS_BUNDLE_KEY,
-						arrayOf(args.getNovelID()).toIntArray()
-					)
+		findNavController().navigate(
+			R.id.action_novelController_to_migrationController,
+			bundleOf(
+				Pair(
+					TARGETS_BUNDLE_KEY,
+					arrayOf(arguments!!.getNovelID()).toIntArray()
 				)
-			).withFadeTransaction()
+			)
 		)
 	}
 
@@ -202,11 +201,11 @@ class NovelController(bundle: Bundle) :
 					catch = {
 						makeSnackBar(
 							getString(
-								R.string.controller_novel_error_share,
+								string.controller_novel_error_share,
 								it.message ?: "Unknown"
 							)
 						)
-							?.setAction(R.string.report) { _ ->
+							?.setAction(string.report) { _ ->
 								ACRA.errorReporter.handleSilentException(it)
 							}?.show()
 					}
@@ -226,45 +225,46 @@ class NovelController(bundle: Bundle) :
 		)
 	}
 
+	@Deprecated("Deprecated in Java")
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-		id.source_migrate -> {
+		R.id.source_migrate -> {
 			// migrateOpen()
-			makeSnackBar(R.string.regret)?.dismiss()
+			makeSnackBar(string.regret)?.dismiss()
 			true
 		}
-		id.webview -> {
+		R.id.webview -> {
 			openWebView()
 			true
 		}
-		id.share -> {
+		R.id.share -> {
 			openShare()
 			true
 		}
-		id.option_chapter_jump -> {
+		R.id.option_chapter_jump -> {
 			openChapterJumpDialog()
 			true
 		}
-		id.download_next -> {
+		R.id.download_next -> {
 			viewModel.downloadNextChapter()
 			true
 		}
-		id.download_next_5 -> {
+		R.id.download_next_5 -> {
 			viewModel.downloadNext5Chapters()
 			true
 		}
-		id.download_next_10 -> {
+		R.id.download_next_10 -> {
 			viewModel.downloadNext10Chapters()
 			true
 		}
-		id.download_custom -> {
+		R.id.download_custom -> {
 			downloadCustom()
 			true
 		}
-		id.download_unread -> {
+		R.id.download_unread -> {
 			viewModel.downloadAllUnreadChapters()
 			true
 		}
-		id.download_all -> {
+		R.id.download_all -> {
 			viewModel.downloadAllChapters()
 			true
 		}
@@ -279,19 +279,19 @@ class NovelController(bundle: Bundle) :
 		binding.findByChapterName.setOnCheckedChangeListener { _, isChecked ->
 			if (isChecked) {
 				binding.editTextNumber.inputType = TYPE_TEXT_FLAG_NO_SUGGESTIONS
-				binding.editTextNumber.setHint(R.string.controller_novel_jump_dialog_hint_chapter_title)
+				binding.editTextNumber.setHint(string.controller_novel_jump_dialog_hint_chapter_title)
 			} else {
 				binding.editTextNumber.inputType = TYPE_NUMBER_FLAG_DECIMAL
-				binding.editTextNumber.setHint(R.string.controller_novel_jump_dialog_hint_chapter_number)
+				binding.editTextNumber.setHint(string.controller_novel_jump_dialog_hint_chapter_number)
 			}
 		}
 
 		AlertDialog.Builder(activity!!)
 			.setView(binding.root)
-			.setTitle(R.string.jump_to_chapter)
+			.setTitle(string.jump_to_chapter)
 			.setNegativeButton(android.R.string.cancel) { _, _ ->
 			}
-			.setPositiveButton(R.string.alert_dialog_jump_positive) { _, _ ->
+			.setPositiveButton(string.alert_dialog_jump_positive) { _, _ ->
 				/**
 				 * The predicate to use to find the chapter to scroll to
 				 */
@@ -302,8 +302,8 @@ class NovelController(bundle: Bundle) :
 					// Predicate will be searching if the title contains the text
 					val text = binding.editTextNumber.text.toString()
 					if (text.isBlank()) {
-						makeSnackBar(R.string.toast_error_chapter_jump_empty_title)
-							?.setAction(R.string.generic_question_retry) { openChapterJumpDialog() }
+						makeSnackBar(string.toast_error_chapter_jump_empty_title)
+							?.setAction(string.generic_question_retry) { openChapterJumpDialog() }
 							?.show()
 						return@setPositiveButton
 					}
@@ -314,8 +314,8 @@ class NovelController(bundle: Bundle) :
 
 					val selectedNumber =
 						binding.editTextNumber.text.toString().toDoubleOrNull()?.plus(1.0) ?: run {
-							makeSnackBar(R.string.toast_error_chapter_jump_invalid_number)
-								?.setAction(R.string.generic_question_retry) { openChapterJumpDialog() }
+							makeSnackBar(string.toast_error_chapter_jump_invalid_number)
+								?.setAction(string.generic_question_retry) { openChapterJumpDialog() }
 								?.show()
 							return@setPositiveButton
 						}
@@ -325,8 +325,8 @@ class NovelController(bundle: Bundle) :
 
 				viewModel.scrollTo(predicate).collectLA(this, catch = {}) {
 					if (!it) {
-						makeSnackBar(R.string.toast_error_chapter_jump_invalid_target)
-							?.setAction(R.string.generic_question_retry) {
+						makeSnackBar(string.toast_error_chapter_jump_invalid_target)
+							?.setAction(string.generic_question_retry) {
 								openChapterJumpDialog()
 							}
 							?.show()
@@ -343,7 +343,7 @@ class NovelController(bundle: Bundle) :
 		if (context == null) return
 		viewModel.getChapterCount().collectLA(this, catch = {}) { max ->
 			AlertDialog.Builder(activity!!).apply {
-				setTitle(R.string.download_custom_chapters)
+				setTitle(string.download_custom_chapters)
 				val numberPicker = NumberPicker(activity!!).apply {
 					minValue = 0
 					maxValue = max
@@ -362,11 +362,12 @@ class NovelController(bundle: Bundle) :
 
 	}
 
+	@Deprecated("Deprecated in Java")
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_novel, menu)
 
 		runBlocking {
-			menu.findItem(id.source_migrate).isVisible = viewModel.isBookmarked().first()
+			menu.findItem(R.id.source_migrate).isVisible = viewModel.isBookmarked().first()
 		}
 	}
 
@@ -379,14 +380,14 @@ class NovelController(bundle: Bundle) :
 					makeSnackBar(
 						try {
 							resources!!.getQuantityString(
-								R.plurals.controller_novel_toggle_delete_chapters,
+								plurals.controller_novel_toggle_delete_chapters,
 								it.chapters,
 								it.chapters
 							)
 						} catch (e: Resources.NotFoundException) {
 							"Delete ${it.chapters} chapters?"
 						}
-					)?.setAction(R.string.delete) {
+					)?.setAction(string.delete) {
 						viewModel.deleteChapters()
 					}?.show()
 				}
@@ -398,9 +399,9 @@ class NovelController(bundle: Bundle) :
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
-		container: ViewGroup,
+		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(container.context).apply {
+	): View = ComposeView(requireContext()).apply {
 		setViewTitle()
 		setContent {
 			if (resume != null)
@@ -417,7 +418,7 @@ class NovelController(bundle: Bundle) :
 				if (viewModel.isOnline()) {
 					refresh()
 				} else {
-					displayOfflineSnackBar(R.string.controller_novel_snackbar_cannot_inital_load_offline)
+					displayOfflineSnackBar(string.controller_novel_snackbar_cannot_inital_load_offline)
 				}
 			}
 
@@ -474,21 +475,21 @@ class NovelController(bundle: Bundle) :
 				is SQLiteException ->
 					makeSnackBar(
 						getString(
-							R.string.controller_novel_delete_previous_fail,
+							string.controller_novel_delete_previous_fail,
 							it.message ?: ""
 						)
 					)?.show()
 				is FilePermissionException ->
 					makeSnackBar(
 						getString(
-							R.string.controller_novel_delete_previous_fail,
+							string.controller_novel_delete_previous_fail,
 							it.message ?: ""
 						)
 					)?.show()
 				is NoSuchExtensionException ->
 					makeSnackBar(
 						getString(
-							R.string.missing_extension,
+							string.missing_extension,
 							it.extensionId
 						)
 					)?.show()
@@ -498,8 +499,8 @@ class NovelController(bundle: Bundle) :
 		}
 	}
 
-	override fun onViewCreated(view: View) {
-		viewModel.setNovelID(args.getNovelID())
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		viewModel.setNovelID(arguments!!.getNovelID())
 		if (viewModel.isFromChapterReader) viewModel.deletePrevious().collectDeletePrevious()
 
 		viewModel.hasSelected.collectLatestLA(this, catch = {}) { hasSelected ->
@@ -514,10 +515,10 @@ class NovelController(bundle: Bundle) :
 			if (it != null)
 				makeSnackBar(
 					getString(
-						R.string.controller_novel_error_load,
+						string.controller_novel_error_load,
 						it.message ?: "Unknown"
 					)
-				)?.setAction(R.string.report) { _ ->
+				)?.setAction(string.report) { _ ->
 					ACRA.errorReporter.handleSilentException(it)
 				}?.show()
 		}
@@ -526,10 +527,10 @@ class NovelController(bundle: Bundle) :
 			if (it != null)
 				makeSnackBar(
 					getString(
-						R.string.controller_novel_error_load_chapters,
+						string.controller_novel_error_load_chapters,
 						it.message ?: "Unknown"
 					)
-				)?.setAction(R.string.report) { _ ->
+				)?.setAction(string.report) { _ ->
 					ACRA.errorReporter.handleSilentException(it)
 				}?.show()
 		}
@@ -545,11 +546,11 @@ class NovelController(bundle: Bundle) :
 			catch = {
 				makeSnackBar(
 					getString(
-						R.string.controller_novel_error_url,
+						string.controller_novel_error_url,
 						it.message ?: "Unknown"
 					)
 				)
-					?.setAction(R.string.report) { _ ->
+					?.setAction(string.report) { _ ->
 						ACRA.errorReporter.handleSilentException(it)
 					}?.show()
 			}
@@ -606,19 +607,19 @@ class NovelController(bundle: Bundle) :
 				catch = {
 					makeSnackBar(
 						getString(
-							R.string.controller_novel_error_true_delete,
+							string.controller_novel_error_true_delete,
 							it.message ?: "Unknown"
 						)
 					)
-						?.setAction(R.string.report) { _ ->
+						?.setAction(string.report) { _ ->
 							ACRA.errorReporter.handleSilentException(it)
 						}?.show()
 				}
 			) {
-				menu.findItem(id.true_delete).isVisible = it
+				menu.findItem(R.id.true_delete).isVisible = it
 			}
 
-			mode.setTitle(R.string.selection)
+			mode.setTitle(string.selection)
 			return true
 		}
 
@@ -626,19 +627,19 @@ class NovelController(bundle: Bundle) :
 
 		override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean =
 			when (item.itemId) {
-				id.chapter_select_all -> {
+				R.id.chapter_select_all -> {
 					selectAll()
 					true
 				}
-				id.chapter_select_between -> {
+				R.id.chapter_select_between -> {
 					selectBetween()
 					true
 				}
-				id.chapter_inverse -> {
+				R.id.chapter_inverse -> {
 					invertSelection()
 					true
 				}
-				id.true_delete -> {
+				R.id.true_delete -> {
 					trueDeleteSelection()
 					true
 				}
@@ -840,8 +841,8 @@ fun NovelInfoContent(
 						enabled = selectedChaptersState.showDownload
 					) {
 						Icon(
-							painterResource(R.drawable.download),
-							stringResource(R.string.controller_novel_selected_download)
+							painterResource(drawable.download),
+							stringResource(string.controller_novel_selected_download)
 						)
 					}
 					IconButton(
@@ -849,8 +850,8 @@ fun NovelInfoContent(
 						enabled = selectedChaptersState.showDelete
 					) {
 						Icon(
-							painterResource(R.drawable.trash),
-							stringResource(R.string.controller_novel_selected_delete)
+							painterResource(drawable.trash),
+							stringResource(string.controller_novel_selected_delete)
 						)
 					}
 					IconButton(
@@ -858,8 +859,8 @@ fun NovelInfoContent(
 						enabled = selectedChaptersState.showMarkAsRead
 					) {
 						Icon(
-							painterResource(R.drawable.read_mark),
-							stringResource(R.string.controller_novel_selected_read)
+							painterResource(drawable.read_mark),
+							stringResource(string.controller_novel_selected_read)
 						)
 					}
 					IconButton(
@@ -867,8 +868,8 @@ fun NovelInfoContent(
 						enabled = selectedChaptersState.showMarkAsUnread
 					) {
 						Icon(
-							painterResource(R.drawable.unread_mark),
-							stringResource(R.string.controller_novel_selected_unread)
+							painterResource(drawable.unread_mark),
+							stringResource(string.controller_novel_selected_unread)
 						)
 					}
 					IconButton(
@@ -876,8 +877,8 @@ fun NovelInfoContent(
 						enabled = selectedChaptersState.showBookmark
 					) {
 						Icon(
-							painterResource(R.drawable.ic_outline_bookmark_add_24),
-							stringResource(R.string.controller_novel_selected_bookmark)
+							painterResource(drawable.ic_outline_bookmark_add_24),
+							stringResource(string.controller_novel_selected_bookmark)
 						)
 					}
 					IconButton(
@@ -885,8 +886,8 @@ fun NovelInfoContent(
 						enabled = selectedChaptersState.showRemoveBookmark
 					) {
 						Icon(
-							painterResource(R.drawable.ic_baseline_bookmark_remove_24),
-							stringResource(R.string.controller_novel_selected_unbookmark)
+							painterResource(drawable.ic_baseline_bookmark_remove_24),
+							stringResource(string.controller_novel_selected_unbookmark)
 						)
 					}
 				}
@@ -993,7 +994,7 @@ fun NovelChapterContent(
 					if (chapter.readingStatus == ReadingStatus.READING)
 						Row {
 							Text(
-								stringResource(R.string.controller_novel_chapter_position),
+								stringResource(string.controller_novel_chapter_position),
 								fontSize = 12.sp,
 								modifier = Modifier.padding(end = 4.dp)
 							)
@@ -1006,7 +1007,7 @@ fun NovelChapterContent(
 
 				if (chapter.isSaved)
 					Text(
-						stringResource(R.string.downloaded),
+						stringResource(string.downloaded),
 						fontSize = 12.sp
 					)
 			}
@@ -1056,10 +1057,10 @@ fun NovelInfoCoverContent(
 	AsyncImage(
 		ImageRequest.Builder(LocalContext.current)
 			.data(imageURL)
-			.placeholder(R.drawable.animated_refresh)
-			.error(R.drawable.broken_image)
+			.placeholder(drawable.animated_refresh)
+			.error(drawable.broken_image)
 			.build(),
-		stringResource(R.string.controller_novel_info_image),
+		stringResource(string.controller_novel_info_image),
 		modifier = modifier
 			.aspectRatio(.75f)
 			.padding(top = 8.dp)
@@ -1099,10 +1100,10 @@ fun NovelInfoHeaderContent(
 			AsyncImage(
 				ImageRequest.Builder(LocalContext.current)
 					.data(novelInfo.imageURL)
-					.placeholder(R.drawable.animated_refresh)
-					.error(R.drawable.broken_image)
+					.placeholder(drawable.animated_refresh)
+					.error(drawable.broken_image)
 					.build(),
-				stringResource(R.string.controller_novel_info_image),
+				stringResource(string.controller_novel_info_image),
 				modifier = Modifier
 					.matchParentSize()
 					.alpha(.10f),
@@ -1141,7 +1142,7 @@ fun NovelInfoHeaderContent(
 							) {
 								if (novelInfo.artists.isEmpty() && novelInfo.artists.none { it.isNotEmpty() })
 									Text(
-										stringResource(R.string.novel_author),
+										stringResource(string.novel_author),
 										style = MaterialTheme.typography.subtitle2
 									)
 								Text(
@@ -1156,7 +1157,7 @@ fun NovelInfoHeaderContent(
 							) {
 								if (novelInfo.authors.isEmpty() && novelInfo.authors.none { it.isNotEmpty() })
 									Text(
-										stringResource(R.string.artist_s),
+										stringResource(string.artist_s),
 										style = MaterialTheme.typography.subtitle2
 									)
 								Text(
@@ -1168,10 +1169,10 @@ fun NovelInfoHeaderContent(
 						Row {
 							Text(
 								when (novelInfo.status) {
-									Novel.Status.PUBLISHING -> stringResource(R.string.publishing)
-									Novel.Status.COMPLETED -> stringResource(R.string.completed)
-									Novel.Status.PAUSED -> stringResource(R.string.paused)
-									Novel.Status.UNKNOWN -> stringResource(R.string.unknown)
+									Novel.Status.PUBLISHING -> stringResource(string.publishing)
+									Novel.Status.COMPLETED -> stringResource(string.completed)
+									Novel.Status.PAUSED -> stringResource(string.paused)
+									Novel.Status.UNKNOWN -> stringResource(string.unknown)
 								},
 								style = MaterialTheme.typography.subtitle2
 							)
@@ -1202,9 +1203,9 @@ fun NovelInfoHeaderContent(
 						) {
 							Icon(
 								if (novelInfo.bookmarked) {
-									painterResource(R.drawable.ic_heart_svg_filled)
+									painterResource(drawable.ic_heart_svg_filled)
 								} else {
-									painterResource(R.drawable.ic_heart_svg)
+									painterResource(drawable.ic_heart_svg)
 								},
 								null,
 								tint = MaterialTheme.colors.primary
@@ -1213,9 +1214,9 @@ fun NovelInfoHeaderContent(
 							Text(
 								stringResource(
 									if (novelInfo.bookmarked) {
-										R.string.controller_novel_in_library
+										string.controller_novel_in_library
 									} else {
-										R.string.controller_novel_add_to_library
+										string.controller_novel_add_to_library
 									}
 								),
 								style = MaterialTheme.typography.body1
@@ -1227,10 +1228,10 @@ fun NovelInfoHeaderContent(
 							horizontalAlignment = Alignment.CenterHorizontally
 						) {
 							Icon(
-								painterResource(R.drawable.open_in_browser),
-								stringResource(R.string.controller_novel_info_open_web)
+								painterResource(drawable.open_in_browser),
+								stringResource(string.controller_novel_info_open_web)
 							)
-							Text(stringResource(R.string.controller_novel_info_open_web_text))
+							Text(stringResource(string.controller_novel_info_open_web_text))
 						}
 					}
 				}
@@ -1276,7 +1277,7 @@ fun NovelInfoHeaderContent(
 			verticalAlignment = Alignment.CenterVertically
 		) {
 			Row {
-				Text(stringResource(R.string.chapters))
+				Text(stringResource(string.chapters))
 				Text("$chapterCount", modifier = Modifier.padding(start = 8.dp))
 			}
 
@@ -1291,7 +1292,7 @@ fun NovelInfoHeaderContent(
 					modifier = Modifier.fillMaxHeight(),
 				) {
 					Text(
-						stringResource(R.string.jump_to_chapter_short),
+						stringResource(string.jump_to_chapter_short),
 						modifier = Modifier.padding(8.dp),
 					)
 				}
@@ -1306,8 +1307,8 @@ fun NovelInfoHeaderContent(
 						verticalAlignment = Alignment.CenterVertically,
 						modifier = Modifier.padding(8.dp),
 					) {
-						Icon(painterResource(R.drawable.filter), null)
-						Text(stringResource(R.string.filter))
+						Icon(painterResource(drawable.filter), null)
+						Text(stringResource(string.filter))
 					}
 				}
 			}
@@ -1348,8 +1349,8 @@ fun ExpandedText(
 		) {
 			Text(
 				if (!isExpanded)
-					stringResource(R.string.more)
-				else stringResource(R.string.less)
+					stringResource(string.more)
+				else stringResource(string.less)
 			)
 		}
 	}

@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
+import androidx.navigation.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -32,9 +33,7 @@ import androidx.paging.compose.itemsIndexed
 import app.shosetsu.android.common.consts.BundleKeys
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.makeSnackBar
-import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.common.ext.viewModel
-import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.compose.*
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
@@ -74,7 +73,7 @@ import javax.security.auth.DestroyFailedException
  *
  * @author github.com/doomsdayrs
  */
-class SearchController(bundle: Bundle) : ShosetsuController(bundle) {
+class SearchController() : ShosetsuController() {
 	override val viewTitleRes: Int = R.string.search
 	internal val viewModel: ASearchViewModel by viewModel()
 
@@ -84,9 +83,9 @@ class SearchController(bundle: Bundle) : ShosetsuController(bundle) {
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
-		container: ViewGroup,
+		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(container.context).apply {
+	): View = ComposeView(requireContext()).apply {
 		setContent {
 			ShosetsuCompose {
 				val rows by viewModel.listings.collectAsState(listOf())
@@ -103,7 +102,10 @@ class SearchController(bundle: Bundle) : ShosetsuController(bundle) {
 					},
 					getException = viewModel::getException,
 					onClick = {
-						router.shosetsuPush(NovelController(bundleOf(BundleKeys.BUNDLE_NOVEL_ID to it.id)))
+						findNavController().navigate(
+							R.id.action_searchController_to_novelController,
+							(bundleOf(BundleKeys.BUNDLE_NOVEL_ID to it.id))
+						)
 					},
 					onRefresh = viewModel::refresh,
 					onRefreshAll = viewModel::refresh
@@ -122,10 +124,12 @@ class SearchController(bundle: Bundle) : ShosetsuController(bundle) {
 		}
 	}
 
+	@Deprecated("Deprecated in Java")
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_search, menu)
 	}
 
+	@Deprecated("Deprecated in Java")
 	override fun onPrepareOptionsMenu(menu: Menu) {
 		val searchView = menu.findItem(R.id.search).actionView as SearchView
 		searchView.setOnQueryTextListener(InternalQuery())
@@ -142,10 +146,11 @@ class SearchController(bundle: Bundle) : ShosetsuController(bundle) {
 		}
 	}
 
+	@Deprecated("Deprecated in Java")
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = true
 
-	override fun onViewCreated(view: View) {
-		viewModel.initQuery(args.getString(BundleKeys.BUNDLE_QUERY, "")!!)
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		viewModel.initQuery(arguments!!.getString(BundleKeys.BUNDLE_QUERY, "")!!)
 	}
 
 	/** Class that handles querying */

@@ -114,14 +114,11 @@ class AdvancedSettings : ShosetsuController() {
 		}?.show()
 	}
 
-
-	override fun onViewCreated(view: View) {}
-
 	override fun onCreateView(
 		inflater: LayoutInflater,
-		container: ViewGroup,
+		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(container.context).apply {
+	): View = ComposeView(requireContext()).apply {
 		setViewTitle()
 		setContent {
 			ShosetsuCompose {

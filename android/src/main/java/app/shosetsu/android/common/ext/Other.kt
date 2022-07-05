@@ -18,9 +18,9 @@ package app.shosetsu.android.common.ext
  */
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.bluelinelabs.conductor.archlifecycle.LifecycleController
 import org.kodein.di.DIAware
 import org.kodein.di.direct
 import org.kodein.di.instance
@@ -36,7 +36,7 @@ import org.kodein.di.instance
  * KODEIN EXT
  **/
 inline fun <reified VM : ViewModel, T> T.viewModel()
-		: Lazy<VM> where T : DIAware, T : LifecycleController =
+		: Lazy<VM> where T : DIAware, T : Fragment =
 	lazy(LazyThreadSafetyMode.NONE) {
 		ViewModelProvider(
 			this.activity as AppCompatActivity,

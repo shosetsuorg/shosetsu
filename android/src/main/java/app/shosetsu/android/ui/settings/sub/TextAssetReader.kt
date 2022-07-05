@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import app.shosetsu.android.common.enums.TextAsset
-import app.shosetsu.android.common.ext.getString
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
@@ -46,20 +45,16 @@ import app.shosetsu.android.viewmodel.abstracted.ATextAssetReaderViewModel
  * Shosetsu
  * 9 / June / 2019
  */
-class TextAssetReader(bundleI: Bundle) : ShosetsuController(bundleI) {
+class TextAssetReader() : ShosetsuController() {
 
 	private val viewModel: ATextAssetReaderViewModel by viewModel()
 
-	/**
-	 * Constructor via [TextAsset]
-	 */
-	constructor(target: TextAsset) : this(target.bundle)
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
-		container: ViewGroup,
+		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(container.context).apply {
+	): View = ComposeView(requireContext()).apply {
 		setContent {
 			val content by viewModel.liveData.collectAsState(initial = null)
 			ShosetsuCompose {
@@ -68,8 +63,13 @@ class TextAssetReader(bundleI: Bundle) : ShosetsuController(bundleI) {
 		}
 	}
 
-	override fun onViewCreated(view: View) {
-		viewModel.setTarget(args.getInt(BUNDLE_KEY, TextAsset.LICENSE.bundle.getInt(BUNDLE_KEY)))
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		viewModel.setTarget(
+			arguments!!.getInt(
+				BUNDLE_KEY,
+				TextAsset.LICENSE.bundle.getInt(BUNDLE_KEY)
+			)
+		)
 
 		viewModel.targetLiveData.observe(catch = {}) {
 			if (it != null)
@@ -79,7 +79,7 @@ class TextAssetReader(bundleI: Bundle) : ShosetsuController(bundleI) {
 
 	companion object {
 		const val BUNDLE_KEY: String = "target"
-		private val TextAsset.bundle: Bundle
+		val TextAsset.bundle: Bundle
 			get() = bundleOf(BUNDLE_KEY to ordinal)
 	}
 }

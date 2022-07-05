@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -33,7 +34,6 @@ import app.shosetsu.android.common.enums.NovelCardType
 import app.shosetsu.android.common.enums.NovelCardType.*
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.listeners.CatalogueSearchQuery
-import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.ComposeBottomSheetDialog
 import app.shosetsu.android.view.compose.*
 import app.shosetsu.android.view.controller.ShosetsuController
@@ -75,10 +75,7 @@ import org.acra.ACRA
  *
  * @author github.com/doomsdayrs
  */
-class CatalogController(
-	/** data bundle uwu */
-	val bundle: Bundle,
-) : ShosetsuController(bundle), ExtendedFABController {
+class CatalogController : ShosetsuController(), ExtendedFABController {
 	private var bsg: BottomSheetDialog? = null
 
 	/***/
@@ -91,9 +88,9 @@ class CatalogController(
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
-		container: ViewGroup,
+		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(container.context).apply {
+	): View = ComposeView(requireContext()).apply {
 		setViewTitle()
 		setContent {
 			ShosetsuCompose {
@@ -148,13 +145,13 @@ class CatalogController(
 					columnsInV,
 					columnsInH,
 					onClick = {
-						router.shosetsuPush(
-							NovelController(
-								bundleOf(
-									BUNDLE_NOVEL_ID to it.id,
-									BUNDLE_EXTENSION to bundle.getInt(BUNDLE_EXTENSION)
-								)
-							)
+						findNavController().navigate(
+							R.id.action_catalogController_to_novelController, (
+									bundleOf(
+										BUNDLE_NOVEL_ID to it.id,
+										BUNDLE_EXTENSION to arguments!!.getInt(BUNDLE_EXTENSION)
+									)
+									)
 						)
 					},
 					onLongClick = {
@@ -211,8 +208,8 @@ class CatalogController(
 		return true
 	}
 
-	override fun onViewCreated(view: View) {
-		viewModel.setExtensionID(bundle.getInt(BUNDLE_EXTENSION))
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		viewModel.setExtensionID(arguments!!.getInt(BUNDLE_EXTENSION))
 		setupObservers()
 	}
 
@@ -221,6 +218,7 @@ class CatalogController(
 	}
 
 	/***/
+	@Deprecated("Deprecated in Java")
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		menu.clear()
 		inflater.inflate(R.menu.toolbar_catalogue, menu)
@@ -228,6 +226,7 @@ class CatalogController(
 
 	private var optionSyncJob: Job? = null
 
+	@Deprecated("Deprecated in Java")
 	override fun onPrepareOptionsMenu(menu: Menu) {
 		logI("Preparing option menu")
 		optionSyncJob?.cancel()
@@ -266,6 +265,7 @@ class CatalogController(
 		}
 	}
 
+	@Deprecated("Deprecated in Java")
 	override fun onOptionsItemSelected(item: MenuItem): Boolean =
 		when (item.itemId) {
 			R.id.view_type_normal -> {

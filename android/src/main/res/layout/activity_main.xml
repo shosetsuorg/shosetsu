@@ -27,12 +27,6 @@
                 android:theme="?attr/actionBarTheme"
                 app:layout_scrollFlags="scroll|enterAlways|snap" />
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
-
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/backupWarning"
                 android:layout_width="match_parent"
@@ -75,11 +69,14 @@
                 app:menu="@menu/bottom_menu"
                 tools:visibility="visible" />
 
-            <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
+            <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/controller_container"
+                android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+                app:defaultNavHost="true"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+                app:navGraph="@navigation/nav_graph" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton

@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.os.bundleOf
+import androidx.navigation.fragment.findNavController
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.consts.BundleKeys
@@ -35,12 +36,12 @@ import app.shosetsu.android.common.enums.NovelCardType.*
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.library.listener.LibrarySearchQuery
 import app.shosetsu.android.ui.migration.MigrationController
-import app.shosetsu.android.ui.novel.NovelController
 import app.shosetsu.android.view.ComposeBottomSheetDialog
 import app.shosetsu.android.view.compose.*
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.ExtendedFABController.EFabMaintainer
+import app.shosetsu.android.view.controller.base.HomeFragment
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.view.uimodels.model.LibraryNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
@@ -76,7 +77,7 @@ import kotlinx.coroutines.runBlocking
  * @author github.com/doomsdayrs
  */
 class LibraryController
-	: ShosetsuController(), ExtendedFABController {
+	: ShosetsuController(), ExtendedFABController, HomeFragment {
 
 	private var fab: EFabMaintainer? = null
 	private var bsg: BottomSheetDialog? = null
@@ -92,9 +93,9 @@ class LibraryController
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
-		container: ViewGroup,
+		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(container.context).apply {
+	): View = ComposeView(requireContext()).apply {
 		setContent {
 			ShosetsuCompose {
 				setViewTitle()
@@ -117,10 +118,9 @@ class LibraryController
 						onRefresh()
 					},
 					onOpen = { item ->
-						router.shosetsuPush(
-							NovelController(
-								bundleOf(BundleKeys.BUNDLE_NOVEL_ID to item.id)
-							)
+						findNavController().navigate(
+							R.id.action_libraryController_to_novelController,
+							bundleOf(BundleKeys.BUNDLE_NOVEL_ID to item.id)
 						)
 					},
 					toggleSelection = { item ->
@@ -144,7 +144,7 @@ class LibraryController
 		}
 	}
 
-	override fun onViewCreated(view: View) {
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		startObservation()
 	}
 
@@ -160,6 +160,7 @@ class LibraryController
 		}
 	}
 
+	@Deprecated("Deprecated in Java")
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		if (!viewModel.hasSelection) {
 			inflater.inflate(R.menu.toolbar_library, menu)
@@ -170,6 +171,7 @@ class LibraryController
 
 	private var searchView: SearchView? = null
 
+	@Deprecated("Deprecated in Java")
 	override fun onPrepareOptionsMenu(menu: Menu) {
 		logI("Preparing options menu")
 		searchView = (menu.findItem(R.id.library_search)?.actionView as? SearchView)
@@ -206,13 +208,17 @@ class LibraryController
 		}
 	}
 
+	/*&
+	TODO BACK
 	override fun handleBack(): Boolean =
 		if (searchView != null && searchView!!.isIconified) {
 			searchView!!.onActionViewCollapsed()
 			true
 		} else super.handleBack()
+	 */
 
 	/***/
+	@Deprecated("Deprecated in Java")
 	override fun onOptionsItemSelected(item: MenuItem): Boolean =
 		when (item.itemId) {
 			R.id.updater_now -> {
@@ -243,10 +249,9 @@ class LibraryController
 			}
 			R.id.source_migrate -> {
 				viewModel.getSelectedIds().firstLa(this, catch = {}) {
-					router.pushController(
-						MigrationController(
-							bundleOf(MigrationController.TARGETS_BUNDLE_KEY to it)
-						).withFadeTransaction()
+					findNavController().navigate(
+						R.id.action_libraryController_to_migrationController,
+						bundleOf(MigrationController.TARGETS_BUNDLE_KEY to it)
 					)
 				}
 

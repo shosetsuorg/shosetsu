@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/libraryController">
+
+    <fragment
+        android:id="@+id/libraryController"
+        android:name="app.shosetsu.android.ui.library.LibraryController"
+        android:label="LibraryController">
+        <action
+            android:id="@+id/action_libraryController_to_novelController"
+            app:destination="@id/novelController" />
+        <action
+            android:id="@+id/action_libraryController_to_moreController"
+            app:destination="@id/moreController" />
+        <action
+            android:id="@+id/action_libraryController_to_introductionActivity"
+            app:destination="@id/introductionActivity" />
+        <action
+            android:id="@+id/action_libraryController_to_updatesController"
+            app:destination="@id/updatesController" />
+        <action
+            android:id="@+id/action_libraryController_to_migrationController"
+            app:destination="@id/migrationController" />
+        <action
+            android:id="@+id/action_libraryController_to_browseController"
+            app:destination="@id/browseController" />
+    </fragment>
+    <fragment
+        android:id="@+id/addShareController"
+        android:name="app.shosetsu.android.ui.add.AddShareController"
+        android:label="AddShareController">
+        <action
+            android:id="@+id/action_addShareController_to_moreController"
+            app:destination="@id/moreController" />
+        <action
+            android:id="@+id/action_addShareController_to_novelController"
+            app:destination="@id/novelController" />
+    </fragment>
+    <fragment
+        android:id="@+id/advancedSettings"
+        android:name="app.shosetsu.android.ui.settings.sub.AdvancedSettings"
+        android:label="AdvancedSettings">
+        <action
+            android:id="@+id/action_advancedSettings_to_settingsController"
+            app:destination="@id/settingsController" />
+    </fragment>
+    <fragment
+        android:id="@+id/backupSettings"
+        android:name="app.shosetsu.android.ui.backup.BackupSettings"
+        android:label="BackupSettings">
+        <action
+            android:id="@+id/action_backupSettings_to_moreController"
+            app:destination="@id/moreController" />
+    </fragment>
+    <fragment
+        android:id="@+id/browseController"
+        android:name="app.shosetsu.android.ui.browse.BrowseController"
+        android:label="BrowseController">
+        <action
+            android:id="@+id/action_browseController_to_catalogController"
+            app:destination="@id/catalogController" />
+        <action
+            android:id="@+id/action_browseController_to_searchController"
+            app:destination="@id/searchController" />
+        <action
+            android:id="@+id/action_browseController_to_configureExtension"
+            app:destination="@id/configureExtension" />
+    </fragment>
+    <fragment
+        android:id="@+id/catalogController"
+        android:name="app.shosetsu.android.ui.catalogue.CatalogController"
+        android:label="CatalogController">
+        <action
+            android:id="@+id/action_catalogController_to_novelController"
+            app:destination="@id/novelController" />
+    </fragment>
+    <fragment
+        android:id="@+id/aboutController"
+        android:name="app.shosetsu.android.ui.about.AboutController"
+        android:label="AboutController">
+        <action
+            android:id="@+id/action_aboutController_to_textAssetReader"
+            app:destination="@id/textAssetReader" />
+        <action
+            android:id="@+id/action_aboutController_to_moreController"
+            app:destination="@id/moreController" />
+    </fragment>
+    <fragment
+        android:id="@+id/configureExtension"
+        android:name="app.shosetsu.android.ui.extensionsConfigure.ConfigureExtension"
+        android:label="ConfigureExtension">
+        <action
+            android:id="@+id/action_configureExtension_to_browseController"
+            app:destination="@id/browseController" />
+    </fragment>
+    <fragment
+        android:id="@+id/downloadsController"
+        android:name="app.shosetsu.android.ui.downloads.DownloadsController"
+        android:label="DownloadsController">
+        <action
+            android:id="@+id/action_downloadsController_to_moreController"
+            app:destination="@id/moreController" />
+    </fragment>
+    <fragment
+        android:id="@+id/downloadSettings"
+        android:name="app.shosetsu.android.ui.settings.sub.DownloadSettings"
+        android:label="DownloadSettings">
+        <action
+            android:id="@+id/action_downloadSettings_to_settingsController"
+            app:destination="@id/settingsController" />
+    </fragment>
+    <fragment
+        android:id="@+id/migrationController"
+        android:name="app.shosetsu.android.ui.migration.MigrationController"
+        android:label="MigrationController">
+        <action
+            android:id="@+id/action_migrationController_to_libraryController"
+            app:destination="@id/libraryController" />
+        <action
+            android:id="@+id/action_migrationController_to_novelController"
+            app:destination="@id/novelController" />
+    </fragment>
+    <fragment
+        android:id="@+id/novelController"
+        android:name="app.shosetsu.android.ui.novel.NovelController"
+        android:label="NovelController">
+        <action
+            android:id="@+id/action_novelController_to_chapterReader"
+            app:destination="@id/chapterReader" />
+        <action
+            android:id="@+id/action_novelController_to_catalogController"
+            app:destination="@id/catalogController" />
+        <action
+            android:id="@+id/action_novelController_to_libraryController"
+            app:destination="@id/libraryController" />
+        <action
+            android:id="@+id/action_novelController_to_addShareController"
+            app:destination="@id/addShareController" />
+        <action
+            android:id="@+id/action_novelController_to_migrationController"
+            app:destination="@id/migrationController" />
+        <action
+            android:id="@+id/action_novelController_to_searchController"
+            app:destination="@id/searchController" />
+    </fragment>
+    <fragment
+        android:id="@+id/readerSettings"
+        android:name="app.shosetsu.android.ui.settings.sub.ReaderSettings"
+        android:label="ReaderSettings">
+        <action
+            android:id="@+id/action_readerSettings_to_CSSEditorActivity"
+            app:destination="@id/CSSEditorActivity" />
+        <action
+            android:id="@+id/action_readerSettings_to_settingsController"
+            app:destination="@id/settingsController" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchController"
+        android:name="app.shosetsu.android.ui.search.SearchController"
+        android:label="SearchController">
+        <action
+            android:id="@+id/action_searchController_to_browseController"
+            app:destination="@id/browseController" />
+        <action
+            android:id="@+id/action_searchController_to_novelController"
+            app:destination="@id/novelController" />
+    </fragment>
+    <fragment
+        android:id="@+id/repositoryController"
+        android:name="app.shosetsu.android.ui.repository.RepositoryController"
+        android:label="RepositoryController">
+        <action
+            android:id="@+id/action_repositoryController_to_moreController"
+            app:destination="@id/moreController" />
+    </fragment>
+    <fragment
+        android:id="@+id/textAssetReader"
+        android:name="app.shosetsu.android.ui.settings.sub.TextAssetReader"
+        android:label="TextAssetReader">
+        <action
+            android:id="@+id/action_textAssetReader_to_aboutController"
+            app:destination="@id/aboutController" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateSettings"
+        android:name="app.shosetsu.android.ui.settings.sub.UpdateSettings"
+        android:label="UpdateSettings">
+        <action
+            android:id="@+id/action_updateSettings_to_settingsController"
+            app:destination="@id/settingsController" />
+    </fragment>
+    <activity
+        android:id="@+id/CSSEditorActivity"
+        android:name="app.shosetsu.android.ui.css.CSSEditorActivity"
+        android:label="CSSEditorActivity" />
+    <activity
+        android:id="@+id/chapterReader"
+        android:name="app.shosetsu.android.ui.reader.ChapterReader"
+        android:label="ChapterReader" />
+    <activity
+        android:id="@+id/introductionActivity"
+        android:name="app.shosetsu.android.ui.intro.IntroductionActivity"
+        android:label="IntroductionActivity" />
+    <fragment
+        android:id="@+id/moreController"
+        android:name="app.shosetsu.android.ui.more.ComposeMoreController"
+        android:label="MoreController">
+        <action
+            android:id="@+id/action_moreController_to_addShareController"
+            app:destination="@id/addShareController" />
+        <action
+            android:id="@+id/action_moreController_to_downloadsController"
+            app:destination="@id/downloadsController" />
+        <action
+            android:id="@+id/action_moreController_to_settingsController"
+            app:destination="@id/settingsController" />
+        <action
+            android:id="@+id/action_moreController_to_aboutController"
+            app:destination="@id/aboutController" />
+        <action
+            android:id="@+id/action_moreController_to_backupSettings"
+            app:destination="@id/backupSettings" />
+        <action
+            android:id="@+id/action_moreController_to_repositoryController"
+            app:destination="@id/repositoryController" />
+        <action
+            android:id="@+id/action_moreController_to_libraryController"
+            app:destination="@id/libraryController" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsController"
+        android:name="app.shosetsu.android.ui.settings.ComposeSettingsController"
+        android:label="SettingsController">
+        <action
+            android:id="@+id/action_settingsController_to_viewSettings"
+            app:destination="@id/viewSettings" />
+        <action
+            android:id="@+id/action_settingsController_to_downloadSettings"
+            app:destination="@id/downloadSettings" />
+        <action
+            android:id="@+id/action_settingsController_to_readerSettings"
+            app:destination="@id/readerSettings" />
+        <action
+            android:id="@+id/action_settingsController_to_advancedSettings"
+            app:destination="@id/advancedSettings" />
+        <action
+            android:id="@+id/action_settingsController_to_updateSettings"
+            app:destination="@id/updateSettings" />
+        <action
+            android:id="@+id/action_settingsController_to_moreController"
+            app:destination="@id/moreController" />
+    </fragment>
+    <fragment
+        android:id="@+id/updatesController"
+        android:name="app.shosetsu.android.ui.updates.ComposeUpdatesController"
+        android:label="UpdatesController">
+        <action
+            android:id="@+id/action_updatesController_to_chapterReader"
+            app:destination="@id/chapterReader" />
+        <action
+            android:id="@+id/action_updatesController_to_libraryController"
+            app:destination="@id/libraryController" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewSettings"
+        android:name="app.shosetsu.android.ui.settings.sub.ViewSettings"
+        android:label="ViewSettings">
+        <action
+            android:id="@+id/action_viewSettings_to_settingsController"
+            app:destination="@id/settingsController" />
+    </fragment>
+</navigation>

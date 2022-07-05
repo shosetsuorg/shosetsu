@@ -23,18 +23,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.fragment.findNavController
 import app.shosetsu.android.common.ext.makeSnackBar
-import app.shosetsu.android.common.ext.shosetsuPush
-import app.shosetsu.android.ui.about.AboutController
-import app.shosetsu.android.ui.add.AddShareController
-import app.shosetsu.android.ui.backup.BackupSettings
-import app.shosetsu.android.ui.downloads.DownloadsController
-import app.shosetsu.android.ui.repository.RepositoryController
-import app.shosetsu.android.ui.settings.SettingsController
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
-import com.bluelinelabs.conductor.Controller
+import app.shosetsu.android.view.controller.base.HomeFragment
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -60,19 +54,16 @@ import com.github.doomsdayrs.apps.shosetsu.R
  *
  * Option for download queue
  */
-class MoreController
-	: ShosetsuController(), CollapsedToolBarController {
+class ComposeMoreController
+	: ShosetsuController(), CollapsedToolBarController, HomeFragment {
 
 	override val viewTitleRes: Int = R.string.more
 
-	override fun onViewCreated(view: View) {}
-
-
 	override fun onCreateView(
 		inflater: LayoutInflater,
-		container: ViewGroup,
+		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(container.context).apply {
+	): View = ComposeView(requireContext()).apply {
 		setViewTitle()
 		setContent {
 			ShosetsuCompose {
@@ -81,7 +72,7 @@ class MoreController
 						makeSnackBar(R.string.style_wait)?.show()
 					}
 				) {
-					router.shosetsuPush(it)
+					findNavController().navigate(it)
 				}
 			}
 		}
@@ -127,7 +118,7 @@ fun PreviewMoreContent() {
 @Composable
 fun MoreContent(
 	showStyleBar: () -> Unit,
-	pushController: (Controller) -> Unit
+	pushController: (Int) -> Unit
 ) {
 	Column(
 		modifier = Modifier
@@ -153,19 +144,19 @@ fun MoreContent(
 		) {
 			item {
 				MoreItemContent(R.string.downloads, R.drawable.download) {
-					pushController(DownloadsController())
+					pushController(R.id.action_moreController_to_downloadsController)
 				}
 			}
 
 			item {
 				MoreItemContent(R.string.backup, R.drawable.restore) {
-					pushController(BackupSettings())
+					pushController(R.id.action_moreController_to_backupSettings)
 				}
 			}
 
 			item {
 				MoreItemContent(R.string.repositories, R.drawable.add_shopping_cart) {
-					pushController(RepositoryController())
+					pushController(R.id.action_moreController_to_repositoryController)
 				}
 			}
 
@@ -177,19 +168,19 @@ fun MoreContent(
 
 			item {
 				MoreItemContent(R.string.qr_code_scan, R.drawable.ic_baseline_qr_code_scanner_24) {
-					pushController(AddShareController())
+					pushController(R.id.action_moreController_to_addShareController)
 				}
 			}
 
 			item {
 				MoreItemContent(R.string.settings, R.drawable.settings) {
-					pushController(SettingsController())
+					pushController(R.id.action_moreController_to_settingsController)
 				}
 			}
 
 			item {
 				MoreItemContent(R.string.about, R.drawable.info_outline) {
-					pushController(AboutController())
+					pushController(R.id.action_moreController_to_aboutController)
 				}
 			}
 

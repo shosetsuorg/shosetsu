@@ -49,17 +49,15 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
+import androidx.navigation.fragment.findNavController
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.consts.REPOSITORY_HELP_URL
 import app.shosetsu.android.common.ext.displayOfflineSnackBar
 import app.shosetsu.android.common.ext.makeSnackBar
-import app.shosetsu.android.common.ext.shosetsuPush
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.android.domain.model.local.ExtensionInstallOptionEntity
-import app.shosetsu.android.ui.catalogue.CatalogController
-import app.shosetsu.android.ui.extensionsConfigure.ConfigureExtension
 import app.shosetsu.android.view.ComposeBottomSheetDialog
 import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
@@ -67,6 +65,7 @@ import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.ExtendedFABController.EFabMaintainer
+import app.shosetsu.android.view.controller.base.HomeFragment
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.lib.Version
@@ -83,10 +82,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
  * @author github.com/doomsdayrs
  */
 class BrowseController : ShosetsuController(),
-	ExtendedFABController {
+	ExtendedFABController, HomeFragment {
 	override val viewTitleRes: Int = R.string.browse
-
-	override fun onViewCreated(view: View) {}
 
 	private var bsg: BottomSheetDialog? = null
 
@@ -99,13 +96,15 @@ class BrowseController : ShosetsuController(),
 
 	private var fab: EFabMaintainer? = null
 
+	@Deprecated("Deprecated in Java")
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_browse, menu)
 	}
 
+	@Deprecated("Deprecated in Java")
 	override fun onPrepareOptionsMenu(menu: Menu) {
 		(menu.findItem(R.id.search).actionView as SearchView).apply {
-			setOnQueryTextListener(BrowseSearchQuery { router.shosetsuPush(it) })
+			setOnQueryTextListener(BrowseSearchQuery(findNavController()))
 			isSubmitButtonEnabled = true
 		}
 	}
@@ -125,9 +124,9 @@ class BrowseController : ShosetsuController(),
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
-		container: ViewGroup,
+		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(container.context).apply {
+	): View = ComposeView(requireContext()).apply {
 		setViewTitle()
 		setContent {
 			ShosetsuCompose {
@@ -154,7 +153,10 @@ class BrowseController : ShosetsuController(),
 
 	private fun openSettings(entity: BrowseExtensionEntity) {
 		viewModel.resetSearch()
-		router.shosetsuPush(ConfigureExtension(bundleOf(BUNDLE_EXTENSION to entity.id)))
+		findNavController().navigate(
+			R.id.action_browseController_to_configureExtension,
+			(bundleOf(BUNDLE_EXTENSION to entity.id))
+		)
 	}
 
 	private fun openCatalogue(entity: BrowseExtensionEntity) {
@@ -163,12 +165,13 @@ class BrowseController : ShosetsuController(),
 			// If the extension is installed, push to it, otherwise prompt the user to install
 			if (entity.isInstalled) {
 				viewModel.resetSearch()
-				router.shosetsuPush(
-					CatalogController(
-						bundleOf(
-							BUNDLE_EXTENSION to entity.id
-						)
-					)
+				findNavController().navigate(
+					R.id.action_browseController_to_catalogController,
+					(
+							bundleOf(
+								BUNDLE_EXTENSION to entity.id
+							)
+							)
 				)
 			} else makeSnackBar(R.string.controller_browse_snackbar_not_installed)?.setAction(
 				R.string.install
@@ -179,6 +182,7 @@ class BrowseController : ShosetsuController(),
 
 	}
 
+	@Deprecated("Deprecated in Java")
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
 		R.id.help -> {
 			openHelpMenu()

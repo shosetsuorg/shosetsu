@@ -12,8 +12,8 @@ import android.content.Intent.ACTION_SEARCH
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.annotation.StringRes
@@ -26,30 +26,23 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.window.layout.WindowMetricsCalculator
 import app.shosetsu.android.common.consts.*
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
 import app.shosetsu.android.common.enums.NavigationStyle.LEGACY
 import app.shosetsu.android.common.enums.NavigationStyle.MATERIAL
 import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.common.utils.collapse
-import app.shosetsu.android.common.utils.expand
 import app.shosetsu.android.domain.repository.base.IBackupRepository
-import app.shosetsu.android.ui.browse.BrowseController
 import app.shosetsu.android.ui.intro.IntroductionActivity
-import app.shosetsu.android.ui.library.LibraryController
-import app.shosetsu.android.ui.more.MoreController
-import app.shosetsu.android.ui.search.SearchController
-import app.shosetsu.android.ui.updates.UpdatesController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
+import app.shosetsu.android.view.controller.base.HomeFragment
 import app.shosetsu.android.view.controller.base.LiftOnScrollToolBarController
-import app.shosetsu.android.view.controller.base.TabbedController
 import app.shosetsu.android.viewmodel.abstracted.AMainViewModel
-import com.bluelinelabs.conductor.Conductor.attachRouter
-import com.bluelinelabs.conductor.Controller
-import com.bluelinelabs.conductor.ControllerChangeHandler
-import com.bluelinelabs.conductor.Router
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityMainBinding
 import com.google.android.material.color.DynamicColors
@@ -88,8 +81,7 @@ import org.kodein.di.android.closestDI
  *
  * @author github.com/doomsdayrs
  */
-class MainActivity : AppCompatActivity(), DIAware,
-	ControllerChangeHandler.ControllerChangeListener {
+class MainActivity : AppCompatActivity(), DIAware {
 	companion object {
 		const val INTRO_CODE: Int = 1944
 	}
@@ -99,9 +91,6 @@ class MainActivity : AppCompatActivity(), DIAware,
 	private lateinit var binding: ActivityMainBinding
 
 	private var registered = false
-
-	// The main router of the application
-	private lateinit var router: Router
 
 	private var actionBarDrawerToggle: ActionBarDrawerToggle? = null
 
@@ -113,6 +102,15 @@ class MainActivity : AppCompatActivity(), DIAware,
 				viewModel.toggleShowIntro()
 			}
 		}
+
+	private val navHostFragment: NavHostFragment
+		get() = supportFragmentManager.findFragmentById(R.id.controller_container) as NavHostFragment
+
+	private val navController: NavController
+		get() = navHostFragment.navController
+
+	private val navChildFragmentManager
+		get() = navHostFragment.childFragmentManager
 
 	private val broadcastReceiver by lazy {
 		object : BroadcastReceiver() {
@@ -136,18 +134,19 @@ class MainActivity : AppCompatActivity(), DIAware,
 
 		onBackPressedDispatcher.addCallback(this) {
 			logI("Back pressed")
-			val backStackSize = router.backstackSize
+			val backStackSize = navController.backQueue.size
 			logD("Back stack size: $backStackSize")
 			when {
 				binding.drawerLayout.isDrawerOpen(GravityCompat.START) ->
 					binding.drawerLayout.closeDrawer(GravityCompat.START)
 
-				backStackSize == 1 && router.getControllerWithTag("${R.id.nav_library}") == null ->
-					setSelectedDrawerItem(R.id.nav_library)
+				backStackSize > 2 -> {
+					navController.navigateUp()
+				}
 
 				shouldProtectBack() -> protectedBackWait()
 
-				backStackSize == 1 || !router.handleBack() -> this@MainActivity.finish()
+				backStackSize == 2 -> this@MainActivity.finish()
 			}
 		}
 
@@ -161,9 +160,9 @@ class MainActivity : AppCompatActivity(), DIAware,
 					R.string.activity_main_error_theme,
 					it.message ?: "Unknown error"
 				)
-			).setAction(R.string.report) { _ ->
+			)?.setAction(R.string.report) { _ ->
 				ACRA.errorReporter.handleSilentException(it)
-			}.show()
+			}?.show()
 		}) {
 			setTheme(it)
 			DynamicColors.applyToActivityIfAvailable(this)
@@ -200,7 +199,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 		}
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		computeWindowSizeClasses()
-		setupRouter(savedInstanceState)
+		setupNavigationController()
 		setContentView(binding.root)
 		handleIntentAction(intent)
 		setupProcesses()
@@ -246,7 +245,6 @@ class MainActivity : AppCompatActivity(), DIAware,
 		setupView()
 	}
 
-
 	/**
 	 * Get the current navigation bar view
 	 *
@@ -273,20 +271,20 @@ class MainActivity : AppCompatActivity(), DIAware,
 		launchIO {
 			inProtectingBack = true
 			val snackBar =
-				makeSnackBar(R.string.double_back_message, Snackbar.LENGTH_INDEFINITE).apply {
+				makeSnackBar(R.string.double_back_message, Snackbar.LENGTH_INDEFINITE)?.apply {
 					setOnDismissed { _, _ ->
 						inProtectingBack = false
 					}
 				}
-			snackBar.show()
+			snackBar?.show()
 			delay(2000)
-			snackBar.dismiss()
+			snackBar?.dismiss()
 		}
 	}
 
 	private fun shouldProtectBack(): Boolean =
-		router.backstackSize == 1 &&
-				router.getControllerWithTag("${R.id.nav_library}") != null &&
+		navController.backQueue.size == 1 &&
+				navController.findDestination(R.id.libraryController) != null &&
 				viewModel.requireDoubleBackToExit &&
 				!inProtectingBack
 
@@ -311,7 +309,7 @@ class MainActivity : AppCompatActivity(), DIAware,
 
 		binding.toolbar.setNavigationOnClickListener {
 			logV("Navigation item clicked")
-			if (router.backstackSize == 1) {
+			if (navController.backQueue.size == 1) {
 				if (viewModel.navigationStyle == LEGACY) {
 					binding.drawerLayout.openDrawer(GravityCompat.START)
 				} else onBackPressed()
@@ -358,13 +356,12 @@ class MainActivity : AppCompatActivity(), DIAware,
 		binding.navDrawer.setNavigationItemSelectedListener {
 			logI("Navigation item selected: $it")
 			val id = it.itemId
-			val currentRoot = router.backstack.firstOrNull()
-			if (currentRoot?.tag()?.toIntOrNull() != id) handleNavigationSelected(id)
+			val currentRoot = navController.currentBackStackEntry
+			if (currentRoot?.destination?.id != id) handleNavigationSelected(id)
 			binding.drawerLayout.closeDrawer(GravityCompat.START)
 			return@setNavigationItemSelectedListener true
 		}
 	}
-
 
 	/**
 	 * Setup the bottom navigation
@@ -377,29 +374,43 @@ class MainActivity : AppCompatActivity(), DIAware,
 
 		getMaterialNav().setOnItemSelectedListener {
 			val id = it.itemId
-			val currentRoot = router.backstack.firstOrNull()
-			if (currentRoot?.tag()?.toIntOrNull() != id) handleNavigationSelected(id)
+			val currentRoot = navController.currentBackStackEntry
+			if (currentRoot?.destination?.id != id) handleNavigationSelected(id)
 			return@setOnItemSelectedListener true
 		}
 	}
 
 	private fun handleNavigationSelected(id: Int) {
 		when (id) {
-			R.id.nav_library -> setRoot(LibraryController(), R.id.nav_library)
-			R.id.nav_updates -> setRoot(UpdatesController(), R.id.nav_updates)
-			R.id.nav_browse -> setRoot(BrowseController(), R.id.nav_browse)
-			R.id.nav_more -> setRoot(MoreController(), R.id.nav_more)
+			R.id.nav_library -> navController.navigate(R.id.libraryController)
+			R.id.nav_updates -> navController.navigate(R.id.updatesController)
+			R.id.nav_browse -> navController.navigate(R.id.browseController)
+			R.id.nav_more -> navController.navigate(R.id.moreController)
 		}
 	}
 
-	private fun setupRouter(savedInstanceState: Bundle?) {
-		router = attachRouter(this, binding.controllerContainer, savedInstanceState)
-		router.addChangeListener(this)
-		syncActivityViewWithController(router.backstack.lastOrNull()?.controller)
+	inner class FragmentLifecycleListener() : FragmentManager.FragmentLifecycleCallbacks() {
+		override fun onFragmentViewCreated(
+			fm: FragmentManager,
+			f: Fragment,
+			v: View,
+			savedInstanceState: Bundle?
+		) {
+			logV("Fragment: ${f::class.simpleName}")
+			syncActivityViewWithFragment(f)
+		}
+	}
+
+	private fun setupNavigationController() {
+		navChildFragmentManager.registerFragmentLifecycleCallbacks(
+			FragmentLifecycleListener(),
+			true
+		)
+		syncActivityViewWithFragment(navChildFragmentManager.fragments.lastOrNull())
 	}
 
 	private fun actionMain() {
-		if (!router.hasRootController()) {
+		if (navController.findDestination(R.id.libraryController) == null) {
 			setSelectedDrawerItem(R.id.nav_library)
 		} else {
 			logE("Router has a root controller")
@@ -413,24 +424,16 @@ class MainActivity : AppCompatActivity(), DIAware,
 			ACTION_OPEN_UPDATES -> setSelectedDrawerItem(R.id.nav_updates)
 			ACTION_OPEN_LIBRARY -> setSelectedDrawerItem(R.id.nav_library)
 			ACTION_SEARCH -> {
-				if (!router.hasRootController()) setSelectedDrawerItem(R.id.nav_library)
-
-				router.shosetsuPush(
-					SearchController(
-						bundleOf(
-							BUNDLE_QUERY to (intent.getStringExtra(SearchManager.QUERY) ?: "")
-						)
+				navController.navigate(
+					R.id.searchController, bundleOf(
+						BUNDLE_QUERY to (intent.getStringExtra(SearchManager.QUERY) ?: "")
 					)
 				)
 			}
 			ACTION_OPEN_SEARCH -> {
-				if (!router.hasRootController()) setSelectedDrawerItem(R.id.nav_library)
-
-				router.shosetsuPush(
-					SearchController(
-						bundleOf(
-							BUNDLE_QUERY to (intent.getStringExtra(SearchManager.QUERY) ?: "")
-						)
+				navController.navigate(
+					R.id.searchController, bundleOf(
+						BUNDLE_QUERY to (intent.getStringExtra(SearchManager.QUERY) ?: "")
 					)
 				)
 			}
@@ -439,16 +442,8 @@ class MainActivity : AppCompatActivity(), DIAware,
 				actionMain()
 			}
 			ACTION_MAIN -> actionMain()
-			else -> if (!router.hasRootController()) {
-				setSelectedDrawerItem(R.id.nav_library)
-			} else {
-				logE("Router has a root controller")
-			}
+			else -> setSelectedDrawerItem(R.id.nav_library)
 		}
-	}
-
-	private fun setRoot(controller: Controller, id: Int) {
-		router.setRoot(controller.withFadeTransaction().tag(id.toString()))
 	}
 
 	private fun setupProcesses() {
@@ -458,10 +453,9 @@ class MainActivity : AppCompatActivity(), DIAware,
 					R.string.activity_main_error_update_check,
 					it.message ?: "Unknown error"
 				)
-			)
-				.setAction(R.string.report) { _ ->
-					ACRA.errorReporter.handleSilentException(it)
-				}.show()
+			)?.setAction(R.string.report) { _ ->
+				ACRA.errorReporter.handleSilentException(it)
+			}?.show()
 		}) { result ->
 			if (result != null)
 				AlertDialog.Builder(this).apply {
@@ -514,10 +508,9 @@ class MainActivity : AppCompatActivity(), DIAware,
 					R.string.activity_main_error_handle_update,
 					it.message ?: "Unknown error"
 				)
-			)
-				.setAction(R.string.report) { _ ->
-					ACRA.errorReporter.handleSilentException(it)
-				}.show()
+			)?.setAction(R.string.report) { _ ->
+				ACRA.errorReporter.handleSilentException(it)
+			}?.show()
 		}) {
 			if (it != null)
 				when (it) {
@@ -568,78 +561,68 @@ class MainActivity : AppCompatActivity(), DIAware,
 		}
 	}
 
+	/**
+	 * Show navigation components
+	 */
+	private fun hideNavigation() {
+		when (viewModel.navigationStyle) {
+			LEGACY -> {
+				logI("Sync activity view with controller for legacy")
+				actionBarDrawerToggle?.isDrawerIndicatorEnabled = false
+				binding.drawerLayout.setDrawerLockMode(
+					DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
+					binding.navDrawer
+				)
+			}
+			MATERIAL -> {
+				supportActionBar?.setDisplayHomeAsUpEnabled(true)
+				if (!isTablet)
+					binding.navBottom.isVisible = false
+			}
+		}
+	}
+
+	/**
+	 * Hide navigation components
+	 */
+	private fun showNavigation() {
+		when (viewModel.navigationStyle) {
+			LEGACY -> {
+				logI("Sync activity view with controller for legacy")
+				actionBarDrawerToggle?.isDrawerIndicatorEnabled = true
+				binding.drawerLayout.setDrawerLockMode(
+					DrawerLayout.LOCK_MODE_UNLOCKED,
+					binding.navDrawer
+				)
+			}
+			MATERIAL -> {
+				supportActionBar?.setDisplayHomeAsUpEnabled(false)
+				if (!isTablet)
+					binding.navBottom.isVisible = true
+			}
+		}
+	}
+
 	@SuppressLint("ObjectAnimatorBinding")
-	internal fun syncActivityViewWithController(to: Controller?, from: Controller? = null) {
-		val showHamburger = router.backstackSize == 1 // Show hamburg means this is home
+	internal fun syncActivityViewWithFragment(to: Fragment?) {
+		binding.elevatedAppBarLayout.setExpanded(true)
 
-		logI("Show hamburger?: $showHamburger")
+		// Show hamburg means this is home
+		if (to is HomeFragment) {
+			showNavigation()
+		} else hideNavigation()
 
-		if (showHamburger) {
-			// Shows navigation
-			when (viewModel.navigationStyle) {
-				LEGACY -> {
-					logI("Sync activity view with controller for legacy")
-					actionBarDrawerToggle?.isDrawerIndicatorEnabled = true
-					binding.drawerLayout.setDrawerLockMode(
-						DrawerLayout.LOCK_MODE_UNLOCKED,
-						binding.navDrawer
-					)
-				}
-				MATERIAL -> {
-					supportActionBar?.setDisplayHomeAsUpEnabled(false)
-					if (!isTablet)
-						binding.navBottom.isVisible = true
-				}
-			}
-		} else {
+		Log.d(logID(), "Resetting FAB listeners")
 
-			// Hides navigation
-			when (viewModel.navigationStyle) {
-				LEGACY -> {
-					logI("Sync activity view with controller for legacy")
-					actionBarDrawerToggle?.isDrawerIndicatorEnabled = false
-					binding.drawerLayout.setDrawerLockMode(
-						DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
-						binding.navDrawer
-					)
-				}
-				MATERIAL -> {
-					supportActionBar?.setDisplayHomeAsUpEnabled(true)
-					if (!isTablet)
-						binding.navBottom.isVisible = false
-				}
-			}
-		}
-
-		if (from is ExtendedFABController) {
-			binding.navRail.headerView?.isVisible = false
-			from.hideFAB(eFabMaintainer)
-			from.resetFAB(eFabMaintainer)
-		}
+		eFabMaintainer.hide()
+		eFabMaintainer.setOnClickListener(null)
+		binding.navRail.headerView?.isVisible = false
 
 		if (to is ExtendedFABController) {
 			to.manipulateFAB(eFabMaintainer)
 			to.showFAB(eFabMaintainer)
 			binding.navRail.headerView?.isVisible = true
 		}
-
-		val tabLayout = binding.tabLayout
-
-		if (from is TabbedController) {
-			tabLayout.removeAllTabs()
-			tabLayout.clearOnTabSelectedListeners()
-		}
-
-		if (to is TabbedController) {
-			to.acceptTabLayout(tabLayout)
-			to.configureTabs(tabLayout)
-		}
-
-		// clean up TabbedController
-		if (from is TabbedController && to !is TabbedController) tabLayout.collapse()
-
-		// setup TabbedController
-		if (from !is TabbedController && to is TabbedController) tabLayout.expand()
 
 		// Change the elevation for the app bar layout
 		when (to) {
@@ -673,24 +656,4 @@ class MainActivity : AppCompatActivity(), DIAware,
 				binding.navBottom.isVisible -> anchorView = binding.navBottom
 			}
 		}
-
-	override fun onChangeStarted(
-		to: Controller?,
-		from: Controller?,
-		isPush: Boolean,
-		container: ViewGroup,
-		handler: ControllerChangeHandler,
-	) {
-		binding.elevatedAppBarLayout.setExpanded(true)
-		syncActivityViewWithController(to, from)
-	}
-
-	override fun onChangeCompleted(
-		to: Controller?,
-		from: Controller?,
-		isPush: Boolean,
-		container: ViewGroup,
-		handler: ControllerChangeHandler,
-	) {
-	}
 }

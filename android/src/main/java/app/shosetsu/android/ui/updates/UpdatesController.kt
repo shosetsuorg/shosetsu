@@ -36,6 +36,7 @@ import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
+import app.shosetsu.android.view.controller.base.HomeFragment
 import app.shosetsu.android.viewmodel.abstracted.AUpdatesViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -68,18 +69,16 @@ import java.util.*
  * @since 09 / 10 / 2021
  * @author Doomsdayrs
  */
-class UpdatesController : ShosetsuController() {
+class ComposeUpdatesController : ShosetsuController(), HomeFragment {
 	override val viewTitleRes: Int = R.string.updates
 
 	private val viewModel: AUpdatesViewModel by viewModel()
 
-	override fun onViewCreated(view: View) {}
-
 	override fun onCreateView(
 		inflater: LayoutInflater,
-		container: ViewGroup,
+		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(container.context).apply {
+	): View = ComposeView(requireContext()).apply {
 		setViewTitle()
 		setContent {
 			ShosetsuCompose {
@@ -91,7 +90,7 @@ class UpdatesController : ShosetsuController() {
 				UpdatesContent(
 					items = items,
 					isRefreshing = isRefreshing,
-					onRefresh = this@UpdatesController::onRefresh
+					onRefresh = this@ComposeUpdatesController::onRefresh
 				) { (chapterID, novelID) ->
 					activity?.openChapter(chapterID, novelID)
 				}

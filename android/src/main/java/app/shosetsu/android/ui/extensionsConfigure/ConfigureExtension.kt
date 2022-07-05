@@ -63,19 +63,19 @@ import kotlin.random.Random
  *
  * Opens up detailed view of an extension, allows modifications
  */
-class ConfigureExtension(bundle: Bundle) : ShosetsuController(bundle),
+class ConfigureExtension() : ShosetsuController(),
 	CollapsedToolBarController {
 	val viewModel: AExtensionConfigureViewModel by viewModel()
 
-	override fun onViewCreated(view: View) {
-		viewModel.setExtensionID(args.getInt(BUNDLE_EXTENSION))
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		viewModel.setExtensionID(arguments!!.getInt(BUNDLE_EXTENSION))
 	}
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
-		container: ViewGroup,
+		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(container.context).apply {
+	): View = ComposeView(requireContext()).apply {
 		setViewTitle()
 		setContent {
 			ShosetsuCompose {

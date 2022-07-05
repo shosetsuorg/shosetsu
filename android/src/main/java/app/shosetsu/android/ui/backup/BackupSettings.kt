@@ -22,7 +22,10 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.LifecycleOwner
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.consts.BACKUP_FILE_EXTENSION
-import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.makeSnackBar
+import app.shosetsu.android.common.ext.toast
+import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.compose.setting.ButtonSettingContent
 import app.shosetsu.android.view.compose.setting.SwitchSettingContent
@@ -56,14 +59,11 @@ class BackupSettings : ShosetsuController() {
 
 	val viewModel: ABackupSettingsViewModel by viewModel()
 
-	override fun onViewCreated(view: View) {
-	}
-
 	override fun onCreateView(
 		inflater: LayoutInflater,
-		container: ViewGroup,
+		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(container.context).apply {
+	): View = ComposeView(requireContext()).apply {
 		setViewTitle()
 		setContent {
 			ShosetsuCompose {

@@ -59,13 +59,11 @@ class ViewSettings : ShosetsuController() {
 
 	override val viewTitleRes: Int = R.string.settings_view
 
-	override fun onViewCreated(view: View) {}
-
 	override fun onCreateView(
 		inflater: LayoutInflater,
-		container: ViewGroup,
+		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(container.context).apply {
+	): View = ComposeView(requireContext()).apply {
 		setViewTitle()
 		setContent {
 			ShosetsuCompose {

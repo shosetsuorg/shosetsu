@@ -17,11 +17,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.shosetsu.android.common.ext.shosetsuPush
-import app.shosetsu.android.ui.settings.sub.*
+import androidx.navigation.findNavController
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
-import com.bluelinelabs.conductor.Controller
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -47,21 +45,19 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * @since 06 / 10 / 2021
  * @author Doomsdayrs
  */
-class SettingsController : ShosetsuController() {
+class ComposeSettingsController : ShosetsuController() {
 
 	override val viewTitleRes: Int = R.string.settings
 
-	override fun onViewCreated(view: View) {}
-
 	override fun onCreateView(
 		inflater: LayoutInflater,
-		container: ViewGroup,
+		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(container.context).apply {
+	): View = ComposeView(requireContext()).apply {
 		setViewTitle()
 		setContent {
 			ShosetsuCompose {
-				SettingsContent { router.shosetsuPush(it) }
+				SettingsContent { findNavController().navigate(it) }
 			}
 		}
 	}
@@ -94,26 +90,26 @@ fun SettingMenuItem(@StringRes title: Int, @DrawableRes drawableRes: Int, onClic
 }
 
 @Composable
-fun SettingsContent(pushController: (Controller) -> Unit) {
+fun SettingsContent(pushController: (Int) -> Unit) {
 	Column {
 		SettingMenuItem(R.string.view, R.drawable.view_module) {
-			pushController(ViewSettings())
+			pushController(R.id.action_settingsController_to_viewSettings)
 		}
 
 		SettingMenuItem(R.string.reader, R.drawable.book) {
-			pushController(ReaderSettings())
+			pushController(R.id.action_settingsController_to_readerSettings)
 		}
 
 		SettingMenuItem(R.string.download, R.drawable.download) {
-			pushController(DownloadSettings())
+			pushController(R.id.action_settingsController_to_downloadSettings)
 		}
 
 		SettingMenuItem(R.string.update, R.drawable.update) {
-			pushController(UpdateSettings())
+			pushController(R.id.action_settingsController_to_updateSettings)
 		}
 
 		SettingMenuItem(R.string.advanced, R.drawable.settings) {
-			pushController(AdvancedSettings())
+			pushController(R.id.action_settingsController_to_advancedSettings)
 		}
 	}
 }

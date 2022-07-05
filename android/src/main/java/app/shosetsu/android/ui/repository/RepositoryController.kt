@@ -68,10 +68,10 @@ class RepositoryController : ShosetsuController(),
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
-		container: ViewGroup,
+		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View =
-		ComposeView(container.context).apply {
+	): View {
+		return ComposeView(requireContext()).apply {
 			setViewTitle()
 			setContent {
 				ShosetsuCompose {
@@ -83,10 +83,10 @@ class RepositoryController : ShosetsuController(),
 							toggleIsEnabled(it)
 						},
 						onRemove = {
-							onRemove(it, container.context)
+							onRemove(it, this.context)
 						},
 						addRepository = {
-							launchAddRepositoryDialog(container)
+							launchAddRepositoryDialog(this)
 						},
 						onRefresh = {
 							onRefresh()
@@ -96,9 +96,6 @@ class RepositoryController : ShosetsuController(),
 				}
 			}
 		}
-
-	override fun onViewCreated(view: View) {
-
 	}
 
 	private fun onRemove(item: RepositoryUI, context: Context) {
