@@ -5,21 +5,21 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_library"
+            android:id="@+id/libraryController"
             android:icon="@drawable/library"
             android:title="@string/my_library" />
         <item
-            android:id="@+id/nav_updates"
+            android:id="@+id/updatesController"
             android:icon="@drawable/update"
             android:title="@string/updates" />
 
         <item
-            android:id="@+id/nav_browse"
+            android:id="@+id/browseController"
             android:icon="@drawable/navigation_arrow"
             android:title="@string/browse" />
 
         <item
-            android:id="@+id/nav_more"
+            android:id="@+id/moreController"
             android:icon="@drawable/ic_baseline_more_horiz_24"
             android:title="@string/more" />
     </group>

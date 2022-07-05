@@ -30,6 +30,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import androidx.window.layout.WindowMetricsCalculator
 import app.shosetsu.android.common.consts.*
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
@@ -288,21 +290,6 @@ class MainActivity : AppCompatActivity(), DIAware {
 				viewModel.requireDoubleBackToExit &&
 				!inProtectingBack
 
-	private fun setSelectedDrawerItem(id: Int) {
-		if (!isFinishing) {
-			when (viewModel.navigationStyle) {
-				MATERIAL -> {
-					getMaterialNav().selectedItemId = id
-					getMaterialNav().menu.performIdentifierAction(id, 0)
-				}
-				LEGACY -> {
-					binding.navDrawer.setCheckedItem(id)
-					binding.navDrawer.menu.performIdentifierAction(id, 0)
-				}
-			}
-		}
-	}
-
 	private fun setupView() {
 		//Sets the toolbar
 		setSupportActionBar(binding.toolbar)
@@ -350,17 +337,8 @@ class MainActivity : AppCompatActivity(), DIAware {
 
 		binding.drawerLayout.addDrawerListener(actionBarDrawerToggle!!)
 
-
-		// Navigation view
-		//nav_view.setNavigationItemSelectedListener(NavigationSwapListener(this))
-		binding.navDrawer.setNavigationItemSelectedListener {
-			logI("Navigation item selected: $it")
-			val id = it.itemId
-			val currentRoot = navController.currentBackStackEntry
-			if (currentRoot?.destination?.id != id) handleNavigationSelected(id)
-			binding.drawerLayout.closeDrawer(GravityCompat.START)
-			return@setNavigationItemSelectedListener true
-		}
+		setupActionBarWithNavController(navController, binding.drawerLayout)
+		binding.navDrawer.setupWithNavController(navController)
 	}
 
 	/**
@@ -372,21 +350,7 @@ class MainActivity : AppCompatActivity(), DIAware {
 			binding.navDrawer
 		)
 
-		getMaterialNav().setOnItemSelectedListener {
-			val id = it.itemId
-			val currentRoot = navController.currentBackStackEntry
-			if (currentRoot?.destination?.id != id) handleNavigationSelected(id)
-			return@setOnItemSelectedListener true
-		}
-	}
-
-	private fun handleNavigationSelected(id: Int) {
-		when (id) {
-			R.id.nav_library -> navController.navigate(R.id.libraryController)
-			R.id.nav_updates -> navController.navigate(R.id.updatesController)
-			R.id.nav_browse -> navController.navigate(R.id.browseController)
-			R.id.nav_more -> navController.navigate(R.id.moreController)
-		}
+		getMaterialNav().setupWithNavController(navController)
 	}
 
 	inner class FragmentLifecycleListener() : FragmentManager.FragmentLifecycleCallbacks() {
@@ -411,7 +375,7 @@ class MainActivity : AppCompatActivity(), DIAware {
 
 	private fun actionMain() {
 		if (navController.findDestination(R.id.libraryController) == null) {
-			setSelectedDrawerItem(R.id.nav_library)
+			navController.navigate(R.id.libraryController)
 		} else {
 			logE("Router has a root controller")
 		}
@@ -420,9 +384,9 @@ class MainActivity : AppCompatActivity(), DIAware {
 	internal fun handleIntentAction(intent: Intent) {
 		logD("Intent received was ${intent.action}")
 		when (intent.action) {
-			ACTION_OPEN_CATALOGUE -> setSelectedDrawerItem(R.id.nav_browse)
-			ACTION_OPEN_UPDATES -> setSelectedDrawerItem(R.id.nav_updates)
-			ACTION_OPEN_LIBRARY -> setSelectedDrawerItem(R.id.nav_library)
+			ACTION_OPEN_CATALOGUE -> navController.navigate(R.id.browseController)
+			ACTION_OPEN_UPDATES -> navController.navigate(R.id.updatesController)
+			ACTION_OPEN_LIBRARY -> navController.navigate(R.id.libraryController)
 			ACTION_SEARCH -> {
 				navController.navigate(
 					R.id.searchController, bundleOf(
@@ -442,7 +406,7 @@ class MainActivity : AppCompatActivity(), DIAware {
 				actionMain()
 			}
 			ACTION_MAIN -> actionMain()
-			else -> setSelectedDrawerItem(R.id.nav_library)
+			else -> navController.navigate(R.id.libraryController)
 		}
 	}
 
@@ -615,6 +579,7 @@ class MainActivity : AppCompatActivity(), DIAware {
 		Log.d(logID(), "Resetting FAB listeners")
 
 		eFabMaintainer.hide()
+		binding.efab.text = null
 		eFabMaintainer.setOnClickListener(null)
 		binding.navRail.headerView?.isVisible = false
 
