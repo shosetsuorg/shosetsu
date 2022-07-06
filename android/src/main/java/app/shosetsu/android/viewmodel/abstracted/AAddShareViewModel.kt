@@ -52,7 +52,7 @@ abstract class AAddShareViewModel : ShosetsuViewModel(), Destroyable {
 	abstract val extLink: Flow<ExtensionLink?>
 	abstract val repoLink: Flow<RepositoryLink?>
 
-	abstract val hasData: Flow<Boolean>
+	abstract val openQRScanner: Flow<Boolean>
 
 	abstract val exception: Flow<Exception?>
 
@@ -65,6 +65,8 @@ abstract class AAddShareViewModel : ShosetsuViewModel(), Destroyable {
 	 * Set that the QR code scanned is invalid
 	 */
 	abstract fun setInvalidQRCode()
+
+	abstract fun setUserCancelled()
 
 	abstract fun add()
 

@@ -23,7 +23,7 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.findNavController
 import app.shosetsu.android.common.consts.BundleKeys
-import app.shosetsu.android.common.ext.collectLatestLA
+import app.shosetsu.android.common.ext.collectLA
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.compose.ErrorAction
@@ -79,8 +79,8 @@ class AddShareController : ShosetsuController(), CollapsedToolBarController {
 
 	private val viewModel: AAddShareViewModel by viewModel()
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		viewModel.hasData.collectLatestLA(this, catch = {}) {
-			if (!it) scanQrCode.launch(null)
+		viewModel.openQRScanner.collectLA(this, catch = {}) {
+			if (it) scanQrCode.launch(null)
 		}
 	}
 
@@ -119,7 +119,6 @@ class AddShareController : ShosetsuController(), CollapsedToolBarController {
 					},
 					retry = {
 						viewModel.retry()
-						scanQrCode.launch(null)
 					},
 					novelLink = novelLink,
 					extensionLink = extLink,
@@ -163,7 +162,7 @@ class AddShareController : ShosetsuController(), CollapsedToolBarController {
 				}
 			}
 			QRResult.QRUserCanceled -> {
-				viewModel.setInvalidQRCode()
+				viewModel.setUserCancelled()
 			}
 			QRResult.QRMissingPermission -> {
 				viewModel.setInvalidQRCode()

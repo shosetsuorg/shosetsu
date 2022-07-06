@@ -23,10 +23,8 @@ import app.shosetsu.lib.share.ExtensionLink
 import app.shosetsu.lib.share.NovelLink
 import app.shosetsu.lib.share.RepositoryLink
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.acra.ACRA
@@ -86,8 +84,7 @@ class AddShareViewModel(
 
 	override val exception: MutableStateFlow<Exception?> = MutableStateFlow(null)
 
-	override val hasData: Flow<Boolean> =
-		data.map { it != null }
+	override val openQRScanner: MutableStateFlow<Boolean> = MutableStateFlow(true)
 
 	private var repoEntity: RepositoryEntity? = null
 	private var extEntity: InstalledExtensionEntity? = null
@@ -231,7 +228,14 @@ class AddShareViewModel(
 
 	override fun takeData(url: String) {
 		logV(url)
+		openQRScanner.tryEmit(false)
 		data.tryEmit(url)
+	}
+
+
+	override fun setUserCancelled() {
+		openQRScanner.tryEmit(false)
+		setInvalidQRCode()
 	}
 
 	override fun setInvalidQRCode() {
@@ -391,6 +395,7 @@ class AddShareViewModel(
 		isAdding.tryEmit(false)
 		isProcessing.tryEmit(true)
 		isQRCodeValid.tryEmit(false)
+		openQRScanner.tryEmit(true)
 	}
 
 	override fun getNovel(): NovelEntity? =
