@@ -186,6 +186,7 @@ class AddShareController : ShosetsuController(), CollapsedToolBarController {
 			logE("Failed to destroy viewmodel", e)
 			ACRA.errorReporter.handleSilentException(e)
 		}
+		super.onDestroy()
 	}
 }
 

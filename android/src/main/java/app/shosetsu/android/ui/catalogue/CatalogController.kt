@@ -214,6 +214,7 @@ class CatalogController : ShosetsuController(), ExtendedFABController {
 	}
 
 	override fun onDestroy() {
+		super.onDestroy()
 		viewModel.destroy()
 	}
 
