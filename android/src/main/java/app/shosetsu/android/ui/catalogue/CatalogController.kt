@@ -49,6 +49,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import org.acra.ACRA
 
 /*
@@ -285,24 +286,31 @@ class CatalogController : ShosetsuController(), ExtendedFABController {
 				true
 			}
 			R.id.web_view -> {
-				viewModel.getBaseURL().observe(
-					catch = {
-						makeSnackBar(
-							getString(
-								R.string.controller_catalogue_error_base_url,
-								it.message ?: "Unknown exception"
-							)
-						)?.setAction(R.string.report) { _ ->
-							ACRA.errorReporter.handleSilentException(it)
-						}?.show()
-					}
-				) {
-					activity?.openInWebView(it)
-				}
+				openInWebView()
 				true
 			}
 			else -> false
 		}
+
+	private fun openInWebView() {
+		var job: Job? = null
+		job = viewModel.getBaseURL().firstLa(
+			this,
+			catch = {
+				makeSnackBar(
+					getString(
+						R.string.controller_catalogue_error_base_url,
+						it.message ?: "Unknown exception"
+					)
+				)?.setAction(R.string.report) { _ ->
+					ACRA.errorReporter.handleSilentException(it)
+				}?.show()
+			}
+		) {
+			activity?.openInWebView(it)
+			job?.cancel("Done")
+		}
+	}
 
 	private fun setupObservers() {
 		setViewTitle(getString(R.string.loading))

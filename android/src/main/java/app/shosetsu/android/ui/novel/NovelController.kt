@@ -64,6 +64,8 @@ import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelJumpDialog
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
@@ -162,19 +164,23 @@ class NovelController() : ShosetsuController(),
 
 	override fun manipulateFAB(fab: EFabMaintainer) {
 		resume = fab
-		fab.setOnClickListener {
-			viewModel.openLastRead().firstLa(this, catch = {
-				logE("Loading last read hit an error")
-			}) { chapterUI ->
-				if (chapterUI != null) {
-					activity?.openChapter(chapterUI)
-				} else {
-					makeSnackBar(string.controller_novel_snackbar_finished_reading)?.show()
-				}
-			}
-		}
+		fab.setOnClickListener { openLastRead() }
 		fab.setIconResource(drawable.play_arrow)
 		fab.setText(string.resume)
+	}
+
+	private fun openLastRead() {
+		var job: Job? = null
+		job = viewModel.openLastRead().firstLa(this, catch = {
+			logE("Loading last read hit an error")
+		}) { chapterUI ->
+			if (chapterUI != null) {
+				activity?.openChapter(chapterUI)
+			} else {
+				makeSnackBar(string.controller_novel_snackbar_finished_reading)?.show()
+			}
+			job?.cancel()
+		}
 	}
 
 	@ExperimentalMaterialApi
@@ -542,7 +548,9 @@ class NovelController() : ShosetsuController(),
 	}
 
 	private fun openWebView() {
-		viewModel.getNovelURL().observe(
+		var job: Job? = null
+		job = viewModel.getNovelURL().firstLa(
+			this,
 			catch = {
 				makeSnackBar(
 					getString(
@@ -555,8 +563,10 @@ class NovelController() : ShosetsuController(),
 					}?.show()
 			}
 		) {
-			if (it != null)
+			if (it != null) {
 				activity?.openInWebView(it)
+				job?.cancel("")
+			}
 		}
 	}
 
