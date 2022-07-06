@@ -163,7 +163,7 @@ class NovelController() : ShosetsuController(),
 	override fun manipulateFAB(fab: EFabMaintainer) {
 		resume = fab
 		fab.setOnClickListener {
-			viewModel.openLastRead().observe(catch = {
+			viewModel.openLastRead().firstLa(this, catch = {
 				logE("Loading last read hit an error")
 			}) { chapterUI ->
 				if (chapterUI != null) {
