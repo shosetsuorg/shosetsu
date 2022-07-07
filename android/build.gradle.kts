@@ -208,7 +208,7 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.3")
 
 	// Error logging
-	val acraVersion = "5.9.3"
+	val acraVersion = "5.9.5"
 	fun acra(module: String, version: String = acraVersion) =
 		"ch.acra:$module:$version"
 
@@ -308,7 +308,7 @@ dependencies {
 	implementation("androidx.compose.runtime:runtime-livedata:1.1.1")
 
 	// MDC Adapter
-	implementation("com.google.android.material:compose-theme-adapter:1.1.12")
+	implementation("com.google.android.material:compose-theme-adapter:1.1.14")
 
 	val androidxActivity = "1.4.0"
 	fun androidxActivity(module: String, version: String = androidxActivity) =
