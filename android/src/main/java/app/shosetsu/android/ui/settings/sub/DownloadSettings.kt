@@ -239,6 +239,7 @@ fun DownloadSettingsContent(
 			)
 		}
 
+		/*
 		item {
 			SliderSettingContent(
 				stringResource(R.string.settings_download_delete_on_read_title),
@@ -262,6 +263,7 @@ fun DownloadSettingsContent(
 				maxHeaderSize = 80.dp
 			)
 		}
+		 */
 
 		item {
 			SwitchSettingContent(
