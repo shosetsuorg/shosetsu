@@ -1,10 +1,8 @@
 package app.shosetsu.android.ui.settings.sub
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +17,6 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.SettingKey
-import app.shosetsu.android.common.consts.ActivityRequestCodes.REQUEST_CODE_DIRECTORY
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.compose.setting.SliderSettingContent
@@ -83,9 +80,10 @@ class DownloadSettings : ShosetsuController() {
 		)
 		val i = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
 		i.addCategory(Intent.CATEGORY_DEFAULT)
-		activity?.startActivityForResult(Intent.createChooser(i, "Choose directory"), 42)
+		//activity?.startActivityForResult(Intent.createChooser(i, "Choose directory"), 42)
 	}
 
+	/*
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
 		if (requestCode == REQUEST_CODE_DIRECTORY && resultCode == Activity.RESULT_OK) {
@@ -98,6 +96,7 @@ class DownloadSettings : ShosetsuController() {
 			}
 		}
 	}
+	 */
 
 	override fun onDestroy() {
 		super.onDestroy()
