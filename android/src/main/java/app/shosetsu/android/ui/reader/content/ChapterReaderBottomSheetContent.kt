@@ -25,7 +25,7 @@ import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ColumnScope.ChapterReaderBottomSheetContent(
+fun ChapterReaderBottomSheetContent(
 	scaffoldState: BottomSheetScaffoldState,
 	isTTSCapable: Boolean,
 	isTTSPlaying: Boolean,

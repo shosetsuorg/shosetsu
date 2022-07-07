@@ -81,7 +81,7 @@ class LibraryFilterMenuBuilder constructor(
 						) {
 							// Add tabs for all of our pages
 							pages.forEachIndexed { index, title ->
-								androidx.compose.material.Tab(
+								Tab(
 									text = { Text(title) },
 									selected = pagerState.currentPage == index,
 									onClick = {
@@ -279,7 +279,6 @@ class LibraryFilterMenuBuilder constructor(
 		}
 	}
 
-	@OptIn(ExperimentalMaterialApi::class)
 	@Composable
 	private fun Menu1Item(
 		name: Int,

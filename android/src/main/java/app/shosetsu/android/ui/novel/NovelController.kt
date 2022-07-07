@@ -99,7 +99,7 @@ import javax.security.auth.DestroyFailedException
  *
  * The page you see when you select a novel
  */
-class NovelController() : ShosetsuController(),
+class NovelController : ShosetsuController(),
 	ExtendedFABController, MenuProvider {
 
 	/*

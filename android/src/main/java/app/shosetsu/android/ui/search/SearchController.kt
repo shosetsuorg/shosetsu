@@ -74,7 +74,7 @@ import javax.security.auth.DestroyFailedException
  *
  * @author github.com/doomsdayrs
  */
-class SearchController() : ShosetsuController(), MenuProvider {
+class SearchController : ShosetsuController(), MenuProvider {
 	override val viewTitleRes: Int = R.string.search
 	internal val viewModel: ASearchViewModel by viewModel()
 

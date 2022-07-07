@@ -45,7 +45,7 @@ import app.shosetsu.android.viewmodel.abstracted.ATextAssetReaderViewModel
  * Shosetsu
  * 9 / June / 2019
  */
-class TextAssetReader() : ShosetsuController() {
+class TextAssetReader : ShosetsuController() {
 
 	private val viewModel: ATextAssetReaderViewModel by viewModel()
 

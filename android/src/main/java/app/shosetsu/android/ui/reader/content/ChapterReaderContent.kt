@@ -63,6 +63,7 @@ fun PreviewChapterReaderContent() {
 			},
 			sheetContent = {
 				ChapterReaderBottomSheetContent(
+					scaffoldState = it,
 					isTTSCapable = false,
 					isTTSPlaying = false,
 					isBookmarked = false,
@@ -72,13 +73,11 @@ fun PreviewChapterReaderContent() {
 					toggleBookmark = {},
 					exit = {},
 					onPlayTTS = {},
+					onStopTTS = {},
 					updateSetting = {},
 					lowerSheet = {},
-					toggleFocus = {},
-					onShowNavigation = {},
-					scaffoldState = it,
-					onStopTTS = {}
-				)
+					toggleFocus = {}
+				) {}
 			}
 		)
 	}

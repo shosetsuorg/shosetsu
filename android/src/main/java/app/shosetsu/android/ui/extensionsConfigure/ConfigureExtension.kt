@@ -63,7 +63,7 @@ import kotlin.random.Random
  *
  * Opens up detailed view of an extension, allows modifications
  */
-class ConfigureExtension() : ShosetsuController(),
+class ConfigureExtension : ShosetsuController(),
 	CollapsedToolBarController {
 	val viewModel: AExtensionConfigureViewModel by viewModel()
 

@@ -59,7 +59,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * @author github.com/doomsdayrs
  * yes, a THIRD ONE
  */
-class MigrationController() : ShosetsuController() {
+class MigrationController : ShosetsuController() {
 	companion object {
 		const val TARGETS_BUNDLE_KEY: String = "targets"
 	}

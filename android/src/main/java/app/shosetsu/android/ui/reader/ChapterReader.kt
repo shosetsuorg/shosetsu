@@ -185,31 +185,17 @@ class ChapterReader
 					onFirstFocus = viewModel::onFirstFocus,
 					sheetContent = { state ->
 						ChapterReaderBottomSheetContent(
+							scaffoldState = state,
+							isTTSCapable = isTTSCapable,
+							isTTSPlaying = isTTSPlaying,
+							isBookmarked = isBookmarked,
+							isRotationLocked = isRotationLocked,
+							setting = setting,
+							toggleRotationLock = viewModel::toggleScreenRotationLock,
+							toggleBookmark = viewModel::toggleBookmark,
 							exit = {
 								finish()
 							},
-							toggleBookmark = viewModel::toggleBookmark,
-							toggleRotationLock = viewModel::toggleScreenRotationLock,
-							isTTSPlaying = isTTSPlaying,
-							isTTSCapable = isTTSCapable,
-							lowerSheet = {
-								item { viewModel.textSizeOption() }
-								//item { viewModel.tapToScrollOption() }
-								//item { viewModel.volumeScrollingOption() }
-								//item { viewModel.horizontalSwitchOption() }
-								item { viewModel.invertChapterSwipeOption() }
-								item { viewModel.readerKeepScreenOnOption() }
-								item { viewModel.showReaderDivider() }
-								item { viewModel.stringAsHtmlOption() }
-								item { viewModel.doubleTapFocus() }
-								item { viewModel.doubleTapSystem() }
-							},
-							setting = setting,
-							updateSetting = viewModel::updateSetting,
-							isBookmarked = isBookmarked,
-							isRotationLocked = isRotationLocked,
-							onShowNavigation = viewModel::toggleSystemVisible,
-							toggleFocus = viewModel::toggleFocus,
 							onPlayTTS = {
 								if (chapterType == null) return@ChapterReaderBottomSheetContent
 								items
@@ -252,10 +238,24 @@ class ChapterReader
 										}
 									}
 							},
-							scaffoldState = state,
 							onStopTTS = {
 								tts.stop()
 							},
+							updateSetting = viewModel::updateSetting,
+							lowerSheet = {
+								item { viewModel.textSizeOption() }
+								//item { viewModel.tapToScrollOption() }
+								//item { viewModel.volumeScrollingOption() }
+								//item { viewModel.horizontalSwitchOption() }
+								item { viewModel.invertChapterSwipeOption() }
+								item { viewModel.readerKeepScreenOnOption() }
+								item { viewModel.showReaderDivider() }
+								item { viewModel.stringAsHtmlOption() }
+								item { viewModel.doubleTapFocus() }
+								item { viewModel.doubleTapSystem() }
+							},
+							toggleFocus = viewModel::toggleFocus,
+							onShowNavigation = viewModel::toggleSystemVisible,
 						)
 					},
 					content = { paddingValues ->

@@ -352,7 +352,7 @@ class MainActivity : AppCompatActivity(), DIAware {
 		getMaterialNav().setupWithNavController(navController)
 	}
 
-	inner class FragmentLifecycleListener() : FragmentManager.FragmentLifecycleCallbacks() {
+	inner class FragmentLifecycleListener : FragmentManager.FragmentLifecycleCallbacks() {
 		override fun onFragmentViewCreated(
 			fm: FragmentManager,
 			f: Fragment,
