@@ -214,9 +214,7 @@ fun ReaderSettingsContent(
 
 		//item { viewModel.tapToScrollOption() }
 
-		item {
-			viewModel.volumeScrollingOption()
-		}
+		//item { viewModel.volumeScrollingOption() }
 
 		item {
 			SwitchSettingContent(

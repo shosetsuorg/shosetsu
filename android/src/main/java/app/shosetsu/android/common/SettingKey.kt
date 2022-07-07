@@ -89,7 +89,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 
 	//- How things act in Reader
 	object ReaderIsTapToScroll : BooleanKey("tapToScroll", false)
-	object ReaderVolumeScroll : BooleanKey("volumeToScroll", false)
+	object ReaderVolumeScroll : BooleanKey("volumeToScroll_force", false)
 
 
 	object ReaderIsInvertedSwipe : BooleanKey("invertedSwipe", false)

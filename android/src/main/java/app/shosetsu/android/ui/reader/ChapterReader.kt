@@ -195,7 +195,7 @@ class ChapterReader
 							lowerSheet = {
 								item { viewModel.textSizeOption() }
 								//item { viewModel.tapToScrollOption() }
-								item { viewModel.volumeScrollingOption() }
+								//item { viewModel.volumeScrollingOption() }
 								//item { viewModel.horizontalSwitchOption() }
 								item { viewModel.invertChapterSwipeOption() }
 								item { viewModel.readerKeepScreenOnOption() }
