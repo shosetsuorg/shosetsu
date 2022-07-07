@@ -353,6 +353,8 @@
     <string name="message_backup_warning">While the backup is running, Please do not use the application</string>
     <string name="update_novel">Novel Updater</string>
     <string name="settings_backup_alert_select_location_title">Select location</string>
+    <string name="settings_backup_alert_select_backup_title">Select backup</string>
+    <string name="fragment_backup_settings_label">Backup Settings</string>
     <string name="settings_backup_alert_location_external">External</string>
     <string name="settings_backup_alert_location_internal">Internal</string>
     <string name="settings_backup_alert_internal_title">Select a backup</string>

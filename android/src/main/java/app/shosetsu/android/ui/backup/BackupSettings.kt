@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
@@ -172,7 +173,7 @@ fun BackupSelectionDialog(
 				modifier = Modifier.padding(8.dp),
 			) {
 				Text(
-					stringResource(R.string.settings_backup_alert_select_location_title),
+					stringResource(R.string.settings_backup_alert_select_backup_title),
 					style = MaterialTheme.typography.h6,
 					modifier = Modifier.padding(
 						bottom = 16.dp,
@@ -224,93 +225,9 @@ fun BackupSettingsContent(
 	export: (String) -> Unit
 ) {
 	LazyColumn(
-		contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 64.dp)
+		contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 64.dp),
+		verticalArrangement = Arrangement.spacedBy(8.dp)
 	) {
-
-		item {
-			SwitchSettingContent(
-				stringResource(R.string.backup_chapters_option),
-				stringResource(R.string.backup_chapters_option_description),
-				viewModel.settingsRepo,
-				SettingKey.ShouldBackupChapters,
-				modifier = Modifier
-					.padding(bottom = 8.dp)
-					.fillMaxWidth()
-			)
-		}
-
-		item {
-			SwitchSettingContent(
-				stringResource(R.string.backup_settings_option),
-				stringResource(R.string.backup_settings_option_desc),
-				viewModel.settingsRepo,
-				SettingKey.ShouldBackupSettings,
-				modifier = Modifier
-					.padding(bottom = 8.dp)
-					.fillMaxWidth()
-			)
-		}
-
-		item {
-			SwitchSettingContent(
-				stringResource(R.string.backup_only_modified_title),
-				stringResource(R.string.backup_only_modified_desc),
-				viewModel.settingsRepo,
-				SettingKey.BackupOnlyModifiedChapters,
-				modifier = Modifier
-					.padding(bottom = 8.dp)
-					.fillMaxWidth()
-			)
-		}
-
-		item {
-			SwitchSettingContent(
-				stringResource(R.string.backup_restore_print_chapters_title),
-				stringResource(R.string.backup_restore_print_chapters_desc),
-				viewModel.settingsRepo,
-				SettingKey.RestorePrintChapters,
-				modifier = Modifier
-					.padding(bottom = 8.dp)
-					.fillMaxWidth()
-			)
-		}
-
-		item {
-			SwitchSettingContent(
-				stringResource(R.string.backup_restore_low_storage),
-				stringResource(R.string.backup_restore_low_storage_desc),
-				viewModel.settingsRepo,
-				SettingKey.BackupOnLowStorage,
-				modifier = Modifier
-					.padding(bottom = 8.dp)
-					.fillMaxWidth()
-			)
-		}
-
-		item {
-			SwitchSettingContent(
-				stringResource(R.string.backup_restore_low_battery),
-				stringResource(R.string.backup_restore_low_battery_desc),
-				viewModel.settingsRepo,
-				SettingKey.BackupOnLowBattery,
-				modifier = Modifier
-					.padding(bottom = 8.dp)
-					.fillMaxWidth()
-			)
-		}
-
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-			item {
-				SwitchSettingContent(
-					stringResource(R.string.backup_restore_only_idle),
-					stringResource(R.string.backup_restore_only_idle_desc),
-					viewModel.settingsRepo,
-					SettingKey.BackupOnlyWhenIdle,
-					modifier = Modifier
-						.padding(bottom = 8.dp)
-						.fillMaxWidth()
-				)
-			}
 
 		item {
 			ButtonSettingContent(
@@ -318,7 +235,6 @@ fun BackupSettingsContent(
 				"",
 				stringResource(R.string.backup_now),
 				onClick = backupNow, modifier = Modifier
-					.padding(bottom = 8.dp)
 					.fillMaxWidth()
 			)
 		}
@@ -332,7 +248,6 @@ fun BackupSettingsContent(
 				"",
 				stringResource(R.string.restore_now),
 				modifier = Modifier
-					.padding(bottom = 8.dp)
 					.fillMaxWidth()
 			) {
 				isDialogShowing = true
@@ -370,6 +285,7 @@ fun BackupSettingsContent(
 					}
 				)
 		}
+
 		item {
 			var isExportShowing: Boolean by remember { mutableStateOf(false) }
 
@@ -387,10 +303,101 @@ fun BackupSettingsContent(
 					isExportShowing = true
 				},
 				modifier = Modifier
-					.padding(bottom = 8.dp)
 					.fillMaxWidth()
 			)
 		}
+
+		item {
+			Row(
+				verticalAlignment = Alignment.Bottom,
+				modifier = Modifier.padding(top = 8.dp)
+			) {
+				Text(
+					stringResource(R.string.fragment_backup_settings_label),
+					modifier = Modifier.padding(end = 8.dp),
+					style = MaterialTheme.typography.h6
+				)
+				Divider()
+			}
+		}
+
+		item {
+			SwitchSettingContent(
+				stringResource(R.string.backup_chapters_option),
+				stringResource(R.string.backup_chapters_option_description),
+				viewModel.settingsRepo,
+				SettingKey.ShouldBackupChapters,
+				modifier = Modifier
+					.fillMaxWidth()
+			)
+		}
+
+		item {
+			SwitchSettingContent(
+				stringResource(R.string.backup_settings_option),
+				stringResource(R.string.backup_settings_option_desc),
+				viewModel.settingsRepo,
+				SettingKey.ShouldBackupSettings,
+				modifier = Modifier
+					.fillMaxWidth()
+			)
+		}
+
+		item {
+			SwitchSettingContent(
+				stringResource(R.string.backup_only_modified_title),
+				stringResource(R.string.backup_only_modified_desc),
+				viewModel.settingsRepo,
+				SettingKey.BackupOnlyModifiedChapters,
+				modifier = Modifier
+					.fillMaxWidth()
+			)
+		}
+
+		item {
+			SwitchSettingContent(
+				stringResource(R.string.backup_restore_print_chapters_title),
+				stringResource(R.string.backup_restore_print_chapters_desc),
+				viewModel.settingsRepo,
+				SettingKey.RestorePrintChapters,
+				modifier = Modifier
+					.fillMaxWidth()
+			)
+		}
+
+		item {
+			SwitchSettingContent(
+				stringResource(R.string.backup_restore_low_storage),
+				stringResource(R.string.backup_restore_low_storage_desc),
+				viewModel.settingsRepo,
+				SettingKey.BackupOnLowStorage,
+				modifier = Modifier
+					.fillMaxWidth()
+			)
+		}
+
+		item {
+			SwitchSettingContent(
+				stringResource(R.string.backup_restore_low_battery),
+				stringResource(R.string.backup_restore_low_battery_desc),
+				viewModel.settingsRepo,
+				SettingKey.BackupOnLowBattery,
+				modifier = Modifier
+					.fillMaxWidth()
+			)
+		}
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+			item {
+				SwitchSettingContent(
+					stringResource(R.string.backup_restore_only_idle),
+					stringResource(R.string.backup_restore_only_idle_desc),
+					viewModel.settingsRepo,
+					SettingKey.BackupOnlyWhenIdle,
+					modifier = Modifier
+						.fillMaxWidth()
+				)
+			}
 
 	}
 }
