@@ -87,13 +87,15 @@ fun NovelCardNormalContent(
 	overlay: @Composable (BoxScope.() -> Unit)? = null,
 	isPlaceholder: Boolean = false,
 	isSelected: Boolean = false,
+	isBookmarked: Boolean = false
 ) {
 	Card(
 		modifier = Modifier
 			.combinedClickable(
 				onClick = onClick,
 				onLongClick = onLongClick
-			),
+			)
+			.alpha(if (isBookmarked) .5f else 1f),
 		border = if (isSelected) {
 			BorderStroke(
 				width = (SELECTED_STROKE_WIDTH / 2).dp,
@@ -190,8 +192,12 @@ fun NovelCardCozyContent(
 	overlay: @Composable (BoxScope.() -> Unit)? = null,
 	isPlaceholder: Boolean = false,
 	isSelected: Boolean = false,
+	isBookmarked: Boolean = false
 ) {
-	Column {
+	Column(
+		modifier = Modifier
+			.alpha(if (isBookmarked) .5f else 1f)
+	) {
 		Card(
 			modifier = Modifier
 				.combinedClickable(
@@ -263,13 +269,15 @@ fun NovelCardCompressedContent(
 	overlay: @Composable (RowScope.() -> Unit)? = null,
 	isPlaceholder: Boolean = false,
 	isSelected: Boolean = false,
+	isBookmarked: Boolean = false
 ) {
 	Card(
 		modifier = Modifier
 			.combinedClickable(
 				onClick = onClick,
 				onLongClick = onLongClick
-			),
+			)
+			.alpha(if (isBookmarked) .5f else 1f),
 		border = if (isSelected) {
 			BorderStroke(
 				width = (SELECTED_STROKE_WIDTH / 2).dp,

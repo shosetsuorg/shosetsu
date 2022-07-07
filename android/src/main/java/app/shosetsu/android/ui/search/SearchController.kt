@@ -237,6 +237,7 @@ fun SearchContent(
 												onClick(novelUI)
 											},
 											onLongClick = {},
+											isBookmarked = novelUI.bookmarked
 										)
 									else NovelCardCozyContent(
 										novelUI.title,
@@ -244,7 +245,8 @@ fun SearchContent(
 										onClick = {
 											onClick(novelUI)
 										},
-										onLongClick = {}
+										onLongClick = {},
+										isBookmarked = novelUI.bookmarked
 									)
 								else if (!isCozy) PlaceholderNovelCardNormalContent() else PlaceholderNovelCardCozyContent()
 							}

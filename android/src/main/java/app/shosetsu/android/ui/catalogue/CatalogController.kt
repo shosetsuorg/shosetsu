@@ -455,7 +455,8 @@ fun CatalogContent(
 									},
 									onLongClick = {
 										onLongClick(item)
-									}
+									},
+									isBookmarked = item.bookmarked
 								)
 						}
 						COMPRESSED -> {
@@ -468,7 +469,8 @@ fun CatalogContent(
 									},
 									onLongClick = {
 										onLongClick(item)
-									}
+									},
+									isBookmarked = item.bookmarked
 								)
 						}
 						COZY -> {
@@ -481,7 +483,8 @@ fun CatalogContent(
 									},
 									onLongClick = {
 										onLongClick(item)
-									}
+									},
+									isBookmarked = item.bookmarked
 								)
 						}
 					}
