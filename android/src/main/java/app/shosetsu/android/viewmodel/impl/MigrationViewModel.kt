@@ -4,11 +4,11 @@ import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.model.local.StrippedBookmarkedNovelEntity
+import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.domain.usecases.get.GetNovelUIUseCase
 import app.shosetsu.android.domain.usecases.load.LoadBrowseExtensionsUseCase
 import app.shosetsu.android.view.uimodels.model.MigrationExtensionUI
 import app.shosetsu.android.view.uimodels.model.MigrationNovelUI
-import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.AMigrationViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -39,7 +39,8 @@ import kotlinx.coroutines.flow.*
 @OptIn(ExperimentalCoroutinesApi::class)
 class MigrationViewModel(
 	private val getNovelUI: GetNovelUIUseCase,
-	private val loadBrowseExtensionsFlow: LoadBrowseExtensionsUseCase
+	private val loadBrowseExtensionsFlow: LoadBrowseExtensionsUseCase,
+	private val novelRepo: INovelsRepository
 ) : AMigrationViewModel() {
 	private val novelIds: MutableStateFlow<IntArray> = MutableStateFlow(intArrayOf())
 
@@ -52,6 +53,7 @@ class MigrationViewModel(
 	 * Map of novel id to query
 	 */
 	private val queryMap = hashMapOf<Int, MutableStateFlow<String>>()
+	private val submittedQueryMap = hashMapOf<Int, MutableStateFlow<String?>>()
 
 	override val currentQuery: Flow<String> by lazy {
 		whichFlow.transformLatest { currentNovelId ->
@@ -68,7 +70,6 @@ class MigrationViewModel(
 			)
 		}.onIO()
 	}
-
 
 	override val extensions: Flow<List<MigrationExtensionUI>> by lazy {
 		flow {
@@ -151,14 +152,26 @@ class MigrationViewModel(
 	override val which: Flow<Int>
 		get() = whichFlow.onIO()
 
+	override val results: Flow<List<StrippedBookmarkedNovelEntity>> by lazy {
+		whichFlow.transformLatest { novelId ->
+			if (submittedQueryMap.containsKey(novelId))
+				emitAll(
+					submittedQueryMap[novelId]!!.transform { query ->
+						if (query.isNullOrBlank()) {
+							emit(listOf())
+						} else {
+							emit(listOf())
+						}
+					}
+				)
+			else emit(listOf())
+		}
+	}
+
 	override fun setWorkingOn(novelId: Int) {
 		logI("Now working on $novelId")
 		whichFlow.value = novelId
 	}
-
-	override fun getResults(novelUI: NovelUI): Flow<StrippedBookmarkedNovelEntity> =
-		flow {
-		}
 
 	override fun setNovels(array: IntArray) {
 		novelIds.value = array
