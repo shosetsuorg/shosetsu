@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
+import androidx.core.view.MenuProvider
 import androidx.navigation.fragment.findNavController
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
@@ -82,27 +83,21 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
  * @author github.com/doomsdayrs
  */
 class BrowseController : ShosetsuController(),
-	ExtendedFABController, HomeFragment {
+	ExtendedFABController, HomeFragment, MenuProvider {
 	override val viewTitleRes: Int = R.string.browse
 
 	private var bsg: BottomSheetDialog? = null
-
-	init {
-		setHasOptionsMenu(true)
-	}
 
 	/***/
 	val viewModel: ABrowseViewModel by viewModel()
 
 	private var fab: EFabMaintainer? = null
 
-	@Deprecated("Deprecated in Java")
-	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+	override fun onCreateMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_browse, menu)
 	}
 
-	@Deprecated("Deprecated in Java")
-	override fun onPrepareOptionsMenu(menu: Menu) {
+	override fun onPrepareMenu(menu: Menu) {
 		(menu.findItem(R.id.search).actionView as SearchView).apply {
 			setOnQueryTextListener(BrowseSearchQuery(findNavController()))
 			isSubmitButtonEnabled = true
@@ -126,27 +121,32 @@ class BrowseController : ShosetsuController(),
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(requireContext()).apply {
+	): View {
+		activity?.addMenuProvider(this, viewLifecycleOwner)
 		setViewTitle()
-		setContent {
-			ShosetsuCompose {
-				val entites by viewModel.liveData.collectAsState(listOf())
-				var isRefreshing by remember { mutableStateOf(false) }
-				BrowseContent(
-					entites,
-					refresh = {
-						isRefreshing = true
-						onRefresh()
-						isRefreshing = false
-					},
-					installExtension = ::installExtension,
-					update = viewModel::updateExtension,
-					openCatalogue = ::openCatalogue,
-					openSettings = ::openSettings,
-					cancelInstall = viewModel::cancelInstall,
-					isRefreshing = isRefreshing,
-					fab
-				)
+		return ComposeView(requireContext()).apply {
+			return ComposeView(requireContext()).apply {
+				setContent {
+					ShosetsuCompose {
+						val entites by viewModel.liveData.collectAsState(listOf())
+						var isRefreshing by remember { mutableStateOf(false) }
+						BrowseContent(
+							entites,
+							refresh = {
+								isRefreshing = true
+								onRefresh()
+								isRefreshing = false
+							},
+							installExtension = ::installExtension,
+							update = viewModel::updateExtension,
+							openCatalogue = ::openCatalogue,
+							openSettings = ::openSettings,
+							cancelInstall = viewModel::cancelInstall,
+							isRefreshing = isRefreshing,
+							fab
+						)
+					}
+				}
 			}
 		}
 	}
@@ -182,8 +182,7 @@ class BrowseController : ShosetsuController(),
 
 	}
 
-	@Deprecated("Deprecated in Java")
-	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+	override fun onMenuItemSelected(item: MenuItem): Boolean = when (item.itemId) {
 		R.id.help -> {
 			openHelpMenu()
 			true

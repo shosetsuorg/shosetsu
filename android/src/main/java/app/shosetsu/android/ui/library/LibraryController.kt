@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.os.bundleOf
+import androidx.core.view.MenuProvider
 import androidx.navigation.fragment.findNavController
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.SettingKey
@@ -77,7 +78,7 @@ import kotlinx.coroutines.runBlocking
  * @author github.com/doomsdayrs
  */
 class LibraryController
-	: ShosetsuController(), ExtendedFABController, HomeFragment {
+	: ShosetsuController(), ExtendedFABController, HomeFragment, MenuProvider {
 
 	private var fab: EFabMaintainer? = null
 	private var bsg: BottomSheetDialog? = null
@@ -87,59 +88,62 @@ class LibraryController
 	/***/
 	val viewModel: ALibraryViewModel by viewModel()
 
-	init {
-		setHasOptionsMenu(true)
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
 	}
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(requireContext()).apply {
-		setContent {
-			ShosetsuCompose {
-				setViewTitle()
-				val items by viewModel.liveData.collectAsState(listOf())
-				val isEmpty by viewModel.isEmptyFlow.collectAsState(false)
-				val hasSelected by viewModel.hasSelectionFlow.collectAsState(false)
-				val type by viewModel.novelCardTypeFlow.collectAsState(NORMAL)
+	): View {
+		activity?.addMenuProvider(this, viewLifecycleOwner)
+		setViewTitle()
+		return ComposeView(requireContext()).apply {
+			setContent {
+				ShosetsuCompose {
+					val items by viewModel.liveData.collectAsState(listOf())
+					val isEmpty by viewModel.isEmptyFlow.collectAsState(false)
+					val hasSelected by viewModel.hasSelectionFlow.collectAsState(false)
+					val type by viewModel.novelCardTypeFlow.collectAsState(NORMAL)
 
-				val columnsInV by viewModel.columnsInV.collectAsState(SettingKey.ChapterColumnsInPortait.default)
-				val columnsInH by viewModel.columnsInH.collectAsState(SettingKey.ChapterColumnsInLandscape.default)
+					val columnsInV by viewModel.columnsInV.collectAsState(SettingKey.ChapterColumnsInPortait.default)
+					val columnsInH by viewModel.columnsInH.collectAsState(SettingKey.ChapterColumnsInLandscape.default)
 
-				LibraryContent(
-					items,
-					isEmpty = isEmpty,
-					type,
-					columnsInV,
-					columnsInH,
-					hasSelected = hasSelected,
-					onRefresh = {
-						onRefresh()
-					},
-					onOpen = { item ->
-						findNavController().navigate(
-							R.id.action_libraryController_to_novelController,
-							bundleOf(BundleKeys.BUNDLE_NOVEL_ID to item.id)
-						)
-					},
-					toggleSelection = { item ->
-						viewModel.toggleSelection(item)
-					},
-					toastNovel = { item ->
-						try {
-							makeSnackBar(
-								resources!!.getQuantityString(
-									R.plurals.toast_unread_count,
-									item.unread,
-									item.unread
-								)
-							)?.show()
-						} catch (e: Resources.NotFoundException) {
-						}
-					},
-					fab
-				)
+					LibraryContent(
+						items,
+						isEmpty = isEmpty,
+						type,
+						columnsInV,
+						columnsInH,
+						hasSelected = hasSelected,
+						onRefresh = {
+							onRefresh()
+						},
+						onOpen = { item ->
+							findNavController().navigate(
+								R.id.action_libraryController_to_novelController,
+								bundleOf(BundleKeys.BUNDLE_NOVEL_ID to item.id)
+							)
+						},
+						toggleSelection = { item ->
+							viewModel.toggleSelection(item)
+						},
+						toastNovel = { item ->
+							try {
+								makeSnackBar(
+									resources!!.getQuantityString(
+										R.plurals.toast_unread_count,
+										item.unread,
+										item.unread
+									)
+								)?.show()
+							} catch (e: Resources.NotFoundException) {
+							}
+						},
+						fab
+					)
+				}
 			}
 		}
 	}
@@ -160,8 +164,7 @@ class LibraryController
 		}
 	}
 
-	@Deprecated("Deprecated in Java")
-	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+	override fun onCreateMenu(menu: Menu, inflater: MenuInflater) {
 		if (!viewModel.hasSelection) {
 			inflater.inflate(R.menu.toolbar_library, menu)
 		} else {
@@ -171,8 +174,7 @@ class LibraryController
 
 	private var searchView: SearchView? = null
 
-	@Deprecated("Deprecated in Java")
-	override fun onPrepareOptionsMenu(menu: Menu) {
+	override fun onPrepareMenu(menu: Menu) {
 		logI("Preparing options menu")
 		searchView = (menu.findItem(R.id.library_search)?.actionView as? SearchView)
 		searchView?.apply {
@@ -218,8 +220,7 @@ class LibraryController
 	 */
 
 	/***/
-	@Deprecated("Deprecated in Java")
-	override fun onOptionsItemSelected(item: MenuItem): Boolean =
+	override fun onMenuItemSelected(item: MenuItem): Boolean =
 		when (item.itemId) {
 			R.id.updater_now -> {
 				if (viewModel.isOnline())

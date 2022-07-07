@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.os.bundleOf
+import androidx.core.view.MenuProvider
 import androidx.navigation.fragment.findNavController
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.FilePermissionException
@@ -99,7 +100,7 @@ import javax.security.auth.DestroyFailedException
  * The page you see when you select a novel
  */
 class NovelController() : ShosetsuController(),
-	ExtendedFABController {
+	ExtendedFABController, MenuProvider {
 
 	/*
 	/** Fixes invalid adapter postion errors */
@@ -231,8 +232,7 @@ class NovelController() : ShosetsuController(),
 		)
 	}
 
-	@Deprecated("Deprecated in Java")
-	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+	override fun onMenuItemSelected(item: MenuItem): Boolean = when (item.itemId) {
 		R.id.source_migrate -> {
 			// migrateOpen()
 			makeSnackBar(string.regret)?.dismiss()
@@ -368,8 +368,7 @@ class NovelController() : ShosetsuController(),
 
 	}
 
-	@Deprecated("Deprecated in Java")
-	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+	override fun onCreateMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_novel, menu)
 
 		runBlocking {
@@ -407,70 +406,73 @@ class NovelController() : ShosetsuController(),
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(requireContext()).apply {
+	): View {
+		activity?.addMenuProvider(this, viewLifecycleOwner)
 		setViewTitle()
-		setContent {
-			if (resume != null)
-				syncFABWithCompose(state, resume!!)
-			val novelInfo by viewModel.novelLive.collectAsState(null)
-			val chapters by viewModel.chaptersLive.collectAsState(emptyList())
-			val isRefreshing by viewModel.isRefreshing.collectAsState(false)
-			val hasSelected by viewModel.hasSelected.collectAsState(false)
-			val itemAt by viewModel.itemIndex.collectAsState(0)
+		return ComposeView(requireContext()).apply {
+			setContent {
+				if (resume != null)
+					syncFABWithCompose(state, resume!!)
+				val novelInfo by viewModel.novelLive.collectAsState(null)
+				val chapters by viewModel.chaptersLive.collectAsState(emptyList())
+				val isRefreshing by viewModel.isRefreshing.collectAsState(false)
+				val hasSelected by viewModel.hasSelected.collectAsState(false)
+				val itemAt by viewModel.itemIndex.collectAsState(0)
 
-			activity?.invalidateOptionsMenu()
-			// If the data is not present, loads it
-			if (novelInfo != null && !novelInfo!!.loaded) {
-				if (viewModel.isOnline()) {
-					refresh()
-				} else {
-					displayOfflineSnackBar(string.controller_novel_snackbar_cannot_inital_load_offline)
+				activity?.invalidateOptionsMenu()
+				// If the data is not present, loads it
+				if (novelInfo != null && !novelInfo!!.loaded) {
+					if (viewModel.isOnline()) {
+						refresh()
+					} else {
+						displayOfflineSnackBar(string.controller_novel_snackbar_cannot_inital_load_offline)
+					}
 				}
-			}
 
-			ShosetsuCompose {
-				NovelInfoContent(
-					novelInfo,
-					chapters,
-					selectedChaptersStateFlow = viewModel.selectedChaptersState,
-					itemAt,
-					updateItemAt = viewModel::setItemAt,
-					isRefreshing,
-					onRefresh = {
-						if (viewModel.isOnline())
-							refresh()
-						else displayOfflineSnackBar()
-					},
-					openWebView = ::openWebView,
-					toggleBookmark = ::toggleBookmark,
-					openFilter = ::openFilterMenu,
-					openChapterJump = ::openChapterJumpDialog,
-					chapterContent = {
-						NovelChapterContent(
-							chapter = it,
-							openChapter = {
-								viewModel.isFromChapterReader = true
-								activity?.openChapter(it)
-							},
-							onToggleSelection = {
-								viewModel.toggleSelection(it)
-							},
-							selectionMode = hasSelected
-						)
-					},
-					downloadSelected = viewModel::downloadSelected,
-					deleteSelected = viewModel::deleteSelected,
-					markSelectedAsRead = {
-						viewModel.markSelectedAs(ReadingStatus.READ)
-					},
-					markSelectedAsUnread = {
-						viewModel.markSelectedAs(ReadingStatus.UNREAD)
-					},
-					bookmarkSelected = viewModel::bookmarkSelected,
-					unbookmarkSelected = viewModel::removeBookmarkFromSelected,
-					hasSelected = hasSelected,
-					state = state
-				)
+				ShosetsuCompose {
+					NovelInfoContent(
+						novelInfo,
+						chapters,
+						selectedChaptersStateFlow = viewModel.selectedChaptersState,
+						itemAt,
+						updateItemAt = viewModel::setItemAt,
+						isRefreshing,
+						onRefresh = {
+							if (viewModel.isOnline())
+								refresh()
+							else displayOfflineSnackBar()
+						},
+						openWebView = ::openWebView,
+						toggleBookmark = ::toggleBookmark,
+						openFilter = ::openFilterMenu,
+						openChapterJump = ::openChapterJumpDialog,
+						chapterContent = {
+							NovelChapterContent(
+								chapter = it,
+								openChapter = {
+									viewModel.isFromChapterReader = true
+									activity?.openChapter(it)
+								},
+								onToggleSelection = {
+									viewModel.toggleSelection(it)
+								},
+								selectionMode = hasSelected
+							)
+						},
+						downloadSelected = viewModel::downloadSelected,
+						deleteSelected = viewModel::deleteSelected,
+						markSelectedAsRead = {
+							viewModel.markSelectedAs(ReadingStatus.READ)
+						},
+						markSelectedAsUnread = {
+							viewModel.markSelectedAs(ReadingStatus.UNREAD)
+						},
+						bookmarkSelected = viewModel::bookmarkSelected,
+						unbookmarkSelected = viewModel::removeBookmarkFromSelected,
+						hasSelected = hasSelected,
+						state = state
+					)
+				}
 			}
 		}
 	}

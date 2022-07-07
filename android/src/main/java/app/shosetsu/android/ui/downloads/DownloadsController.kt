@@ -39,6 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.view.MenuProvider
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.common.enums.DownloadStatus.*
 import app.shosetsu.android.common.ext.collectLA
@@ -63,39 +64,38 @@ import kotlinx.coroutines.flow.Flow
  * @author github.com/doomsdayrs
  */
 class DownloadsController : ShosetsuController(),
-	ExtendedFABController {
+	ExtendedFABController, MenuProvider {
 
 	override val viewTitleRes: Int = R.string.downloads
 	private val viewModel: ADownloadsViewModel by viewModel()
 	private var fab: EFabMaintainer? = null
 	private var actionMode: ActionMode? = null
 
-	init {
-		setHasOptionsMenu(true)
-	}
-
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(requireContext()).apply {
+	): View {
+		activity?.addMenuProvider(this, viewLifecycleOwner)
 		setViewTitle()
-		setContent {
-			ShosetsuCompose {
-				val items by viewModel.liveData.collectAsState(listOf())
-				val hasSelected by viewModel.hasSelectedFlow.collectAsState(false)
+		return ComposeView(requireContext()).apply {
+			setContent {
+				ShosetsuCompose {
+					val items by viewModel.liveData.collectAsState(listOf())
+					val hasSelected by viewModel.hasSelectedFlow.collectAsState(false)
 
-				DownloadsContent(
-					items = items,
-					selectedDownloadStateFlow = viewModel.selectedDownloadState,
-					hasSelected = hasSelected,
-					pauseSelection = viewModel::pauseSelection,
-					startSelection = viewModel::startSelection,
-					startFailedSelection = viewModel::restartSelection,
-					deleteSelected = viewModel::deleteSelected,
-					toggleSelection = viewModel::toggleSelection,
-					fab
-				)
+					DownloadsContent(
+						items = items,
+						selectedDownloadStateFlow = viewModel.selectedDownloadState,
+						hasSelected = hasSelected,
+						pauseSelection = viewModel::pauseSelection,
+						startSelection = viewModel::startSelection,
+						startFailedSelection = viewModel::restartSelection,
+						deleteSelected = viewModel::deleteSelected,
+						toggleSelection = viewModel::toggleSelection,
+						fab
+					)
+				}
 			}
 		}
 	}
@@ -107,13 +107,11 @@ class DownloadsController : ShosetsuController(),
 		return true
 	}
 
-	@Deprecated("Deprecated in Java")
-	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+	override fun onCreateMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_downloads, menu)
 	}
 
-	@Deprecated("Deprecated in Java")
-	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+	override fun onMenuItemSelected(item: MenuItem): Boolean {
 		return when (item.itemId) {
 			R.id.set_all_pending -> {
 				viewModel.setAllPending()
@@ -123,7 +121,7 @@ class DownloadsController : ShosetsuController(),
 				viewModel.deleteAll()
 				return true
 			}
-			else -> super.onOptionsItemSelected(item)
+			else -> false
 		}
 	}
 

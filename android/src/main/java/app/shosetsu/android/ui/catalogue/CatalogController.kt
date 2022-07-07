@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
+import androidx.core.view.MenuProvider
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -76,90 +77,89 @@ import org.acra.ACRA
  *
  * @author github.com/doomsdayrs
  */
-class CatalogController : ShosetsuController(), ExtendedFABController {
+class CatalogController : ShosetsuController(), ExtendedFABController, MenuProvider {
 	private var bsg: BottomSheetDialog? = null
 
 	/***/
 	val viewModel: ACatalogViewModel by viewModel()
 	//private val progressAdapter by lazy { ItemAdapter<ProgressItem>() }
 
-	init {
-		setHasOptionsMenu(true)
-	}
-
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(requireContext()).apply {
+	): View {
+		activity?.addMenuProvider(this, viewLifecycleOwner)
 		setViewTitle()
-		setContent {
-			ShosetsuCompose {
-				val type by viewModel.novelCardTypeLive.collectAsState(NORMAL)
+		return ComposeView(requireContext()).apply {
+			setContent {
+				ShosetsuCompose {
+					val type by viewModel.novelCardTypeLive.collectAsState(NORMAL)
 
-				val columnsInV by viewModel.columnsInV.collectAsState(SettingKey.ChapterColumnsInPortait.default)
-				val columnsInH by viewModel.columnsInH.collectAsState(SettingKey.ChapterColumnsInLandscape.default)
+					val columnsInV by viewModel.columnsInV.collectAsState(SettingKey.ChapterColumnsInPortait.default)
+					val columnsInH by viewModel.columnsInH.collectAsState(SettingKey.ChapterColumnsInLandscape.default)
 
-				val items = viewModel.itemsLive.collectAsLazyPagingItems()
+					val items = viewModel.itemsLive.collectAsLazyPagingItems()
 
-				val exception by viewModel.exceptionFlow.collectAsState(null)
+					val exception by viewModel.exceptionFlow.collectAsState(null)
 
-				if (exception != null)
-					LaunchedEffect(Unit) {
-						launchUI {
-							makeSnackBar(exception!!.message ?: "Unknown error")
-								?.setAction(R.string.retry) {
-									viewModel.resetView()
-								}
-								?.show()
+					if (exception != null)
+						LaunchedEffect(Unit) {
+							launchUI {
+								makeSnackBar(exception!!.message ?: "Unknown error")
+									?.setAction(R.string.retry) {
+										viewModel.resetView()
+									}
+									?.show()
+							}
+						}
+
+					val prepend = items.loadState.prepend
+					if (prepend is LoadState.Error) {
+						LaunchedEffect(Unit) {
+							launchUI {
+								makeSnackBar(prepend.error.message ?: "Unknown error")
+									?.setAction(R.string.retry) {
+										items.retry()
+									}
+									?.show()
+							}
+						}
+					}
+					val append = items.loadState.prepend
+					if (append is LoadState.Error) {
+						LaunchedEffect(Unit) {
+							launchUI {
+								makeSnackBar(append.error.message ?: "Unknown error")
+									?.setAction(R.string.retry) {
+										items.retry()
+									}
+									?.show()
+							}
 						}
 					}
 
-				val prepend = items.loadState.prepend
-				if (prepend is LoadState.Error) {
-					LaunchedEffect(Unit) {
-						launchUI {
-							makeSnackBar(prepend.error.message ?: "Unknown error")
-								?.setAction(R.string.retry) {
-									items.retry()
-								}
-								?.show()
-						}
-					}
+					CatalogContent(
+						items,
+						type,
+						columnsInV,
+						columnsInH,
+						onClick = {
+							findNavController().navigate(
+								R.id.action_catalogController_to_novelController, (
+										bundleOf(
+											BUNDLE_NOVEL_ID to it.id,
+											BUNDLE_EXTENSION to arguments!!.getInt(BUNDLE_EXTENSION)
+										)
+										)
+							)
+						},
+						onLongClick = {
+							itemLongClicked(it)
+						},
+						fab
+					)
 				}
-				val append = items.loadState.prepend
-				if (append is LoadState.Error) {
-					LaunchedEffect(Unit) {
-						launchUI {
-							makeSnackBar(append.error.message ?: "Unknown error")
-								?.setAction(R.string.retry) {
-									items.retry()
-								}
-								?.show()
-						}
-					}
-				}
-
-				CatalogContent(
-					items,
-					type,
-					columnsInV,
-					columnsInH,
-					onClick = {
-						findNavController().navigate(
-							R.id.action_catalogController_to_novelController, (
-									bundleOf(
-										BUNDLE_NOVEL_ID to it.id,
-										BUNDLE_EXTENSION to arguments!!.getInt(BUNDLE_EXTENSION)
-									)
-									)
-						)
-					},
-					onLongClick = {
-						itemLongClicked(it)
-					},
-					fab
-				)
 			}
 		}
 	}
@@ -220,16 +220,14 @@ class CatalogController : ShosetsuController(), ExtendedFABController {
 	}
 
 	/***/
-	@Deprecated("Deprecated in Java")
-	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+	override fun onCreateMenu(menu: Menu, inflater: MenuInflater) {
 		menu.clear()
 		inflater.inflate(R.menu.toolbar_catalogue, menu)
 	}
 
 	private var optionSyncJob: Job? = null
 
-	@Deprecated("Deprecated in Java")
-	override fun onPrepareOptionsMenu(menu: Menu) {
+	override fun onPrepareMenu(menu: Menu) {
 		logI("Preparing option menu")
 		optionSyncJob?.cancel()
 		optionSyncJob =
@@ -267,8 +265,7 @@ class CatalogController : ShosetsuController(), ExtendedFABController {
 		}
 	}
 
-	@Deprecated("Deprecated in Java")
-	override fun onOptionsItemSelected(item: MenuItem): Boolean =
+	override fun onMenuItemSelected(item: MenuItem): Boolean =
 		when (item.itemId) {
 			R.id.view_type_normal -> {
 				item.isChecked = true

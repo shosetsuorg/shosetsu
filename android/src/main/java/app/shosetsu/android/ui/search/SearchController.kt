@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
+import androidx.core.view.MenuProvider
 import androidx.navigation.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
@@ -73,43 +74,42 @@ import javax.security.auth.DestroyFailedException
  *
  * @author github.com/doomsdayrs
  */
-class SearchController() : ShosetsuController() {
+class SearchController() : ShosetsuController(), MenuProvider {
 	override val viewTitleRes: Int = R.string.search
 	internal val viewModel: ASearchViewModel by viewModel()
-
-	init {
-		setHasOptionsMenu(true)
-	}
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
 		savedViewState: Bundle?
-	): View = ComposeView(requireContext()).apply {
-		setContent {
-			ShosetsuCompose {
-				val rows by viewModel.listings.collectAsState(listOf())
-				val isCozy by viewModel.isCozy.collectAsState(false)
+	): View {
+		activity?.addMenuProvider(this, viewLifecycleOwner)
+		return ComposeView(requireContext()).apply {
+			setContent {
+				ShosetsuCompose {
+					val rows by viewModel.listings.collectAsState(listOf())
+					val isCozy by viewModel.isCozy.collectAsState(false)
 
-				SearchContent(
-					rows = rows,
-					isCozy = isCozy,
-					getChildren = {
-						if (it == -1)
-							viewModel.searchLibrary()
-						else
-							viewModel.searchExtension(it)
-					},
-					getException = viewModel::getException,
-					onClick = {
-						findNavController().navigate(
-							R.id.action_searchController_to_novelController,
-							(bundleOf(BundleKeys.BUNDLE_NOVEL_ID to it.id))
-						)
-					},
-					onRefresh = viewModel::refresh,
-					onRefreshAll = viewModel::refresh
-				)
+					SearchContent(
+						rows = rows,
+						isCozy = isCozy,
+						getChildren = {
+							if (it == -1)
+								viewModel.searchLibrary()
+							else
+								viewModel.searchExtension(it)
+						},
+						getException = viewModel::getException,
+						onClick = {
+							findNavController().navigate(
+								R.id.action_searchController_to_novelController,
+								(bundleOf(BundleKeys.BUNDLE_NOVEL_ID to it.id))
+							)
+						},
+						onRefresh = viewModel::refresh,
+						onRefreshAll = viewModel::refresh
+					)
+				}
 			}
 		}
 	}
@@ -124,13 +124,11 @@ class SearchController() : ShosetsuController() {
 		}
 	}
 
-	@Deprecated("Deprecated in Java")
-	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+	override fun onCreateMenu(menu: Menu, inflater: MenuInflater) {
 		inflater.inflate(R.menu.toolbar_search, menu)
 	}
 
-	@Deprecated("Deprecated in Java")
-	override fun onPrepareOptionsMenu(menu: Menu) {
+	override fun onPrepareMenu(menu: Menu) {
 		val searchView = menu.findItem(R.id.search).actionView as SearchView
 		searchView.setOnQueryTextListener(InternalQuery())
 		searchView.setIconifiedByDefault(false)
@@ -146,8 +144,7 @@ class SearchController() : ShosetsuController() {
 		}
 	}
 
-	@Deprecated("Deprecated in Java")
-	override fun onOptionsItemSelected(item: MenuItem): Boolean = true
+	override fun onMenuItemSelected(item: MenuItem): Boolean = true
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		viewModel.initQuery(arguments!!.getString(BundleKeys.BUNDLE_QUERY, "")!!)
