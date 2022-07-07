@@ -285,8 +285,7 @@ class MainActivity : AppCompatActivity(), DIAware {
 	}
 
 	private fun shouldProtectBack(): Boolean =
-		navController.backQueue.size == 1 &&
-				navController.findDestination(R.id.libraryController) != null &&
+		navController.backQueue.size == 2 &&
 				viewModel.requireDoubleBackToExit &&
 				!inProtectingBack
 
@@ -296,7 +295,7 @@ class MainActivity : AppCompatActivity(), DIAware {
 
 		binding.toolbar.setNavigationOnClickListener {
 			logV("Navigation item clicked")
-			if (navController.backQueue.size == 1) {
+			if (navController.backQueue.size == 2) {
 				if (viewModel.navigationStyle == LEGACY) {
 					binding.drawerLayout.openDrawer(GravityCompat.START)
 				} else onBackPressed()
