@@ -372,14 +372,6 @@ class MainActivity : AppCompatActivity(), DIAware {
 		syncActivityViewWithFragment(navChildFragmentManager.fragments.lastOrNull())
 	}
 
-	private fun actionMain() {
-		if (navController.findDestination(R.id.libraryController) == null) {
-			navController.navigate(R.id.libraryController)
-		} else {
-			logE("Router has a root controller")
-		}
-	}
-
 	internal fun handleIntentAction(intent: Intent) {
 		logD("Intent received was ${intent.action}")
 		when (intent.action) {
@@ -402,9 +394,9 @@ class MainActivity : AppCompatActivity(), DIAware {
 			}
 			ACTION_OPEN_APP_UPDATE -> {
 				handleAppUpdate()
-				actionMain()
 			}
-			ACTION_MAIN -> actionMain()
+			ACTION_MAIN -> {
+			}
 			else -> navController.navigate(R.id.libraryController)
 		}
 	}
