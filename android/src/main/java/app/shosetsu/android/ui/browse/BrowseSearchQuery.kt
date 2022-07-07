@@ -4,6 +4,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
+import app.shosetsu.android.common.ext.launchUI
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -34,10 +35,15 @@ class BrowseSearchQuery(
 ) :
 	SearchView.OnQueryTextListener {
 	override fun onQueryTextSubmit(s: String): Boolean = true.also {
-		navController.navigate(
-			R.id.action_browseController_to_searchController,
-			bundleOf(BUNDLE_QUERY to s)
-		)
+		launchUI {
+			try {
+				navController.navigate(
+					R.id.action_browseController_to_searchController,
+					bundleOf(BUNDLE_QUERY to s)
+				)
+			} catch (e: IllegalArgumentException) {
+			}
+		}
 	}
 
 	override fun onQueryTextChange(s: String): Boolean = false
