@@ -116,7 +116,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	/**
 	 * Instead of vertically moving between chapters, do a horizontal move
 	 */
-	object ReaderHorizontalPageSwap : BooleanKey("readerHorizontalPaging", true)
+	object ReaderHorizontalPageSwap : BooleanKey("readerHorizontalPaging_force", true)
 
 	/**
 	 * The reader smoothly moves between chapters

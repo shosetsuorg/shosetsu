@@ -230,9 +230,7 @@ fun ReaderSettingsContent(
 			)
 		}
 
-		item {
-			viewModel.horizontalSwitchOption()
-		}
+		//item { viewModel.horizontalSwitchOption() }
 
 		item {
 			ButtonSettingContent(
