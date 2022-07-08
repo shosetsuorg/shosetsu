@@ -2,6 +2,7 @@ package app.shosetsu.android.application
 
 import android.app.Application
 import android.content.Context
+import android.database.sqlite.SQLiteException
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.Lifecycle
@@ -18,6 +19,7 @@ import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.toast
 import app.shosetsu.android.di.*
 import app.shosetsu.android.domain.repository.base.IExtensionLibrariesRepository
+import app.shosetsu.android.domain.repository.base.IExtensionsRepository
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.android.viewmodel.factory.ViewModelFactory
@@ -29,6 +31,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.color.DynamicColors
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
+import org.acra.ACRA
 import org.acra.config.dialog
 import org.acra.config.httpSender
 import org.acra.data.StringFormat
@@ -69,6 +72,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, DIAware,
 	private val extLibRepository by instance<IExtensionLibrariesRepository>()
 	private val okHttpClient by instance<OkHttpClient>()
 	private val startRepositoryUpdateManagerUseCase: StartRepositoryUpdateManagerUseCase by instance()
+	private val extensionsRepo: IExtensionsRepository by instance()
 	private val settingsRepo: ISettingsRepository by instance()
 
 
@@ -169,7 +173,14 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, DIAware,
 		@Suppress("DEPRECATION")
 		DBHelper(this@ShosetsuApplication).writableDatabase.close()
 
-		startRepositoryUpdateManagerUseCase()
+		launchIO {
+			try {
+				if (extensionsRepo.loadRepositoryExtensions().isEmpty())
+					startRepositoryUpdateManagerUseCase()
+			} catch (e: SQLiteException) {
+				ACRA.errorReporter.handleException(e)
+			}
+		}
 		super.onCreate()
 		DynamicColors.applyToActivitiesIfAvailable(this)
 	}
