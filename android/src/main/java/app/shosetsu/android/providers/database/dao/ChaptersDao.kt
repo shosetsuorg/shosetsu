@@ -7,6 +7,7 @@ import androidx.room.Transaction
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.entity
 import app.shosetsu.android.common.ext.toDB
+import app.shosetsu.android.common.utils.ensureSQLSizeCompliant
 import app.shosetsu.android.domain.model.database.DBChapterEntity
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
@@ -227,6 +228,19 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 	)
 	suspend fun updateChapterReadingStatus(chapterIds: List<Int>, readingStatus: ReadingStatus)
 
+	/**
+	 * Bulk transaction to ensure that [chapterIds] < 999
+	 */
+	@Transaction
+	suspend fun updateChapterReadingStatusBulk(
+		chapterIds: List<Int>,
+		readingStatus: ReadingStatus
+	) {
+		ensureSQLSizeCompliant(chapterIds) {
+			updateChapterReadingStatus(it, readingStatus)
+		}
+	}
+
 	@Query(
 		"""
 		UPDATE chapters
@@ -236,6 +250,16 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 	)
 	suspend fun updateChapterBookmark(chapterIds: List<Int>, bookmarked: Boolean)
 
+	/**
+	 * Bulk transaction to ensure that [chapterIds] < 999
+	 */
+	@Transaction
+	suspend fun updateChapterBookmarkBulk(chapterIds: List<Int>, bookmarked: Boolean) {
+		ensureSQLSizeCompliant(chapterIds) {
+			updateChapterBookmark(it, bookmarked)
+		}
+	}
+
 	@Query(
 		"""
 		UPDATE chapters
@@ -244,4 +268,14 @@ interface ChaptersDao : BaseDao<DBChapterEntity> {
 		"""
 	)
 	suspend fun markChaptersDeleted(chapterIds: List<Int>)
+
+	/**
+	 * Bulk transaction to ensure that [chapterIds] < 999
+	 */
+	@Transaction
+	suspend fun markChaptersDeletedBulk(chapterIds: List<Int>) {
+		ensureSQLSizeCompliant(chapterIds) {
+			markChaptersDeleted(it)
+		}
+	}
 }

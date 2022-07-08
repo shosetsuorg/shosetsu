@@ -73,7 +73,7 @@ class DBDownloadsDataSource(
 
 	@Throws(SQLiteException::class)
 	override suspend fun updateStatus(chapterIds: List<Int>, status: DownloadStatus) {
-		downloadsDao.updateStatus(chapterIds, status)
+		downloadsDao.updateStatusBulk(chapterIds, status)
 	}
 
 	@Throws(SQLiteException::class)

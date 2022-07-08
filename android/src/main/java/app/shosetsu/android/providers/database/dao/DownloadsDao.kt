@@ -3,7 +3,9 @@ package app.shosetsu.android.providers.database.dao
 import android.database.sqlite.SQLiteException
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import app.shosetsu.android.common.enums.DownloadStatus
+import app.shosetsu.android.common.utils.ensureSQLSizeCompliant
 import app.shosetsu.android.domain.model.database.DBDownloadEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import kotlinx.coroutines.flow.Flow
@@ -68,6 +70,16 @@ interface DownloadsDao : BaseDao<DBDownloadEntity> {
 		"""
 	)
 	suspend fun updateStatus(chapterIds: List<Int>, status: DownloadStatus)
+
+	/**
+	 * Bulk transaction to ensure that [chapterIds] < 999
+	 */
+	@Transaction
+	suspend fun updateStatusBulk(chapterIds: List<Int>, status: DownloadStatus) {
+		ensureSQLSizeCompliant(chapterIds) {
+			updateStatus(it, status)
+		}
+	}
 
 	@Query(
 		"""

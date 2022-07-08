@@ -101,14 +101,14 @@ class DBChaptersDataSource(
 		chapterIds: List<Int>,
 		readingStatus: ReadingStatus
 	) {
-		chaptersDao.updateChapterReadingStatus(chapterIds, readingStatus)
+		chaptersDao.updateChapterReadingStatusBulk(chapterIds, readingStatus)
 	}
 
 	override suspend fun updateChapterBookmark(chapterIds: List<Int>, bookmarked: Boolean) {
-		chaptersDao.updateChapterBookmark(chapterIds, bookmarked)
+		chaptersDao.updateChapterBookmarkBulk(chapterIds, bookmarked)
 	}
 
 	override suspend fun markChaptersDeleted(chapterIds: List<Int>) {
-		chaptersDao.markChaptersDeleted(chapterIds)
+		chaptersDao.markChaptersDeletedBulk(chapterIds)
 	}
 }
