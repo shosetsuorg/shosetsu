@@ -383,6 +383,7 @@ class AddShareViewModel(
 			novelLink.emit(null)
 			repoLink.emit(null)
 			data.emit(null)
+			openQRScanner.emit(true)
 
 			exception.emit(null)
 			repoEntity = null
