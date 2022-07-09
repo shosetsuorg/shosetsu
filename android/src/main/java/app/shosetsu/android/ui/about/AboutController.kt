@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -37,6 +38,7 @@ import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.AAboutViewModel
 import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import com.github.doomsdayrs.apps.shosetsu.R
+import org.acra.util.Installation
 
 /*
  * This file is part of shosetsu.
@@ -223,6 +225,12 @@ fun AboutContent(
 			AboutItem(
 				R.string.check_for_app_update,
 				onClick = onCheckForAppUpdate
+			)
+		}
+		item {
+			AboutItem(
+				R.string.fragment_about_acra_id,
+				description = Installation.id(LocalContext.current)
 			)
 		}
 		item {

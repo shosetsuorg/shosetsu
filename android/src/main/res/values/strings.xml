@@ -705,6 +705,7 @@
     <string name="force">Force</string>
     <string name="controller_novel_delete_previous_fail">Failed to delete previous chapter: %s</string>
     <string name="missing_extension">Extension is missing %i</string>
+    <string name="fragment_about_acra_id">ACRA Identification</string>
     <plurals name="controller_novel_toggle_delete_chapters">
         <!-- Ignore zero-->
         <item quantity="one">Delete %d chapter?</item>
