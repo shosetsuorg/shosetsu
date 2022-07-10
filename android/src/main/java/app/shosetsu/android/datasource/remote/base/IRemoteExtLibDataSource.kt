@@ -1,5 +1,6 @@
 package app.shosetsu.android.datasource.remote.base
 
+import app.shosetsu.android.common.EmptyResponseBodyException
 import app.shosetsu.android.domain.model.local.ExtLibEntity
 import app.shosetsu.lib.exceptions.HTTPException
 import java.io.IOException
@@ -32,8 +33,8 @@ interface IRemoteExtLibDataSource {
 	 * @param repoURL URL of the repository
 	 * @param extLibEntity The library to download
 	 */
-	@Throws(HTTPException::class, IOException::class)
-	fun downloadLibrary(
+	@Throws(HTTPException::class, IOException::class, EmptyResponseBodyException::class)
+	suspend fun downloadLibrary(
 		repoURL: String,
 		extLibEntity: ExtLibEntity,
 	): String

@@ -1,5 +1,6 @@
 package app.shosetsu.android.datasource.remote.impl
 
+import app.shosetsu.android.common.EmptyResponseBodyException
 import app.shosetsu.android.common.consts.REPO_SOURCE_DIR
 import app.shosetsu.android.common.ext.quickie
 import app.shosetsu.android.datasource.remote.base.IRemoteExtensionDataSource
@@ -37,20 +38,21 @@ class RemoteExtensionDataSource(
 	private fun makeExtensionURL(repo: RepositoryEntity, fe: GenericExtensionEntity): String =
 		"${repo.url}$REPO_SOURCE_DIR/${fe.lang}/${fe.fileName}.lua"
 
-	@Throws(HTTPException::class, IOException::class)
+	@Throws(HTTPException::class, IOException::class, EmptyResponseBodyException::class)
 	override suspend fun downloadExtension(
 		repositoryEntity: RepositoryEntity,
 		extensionEntity: GenericExtensionEntity,
 	): ByteArray {
-		@Suppress("BlockingMethodInNonBlockingContext")
-		val response = client.quickie(
-			makeExtensionURL(
-				repositoryEntity,
-				extensionEntity
-			)
+		val url = makeExtensionURL(
+			repositoryEntity,
+			extensionEntity
 		)
+
+		@Suppress("BlockingMethodInNonBlockingContext")
+		val response = client.quickie(url)
 		if (response.isSuccessful)
-			return response.body!!.bytes()
+			@Suppress("BlockingMethodInNonBlockingContext")
+			return response.body?.bytes() ?: throw EmptyResponseBodyException(url)
 		else throw HTTPException(response.code)
 	}
 

@@ -1,5 +1,6 @@
 package app.shosetsu.android.datasource.remote.base
 
+import app.shosetsu.android.common.EmptyResponseBodyException
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.lib.exceptions.HTTPException
 import app.shosetsu.lib.json.RepoIndex
@@ -30,6 +31,6 @@ interface IRemoteExtRepoDataSource {
 	/**
 	 * Download the current repository data
 	 */
-	@Throws(HTTPException::class, IOException::class)
+	@Throws(HTTPException::class, IOException::class, EmptyResponseBodyException::class)
 	suspend fun downloadRepoData(repo: RepositoryEntity): RepoIndex
 }

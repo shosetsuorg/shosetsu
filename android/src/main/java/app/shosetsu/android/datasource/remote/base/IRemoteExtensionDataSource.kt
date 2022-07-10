@@ -1,5 +1,6 @@
 package app.shosetsu.android.datasource.remote.base
 
+import app.shosetsu.android.common.EmptyResponseBodyException
 import app.shosetsu.android.domain.model.local.GenericExtensionEntity
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.lib.exceptions.HTTPException
@@ -32,7 +33,7 @@ interface IRemoteExtensionDataSource {
 	 * Downloads an extension
 	 * @return extension content
 	 */
-	@Throws(HTTPException::class, IOException::class)
+	@Throws(HTTPException::class, IOException::class, EmptyResponseBodyException::class)
 	suspend fun downloadExtension(
 		repositoryEntity: RepositoryEntity,
 		extensionEntity: GenericExtensionEntity,
