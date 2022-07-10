@@ -24,11 +24,11 @@ package app.shosetsu.android.common.enums
  * Defines location of internal file directories
  */
 enum class InternalFileDir {
-    CACHE,
-    FILES,
+	CACHE,
+	FILES,
 
-    /**
-     * Just dumps into the app dir
-     */
-    GENERIC
+	/**
+	 * Just dumps into the app dir
+	 */
+	GENERIC
 }

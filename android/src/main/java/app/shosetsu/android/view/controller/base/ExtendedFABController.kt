@@ -9,9 +9,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.recyclerview.widget.RecyclerView
 import app.shosetsu.android.common.ext.logID
-import app.shosetsu.android.common.ext.percentageScrolled
 import kotlinx.coroutines.launch
 
 /*
@@ -80,31 +78,6 @@ interface ExtendedFABController {
 	 */
 	fun manipulateFAB(fab: EFabMaintainer)
 }
-
-
-/**
- * Syncs the FAB with the recyclerview, hiding it when scrolling and showing again when idle
- */
-fun ExtendedFABController.syncFABWithRecyclerView(
-	recyclerView: RecyclerView,
-	fab: ExtendedFABController.EFabMaintainer
-) =
-	recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-		override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-			when (newState) {
-				RecyclerView.SCROLL_STATE_DRAGGING -> hideFAB(fab)
-				RecyclerView.SCROLL_STATE_IDLE -> {
-					if (recyclerView.percentageScrolled() < (2)) {
-						showFAB(fab)
-						fab.shrink()
-					} else {
-						showFAB(fab)
-						fab.extend()
-					}
-				}
-			}
-		}
-	})
 
 @Composable
 fun syncFABWithCompose(

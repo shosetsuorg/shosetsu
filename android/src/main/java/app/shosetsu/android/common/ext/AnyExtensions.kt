@@ -64,9 +64,11 @@ fun Array<String>.convertArrayToString(): String {
 @Suppress("unused")
 inline fun <reified T : Any> T.logID(): String = T::class.java.simpleName
 
+@OptIn(DelicateCoroutinesApi::class)
 fun launchUI(block: suspend CoroutineScope.() -> Unit): Job =
 	GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT, block)
 
+@OptIn(DelicateCoroutinesApi::class)
 fun launchIO(block: suspend CoroutineScope.() -> Unit): Job =
 	GlobalScope.launch(Dispatchers.IO, CoroutineStart.DEFAULT, block)
 

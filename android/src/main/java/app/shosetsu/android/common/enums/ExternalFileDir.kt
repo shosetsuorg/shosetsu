@@ -24,8 +24,8 @@ package app.shosetsu.android.common.enums
  * Defines the 'type' of directory the file should be pulled from
  */
 enum class ExternalFileDir {
-    /** Refers to the app specific external dir */
-    APP,
+	/** Refers to the app specific external dir */
+	APP,
 	DOWNLOADS,
-    DOCUMENTS,
+	DOCUMENTS,
 }

@@ -26,6 +26,7 @@ import kotlinx.coroutines.*
  * 30 / 09 / 2020
  */
 
+@OptIn(DelicateCoroutinesApi::class)
 fun ViewModel.launchUI(block: suspend CoroutineScope.() -> Unit): Job =
 	GlobalScope.launch(
 		viewModelScope.coroutineContext + Dispatchers.Main,
@@ -33,6 +34,7 @@ fun ViewModel.launchUI(block: suspend CoroutineScope.() -> Unit): Job =
 		block
 	)
 
+@OptIn(DelicateCoroutinesApi::class)
 fun ViewModel.launchIO(block: suspend CoroutineScope.() -> Unit): Job =
 	GlobalScope.launch(
 		viewModelScope.coroutineContext + Dispatchers.IO,
@@ -40,6 +42,7 @@ fun ViewModel.launchIO(block: suspend CoroutineScope.() -> Unit): Job =
 		block
 	)
 
+/*
 @ExperimentalCoroutinesApi
 fun ViewModel.launchAsync(block: suspend CoroutineScope.() -> Unit): Job =
 	GlobalScope.launch(
@@ -55,3 +58,4 @@ fun ViewModel.launchFree(block: suspend CoroutineScope.() -> Unit): Job =
 		CoroutineStart.UNDISPATCHED,
 		block
 	)
+ */

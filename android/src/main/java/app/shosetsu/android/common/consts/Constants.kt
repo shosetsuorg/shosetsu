@@ -46,9 +46,6 @@ const val REPO_SOURCE_DIR: String = "/src/"
 
 const val APP_UPDATE_CACHE_FILE = "SHOSETSU_APP_UPDATE.json"
 
-
-const val READER_BAR_ALPHA: Float = 0.95F
-
 const val APK_MIME = "application/vnd.android.package-archive"
 
 /**

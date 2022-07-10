@@ -1,9 +1,5 @@
 package app.shosetsu.android.common.ext
 
-import app.shosetsu.lib.exceptions.HTTPException
-import org.acra.ErrorReporter
-import java.net.SocketTimeoutException
-
 /*
  * This file is part of shosetsu.
  *
@@ -25,15 +21,3 @@ import java.net.SocketTimeoutException
  */
 
 
-fun ErrorReporter.handleIfValid(exception: Exception?) {
-	if (exception == null)
-		return
-
-	if (exception is HTTPException || exception.cause is HTTPException)
-		return
-
-	if (exception is SocketTimeoutException || exception.cause is SocketTimeoutException)
-		return
-
-	handleException(exception, false)
-}
