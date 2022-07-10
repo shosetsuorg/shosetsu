@@ -162,9 +162,9 @@ class MainActivity : AppCompatActivity(), DIAware {
 					R.string.activity_main_error_theme,
 					it.message ?: "Unknown error"
 				)
-			)?.setAction(R.string.report) { _ ->
+			).setAction(R.string.report) { _ ->
 				ACRA.errorReporter.handleSilentException(it)
-			}?.show()
+			}.show()
 		}) {
 			setTheme(it)
 			DynamicColors.applyToActivityIfAvailable(this)
@@ -273,14 +273,14 @@ class MainActivity : AppCompatActivity(), DIAware {
 		launchIO {
 			inProtectingBack = true
 			val snackBar =
-				makeSnackBar(R.string.double_back_message, Snackbar.LENGTH_INDEFINITE)?.apply {
+				makeSnackBar(R.string.double_back_message, Snackbar.LENGTH_INDEFINITE).apply {
 					setOnDismissed { _, _ ->
 						inProtectingBack = false
 					}
 				}
-			snackBar?.show()
+			snackBar.show()
 			delay(2000)
-			snackBar?.dismiss()
+			snackBar.dismiss()
 		}
 	}
 
@@ -408,9 +408,9 @@ class MainActivity : AppCompatActivity(), DIAware {
 					R.string.activity_main_error_update_check,
 					it.message ?: "Unknown error"
 				)
-			)?.setAction(R.string.report) { _ ->
+			).setAction(R.string.report) { _ ->
 				ACRA.errorReporter.handleSilentException(it)
-			}?.show()
+			}.show()
 		}) { result ->
 			if (result != null)
 				AlertDialog.Builder(this).apply {
@@ -463,9 +463,9 @@ class MainActivity : AppCompatActivity(), DIAware {
 					R.string.activity_main_error_handle_update,
 					it.message ?: "Unknown error"
 				)
-			)?.setAction(R.string.report) { _ ->
+			).setAction(R.string.report) { _ ->
 				ACRA.errorReporter.handleSilentException(it)
-			}?.show()
+			}.show()
 		}) {
 			if (it != null)
 				when (it) {
