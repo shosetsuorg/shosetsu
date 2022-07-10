@@ -85,6 +85,9 @@ import org.kodein.di.android.closestDI
  */
 class MainActivity : AppCompatActivity(), DIAware {
 	companion object {
+		/**
+		 * I forgot what this does
+		 */
 		const val INTRO_CODE: Int = 1944
 	}
 
@@ -124,13 +127,20 @@ class MainActivity : AppCompatActivity(), DIAware {
 		}
 	}
 
+	/**
+	 * Destroy the main activity
+	 */
 	override fun onDestroy() {
 		if (registered)
 			unregisterReceiver(broadcastReceiver)
 		super.onDestroy()
 	}
 
+	/**
+	 * Create the main activity
+	 */
 	override fun onCreate(savedInstanceState: Bundle?) {
+		@Suppress("UNUSED_VARIABLE") // We keep this value
 		val splashScreen = installSplashScreen()
 		viewModel.navigationStyle
 
@@ -258,6 +268,9 @@ class MainActivity : AppCompatActivity(), DIAware {
 		else binding.navBottom
 	}
 
+	/**
+	 * Re-sync the action bar drawer toggle
+	 */
 	override fun onPostCreate(savedInstanceState: Bundle?) {
 		super.onPostCreate(savedInstanceState)
 
@@ -334,6 +347,7 @@ class MainActivity : AppCompatActivity(), DIAware {
 			onBackPressed()
 		}
 
+		@Suppress("ReplaceNotNullAssertionWithElvisReturn")
 		binding.drawerLayout.addDrawerListener(actionBarDrawerToggle!!)
 
 		setupActionBarWithNavController(navController, binding.drawerLayout)
@@ -352,7 +366,15 @@ class MainActivity : AppCompatActivity(), DIAware {
 		getMaterialNav().setupWithNavController(navController)
 	}
 
+	/**
+	 * Listen to when fragment changes occur.
+	 *
+	 * This is used to to sync each fragment view and the activity view together.
+	 */
 	inner class FragmentLifecycleListener : FragmentManager.FragmentLifecycleCallbacks() {
+		/**
+		 * When called, sync the activity view
+		 */
 		override fun onFragmentViewCreated(
 			fm: FragmentManager,
 			f: Fragment,
@@ -594,14 +616,24 @@ class MainActivity : AppCompatActivity(), DIAware {
 		}
 	}
 
-	@SuppressLint("ShowToast")
+	/**
+	 * Make a snack bar
+	 *
+	 * @param stringRes String resource id
+	 * @param length Length of the snack
+	 */
 	fun makeSnackBar(
 		@StringRes stringRes: Int,
 		@Duration length: Int = Snackbar.LENGTH_SHORT
 	): Snackbar =
 		makeSnackBar(getString(stringRes), length)
 
-	@SuppressLint("ShowToast")
+	/**
+	 * Make a snack bar
+	 *
+	 * @param string Content of snack
+	 * @param length Length of the snack
+	 */
 	fun makeSnackBar(
 		string: String,
 		@Duration length: Int = Snackbar.LENGTH_SHORT
