@@ -1,6 +1,8 @@
 package app.shosetsu.android.domain.repository.impl
 
 import android.database.sqlite.SQLiteException
+import app.shosetsu.android.common.FileNotFoundException
+import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.ext.onIO
 import app.shosetsu.android.datasource.local.database.base.IDBExtLibDataSource
 import app.shosetsu.android.datasource.local.file.base.IFileExtLibDataSource
@@ -69,8 +71,9 @@ class ExtensionLibrariesRepository(
 		fileSource.writeExtLib(extLibEntity.scriptName, data)
 	}
 
-	override fun blockingLoadExtLibrary(name: String): String =
-		memSource.loadLibrary(name) ?: fileSource.blockingLoadLib(name).also {
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
+	override suspend fun loadExtLibrary(name: String): String =
+		memSource.loadLibrary(name) ?: fileSource.loadExtLib(name).also {
 			memSource.setLibrary(name, it)
 		}
 }

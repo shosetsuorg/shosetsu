@@ -34,8 +34,5 @@ interface IFileExtLibDataSource {
 	suspend fun loadExtLib(fileName: String): String
 
 	@Throws(FileNotFoundException::class, FilePermissionException::class)
-	fun blockingLoadLib(fileName: String): String
-
-	@Throws(FileNotFoundException::class, FilePermissionException::class)
 	suspend fun deleteExtLib(fileName: String)
 }

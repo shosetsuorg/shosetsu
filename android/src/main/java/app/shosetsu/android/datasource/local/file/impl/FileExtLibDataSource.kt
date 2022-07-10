@@ -60,10 +60,6 @@ class FileExtLibDataSource(
 
 	@Throws(FileNotFoundException::class, FilePermissionException::class)
 	override suspend fun loadExtLib(fileName: String): String =
-		blockingLoadLib(fileName)
-
-	@Throws(FileNotFoundException::class, FilePermissionException::class)
-	override fun blockingLoadLib(fileName: String): String =
 		iFileSystemProvider.readFile(FILES, makeLibraryFile(fileName)).decodeToString()
 
 	@Throws(FileNotFoundException::class, FilePermissionException::class)

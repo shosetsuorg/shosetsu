@@ -1,6 +1,8 @@
 package app.shosetsu.android.domain.repository.base
 
 import android.database.sqlite.SQLiteException
+import app.shosetsu.android.common.FileNotFoundException
+import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.domain.model.local.ExtLibEntity
 import app.shosetsu.lib.exceptions.HTTPException
 import java.net.SocketTimeoutException
@@ -55,5 +57,6 @@ interface IExtensionLibrariesRepository {
 	 * @param name Name of the library requested
 	 * @return Library ext content
 	 */
-	fun blockingLoadExtLibrary(name: String): String
+	@Throws(FileNotFoundException::class, FilePermissionException::class)
+	suspend fun loadExtLibrary(name: String): String
 }

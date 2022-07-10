@@ -198,14 +198,11 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, DIAware,
 		ShosetsuLuaLib.libLoader = libLoader@{ name ->
 			Log.i("LuaLibLoader", "Loading ($name)")
 			try {
-				val result = extLibRepository.blockingLoadExtLibrary(name)
-				val l = try {
+				val result = runBlocking { extLibRepository.loadExtLibrary(name) }
+				val l =
 					shosetsuGlobals().load(result, "lib($name)")
-				} catch (e: Error) {
-					throw e
-				}
 				l.call()
-			} catch (e: Exception) {
+			} catch (e: Throwable) {
 				logE("${e.message}", e)
 				null
 			}
