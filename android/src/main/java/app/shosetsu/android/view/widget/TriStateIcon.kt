@@ -6,7 +6,7 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.isVisible
 import app.shosetsu.android.common.enums.TriStateState
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.R
 
 class TriStateIcon @JvmOverloads constructor(
 	context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0

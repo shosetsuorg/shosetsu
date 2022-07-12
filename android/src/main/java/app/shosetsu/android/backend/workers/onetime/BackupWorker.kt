@@ -7,6 +7,7 @@ import android.util.Base64
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
+import app.shosetsu.android.R
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
 import app.shosetsu.android.common.SettingKey.*
@@ -23,7 +24,6 @@ import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.model.local.backup.*
 import app.shosetsu.android.domain.repository.base.*
 import app.shosetsu.android.domain.repository.base.IBackupRepository.BackupProgress
-import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.delay
 import kotlinx.serialization.encodeToString
 import org.acra.ACRA

@@ -34,7 +34,7 @@ import app.shosetsu.lib.Version
 import app.shosetsu.lib.exceptions.HTTPException
 import coil.imageLoader
 import coil.request.ImageRequest
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.decodeFromStream

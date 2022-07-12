@@ -31,7 +31,7 @@ import app.shosetsu.android.view.uimodels.model.MigrationExtensionUI
 import app.shosetsu.android.view.uimodels.model.MigrationNovelUI
 import app.shosetsu.android.viewmodel.abstracted.AMigrationViewModel
 import coil.compose.rememberAsyncImagePainter
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.R
 
 /*
  * This file is part of Shosetsu.

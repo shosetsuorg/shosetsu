@@ -1,5 +1,6 @@
 package app.shosetsu.android.domain.repository.impl
 
+import app.shosetsu.android.BuildConfig
 import app.shosetsu.android.common.EmptyResponseBodyException
 import app.shosetsu.android.common.FileNotFoundException
 import app.shosetsu.android.common.FilePermissionException
@@ -11,7 +12,6 @@ import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.android.domain.model.local.AppUpdateEntity
 import app.shosetsu.android.domain.repository.base.IAppUpdatesRepository
 import app.shosetsu.lib.exceptions.HTTPException
-import com.github.doomsdayrs.apps.shosetsu.BuildConfig
 import kotlinx.coroutines.flow.Flow
 import java.io.IOException
 

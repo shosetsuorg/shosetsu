@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.findNavController
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.R
 
 /*
  * This file is part of shosetsu.

@@ -12,10 +12,10 @@ import android.widget.FrameLayout
 import androidx.annotation.IdRes
 import androidx.annotation.MenuRes
 import androidx.core.view.isVisible
+import app.shosetsu.android.R
 import app.shosetsu.android.common.ext.logE
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.databinding.BottomActionBarBinding
-import com.github.doomsdayrs.apps.shosetsu.databinding.BottomActionBarBinding.inflate
+import app.shosetsu.android.databinding.BottomActionBarBinding
+import app.shosetsu.android.databinding.BottomActionBarBinding.inflate
 
 /*
  * This file is part of Shosetsu.

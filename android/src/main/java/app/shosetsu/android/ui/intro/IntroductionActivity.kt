@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import app.shosetsu.android.activity.MainActivity.Companion.INTRO_CODE
 import app.shosetsu.android.common.ext.readAsset
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.databinding.IntroLicenseBinding
+import app.shosetsu.android.R
+import app.shosetsu.android.databinding.IntroLicenseBinding
 import com.heinrichreimersoftware.materialintro.app.IntroActivity
 import com.heinrichreimersoftware.materialintro.app.NavigationPolicy
 import com.heinrichreimersoftware.materialintro.slide.FragmentSlide

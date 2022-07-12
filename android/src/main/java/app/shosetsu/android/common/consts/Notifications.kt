@@ -7,7 +7,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import app.shosetsu.android.common.ext.notificationManager
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.R
 
 /*
  * This file is part of shosetsu.

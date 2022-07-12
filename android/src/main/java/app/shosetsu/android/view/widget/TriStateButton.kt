@@ -9,8 +9,8 @@ import androidx.annotation.StringRes
 import androidx.core.content.res.getResourceIdOrThrow
 import androidx.core.view.isVisible
 import app.shosetsu.android.common.enums.TriStateState
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.databinding.TriStateButtonBinding
+import app.shosetsu.android.R
+import app.shosetsu.android.databinding.TriStateButtonBinding
 
 /*
  * This file is part of Shosetsu.

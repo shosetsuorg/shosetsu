@@ -12,7 +12,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.sp
 import app.shosetsu.android.view.compose.ShosetsuCompose
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.R
 
 
 @Composable

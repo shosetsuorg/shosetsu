@@ -46,7 +46,7 @@ import app.shosetsu.android.view.controller.base.HomeFragment
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.view.uimodels.model.LibraryNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.R
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog

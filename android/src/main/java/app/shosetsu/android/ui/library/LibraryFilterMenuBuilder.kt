@@ -21,7 +21,7 @@ import app.shosetsu.android.common.enums.NovelSortType
 import app.shosetsu.android.common.enums.NovelSortType.*
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.R
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset

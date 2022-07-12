@@ -59,9 +59,9 @@ import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel.SelectedChapter
 import app.shosetsu.lib.Novel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.R.*
-import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelJumpDialogBinding
+import app.shosetsu.android.R
+import app.shosetsu.android.R.*
+import app.shosetsu.android.databinding.ControllerNovelJumpDialogBinding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog

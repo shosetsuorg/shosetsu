@@ -18,7 +18,7 @@ import androidx.savedstate.SavedStateRegistryOwner
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.view.compose.ShosetsuCompose
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.R
 import kotlinx.coroutines.delay
 
 /*

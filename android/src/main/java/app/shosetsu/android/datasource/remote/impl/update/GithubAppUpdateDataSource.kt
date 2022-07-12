@@ -7,7 +7,7 @@ import app.shosetsu.android.datasource.remote.base.IRemoteAppUpdateDataSource
 import app.shosetsu.android.domain.model.local.AppUpdateEntity
 import app.shosetsu.android.domain.model.remote.AppUpdateDTO
 import app.shosetsu.lib.exceptions.HTTPException
-import com.github.doomsdayrs.apps.shosetsu.BuildConfig.DEBUG
+import app.shosetsu.android.BuildConfig.DEBUG
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream

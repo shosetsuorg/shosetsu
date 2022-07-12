@@ -17,10 +17,10 @@ import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.makeSnackBar
 import app.shosetsu.android.view.uimodels.NovelSettingUI
 import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottomMenu0Binding
-import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottomMenu1Binding
-import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottomMenuBinding
+import app.shosetsu.android.R
+import app.shosetsu.android.databinding.ControllerNovelInfoBottomMenu0Binding
+import app.shosetsu.android.databinding.ControllerNovelInfoBottomMenu1Binding
+import app.shosetsu.android.databinding.ControllerNovelInfoBottomMenuBinding
 import kotlinx.coroutines.flow.Flow
 import org.acra.ACRA
 

@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.R
 import com.google.accompanist.placeholder.material.placeholder
 
 /*

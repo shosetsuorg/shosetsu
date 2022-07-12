@@ -7,7 +7,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat.*
 import androidx.core.graphics.drawable.IconCompat
 import app.shosetsu.android.backend.receivers.NotificationBroadcastReceiver
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.R
 
 /*
  * This file is part of Shosetsu.

@@ -35,7 +35,7 @@ import app.shosetsu.lib.Novel
 import app.shosetsu.lib.exceptions.HTTPException
 import coil.imageLoader
 import coil.request.ImageRequest
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.R
 import kotlinx.coroutines.delay
 import org.kodein.di.DI
 import org.kodein.di.DIAware

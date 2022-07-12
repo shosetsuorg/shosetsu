@@ -22,8 +22,8 @@ import app.shosetsu.android.view.compose.setting.SliderSettingContent
 import app.shosetsu.android.view.compose.setting.SwitchSettingContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.settings.AUpdateSettingsViewModel
-import com.github.doomsdayrs.apps.shosetsu.BuildConfig
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.BuildConfig
+import app.shosetsu.android.R
 
 /*
  * This file is part of shosetsu.

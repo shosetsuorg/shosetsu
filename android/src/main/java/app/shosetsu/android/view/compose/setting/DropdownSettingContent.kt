@@ -12,7 +12,7 @@ import androidx.compose.ui.text.AnnotatedString
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.R
 
 @Composable
 fun DropdownSettingContent(

@@ -18,7 +18,7 @@ import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.model.local.BackupEntity
 import app.shosetsu.android.domain.repository.base.IBackupRepository
 import app.shosetsu.android.domain.repository.base.IBackupUriRepository
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.R
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI

@@ -38,7 +38,7 @@ if (acraPropertiesFile.exists())
 android {
 	compileSdk = 32
 	defaultConfig {
-		applicationId = "com.github.doomsdayrs.apps.shosetsu"
+		applicationId = "app.shosetsu.android"
 		minSdk = 22
 		targetSdk = 31
 		versionCode = 26
@@ -97,8 +97,6 @@ android {
 	flavorDimensions.add("default")
 	productFlavors {
 		create("playstore") {
-			// play store will be in this
-			applicationId = "app.shosetsu.android"
 			applicationIdSuffix = ".play"
 			versionNameSuffix = "-play"
 		}
@@ -127,7 +125,7 @@ android {
 	lint {
 		abortOnError = false
 	}
-	namespace = "com.github.doomsdayrs.apps.shosetsu"
+	namespace = "app.shosetsu.android"
 }
 
 //TODO Fix application variant naming

@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.findNavController
+import app.shosetsu.android.R
 import app.shosetsu.android.common.consts.BundleKeys
 import app.shosetsu.android.common.ext.collectLA
 import app.shosetsu.android.common.ext.logE
@@ -38,7 +39,6 @@ import app.shosetsu.lib.share.RepositoryLink
 import app.shosetsu.lib.share.StyleLink
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.github.doomsdayrs.apps.shosetsu.R
 import io.github.g00fy2.quickie.QRResult
 import io.github.g00fy2.quickie.ScanQRCode
 import io.github.g00fy2.quickie.content.QRContent

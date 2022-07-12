@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.shosetsu.android.R
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.enums.TriStateState
 import app.shosetsu.android.common.ext.viewModel
@@ -37,7 +38,6 @@ import app.shosetsu.lib.ExtensionType
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.Version
 import coil.compose.rememberAsyncImagePainter
-import com.github.doomsdayrs.apps.shosetsu.R
 import kotlin.random.Random
 
 /*
