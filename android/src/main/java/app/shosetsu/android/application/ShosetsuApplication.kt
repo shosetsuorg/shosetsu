@@ -9,7 +9,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.work.Configuration
-import app.shosetsu.android.backend.database.DBHelper
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.ShortCuts
@@ -168,10 +167,6 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, DIAware,
 		}
 
 		setupCoreLib()
-
-		// OLD DB TO NEW
-		@Suppress("DEPRECATION")
-		DBHelper(this@ShosetsuApplication).writableDatabase.close()
 
 		launchIO {
 			try {
