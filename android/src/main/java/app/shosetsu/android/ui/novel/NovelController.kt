@@ -184,7 +184,6 @@ class NovelController : ShosetsuController(),
 		}
 	}
 
-	@ExperimentalMaterialApi
 	@Suppress("unused")
 	fun migrateOpen() {
 		findNavController().navigate(
@@ -234,8 +233,7 @@ class NovelController : ShosetsuController(),
 
 	override fun onMenuItemSelected(item: MenuItem): Boolean = when (item.itemId) {
 		R.id.source_migrate -> {
-			// migrateOpen()
-			makeSnackBar(string.regret)?.dismiss()
+			migrateOpen()
 			true
 		}
 		R.id.webview -> {
