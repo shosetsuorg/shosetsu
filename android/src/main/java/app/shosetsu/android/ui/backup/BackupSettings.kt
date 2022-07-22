@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -120,7 +121,7 @@ class BackupSettings : ShosetsuController() {
 		selectLocationToExportLauncher = registry.register(
 			"backup_settings_point_export_rq#",
 			owner,
-			ActivityResultContracts.CreateDocument()
+			CreateDocument("application/octet-stream")
 		) { uri: Uri? ->
 			if (uri == null) {
 				logE("Cancelled")
