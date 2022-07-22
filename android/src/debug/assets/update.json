@@ -1,21 +1,22 @@
 {
-  "latestVersion": "2344",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r2344/shosetsu-r2344-universal.apk",
+  "latestVersion": "2363",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r2363/shosetsu-r2363-universal.apk",
   "releaseNotes": [
     "New:",
-    "- Navigation rail for tablet",
-    "- Add themed icon support",
-    "- Reimplement fragments",
+    "- Add ACRA identification to AboutController",
     "",
     "Fixes:",
-    "- Fixed novels not being faded out when already in the library",
+    "- Fix qr scanner not being opened after leave it",
+    "- Ensure bulk operations do not exceed 999 variables per query",
+    "- Possibly fix migration from database 2 to 3, I will not test this.",
+    "- Fix dual output not being respected",
+    "- Launch certain views in single top mode to prevent crashes",
     "",
     "Misc:",
-    "- Update dependencies",
-    "- Rearrange Backup view for better user clarity",
-    "- Disable vertical paging",
-    "- Disable volume scroll",
-    "- Disable delete chapters on read",
-    "- Use MenuProvider for menus"
+    "- Only update repositories when there are no extensions",
+    "- Better handle errors",
+    "- Update user agent",
+    "- Specify mimeType when creating a backup",
+    "- Code clean ups"
   ]
 }
