@@ -37,6 +37,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.NoSuchExtensionException
@@ -189,11 +190,11 @@ class NovelController : ShosetsuController(),
 		findNavController().navigate(
 			R.id.action_novelController_to_migrationController,
 			bundleOf(
-				Pair(
-					TARGETS_BUNDLE_KEY,
-					arrayOf(arguments!!.getNovelID()).toIntArray()
-				)
-			)
+				TARGETS_BUNDLE_KEY to arrayOf(arguments!!.getNovelID()).toIntArray()
+			),
+			navOptions {
+				setShosetsuTransition()
+			}
 		)
 	}
 

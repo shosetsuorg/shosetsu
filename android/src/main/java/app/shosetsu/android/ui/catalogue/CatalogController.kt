@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -146,12 +147,13 @@ class CatalogController : ShosetsuController(), ExtendedFABController, MenuProvi
 						columnsInH,
 						onClick = {
 							findNavController().navigate(
-								R.id.action_catalogController_to_novelController, (
-										bundleOf(
-											BUNDLE_NOVEL_ID to it.id,
-											BUNDLE_EXTENSION to arguments!!.getInt(BUNDLE_EXTENSION)
-										)
-										)
+								R.id.action_catalogController_to_novelController, bundleOf(
+									BUNDLE_NOVEL_ID to it.id,
+									BUNDLE_EXTENSION to arguments!!.getInt(BUNDLE_EXTENSION)
+								),
+								navOptions {
+									setShosetsuTransition()
+								}
 							)
 						},
 						onLongClick = {

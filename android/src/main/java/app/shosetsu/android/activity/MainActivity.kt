@@ -30,6 +30,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.navOptions
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.window.layout.WindowMetricsCalculator
@@ -362,7 +363,7 @@ class MainActivity : AppCompatActivity(), DIAware {
 			DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
 			binding.navDrawer
 		)
-
+		androidx.navigation.ui.R.animator.nav_default_enter_anim
 		getMaterialNav().setupWithNavController(navController)
 	}
 
@@ -397,21 +398,34 @@ class MainActivity : AppCompatActivity(), DIAware {
 	internal fun handleIntentAction(intent: Intent) {
 		logD("Intent received was ${intent.action}")
 		when (intent.action) {
-			ACTION_OPEN_CATALOGUE -> navController.navigate(R.id.browseController)
-			ACTION_OPEN_UPDATES -> navController.navigate(R.id.updatesController)
-			ACTION_OPEN_LIBRARY -> navController.navigate(R.id.libraryController)
+			ACTION_OPEN_CATALOGUE -> navController.navigate(
+				R.id.browseController,
+				null,
+				navOptions { setShosetsuTransition() }
+			)
+			ACTION_OPEN_UPDATES -> navController.navigate(R.id.updatesController,
+				null,
+				navOptions { setShosetsuTransition() }
+			)
+			ACTION_OPEN_LIBRARY -> navController.navigate(R.id.libraryController,
+				null,
+				navOptions { setShosetsuTransition() }
+			)
 			ACTION_SEARCH -> {
 				navController.navigate(
 					R.id.searchController, bundleOf(
 						BUNDLE_QUERY to (intent.getStringExtra(SearchManager.QUERY) ?: "")
-					)
+					), navOptions { setShosetsuTransition() }
+
 				)
 			}
 			ACTION_OPEN_SEARCH -> {
 				navController.navigate(
 					R.id.searchController, bundleOf(
 						BUNDLE_QUERY to (intent.getStringExtra(SearchManager.QUERY) ?: "")
-					)
+					),
+					navOptions { setShosetsuTransition() }
+
 				)
 			}
 			ACTION_OPEN_APP_UPDATE -> {
@@ -419,7 +433,10 @@ class MainActivity : AppCompatActivity(), DIAware {
 			}
 			ACTION_MAIN -> {
 			}
-			else -> navController.navigate(R.id.libraryController)
+			else -> navController.navigate(R.id.libraryController,
+				null,
+				navOptions { setShosetsuTransition() }
+			)
 		}
 	}
 

@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.navigation.findNavController
+import androidx.navigation.navOptions
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -34,6 +35,7 @@ import androidx.paging.compose.itemsIndexed
 import app.shosetsu.android.common.consts.BundleKeys
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.makeSnackBar
+import app.shosetsu.android.common.ext.setShosetsuTransition
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.compose.*
 import app.shosetsu.android.view.controller.ShosetsuController
@@ -103,7 +105,10 @@ class SearchController : ShosetsuController(), MenuProvider {
 						onClick = {
 							findNavController().navigate(
 								R.id.action_searchController_to_novelController,
-								(bundleOf(BundleKeys.BUNDLE_NOVEL_ID to it.id))
+								bundleOf(BundleKeys.BUNDLE_NOVEL_ID to it.id),
+								navOptions {
+									setShosetsuTransition()
+								}
 							)
 						},
 						onRefresh = viewModel::refresh,

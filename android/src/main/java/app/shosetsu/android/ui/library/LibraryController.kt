@@ -28,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.consts.BundleKeys
@@ -117,11 +117,14 @@ class LibraryController
 						onRefresh = {
 							onRefresh()
 						},
-						onOpen = { item ->
+						onOpen = { (id) ->
 							findNavController().navigate(
 								R.id.action_libraryController_to_novelController,
-								bundleOf(BundleKeys.BUNDLE_NOVEL_ID to item.id),
-								navOptions = NavOptions.Builder().setLaunchSingleTop(true).build()
+								bundleOf(BundleKeys.BUNDLE_NOVEL_ID to id),
+								navOptions = navOptions {
+									launchSingleTop = true
+									setShosetsuTransition()
+								}
 							)
 						},
 						toggleSelection = { item ->
@@ -250,7 +253,10 @@ class LibraryController
 				viewModel.getSelectedIds().firstLa(this, catch = {}) {
 					findNavController().navigate(
 						R.id.action_libraryController_to_migrationController,
-						bundleOf(MigrationController.TARGETS_BUNDLE_KEY to it)
+						bundleOf(MigrationController.TARGETS_BUNDLE_KEY to it),
+						navOptions {
+							setShosetsuTransition()
+						}
 					)
 				}
 

@@ -23,9 +23,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import app.shosetsu.android.common.ext.makeSnackBar
+import app.shosetsu.android.common.ext.setShosetsuTransition
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
@@ -76,7 +77,10 @@ class ComposeMoreController
 					findNavController().navigate(
 						it,
 						null,
-						navOptions = NavOptions.Builder().setLaunchSingleTop(singleTop).build()
+						navOptions = navOptions {
+							launchSingleTop = singleTop
+							setShosetsuTransition()
+						}
 					)
 				}
 			}

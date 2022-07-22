@@ -18,6 +18,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.findNavController
+import androidx.navigation.navOptions
+import app.shosetsu.android.common.ext.setShosetsuTransition
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -57,7 +59,12 @@ class ComposeSettingsController : ShosetsuController() {
 		setViewTitle()
 		setContent {
 			ShosetsuCompose {
-				SettingsContent { findNavController().navigate(it) }
+				SettingsContent {
+					findNavController().navigate(
+						it,
+						null,
+						navOptions { setShosetsuTransition() })
+				}
 			}
 		}
 	}

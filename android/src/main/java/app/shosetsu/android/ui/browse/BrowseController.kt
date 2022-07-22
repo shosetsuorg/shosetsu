@@ -50,13 +50,14 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.consts.REPOSITORY_HELP_URL
 import app.shosetsu.android.common.ext.displayOfflineSnackBar
 import app.shosetsu.android.common.ext.makeSnackBar
+import app.shosetsu.android.common.ext.setShosetsuTransition
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.android.domain.model.local.ExtensionInstallOptionEntity
@@ -99,7 +100,7 @@ class BrowseController : ShosetsuController(),
 	}
 
 	override fun onPrepareMenu(menu: Menu) {
-		(menu.findItem(R.id.search).actionView as SearchView).apply {
+		(menu.findItem(R.id.search)?.actionView as? SearchView)?.apply {
 			setOnQueryTextListener(BrowseSearchQuery(findNavController()))
 			isSubmitButtonEnabled = true
 		}
@@ -157,7 +158,10 @@ class BrowseController : ShosetsuController(),
 		findNavController().navigate(
 			R.id.action_browseController_to_configureExtension,
 			bundleOf(BUNDLE_EXTENSION to entity.id),
-			navOptions = NavOptions.Builder().setLaunchSingleTop(true).build()
+			navOptions = navOptions {
+				launchSingleTop = true
+				setShosetsuTransition()
+			}
 		)
 	}
 
@@ -172,7 +176,10 @@ class BrowseController : ShosetsuController(),
 					bundleOf(
 						BUNDLE_EXTENSION to entity.id
 					),
-					navOptions = NavOptions.Builder().setLaunchSingleTop(true).build()
+					navOptions = navOptions {
+						launchSingleTop = true
+						setShosetsuTransition()
+					}
 				)
 			} else makeSnackBar(R.string.controller_browse_snackbar_not_installed)?.setAction(
 				R.string.install

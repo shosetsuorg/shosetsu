@@ -3,8 +3,10 @@ package app.shosetsu.android.ui.browse
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
+import androidx.navigation.navOptions
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
 import app.shosetsu.android.common.ext.launchUI
+import app.shosetsu.android.common.ext.setShosetsuTransition
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -39,7 +41,10 @@ class BrowseSearchQuery(
 			try {
 				navController.navigate(
 					R.id.action_browseController_to_searchController,
-					bundleOf(BUNDLE_QUERY to s)
+					bundleOf(BUNDLE_QUERY to s),
+					navOptions {
+						setShosetsuTransition()
+					}
 				)
 			} catch (e: IllegalArgumentException) {
 			}

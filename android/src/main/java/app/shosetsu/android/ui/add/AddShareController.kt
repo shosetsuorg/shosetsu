@@ -22,9 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import app.shosetsu.android.common.consts.BundleKeys
 import app.shosetsu.android.common.ext.collectLA
 import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.setShosetsuTransition
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
@@ -136,7 +138,10 @@ class AddShareController : ShosetsuController(), CollapsedToolBarController {
 						if (entity != null) {
 							findNavController().navigate(
 								R.id.action_addShareController_to_novelController,
-								bundleOf(BundleKeys.BUNDLE_NOVEL_ID to entity.id)
+								bundleOf(BundleKeys.BUNDLE_NOVEL_ID to entity.id),
+								navOptions {
+									setShosetsuTransition()
+								}
 							)
 						}
 					},
