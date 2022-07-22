@@ -32,4 +32,4 @@ fun Fragment.makeSnackBar(
 
 @Throws(Resources.NotFoundException::class)
 fun Fragment.getString(@StringRes resId: Int, vararg formatArgs: Any): String =
-	resources?.getString(resId, *formatArgs)!!
+	resources.getString(resId, *formatArgs)

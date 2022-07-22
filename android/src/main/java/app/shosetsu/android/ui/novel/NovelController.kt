@@ -382,7 +382,7 @@ class NovelController : ShosetsuController(),
 				is ANovelViewModel.ToggleBookmarkResponse.DeleteChapters -> {
 					makeSnackBar(
 						try {
-							resources!!.getQuantityString(
+							resources.getQuantityString(
 								plurals.controller_novel_toggle_delete_chapters,
 								it.chapters,
 								it.chapters
