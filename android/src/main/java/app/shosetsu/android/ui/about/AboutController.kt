@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import app.shosetsu.android.common.consts.*
 import app.shosetsu.android.common.enums.TextAsset
@@ -96,14 +97,16 @@ class AboutController : ShosetsuController() {
 	private fun onClickLicense() {
 		findNavController().navigate(
 			R.id.action_aboutController_to_textAssetReader,
-			TextAsset.LICENSE.bundle
+			TextAsset.LICENSE.bundle,
+			navOptions = NavOptions.Builder().setLaunchSingleTop(true).build()
 		)
 	}
 
 	private fun onClickDisclaimer() {
 		findNavController().navigate(
 			R.id.action_aboutController_to_textAssetReader,
-			TextAsset.DISCLAIMER.bundle
+			TextAsset.DISCLAIMER.bundle,
+			navOptions = NavOptions.Builder().setLaunchSingleTop(true).build()
 		)
 	}
 

@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
@@ -155,7 +156,8 @@ class BrowseController : ShosetsuController(),
 		viewModel.resetSearch()
 		findNavController().navigate(
 			R.id.action_browseController_to_configureExtension,
-			(bundleOf(BUNDLE_EXTENSION to entity.id))
+			bundleOf(BUNDLE_EXTENSION to entity.id),
+			navOptions = NavOptions.Builder().setLaunchSingleTop(true).build()
 		)
 	}
 
@@ -167,11 +169,10 @@ class BrowseController : ShosetsuController(),
 				viewModel.resetSearch()
 				findNavController().navigate(
 					R.id.action_browseController_to_catalogController,
-					(
-							bundleOf(
-								BUNDLE_EXTENSION to entity.id
-							)
-							)
+					bundleOf(
+						BUNDLE_EXTENSION to entity.id
+					),
+					navOptions = NavOptions.Builder().setLaunchSingleTop(true).build()
 				)
 			} else makeSnackBar(R.string.controller_browse_snackbar_not_installed)?.setAction(
 				R.string.install

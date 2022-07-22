@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import app.shosetsu.android.common.ext.makeSnackBar
 import app.shosetsu.android.view.compose.ShosetsuCompose
@@ -71,8 +72,12 @@ class ComposeMoreController
 					{
 						makeSnackBar(R.string.style_wait)?.show()
 					}
-				) {
-					findNavController().navigate(it)
+				) { it, singleTop ->
+					findNavController().navigate(
+						it,
+						null,
+						navOptions = NavOptions.Builder().setLaunchSingleTop(singleTop).build()
+					)
 				}
 			}
 		}
@@ -112,13 +117,13 @@ fun MoreItemContent(
 @Preview
 @Composable
 fun PreviewMoreContent() {
-	MoreContent({}) { }
+	MoreContent({}) { id, singleTop -> }
 }
 
 @Composable
 fun MoreContent(
 	showStyleBar: () -> Unit,
-	pushController: (Int) -> Unit
+	pushController: (Int, singleTop: Boolean) -> Unit
 ) {
 	Column(
 		modifier = Modifier
@@ -144,19 +149,19 @@ fun MoreContent(
 		) {
 			item {
 				MoreItemContent(R.string.downloads, R.drawable.download) {
-					pushController(R.id.action_moreController_to_downloadsController)
+					pushController(R.id.action_moreController_to_downloadsController, true)
 				}
 			}
 
 			item {
 				MoreItemContent(R.string.backup, R.drawable.restore) {
-					pushController(R.id.action_moreController_to_backupSettings)
+					pushController(R.id.action_moreController_to_backupSettings, true)
 				}
 			}
 
 			item {
 				MoreItemContent(R.string.repositories, R.drawable.add_shopping_cart) {
-					pushController(R.id.action_moreController_to_repositoryController)
+					pushController(R.id.action_moreController_to_repositoryController, true)
 				}
 			}
 
@@ -168,19 +173,19 @@ fun MoreContent(
 
 			item {
 				MoreItemContent(R.string.qr_code_scan, R.drawable.ic_baseline_qr_code_scanner_24) {
-					pushController(R.id.action_moreController_to_addShareController)
+					pushController(R.id.action_moreController_to_addShareController, true)
 				}
 			}
 
 			item {
 				MoreItemContent(R.string.settings, R.drawable.settings) {
-					pushController(R.id.action_moreController_to_settingsController)
+					pushController(R.id.action_moreController_to_settingsController, false)
 				}
 			}
 
 			item {
 				MoreItemContent(R.string.about, R.drawable.info_outline) {
-					pushController(R.id.action_moreController_to_aboutController)
+					pushController(R.id.action_moreController_to_aboutController, false)
 				}
 			}
 

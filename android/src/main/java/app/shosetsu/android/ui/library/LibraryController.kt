@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.SettingKey
@@ -119,7 +120,8 @@ class LibraryController
 						onOpen = { item ->
 							findNavController().navigate(
 								R.id.action_libraryController_to_novelController,
-								bundleOf(BundleKeys.BUNDLE_NOVEL_ID to item.id)
+								bundleOf(BundleKeys.BUNDLE_NOVEL_ID to item.id),
+								navOptions = NavOptions.Builder().setLaunchSingleTop(true).build()
 							)
 						},
 						toggleSelection = { item ->
