@@ -23,8 +23,10 @@ import app.shosetsu.android.domain.model.local.StrippedBookmarkedNovelEntity
 import app.shosetsu.android.domain.model.local.StrippedNovelEntity
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
+import app.shosetsu.lib.exceptions.HTTPException
 import kotlinx.coroutines.flow.Flow
 import org.luaj.vm2.LuaError
+import java.io.IOException
 import javax.net.ssl.SSLException
 
 
@@ -102,7 +104,7 @@ interface INovelsRepository {
 	/**
 	 * Retrieves NovelInfo from it's source
 	 */
-	@Throws(LuaError::class)
+	@Throws(HTTPException::class, IOException::class, LuaError::class)
 	suspend fun retrieveNovelInfo(
 		extension: IExtension,
 		novelEntity: NovelEntity,

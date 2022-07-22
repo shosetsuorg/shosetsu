@@ -8,7 +8,9 @@ import app.shosetsu.android.domain.model.local.UpdateEntity
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.domain.repository.base.IUpdatesRepository
+import app.shosetsu.lib.exceptions.HTTPException
 import org.luaj.vm2.LuaError
+import java.io.IOException
 
 /*
  * This file is part of shosetsu.
@@ -46,7 +48,13 @@ class GetRemoteNovelUseCase(
 		val updatedChapters: List<ChapterEntity> = listOf()
 	)
 
-	@Throws(SQLiteException::class, IndexOutOfBoundsException::class, LuaError::class)
+	@Throws(
+		SQLiteException::class,
+		IndexOutOfBoundsException::class,
+		HTTPException::class,
+		IOException::class,
+		LuaError::class
+	)
 	private suspend fun main(
 		novel: NovelEntity,
 		loadChapters: Boolean = true,
@@ -95,7 +103,13 @@ class GetRemoteNovelUseCase(
 		}
 	}
 
-	@Throws(SQLiteException::class, IndexOutOfBoundsException::class, LuaError::class)
+	@Throws(
+		SQLiteException::class,
+		IndexOutOfBoundsException::class,
+		HTTPException::class,
+		IOException::class,
+		LuaError::class
+	)
 	suspend operator fun invoke(
 		novel: NovelEntity,
 		loadChapters: Boolean = true,
@@ -104,7 +118,13 @@ class GetRemoteNovelUseCase(
 		loadChapters = loadChapters
 	)
 
-	@Throws(SQLiteException::class, IndexOutOfBoundsException::class, LuaError::class)
+	@Throws(
+		SQLiteException::class,
+		IndexOutOfBoundsException::class,
+		HTTPException::class,
+		IOException::class,
+		LuaError::class
+	)
 	suspend operator fun invoke(
 		novelID: Int,
 		loadChapters: Boolean = true,

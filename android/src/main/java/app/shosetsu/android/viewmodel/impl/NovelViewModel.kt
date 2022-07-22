@@ -417,14 +417,19 @@ class NovelViewModel(
 	override fun refresh(): Flow<Unit> =
 		flow {
 			_isRefreshing.emit(true)
+			val t: Throwable? = null
 			try {
 				loadRemoteNovel(novelIDLive.value, true)?.let {
 					startDownloadWorkerAfterUpdateUseCase(it.updatedChapters)
 				}
+			} catch (t: Throwable) {
+
 			} finally {
 				emit(Unit)
 				_isRefreshing.emit(false)
 			}
+			if (t != null)
+				throw t
 		}.onIO()
 
 	override fun setNovelID(novelID: Int) {

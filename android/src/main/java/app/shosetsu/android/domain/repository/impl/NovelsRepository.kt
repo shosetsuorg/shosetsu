@@ -13,9 +13,11 @@ import app.shosetsu.android.domain.model.local.StrippedNovelEntity
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.lib.IExtension
 import app.shosetsu.lib.Novel
+import app.shosetsu.lib.exceptions.HTTPException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import org.luaj.vm2.LuaError
+import java.io.IOException
 import javax.net.ssl.SSLException
 
 /*
@@ -113,7 +115,7 @@ class NovelsRepository(
 		onIO { database.update(list) }
 	}
 
-	@Throws(LuaError::class)
+	@Throws(HTTPException::class, IOException::class, LuaError::class)
 	override suspend fun retrieveNovelInfo(
 		extension: IExtension,
 		novelEntity: NovelEntity,

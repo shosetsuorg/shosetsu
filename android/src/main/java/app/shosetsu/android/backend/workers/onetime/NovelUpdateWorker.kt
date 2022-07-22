@@ -41,6 +41,7 @@ import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
+import org.luaj.vm2.LuaError
 import java.io.IOException
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -174,6 +175,25 @@ class NovelUpdateWorker(
 
 				val it = try {
 					loadRemoteNovelUseCase(nE, true)
+				} catch (e: LuaError) {
+					logE("Failed to load novel: $nE", e)
+					notify(
+						"${e.message}",
+						10000 + nE.id!!
+					) {
+						setContentTitle(
+							getString(
+								R.string.worker_novel_update_load_failure,
+								nE.title
+							)
+						)
+
+						setNotOngoing()
+						removeProgress()
+						addCancelAction()
+						this.priority = NotificationCompat.PRIORITY_HIGH
+					}
+					continue
 				} catch (e: HTTPException) {
 					logE("Failed to load novel: $nE", e)
 					notify(
