@@ -344,6 +344,7 @@ class CatalogController : ShosetsuController(), ExtendedFABController, MenuProvi
 	override fun manipulateFAB(fab: EFabMaintainer) {
 		this.fab = fab
 		fab.setIconResource(R.drawable.filter)
+		fab.setText(R.string.filter)
 		fab.setOnClickListener {
 			//bottomMenuRetriever.invoke()?.show()
 			if (bsg == null)
