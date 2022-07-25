@@ -56,7 +56,7 @@ import com.github.doomsdayrs.apps.shosetsu.R
  * Shosetsu
  * 13 / 07 / 2019
  */
-class BackupSettings : ShosetsuController() {
+class BackupFragment : ShosetsuController() {
 	override val viewTitleRes: Int = R.string.controller_backup_title
 
 	val viewModel: ABackupSettingsViewModel by viewModel()

@@ -48,7 +48,7 @@
     </fragment>
     <fragment
         android:id="@+id/backupSettings"
-        android:name="app.shosetsu.android.ui.backup.BackupSettings"
+        android:name="app.shosetsu.android.ui.backup.BackupFragment"
         android:label="BackupSettings">
         <action
             android:id="@+id/action_backupSettings_to_moreController"
