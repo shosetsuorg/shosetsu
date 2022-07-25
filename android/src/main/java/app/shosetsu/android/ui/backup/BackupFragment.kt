@@ -264,7 +264,12 @@ fun BackupSettingsContent(
 						isDialogShowing = false
 					},
 					buttons = {
-						Row {
+						Row(
+							modifier = Modifier
+								.fillMaxWidth()
+								.padding(8.dp),
+							horizontalArrangement = Arrangement.SpaceEvenly
+						) {
 							TextButton(onClick = {
 								// Open file selector
 								performFileSelection()
@@ -282,8 +287,18 @@ fun BackupSettingsContent(
 						}
 					},
 					title = {
-						Text(stringResource(R.string.settings_backup_alert_select_location_title))
-					}
+						Text(
+							stringResource(R.string.settings_backup_alert_select_location_title),
+							style = MaterialTheme.typography.h6,
+							modifier = Modifier.padding(
+								bottom = 16.dp,
+								top = 8.dp,
+								start = 24.dp,
+								end = 24.dp
+							)
+						)
+					},
+					modifier = Modifier.padding(8.dp)
 				)
 		}
 
