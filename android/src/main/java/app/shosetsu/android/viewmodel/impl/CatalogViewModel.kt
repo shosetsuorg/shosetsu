@@ -159,6 +159,10 @@ class CatalogViewModel(
 		}.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Eagerly, 1)
 	}
 
+	override val hasFilters: Flow<Boolean> by lazy {
+		iExtensionFlow.mapLatest { it?.searchFiltersModel?.isNotEmpty() ?: false }
+	}
+
 	override val hasSearchLive: Flow<Boolean> by lazy {
 		iExtensionFlow.mapLatest { it?.hasSearch ?: false }.onIO()
 	}

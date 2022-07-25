@@ -45,6 +45,7 @@ abstract class ACatalogViewModel :
 	 * The list of items that will be presented as the filter menu
 	 */
 	abstract val filterItemsLive: Flow<List<Filter<*>>>
+	abstract val hasFilters: Flow<Boolean>
 
 	/**
 	 * enable or disable searching

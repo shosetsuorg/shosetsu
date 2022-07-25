@@ -103,6 +103,7 @@ class CatalogController : ShosetsuController(), ExtendedFABController, MenuProvi
 					val items = viewModel.itemsLive.collectAsLazyPagingItems()
 
 					val exception by viewModel.exceptionFlow.collectAsState(null)
+					val hasFilters by viewModel.hasFilters.collectAsState(false)
 
 					if (exception != null)
 						LaunchedEffect(Unit) {
@@ -159,6 +160,7 @@ class CatalogController : ShosetsuController(), ExtendedFABController, MenuProvi
 						onLongClick = {
 							itemLongClicked(it)
 						},
+						hasFilters = hasFilters,
 						fab
 					)
 				}
@@ -379,6 +381,13 @@ class CatalogController : ShosetsuController(), ExtendedFABController, MenuProvi
 				}?.show()
 			}
 		}
+		viewModel.hasFilters.collectLatestLA(this, catch = {}) {
+			if (it)
+				fab.show()
+			else {
+				fab.hide()
+			}
+		}
 	}
 }
 
@@ -390,6 +399,7 @@ fun CatalogContent(
 	columnsInH: Int,
 	onClick: (ACatalogNovelUI) -> Unit,
 	onLongClick: (ACatalogNovelUI) -> Unit,
+	hasFilters: Boolean,
 	fab: EFabMaintainer
 ) {
 	Column(
@@ -427,7 +437,8 @@ fun CatalogContent(
 				}).dp - 8.dp
 
 			val state = rememberLazyGridState()
-			syncFABWithCompose(state, fab)
+			if (hasFilters)
+				syncFABWithCompose(state, fab)
 			LazyVerticalGrid(
 				columns = GridCells.Adaptive(if (cardType != COMPRESSED) size else 400.dp),
 				contentPadding = PaddingValues(
