@@ -110,7 +110,8 @@ fun ReaderSettingsContent(
 ) {
 
 	LazyColumn(
-		contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 64.dp)
+		contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 64.dp),
+		verticalArrangement = Arrangement.spacedBy(8.dp)
 	) {
 		//TODO Text Preview at top
 
@@ -124,8 +125,7 @@ fun ReaderSettingsContent(
 				description = stringResource(R.string.settings_reader_text_alignment_desc),
 				choices = stringArrayResource(R.array.text_alignments),
 				modifier = Modifier
-					.fillMaxWidth()
-					.padding(bottom = 8.dp),
+					.fillMaxWidth(),
 				repo = viewModel.settingsRepo,
 				ReaderTextAlignment
 			)
@@ -147,11 +147,11 @@ fun ReaderSettingsContent(
 				val themes by viewModel.getReaderThemes().collectAsState(listOf())
 
 				LazyRow(
-					contentPadding = PaddingValues(16.dp)
+					contentPadding = PaddingValues(16.dp),
+					horizontalArrangement = Arrangement.spacedBy(8.dp)
 				) {
 					items(themes, key = { it.id }) { themeItem ->
 						Card(
-							modifier = Modifier.padding(8.dp),
 							border = if (themeItem.isSelected) BorderStroke(
 								SELECTED_STROKE_WIDTH.dp,
 								MaterialTheme.colors.secondary
@@ -184,7 +184,6 @@ fun ReaderSettingsContent(
 
 					item {
 						Card(
-							modifier = Modifier.padding(8.dp),
 							onClick = {
 								showStyleAddSnackBar()
 							}
@@ -224,7 +223,6 @@ fun ReaderSettingsContent(
 				ReaderMarkReadAsReading,
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -238,7 +236,6 @@ fun ReaderSettingsContent(
 				onClick = openHTMLEditor,
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -275,7 +272,6 @@ fun ReaderSettingsContent(
 				},
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -287,7 +283,6 @@ fun ReaderSettingsContent(
 				ChaptersResumeFirstUnread,
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -299,7 +294,6 @@ fun ReaderSettingsContent(
 				ReaderKeepScreenOn,
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(bottom = 8.dp)
 			)
 		}
 

@@ -129,7 +129,8 @@ fun ChapterReaderBottomSheetContent(
 	}
 
 	LazyColumn(
-		contentPadding = PaddingValues(16.dp)
+		contentPadding = PaddingValues(16.dp),
+		verticalArrangement = Arrangement.spacedBy(8.dp)
 	) {
 		item {
 			GenericBottomSettingLayout(
