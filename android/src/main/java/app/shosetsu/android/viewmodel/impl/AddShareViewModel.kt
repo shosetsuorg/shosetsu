@@ -152,6 +152,7 @@ class AddShareViewModel(
 									ext
 								)
 
+								logI("Checking if repository is present")
 								repoEntity = try {
 									repoRepo.loadRepositories().find {
 										val entityUrl = it.url.toHttpUrl().toUri().normalize()
@@ -166,12 +167,14 @@ class AddShareViewModel(
 									null
 								}
 
+								logI("Checking if extension is installed")
 								extEntity = try {
 									extRepo.getInstalledExtension(ext.id)
 								} catch (e: SQLiteException) {
 									null
 								}
 
+								logI("Checking for matching novel in database")
 								novelEntity = novelRepo.loadNovels().find { entity ->
 									val contentUrl =
 										try {
