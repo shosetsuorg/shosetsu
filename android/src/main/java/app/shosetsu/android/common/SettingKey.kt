@@ -245,7 +245,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	/**
 	 * Automatically bookmark a novel when scanned via a QR code
 	 */
-	object AutoBookmarkFromQR : BooleanKey("bookmark_from_qr", false)
+	object AutoBookmarkFromQR : BooleanKey("bookmark_from_qr2", true)
 
 	object AppTheme : IntKey("selectedAppTheme", 0)
 
