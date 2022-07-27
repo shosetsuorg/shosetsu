@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -70,12 +70,12 @@ class UpdateSettings : ShosetsuController() {
 @Composable
 fun UpdateSettingsContent(viewModel: AUpdateSettingsViewModel) {
 	LazyColumn(
-		contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 64.dp, top = 16.dp)
+		contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 64.dp, top = 16.dp),
+		verticalArrangement = Arrangement.spacedBy(8.dp)
 	) {
 		item {
 			HeaderSettingContent(
 				stringResource(R.string.settings_update_header_novel),
-				modifier = Modifier.padding(bottom = 8.dp)
 			)
 		}
 
@@ -99,7 +99,6 @@ fun UpdateSettingsContent(viewModel: AUpdateSettingsViewModel) {
 				},
 				repo = viewModel.settingsRepo,
 				key = SettingKey.NovelUpdateCycle,
-				modifier = Modifier.padding(bottom = 8.dp),
 				haveSteps = false,
 				manipulateUpdate = {
 					when (it) {
@@ -129,7 +128,6 @@ fun UpdateSettingsContent(viewModel: AUpdateSettingsViewModel) {
 				viewModel.settingsRepo,
 				SettingKey.DownloadNewNovelChapters,
 				modifier = Modifier
-					.padding(bottom = 8.dp)
 					.fillMaxWidth()
 			)
 		}
@@ -141,7 +139,6 @@ fun UpdateSettingsContent(viewModel: AUpdateSettingsViewModel) {
 				viewModel.settingsRepo,
 				SettingKey.OnlyUpdateOngoingNovels,
 				modifier = Modifier
-					.padding(bottom = 8.dp)
 					.fillMaxWidth()
 			)
 		}
@@ -152,7 +149,6 @@ fun UpdateSettingsContent(viewModel: AUpdateSettingsViewModel) {
 				viewModel.settingsRepo,
 				SettingKey.NovelUpdateOnMeteredConnection,
 				modifier = Modifier
-					.padding(bottom = 8.dp)
 					.fillMaxWidth()
 			)
 		}
@@ -163,7 +159,6 @@ fun UpdateSettingsContent(viewModel: AUpdateSettingsViewModel) {
 				viewModel.settingsRepo,
 				SettingKey.NovelUpdateOnLowBattery,
 				modifier = Modifier
-					.padding(bottom = 8.dp)
 					.fillMaxWidth()
 			)
 		}
@@ -174,7 +169,6 @@ fun UpdateSettingsContent(viewModel: AUpdateSettingsViewModel) {
 				viewModel.settingsRepo,
 				SettingKey.NovelUpdateOnLowStorage,
 				modifier = Modifier
-					.padding(bottom = 8.dp)
 					.fillMaxWidth()
 			)
 		}
@@ -186,7 +180,6 @@ fun UpdateSettingsContent(viewModel: AUpdateSettingsViewModel) {
 					viewModel.settingsRepo,
 					SettingKey.NovelUpdateOnlyWhenIdle,
 					modifier = Modifier
-						.padding(bottom = 8.dp)
 						.fillMaxWidth()
 				)
 			}
@@ -198,7 +191,6 @@ fun UpdateSettingsContent(viewModel: AUpdateSettingsViewModel) {
 				viewModel.settingsRepo,
 				SettingKey.UpdateNotificationStyle,
 				modifier = Modifier
-					.padding(bottom = 8.dp)
 					.fillMaxWidth()
 			)
 		}
@@ -210,7 +202,6 @@ fun UpdateSettingsContent(viewModel: AUpdateSettingsViewModel) {
 				viewModel.settingsRepo,
 				SettingKey.NovelUpdateShowProgress,
 				modifier = Modifier
-					.padding(bottom = 8.dp)
 					.fillMaxWidth()
 			)
 		}
@@ -222,14 +213,12 @@ fun UpdateSettingsContent(viewModel: AUpdateSettingsViewModel) {
 				viewModel.settingsRepo,
 				SettingKey.NovelUpdateClassicFinish,
 				modifier = Modifier
-					.padding(bottom = 8.dp)
 					.fillMaxWidth()
 			)
 		}
 		item {
 			HeaderSettingContent(
-				stringResource(R.string.settings_update_header_repositories),
-				modifier = Modifier.padding(bottom = 8.dp)
+				stringResource(R.string.settings_update_header_repositories)
 			)
 		}
 
@@ -240,7 +229,6 @@ fun UpdateSettingsContent(viewModel: AUpdateSettingsViewModel) {
 				viewModel.settingsRepo,
 				SettingKey.RepoUpdateOnMeteredConnection,
 				modifier = Modifier
-					.padding(bottom = 8.dp)
 					.fillMaxWidth()
 			)
 		}
@@ -251,7 +239,6 @@ fun UpdateSettingsContent(viewModel: AUpdateSettingsViewModel) {
 				viewModel.settingsRepo,
 				SettingKey.RepoUpdateOnLowBattery,
 				modifier = Modifier
-					.padding(bottom = 8.dp)
 					.fillMaxWidth()
 			)
 		}
@@ -262,7 +249,6 @@ fun UpdateSettingsContent(viewModel: AUpdateSettingsViewModel) {
 				viewModel.settingsRepo,
 				SettingKey.RepoUpdateOnLowStorage,
 				modifier = Modifier
-					.padding(bottom = 8.dp)
 					.fillMaxWidth()
 			)
 		}

@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
@@ -92,7 +92,8 @@ fun ViewSettingsContent(viewModel: AViewSettingsViewModel, finishActivity: () ->
 			start = 16.dp,
 			end = 16.dp,
 			bottom = 64.dp
-		)
+		),
+		verticalArrangement = Arrangement.spacedBy(8.dp)
 	) {
 
 		item {
@@ -104,7 +105,6 @@ fun ViewSettingsContent(viewModel: AViewSettingsViewModel, finishActivity: () ->
 				key = ChapterColumnsInPortait,
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -117,7 +117,6 @@ fun ViewSettingsContent(viewModel: AViewSettingsViewModel, finishActivity: () ->
 				key = ChapterColumnsInLandscape,
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -130,7 +129,6 @@ fun ViewSettingsContent(viewModel: AViewSettingsViewModel, finishActivity: () ->
 				key = SelectedNovelCardType,
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(bottom = 8.dp)
 			)
 		}
 

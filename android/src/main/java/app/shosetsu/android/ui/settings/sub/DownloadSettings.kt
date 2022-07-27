@@ -7,9 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -125,7 +125,8 @@ fun DownloadSettingsContent(
 	performFileSearch: () -> Unit
 ) {
 	LazyColumn(
-		contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 64.dp)
+		contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 64.dp),
+		verticalArrangement = Arrangement.spacedBy(8.dp)
 	) {
 		item {
 			SliderSettingContent(
@@ -137,7 +138,6 @@ fun DownloadSettingsContent(
 				SettingKey.DownloadThreadPool,
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -151,7 +151,6 @@ fun DownloadSettingsContent(
 				SettingKey.DownloadExtThreads,
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -164,7 +163,6 @@ fun DownloadSettingsContent(
 				SettingKey.DownloadNewNovelChapters,
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -176,7 +174,6 @@ fun DownloadSettingsContent(
 				SettingKey.DownloadOnMeteredConnection,
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(bottom = 8.dp)
 			)
 		}
 		item {
@@ -187,7 +184,6 @@ fun DownloadSettingsContent(
 				SettingKey.DownloadOnLowBattery,
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(bottom = 8.dp)
 			)
 		}
 		item {
@@ -198,7 +194,6 @@ fun DownloadSettingsContent(
 				SettingKey.DownloadOnLowStorage,
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -211,7 +206,6 @@ fun DownloadSettingsContent(
 					SettingKey.DownloadOnlyWhenIdle,
 					modifier = Modifier
 						.fillMaxWidth()
-						.padding(bottom = 8.dp)
 				)
 			}
 
@@ -223,7 +217,6 @@ fun DownloadSettingsContent(
 				SettingKey.BookmarkOnDownload,
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(bottom = 8.dp)
 			)
 		}
 		item {
@@ -234,7 +227,6 @@ fun DownloadSettingsContent(
 				SettingKey.NotifyExtensionDownload,
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(bottom = 8.dp)
 			)
 		}
 
@@ -272,7 +264,6 @@ fun DownloadSettingsContent(
 				SettingKey.DownloadNotifyChapters,
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(bottom = 8.dp)
 			)
 		}
 	}

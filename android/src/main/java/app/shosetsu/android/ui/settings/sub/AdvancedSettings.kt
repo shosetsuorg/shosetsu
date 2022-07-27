@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -155,7 +155,8 @@ fun AdvancedSettingsContent(
 			start = 16.dp,
 			end = 16.dp,
 			bottom = 64.dp
-		)
+		),
+		verticalArrangement = Arrangement.spacedBy(8.dp)
 	) {
 		item {
 			val choice by viewModel.settingsRepo.getIntFlow(AppTheme)
@@ -166,8 +167,7 @@ fun AdvancedSettingsContent(
 				description = stringResource(R.string.settings_advanced_theme_desc),
 				choices = stringArrayResource(R.array.application_themes),
 				modifier = Modifier
-					.fillMaxWidth()
-					.padding(bottom = 8.dp),
+					.fillMaxWidth(),
 				selection = choice,
 				onSelection = onThemeSelected
 			)
@@ -179,8 +179,7 @@ fun AdvancedSettingsContent(
 				description = stringResource(R.string.settings_advanced_purge_novel_cache),
 				buttonText = stringResource(R.string.settings_advanced_purge_button),
 				modifier = Modifier
-					.fillMaxWidth()
-					.padding(bottom = 8.dp),
+					.fillMaxWidth(),
 				onClick = onPurgeNovelCache
 			)
 		}
@@ -190,8 +189,7 @@ fun AdvancedSettingsContent(
 				title = stringResource(R.string.settings_advanced_verify_checksum_title),
 				description = stringResource(R.string.settings_advanced_verify_checksum_desc),
 				modifier = Modifier
-					.fillMaxWidth()
-					.padding(bottom = 8.dp),
+					.fillMaxWidth(),
 				repo = viewModel.settingsRepo,
 				key = VerifyCheckSum
 			)
@@ -202,8 +200,7 @@ fun AdvancedSettingsContent(
 				title = stringResource(R.string.settings_advanced_require_double_back_title),
 				description = stringResource(R.string.settings_advanced_require_double_back_desc),
 				modifier = Modifier
-					.fillMaxWidth()
-					.padding(bottom = 8.dp),
+					.fillMaxWidth(),
 				repo = viewModel.settingsRepo,
 				key = RequireDoubleBackToExit
 			)
@@ -215,8 +212,7 @@ fun AdvancedSettingsContent(
 				description = stringResource(R.string.settings_advanced_kill_cycle_workers_desc),
 				buttonText = stringResource(R.string.settings_advanced_kill_cycle_workers_button),
 				modifier = Modifier
-					.fillMaxWidth()
-					.padding(bottom = 8.dp),
+					.fillMaxWidth(),
 				onClick = onKillCycleWorkers
 			)
 		}
@@ -227,8 +223,7 @@ fun AdvancedSettingsContent(
 				description = stringResource(R.string.settings_advanced_force_repo_update_desc),
 				buttonText = stringResource(R.string.force),
 				modifier = Modifier
-					.fillMaxWidth()
-					.padding(bottom = 8.dp),
+					.fillMaxWidth(),
 				onClick = onForceRepoSync
 			)
 		}
@@ -239,8 +234,7 @@ fun AdvancedSettingsContent(
 				description = stringResource(R.string.settings_advanced_clear_cookies_desc),
 				buttonText = stringResource(R.string.settings_advanced_clear_cookies_button),
 				modifier = Modifier
-					.fillMaxWidth()
-					.padding(bottom = 8.dp),
+					.fillMaxWidth(),
 				onClick = onClearCookies
 			)
 		}
@@ -250,8 +244,7 @@ fun AdvancedSettingsContent(
 				title = stringResource(R.string.settings_advanced_true_chapter_delete_title),
 				description = stringResource(R.string.settings_advanced_true_chapter_delete_desc),
 				modifier = Modifier
-					.fillMaxWidth()
-					.padding(bottom = 8.dp),
+					.fillMaxWidth(),
 				repo = viewModel.settingsRepo,
 				key = ExposeTrueChapterDelete
 			)
@@ -262,8 +255,7 @@ fun AdvancedSettingsContent(
 				title = stringResource(R.string.settings_advanced_log_title),
 				description = stringResource(R.string.settings_advanced_log_desc),
 				modifier = Modifier
-					.fillMaxWidth()
-					.padding(bottom = 8.dp),
+					.fillMaxWidth(),
 				repo = viewModel.settingsRepo,
 				key = LogToFile
 			)
@@ -274,8 +266,7 @@ fun AdvancedSettingsContent(
 				title = stringResource(R.string.settings_advanced_auto_bookmark_title),
 				description = stringResource(R.string.settings_advanced_auto_bookmark_desc),
 				modifier = Modifier
-					.fillMaxWidth()
-					.padding(bottom = 8.dp),
+					.fillMaxWidth(),
 				repo = viewModel.settingsRepo,
 				key = AutoBookmarkFromQR
 			)
