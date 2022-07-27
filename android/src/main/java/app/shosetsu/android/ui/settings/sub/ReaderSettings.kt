@@ -247,15 +247,7 @@ fun ReaderSettingsContent(
 		}
 
 		item {
-			SwitchSettingContent(
-				stringResource(R.string.settings_reader_title_continous_scroll),
-				stringResource(R.string.settings_reader_desc_continous_scroll),
-				viewModel.settingsRepo,
-				ReaderContinuousScroll,
-				modifier = Modifier
-					.fillMaxWidth()
-					.padding(bottom = 8.dp)
-			)
+			//viewModel.continuousScrollOption()
 		}
 
 		item {
