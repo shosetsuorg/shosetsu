@@ -34,9 +34,6 @@
         <action
             android:id="@+id/action_addShareController_to_moreController"
             app:destination="@id/moreController" />
-        <action
-            android:id="@+id/action_addShareController_to_novelController"
-            app:destination="@id/novelController" />
     </fragment>
     <fragment
         android:id="@+id/advancedSettings"
@@ -228,6 +225,9 @@
         <action
             android:id="@+id/action_moreController_to_libraryController"
             app:destination="@id/libraryController" />
+        <action
+            android:id="@+id/action_moreController_to_novelController"
+            app:destination="@id/novelController" />
     </fragment>
     <fragment
         android:id="@+id/settingsController"

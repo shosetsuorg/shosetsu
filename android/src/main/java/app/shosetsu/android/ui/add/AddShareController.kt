@@ -137,7 +137,7 @@ class AddShareController : ShosetsuController(), CollapsedToolBarController {
 
 						if (entity != null) {
 							findNavController().navigate(
-								R.id.action_addShareController_to_novelController,
+								R.id.action_moreController_to_novelController,
 								bundleOf(BundleKeys.BUNDLE_NOVEL_ID to entity.id),
 								navOptions {
 									setShosetsuTransition()
