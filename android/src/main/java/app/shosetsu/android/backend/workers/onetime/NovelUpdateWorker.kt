@@ -1,6 +1,7 @@
 package app.shosetsu.android.backend.workers.onetime
 
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -11,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.EXTRA_NOTIFICATION_ID
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.os.bundleOf
 import androidx.work.*
 import androidx.work.ExistingWorkPolicy.REPLACE
 import androidx.work.NetworkType.CONNECTED
@@ -19,6 +21,7 @@ import app.shosetsu.android.backend.receivers.NotificationBroadcastReceiver
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
 import app.shosetsu.android.common.SettingKey.*
+import app.shosetsu.android.common.consts.BundleKeys
 import app.shosetsu.android.common.consts.LogConstants
 import app.shosetsu.android.common.consts.LogConstants.SERVICE_EXECUTE
 import app.shosetsu.android.common.consts.Notifications.CHANNEL_UPDATE
@@ -31,6 +34,7 @@ import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerAfterUpdateUseCase
 import app.shosetsu.android.domain.usecases.get.GetRemoteNovelUseCase
+import app.shosetsu.android.ui.reader.ChapterReader
 import app.shosetsu.lib.Novel
 import app.shosetsu.lib.exceptions.HTTPException
 import coil.imageLoader
@@ -288,7 +292,9 @@ class NovelUpdateWorker(
 		if (!classicFinale())
 			for (novel in updateNovels) {
 				launchIO { // Run each novel notification on it's own seperate thread
-					val chapterSize: Int = updatedChapters.filter { it.novelID == novel.id }.size
+					val uniqueChapters = updatedChapters.filter { it.novelID == novel.id }
+					val chapterSize: Int = uniqueChapters.size
+					val firstChapterId = uniqueChapters.minByOrNull { it.order }?.id
 					val bitmap: Bitmap? =
 						applicationContext.imageLoader.execute(
 							ImageRequest.Builder(applicationContext).data(novel.imageURL)
@@ -315,6 +321,15 @@ class NovelUpdateWorker(
 
 						setNotOngoing()
 						removeProgress()
+
+						if (firstChapterId != null) {
+							addOpenReader(
+								novel.id ?: return@notify,
+								firstChapterId
+							)
+							setAutoCancel(true)
+						}
+
 					}
 				}
 			}
@@ -324,6 +339,27 @@ class NovelUpdateWorker(
 			startDownloadWorker(updatedChapters)
 
 		return Result.success()
+	}
+
+	/**
+	 * Set the content intent of the notification to open up the chapter reader.
+	 */
+	private fun NotificationCompat.Builder.addOpenReader(novelId: Int, chapterId: Int) {
+		setContentIntent(
+			PendingIntent.getActivity(
+				applicationContext,
+				0,
+				intent(applicationContext, ChapterReader::class.java) {
+					bundleOf(
+						BundleKeys.BUNDLE_CHAPTER_ID to chapterId,
+						BundleKeys.BUNDLE_NOVEL_ID to novelId
+					)
+				},
+				(
+						if (SDK_INT >= VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
+						) or FLAG_UPDATE_CURRENT
+			)
+		)
 	}
 
 	/**
