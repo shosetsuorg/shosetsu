@@ -1,10 +1,15 @@
 package app.shosetsu.android.domain.usecases.load
 
+import app.shosetsu.android.common.utils.uifactory.mapLatestToResultFlowWithFactory
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
 import app.shosetsu.android.domain.repository.base.IUpdatesRepository
+import app.shosetsu.android.dto.convertList
+import app.shosetsu.android.view.uimodels.model.UpdatesUI
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -30,9 +35,11 @@ import kotlinx.coroutines.flow.flow
 class LoadUpdatesUseCase(
 	private val updatesRepository: IUpdatesRepository,
 ) {
-	operator fun invoke(): Flow<List<UpdateCompleteEntity>> = flow {
+	@OptIn(ExperimentalCoroutinesApi::class)
+	operator fun invoke(): Flow<List<UpdatesUI>> = flow {
 		emitAll(
-			updatesRepository.getCompleteUpdatesFlow()
+			updatesRepository.getCompleteUpdatesFlow().mapLatestToResultFlowWithFactory()
+				.mapLatest { it.convertList() }
 		)
 	}
 }

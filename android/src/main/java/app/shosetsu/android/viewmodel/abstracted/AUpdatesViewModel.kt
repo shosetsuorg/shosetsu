@@ -2,6 +2,7 @@ package app.shosetsu.android.viewmodel.abstracted
 
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.domain.model.local.UpdateCompleteEntity
+import app.shosetsu.android.view.uimodels.model.UpdatesUI
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.StartUpdateManagerViewModel
@@ -35,10 +36,10 @@ import org.joda.time.DateTime
  */
 abstract class AUpdatesViewModel
 	: ShosetsuViewModel(),
-	SubscribeViewModel<Map<DateTime, List<UpdateCompleteEntity>>>,
+	SubscribeViewModel<Map<DateTime, List<UpdatesUI>>>,
 	StartUpdateManagerViewModel, IsOnlineCheckViewModel {
 
 	abstract val isRefreshing: Flow<Boolean>
 
-	abstract suspend fun updateChapter(updateUI: UpdateCompleteEntity, readingStatus: ReadingStatus)
+	abstract suspend fun updateChapter(updateUI: UpdatesUI, readingStatus: ReadingStatus)
 }

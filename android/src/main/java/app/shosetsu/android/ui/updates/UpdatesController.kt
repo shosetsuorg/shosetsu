@@ -16,11 +16,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,6 +39,7 @@ import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.HomeFragment
+import app.shosetsu.android.view.uimodels.model.UpdatesUI
 import app.shosetsu.android.viewmodel.abstracted.AUpdatesViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -82,7 +85,7 @@ class ComposeUpdatesController : ShosetsuController(), HomeFragment {
 		setViewTitle()
 		setContent {
 			ShosetsuCompose {
-				val items: Map<DateTime, List<UpdateCompleteEntity>> by viewModel.liveData.collectAsState(
+				val items: Map<DateTime, List<UpdatesUI>> by viewModel.liveData.collectAsState(
 					emptyMap()
 				)
 				val isRefreshing by viewModel.isRefreshing.collectAsState(false)
@@ -108,10 +111,10 @@ class ComposeUpdatesController : ShosetsuController(), HomeFragment {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UpdatesContent(
-	items: Map<DateTime, List<UpdateCompleteEntity>>,
+	items: Map<DateTime, List<UpdatesUI>>,
 	isRefreshing: Boolean,
 	onRefresh: () -> Unit,
-	openChapter: (UpdateCompleteEntity) -> Unit
+	openChapter: (UpdatesUI) -> Unit
 ) {
 	SwipeRefresh(
 		state = SwipeRefreshState(isRefreshing),
@@ -160,7 +163,7 @@ fun PreviewUpdateHeaderItemContent() {
 @Composable
 fun PreviewUpdateItemContent() {
 	UpdateItemContent(
-		UpdateCompleteEntity(
+		UpdatesUI(
 			1,
 			1,
 			System.currentTimeMillis(),
@@ -175,7 +178,7 @@ fun PreviewUpdateItemContent() {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun UpdateItemContent(updateUI: UpdateCompleteEntity, onClick: () -> Unit) {
+fun UpdateItemContent(updateUI: UpdatesUI, onClick: () -> Unit) {
 	Card(
 		modifier = Modifier
 			.fillMaxWidth()
@@ -216,7 +219,7 @@ fun UpdateItemContent(updateUI: UpdateCompleteEntity, onClick: () -> Unit) {
 					modifier = Modifier.alpha(.75f)
 				)
 				Text(
-					DateFormat.format("hh:mm", Date(updateUI.time)).toString(),
+					updateUI.displayTime,
 					fontSize = 12.sp,
 					maxLines = 1,
 					modifier = Modifier.alpha(.5f)
@@ -233,12 +236,15 @@ fun UpdateHeaderItemContent(dateTime: DateTime) {
 		shape = RectangleShape,
 		elevation = 2.dp
 	) {
-		val text = when (dateTime) {
-			DateTime(System.currentTimeMillis()).trimDate() ->
-				stringResource(R.string.today)
-			DateTime(System.currentTimeMillis()).trimDate().minusDays(1) ->
-				stringResource(R.string.yesterday)
-			else -> "${dateTime.dayOfMonth}/${dateTime.monthOfYear}/${dateTime.year}"
+		val context = LocalContext.current
+		val text = remember(dateTime, context) {
+			when (dateTime) {
+				DateTime(System.currentTimeMillis()).trimDate() ->
+					context.getString(R.string.today)
+				DateTime(System.currentTimeMillis()).trimDate().minusDays(1) ->
+					context.getString(R.string.yesterday)
+				else -> "${dateTime.dayOfMonth}/${dateTime.monthOfYear}/${dateTime.year}"
+			}
 		}
 		Text(
 			text, modifier = Modifier
