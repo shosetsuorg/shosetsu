@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
  */
 class TempChapterHistoryRepository : IChapterHistoryRepository {
 	private val chapterHistory: MutableStateFlow<List<ChapterHistoryEntity>> by lazy {
-		MutableStateFlow(listOf())
+		MutableStateFlow(emptyList())
 	}
 
 	override fun markChapterAsRead(chapter: ChapterEntity) {

@@ -108,7 +108,7 @@ class NovelViewModel(
 		}.onIO()
 	}
 
-	private val selectedChapters = MutableStateFlow<Map<Int, Boolean>>(mapOf())
+	private val selectedChapters = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
 
 	private suspend fun copySelected(): HashMap<Int, Boolean> =
 		selectedChapters.first().copy()

@@ -158,13 +158,13 @@ class MigrationViewModel(
 				emitAll(
 					submittedQueryMap[novelId]!!.transform { query ->
 						if (query.isNullOrBlank()) {
-							emit(listOf())
+							emit(emptyList())
 						} else {
-							emit(listOf())
+							emit(emptyList())
 						}
 					}
 				)
-			else emit(listOf())
+			else emit(emptyList())
 		}
 	}
 

@@ -120,7 +120,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 					)
 				}
 			}
-		return listOf()
+		return emptyList()
 	}
 
 

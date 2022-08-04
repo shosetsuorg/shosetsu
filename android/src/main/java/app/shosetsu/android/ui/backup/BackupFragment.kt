@@ -161,7 +161,7 @@ fun BackupSelectionDialog(
 	dismiss: () -> Unit,
 	optionSelected: (String) -> Unit,
 ) {
-	val options by viewModel.loadInternalOptions().collectAsState(listOf())
+	val options by viewModel.loadInternalOptions().collectAsState(emptyList())
 	Dialog(
 		onDismissRequest = {
 			dismiss()

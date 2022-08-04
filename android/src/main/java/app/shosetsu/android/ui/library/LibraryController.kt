@@ -99,7 +99,7 @@ class LibraryController
 		return ComposeView(requireContext()).apply {
 			setContent {
 				ShosetsuCompose {
-					val items by viewModel.liveData.collectAsState(listOf())
+					val items by viewModel.liveData.collectAsState(emptyList())
 					val isEmpty by viewModel.isEmptyFlow.collectAsState(false)
 					val hasSelected by viewModel.hasSelectionFlow.collectAsState(false)
 					val type by viewModel.novelCardTypeFlow.collectAsState(NORMAL)

@@ -70,7 +70,7 @@ class DownloadsViewModel(
 		downloadsRepository.deleteEntity(downloadUI.convertList())
 	}
 
-	private val selectedDownloads = MutableStateFlow<Map<Int, Boolean>>(mapOf())
+	private val selectedDownloads = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
 	private suspend fun copySelected(): HashMap<Int, Boolean> =
 		selectedDownloads.first().copy()
 

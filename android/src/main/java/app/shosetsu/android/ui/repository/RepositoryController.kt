@@ -75,7 +75,7 @@ class RepositoryController : ShosetsuController(),
 			setViewTitle()
 			setContent {
 				ShosetsuCompose {
-					val items by viewModel.liveData.collectAsState(listOf())
+					val items by viewModel.liveData.collectAsState(emptyList())
 
 					RepositoriesContent(
 						items = items,

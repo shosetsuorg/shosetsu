@@ -81,7 +81,7 @@ class DownloadsController : ShosetsuController(),
 		return ComposeView(requireContext()).apply {
 			setContent {
 				ShosetsuCompose {
-					val items by viewModel.liveData.collectAsState(listOf())
+					val items by viewModel.liveData.collectAsState(emptyList())
 					val hasSelected by viewModel.hasSelectedFlow.collectAsState(false)
 
 					DownloadsContent(

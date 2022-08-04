@@ -59,7 +59,7 @@ class LibraryViewModel(
 	private val setNovelUITypeUseCase: SetNovelUITypeUseCase
 ) : ALibraryViewModel() {
 
-	private val selectedNovels = MutableStateFlow<Map<Int, Boolean>>(mapOf())
+	private val selectedNovels = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
 	private suspend fun copySelected(): HashMap<Int, Boolean> =
 		selectedNovels.first().copy()
 

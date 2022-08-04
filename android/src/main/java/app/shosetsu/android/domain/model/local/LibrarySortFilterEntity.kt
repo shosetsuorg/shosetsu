@@ -30,8 +30,8 @@ data class LibrarySortFilterEntity(
 	var reversedSort: Boolean = false,
 	var unreadInclusion: InclusionState? = null,
 
-	var genreFilter: Map<String, InclusionState> = mapOf(),
-	var authorFilter: Map<String, InclusionState> = mapOf(),
-	var artistFilter: Map<String, InclusionState> = mapOf(),
-	var tagFilter: Map<String, InclusionState> = mapOf(),
+	var genreFilter: Map<String, InclusionState> = emptyMap(),
+	var authorFilter: Map<String, InclusionState> = emptyMap(),
+	var artistFilter: Map<String, InclusionState> = emptyMap(),
+	var tagFilter: Map<String, InclusionState> = emptyMap(),
 )

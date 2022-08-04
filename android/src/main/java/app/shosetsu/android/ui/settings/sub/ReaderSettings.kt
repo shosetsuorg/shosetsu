@@ -144,7 +144,7 @@ fun ReaderSettingsContent(
 				stringResource(R.string.theme),
 				""
 			) {
-				val themes by viewModel.getReaderThemes().collectAsState(listOf())
+				val themes by viewModel.getReaderThemes().collectAsState(emptyList())
 
 				LazyRow(
 					contentPadding = PaddingValues(16.dp),

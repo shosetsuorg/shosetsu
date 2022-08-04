@@ -40,7 +40,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	/**
 	 * Languages to filter out of browse view
 	 */
-	object BrowseFilteredLanguages : StringSetKey("browse_filtered_languages", setOf())
+	object BrowseFilteredLanguages : StringSetKey("browse_filtered_languages", emptySet())
 
 	/**
 	 * Show only installed extensions
@@ -62,7 +62,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	 * Themes that can be edited by the user
 	 */
 	// How things look in Reader
-	object ReaderUserThemes : StringSetKey("readerThemes", setOf())
+	object ReaderUserThemes : StringSetKey("readerThemes", emptySet())
 
 
 	object ReaderTextSize : FloatKey("readerTextSize", 14f)

@@ -10,8 +10,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class FleshedBackupEntity(
 	val version: String = VERSION_BACKUP,
-	val repos: List<BackupRepositoryEntity> = listOf(),
-	val extensions: List<BackupExtensionEntity> = listOf(),
+	val repos: List<BackupRepositoryEntity> = emptyList(),
+	val extensions: List<BackupExtensionEntity> = emptyList(),
 )
 
 @Serializable
