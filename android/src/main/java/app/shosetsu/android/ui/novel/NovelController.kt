@@ -809,7 +809,6 @@ fun NovelInfoContent(
 
 						if (chapters != null)
 							NovelInfoChaptersContent(
-								this,
 								chapters,
 								chapterContent
 							)
@@ -934,16 +933,11 @@ fun PreviewChapterContent() {
 	}
 }
 
-fun NovelInfoChaptersContent(
-	scope: LazyListScope,
+fun LazyListScope.NovelInfoChaptersContent(
 	chapters: List<ChapterUI>,
 	chapterContent: @Composable (ChapterUI) -> Unit
 ) {
-	chapters.forEach {
-		scope.item {
-			chapterContent(it)
-		}
-	}
+	items(chapters) { chapterContent(it) }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -969,8 +963,7 @@ fun NovelChapterContent(
 				else onToggleSelection,
 				onLongClick = onToggleSelection
 			),
-		border =
-		if (chapter.isSelected) {
+		border = if (chapter.isSelected) {
 			BorderStroke(
 				width = (SELECTED_STROKE_WIDTH / 2).dp,
 				color = MaterialTheme.colors.primary
@@ -1010,7 +1003,7 @@ fun NovelChapterContent(
 								modifier = Modifier.padding(end = 4.dp)
 							)
 							Text(
-								"%2.1f%%".format(chapter.readingPosition * 100),
+								chapter.displayPosition,
 								fontSize = 12.sp
 							)
 						}
@@ -1157,7 +1150,7 @@ fun NovelInfoHeaderContent(
 										style = MaterialTheme.typography.subtitle2
 									)
 								Text(
-									novelInfo.authors.joinToString(", "),
+									novelInfo.displayAuthors,
 									style = MaterialTheme.typography.subtitle2
 								)
 							}
@@ -1172,7 +1165,7 @@ fun NovelInfoHeaderContent(
 										style = MaterialTheme.typography.subtitle2
 									)
 								Text(
-									novelInfo.artists.joinToString(", "),
+									novelInfo.displayArtists,
 									style = MaterialTheme.typography.subtitle2
 								)
 							}
