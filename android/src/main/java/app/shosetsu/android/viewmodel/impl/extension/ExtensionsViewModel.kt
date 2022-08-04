@@ -152,11 +152,11 @@ class ExtensionsViewModel(
 	}
 
 	override fun setSearch(name: String) {
-		searchTermFlow.tryEmit(name)
+		searchTermFlow.value = name
 	}
 
 	override fun resetSearch() {
-		searchTermFlow.tryEmit("")
+		searchTermFlow.value = ""
 	}
 
 	override val searchTermLive: Flow<String> by lazy {

@@ -63,8 +63,8 @@ class LibraryViewModel(
 	private suspend fun copySelected(): HashMap<Int, Boolean> =
 		selectedNovels.first().copy()
 
-	private suspend fun clearSelectedSuspend() {
-		selectedNovels.emit(mapOf())
+	private fun clearSelected() {
+		selectedNovels.value = emptyMap()
 	}
 
 	override fun selectAll() {
@@ -76,7 +76,7 @@ class LibraryViewModel(
 				selection[it.id] = true
 			}
 
-			selectedNovels.emit(selection)
+			selectedNovels.value = selection
 		}
 	}
 
@@ -107,7 +107,7 @@ class LibraryViewModel(
 				selection[it.id] = true
 			}
 
-			selectedNovels.emit(selection)
+			selectedNovels.value = selection
 		}
 	}
 
@@ -117,7 +117,7 @@ class LibraryViewModel(
 
 			selection[item.id] = !item.isSelected
 
-			selectedNovels.emit(selection)
+			selectedNovels.value = selection
 		}
 	}
 
@@ -130,7 +130,7 @@ class LibraryViewModel(
 				selection[it.id] = !it.isSelected
 			}
 
-			selectedNovels.emit(selection)
+			selectedNovels.value = selection
 		}
 	}
 
@@ -182,22 +182,22 @@ class LibraryViewModel(
 			false
 		)
 	}
-	private val genreFilterFlow: MutableStateFlow<HashMap<String, InclusionState>> by lazy {
+	private val genreFilterFlow: MutableStateFlow<Map<String, InclusionState>> by lazy {
 		MutableStateFlow(
 			hashMapOf()
 		)
 	}
-	private val authorFilterFlow: MutableStateFlow<HashMap<String, InclusionState>> by lazy {
+	private val authorFilterFlow: MutableStateFlow<Map<String, InclusionState>> by lazy {
 		MutableStateFlow(
 			hashMapOf()
 		)
 	}
-	private val artistFilterFlow: MutableStateFlow<HashMap<String, InclusionState>> by lazy {
+	private val artistFilterFlow: MutableStateFlow<Map<String, InclusionState>> by lazy {
 		MutableStateFlow(
 			hashMapOf()
 		)
 	}
-	private val tagFilterFlow: MutableStateFlow<HashMap<String, InclusionState>> by lazy {
+	private val tagFilterFlow: MutableStateFlow<Map<String, InclusionState>> by lazy {
 		MutableStateFlow(
 			hashMapOf()
 		)
@@ -256,7 +256,7 @@ class LibraryViewModel(
 	 * @param against Return a [List] of [String] to compare against
 	 */
 	private fun Flow<List<LibraryNovelUI>>.applyFilterList(
-		flow: Flow<HashMap<String, InclusionState>>,
+		flow: Flow<Map<String, InclusionState>>,
 		against: (LibraryNovelUI) -> List<String>
 	) = combine(flow) { list, filters ->
 		if (filters.isNotEmpty()) {
@@ -362,9 +362,9 @@ class LibraryViewModel(
 	override fun removeSelectedFromLibrary() {
 		launchIO {
 			val selected = liveData.first().filter { it.isSelected }
-			clearSelectedSuspend()
-			updateBookmarkedNovelUseCase(selected.onEach {
-				it.bookmarked = false
+			clearSelected()
+			updateBookmarkedNovelUseCase(selected.map {
+				it.copy(bookmarked = false)
 			})
 		}
 	}
@@ -372,13 +372,13 @@ class LibraryViewModel(
 	override fun getSelectedIds(): Flow<IntArray> = flow {
 		val ints = selectedNovels.first().keys.toIntArray()
 		if (ints.isEmpty()) return@flow
-		clearSelectedSuspend()
+		clearSelected()
 		emit(ints)
 	}
 
 	override fun deselectAll() {
 		launchIO {
-			clearSelectedSuspend()
+			clearSelected()
 		}
 	}
 
@@ -401,7 +401,7 @@ class LibraryViewModel(
 			currentState.toInclusionState().cycle()?.let {
 				map[genre] = it
 			} ?: map.remove(genre)
-			genreFilterFlow.emit(map)
+			genreFilterFlow.value = map
 		}
 	}
 
@@ -415,7 +415,7 @@ class LibraryViewModel(
 			currentState.toInclusionState().cycle()?.let {
 				map[author] = it
 			} ?: map.remove(author)
-			authorFilterFlow.emit(map)
+			authorFilterFlow.value = map
 		}
 	}
 
@@ -429,7 +429,7 @@ class LibraryViewModel(
 			currentState.toInclusionState().cycle()?.let {
 				map[artist] = it
 			} ?: map.remove(artist)
-			artistFilterFlow.emit(map)
+			artistFilterFlow.value = map
 		}
 	}
 
@@ -443,7 +443,7 @@ class LibraryViewModel(
 			currentState.toInclusionState().cycle()?.let {
 				map[tag] = it
 			} ?: map.remove(tag)
-			tagFilterFlow.emit(map)
+			tagFilterFlow.value = map
 		}
 	}
 
@@ -493,8 +493,6 @@ class LibraryViewModel(
 	override val queryFlow: MutableStateFlow<String> = MutableStateFlow("")
 
 	override fun setQuery(s: String) {
-		runBlocking {
-			queryFlow.emit(s)
-		}
+		queryFlow.value = s
 	}
 }

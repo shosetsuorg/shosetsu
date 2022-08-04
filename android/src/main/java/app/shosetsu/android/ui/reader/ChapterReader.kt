@@ -75,14 +75,14 @@ class ChapterReader
 
 					if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
 						logE("Language not supported for TTS")
-						isTTSCapable.tryEmit(false)
+						isTTSCapable.value = false
 					} else {
-						isTTSCapable.tryEmit(true)
+						isTTSCapable.value = true
 					}
 				}
 				else -> {
 					logE("TTS Initialization failed")
-					isTTSCapable.tryEmit(false)
+					isTTSCapable.value = false
 				}
 			}
 		}
@@ -168,8 +168,8 @@ class ChapterReader
 			val isFocused by viewModel.isFocused.collectAsState(false)
 			val chapterType by viewModel.chapterType.collectAsState(null)
 			val currentChapterID by viewModel.currentChapterID.collectAsState(-1)
-			val isTTSCapable by isTTSCapable.collectAsState(false)
-			val isTTSPlaying by isTTSPlaying.collectAsState(false)
+			val isTTSCapable by isTTSCapable.collectAsState()
+			val isTTSPlaying by isTTSPlaying.collectAsState()
 			val setting by viewModel.getSettings()
 				.collectAsState(NovelReaderSettingEntity(-1, 0, 0.0F))
 			val currentPage by viewModel.currentPage.collectAsState(null)

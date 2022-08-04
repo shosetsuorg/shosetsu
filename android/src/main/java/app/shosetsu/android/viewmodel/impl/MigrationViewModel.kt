@@ -182,7 +182,7 @@ class MigrationViewModel(
 		logI("$novelId now working with extension ${extensionUI.name}(${extensionUI.id})")
 		if (selectedExtensionMap.containsKey(novelId)) {
 			logI("Emitting")
-			selectedExtensionMap[novelId]?.tryEmit(extensionUI.id)
+			selectedExtensionMap[novelId]?.value = extensionUI.id
 		} else {
 			logE("Did not exist, creating new flow")
 			selectedExtensionMap[novelId] = MutableStateFlow(extensionUI.id)
@@ -194,7 +194,7 @@ class MigrationViewModel(
 		logI("$novelId now working with query $newQuery")
 		if (queryMap.containsKey(novelId)) {
 			logI("Emitting")
-			queryMap[novelId]?.tryEmit(newQuery)
+			queryMap[novelId]?.value = newQuery
 		} else {
 			logE("Did not exist, creating new flow")
 			queryMap[novelId] = MutableStateFlow(newQuery)

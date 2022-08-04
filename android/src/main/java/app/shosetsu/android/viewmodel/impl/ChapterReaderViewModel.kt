@@ -182,7 +182,7 @@ class ChapterReaderViewModel(
 	override fun retryChapter(item: ReaderChapterUI) {
 		//logV("$item")
 		val flow = getRefreshFlow(item)
-		flow.tryEmit(!flow.value)
+		flow.value = !flow.value
 	}
 
 	private var cleanStringMapJob: Job? = null
@@ -402,6 +402,7 @@ class ChapterReaderViewModel(
 	override val liveData: Flow<List<ReaderUIItem>> by lazy {
 		chaptersFlow
 			.combineDividers() // Add dividers
+			// todo maybe replace with .distinctUntilChanged()
 			.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Lazily, 1)
 			.onIO()
 	}
@@ -435,7 +436,7 @@ class ChapterReaderViewModel(
 
 	override fun setCurrentPage(page: Int) {
 		//logV("$page")
-		currentPage.tryEmit(page)
+		currentPage.value = page
 	}
 
 	private val readerSettingsFlow: Flow<NovelReaderSettingEntity> by lazy {
@@ -508,7 +509,7 @@ class ChapterReaderViewModel(
 				return
 			}
 		}
-		novelIDLive.tryEmit(novelID)
+		novelIDLive.value = novelID
 	}
 
 	@Suppress("NOTHING_TO_INLINE") // We need every ns
@@ -590,9 +591,9 @@ class ChapterReaderViewModel(
 					 * and the chapter's readingStatus is read, save progress temporarily.
 					 */
 					if (!markReadAsReading && chapterEntity.readingStatus == READ) {
-						progressMapFlow.emit(progressMapFlow.value.copy().apply {
+						progressMapFlow.value = progressMapFlow.value.copy().apply {
 							put(chapter.id, readingPosition)
-						})
+						}
 						return@launchIO
 					}
 
@@ -605,9 +606,9 @@ class ChapterReaderViewModel(
 					}
 
 					// Remove temp progress
-					progressMapFlow.emit(progressMapFlow.value.copy().apply {
+					progressMapFlow.value = progressMapFlow.value.copy().apply {
 						remove(chapter.id)
-					})
+					}
 
 					chapterRepository.updateChapter(
 						chapterEntity.copy(
@@ -624,9 +625,9 @@ class ChapterReaderViewModel(
 				recordChapterIsRead(chapter)
 
 				// Temp remember the progress
-				progressMapFlow.emit(progressMapFlow.value.copy().apply {
+				progressMapFlow.value = progressMapFlow.value.copy().apply {
 					put(chapter.id, readingPosition)
-				})
+				}
 
 				chapterRepository.updateChapter(
 					chapterEntity.copy(
@@ -664,21 +665,21 @@ class ChapterReaderViewModel(
 	override val isSystemVisible: MutableStateFlow<Boolean> = MutableStateFlow(true)
 
 	override fun toggleFocus() {
-		isFocused.tryEmit(!isFocused.value)
+		isFocused.value = !isFocused.value
 	}
 
 	override fun toggleSystemVisible() {
-		isFocused.tryEmit(isSystemVisible.value)
-		isSystemVisible.tryEmit(!isSystemVisible.value)
+		isFocused.value = isSystemVisible.value
+		isSystemVisible.value = !isSystemVisible.value
 	}
 
 	override fun onReaderClicked() {
 		launchIO {
 			if (!doubleTapFocus.first()) {
 				val newValue = !isFocused.value
-				isFocused.emit(newValue)
+				isFocused.value = newValue
 				if (newValue)
-					isSystemVisible.emit(false)
+					isSystemVisible.value = false
 			}
 		}
 	}
@@ -687,9 +688,9 @@ class ChapterReaderViewModel(
 		launchIO {
 			if (doubleTapFocus.first()) {
 				val newValue = !isFocused.value
-				isFocused.emit(newValue)
+				isFocused.value = newValue
 				if (newValue)
-					isSystemVisible.emit(false)
+					isSystemVisible.value = false
 			} else if (doubleTapSystemFlow.first()) {
 				toggleSystemVisible()
 			}
@@ -783,15 +784,13 @@ class ChapterReaderViewModel(
 
 	override fun setCurrentChapterID(chapterId: Int, initial: Boolean) {
 		//logV("$chapterId, $initial")
-		currentChapterID.tryEmit(chapterId)
+		currentChapterID.value = chapterId
 
 		if (initial)
 			launchIO {
 				val items = liveData.first()
-				currentPage.emit(
-					items
-						.indexOfFirst { it is ReaderChapterUI && it.id == chapterId }
-				)
+				currentPage.value = items
+					.indexOfFirst { it is ReaderChapterUI && it.id == chapterId }
 			}
 	}
 
@@ -853,7 +852,7 @@ class ChapterReaderViewModel(
 					map.remove(key)
 				}
 
-				progressMapFlow.emit(map)
+				progressMapFlow.value = map
 			}
 
 			run {

@@ -49,9 +49,9 @@ class UpdatesViewModel(
 ) : AUpdatesViewModel() {
 	override val liveData: Flow<Map<DateTime, List<UpdatesUI>>> by lazy {
 		getUpdatesUseCase().transformLatest {
-			isRefreshing.emit(true)
+			isRefreshing.value = true
 			emit(it.ifEmpty { emptyList() }.sortedByDescending { it.time })
-			isRefreshing.emit(false)
+			isRefreshing.value = false
 		}.mapLatest { result ->
 			result.groupBy {
 				DateTime(it.time).trimDate()

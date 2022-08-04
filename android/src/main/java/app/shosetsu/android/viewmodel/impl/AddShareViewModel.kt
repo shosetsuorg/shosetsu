@@ -95,11 +95,11 @@ class AddShareViewModel(
 			data.collectLatest { url ->
 				if (url == null) return@collectLatest
 
-				isProcessing.tryEmit(true)
+				isProcessing.value = true
 
-				suspend fun invalidate() {
-					isProcessing.emit(false)
-					isQRCodeValid.emit(false)
+				fun invalidate() {
+					isProcessing.value = false
+					isQRCodeValid.value = false
 				}
 
 				val http = url.toHttpUrlOrNull()
@@ -193,21 +193,21 @@ class AddShareViewModel(
 									contentUrl == novelLinkUrl
 								}?.takeIf { it.bookmarked }
 
-								repoLink.emit(repo)
-								extLink.emit(ext)
-								novelLink.emit(novel)
+								repoLink.value = repo
+								extLink.value = ext
+								novelLink.value = novel
 
 								if (repoEntity != null)
-									isRepoAlreadyPresent.emit(true)
+									isRepoAlreadyPresent.value = true
 
 								if (extEntity != null)
-									isExtAlreadyPresent.emit(true)
+									isExtAlreadyPresent.value = true
 
 								if (novelEntity != null)
-									isNovelAlreadyPresent.emit(true)
+									isNovelAlreadyPresent.value = true
 
-								isProcessing.emit(false)
-								isQRCodeValid.emit(true)
+								isProcessing.value = false
+								isQRCodeValid.value = true
 							}
 							"repository" -> {
 								invalidate()
@@ -231,24 +231,24 @@ class AddShareViewModel(
 
 	override fun takeData(url: String) {
 		logV(url)
-		openQRScanner.tryEmit(false)
-		data.tryEmit(url)
+		openQRScanner.value = false
+		data.value = url
 	}
 
 
 	override fun setUserCancelled() {
-		openQRScanner.tryEmit(false)
+		openQRScanner.value = false
 		setInvalidQRCode()
 	}
 
 	override fun setInvalidQRCode() {
-		isQRCodeValid.tryEmit(false)
-		isProcessing.tryEmit(false)
+		isQRCodeValid.value = false
+		isProcessing.value = false
 	}
 
 	override fun add() {
 		launchIO {
-			isAdding.emit(true)
+			isAdding.value = true
 
 			// Add repository if not present
 			if (!isRepoAlreadyPresent.value) {
@@ -256,7 +256,7 @@ class AddShareViewModel(
 				try {
 					repoRepo.addRepository(link.url, link.name)
 				} catch (e: SQLiteException) {
-					exception.emit(e)
+					exception.value = e
 					return@launchIO
 				}
 				startRepositoryUpdateWorker()
@@ -279,10 +279,10 @@ class AddShareViewModel(
 					repoEntity = try {
 						repoRepo.loadRepositories().first { it.url == link.repo.url }
 					} catch (e: SQLiteException) {
-						exception.emit(e)
+						exception.value = e
 						return@launchIO
 					} catch (e: NoSuchElementException) {
-						exception.emit(e)
+						exception.value = e
 						return@launchIO
 					}
 
@@ -320,14 +320,14 @@ class AddShareViewModel(
 					if (extEntity == null)
 						extEntity = extRepo.getInstalledExtension(link.extensionQRCode.id)
 				} catch (e: SQLiteException) {
-					exception.emit(e)
+					exception.value = e
 					return@launchIO
 				}
 
 				val iExt = try {
 					iExtRepo.get(extEntity!!.generify())
 				} catch (e: IncompatibleExtensionException) {
-					exception.emit(e)
+					exception.value = e
 					return@launchIO
 				}
 
@@ -356,39 +356,39 @@ class AddShareViewModel(
 							)
 					}
 
-					isNovelOpenable.emit(true)
+					isNovelOpenable.value = true
 				} catch (e: SQLiteException) {
-					exception.emit(e)
+					exception.value = e
 					return@launchIO
 				}
 			}
 
-			isAdding.emit(false)
-			isComplete.emit(true)
+			isAdding.value = false
+			isComplete.value = true
 		}
 	}
 
 	override fun destroy() {
 		launchIO {
-			isAdding.emit(false)
-			isComplete.emit(false)
-			isNovelOpenable.emit(false)
+			isAdding.value = false
+			isComplete.value = false
+			isNovelOpenable.value = false
 
-			isNovelAlreadyPresent.emit(false)
-			isStyleAlreadyPresent.emit(false)
-			isExtAlreadyPresent.emit(false)
-			isRepoAlreadyPresent.emit(false)
+			isNovelAlreadyPresent.value = false
+			isStyleAlreadyPresent.value = false
+			isExtAlreadyPresent.value = false
+			isRepoAlreadyPresent.value = false
 
-			isProcessing.emit(true)
-			isQRCodeValid.emit(false)
+			isProcessing.value = true
+			isQRCodeValid.value = false
 
-			extLink.emit(null)
-			novelLink.emit(null)
-			repoLink.emit(null)
-			data.emit(null)
-			openQRScanner.emit(true)
+			extLink.value = null
+			novelLink.value = null
+			repoLink.value = null
+			data.value = null
+			openQRScanner.value = true
 
-			exception.emit(null)
+			exception.value = null
 			repoEntity = null
 			extEntity = null
 			novelEntity = null
@@ -396,10 +396,10 @@ class AddShareViewModel(
 	}
 
 	override fun retry() {
-		isAdding.tryEmit(false)
-		isProcessing.tryEmit(true)
-		isQRCodeValid.tryEmit(false)
-		openQRScanner.tryEmit(true)
+		isAdding.value = false
+		isProcessing.value = true
+		isQRCodeValid.value = false
+		openQRScanner.value = true
 	}
 
 	override fun getNovel(): NovelEntity? =
