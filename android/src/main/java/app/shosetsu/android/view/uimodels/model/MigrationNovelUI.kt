@@ -1,5 +1,7 @@
 package app.shosetsu.android.view.uimodels.model
 
+import androidx.compose.runtime.Immutable
+
 /*
  * This file is part of shosetsu.
  *
@@ -23,9 +25,10 @@ package app.shosetsu.android.view.uimodels.model
  * @since 05 / 08 / 2021
  * @author Doomsdayrs
  */
+@Immutable
 data class MigrationNovelUI(
 	val id: Int,
 	val title: String,
 	val imageURL: String,
-	var isSelected: Boolean = false
+	val isSelected: Boolean = false
 )

@@ -1,5 +1,6 @@
 package app.shosetsu.android.view.uimodels.model
 
+import androidx.compose.runtime.Immutable
 import app.shosetsu.android.domain.model.local.IDTitleImageBook
 import app.shosetsu.android.dto.Convertible
 
@@ -24,11 +25,12 @@ import app.shosetsu.android.dto.Convertible
  * shosetsu
  * 08 / 05 / 2020
  */
+@Immutable
 data class IDTitleImageBookUI(
 	val id: Int,
 	val title: String,
 	val imageURL: String,
-	var bookmarked: Boolean,
+	val bookmarked: Boolean,
 ) : Convertible<IDTitleImageBook> {
 	override fun convertTo(): IDTitleImageBook = IDTitleImageBook(id, title, imageURL, bookmarked)
 }

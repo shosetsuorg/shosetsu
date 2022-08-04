@@ -1,5 +1,6 @@
 package app.shosetsu.android.view.uimodels.model
 
+import androidx.compose.runtime.Immutable
 import app.shosetsu.android.domain.model.local.RepositoryEntity
 import app.shosetsu.android.dto.Convertible
 
@@ -26,6 +27,7 @@ import app.shosetsu.android.dto.Convertible
  *
  * @see RepositoryEntity
  */
+@Immutable
 data class RepositoryUI(
 	val id: Int,
 	val url: String,

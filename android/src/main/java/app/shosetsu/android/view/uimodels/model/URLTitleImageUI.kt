@@ -1,5 +1,6 @@
 package app.shosetsu.android.view.uimodels.model
 
+import androidx.compose.runtime.Immutable
 import app.shosetsu.android.domain.model.local.URLImageTitle
 import app.shosetsu.android.dto.Convertible
 
@@ -24,6 +25,7 @@ import app.shosetsu.android.dto.Convertible
  * shosetsu
  * 08 / 05 / 2020
  */
+@Immutable
 data class URLTitleImageUI(
 	val url: String,
 	val title: String,

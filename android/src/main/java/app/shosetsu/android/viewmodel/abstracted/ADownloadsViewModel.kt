@@ -1,5 +1,6 @@
 package app.shosetsu.android.viewmodel.abstracted
 
+import androidx.compose.runtime.Immutable
 import app.shosetsu.android.view.uimodels.model.DownloadUI
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
@@ -72,6 +73,7 @@ abstract class ADownloadsViewModel :
 	 * @param startVisible Show the start button
 	 * @param deleteVisible Show the delete button
 	 */
+	@Immutable
 	data class SelectedDownloadsState(
 		val pauseVisible: Boolean = false,
 		val restartVisible: Boolean = false,

@@ -1,5 +1,7 @@
 package app.shosetsu.android.view.uimodels.model.catlog
 
+import androidx.compose.runtime.Immutable
+
 /*
  * This file is part of shosetsu.
  *
@@ -23,6 +25,7 @@ package app.shosetsu.android.view.uimodels.model.catlog
  *
  * This class represents novels listed by an extension in its catalogue
  */
+@Immutable
 data class ACatalogNovelUI(
 	val id: Int,
 	val title: String,
