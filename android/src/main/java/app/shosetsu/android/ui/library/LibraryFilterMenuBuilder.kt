@@ -141,12 +141,8 @@ class LibraryFilterMenuBuilder constructor(
 					toggleExpansion = {
 						genresIsExpanded = !genresIsExpanded
 					},
-					getState = {
-						viewModel.getFilterGenreState(it)
-					},
-					cycleState = { name, state ->
-						viewModel.cycleFilterGenreState(name, state)
-					}
+					getState = viewModel::getFilterGenreState,
+					cycleState = viewModel::cycleFilterGenreState
 				)
 
 			if (tagsIsNotEmpty)
@@ -173,12 +169,8 @@ class LibraryFilterMenuBuilder constructor(
 					toggleExpansion = {
 						authorsIsExpanded = !authorsIsExpanded
 					},
-					getState = {
-						viewModel.getFilterAuthorState(it)
-					},
-					cycleState = { name, state ->
-						viewModel.cycleFilterAuthorState(name, state)
-					}
+					getState = viewModel::getFilterAuthorState,
+					cycleState = viewModel::cycleFilterAuthorState
 				)
 
 			if (artistsIsNotEmpty)

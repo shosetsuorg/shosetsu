@@ -113,15 +113,11 @@ class AddShareController : ShosetsuController(), CollapsedToolBarController {
 					isProcessing = isProcessing,
 					isQRCodeValid = isQRCodeValid,
 					isAdding = isAdding,
-					add = {
-						viewModel.add()
-					},
+					add = viewModel::add,
 					reject = {
 						activity?.onBackPressed()
 					},
-					retry = {
-						viewModel.retry()
-					},
+					retry = viewModel::retry,
 					novelLink = novelLink,
 					extensionLink = extLink,
 					repositoryLink = repoLink,

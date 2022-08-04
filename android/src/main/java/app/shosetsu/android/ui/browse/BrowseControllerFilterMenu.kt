@@ -55,9 +55,7 @@ fun BrowseControllerFilterMenu(viewModel: ABrowseViewModel) {
 	Column(modifier = Modifier
 		.fillMaxWidth()
 		.padding(16.dp)) {
-		BrowseControllerNameFilter(searchTerm) {
-			viewModel.setSearch(it)
-		}
+		BrowseControllerNameFilter(searchTerm, viewModel::setSearch)
 
 		BrowseControllerLanguagesFilter(languageList, hideLanguageFilter,
 			setLanguageFilterState = { l, s ->
@@ -238,9 +236,7 @@ fun BrowseControllerInstalledFilter(state: Boolean, updateState: (Boolean) -> Un
 		)
 		Checkbox(
 			checked = state,
-			onCheckedChange = {
-				updateState(it)
-			},
+			onCheckedChange = updateState,
 			modifier = Modifier
 				.alignByBaseline()
 				.padding(bottom = 8.dp, end = 12.dp)

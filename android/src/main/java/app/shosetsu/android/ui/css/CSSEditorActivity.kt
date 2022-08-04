@@ -106,9 +106,7 @@ class CSSEditorActivity : AppCompatActivity(), DIAware {
 					onExport = {
 						// TODO Add exporting
 					},
-					onNewText = {
-						viewModel.write(it)
-					},
+					onNewText = viewModel::write,
 					onPaste = {
 						val text = clipboardManager.primaryClip?.getItemAt(0)?.text
 						if (text == null) {

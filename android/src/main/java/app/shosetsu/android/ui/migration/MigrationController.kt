@@ -107,7 +107,7 @@ fun MigrationContent(viewModel: AMigrationViewModel) {
 		Text(text = "With name")
 
 		if (currentQuery != null) {
-			TextField(value = currentQuery!!, onValueChange = { viewModel.setQuery(it) })
+			TextField(value = currentQuery!!, onValueChange = viewModel::setQuery)
 		}
 
 		Text(text = "In")
@@ -122,9 +122,7 @@ fun MigrationContent(viewModel: AMigrationViewModel) {
 			// MigrationExtensionsLoadingContent()
 			MigrationExtensionsContent(
 				list = extensionsToSelect,
-				onClick = {
-					viewModel.setSelectedExtension(it)
-				}
+				onClick = viewModel::setSelectedExtension
 			)
 		}
 
