@@ -118,12 +118,12 @@ class NovelViewModel(
 
 	override fun clearSelection() {
 		launchIO {
-			clearSelectedSuspend()
+			clearSelected()
 		}
 	}
 
-	private suspend fun clearSelectedSuspend() {
-		selectedChapters.emit(mapOf())
+	private fun clearSelected() {
+		selectedChapters.value = emptyMap()
 	}
 
 	private val chaptersFlow: Flow<List<ChapterUI>> by lazy {
@@ -139,7 +139,7 @@ class NovelViewModel(
 					.combineSelection()
 			)
 		}.catch {
-			chaptersException.emit(it)
+			chaptersException.value = it
 		}.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Lazily, 1)
 	}
 
@@ -351,16 +351,14 @@ class NovelViewModel(
 	}
 
 	override fun destroy() {
-		novelIDLive.tryEmit(-1) // Reset view to nothing
-		itemIndex.tryEmit(0)
-		_isRefreshing.tryEmit(false)
+		novelIDLive.value = -1 // Reset view to nothing
+		itemIndex.value = 0
+		_isRefreshing.value = false
 
-		novelException.tryEmit(null)
-		chaptersException.tryEmit(null)
-		otherException.tryEmit(null)
-		runBlocking {
-			clearSelectedSuspend()
-		}
+		novelException.value = null
+		chaptersException.value = null
+		otherException.value = null
+		clearSelected()
 	}
 
 	private suspend fun downloadChapter(chapters: Array<ChapterUI>, startManager: Boolean = false) {
@@ -416,7 +414,7 @@ class NovelViewModel(
 
 	override fun refresh(): Flow<Unit> =
 		flow {
-			_isRefreshing.emit(true)
+			_isRefreshing.value = true
 			val t: Throwable? = null
 			try {
 				loadRemoteNovel(novelIDLive.value, true)?.let {
@@ -426,7 +424,7 @@ class NovelViewModel(
 
 			} finally {
 				emit(Unit)
-				_isRefreshing.emit(false)
+				_isRefreshing.value = false
 			}
 			if (t != null)
 				throw t
@@ -441,7 +439,7 @@ class NovelViewModel(
 				return
 			}
 		}
-		novelIDLive.tryEmit(novelID)
+		novelIDLive.value = novelID
 	}
 
 	override fun toggleNovelBookmark(): Flow<ToggleBookmarkResponse> {
@@ -527,7 +525,7 @@ class NovelViewModel(
 
 	override val itemIndex: MutableStateFlow<Int> = MutableStateFlow(0)
 	override fun setItemAt(index: Int) {
-		itemIndex.tryEmit(index)
+		itemIndex.value = index
 	}
 
 	override val hasSelected: Flow<Boolean> by lazy {
@@ -538,7 +536,7 @@ class NovelViewModel(
 		launchIO {
 			chapterRepo.updateChapterBookmark(getSelectedIds(), true)
 
-			clearSelectedSuspend()
+			clearSelected()
 		}
 	}
 
@@ -546,7 +544,7 @@ class NovelViewModel(
 		launchIO {
 			val list = chaptersFlow.first().filter { it.isSelected && it.isSaved }
 			deleteChapterPassageUseCase(list)
-			clearSelectedSuspend()
+			clearSelected()
 		}
 	}
 
@@ -554,7 +552,7 @@ class NovelViewModel(
 		launchIO {
 			val list = chaptersFlow.first().filter { it.isSelected && !it.isSaved }
 			downloadChapterPassageUseCase(list.toTypedArray())
-			clearSelectedSuspend()
+			clearSelected()
 			startDownloadWorkerUseCase()
 		}
 	}
@@ -568,7 +566,7 @@ class NovelViewModel(
 				selection[it.id] = !it.isSelected
 			}
 
-			selectedChapters.emit(selection)
+			selectedChapters.value = selection
 		}
 	}
 
@@ -576,14 +574,14 @@ class NovelViewModel(
 		launchIO {
 			chapterRepo.updateChapterReadingStatus(getSelectedIds(), readingStatus)
 
-			clearSelectedSuspend()
+			clearSelected()
 		}
 	}
 
 	override fun removeBookmarkFromSelected() {
 		launchIO {
 			chapterRepo.updateChapterBookmark(getSelectedIds(), false)
-			clearSelectedSuspend()
+			clearSelected()
 		}
 	}
 
@@ -596,7 +594,7 @@ class NovelViewModel(
 				selection[it.id] = true
 			}
 
-			selectedChapters.emit(selection)
+			selectedChapters.value = selection
 		}
 	}
 
@@ -627,7 +625,7 @@ class NovelViewModel(
 				selection[it.id] = true
 			}
 
-			selectedChapters.emit(selection)
+			selectedChapters.value = selection
 		}
 	}
 
@@ -635,7 +633,7 @@ class NovelViewModel(
 		launchIO {
 			val list = chaptersFlow.first()
 			trueDeleteChapter(list.filter { it.isSelected })
-			clearSelectedSuspend()
+			clearSelected()
 		}
 	}
 
@@ -643,7 +641,7 @@ class NovelViewModel(
 		flow {
 			val chapters = chaptersFlow.first()
 			chapters.indexOfFirst(predicate).takeIf { it != -1 }?.let {
-				itemIndex.emit(it)
+				itemIndex.value = it
 				emit(true)
 			} ?: emit(false)
 		}
@@ -655,7 +653,7 @@ class NovelViewModel(
 
 			selection[it.id] = !it.isSelected
 
-			selectedChapters.emit(selection)
+			selectedChapters.value = selection
 		}
 	}
 

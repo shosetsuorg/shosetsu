@@ -61,20 +61,20 @@ class CSSEditorViewModel(
 	override fun undo() {
 		logI("Undo")
 		redoStack.add(cssContentFlow.value) // Save currentText as a redo action
-		canRedoFlow.tryEmit(true)
-		cssContentFlow.tryEmit(undoStack.pop())
+		canRedoFlow.value = true
+		cssContentFlow.value = undoStack.pop()
 		if (undoStack.size == 0) {
-			canUndoFlow.tryEmit(false)
+			canUndoFlow.value = false
 		}
 	}
 
 	override fun redo() {
 		logI("Redo")
 		undoStack.add(cssContentFlow.value)
-		canUndoFlow.tryEmit(true)
-		cssContentFlow.tryEmit(redoStack.pop())
+		canUndoFlow.value = true
+		cssContentFlow.value = redoStack.pop()
 		if (redoStack.size == 0) {
-			canRedoFlow.tryEmit(false)
+			canRedoFlow.value = false
 		}
 	}
 
@@ -82,11 +82,11 @@ class CSSEditorViewModel(
 		launchIO {
 			if (undoStack.size > 0 && undoStack.peek() == content) return@launchIO // ignore if nothing changed
 			undoStack.add(cssContentFlow.value)
-			canUndoFlow.tryEmit(true)
+			canUndoFlow.value = true
 			redoStack.clear()
-			canRedoFlow.tryEmit(false)
+			canRedoFlow.value = false
 		}
-		cssContentFlow.tryEmit(content)
+		cssContentFlow.value = content
 	}
 
 	override fun saveCSS() {
@@ -102,11 +102,11 @@ class CSSEditorViewModel(
 		launchIO {
 			if (undoStack.size > 0 && undoStack.peek() == combined) return@launchIO // ignore if nothing changed
 			undoStack.add(value)
-			canUndoFlow.tryEmit(true)
+			canUndoFlow.value = true
 			redoStack.clear()
-			canRedoFlow.tryEmit(false)
+			canRedoFlow.value = false
 		}
-		cssContentFlow.tryEmit(combined)
+		cssContentFlow.value = combined
 	}
 
 	override fun setCSSId(int: Int) {
@@ -114,8 +114,8 @@ class CSSEditorViewModel(
 			if (int != cssIDFlow.value) {
 				undoStack.clear()
 				redoStack.clear()
-				cssContentFlow.emit("")
-				cssIDFlow.emit(int)
+				cssContentFlow.value = ""
+				cssIDFlow.value = int
 			}
 		}
 	}
@@ -125,7 +125,7 @@ class CSSEditorViewModel(
 			styleFlow.collect { result ->
 				result.let {
 					settingsRepo.getString(SettingKey.ReaderHtmlCss).let {
-						cssContentFlow.emit(it)
+						cssContentFlow.value = it
 					}
 				}
 			}

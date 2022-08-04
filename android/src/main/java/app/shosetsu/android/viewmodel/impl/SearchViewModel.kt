@@ -136,7 +136,8 @@ class SearchViewModel(
 		logI("$id")
 		launchIO {
 			val flow = getRefreshFlow(id)
-			flow.emit(flow.value++)
+			// todo ++ probably already sets the value
+			flow.value = flow.value++
 		}
 	}
 
@@ -171,7 +172,7 @@ class SearchViewModel(
 
 				val exceptionFlow = getExceptionFlow(-1)
 
-				exceptionFlow.emit(null)
+				exceptionFlow.value = null
 
 				try {
 					emitAll(
@@ -194,7 +195,7 @@ class SearchViewModel(
 						}
 					)
 				} catch (e: SQLiteException) {
-					exceptionFlow.emit(e)
+					exceptionFlow.value = e
 				}
 			}
 	}
@@ -212,7 +213,7 @@ class SearchViewModel(
 				appliedQueryFlow.combine(getRefreshFlow(extensionID)) { query, _ -> query }
 					.transformLatest { query ->
 						if (query == null) return@transformLatest
-						exceptionFlow.emit(null)
+						exceptionFlow.value = null
 
 						emitAll(
 							Pager(
@@ -232,7 +233,7 @@ class SearchViewModel(
 						)
 
 					}.catch {
-						exceptionFlow.emit(it)
+						exceptionFlow.value = it
 					}
 			)
 		}.onIO()

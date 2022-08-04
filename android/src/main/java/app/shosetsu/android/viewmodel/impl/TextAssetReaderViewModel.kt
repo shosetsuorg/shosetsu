@@ -55,7 +55,7 @@ class TextAssetReaderViewModel(val application: Application) : ATextAssetReaderV
 			if (targetFlow.value!!.ordinal == targetOrdinal)
 				return
 		}
-		targetFlow.tryEmit(null)
-		targetFlow.tryEmit(TextAsset.values()[targetOrdinal])
+		targetFlow.value = null
+		targetFlow.value = TextAsset.values()[targetOrdinal]
 	}
 }

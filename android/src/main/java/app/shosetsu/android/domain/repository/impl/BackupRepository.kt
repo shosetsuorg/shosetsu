@@ -44,7 +44,7 @@ class BackupRepository(
 		get() = _backupProgress.onIO()
 
 	override fun updateProgress(result: BackupProgress) {
-		_backupProgress.tryEmit(result)
+		_backupProgress.value = result
 	}
 
 	override suspend fun loadBackups(): List<String> =

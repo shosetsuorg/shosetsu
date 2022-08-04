@@ -188,12 +188,12 @@ class CatalogViewModel(
 				return
 			}
 		}
-		extensionIDFlow.tryEmit(extensionID)
+		extensionIDFlow.value = extensionID
 	}
 
 	override fun applyQuery(newQuery: String) {
+		queryFlow.value = newQuery
 		launchIO {
-			queryFlow.emit(newQuery)
 			_applyFilter()
 		}
 	}
@@ -201,12 +201,12 @@ class CatalogViewModel(
 	override fun resetView() {
 		launchIO {
 			resetFilterDataState()
-			queryFlow.emit(null)
+			queryFlow.value = null
 			_applyFilter()
 		}
 	}
 
-	private suspend fun resetFilter(filter: Filter<*>) {
+	private fun resetFilter(filter: Filter<*>) {
 		when (filter) {
 			is Filter.Text -> _setFilterStringState(filter, filter.state)
 			is Filter.Switch -> _setFilterBooleanState(filter, filter.state)
@@ -231,8 +231,8 @@ class CatalogViewModel(
 			emit(BackgroundNovelAddProgress.ADDED)
 		}.onIO()
 
-	private suspend fun _applyFilter() {
-		filterDataFlow.emit(filterDataState.mapValues { it.value.value })
+	private fun _applyFilter() {
+		filterDataFlow.value = filterDataState.mapValues { it.value.value }
 	}
 
 	override fun applyFilter() {
@@ -246,10 +246,10 @@ class CatalogViewModel(
 			MutableStateFlow(id.state)
 		}.onIO()
 
-	private suspend fun _setFilterStringState(id: Filter<String>, value: String) {
+	private fun _setFilterStringState(id: Filter<String>, value: String) {
 		filterDataState.specialGetOrPut(id.id) {
 			MutableStateFlow(id.state)
-		}.emit(value)
+		}.value = value
 	}
 
 
@@ -262,10 +262,10 @@ class CatalogViewModel(
 			MutableStateFlow(id.state)
 		}.onIO()
 
-	private suspend fun _setFilterBooleanState(id: Filter<Boolean>, value: Boolean) {
+	private fun _setFilterBooleanState(id: Filter<Boolean>, value: Boolean) {
 		filterDataState.specialGetOrPut(id.id) {
 			MutableStateFlow(id.state)
-		}.emit(value)
+		}.value = value
 	}
 
 	override fun setFilterBooleanState(id: Filter<Boolean>, value: Boolean) {
@@ -277,10 +277,10 @@ class CatalogViewModel(
 			MutableStateFlow(id.state)
 		}.onIO()
 
-	private suspend fun _setFilterIntState(id: Filter<Int>, value: Int) {
+	private fun _setFilterIntState(id: Filter<Int>, value: Int) {
 		filterDataState.specialGetOrPut(id.id) {
 			MutableStateFlow(id.state)
-		}.emit(value)
+		}.value = value
 	}
 
 	override fun setFilterIntState(id: Filter<Int>, value: Int) {
@@ -311,7 +311,7 @@ class CatalogViewModel(
 	}
 
 	override fun destroy() {
-		extensionIDFlow.tryEmit(-1)
+		extensionIDFlow.value = -1
 		resetView()
 		System.gc()
 	}

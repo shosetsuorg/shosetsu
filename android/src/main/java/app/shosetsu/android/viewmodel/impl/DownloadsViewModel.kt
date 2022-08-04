@@ -74,8 +74,8 @@ class DownloadsViewModel(
 	private suspend fun copySelected(): HashMap<Int, Boolean> =
 		selectedDownloads.first().copy()
 
-	private suspend fun clearSelectedSuspend() {
-		selectedDownloads.emit(mapOf())
+	private fun clearSelected() {
+		selectedDownloads.value = emptyMap()
 	}
 
 	private fun List<DownloadUI>.sort() = sortedWith(compareBy<DownloadUI> {
@@ -203,7 +203,7 @@ class DownloadsViewModel(
 				selection[it.chapterID] = true
 			}
 
-			selectedDownloads.emit(selection)
+			selectedDownloads.value = selection
 		}
 	}
 
@@ -216,7 +216,7 @@ class DownloadsViewModel(
 				selection[it.chapterID] = !it.isSelected
 			}
 
-			selectedDownloads.emit(selection)
+			selectedDownloads.value = selection
 		}
 	}
 
@@ -229,7 +229,7 @@ class DownloadsViewModel(
 				selection[it.chapterID] = true
 			}
 
-			selectedDownloads.emit(selection)
+			selectedDownloads.value = selection
 		}
 	}
 
@@ -239,7 +239,7 @@ class DownloadsViewModel(
 
 			deleteDownloadUseCase(selected)
 
-			clearSelectedSuspend()
+			clearSelected()
 		}
 	}
 
@@ -249,7 +249,7 @@ class DownloadsViewModel(
 
 			updateDownloadStatus(selected, DownloadStatus.PAUSED)
 
-			clearSelectedSuspend()
+			clearSelected()
 		}
 	}
 
@@ -263,7 +263,7 @@ class DownloadsViewModel(
 
 			updateDownloadStatus(selected, DownloadStatus.PENDING)
 
-			clearSelectedSuspend()
+			clearSelected()
 		}
 	}
 
@@ -277,7 +277,7 @@ class DownloadsViewModel(
 
 			updateDownloadStatus(selected, DownloadStatus.PENDING)
 
-			clearSelectedSuspend()
+			clearSelected()
 		}
 	}
 
@@ -285,13 +285,13 @@ class DownloadsViewModel(
 		launchIO {
 			val selection = copySelected()
 			selection[entity.chapterID] = !entity.isSelected
-			selectedDownloads.emit(selection)
+			selectedDownloads.value = selection
 		}
 	}
 
 	override fun deselectAll() {
 		launchIO {
-			clearSelectedSuspend()
+			clearSelected()
 		}
 	}
 }
