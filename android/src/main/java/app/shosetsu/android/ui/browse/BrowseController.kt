@@ -127,27 +127,25 @@ class BrowseController : ShosetsuController(),
 		activity?.addMenuProvider(this, viewLifecycleOwner)
 		setViewTitle()
 		return ComposeView(requireContext()).apply {
-			return ComposeView(requireContext()).apply {
-				setContent {
-					ShosetsuCompose {
-						val entites by viewModel.liveData.collectAsState(listOf())
-						var isRefreshing by remember { mutableStateOf(false) }
-						BrowseContent(
-							entites,
-							refresh = {
-								isRefreshing = true
-								onRefresh()
-								isRefreshing = false
-							},
-							installExtension = ::installExtension,
-							update = viewModel::updateExtension,
-							openCatalogue = ::openCatalogue,
-							openSettings = ::openSettings,
-							cancelInstall = viewModel::cancelInstall,
-							isRefreshing = isRefreshing,
-							fab
-						)
-					}
+			setContent {
+				ShosetsuCompose {
+					val entites by viewModel.liveData.collectAsState(emptyList())
+					var isRefreshing by remember { mutableStateOf(false) }
+					BrowseContent(
+						entites,
+						refresh = {
+							isRefreshing = true
+							onRefresh()
+							isRefreshing = false
+						},
+						installExtension = ::installExtension,
+						update = viewModel::updateExtension,
+						openCatalogue = ::openCatalogue,
+						openSettings = ::openSettings,
+						cancelInstall = viewModel::cancelInstall,
+						isRefreshing = isRefreshing,
+						fab
+					)
 				}
 			}
 		}
