@@ -109,19 +109,19 @@ class LibraryFilterMenuBuilder constructor(
 
 	@Composable
 	private fun Menu0Content() {
-		val genres by viewModel.genresFlow.collectAsState(listOf())
+		val genres by viewModel.genresFlow.collectAsState(emptyList())
 		val genresIsNotEmpty by remember { derivedStateOf { genres.isNotEmpty() } }
 		var genresIsExpanded by remember { mutableStateOf(false) }
 
-		val tags by viewModel.tagsFlow.collectAsState(listOf())
+		val tags by viewModel.tagsFlow.collectAsState(emptyList())
 		val tagsIsNotEmpty by remember { derivedStateOf { tags.isNotEmpty() } }
 		var tagsIsExpanded by remember { mutableStateOf(false) }
 
-		val authors by viewModel.authorsFlow.collectAsState(listOf())
+		val authors by viewModel.authorsFlow.collectAsState(emptyList())
 		val authorsIsNotEmpty by remember { derivedStateOf { authors.isNotEmpty() } }
 		var authorsIsExpanded by remember { mutableStateOf(false) }
 
-		val artists by viewModel.artistsFlow.collectAsState(listOf())
+		val artists by viewModel.artistsFlow.collectAsState(emptyList())
 		val artistsIsNotEmpty by remember { derivedStateOf { artists.isNotEmpty() } }
 		var artistsIsExpanded by remember { mutableStateOf(false) }
 

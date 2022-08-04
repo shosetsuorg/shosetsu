@@ -56,16 +56,16 @@ data class NovelEntity(
 	var language: String = "",
 
 	/** Genres this novel matches too */
-	var genres: List<String> = listOf(),
+	var genres: List<String> = emptyList(),
 
 	/** Authors of this novel */
-	var authors: List<String> = listOf(),
+	var authors: List<String> = emptyList(),
 
 	/** Artists who helped with the novel illustration */
-	var artists: List<String> = listOf(),
+	var artists: List<String> = emptyList(),
 
 	/** Tags this novel matches, in case genres were not enough*/
-	var tags: List<String> = listOf(),
+	var tags: List<String> = emptyList(),
 
 	/** The publishing status of this novel */
 	var status: Novel.Status = Novel.Status.UNKNOWN,

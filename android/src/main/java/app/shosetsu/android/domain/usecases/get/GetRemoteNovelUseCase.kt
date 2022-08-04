@@ -45,7 +45,7 @@ class GetRemoteNovelUseCase(
 	 * Details regarding the state of an updated novel
 	 */
 	data class UpdatedNovelInfo(
-		val updatedChapters: List<ChapterEntity> = listOf()
+		val updatedChapters: List<ChapterEntity> = emptyList()
 	)
 
 	@Throws(
