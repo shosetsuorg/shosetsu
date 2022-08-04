@@ -110,19 +110,19 @@ class LibraryFilterMenuBuilder constructor(
 	@Composable
 	private fun Menu0Content() {
 		val genres by viewModel.genresFlow.collectAsState(emptyList())
-		val genresIsNotEmpty by remember { derivedStateOf { genres.isNotEmpty() } }
+		val genresIsNotEmpty by derivedStateOf { genres.isNotEmpty() }
 		var genresIsExpanded by remember { mutableStateOf(false) }
 
 		val tags by viewModel.tagsFlow.collectAsState(emptyList())
-		val tagsIsNotEmpty by remember { derivedStateOf { tags.isNotEmpty() } }
+		val tagsIsNotEmpty by derivedStateOf { tags.isNotEmpty() }
 		var tagsIsExpanded by remember { mutableStateOf(false) }
 
 		val authors by viewModel.authorsFlow.collectAsState(emptyList())
-		val authorsIsNotEmpty by remember { derivedStateOf { authors.isNotEmpty() } }
+		val authorsIsNotEmpty by derivedStateOf { authors.isNotEmpty() }
 		var authorsIsExpanded by remember { mutableStateOf(false) }
 
 		val artists by viewModel.artistsFlow.collectAsState(emptyList())
-		val artistsIsNotEmpty by remember { derivedStateOf { artists.isNotEmpty() } }
+		val artistsIsNotEmpty by derivedStateOf { artists.isNotEmpty() }
 		var artistsIsExpanded by remember { mutableStateOf(false) }
 
 		LazyColumn(
