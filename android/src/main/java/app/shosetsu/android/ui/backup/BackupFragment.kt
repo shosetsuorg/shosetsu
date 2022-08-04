@@ -189,8 +189,10 @@ fun BackupSelectionDialog(
 							dismiss()
 						}) {
 							Text(
-								option.removePrefix("shosetsu-backup-")
-									.removeSuffix(".$BACKUP_FILE_EXTENSION")
+								remember(option) {
+									option.removePrefix("shosetsu-backup-")
+										.removeSuffix(".$BACKUP_FILE_EXTENSION")
+								}
 							)
 						}
 					}
