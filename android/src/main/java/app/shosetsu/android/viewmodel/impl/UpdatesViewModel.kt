@@ -8,6 +8,7 @@ import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.load.LoadUpdatesUseCase
 import app.shosetsu.android.domain.usecases.start.StartUpdateWorkerUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateChapterUseCase
+import app.shosetsu.android.view.uimodels.model.UpdatesUI
 import app.shosetsu.android.viewmodel.abstracted.AUpdatesViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -46,7 +47,7 @@ class UpdatesViewModel(
 	private val isOnlineUseCase: IsOnlineUseCase,
 	private val updateChapterUseCase: UpdateChapterUseCase
 ) : AUpdatesViewModel() {
-	override val liveData: Flow<Map<DateTime, List<UpdateCompleteEntity>>> by lazy {
+	override val liveData: Flow<Map<DateTime, List<UpdatesUI>>> by lazy {
 		getUpdatesUseCase().transformLatest {
 			isRefreshing.emit(true)
 			emit(it.ifEmpty { emptyList() }.sortedByDescending { it.time })
@@ -65,7 +66,7 @@ class UpdatesViewModel(
 	override val isRefreshing: MutableStateFlow<Boolean> by lazy { MutableStateFlow(false) }
 
 	override suspend fun updateChapter(
-		updateUI: UpdateCompleteEntity,
+		updateUI: UpdatesUI,
 		readingStatus: ReadingStatus
 	) {
 		TODO("Not yet implemented")
