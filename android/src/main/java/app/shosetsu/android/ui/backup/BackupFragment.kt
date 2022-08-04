@@ -71,21 +71,15 @@ class BackupFragment : ShosetsuController() {
 			ShosetsuCompose {
 				BackupSettingsContent(
 					viewModel,
-					backupNow = {
-						// Stops novel updates while backup is taking place
-						// Starts backing up data
-						viewModel.startBackup()
-					},
-					restore = {
-						viewModel.restore(it)
-					},
+					// Stops novel updates while backup is taking place
+					// Starts backing up data
+					backupNow = viewModel::startBackup,
+					restore = viewModel::restore,
 					export = {
 						viewModel.holdBackupToExport(it)
 						performExportSelection()
 					},
-					performFileSelection = {
-						performFileSelection()
-					}
+					performFileSelection = ::performFileSelection
 				)
 			}
 		}
@@ -254,9 +248,7 @@ fun BackupSettingsContent(
 				isDialogShowing = true
 			}
 			if (isRestoreDialogShowing)
-				BackupSelectionDialog(viewModel, { isRestoreDialogShowing = false }) {
-					restore(it)
-				}
+				BackupSelectionDialog(viewModel, { isRestoreDialogShowing = false }, restore)
 
 			if (isDialogShowing)
 				AlertDialog(
@@ -306,9 +298,7 @@ fun BackupSettingsContent(
 			var isExportShowing: Boolean by remember { mutableStateOf(false) }
 
 			if (isExportShowing) {
-				BackupSelectionDialog(viewModel, { isExportShowing = false }) {
-					export(it)
-				}
+				BackupSelectionDialog(viewModel, { isExportShowing = false }, export)
 			}
 
 			ButtonSettingContent(
