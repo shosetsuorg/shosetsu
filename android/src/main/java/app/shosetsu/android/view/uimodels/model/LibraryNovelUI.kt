@@ -1,13 +1,15 @@
 package app.shosetsu.android.view.uimodels.model
 
+import androidx.compose.runtime.Immutable
 import app.shosetsu.android.domain.model.local.LibraryNovelEntity
 import app.shosetsu.android.dto.Convertible
 
+@Immutable
 data class LibraryNovelUI(
 	val id: Int,
 	val title: String,
 	val imageURL: String,
-	var bookmarked: Boolean,
+	val bookmarked: Boolean,
 	val unread: Int,
 	val genres: List<String>,
 	val authors: List<String>,

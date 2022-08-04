@@ -1,5 +1,7 @@
 package app.shosetsu.android.view.uimodels.model.search
 
+import androidx.compose.runtime.Immutable
+
 /*
  * This file is part of shosetsu.
  *
@@ -22,9 +24,10 @@ package app.shosetsu.android.view.uimodels.model.search
  * 09 / 09 / 2020
  * @param name Name displayed of this data
  */
+@Immutable
 data class SearchRowUI(
 	val extensionID: Int,
 	val name: String,
 	val imageURL: String?,
-	var hasError: Boolean = false
+	val hasError: Boolean = false
 )

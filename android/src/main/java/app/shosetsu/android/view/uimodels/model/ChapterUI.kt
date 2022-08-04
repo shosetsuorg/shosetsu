@@ -1,5 +1,6 @@
 package app.shosetsu.android.view.uimodels.model
 
+import androidx.compose.runtime.Immutable
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.domain.model.local.ChapterEntity
 import app.shosetsu.android.dto.Convertible
@@ -28,20 +29,23 @@ import app.shosetsu.android.dto.Convertible
  * @author github.com/doomsdayrs
  * @param isSaved the chapters is downloaded
  */
+@Immutable
 data class ChapterUI(
 	val id: Int,
 	val novelID: Int,
 	val link: String,
 	val extensionID: Int,
-	var title: String,
-	var releaseDate: String,
-	var order: Double,
-	var readingPosition: Double,
-	var readingStatus: ReadingStatus,
-	var bookmarked: Boolean,
-	var isSaved: Boolean,
-	var isSelected: Boolean = false
+	val title: String,
+	val releaseDate: String,
+	val order: Double,
+	val readingPosition: Double,
+	val readingStatus: ReadingStatus,
+	val bookmarked: Boolean,
+	val isSaved: Boolean,
+	val isSelected: Boolean = false
 ) : Convertible<ChapterEntity> {
+
+	val displayPosition = "%2.1f%%".format(readingPosition * 100)
 
 	override fun convertTo(): ChapterEntity =
 		ChapterEntity(

@@ -1,5 +1,6 @@
 package app.shosetsu.android.view.uimodels.model.reader
 
+import androidx.compose.runtime.Immutable
 import app.shosetsu.android.domain.model.local.ReaderChapterEntity
 import app.shosetsu.android.dto.Convertible
 
@@ -28,6 +29,7 @@ sealed class ReaderUIItem {
 	/**
 	 * Data class that holds each chapter and its data (not including text content)
 	 */
+	@Immutable
 	data class ReaderChapterUI(
 		val chapter: ReaderChapterEntity
 	) : Convertible<ReaderChapterEntity>, ReaderUIItem() {
@@ -44,6 +46,7 @@ sealed class ReaderUIItem {
 	 * Will always appear after the first chapter, never before the first.
 	 * Will appear after the last chapter, but stating there are no more chapters
 	 */
+	@Immutable
 	data class ReaderDividerUI(
 		val prev: ReaderChapterUI,
 		val next: ReaderChapterUI? = null

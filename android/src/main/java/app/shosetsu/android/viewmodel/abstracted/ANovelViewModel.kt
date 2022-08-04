@@ -1,5 +1,6 @@
 package app.shosetsu.android.viewmodel.abstracted
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.ImageBitmap
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.view.uimodels.NovelSettingUI
@@ -185,6 +186,7 @@ abstract class ANovelViewModel
 	 * @param showMarkAsRead If any are unread, show read option
 	 * @param showMarkAsUnread If any are read, show unread option
 	 */
+	@Immutable
 	data class SelectedChaptersState(
 		val showRemoveBookmark: Boolean = false,
 		val showBookmark: Boolean = false,

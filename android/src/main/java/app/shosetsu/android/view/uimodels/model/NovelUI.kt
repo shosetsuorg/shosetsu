@@ -1,5 +1,6 @@
 package app.shosetsu.android.view.uimodels.model
 
+import androidx.compose.runtime.Immutable
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.dto.Convertible
 import app.shosetsu.lib.Novel
@@ -28,6 +29,7 @@ import app.shosetsu.lib.Novel
  *
  * @author github.com/doomsdayrs
  */
+@Immutable
 data class NovelUI(
 	val id: Int,
 
@@ -35,25 +37,28 @@ data class NovelUI(
 
 	val extID: Int,
 
-	var extName: String = "",
+	val extName: String = "",
 
-	var bookmarked: Boolean,
+	val bookmarked: Boolean,
 
-	var title: String,
+	val title: String,
 
-	var imageURL: String,
+	val imageURL: String,
 
-	var description: String,
-	var loaded: Boolean,
-	var language: String,
+	val description: String,
+	val loaded: Boolean,
+	val language: String,
 
-	var genres: List<String>,
-	var authors: List<String>,
-	var artists: List<String>,
-	var tags: List<String>,
+	val genres: List<String>,
+	val authors: List<String>,
+	val artists: List<String>,
+	val tags: List<String>,
 
-	var status: Novel.Status,
+	val status: Novel.Status,
 ) : Convertible<NovelEntity> {
+
+	val displayAuthors = authors.joinToString(", ")
+	val displayArtists = artists.joinToString(", ")
 
 	override fun convertTo(): NovelEntity = NovelEntity(
 		id = id,

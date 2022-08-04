@@ -1,5 +1,6 @@
 package app.shosetsu.android.view.uimodels
 
+import androidx.compose.runtime.Immutable
 import app.shosetsu.android.common.enums.ChapterSortType
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.domain.model.local.NovelSettingEntity
@@ -25,15 +26,16 @@ import app.shosetsu.android.dto.Convertible
 /**
  * 30 / 12 / 2020
  */
+@Immutable
 data class NovelSettingUI(
 	val novelID: Int,
 
 	// how chapters are sorted
-	var sortType: ChapterSortType = ChapterSortType.SOURCE,
-	var showOnlyReadingStatusOf: ReadingStatus? = null,
-	var showOnlyBookmarked: Boolean = false,
-	var showOnlyDownloaded: Boolean = false,
-	var reverseOrder: Boolean = false
+	val sortType: ChapterSortType = ChapterSortType.SOURCE,
+	val showOnlyReadingStatusOf: ReadingStatus? = null,
+	val showOnlyBookmarked: Boolean = false,
+	val showOnlyDownloaded: Boolean = false,
+	val reverseOrder: Boolean = false
 ) : Convertible<NovelSettingEntity> {
 	override fun convertTo(): NovelSettingEntity = NovelSettingEntity(
 		novelID,

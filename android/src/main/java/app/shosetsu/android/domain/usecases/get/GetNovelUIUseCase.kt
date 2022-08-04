@@ -44,9 +44,9 @@ class GetNovelUIUseCase(
 			}.map { novelUI ->
 				if (novelUI != null)
 					extensionRepository.getInstalledExtension(novelUI.extID)?.let { ext ->
-						novelUI.apply {
+						novelUI.copy(
 							extName = ext.name
-						}
+						)
 					} ?: novelUI
 				else null
 			})

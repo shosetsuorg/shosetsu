@@ -1,5 +1,6 @@
 package app.shosetsu.android.viewmodel.abstracted
 
+import androidx.compose.runtime.Immutable
 import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.android.domain.model.local.ExtensionInstallOptionEntity
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
@@ -36,6 +37,7 @@ abstract class ABrowseViewModel :
 	SubscribeViewModel<List<BrowseExtensionEntity>>,
 	IsOnlineCheckViewModel {
 
+	@Immutable
 	data class FilteredLanguages(
 		val languages: List<String>,
 		val states: Map<String, Boolean>

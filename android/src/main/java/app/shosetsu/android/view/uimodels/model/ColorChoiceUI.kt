@@ -1,5 +1,7 @@
 package app.shosetsu.android.view.uimodels.model
 
+import androidx.compose.runtime.Immutable
+
 /*
  * This file is part of Shosetsu.
  *
@@ -26,6 +28,7 @@ package app.shosetsu.android.view.uimodels.model
  * @param textColor Color of the text
  * @param backgroundColor Color of the background
  */
+@Immutable
 data class ColorChoiceUI(
 	val id: Long,
 	val name: String,

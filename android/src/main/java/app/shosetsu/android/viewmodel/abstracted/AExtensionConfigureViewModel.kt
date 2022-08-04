@@ -1,5 +1,6 @@
 package app.shosetsu.android.viewmodel.abstracted
 
+import androidx.compose.runtime.Immutable
 import app.shosetsu.android.domain.model.local.FilterEntity
 import app.shosetsu.android.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
@@ -37,6 +38,7 @@ abstract class AExtensionConfigureViewModel
 	abstract val extensionListing: Flow<ListingSelectionData>
 	abstract val extensionSettings: Flow<List<FilterEntity>>
 
+	@Immutable
 	data class ListingSelectionData(
 		val choices: List<String>,
 		val selection: Int

@@ -1,5 +1,6 @@
 package app.shosetsu.android.view.uimodels.model
 
+import androidx.compose.runtime.Immutable
 import app.shosetsu.android.common.enums.DownloadStatus
 import app.shosetsu.android.domain.model.local.DownloadEntity
 import app.shosetsu.android.dto.Convertible
@@ -29,6 +30,7 @@ import app.shosetsu.android.dto.Convertible
  * @author github.com/doomsdayrs
  *
  */
+@Immutable
 data class DownloadUI(
 	val chapterID: Int,
 	val novelID: Int,
