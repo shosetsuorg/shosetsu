@@ -36,7 +36,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.plus
-import kotlinx.coroutines.runBlocking
 
 /*
  * This file is part of shosetsu.
@@ -365,6 +364,7 @@ class NovelViewModel(
 	}
 
 	private suspend fun downloadChapter(chapters: Array<ChapterUI>, startManager: Boolean = false) {
+		if (chapters.isEmpty()) return
 		downloadChapterPassageUseCase(chapters)
 
 		if (startManager)
