@@ -1,10 +1,25 @@
 package app.shosetsu.android.ui.browse
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Checkbox
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconToggleButton
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -14,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel.FilteredLanguages
+import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel.LanguageFilter
 import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
@@ -52,9 +68,11 @@ fun BrowseControllerFilterMenu(viewModel: ABrowseViewModel) {
 
 	val searchTerm by viewModel.searchTermLive.collectAsState("")
 
-	Column(modifier = Modifier
-		.fillMaxWidth()
-		.padding(16.dp)) {
+	Column(
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(vertical = 16.dp)
+	) {
 		BrowseControllerNameFilter(searchTerm, viewModel::setSearch)
 
 		BrowseControllerLanguagesFilter(languageList, hideLanguageFilter,
@@ -66,7 +84,7 @@ fun BrowseControllerFilterMenu(viewModel: ABrowseViewModel) {
 			}
 		)
 
-		Divider(modifier = Modifier.padding(bottom = 8.dp))
+		Divider(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp))
 
 		BrowseControllerInstalledFilter(
 			state = showOnlyInstalled,
@@ -82,12 +100,12 @@ fun PreviewBrowseControllerNameFilter() {
 
 @Composable
 fun BrowseControllerNameFilter(searchTerm: String, setSearchTerm: (newTerm: String) -> Unit) {
-	TextField(
+	OutlinedTextField(
 		value = searchTerm,
 		onValueChange = setSearchTerm,
 		modifier = Modifier
-			.padding(bottom = 8.dp)
-			.fillMaxWidth(),
+			.fillMaxWidth()
+			.padding(horizontal = 16.dp),
 		label = {
 			Text(stringResource(R.string.controller_browse_filter_name_label))
 		}
@@ -98,7 +116,7 @@ fun BrowseControllerNameFilter(searchTerm: String, setSearchTerm: (newTerm: Stri
 @Composable
 fun PreviewBrowseControllerLanguagesFilter() {
 	BrowseControllerLanguagesFilter(
-		FilteredLanguages(listOf("en"), mapOf("en" to true)),
+		FilteredLanguages(listOf(LanguageFilter("en")), mapOf("en" to true)),
 		false,
 		{ _, _ -> },
 		{}
@@ -112,17 +130,22 @@ fun BrowseControllerLanguagesFilter(
 	setLanguageFilterState: (language: String, newState: Boolean) -> Unit,
 	setHidden: (newValue: Boolean) -> Unit
 ) {
-	Column(modifier = Modifier
-		.fillMaxWidth()
-		.padding(bottom = 8.dp)) {
+	Column(
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(vertical = 8.dp)
+	) {
 		Row(
-			modifier = Modifier.fillMaxWidth(),
+			modifier = Modifier
+				.fillMaxWidth()
+				.height(56.dp)
+				.clickable(onClick = { setHidden(!hidden) }),
 			horizontalArrangement = Arrangement.SpaceBetween,
 			verticalAlignment = Alignment.CenterVertically
 		) {
 			Text(
 				text = stringResource(R.string.languages),
-				Modifier.padding(bottom = 8.dp)
+				Modifier.padding(start = 16.dp, bottom = 8.dp)
 			)
 
 			IconToggleButton(
@@ -138,9 +161,9 @@ fun BrowseControllerLanguagesFilter(
 			}
 		}
 
-		if (!hidden) {
+		AnimatedVisibility(!hidden) {
 			languageList.let { (languages, state) ->
-				Divider(modifier = Modifier.padding(bottom = 8.dp, end = 8.dp))
+				Divider(modifier = Modifier.padding(bottom = 8.dp, end = 8.dp, start = 8.dp))
 
 				BrowseControllerLanguagesContent(
 					languages = languages,
@@ -159,7 +182,7 @@ fun BrowseControllerLanguagesFilter(
 fun PreviewBrowseControllerLanguages() {
 	ShosetsuCompose {
 		BrowseControllerLanguagesContent(
-			languages = listOf("en", "ch", "ru", "fr"),
+			languages = listOf("en", "ch", "ru", "fr").map(::LanguageFilter),
 			state = mapOf("en" to false, "ch" to false, "ru" to true, "fr" to false),
 			onLanguageChecked = { a, b -> })
 	}
@@ -167,16 +190,16 @@ fun PreviewBrowseControllerLanguages() {
 
 @Composable
 fun BrowseControllerLanguagesContent(
-	languages: List<String>,
+	languages: List<LanguageFilter>,
 	state: Map<String, Boolean>,
 	onLanguageChecked: (String, Boolean) -> Unit
 ) {
-	LazyColumn(
-		modifier = Modifier.fillMaxWidth(),
-		contentPadding = PaddingValues(start = 8.dp, top = 8.dp, end = 12.dp)
+	Column(
+		Modifier.fillMaxWidth()
+			.padding(top = 8.dp, bottom = 8.dp)
 	) {
-		items(languages) { language ->
-			BrowseControllerLanguageItem(language, state[language] ?: false, onLanguageChecked)
+		languages.forEach { language ->
+			BrowseControllerLanguageItem(language, state[language.lang] ?: false, onLanguageChecked)
 		}
 	}
 }
@@ -185,13 +208,13 @@ fun BrowseControllerLanguagesContent(
 @Preview
 @Composable
 fun PreviewBrowseControllerLanguageItem() {
-	BrowseControllerLanguageItem("en", false) { _, _ -> }
+	BrowseControllerLanguageItem(LanguageFilter("en"), false) { _, _ -> }
 }
 
 
 @Composable
 fun BrowseControllerLanguageItem(
-	language: String,
+	language: LanguageFilter,
 	state: Boolean,
 	onLanguageChecked: (String, Boolean) -> Unit
 ) {
@@ -199,19 +222,20 @@ fun BrowseControllerLanguageItem(
 		horizontalArrangement = Arrangement.SpaceBetween,
 		modifier = Modifier
 			.fillMaxWidth()
+			.height(56.dp)
+			.clickable(onClick = { onLanguageChecked(language.lang, !state) })
+			.padding(horizontal = 16.dp),
+		verticalAlignment = Alignment.CenterVertically
 	) {
 		Text(
-			text = language,
-			modifier = Modifier.alignByBaseline()
+			text = language.displayLang,
 		)
 		Checkbox(
 			checked = state,
-			onCheckedChange = {
-				onLanguageChecked(language, it)
-			},
+			onCheckedChange = null,
 			modifier = Modifier
-				.alignByBaseline()
-				.padding(bottom = 8.dp)
+
+				.padding(bottom = 8.dp, end = 4.dp)
 		)
 	}
 
@@ -229,17 +253,19 @@ fun BrowseControllerInstalledFilter(state: Boolean, updateState: (Boolean) -> Un
 		horizontalArrangement = Arrangement.SpaceBetween,
 		modifier = Modifier
 			.fillMaxWidth()
+			.height(56.dp)
+			.clickable(onClick = { updateState(!state) })
+			.padding(horizontal = 16.dp),
+		verticalAlignment = Alignment.CenterVertically
 	) {
 		Text(
 			text = stringResource(R.string.controller_browse_filter_only_installed),
-			modifier = Modifier.alignByBaseline()
 		)
 		Checkbox(
 			checked = state,
-			onCheckedChange = updateState,
+			onCheckedChange = null,
 			modifier = Modifier
-				.alignByBaseline()
-				.padding(bottom = 8.dp, end = 12.dp)
+				.padding(end = 4.dp)
 		)
 	}
 }

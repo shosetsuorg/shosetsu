@@ -17,7 +17,11 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.SettingKey
-import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.common.ext.launchUI
+import app.shosetsu.android.common.ext.makeSnackBar
+import app.shosetsu.android.common.ext.setOnDismissed
+import app.shosetsu.android.common.ext.toast
+import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.compose.setting.SliderSettingContent
 import app.shosetsu.android.view.compose.setting.SwitchSettingContent
@@ -125,7 +129,7 @@ fun DownloadSettingsContent(
 	performFileSearch: () -> Unit
 ) {
 	LazyColumn(
-		contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 64.dp),
+		contentPadding = PaddingValues(top = 16.dp, bottom = 64.dp),
 		verticalArrangement = Arrangement.spacedBy(8.dp)
 	) {
 		item {

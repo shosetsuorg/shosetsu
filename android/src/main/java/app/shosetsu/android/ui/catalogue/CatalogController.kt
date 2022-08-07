@@ -406,115 +406,113 @@ fun CatalogContent(
 	hasFilters: Boolean,
 	fab: EFabMaintainer
 ) {
-	Column(
+	Box(
 		modifier = Modifier.fillMaxSize(),
 	) {
-		val refreshState = items.loadState.refresh
-		when (refreshState) {
-			is LoadState.NotLoading -> {
-			}
-			LoadState.Loading ->
-				LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-
-			is LoadState.Error ->
-				ErrorContent(
-					refreshState.error.message ?: "Unknown",
-					ErrorAction(R.string.retry) {
-						items.refresh()
-					},
-					stackTrace = refreshState.error.stackTraceToString()
-				)
-		}
-		SwipeRefresh(
-			SwipeRefreshState(false),
-			{
-				items.refresh()
-			},
-		) {
-			val w = LocalConfiguration.current.screenWidthDp
-			val o = LocalConfiguration.current.orientation
-
-			val size =
-				(w / when (o) {
-					Configuration.ORIENTATION_LANDSCAPE -> columnsInH
-					else -> columnsInV
-				}).dp - 8.dp
-
-			val state = rememberLazyGridState()
-			if (hasFilters)
-				syncFABWithCompose(state, fab)
-			LazyVerticalGrid(
-				columns = GridCells.Adaptive(if (cardType != COMPRESSED) size else 400.dp),
-				contentPadding = PaddingValues(
-					bottom = 200.dp,
-					start = 8.dp,
-					end = 8.dp,
-					top = 4.dp
-				),
-				state = state,
-				horizontalArrangement = Arrangement.spacedBy(4.dp),
-				verticalArrangement = Arrangement.spacedBy(4.dp)
+		Column(Modifier.fillMaxHeight()) {
+			SwipeRefresh(
+				state = SwipeRefreshState(false),
+				onRefresh = {
+					items.refresh()
+				},
 			) {
-				itemsIndexed(
-					items,
-					key = { index, item -> item.hashCode() + index }
-				) { _, item ->
-					when (cardType) {
-						NORMAL -> {
-							if (item != null)
-								NovelCardNormalContent(
-									item.title,
-									item.imageURL,
-									onClick = {
-										onClick(item)
-									},
-									onLongClick = {
-										onLongClick(item)
-									},
-									isBookmarked = item.bookmarked
-								)
-						}
-						COMPRESSED -> {
-							if (item != null)
-								NovelCardCompressedContent(
-									item.title,
-									item.imageURL,
-									onClick = {
-										onClick(item)
-									},
-									onLongClick = {
-										onLongClick(item)
-									},
-									isBookmarked = item.bookmarked
-								)
-						}
-						COZY -> {
-							if (item != null)
-								NovelCardCozyContent(
-									item.title,
-									item.imageURL,
-									onClick = {
-										onClick(item)
-									},
-									onLongClick = {
-										onLongClick(item)
-									},
-									isBookmarked = item.bookmarked
-								)
+				val w = LocalConfiguration.current.screenWidthDp
+				val o = LocalConfiguration.current.orientation
+
+				val size =
+					(w / when (o) {
+						Configuration.ORIENTATION_LANDSCAPE -> columnsInH
+						else -> columnsInV
+					}).dp - 8.dp
+
+				val state = rememberLazyGridState()
+				if (hasFilters)
+					syncFABWithCompose(state, fab)
+				LazyVerticalGrid(
+					columns = GridCells.Adaptive(if (cardType != COMPRESSED) size else 400.dp),
+					contentPadding = PaddingValues(
+						bottom = 200.dp,
+						start = 8.dp,
+						end = 8.dp,
+						top = 4.dp
+					),
+					state = state,
+					horizontalArrangement = Arrangement.spacedBy(4.dp),
+					verticalArrangement = Arrangement.spacedBy(4.dp)
+				) {
+					itemsIndexed(
+						items,
+						key = { index, item -> item.hashCode() + index }
+					) { _, item ->
+						when (cardType) {
+							NORMAL -> {
+								if (item != null)
+									NovelCardNormalContent(
+										item.title,
+										item.imageURL,
+										onClick = {
+											onClick(item)
+										},
+										onLongClick = {
+											onLongClick(item)
+										},
+										isBookmarked = item.bookmarked
+									)
+							}
+							COMPRESSED -> {
+								if (item != null)
+									NovelCardCompressedContent(
+										item.title,
+										item.imageURL,
+										onClick = {
+											onClick(item)
+										},
+										onLongClick = {
+											onLongClick(item)
+										},
+										isBookmarked = item.bookmarked
+									)
+							}
+							COZY -> {
+								if (item != null)
+									NovelCardCozyContent(
+										item.title,
+										item.imageURL,
+										onClick = {
+											onClick(item)
+										},
+										onLongClick = {
+											onLongClick(item)
+										},
+										isBookmarked = item.bookmarked
+									)
+							}
 						}
 					}
 				}
 			}
+
+			if (items.loadState.append == LoadState.Loading)
+				LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+
+			if (items.loadState.refresh.endOfPaginationReached && items.loadState.append.endOfPaginationReached) {
+				CatalogContentNoMore()
+			}
+
+			val errorState = items.loadState.refresh
+			if (errorState is LoadState.Error) {
+				ErrorContent(
+					errorState.error.message ?: "Unknown",
+					ErrorAction(R.string.retry) {
+						items.refresh()
+					},
+					stackTrace = errorState.error.stackTraceToString()
+				)
+			}
 		}
 
-		if (items.loadState.append == LoadState.Loading)
+		if (items.loadState.refresh == LoadState.Loading)
 			LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-
-		if (refreshState is LoadState.NotLoading &&
-			items.loadState.append is LoadState.NotLoading
-		) {
-			CatalogContentNoMore()
-		}
 	}
 }
 

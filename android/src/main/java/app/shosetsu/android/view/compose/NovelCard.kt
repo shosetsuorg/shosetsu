@@ -1,11 +1,19 @@
 package app.shosetsu.android.view.compose
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,8 +31,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
-import coil.compose.AsyncImage
+import androidx.compose.ui.unit.sp
+import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.placeholder.material.placeholder
@@ -52,6 +60,8 @@ import com.google.accompanist.placeholder.material.placeholder
  * @since 14 / 05 / 2022
  * @author Doomsdayrs
  */
+
+const val coverRatio = 12.8F / 18.2F
 
 @Composable
 fun PlaceholderNovelCardNormalContent() {
@@ -91,37 +101,30 @@ fun NovelCardNormalContent(
 ) {
 	Card(
 		modifier = Modifier
+			.selectedOutline(isSelected)
 			.combinedClickable(
 				onClick = onClick,
 				onLongClick = onLongClick
 			)
 			.alpha(if (isBookmarked) .5f else 1f),
-		border = if (isSelected) {
-			BorderStroke(
-				width = (SELECTED_STROKE_WIDTH / 2).dp,
-				color = MaterialTheme.colors.primary
-			)
-		} else {
-			null
-		}
 	) {
 		Box {
-			AsyncImage(
-				ImageRequest.Builder(LocalContext.current)
-					.data(imageURL)
-					.error(R.drawable.broken_image)
-					.build(),
+			SubcomposeAsyncImage(
+				imageURL,
 				stringResource(R.string.controller_novel_info_image),
 				modifier = Modifier
 					.fillMaxSize()
-					.aspectRatio(.75f)
+					.aspectRatio(coverRatio)
 					.placeholder(visible = isPlaceholder),
-				contentScale = ContentScale.Crop
+				contentScale = ContentScale.Crop,
+				error = {
+					ImageLoadingError()
+				}
 			)
 
 			Box(
 				modifier = Modifier
-					.aspectRatio(.75f)
+					.aspectRatio(coverRatio)
 					.fillMaxSize()
 					.drawWithCache {
 						onDrawWithContent {
@@ -150,7 +153,8 @@ fun NovelCardNormalContent(
 				textAlign = TextAlign.Center,
 				color = Color.White,
 				overflow = TextOverflow.Ellipsis,
-				maxLines = 3
+				maxLines = 3,
+				fontSize = 14.sp
 			)
 			if (overlay != null)
 				overlay()
@@ -196,6 +200,7 @@ fun NovelCardCozyContent(
 ) {
 	Column(
 		modifier = Modifier
+			.selectedOutline(isSelected)
 			.alpha(if (isBookmarked) .5f else 1f)
 	) {
 		Card(
@@ -204,27 +209,25 @@ fun NovelCardCozyContent(
 					onClick = onClick,
 					onLongClick = onLongClick
 				),
-			border = if (isSelected) {
-				BorderStroke(
-					width = (SELECTED_STROKE_WIDTH / 2).dp,
-					color = MaterialTheme.colors.primary
-				)
-			} else {
-				null
-			}
 		) {
 			Box {
-				AsyncImage(
+				SubcomposeAsyncImage(
 					ImageRequest.Builder(LocalContext.current)
 						.data(imageURL)
-						.error(R.drawable.broken_image)
+						.crossfade(true)
 						.build(),
 					stringResource(R.string.controller_novel_info_image),
 					modifier = Modifier
 						.fillMaxSize()
-						.aspectRatio(.75f)
+						.aspectRatio(coverRatio)
 						.placeholder(visible = isPlaceholder),
-					contentScale = ContentScale.Crop
+					contentScale = ContentScale.Crop,
+					error = {
+						ImageLoadingError()
+					},
+					loading = {
+						Box(Modifier.placeholder(true))
+					}
 				)
 
 				if (overlay != null)
@@ -240,7 +243,8 @@ fun NovelCardCozyContent(
 				.padding(4.dp),
 			textAlign = TextAlign.Center,
 			overflow = TextOverflow.Ellipsis,
-			maxLines = 3
+			maxLines = 3,
+			fontSize = 14.sp
 		)
 	}
 }
@@ -273,19 +277,12 @@ fun NovelCardCompressedContent(
 ) {
 	Card(
 		modifier = Modifier
+			.selectedOutline(isSelected)
 			.combinedClickable(
 				onClick = onClick,
 				onLongClick = onLongClick
 			)
 			.alpha(if (isBookmarked) .5f else 1f),
-		border = if (isSelected) {
-			BorderStroke(
-				width = (SELECTED_STROKE_WIDTH / 2).dp,
-				color = MaterialTheme.colors.primary
-			)
-		} else {
-			null
-		}
 	) {
 		Box {
 			Row(
@@ -297,17 +294,22 @@ fun NovelCardCompressedContent(
 					verticalAlignment = Alignment.CenterVertically,
 					modifier = Modifier.fillMaxSize(.70f)
 				) {
-					AsyncImage(
+					SubcomposeAsyncImage(
 						ImageRequest.Builder(LocalContext.current)
 							.data(imageURL)
-							.error(R.drawable.broken_image)
+							.crossfade(true)
 							.build(),
 						stringResource(R.string.controller_novel_info_image),
 						modifier = Modifier
 							.width(64.dp)
-							.aspectRatio(1.0f)
-							.placeholder(visible = isPlaceholder),
-						contentScale = ContentScale.Crop
+							.aspectRatio(1.0f),
+						contentScale = ContentScale.Crop,
+						error = {
+							ImageLoadingError()
+						},
+						loading = {
+							Box(Modifier.placeholder(true))
+						}
 					)
 
 					Text(

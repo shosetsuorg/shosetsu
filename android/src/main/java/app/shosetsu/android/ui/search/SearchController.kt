@@ -1,10 +1,23 @@
 package app.shosetsu.android.ui.search
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
@@ -19,7 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,14 +46,25 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import app.shosetsu.android.common.consts.BundleKeys
-import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.view.compose.*
+import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.makeSnackBar
+import app.shosetsu.android.common.ext.navigateSafely
+import app.shosetsu.android.common.ext.setShosetsuTransition
+import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.view.compose.ImageLoadingError
+import app.shosetsu.android.view.compose.NovelCardCozyContent
+import app.shosetsu.android.view.compose.NovelCardNormalContent
+import app.shosetsu.android.view.compose.PlaceholderNovelCardCozyContent
+import app.shosetsu.android.view.compose.PlaceholderNovelCardNormalContent
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.view.uimodels.model.search.SearchRowUI
 import app.shosetsu.android.viewmodel.abstracted.ASearchViewModel
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.flow.Flow
@@ -324,14 +348,19 @@ fun SearchRowContent(
 			modifier = Modifier.padding(8.dp),
 			verticalAlignment = Alignment.CenterVertically
 		) {
-			Image(
-				if (!row.imageURL.isNullOrEmpty()) {
-					rememberAsyncImagePainter(row.imageURL)
-				} else {
-					painterResource(R.drawable.library)
-				},
+			SubcomposeAsyncImage(
+				ImageRequest.Builder(LocalContext.current)
+					.data(if (!row.imageURL.isNullOrEmpty()) row.imageURL else R.drawable.library)
+					.crossfade(true)
+					.build(),
 				contentDescription = row.name,
-				modifier = Modifier.size(32.dp)
+				modifier = Modifier.size(32.dp),
+				error = {
+					ImageLoadingError()
+				},
+				loading = {
+					Box(Modifier.placeholder(true))
+				}
 			)
 			Text(row.name, modifier = Modifier.padding(start = 8.dp))
 		}
@@ -339,7 +368,7 @@ fun SearchRowContent(
 
 		LazyRow(
 			horizontalArrangement = Arrangement.spacedBy(4.dp),
-			contentPadding = PaddingValues(start = 4.dp)
+			contentPadding = PaddingValues(horizontal = 4.dp)
 		) {
 			items()
 		}

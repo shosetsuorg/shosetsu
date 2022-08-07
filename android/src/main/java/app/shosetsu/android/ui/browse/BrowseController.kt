@@ -21,25 +21,50 @@ import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.Card
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,22 +80,29 @@ import androidx.navigation.navOptions
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.consts.REPOSITORY_HELP_URL
-import app.shosetsu.android.common.ext.*
-import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
+import app.shosetsu.android.common.ext.displayOfflineSnackBar
+import app.shosetsu.android.common.ext.makeSnackBar
+import app.shosetsu.android.common.ext.navigateSafely
+import app.shosetsu.android.common.ext.setShosetsuTransition
+import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.domain.model.local.ExtensionInstallOptionEntity
 import app.shosetsu.android.view.ComposeBottomSheetDialog
 import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
+import app.shosetsu.android.view.compose.ImageLoadingError
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.ExtendedFABController.EFabMaintainer
 import app.shosetsu.android.view.controller.base.HomeFragment
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
+import app.shosetsu.android.view.uimodels.model.BrowseExtensionUI
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.lib.Version
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -104,7 +136,7 @@ class BrowseController : ShosetsuController(),
 	}
 
 	private fun installExtension(
-		extension: BrowseExtensionEntity,
+		extension: BrowseExtensionUI,
 		option: ExtensionInstallOptionEntity
 	) {
 		if (!extension.isInstalled) {
@@ -126,10 +158,10 @@ class BrowseController : ShosetsuController(),
 		return ComposeView(requireContext()).apply {
 			setContent {
 				ShosetsuCompose {
-					val entites by viewModel.liveData.collectAsState(emptyList())
+					val entities by viewModel.liveData.collectAsState(null)
 					var isRefreshing by remember { mutableStateOf(false) }
 					BrowseContent(
-						entites,
+						entities,
 						refresh = {
 							isRefreshing = true
 							onRefresh()
@@ -148,7 +180,7 @@ class BrowseController : ShosetsuController(),
 		}
 	}
 
-	private fun openSettings(entity: BrowseExtensionEntity) {
+	private fun openSettings(entity: BrowseExtensionUI) {
 		viewModel.resetSearch()
 		findNavController().navigateSafely(
 			R.id.action_browseController_to_configureExtension,
@@ -160,7 +192,7 @@ class BrowseController : ShosetsuController(),
 		)
 	}
 
-	private fun openCatalogue(entity: BrowseExtensionEntity) {
+	private fun openCatalogue(entity: BrowseExtensionUI) {
 		// First check if the user is online or not
 		if (viewModel.isOnline()) {
 			// If the extension is installed, push to it, otherwise prompt the user to install
@@ -244,7 +276,7 @@ fun PreviewBrowseContent() {
 	BrowseContent(
 		entities =
 		List(10) {
-			BrowseExtensionEntity(
+			BrowseExtensionUI(
 				it,
 				"Fake a b c",
 				"",
@@ -271,20 +303,20 @@ fun PreviewBrowseContent() {
 
 @Composable
 fun BrowseContent(
-	entities: List<BrowseExtensionEntity>,
+	entities: List<BrowseExtensionUI>?,
 	refresh: () -> Unit,
-	installExtension: (BrowseExtensionEntity, ExtensionInstallOptionEntity) -> Unit,
-	update: (BrowseExtensionEntity) -> Unit,
-	openCatalogue: (BrowseExtensionEntity) -> Unit,
-	openSettings: (BrowseExtensionEntity) -> Unit,
-	cancelInstall: (BrowseExtensionEntity) -> Unit,
+	installExtension: (BrowseExtensionUI, ExtensionInstallOptionEntity) -> Unit,
+	update: (BrowseExtensionUI) -> Unit,
+	openCatalogue: (BrowseExtensionUI) -> Unit,
+	openSettings: (BrowseExtensionUI) -> Unit,
+	cancelInstall: (BrowseExtensionUI) -> Unit,
 	isRefreshing: Boolean,
 	fab: EFabMaintainer?
 ) {
 	SwipeRefresh(
 		state = SwipeRefreshState(isRefreshing), refresh, modifier = Modifier.fillMaxSize()
 	) {
-		if (entities.isNotEmpty()) {
+		if (!entities.isNullOrEmpty()) {
 			val state = rememberLazyListState()
 			if (fab != null)
 				syncFABWithCompose(state, fab)
@@ -320,7 +352,7 @@ fun BrowseContent(
 					)
 				}
 			}
-		} else {
+		} else if (entities != null && entities.isEmpty()) {
 			ErrorContent(
 				R.string.empty_browse_message,
 				ErrorAction(R.string.empty_browse_refresh_action) {
@@ -335,7 +367,7 @@ fun BrowseContent(
 @Composable
 fun PreviewBrowseExtensionContent() {
 	BrowseExtensionContent(
-		BrowseExtensionEntity(
+		BrowseExtensionUI(
 			1,
 			"Fake a  aaaaaaaaaaaaaaaaa",
 			"",
@@ -366,7 +398,7 @@ fun PreviewBrowseExtensionContent() {
 )
 @Composable
 fun BrowseExtensionContent(
-	item: BrowseExtensionEntity,
+	item: BrowseExtensionUI,
 	install: (ExtensionInstallOptionEntity) -> Unit,
 	update: () -> Unit,
 	openCatalogue: () -> Unit,
@@ -388,21 +420,30 @@ fun BrowseExtensionContent(
 				Row(
 					verticalAlignment = Alignment.CenterVertically,
 				) {
-					Image(
-						painter = if (item.imageURL.isNotEmpty()) {
-							rememberAsyncImagePainter(item.imageURL)
-						} else {
-							painterResource(R.drawable.broken_image)
-						},
-						stringResource(R.string.controller_browse_ext_icon_desc),
-						modifier = Modifier.size(64.dp)
-					)
+					if (item.imageURL.isNotEmpty()) {
+						SubcomposeAsyncImage(
+							ImageRequest.Builder(LocalContext.current)
+								.data(item.imageURL)
+								.crossfade(true)
+								.build(),
+							contentDescription = stringResource(R.string.controller_browse_ext_icon_desc),
+							modifier = Modifier.size(64.dp),
+							error = {
+								ImageLoadingError()
+							},
+							loading = {
+								Box(Modifier.placeholder(true))
+							}
+						)
+					} else {
+						ImageLoadingError(Modifier.size(64.dp))
+					}
 					Column(
 						modifier = Modifier.padding(start = 8.dp)
 					) {
 						Text(item.name)
 						Row {
-							Text(item.lang, fontSize = TextUnit(14f, TextUnitType.Sp))
+							Text(item.displayLang, fontSize = TextUnit(14f, TextUnitType.Sp))
 
 							if (item.isInstalled && item.installedVersion != null)
 								Text(

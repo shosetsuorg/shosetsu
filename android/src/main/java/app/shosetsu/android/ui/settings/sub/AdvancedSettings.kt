@@ -17,8 +17,19 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.shosetsu.android.common.SettingKey.*
-import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.common.SettingKey.AppTheme
+import app.shosetsu.android.common.SettingKey.AutoBookmarkFromQR
+import app.shosetsu.android.common.SettingKey.ExposeTrueChapterDelete
+import app.shosetsu.android.common.SettingKey.LogToFile
+import app.shosetsu.android.common.SettingKey.RequireDoubleBackToExit
+import app.shosetsu.android.common.SettingKey.VerifyCheckSum
+import app.shosetsu.android.common.ext.launchIO
+import app.shosetsu.android.common.ext.launchUI
+import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.logV
+import app.shosetsu.android.common.ext.makeSnackBar
+import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.compose.setting.ButtonSettingContent
 import app.shosetsu.android.view.compose.setting.DropdownSettingContent
@@ -152,8 +163,6 @@ fun AdvancedSettingsContent(
 	LazyColumn(
 		contentPadding = PaddingValues(
 			top = 16.dp,
-			start = 16.dp,
-			end = 16.dp,
 			bottom = 64.dp
 		),
 		verticalArrangement = Arrangement.spacedBy(8.dp)

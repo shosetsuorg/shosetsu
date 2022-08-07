@@ -27,7 +27,9 @@ import app.shosetsu.android.common.consts.BundleKeys
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
+import app.shosetsu.android.view.compose.ImageLoadingError
 import app.shosetsu.android.view.compose.ShosetsuCompose
+import app.shosetsu.android.view.compose.coverRatio
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
 import app.shosetsu.android.viewmodel.abstracted.AAddShareViewModel
@@ -36,8 +38,11 @@ import app.shosetsu.lib.share.NovelLink
 import app.shosetsu.lib.share.RepositoryLink
 import app.shosetsu.lib.share.StyleLink
 import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
+import com.google.accompanist.placeholder.material.placeholder
+import com.google.accompanist.placeholder.placeholder
 import io.github.g00fy2.quickie.QRResult
 import io.github.g00fy2.quickie.ScanQRCode
 import io.github.g00fy2.quickie.content.QRContent
@@ -360,16 +365,21 @@ fun AddShareContent(
 										verticalAlignment = Alignment.CenterVertically
 									) {
 
-										AsyncImage(
+										SubcomposeAsyncImage(
 											model = ImageRequest.Builder(LocalContext.current)
 												.data(novelLink.imageURL)
-												.error(R.drawable.broken_image)
-												.placeholder(R.drawable.animated_refresh)
+												.crossfade(true)
 												.build(),
 											contentDescription = null,
 											modifier = Modifier
 												.heightIn(max = 128.dp)
-												.aspectRatio(.75f)
+												.aspectRatio(coverRatio),
+											error = {
+												ImageLoadingError()
+											},
+											loading = {
+												Box(Modifier.placeholder(true))
+											}
 										)
 										Column(
 											modifier = Modifier.padding(start = 8.dp)
@@ -412,14 +422,19 @@ fun AddShareContent(
 									Row(
 										verticalAlignment = Alignment.CenterVertically
 									) {
-										AsyncImage(
+										SubcomposeAsyncImage(
 											ImageRequest.Builder(LocalContext.current)
 												.data(extensionLink.imageURL)
-												.placeholder(R.drawable.animated_refresh)
-												.error(R.drawable.broken_image)
+												.crossfade(true)
 												.build(),
 											"",
-											modifier = Modifier.size(64.dp)
+											modifier = Modifier.size(64.dp),
+											error = {
+												ImageLoadingError()
+											},
+											loading = {
+												Box(Modifier.placeholder(true))
+											}
 										)
 										Text(
 											extensionLink.name,

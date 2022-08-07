@@ -6,30 +6,70 @@ import android.database.sqlite.SQLiteException
 import android.os.Bundle
 import android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
 import android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
-import android.view.*
+import android.view.ActionMode
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.NumberPicker
 import androidx.appcompat.app.AlertDialog
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.Card
+import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,12 +81,26 @@ import androidx.navigation.navOptions
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.NoSuchExtensionException
-import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.common.enums.ReadingStatus
-import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.common.ext.collectLA
+import app.shosetsu.android.common.ext.collectLatestLA
+import app.shosetsu.android.common.ext.displayOfflineSnackBar
+import app.shosetsu.android.common.ext.firstLa
+import app.shosetsu.android.common.ext.getNovelID
+import app.shosetsu.android.common.ext.logE
+import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.makeSnackBar
+import app.shosetsu.android.common.ext.navigateSafely
+import app.shosetsu.android.common.ext.openChapter
+import app.shosetsu.android.common.ext.openInWebView
+import app.shosetsu.android.common.ext.openShare
+import app.shosetsu.android.common.ext.setShosetsuTransition
+import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
+import app.shosetsu.android.view.compose.ImageLoadingError
 import app.shosetsu.android.view.compose.LazyColumnScrollbar
 import app.shosetsu.android.view.compose.ShosetsuCompose
+import app.shosetsu.android.view.compose.coverRatio
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.ExtendedFABController.EFabMaintainer
@@ -58,11 +112,14 @@ import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
 import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel.SelectedChaptersState
 import app.shosetsu.lib.Novel
-import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.R.*
+import com.github.doomsdayrs.apps.shosetsu.R.drawable
+import com.github.doomsdayrs.apps.shosetsu.R.plurals
+import com.github.doomsdayrs.apps.shosetsu.R.string
 import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelJumpDialogBinding
+import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -772,11 +829,6 @@ fun NovelInfoContent(
 		Column(
 			modifier = Modifier.fillMaxSize()
 		) {
-			if (isRefreshing)
-				LinearProgressIndicator(
-					modifier = Modifier.fillMaxWidth()
-				)
-
 			SwipeRefresh(state = SwipeRefreshState(false), onRefresh = onRefresh) {
 				LazyColumnScrollbar(
 					state,
@@ -903,6 +955,10 @@ fun NovelInfoContent(
 				}
 			}
 		}
+		if (isRefreshing)
+			LinearProgressIndicator(
+				modifier = Modifier.fillMaxWidth()
+			)
 	}
 }
 
@@ -948,14 +1004,20 @@ fun NovelChapterContent(
 	openChapter: () -> Unit,
 	onToggleSelection: () -> Unit
 ) {
-	Card(
-		shape = RectangleShape,
+	Box(
 		modifier = Modifier
 			.let {
 				if (chapter.readingStatus == ReadingStatus.READ)
 					it.alpha(.5f)
 				else it
 			}
+			.background(
+				if (chapter.isSelected) {
+					MaterialTheme.colors.secondary.copy(alpha = if (isSystemInDarkTheme()) 0.08f else 0.22f)
+				} else {
+					MaterialTheme.colors.surface
+				}
+			)
 			.combinedClickable(
 				onClick =
 				if (!selectionMode)
@@ -963,14 +1025,6 @@ fun NovelChapterContent(
 				else onToggleSelection,
 				onLongClick = onToggleSelection
 			),
-		border = if (chapter.isSelected) {
-			BorderStroke(
-				width = (SELECTED_STROKE_WIDTH / 2).dp,
-				color = MaterialTheme.colors.primary
-			)
-		} else {
-			null
-		}
 	) {
 		Column(
 			modifier = Modifier.padding(16.dp)
@@ -1058,18 +1112,23 @@ fun NovelInfoCoverContent(
 	modifier: Modifier = Modifier,
 	onClick: () -> Unit,
 ) {
-	AsyncImage(
+	SubcomposeAsyncImage(
 		ImageRequest.Builder(LocalContext.current)
 			.data(imageURL)
-			.placeholder(drawable.animated_refresh)
-			.error(drawable.broken_image)
+			.crossfade(true)
 			.build(),
 		stringResource(string.controller_novel_info_image),
 		modifier = modifier
-			.aspectRatio(.75f)
-			.padding(top = 8.dp)
+			.aspectRatio(coverRatio)
+			.padding(top = 8.dp, start = 4.dp)
 			.clickable(onClick = onClick)
 			.clip(RoundedCornerShape(16.dp)),
+		error = {
+			ImageLoadingError()
+		},
+		loading = {
+			Box(Modifier.placeholder(true))
+		}
 	)
 }
 
@@ -1101,17 +1160,22 @@ fun NovelInfoHeaderContent(
 		Box(
 			modifier = Modifier.fillMaxWidth(),
 		) {
-			AsyncImage(
+			SubcomposeAsyncImage(
 				ImageRequest.Builder(LocalContext.current)
 					.data(novelInfo.imageURL)
-					.placeholder(drawable.animated_refresh)
-					.error(drawable.broken_image)
+					.crossfade(true)
 					.build(),
 				stringResource(string.controller_novel_info_image),
 				modifier = Modifier
 					.matchParentSize()
 					.alpha(.10f),
 				contentScale = ContentScale.Crop,
+				error = {
+					ImageLoadingError()
+				},
+				loading = {
+					Box(Modifier.placeholder(true))
+				}
 			)
 
 			Column(
@@ -1130,7 +1194,11 @@ fun NovelInfoHeaderContent(
 						isCoverClicked = true
 					}
 					Column(
-						modifier = Modifier.padding(top = 16.dp),
+						modifier = Modifier.padding(
+							top = 16.dp,
+							start = 8.dp,
+							end = 8.dp
+						),
 						verticalArrangement = Arrangement.Center
 					) {
 						Text(
@@ -1198,9 +1266,11 @@ fun NovelInfoHeaderContent(
 					horizontalArrangement = Arrangement.SpaceEvenly,
 					verticalAlignment = Alignment.CenterVertically
 				) {
-					IconButton(
+					TextButton(
 						onClick = toggleBookmark,
-						modifier = Modifier.padding(8.dp)
+						modifier = Modifier
+							.padding(vertical = 8.dp, horizontal = 4.dp)
+							.weight(1F)
 					) {
 						Column(
 							horizontalAlignment = Alignment.CenterHorizontally
@@ -1212,9 +1282,13 @@ fun NovelInfoHeaderContent(
 									painterResource(drawable.ic_heart_svg)
 								},
 								null,
-								tint = MaterialTheme.colors.primary
+								tint = if (novelInfo.bookmarked)
+									MaterialTheme.colors.primary
+								else
+									MaterialTheme.colors.onSurface,
+								modifier = Modifier.size(20.dp)
 							)
-
+							Spacer(Modifier.height(4.dp))
 							Text(
 								stringResource(
 									if (novelInfo.bookmarked) {
@@ -1223,19 +1297,38 @@ fun NovelInfoHeaderContent(
 										string.controller_novel_add_to_library
 									}
 								),
-								style = MaterialTheme.typography.body1
+								style = MaterialTheme.typography.body1,
+								color = if (novelInfo.bookmarked)
+									MaterialTheme.colors.primary
+								else
+									MaterialTheme.colors.onSurface,
+								fontSize = 12.sp,
+								textAlign = TextAlign.Center,
 							)
 						}
 					}
-					IconButton(onClick = openWebview) {
+					TextButton(
+						onClick = openWebview,
+						modifier = Modifier
+							.padding(vertical = 8.dp, horizontal = 4.dp)
+							.weight(1F)
+					) {
 						Column(
 							horizontalAlignment = Alignment.CenterHorizontally
 						) {
 							Icon(
 								painterResource(drawable.open_in_browser),
-								stringResource(string.controller_novel_info_open_web)
+								stringResource(string.controller_novel_info_open_web),
+								modifier = Modifier.size(20.dp),
+								tint = MaterialTheme.colors.onSurface
 							)
-							Text(stringResource(string.controller_novel_info_open_web_text))
+							Spacer(Modifier.height(4.dp))
+							Text(
+								stringResource(string.controller_novel_info_open_web_text),
+								color = MaterialTheme.colors.onSurface,
+								fontSize = 12.sp,
+								textAlign = TextAlign.Center,
+							)
 						}
 					}
 				}
@@ -1277,7 +1370,7 @@ fun NovelInfoHeaderContent(
 			horizontalArrangement = Arrangement.SpaceBetween,
 			modifier = Modifier
 				.fillMaxWidth()
-				.padding(start = 16.dp, end = 16.dp),
+				.padding(horizontal = 16.dp),
 			verticalAlignment = Alignment.CenterVertically
 		) {
 			Row {
@@ -1293,25 +1386,36 @@ fun NovelInfoHeaderContent(
 			) {
 				Card(
 					onClick = openChapterJump,
-					modifier = Modifier.fillMaxHeight(),
+					modifier = Modifier.height(32.dp),
 				) {
-					Text(
-						stringResource(string.jump_to_chapter_short),
-						modifier = Modifier.padding(8.dp),
-					)
+					Box(
+						modifier = Modifier
+							.fillMaxHeight()
+							.padding(horizontal = 4.dp),
+						contentAlignment = Alignment.Center
+					) {
+						Text(
+							stringResource(string.jump_to_chapter_short),
+						)
+					}
 				}
 
 				Card(
 					onClick = openFilter,
 					modifier = Modifier
 						.padding(start = 8.dp)
-						.fillMaxHeight()
+						.height(32.dp)
 				) {
 					Row(
+						Modifier
+							.fillMaxHeight()
+							.padding(horizontal = 4.dp),
 						verticalAlignment = Alignment.CenterVertically,
-						modifier = Modifier.padding(8.dp),
 					) {
-						Icon(painterResource(drawable.filter), null)
+						Icon(
+							painterResource(drawable.filter),
+							null,
+						)
 						Text(stringResource(string.filter))
 					}
 				}
@@ -1331,7 +1435,11 @@ fun ExpandedText(
 
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally,
-		modifier = modifier
+		modifier = modifier then Modifier.clickable(
+			indication = null,
+			onClick = { isExpanded = !isExpanded },
+			interactionSource = remember { MutableInteractionSource() }
+		)
 	) {
 		Text(
 			if (isExpanded) {
@@ -1346,16 +1454,8 @@ fun ExpandedText(
 			style = MaterialTheme.typography.body2
 		)
 
-		TextButton(
-			onClick = {
-				isExpanded = !isExpanded
-			}
-		) {
-			Text(
-				if (!isExpanded)
-					stringResource(string.more)
-				else stringResource(string.less)
-			)
-		}
+		if (!isExpanded)
+			Icon(painterResource(drawable.expand_more), contentDescription = stringResource(string.more))
+		else Icon(painterResource(drawable.expand_less), contentDescription = stringResource(string.less))
 	}
 }

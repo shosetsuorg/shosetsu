@@ -1,11 +1,18 @@
 package app.shosetsu.android.ui.library
 
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.SearchView
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,8 +20,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material.Chip
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -34,12 +41,25 @@ import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.consts.BundleKeys
 import app.shosetsu.android.common.enums.NovelCardType
-import app.shosetsu.android.common.enums.NovelCardType.*
-import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.common.enums.NovelCardType.COMPRESSED
+import app.shosetsu.android.common.enums.NovelCardType.COZY
+import app.shosetsu.android.common.enums.NovelCardType.NORMAL
+import app.shosetsu.android.common.ext.collectLA
+import app.shosetsu.android.common.ext.collectLatestLA
+import app.shosetsu.android.common.ext.displayOfflineSnackBar
+import app.shosetsu.android.common.ext.firstLa
+import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.navigateSafely
+import app.shosetsu.android.common.ext.setShosetsuTransition
+import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.library.listener.LibrarySearchQuery
 import app.shosetsu.android.ui.migration.MigrationController
 import app.shosetsu.android.view.ComposeBottomSheetDialog
-import app.shosetsu.android.view.compose.*
+import app.shosetsu.android.view.compose.ErrorContent
+import app.shosetsu.android.view.compose.NovelCardCompressedContent
+import app.shosetsu.android.view.compose.NovelCardCozyContent
+import app.shosetsu.android.view.compose.NovelCardNormalContent
+import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.ExtendedFABController.EFabMaintainer
@@ -107,6 +127,10 @@ class LibraryController
 					val columnsInV by viewModel.columnsInV.collectAsState(SettingKey.ChapterColumnsInPortait.default)
 					val columnsInH by viewModel.columnsInH.collectAsState(SettingKey.ChapterColumnsInLandscape.default)
 
+					BackHandler(hasSelected) {
+						viewModel.deselectAll()
+					}
+
 					LibraryContent(
 						items,
 						isEmpty = isEmpty,
@@ -133,18 +157,6 @@ class LibraryController
 						},
 						toggleSelection = { item ->
 							viewModel.toggleSelection(item)
-						},
-						toastNovel = { item ->
-							try {
-								makeSnackBar(
-									resources!!.getQuantityString(
-										R.plurals.toast_unread_count,
-										item.unread,
-										item.unread
-									)
-								)?.show()
-							} catch (e: Resources.NotFoundException) {
-							}
 						},
 						fab
 					)
@@ -337,7 +349,6 @@ fun LibraryContent(
 	onRefresh: () -> Unit,
 	onOpen: (LibraryNovelUI) -> Unit,
 	toggleSelection: (LibraryNovelUI) -> Unit,
-	toastNovel: (LibraryNovelUI) -> Unit,
 	fab: EFabMaintainer?
 ) {
 	if (!isEmpty) {
@@ -398,20 +409,12 @@ fun LibraryContent(
 								},
 								overlay = {
 									if (item.unread > 0)
-										Chip(
-											onClick = {
-												toastNovel(item)
-											},
-											modifier = Modifier
+										Badge(
+											Modifier
 												.align(Alignment.TopStart)
-												.height(24.dp)
-										) {
-											Text(
-												item.unread.toString(),
-												modifier = Modifier.padding(2.dp),
-												fontSize = 14.sp
-											)
-										}
+												.padding(top = 4.dp, start = 4.dp),
+											text = item.unread.toString()
+										)
 								},
 								isSelected = item.isSelected
 							)
@@ -428,20 +431,10 @@ fun LibraryContent(
 								},
 								overlay = {
 									if (item.unread > 0)
-										Chip(
-											onClick = {
-												toastNovel(item)
-											},
-											modifier = Modifier
-												.padding(8.dp)
-												.height(24.dp)
-										) {
-											Text(
-												item.unread.toString(),
-												modifier = Modifier.padding(2.dp),
-												fontSize = 14.sp
-											)
-										}
+										Badge(
+											Modifier.padding(8.dp),
+											text = item.unread.toString()
+										)
 								},
 								isSelected = item.isSelected
 							)
@@ -458,20 +451,12 @@ fun LibraryContent(
 								},
 								overlay = {
 									if (item.unread > 0)
-										Chip(
-											onClick = {
-												toastNovel(item)
-											},
-											modifier = Modifier
+										Badge(
+											Modifier
 												.align(Alignment.TopStart)
-												.height(24.dp)
-										) {
-											Text(
-												item.unread.toString(),
-												modifier = Modifier.padding(2.dp),
-												fontSize = 14.sp
-											)
-										}
+												.padding(top = 4.dp, start = 4.dp),
+											text = item.unread.toString()
+										)
 								},
 								isSelected = item.isSelected
 							)
@@ -486,4 +471,21 @@ fun LibraryContent(
 		)
 	}
 
+}
+
+@Composable
+fun Badge(modifier: Modifier, text: String) {
+	Box(
+		modifier = modifier then Modifier
+			.height(20.dp)
+			.background(MaterialTheme.colors.secondary, MaterialTheme.shapes.medium),
+		contentAlignment = Alignment.Center
+	) {
+		Text(
+			text,
+			fontSize = 12.sp,
+			color = MaterialTheme.colors.onSecondary,
+			modifier = Modifier.padding(vertical = 2.dp, horizontal = 4.dp)
+		)
+	}
 }

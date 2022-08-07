@@ -70,7 +70,7 @@ class UpdateSettings : ShosetsuController() {
 @Composable
 fun UpdateSettingsContent(viewModel: AUpdateSettingsViewModel) {
 	LazyColumn(
-		contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 64.dp, top = 16.dp),
+		contentPadding = PaddingValues(bottom = 64.dp, top = 16.dp),
 		verticalArrangement = Arrangement.spacedBy(8.dp)
 	) {
 		item {

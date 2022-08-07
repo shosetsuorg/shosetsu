@@ -2,13 +2,34 @@ package app.shosetsu.android.ui.library
 
 import android.content.Context
 import android.view.View
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
+import androidx.compose.material.TabRowDefaults
+import androidx.compose.material.Text
+import androidx.compose.material.TriStateCheckbox
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -18,7 +39,9 @@ import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.state.ToggleableState.Off
 import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.enums.NovelSortType
-import app.shosetsu.android.common.enums.NovelSortType.*
+import app.shosetsu.android.common.enums.NovelSortType.BY_ID
+import app.shosetsu.android.common.enums.NovelSortType.BY_TITLE
+import app.shosetsu.android.common.enums.NovelSortType.BY_UNREAD_COUNT
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
 import com.github.doomsdayrs.apps.shosetsu.R
@@ -86,7 +109,7 @@ class LibraryFilterMenuBuilder constructor(
 									selected = pagerState.currentPage == index,
 									onClick = {
 										scope.launch {
-											pagerState.scrollToPage(index)
+											pagerState.animateScrollToPage(index)
 										}
 									},
 								)
@@ -125,13 +148,12 @@ class LibraryFilterMenuBuilder constructor(
 		val artistsIsNotEmpty by derivedStateOf { artists.isNotEmpty() }
 		var artistsIsExpanded by remember { mutableStateOf(false) }
 
-		LazyColumn(
-			modifier = Modifier.fillMaxSize(),
-			contentPadding = PaddingValues(8.dp)
+		Column(
+			modifier = Modifier
+				.fillMaxSize()
+				.verticalScroll(rememberScrollState()),
 		) {
-			item {
-				UnreadStatusFilter()
-			}
+			UnreadStatusFilter()
 
 			if (genresIsNotEmpty)
 				FilterContent(
@@ -194,6 +216,7 @@ class LibraryFilterMenuBuilder constructor(
 	@Composable
 	private fun UnreadStatusFilter() {
 		SimpleFilter(
+			modifier = Modifier.padding(top = 8.dp),
 			name = stringResource(R.string.unread_status),
 			getState = {
 				viewModel.getUnreadFilter()
@@ -206,11 +229,12 @@ class LibraryFilterMenuBuilder constructor(
 
 	@Composable
 	private fun SimpleFilter(
+		modifier: Modifier = Modifier,
 		name: String,
 		getState: () -> Flow<ToggleableState>,
 		cycleState: (ToggleableState) -> Unit
 	) {
-		Box {
+		Box(modifier) {
 			val state by getState().collectAsState(Off)
 			Row(
 				verticalAlignment = Alignment.CenterVertically,
@@ -219,7 +243,7 @@ class LibraryFilterMenuBuilder constructor(
 					.clickable {
 						cycleState(state)
 					}
-					.padding(8.dp)
+					.padding(vertical = 8.dp, horizontal = 16.dp)
 			) {
 
 				TriStateCheckbox(state = state, null)
@@ -230,7 +254,8 @@ class LibraryFilterMenuBuilder constructor(
 	}
 
 	@OptIn(ExperimentalMaterialApi::class)
-	private fun LazyListScope.FilterContent(
+	@Composable
+	private fun ColumnScope.FilterContent(
 		name: Int,
 		items: List<String>,
 		isExpanded: Boolean,
@@ -238,35 +263,36 @@ class LibraryFilterMenuBuilder constructor(
 		getState: (String) -> Flow<ToggleableState>,
 		cycleState: (String, ToggleableState) -> Unit
 	) {
-		item {
-			Card(
-				onClick = toggleExpansion
+		Card(
+			onClick = toggleExpansion,
+			modifier = Modifier.padding(horizontal = 8.dp)
+		) {
+			Row(
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(8.dp)
 			) {
-				Row(
-					modifier = Modifier
-						.fillMaxWidth()
-						.padding(8.dp)
-				) {
-					Icon(
-						painterResource(if (isExpanded) R.drawable.expand_less else R.drawable.expand_more),
-						null
-					)
-					Text(stringResource(name), modifier = Modifier.padding(start = 8.dp))
-				}
+				Icon(
+					painterResource(if (isExpanded) R.drawable.expand_less else R.drawable.expand_more),
+					null
+				)
+				Text(stringResource(name), modifier = Modifier.padding(start = 8.dp))
 			}
 		}
 
-		if (isExpanded) {
-			items(items) { item ->
-				SimpleFilter(
-					name = item,
-					getState = {
-						getState(item)
-					},
-					cycleState = {
-						cycleState(item, it)
-					}
-				)
+		AnimatedVisibility(isExpanded) {
+			Column {
+				items.forEach { item ->
+					SimpleFilter(
+						name = item,
+						getState = {
+							getState(item)
+						},
+						cycleState = {
+							cycleState(item, it)
+						}
+					)
+				}
 			}
 		}
 	}
@@ -281,12 +307,12 @@ class LibraryFilterMenuBuilder constructor(
 		val isExpected = state == expectedState
 		Box(
 			modifier = Modifier
-				.padding(bottom = 8.dp)
 				.clickable {
 					if (isExpected)
 						viewModel.setIsSortReversed(!reversed)
 					else viewModel.setSortType(expectedState)
 				}
+				.padding(8.dp)
 		) {
 			Row(
 				verticalAlignment = Alignment.CenterVertically,
@@ -318,34 +344,29 @@ class LibraryFilterMenuBuilder constructor(
 		val state by viewModel.getSortType().collectAsState(BY_TITLE)
 		val reversed by viewModel.isSortReversed().collectAsState(false)
 
-		LazyColumn(
-			modifier = Modifier.fillMaxSize(),
-			contentPadding = PaddingValues(8.dp)
+		Column(
+			modifier = Modifier
+				.fillMaxSize()
+				.verticalScroll(rememberScrollState()),
 		) {
-			item {
-				Menu1Item(
-					R.string.controller_library_menu_tri_by_title,
-					state,
-					BY_TITLE,
-					reversed
-				)
-			}
-			item {
-				Menu1Item(
-					R.string.controller_library_menu_tri_by_unread,
-					state,
-					BY_UNREAD_COUNT,
-					reversed
-				)
-			}
-			item {
-				Menu1Item(
-					R.string.controller_library_menu_tri_by_id,
-					state,
-					BY_ID,
-					reversed
-				)
-			}
+			Menu1Item(
+				R.string.controller_library_menu_tri_by_title,
+				state,
+				BY_TITLE,
+				reversed
+			)
+			Menu1Item(
+				R.string.controller_library_menu_tri_by_unread,
+				state,
+				BY_UNREAD_COUNT,
+				reversed
+			)
+			Menu1Item(
+				R.string.controller_library_menu_tri_by_id,
+				state,
+				BY_ID,
+				reversed
+			)
 		}
 	}
 
