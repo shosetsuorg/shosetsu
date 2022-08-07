@@ -24,10 +24,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import app.shosetsu.android.common.consts.BundleKeys
-import app.shosetsu.android.common.ext.collectLA
-import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.common.ext.setShosetsuTransition
-import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.compose.ShosetsuCompose
@@ -132,7 +129,7 @@ class AddShareController : ShosetsuController(), CollapsedToolBarController {
 						activity?.onBackPressed()
 
 						if (entity != null) {
-							findNavController().navigate(
+							findNavController().navigateSafely(
 								R.id.action_moreController_to_novelController,
 								bundleOf(BundleKeys.BUNDLE_NOVEL_ID to entity.id),
 								navOptions {

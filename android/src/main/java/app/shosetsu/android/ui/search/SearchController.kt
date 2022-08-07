@@ -33,10 +33,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import app.shosetsu.android.common.consts.BundleKeys
-import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.common.ext.makeSnackBar
-import app.shosetsu.android.common.ext.setShosetsuTransition
-import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.view.compose.*
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
@@ -103,7 +100,7 @@ class SearchController : ShosetsuController(), MenuProvider {
 						},
 						getException = viewModel::getException,
 						onClick = {
-							findNavController().navigate(
+							findNavController().navigateSafely(
 								R.id.action_searchController_to_novelController,
 								bundleOf(BundleKeys.BUNDLE_NOVEL_ID to it.id),
 								navOptions {

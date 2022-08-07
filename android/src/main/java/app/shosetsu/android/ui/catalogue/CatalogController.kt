@@ -147,15 +147,19 @@ class CatalogController : ShosetsuController(), ExtendedFABController, MenuProvi
 						columnsInV,
 						columnsInH,
 						onClick = {
-							findNavController().navigate(
-								R.id.action_catalogController_to_novelController, bundleOf(
-									BUNDLE_NOVEL_ID to it.id,
-									BUNDLE_EXTENSION to arguments!!.getInt(BUNDLE_EXTENSION)
-								),
-								navOptions {
-									setShosetsuTransition()
-								}
-							)
+							try {
+								findNavController().navigateSafely(
+									R.id.action_catalogController_to_novelController, bundleOf(
+										BUNDLE_NOVEL_ID to it.id,
+										BUNDLE_EXTENSION to arguments!!.getInt(BUNDLE_EXTENSION)
+									),
+									navOptions {
+										setShosetsuTransition()
+									}
+								)
+							} catch (ignored: Exception) {
+								// ignore dup
+							}
 						},
 						onLongClick = {
 							itemLongClicked(it)

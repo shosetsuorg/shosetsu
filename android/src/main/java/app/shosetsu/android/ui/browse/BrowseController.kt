@@ -55,10 +55,7 @@ import androidx.navigation.navOptions
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.consts.REPOSITORY_HELP_URL
-import app.shosetsu.android.common.ext.displayOfflineSnackBar
-import app.shosetsu.android.common.ext.makeSnackBar
-import app.shosetsu.android.common.ext.setShosetsuTransition
-import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.android.domain.model.local.ExtensionInstallOptionEntity
 import app.shosetsu.android.view.ComposeBottomSheetDialog
@@ -153,7 +150,7 @@ class BrowseController : ShosetsuController(),
 
 	private fun openSettings(entity: BrowseExtensionEntity) {
 		viewModel.resetSearch()
-		findNavController().navigate(
+		findNavController().navigateSafely(
 			R.id.action_browseController_to_configureExtension,
 			bundleOf(BUNDLE_EXTENSION to entity.id),
 			navOptions = navOptions {
@@ -169,7 +166,7 @@ class BrowseController : ShosetsuController(),
 			// If the extension is installed, push to it, otherwise prompt the user to install
 			if (entity.isInstalled) {
 				viewModel.resetSearch()
-				findNavController().navigate(
+				findNavController().navigateSafely(
 					R.id.action_browseController_to_catalogController,
 					bundleOf(
 						BUNDLE_EXTENSION to entity.id

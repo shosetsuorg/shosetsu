@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import app.shosetsu.android.common.ext.makeSnackBar
+import app.shosetsu.android.common.ext.navigateSafely
 import app.shosetsu.android.common.ext.setShosetsuTransition
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
@@ -74,7 +75,7 @@ class ComposeMoreController
 						makeSnackBar(R.string.style_wait)?.show()
 					}
 				) { it, singleTop ->
-					findNavController().navigate(
+					findNavController().navigateSafely(
 						it,
 						null,
 						navOptions = navOptions {

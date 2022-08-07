@@ -32,6 +32,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import app.shosetsu.android.common.consts.*
 import app.shosetsu.android.common.enums.TextAsset
+import app.shosetsu.android.common.ext.navigateSafely
 import app.shosetsu.android.common.ext.setShosetsuTransition
 import app.shosetsu.android.common.ext.viewModel
 import app.shosetsu.android.ui.settings.sub.TextAssetReader.Companion.bundle
@@ -96,7 +97,7 @@ class AboutController : ShosetsuController() {
 	}
 
 	private fun onClickLicense() {
-		findNavController().navigate(
+		findNavController().navigateSafely(
 			R.id.action_aboutController_to_textAssetReader,
 			TextAsset.LICENSE.bundle,
 			navOptions = navOptions {
@@ -107,7 +108,7 @@ class AboutController : ShosetsuController() {
 	}
 
 	private fun onClickDisclaimer() {
-		findNavController().navigate(
+		findNavController().navigateSafely(
 			R.id.action_aboutController_to_textAssetReader,
 			TextAsset.DISCLAIMER.bundle,
 			navOptions = navOptions {

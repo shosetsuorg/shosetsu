@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.findNavController
 import androidx.navigation.navOptions
+import app.shosetsu.android.common.ext.navigateSafely
 import app.shosetsu.android.common.ext.setShosetsuTransition
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
@@ -60,7 +61,7 @@ class ComposeSettingsController : ShosetsuController() {
 		setContent {
 			ShosetsuCompose {
 				SettingsContent {
-					findNavController().navigate(
+					findNavController().navigateSafely(
 						it,
 						null,
 						navOptions { setShosetsuTransition() })

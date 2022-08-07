@@ -118,14 +118,18 @@ class LibraryController
 							onRefresh()
 						},
 						onOpen = { (id) ->
-							findNavController().navigate(
-								R.id.action_libraryController_to_novelController,
-								bundleOf(BundleKeys.BUNDLE_NOVEL_ID to id),
-								navOptions = navOptions {
-									launchSingleTop = true
-									setShosetsuTransition()
-								}
-							)
+							try {
+								findNavController().navigateSafely(
+									R.id.action_libraryController_to_novelController,
+									bundleOf(BundleKeys.BUNDLE_NOVEL_ID to id),
+									navOptions = navOptions {
+										launchSingleTop = true
+										setShosetsuTransition()
+									}
+								)
+							} catch (ignored: Exception) {
+								// ignore dup
+							}
 						},
 						toggleSelection = { item ->
 							viewModel.toggleSelection(item)
@@ -251,7 +255,7 @@ class LibraryController
 			}
 			R.id.source_migrate -> {
 				viewModel.getSelectedIds().firstLa(this, catch = {}) {
-					findNavController().navigate(
+					findNavController().navigateSafely(
 						R.id.action_libraryController_to_migrationController,
 						bundleOf(MigrationController.TARGETS_BUNDLE_KEY to it),
 						navOptions {

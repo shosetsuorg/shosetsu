@@ -187,7 +187,7 @@ class NovelController : ShosetsuController(),
 
 	@Suppress("unused")
 	fun migrateOpen() {
-		findNavController().navigate(
+		findNavController().navigateSafely(
 			R.id.action_novelController_to_migrationController,
 			bundleOf(
 				TARGETS_BUNDLE_KEY to arrayOf(arguments!!.getNovelID()).toIntArray()
