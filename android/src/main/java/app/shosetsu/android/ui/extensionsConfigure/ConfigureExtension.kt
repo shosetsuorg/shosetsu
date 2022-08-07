@@ -116,7 +116,7 @@ fun ConfigureExtensionContent(
 			}
 		}
 
-		if (extensionListingResult != null) {
+		if (extensionListingResult != null && extensionListingResult!!.choices.size > 1) {
 			item {
 				DropdownSettingContent(
 					title = stringResource(R.string.listings),
