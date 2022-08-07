@@ -31,10 +31,7 @@ import app.shosetsu.android.domain.usecases.update.UpdateExtSelectedListing
 import app.shosetsu.android.domain.usecases.update.UpdateExtensionSettingUseCase
 import app.shosetsu.android.viewmodel.abstracted.AExtensionConfigureViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.transformLatest
+import kotlinx.coroutines.flow.*
 
 /**
  * shosetsu
@@ -65,8 +62,8 @@ class ExtensionConfigureViewModel(
 			val listingNames: List<String> = getExtListNames(extensionID)
 
 			emitAll(
-				getExtSelectedListingFlow(extensionID).transformLatest { hResult ->
-					emit(ListingSelectionData(listingNames, hResult))
+				getExtSelectedListingFlow(extensionID).mapLatest { selectedListing ->
+					ListingSelectionData(listingNames, selectedListing)
 				}
 			)
 		}
