@@ -107,7 +107,7 @@ object Migration2To3 : Migration(2, 3) {
 			// Migrate
 			database.execSQL(
 				"""
-INSERT INTO `${tableName}_new` SELECT `id`, `repoID`, `name`, `imageURL`, `lang`,`enabled`,`installed`,`installedVersion`,`repositoryVersion`,0,`md5`,0 FROM `$tableName`									
+INSERT INTO `${tableName}_new` SELECT `id`, `repoID`, `name`, `name`, `imageURL`, `lang`,`enabled`,`installed`,`installedVersion`,`repositoryVersion`,0,`md5`,0 FROM `$tableName`									
 								"""
 			)
 
