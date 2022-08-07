@@ -2,7 +2,7 @@ package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.compose.runtime.Immutable
 import app.shosetsu.android.domain.model.local.FilterEntity
-import app.shosetsu.android.domain.model.local.InstalledExtensionEntity
+import app.shosetsu.android.view.uimodels.model.InstalledExtensionUI
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeViewModel
 import kotlinx.coroutines.flow.Flow
@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.Flow
  * [liveData] is of the formatter object itself
  */
 abstract class AExtensionConfigureViewModel
-	: ShosetsuViewModel(), SubscribeViewModel<InstalledExtensionEntity?> {
+	: ShosetsuViewModel(), SubscribeViewModel<InstalledExtensionUI?> {
 
 	abstract val extensionListing: Flow<ListingSelectionData>
 	abstract val extensionSettings: Flow<List<FilterEntity>>
@@ -51,7 +51,7 @@ abstract class AExtensionConfigureViewModel
 	/**
 	 * Uninstall this extension
 	 */
-	abstract fun uninstall(extension: InstalledExtensionEntity)
+	abstract fun uninstall(extension: InstalledExtensionUI)
 
 	/**
 	 * Destroy this controller

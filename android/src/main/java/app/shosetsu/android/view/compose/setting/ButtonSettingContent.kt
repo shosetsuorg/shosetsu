@@ -42,7 +42,7 @@ fun ButtonSettingContent(
 	modifier: Modifier = Modifier,
 	onClick: () -> Unit
 ) {
-	GenericRightSettingLayout(title, description, modifier) {
+	GenericRightSettingLayout(title, description, modifier, onClick = onClick) {
 		Button(
 			onClick
 		) {

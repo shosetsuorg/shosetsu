@@ -2,6 +2,7 @@ package app.shosetsu.android.view.compose.setting
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
@@ -40,7 +41,7 @@ fun StringSettingContent(
 	Column(
 		modifier = modifier,
 	) {
-		TextField(
+		OutlinedTextField(
 			value = value,
 			onValueChange = onValueChanged,
 			label = { Text(title) },

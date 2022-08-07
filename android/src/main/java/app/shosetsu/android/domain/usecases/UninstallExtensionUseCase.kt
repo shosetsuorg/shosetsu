@@ -2,9 +2,9 @@ package app.shosetsu.android.domain.usecases
 
 import android.database.sqlite.SQLiteException
 import app.shosetsu.android.common.ext.generify
-import app.shosetsu.android.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.android.domain.repository.base.IExtensionEntitiesRepository
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
+import app.shosetsu.android.view.uimodels.model.InstalledExtensionUI
 
 /*
  * This file is part of shosetsu.
@@ -32,7 +32,8 @@ class UninstallExtensionUseCase(
 	private val extensionEntitiesRepository: IExtensionEntitiesRepository
 ) {
 	@Throws(SQLiteException::class)
-	suspend operator fun invoke(extensionEntity: InstalledExtensionEntity) {
+	suspend operator fun invoke(extensionUI: InstalledExtensionUI) {
+		val extensionEntity = extensionUI.convertTo()
 		extensionEntitiesRepository.uninstall(extensionEntity.generify())
 		extensionRepository.uninstall(extensionEntity)
 	}

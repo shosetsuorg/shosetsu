@@ -1,8 +1,10 @@
 package app.shosetsu.android.domain.usecases.get
 
-import app.shosetsu.android.domain.model.local.InstalledExtensionEntity
+import app.shosetsu.android.common.utils.uifactory.InstalledExtensionConversionFactory
 import app.shosetsu.android.domain.repository.base.IExtensionsRepository
+import app.shosetsu.android.view.uimodels.model.InstalledExtensionUI
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -28,6 +30,7 @@ import kotlinx.coroutines.flow.Flow
 class GetInstalledExtensionUseCase(
 	private val iExtensionsRepository: IExtensionsRepository,
 ) {
-	operator fun invoke(id: Int): Flow<InstalledExtensionEntity?> =
+	operator fun invoke(id: Int): Flow<InstalledExtensionUI?> =
 		iExtensionsRepository.getInstalledExtensionFlow(id)
+			.mapLatest { it?.let { InstalledExtensionConversionFactory(it).convertTo() } }
 }

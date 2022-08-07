@@ -1,6 +1,7 @@
 package app.shosetsu.android.ui.catalogue
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -125,7 +126,7 @@ fun CatalogFilterMenuFilterListContent(
 	LazyColumn(
 		modifier = Modifier
 			.fillMaxWidth(),
-		contentPadding = PaddingValues(16.dp),
+		contentPadding = PaddingValues(vertical = 16.dp),
 		verticalArrangement = Arrangement.Bottom
 	) {
 		items(list) { filter ->
@@ -195,7 +196,10 @@ fun CatalogFilterMenuFilterListContent(
 		modifier = Modifier.fillMaxWidth()
 	) {
 		Row(
-			modifier = Modifier.fillMaxWidth(),
+			modifier = Modifier.fillMaxWidth()
+				.height(56.dp)
+				.clickable(onClick = { collapsed = !collapsed })
+				.padding(horizontal = 16.dp),
 			horizontalArrangement = Arrangement.SpaceBetween,
 			verticalAlignment = Alignment.CenterVertically
 		) {
@@ -213,11 +217,11 @@ fun CatalogFilterMenuFilterListContent(
 			}
 		}
 
-		if (!collapsed) {
+		AnimatedVisibility(!collapsed) {
 			Column(
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(start = 8.dp, end = 8.dp)
+					.padding(horizontal = 16.dp)
 			) {
 				list.forEach { filter ->
 					when (filter) {
@@ -311,9 +315,10 @@ fun CatalogFilterMenuTextContent(
 	val text by getString(filter)
 		.collectAsState(initial = "")
 
-	TextField(
+	OutlinedTextField(
 		modifier = Modifier
 			.fillMaxWidth()
+			.padding(horizontal = 16.dp)
 			.padding(bottom = 8.dp),
 		value = text,
 		onValueChange = { setString(filter, it) },
@@ -343,13 +348,17 @@ fun CatalogFilterMenuSwitchContent(
 		.collectAsState(initial = false)
 
 	Row(
-		modifier = Modifier.fillMaxWidth(),
-		horizontalArrangement = Arrangement.SpaceBetween
+		modifier = Modifier.fillMaxWidth()
+			.height(56.dp)
+			.clickable(onClick = { setBoolean(filter, !state) })
+			.padding(horizontal = 16.dp),
+		horizontalArrangement = Arrangement.SpaceBetween,
+		verticalAlignment = Alignment.CenterVertically
 	) {
 		Text(text = filter.name)
 		Switch(
 			checked = state,
-			onCheckedChange = { setBoolean(filter, it) }
+			onCheckedChange = null
 		)
 	}
 }
@@ -372,13 +381,17 @@ fun CatalogFilterMenuCheckboxContent(
 		.collectAsState(initial = false)
 
 	Row(
-		modifier = Modifier.fillMaxWidth(),
-		horizontalArrangement = Arrangement.SpaceBetween
+		modifier = Modifier.fillMaxWidth()
+			.height(56.dp)
+			.clickable(onClick = { setBoolean(filter, !state) })
+			.padding(horizontal = 16.dp),
+		horizontalArrangement = Arrangement.SpaceBetween,
+		verticalAlignment = Alignment.CenterVertically
 	) {
 		Text(text = filter.name)
 		Checkbox(
 			checked = state,
-			onCheckedChange = { setBoolean(filter, it) }
+			onCheckedChange = null
 		)
 	}
 }
@@ -408,13 +421,9 @@ fun CatalogFilterMenuTriStateContent(
 	}
 
 	Row(
-		modifier = Modifier.fillMaxWidth(),
-		horizontalArrangement = Arrangement.SpaceBetween
-	) {
-		Text(text = filter.name)
-		TriStateCheckbox(
-			state = convertedState,
-			onClick = {
+		modifier = Modifier.fillMaxWidth()
+			.height(56.dp)
+			.clickable(onClick = {
 				setInt(
 					filter,
 					when (triState) {
@@ -424,7 +433,15 @@ fun CatalogFilterMenuTriStateContent(
 						else -> Filter.TriState.STATE_IGNORED
 					}
 				)
-			}
+			})
+			.padding(horizontal = 16.dp),
+		horizontalArrangement = Arrangement.SpaceBetween,
+		verticalAlignment = Alignment.CenterVertically
+	) {
+		Text(text = filter.name)
+		TriStateCheckbox(
+			state = convertedState,
+			onClick = null
 		)
 	}
 }
@@ -450,7 +467,10 @@ fun CatalogFilterMenuDropDownContent(
 	var expanded by remember { mutableStateOf(false) }
 
 	Row(
-		modifier = Modifier.fillMaxWidth(),
+		modifier = Modifier.fillMaxWidth()
+			.height(56.dp)
+			.clickable(onClick = { expanded = true })
+			.padding(horizontal = 16.dp),
 		horizontalArrangement = Arrangement.SpaceBetween,
 		verticalAlignment = Alignment.CenterVertically
 	) {
@@ -458,13 +478,11 @@ fun CatalogFilterMenuDropDownContent(
 
 
 		Row(
+			modifier = Modifier.fillMaxHeight(),
 			verticalAlignment = Alignment.CenterVertically,
 		) {
 			Text(
 				text = AnnotatedString(filter.choices[selection]),
-				modifier = Modifier.clickable(onClick = {
-					expanded = true
-				})
 			)
 			IconToggleButton(
 				onCheckedChange = {
@@ -520,10 +538,14 @@ fun CatalogFilterMenuRadioGroupContent(
 	var expanded by remember { mutableStateOf(true) }
 
 	Column(
-		modifier = Modifier.fillMaxWidth(),
+		modifier = Modifier.fillMaxWidth()
+			,
 	) {
 		Row(
-			modifier = Modifier.fillMaxWidth(),
+			modifier = Modifier.fillMaxWidth()
+				.height(56.dp)
+				.clickable(onClick = { expanded = !expanded })
+				.padding(horizontal = 16.dp),
 			horizontalArrangement = Arrangement.SpaceBetween,
 			verticalAlignment = Alignment.CenterVertically
 		) {
@@ -542,7 +564,7 @@ fun CatalogFilterMenuRadioGroupContent(
 			}
 		}
 
-		if (expanded) {
+		AnimatedVisibility(expanded) {
 			Column(
 				modifier = Modifier
 					.fillMaxWidth()
@@ -550,13 +572,16 @@ fun CatalogFilterMenuRadioGroupContent(
 			) {
 				filter.choices.forEachIndexed { index, s ->
 					Row(
-						modifier = Modifier.fillMaxWidth(),
-						horizontalArrangement = Arrangement.SpaceBetween
+						modifier = Modifier.fillMaxWidth()
+							.height(56.dp)
+							.clickable(onClick = { setInt(filter, index) }),
+						horizontalArrangement = Arrangement.SpaceBetween,
+						verticalAlignment = Alignment.CenterVertically
 					) {
 						Text(text = s)
 						RadioButton(
 							selected = index == selection,
-							onClick = { setInt(filter, index) }
+							onClick = null
 						)
 					}
 				}
@@ -576,13 +601,14 @@ fun CatalogFilterMenuControlContent(
 		shape = RectangleShape
 	) {
 		Row(
-			horizontalArrangement = Arrangement.SpaceEvenly
+			horizontalArrangement = Arrangement.SpaceEvenly,
+			verticalAlignment = Alignment.CenterVertically
 		) {
-			TextButton(onClick = { resetFilter() }, contentPadding = PaddingValues(8.dp)) {
+			TextButton(onClick = resetFilter, contentPadding = PaddingValues(8.dp)) {
 				Text(text = stringResource(id = R.string.reset))
 			}
 
-			TextButton(onClick = { applyFilter() }, contentPadding = PaddingValues(8.dp)) {
+			TextButton(onClick = applyFilter, contentPadding = PaddingValues(8.dp)) {
 				Text(text = stringResource(id = R.string.apply))
 			}
 		}

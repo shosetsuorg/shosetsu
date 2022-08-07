@@ -21,7 +21,6 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.domain.model.local.FilterEntity
-import app.shosetsu.android.domain.model.local.InstalledExtensionEntity
 import app.shosetsu.android.domain.usecases.UninstallExtensionUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtListingNamesUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtSelectedListingFlowUseCase
@@ -29,6 +28,7 @@ import app.shosetsu.android.domain.usecases.get.GetExtensionSettingsUseCase
 import app.shosetsu.android.domain.usecases.get.GetInstalledExtensionUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateExtSelectedListing
 import app.shosetsu.android.domain.usecases.update.UpdateExtensionSettingUseCase
+import app.shosetsu.android.view.uimodels.model.InstalledExtensionUI
 import app.shosetsu.android.viewmodel.abstracted.AExtensionConfigureViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -51,7 +51,7 @@ class ExtensionConfigureViewModel(
 ) : AExtensionConfigureViewModel() {
 	private val extensionIdFlow: MutableStateFlow<Int> by lazy { MutableStateFlow(-1) }
 
-	override val liveData: Flow<InstalledExtensionEntity?> by lazy {
+	override val liveData: Flow<InstalledExtensionUI?> by lazy {
 		extensionIdFlow.transformLatest { id ->
 			emitAll(loadInstalledExtension(id))
 		}.onIO()
@@ -103,7 +103,7 @@ class ExtensionConfigureViewModel(
 		}
 	}
 
-	override fun uninstall(extension: InstalledExtensionEntity) {
+	override fun uninstall(extension: InstalledExtensionUI) {
 		launchIO {
 			uninstallExtensionUI(extension)
 		}

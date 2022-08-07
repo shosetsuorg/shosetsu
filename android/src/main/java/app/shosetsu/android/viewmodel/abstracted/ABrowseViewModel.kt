@@ -1,12 +1,13 @@
 package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.compose.runtime.Immutable
-import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.android.domain.model.local.ExtensionInstallOptionEntity
+import app.shosetsu.android.view.uimodels.model.BrowseExtensionUI
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.SubscribeViewModel
 import kotlinx.coroutines.flow.Flow
+import java.util.Locale
 
 /*
  * This file is part of shosetsu.
@@ -34,12 +35,17 @@ import kotlinx.coroutines.flow.Flow
  */
 abstract class ABrowseViewModel :
 	ShosetsuViewModel(),
-	SubscribeViewModel<List<BrowseExtensionEntity>>,
+	SubscribeViewModel<List<BrowseExtensionUI>>,
 	IsOnlineCheckViewModel {
 
 	@Immutable
+	data class LanguageFilter(val lang: String, val displayLang: String) {
+		constructor(lang: String) : this(lang, Locale.forLanguageTag(lang).displayName)
+	}
+
+	@Immutable
 	data class FilteredLanguages(
-		val languages: List<String>,
+		val languages: List<LanguageFilter>,
 		val states: Map<String, Boolean>
 	)
 
@@ -48,15 +54,15 @@ abstract class ABrowseViewModel :
 
 	/** Installs an extension */
 	abstract fun installExtension(
-		extension: BrowseExtensionEntity,
+		extension: BrowseExtensionUI,
 		option: ExtensionInstallOptionEntity
 	)
 
 	/** Update an extension, only works if it is already installed */
-	abstract fun updateExtension(ext: BrowseExtensionEntity)
+	abstract fun updateExtension(ext: BrowseExtensionUI)
 
 	/** Cancel an extension install */
-	abstract fun cancelInstall(ext: BrowseExtensionEntity)
+	abstract fun cancelInstall(ext: BrowseExtensionUI)
 
 
 	/**

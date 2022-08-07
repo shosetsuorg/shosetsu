@@ -23,7 +23,6 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
-import app.shosetsu.android.domain.model.local.BrowseExtensionEntity
 import app.shosetsu.android.domain.model.local.ExtensionInstallOptionEntity
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.CancelExtensionInstallUseCase
@@ -31,10 +30,16 @@ import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.RequestInstallExtensionUseCase
 import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.android.domain.usecases.load.LoadBrowseExtensionsUseCase
+import app.shosetsu.android.view.uimodels.model.BrowseExtensionUI
 import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.android.viewmodel.base.ExposedSettingsRepoViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.transformLatest
 
 /**
  * shosetsu
@@ -58,7 +63,7 @@ class ExtensionsViewModel(
 	}
 
 	override fun installExtension(
-		extension: BrowseExtensionEntity,
+		extension: BrowseExtensionUI,
 		option: ExtensionInstallOptionEntity
 	) {
 		launchIO {
@@ -66,13 +71,13 @@ class ExtensionsViewModel(
 		}
 	}
 
-	override fun updateExtension(ext: BrowseExtensionEntity) {
+	override fun updateExtension(ext: BrowseExtensionUI) {
 		launchIO {
 			installExtensionUI(ext)
 		}
 	}
 
-	override fun cancelInstall(ext: BrowseExtensionEntity) {
+	override fun cancelInstall(ext: BrowseExtensionUI) {
 		launchIO {
 			cancelExtensionInstall(ext)
 		}
@@ -84,7 +89,8 @@ class ExtensionsViewModel(
 
 	private val languageListFlow by lazy {
 		extensionFlow.map { list ->
-			list.map { it.lang }.distinct()
+			list.map { LanguageFilter(it.lang, it.displayLang) }.distinct()
+				.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.displayLang })
 		}
 	}
 
@@ -95,7 +101,7 @@ class ExtensionsViewModel(
 
 			val map = HashMap<String, Boolean>().apply {
 				languageResult.forEach { language ->
-					this[language] = !filteredLanguages.contains(language)
+					this[language.lang] = filteredLanguages.none { language.lang == it }
 				}
 			}
 			FilteredLanguages(languageResult, map)
@@ -163,7 +169,7 @@ class ExtensionsViewModel(
 		searchTermFlow.onIO()
 	}
 
-	override val liveData: Flow<List<BrowseExtensionEntity>> by lazy {
+	override val liveData: Flow<List<BrowseExtensionUI>> by lazy {
 		extensionFlow.transformLatest { list ->
 			emitAll(
 				settingsRepo.getStringSetFlow(BrowseFilteredLanguages)
@@ -182,7 +188,7 @@ class ExtensionsViewModel(
 							.filter { if (onlyInstalled) it.isInstalled else true }
 							.filterNot { languagesToFilter.contains(it.lang) }
 							.sortedBy { it.name }
-							.sortedBy { it.lang }
+							.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.displayLang })
 							.sortedBy { !it.isInstalled }
 							.sortedBy { !it.isUpdateAvailable }
 							.toList()
