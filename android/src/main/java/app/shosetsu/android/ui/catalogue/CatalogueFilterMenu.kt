@@ -3,11 +3,37 @@ package app.shosetsu.android.ui.catalogue
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
+import androidx.compose.material.Checkbox
+import androidx.compose.material.Divider
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Icon
+import androidx.compose.material.IconToggleButton
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.RadioButton
+import androidx.compose.material.Switch
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.material.TriStateCheckbox
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -122,14 +148,14 @@ fun CatalogFilterMenuFilterListContent(
 	getString: (Filter<String>) -> Flow<String>,
 	setString: (Filter<String>, String) -> Unit
 ) {
-
-	LazyColumn(
+	Column(
 		modifier = Modifier
-			.fillMaxWidth(),
-		contentPadding = PaddingValues(vertical = 16.dp),
+			.fillMaxWidth()
+			.verticalScroll(rememberScrollState()),
 		verticalArrangement = Arrangement.Bottom
 	) {
-		items(list) { filter ->
+		Spacer(Modifier.height(16.dp))
+		list.forEach { filter ->
 			when (filter) {
 				is Filter.Header -> Column {
 					Divider()
@@ -158,6 +184,7 @@ fun CatalogFilterMenuFilterListContent(
 				}
 			}
 		}
+		Spacer(Modifier.height(16.dp))
 	}
 }
 
@@ -196,7 +223,8 @@ fun CatalogFilterMenuFilterListContent(
 		modifier = Modifier.fillMaxWidth()
 	) {
 		Row(
-			modifier = Modifier.fillMaxWidth()
+			modifier = Modifier
+				.fillMaxWidth()
 				.height(56.dp)
 				.clickable(onClick = { collapsed = !collapsed })
 				.padding(horizontal = 16.dp),
@@ -348,7 +376,8 @@ fun CatalogFilterMenuSwitchContent(
 		.collectAsState(initial = false)
 
 	Row(
-		modifier = Modifier.fillMaxWidth()
+		modifier = Modifier
+			.fillMaxWidth()
 			.height(56.dp)
 			.clickable(onClick = { setBoolean(filter, !state) })
 			.padding(horizontal = 16.dp),
@@ -381,7 +410,8 @@ fun CatalogFilterMenuCheckboxContent(
 		.collectAsState(initial = false)
 
 	Row(
-		modifier = Modifier.fillMaxWidth()
+		modifier = Modifier
+			.fillMaxWidth()
 			.height(56.dp)
 			.clickable(onClick = { setBoolean(filter, !state) })
 			.padding(horizontal = 16.dp),
@@ -421,7 +451,8 @@ fun CatalogFilterMenuTriStateContent(
 	}
 
 	Row(
-		modifier = Modifier.fillMaxWidth()
+		modifier = Modifier
+			.fillMaxWidth()
 			.height(56.dp)
 			.clickable(onClick = {
 				setInt(
@@ -467,7 +498,8 @@ fun CatalogFilterMenuDropDownContent(
 	var expanded by remember { mutableStateOf(false) }
 
 	Row(
-		modifier = Modifier.fillMaxWidth()
+		modifier = Modifier
+			.fillMaxWidth()
 			.height(56.dp)
 			.clickable(onClick = { expanded = true })
 			.padding(horizontal = 16.dp),
@@ -542,7 +574,8 @@ fun CatalogFilterMenuRadioGroupContent(
 			,
 	) {
 		Row(
-			modifier = Modifier.fillMaxWidth()
+			modifier = Modifier
+				.fillMaxWidth()
 				.height(56.dp)
 				.clickable(onClick = { expanded = !expanded })
 				.padding(horizontal = 16.dp),
@@ -572,7 +605,8 @@ fun CatalogFilterMenuRadioGroupContent(
 			) {
 				filter.choices.forEachIndexed { index, s ->
 					Row(
-						modifier = Modifier.fillMaxWidth()
+						modifier = Modifier
+							.fillMaxWidth()
 							.height(56.dp)
 							.clickable(onClick = { setInt(filter, index) }),
 						horizontalArrangement = Arrangement.SpaceBetween,
