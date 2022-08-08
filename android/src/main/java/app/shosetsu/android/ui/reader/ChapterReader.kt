@@ -252,11 +252,11 @@ class ChapterReader
 								item { viewModel.invertChapterSwipeOption() }
 								item { viewModel.readerKeepScreenOnOption() }
 								item { viewModel.enableFullscreen() }
-								item { viewModel.matchFullscreenToFocus(enableFullscreen) }
+								item { viewModel.matchFullscreenToFocus() }
 								item { viewModel.showReaderDivider() }
 								item { viewModel.stringAsHtmlOption() }
 								item { viewModel.doubleTapFocus() }
-								item { viewModel.doubleTapSystem(enableFullscreen && !matchFullscreenToFocus) }
+								item { viewModel.doubleTapSystem() }
 							},
 							toggleFocus = viewModel::toggleFocus,
 							onShowNavigation = viewModel::toggleSystemVisible.takeIf { enableFullscreen && !matchFullscreenToFocus },
