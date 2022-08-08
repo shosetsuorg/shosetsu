@@ -45,6 +45,10 @@ class ReaderSettingsViewModel(
 	val loadReaderThemes: LoadReaderThemes
 ) : AReaderSettingsViewModel(iSettingsRepository) {
 
+	override val enableFullscreen: Flow<Boolean> by lazy {
+		settingsRepo.getBooleanFlow(ReaderEnableFullscreen)
+	}
+
 	override fun getReaderThemes(): Flow<List<ColorChoiceUI>> =
 		loadReaderThemes().combine(settingsRepo.getIntFlow(ReaderTheme)) { a, b ->
 			a.map { if (it.id == b.toLong()) it.copy(isSelected = true) else it }
@@ -97,6 +101,17 @@ fun ExposedSettingsRepoViewModel.showReaderDivider() {
 }
 
 @Composable
+fun ExposedSettingsRepoViewModel.enableFullscreen() {
+	SwitchSettingContent(
+		stringResource(R.string.settings_reader_fullscreen),
+		stringResource(R.string.settings_reader_fullscreen_desc),
+		settingsRepo,
+		ReaderEnableFullscreen, modifier = Modifier
+			.fillMaxWidth(),
+	)
+}
+
+@Composable
 fun ExposedSettingsRepoViewModel.doubleTapFocus() {
 	SwitchSettingContent(
 		stringResource(R.string.settings_reader_double_tap),
@@ -108,13 +123,14 @@ fun ExposedSettingsRepoViewModel.doubleTapFocus() {
 }
 
 @Composable
-fun ExposedSettingsRepoViewModel.doubleTapSystem() {
+fun ExposedSettingsRepoViewModel.doubleTapSystem(enabled: Boolean) {
 	SwitchSettingContent(
 		stringResource(R.string.settings_reader_double_tap_system),
 		stringResource(R.string.settings_reader_double_tap_system_desc),
 		settingsRepo,
 		ReaderDoubleTapSystem, modifier = Modifier
-			.fillMaxWidth()
+			.fillMaxWidth(),
+		enabled = enabled
 	)
 }
 

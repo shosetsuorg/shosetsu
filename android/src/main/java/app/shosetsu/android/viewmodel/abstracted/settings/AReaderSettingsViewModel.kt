@@ -27,5 +27,8 @@ import kotlinx.coroutines.flow.Flow
  */
 abstract class AReaderSettingsViewModel(iSettingsRepository: ISettingsRepository) :
 	ASubSettingsViewModel(iSettingsRepository) {
+
+	abstract val enableFullscreen: Flow<Boolean>
+
 	abstract fun getReaderThemes(): Flow<List<ColorChoiceUI>>
 }

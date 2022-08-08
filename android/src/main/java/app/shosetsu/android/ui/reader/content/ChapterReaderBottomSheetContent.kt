@@ -41,7 +41,7 @@ fun ChapterReaderBottomSheetContent(
 	updateSetting: (NovelReaderSettingEntity) -> Unit,
 	lowerSheet: LazyListScope.() -> Unit,
 	toggleFocus: () -> Unit,
-	onShowNavigation: () -> Unit
+	onShowNavigation: (() -> Unit)?
 ) {
 	val coroutineScope = rememberCoroutineScope()
 	Row(
@@ -102,11 +102,13 @@ fun ChapterReaderBottomSheetContent(
 					)
 				}
 
-			IconButton(onClick = onShowNavigation) {
-				Icon(
-					painterResource(R.drawable.unfold_less),
-					null
-				)
+			if (onShowNavigation != null) {
+				IconButton(onClick = onShowNavigation) {
+					Icon(
+						painterResource(R.drawable.unfold_less),
+						null
+					)
+				}
 			}
 		}
 
