@@ -49,6 +49,10 @@ class ReaderSettingsViewModel(
 		settingsRepo.getBooleanFlow(ReaderEnableFullscreen)
 	}
 
+	override val matchFullscreenToFocus: Flow<Boolean> by lazy {
+		settingsRepo.getBooleanFlow(ReaderMatchFullscreenToFocus)
+	}
+
 	override fun getReaderThemes(): Flow<List<ColorChoiceUI>> =
 		loadReaderThemes().combine(settingsRepo.getIntFlow(ReaderTheme)) { a, b ->
 			a.map { if (it.id == b.toLong()) it.copy(isSelected = true) else it }
@@ -108,6 +112,18 @@ fun ExposedSettingsRepoViewModel.enableFullscreen() {
 		settingsRepo,
 		ReaderEnableFullscreen, modifier = Modifier
 			.fillMaxWidth(),
+	)
+}
+
+@Composable
+fun ExposedSettingsRepoViewModel.matchFullscreenToFocus(enabled: Boolean) {
+	SwitchSettingContent(
+		stringResource(R.string.settings_reader_fullscreen_focus),
+		stringResource(R.string.settings_reader_fullscreen_focus_desc),
+		settingsRepo,
+		ReaderMatchFullscreenToFocus, modifier = Modifier
+			.fillMaxWidth(),
+		enabled = enabled
 	)
 }
 

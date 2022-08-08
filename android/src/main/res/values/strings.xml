@@ -496,6 +496,8 @@
     <string name="settings_reader_show_divider_desc">Displays a page between chapters telling you which chapter you are on, and what is the next one</string>
     <string name="settings_reader_fullscreen">Fullscreen</string>
     <string name="settings_reader_fullscreen_desc">Fullscreen mode hides system bars when reading</string>
+    <string name="settings_reader_fullscreen_focus">Match fullscreen to focus</string>
+    <string name="settings_reader_fullscreen_focus_desc">Match the fullscreen state to the reader focus mode</string>
     <string name="languages">Languages</string>
     <string name="controller_browse_filter_only_installed">Show only installed</string>
     <string name="activity_main_backup_in_progress">Backup in progress</string>

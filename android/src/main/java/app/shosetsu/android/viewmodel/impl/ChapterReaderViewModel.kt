@@ -103,14 +103,13 @@ class ChapterReaderViewModel(
 		}
 	}
 
-	private val enableFullscreenFlow by lazy {
-		settingsRepo.getBooleanFlow(ReaderEnableFullscreen)
-	}
-
 	private val doubleTapSystemFlow: Flow<Boolean> by lazy {
 		settingsRepo.getBooleanFlow(ReaderDoubleTapSystem)
-			.combine(enableFullscreenFlow) { doubleTapSystem, enableFullscreen ->
+			.combine(enableFullscreen) { doubleTapSystem, enableFullscreen ->
 				doubleTapSystem || !enableFullscreen
+			}
+			.combine(matchFullscreenToFocus) { doubleTapSystem, matchFullscreenToFocus ->
+				doubleTapSystem && !matchFullscreenToFocus
 			}
 			.onIO()
 	}
@@ -669,16 +668,23 @@ class ChapterReaderViewModel(
 		settingsRepo.getBooleanFlow(ReaderDoubleTapFocus).onIO()
 	}
 
+	override val enableFullscreen by lazy {
+		settingsRepo.getBooleanFlow(ReaderEnableFullscreen)
+	}
+
+	override val matchFullscreenToFocus: Flow<Boolean> by lazy {
+		settingsRepo.getBooleanFlow(ReaderMatchFullscreenToFocus)
+	}
+
 	override val isFocused: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
 	private val _isSystemVisible = MutableStateFlow(true)
 	override val isSystemVisible: Flow<Boolean> by lazy {
-		_isSystemVisible.combine(enableFullscreenFlow) { isSystemVisible, enableFullscreen ->
+		_isSystemVisible.combine(enableFullscreen) { isSystemVisible, enableFullscreen ->
 			isSystemVisible || !enableFullscreen
 		}.onIO()
 	}
 
-	override val enableFullscreen: Flow<Boolean> = enableFullscreenFlow
 
 	override fun toggleFocus() {
 		isFocused.value = !isFocused.value
@@ -694,8 +700,8 @@ class ChapterReaderViewModel(
 			if (!doubleTapFocus.first()) {
 				val newValue = !isFocused.value
 				isFocused.value = newValue
-				if (newValue)
-					_isSystemVisible.value = false
+				if (newValue || matchFullscreenToFocus.first())
+					_isSystemVisible.value = !newValue
 			}
 		}
 	}
@@ -705,8 +711,8 @@ class ChapterReaderViewModel(
 			if (doubleTapFocus.first()) {
 				val newValue = !isFocused.value
 				isFocused.value = newValue
-				if (newValue)
-					_isSystemVisible.value = false
+				if (newValue || matchFullscreenToFocus.first())
+					_isSystemVisible.value = !newValue
 			} else if (doubleTapSystemFlow.first()) {
 				toggleSystemVisible()
 			}

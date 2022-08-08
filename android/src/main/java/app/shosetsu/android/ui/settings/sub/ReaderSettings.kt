@@ -58,6 +58,7 @@ import app.shosetsu.android.viewmodel.impl.settings.doubleTapFocus
 import app.shosetsu.android.viewmodel.impl.settings.doubleTapSystem
 import app.shosetsu.android.viewmodel.impl.settings.enableFullscreen
 import app.shosetsu.android.viewmodel.impl.settings.invertChapterSwipeOption
+import app.shosetsu.android.viewmodel.impl.settings.matchFullscreenToFocus
 import app.shosetsu.android.viewmodel.impl.settings.paragraphIndentOption
 import app.shosetsu.android.viewmodel.impl.settings.paragraphSpacingOption
 import app.shosetsu.android.viewmodel.impl.settings.showReaderDivider
@@ -126,6 +127,8 @@ fun ReaderSettingsContent(
 	openHTMLEditor: () -> Unit,
 	showStyleAddSnackBar: () -> Unit
 ) {
+	val enableFullscreen by viewModel.enableFullscreen.collectAsState(true)
+	val matchFullscreenToFocus by viewModel.matchFullscreenToFocus.collectAsState(false)
 
 	LazyColumn(
 		contentPadding = PaddingValues(top = 16.dp, bottom = 64.dp),
@@ -317,14 +320,15 @@ fun ReaderSettingsContent(
 
 		item { viewModel.enableFullscreen() }
 
+		item { viewModel.matchFullscreenToFocus(enableFullscreen) }
+
 		item {
 			viewModel.showReaderDivider()
 		}
 
 		item { viewModel.doubleTapFocus() }
 		item {
-			val enableFullscreen by viewModel.enableFullscreen.collectAsState(true)
-			viewModel.doubleTapSystem(enableFullscreen)
+			viewModel.doubleTapSystem(enableFullscreen && !matchFullscreenToFocus)
 		}
 	}
 
