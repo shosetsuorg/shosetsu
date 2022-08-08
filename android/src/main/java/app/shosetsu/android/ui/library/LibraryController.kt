@@ -1,6 +1,7 @@
 package app.shosetsu.android.ui.library
 
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,6 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
@@ -49,6 +52,7 @@ import app.shosetsu.android.common.ext.collectLatestLA
 import app.shosetsu.android.common.ext.displayOfflineSnackBar
 import app.shosetsu.android.common.ext.firstLa
 import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.ext.makeSnackBar
 import app.shosetsu.android.common.ext.navigateSafely
 import app.shosetsu.android.common.ext.setShosetsuTransition
 import app.shosetsu.android.common.ext.viewModel
@@ -123,6 +127,7 @@ class LibraryController
 					val isEmpty by viewModel.isEmptyFlow.collectAsState(false)
 					val hasSelected by viewModel.hasSelectionFlow.collectAsState(false)
 					val type by viewModel.novelCardTypeFlow.collectAsState(NORMAL)
+					val badgeToast by viewModel.badgeUnreadToastFlow.collectAsState(true)
 
 					val columnsInV by viewModel.columnsInV.collectAsState(SettingKey.ChapterColumnsInPortait.default)
 					val columnsInH by viewModel.columnsInH.collectAsState(SettingKey.ChapterColumnsInLandscape.default)
@@ -158,6 +163,20 @@ class LibraryController
 						toggleSelection = { item ->
 							viewModel.toggleSelection(item)
 						},
+						toastNovel = if (badgeToast) {
+							{ item ->
+								try {
+									makeSnackBar(
+										resources!!.getQuantityString(
+											R.plurals.toast_unread_count,
+											item.unread,
+											item.unread
+										)
+									)?.show()
+								} catch (e: Resources.NotFoundException) {
+								}
+							}
+						} else null,
 						fab
 					)
 				}
@@ -349,6 +368,7 @@ fun LibraryContent(
 	onRefresh: () -> Unit,
 	onOpen: (LibraryNovelUI) -> Unit,
 	toggleSelection: (LibraryNovelUI) -> Unit,
+	toastNovel: ((LibraryNovelUI) -> Unit)?,
 	fab: EFabMaintainer?
 ) {
 	if (!isEmpty) {
@@ -396,6 +416,9 @@ fun LibraryContent(
 					items,
 					key = { it.hashCode() }
 				) { item ->
+					val onClickBadge = if (toastNovel != null) {
+						{ toastNovel(item) }
+					} else null
 					when (cardType) {
 						NORMAL -> {
 							NovelCardNormalContent(
@@ -413,7 +436,8 @@ fun LibraryContent(
 											Modifier
 												.align(Alignment.TopStart)
 												.padding(top = 4.dp, start = 4.dp),
-											text = item.unread.toString()
+											text = item.unread.toString(),
+											onClick = onClickBadge
 										)
 								},
 								isSelected = item.isSelected
@@ -433,7 +457,8 @@ fun LibraryContent(
 									if (item.unread > 0)
 										Badge(
 											Modifier.padding(8.dp),
-											text = item.unread.toString()
+											text = item.unread.toString(),
+											onClick = onClickBadge
 										)
 								},
 								isSelected = item.isSelected
@@ -455,7 +480,8 @@ fun LibraryContent(
 											Modifier
 												.align(Alignment.TopStart)
 												.padding(top = 4.dp, start = 4.dp),
-											text = item.unread.toString()
+											text = item.unread.toString(),
+											onClick = onClickBadge
 										)
 								},
 								isSelected = item.isSelected
@@ -474,11 +500,17 @@ fun LibraryContent(
 }
 
 @Composable
-fun Badge(modifier: Modifier, text: String) {
+fun Badge(modifier: Modifier, text: String, onClick: (() -> Unit)? = null) {
 	Box(
 		modifier = modifier then Modifier
 			.height(20.dp)
-			.background(MaterialTheme.colors.secondary, MaterialTheme.shapes.medium),
+			.background(MaterialTheme.colors.secondary, MaterialTheme.shapes.medium)
+			.clip(MaterialTheme.shapes.medium)
+			.let {
+				 if (onClick != null) {
+					 it.clickable(onClick = onClick)
+				 } else it
+			},
 		contentAlignment = Alignment.Center
 	) {
 		Text(

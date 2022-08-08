@@ -201,6 +201,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	// View options
 	object ChapterColumnsInPortait : IntKey("columnsInNovelsViewP", 3)
 	object ChapterColumnsInLandscape : IntKey("columnsInNovelsViewH", 6)
+	object NovelBadgeToast : BooleanKey("novelBadge", true)
 	object SelectedNovelCardType : IntKey("novelCardType", 0)
 	object NavStyle : IntKey("navigationStyle", 0)
 

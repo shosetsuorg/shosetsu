@@ -174,6 +174,7 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 
 	bind<LoadNovelUIColumnsPUseCase>() with provider { LoadNovelUIColumnsPUseCase(instance()) }
 	bind<LoadNovelUIColumnsHUseCase>() with provider { LoadNovelUIColumnsHUseCase(instance()) }
+	bind<LoadNovelUIBadgeToastUseCase>() with provider { LoadNovelUIBadgeToastUseCase(instance()) }
 	bind<LoadNovelUITypeUseCase>() with provider { LoadNovelUITypeUseCase(instance()) }
 	bind<StartAppUpdateInstallWorkerUseCase>() with provider {
 		StartAppUpdateInstallWorkerUseCase(instance())

@@ -259,6 +259,8 @@
     <string name="comfy">Comfy</string>
     <string name="novel_card_type_selector_title">Novel card type</string>
     <string name="novel_card_type_selector_desc">Swap between a grid or list for displaying novels</string>
+    <string name="novel_badge_toast_title">Novel badge toast</string>
+    <string name="novel_badge_toast_desc">Toast when the unread badge is clicked to explain what it is for</string>
     <string name="library_update">Updating Library</string>
     <string name="catalogue_default_load">Default home page</string>
     <string name="catalogue_default_load_desc">When a catalogue is selected, This is the thing it loads</string>

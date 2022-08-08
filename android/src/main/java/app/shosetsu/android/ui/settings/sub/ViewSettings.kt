@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import app.shosetsu.android.common.SettingKey.ChapterColumnsInLandscape
 import app.shosetsu.android.common.SettingKey.ChapterColumnsInPortait
 import app.shosetsu.android.common.SettingKey.NavStyle
+import app.shosetsu.android.common.SettingKey.NovelBadgeToast
 import app.shosetsu.android.common.SettingKey.SelectedNovelCardType
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.launchUI
@@ -135,6 +136,17 @@ fun ViewSettingsContent(viewModel: AViewSettingsViewModel, finishActivity: () ->
 				key = SelectedNovelCardType,
 				modifier = Modifier
 					.fillMaxWidth()
+			)
+		}
+
+
+		item {
+			SwitchSettingContent(
+				title = stringResource(R.string.novel_badge_toast_title),
+				description = stringResource(R.string.novel_badge_toast_desc),
+				repo = viewModel.settingsRepo,
+				key = NovelBadgeToast,
+				modifier = Modifier.fillMaxWidth()
 			)
 		}
 

@@ -28,6 +28,7 @@ import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.utils.copy
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.load.LoadLibraryUseCase
+import app.shosetsu.android.domain.usecases.load.LoadNovelUIBadgeToastUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUIColumnsHUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUIColumnsPUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUITypeUseCase
@@ -56,6 +57,7 @@ class LibraryViewModel(
 	private val loadNovelUITypeUseCase: LoadNovelUITypeUseCase,
 	private val loadNovelUIColumnsH: LoadNovelUIColumnsHUseCase,
 	private val loadNovelUIColumnsP: LoadNovelUIColumnsPUseCase,
+	private val loadNovelUIBadgeToast: LoadNovelUIBadgeToastUseCase,
 	private val setNovelUITypeUseCase: SetNovelUITypeUseCase
 ) : ALibraryViewModel() {
 
@@ -230,6 +232,10 @@ class LibraryViewModel(
 
 	override val columnsInV by lazy {
 		loadNovelUIColumnsP().onIO()
+	}
+
+	override val badgeUnreadToastFlow by lazy {
+		loadNovelUIBadgeToast().onIO()
 	}
 
 	/**
