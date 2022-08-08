@@ -127,9 +127,6 @@ fun ReaderSettingsContent(
 	openHTMLEditor: () -> Unit,
 	showStyleAddSnackBar: () -> Unit
 ) {
-	val enableFullscreen by viewModel.enableFullscreen.collectAsState(true)
-	val matchFullscreenToFocus by viewModel.matchFullscreenToFocus.collectAsState(false)
-
 	LazyColumn(
 		contentPadding = PaddingValues(top = 16.dp, bottom = 64.dp),
 		verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -320,16 +317,14 @@ fun ReaderSettingsContent(
 
 		item { viewModel.enableFullscreen() }
 
-		item { viewModel.matchFullscreenToFocus(enableFullscreen) }
+		item { viewModel.matchFullscreenToFocus() }
 
 		item {
 			viewModel.showReaderDivider()
 		}
 
 		item { viewModel.doubleTapFocus() }
-		item {
-			viewModel.doubleTapSystem(enableFullscreen && !matchFullscreenToFocus)
-		}
+		item { viewModel.doubleTapSystem() }
 	}
 
 }

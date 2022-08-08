@@ -3,6 +3,9 @@ package app.shosetsu.android.viewmodel.impl.settings
 import android.app.Application
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import app.shosetsu.android.common.SettingKey.*
@@ -44,14 +47,6 @@ class ReaderSettingsViewModel(
 	private val app: Application,
 	val loadReaderThemes: LoadReaderThemes
 ) : AReaderSettingsViewModel(iSettingsRepository) {
-
-	override val enableFullscreen: Flow<Boolean> by lazy {
-		settingsRepo.getBooleanFlow(ReaderEnableFullscreen)
-	}
-
-	override val matchFullscreenToFocus: Flow<Boolean> by lazy {
-		settingsRepo.getBooleanFlow(ReaderMatchFullscreenToFocus)
-	}
 
 	override fun getReaderThemes(): Flow<List<ColorChoiceUI>> =
 		loadReaderThemes().combine(settingsRepo.getIntFlow(ReaderTheme)) { a, b ->
@@ -116,14 +111,17 @@ fun ExposedSettingsRepoViewModel.enableFullscreen() {
 }
 
 @Composable
-fun ExposedSettingsRepoViewModel.matchFullscreenToFocus(enabled: Boolean) {
+fun ExposedSettingsRepoViewModel.matchFullscreenToFocus() {
+	val enableFullscreen by remember {
+		settingsRepo.getBooleanFlow(ReaderEnableFullscreen)
+	}.collectAsState(true)
 	SwitchSettingContent(
 		stringResource(R.string.settings_reader_fullscreen_focus),
 		stringResource(R.string.settings_reader_fullscreen_focus_desc),
 		settingsRepo,
 		ReaderMatchFullscreenToFocus, modifier = Modifier
 			.fillMaxWidth(),
-		enabled = enabled
+		enabled = enableFullscreen
 	)
 }
 
@@ -139,14 +137,21 @@ fun ExposedSettingsRepoViewModel.doubleTapFocus() {
 }
 
 @Composable
-fun ExposedSettingsRepoViewModel.doubleTapSystem(enabled: Boolean) {
+fun ExposedSettingsRepoViewModel.doubleTapSystem() {
+	val enableFullscreen by remember {
+		settingsRepo.getBooleanFlow(ReaderEnableFullscreen)
+	}.collectAsState(true)
+	val matchFullscreenToFocus by remember {
+		settingsRepo.getBooleanFlow(ReaderMatchFullscreenToFocus)
+	}.collectAsState(true)
+
 	SwitchSettingContent(
 		stringResource(R.string.settings_reader_double_tap_system),
 		stringResource(R.string.settings_reader_double_tap_system_desc),
 		settingsRepo,
 		ReaderDoubleTapSystem, modifier = Modifier
 			.fillMaxWidth(),
-		enabled = enabled
+		enabled = enableFullscreen && !matchFullscreenToFocus
 	)
 }
 
