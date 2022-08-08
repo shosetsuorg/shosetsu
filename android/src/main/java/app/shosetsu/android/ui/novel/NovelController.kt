@@ -40,7 +40,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
@@ -1119,10 +1118,7 @@ fun NovelInfoCoverContent(
 			.build(),
 		stringResource(string.controller_novel_info_image),
 		modifier = modifier
-			.aspectRatio(coverRatio)
-			.padding(top = 8.dp, start = 4.dp)
-			.clickable(onClick = onClick)
-			.clip(RoundedCornerShape(16.dp)),
+			.clickable(onClick = onClick),
 		error = {
 			ImageLoadingError()
 		},
@@ -1190,6 +1186,9 @@ fun NovelInfoHeaderContent(
 					NovelInfoCoverContent(
 						novelInfo.imageURL,
 						modifier = Modifier.fillMaxWidth(.35f)
+							.aspectRatio(coverRatio)
+							.padding(top = 8.dp, start = 4.dp)
+							.clip(MaterialTheme.shapes.medium)
 					) {
 						isCoverClicked = true
 					}
