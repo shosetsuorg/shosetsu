@@ -143,7 +143,7 @@ fun ExposedSettingsRepoViewModel.doubleTapSystem() {
 	}.collectAsState(true)
 	val matchFullscreenToFocus by remember {
 		settingsRepo.getBooleanFlow(ReaderMatchFullscreenToFocus)
-	}.collectAsState(true)
+	}.collectAsState(false)
 
 	SwitchSettingContent(
 		stringResource(R.string.settings_reader_double_tap_system),
