@@ -144,18 +144,24 @@ fun NovelCardNormalContent(
 					}
 					.alpha(if (isPlaceholder) 0.0f else 1.0f)
 			)
-			Text(
-				title,
-				modifier = Modifier
+			Box(
+				Modifier
 					.align(Alignment.BottomCenter)
-					.placeholder(visible = isPlaceholder)
+                    .fillMaxWidth()
 					.padding(4.dp),
-				textAlign = TextAlign.Center,
-				color = Color.White,
-				overflow = TextOverflow.Ellipsis,
-				maxLines = 3,
-				fontSize = 14.sp
-			)
+				contentAlignment = Alignment.Center
+			) {
+				Text(
+					title,
+					modifier = Modifier
+						.placeholder(visible = isPlaceholder),
+					textAlign = TextAlign.Center,
+					color = Color.White,
+					overflow = TextOverflow.Ellipsis,
+					maxLines = 3,
+					fontSize = 14.sp
+				)
+			}
 			if (overlay != null)
 				overlay()
 		}
@@ -236,16 +242,22 @@ fun NovelCardCozyContent(
 			}
 		}
 
-		Text(
-			title,
-			modifier = Modifier
-				.placeholder(visible = isPlaceholder)
+		Box(
+			Modifier
+				.fillMaxWidth()
 				.padding(4.dp),
-			textAlign = TextAlign.Center,
-			overflow = TextOverflow.Ellipsis,
-			maxLines = 3,
-			fontSize = 14.sp
-		)
+			contentAlignment = Alignment.Center
+		) {
+			Text(
+				title,
+				modifier = Modifier
+					.placeholder(visible = isPlaceholder),
+				textAlign = TextAlign.Center,
+				overflow = TextOverflow.Ellipsis,
+				maxLines = 3,
+				fontSize = 14.sp
+			)
+		}
 	}
 }
 
