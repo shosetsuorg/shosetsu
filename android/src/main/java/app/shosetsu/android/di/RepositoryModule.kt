@@ -32,6 +32,10 @@ import org.kodein.di.singleton
  */
 
 val repositoryModule: DI.Module = DI.Module("repository_module") {
+	bind<ICategoryRepository>() with singleton {
+		CategoryRepository(instance())
+	}
+
 	bind<IChaptersRepository>() with singleton {
 		ChaptersRepository(instance(), instance(), instance(), instance(), instance())
 	}
@@ -47,6 +51,10 @@ val repositoryModule: DI.Module = DI.Module("repository_module") {
 	}
 
 	bind<IExtensionRepoRepository>() with singleton { ExtRepoRepository(instance(), instance()) }
+
+	bind<INovelCategoryRepository>() with singleton {
+		NovelCategoryRepository(instance())
+	}
 
 	bind<INovelsRepository>() with singleton {
 		NovelsRepository(

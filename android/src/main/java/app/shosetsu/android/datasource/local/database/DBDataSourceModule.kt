@@ -28,6 +28,7 @@ import org.kodein.di.singleton
  * 01 / 01 / 2021
  */
 val dbDataSourceModule = DI.Module("database_data_source") {
+	bind<IDBCategoriesDataSource>() with singleton { DBCategoriesDataSource(instance()) }
 	bind<IDBChaptersDataSource>() with singleton { DBChaptersDataSource(instance()) }
 	bind<IDBDownloadsDataSource>() with singleton { DBDownloadsDataSource(instance()) }
 
@@ -44,6 +45,8 @@ val dbDataSourceModule = DI.Module("database_data_source") {
 	}
 
 	bind<IDBExtLibDataSource>() with singleton { DBExtLibDataSource(instance()) }
+
+	bind<IDBNovelCategoriesDataSource>() with singleton { DBNovelCategoriesDataSource(instance()) }
 
 	bind<IDBNovelsDataSource>() with singleton { DBNovelsDataSource(instance()) }
 
