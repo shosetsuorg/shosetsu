@@ -61,7 +61,7 @@ import com.google.accompanist.placeholder.material.placeholder
  * @author Doomsdayrs
  */
 
-const val coverRatio = 12.8F / 18.2F
+const val coverRatio = 0.7F
 
 @Composable
 fun PlaceholderNovelCardNormalContent() {
