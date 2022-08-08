@@ -103,8 +103,16 @@ class ChapterReaderViewModel(
 		}
 	}
 
+	private val enableFullscreenFlow by lazy {
+		settingsRepo.getBooleanFlow(ReaderEnableFullscreen)
+	}
+
 	private val doubleTapSystemFlow: Flow<Boolean> by lazy {
 		settingsRepo.getBooleanFlow(ReaderDoubleTapSystem)
+			.combine(enableFullscreenFlow) { doubleTapSystem, enableFullscreen ->
+				doubleTapSystem || !enableFullscreen
+			}
+			.onIO()
 	}
 
 	/**
@@ -662,15 +670,23 @@ class ChapterReaderViewModel(
 	}
 
 	override val isFocused: MutableStateFlow<Boolean> = MutableStateFlow(false)
-	override val isSystemVisible: MutableStateFlow<Boolean> = MutableStateFlow(true)
+
+	private val _isSystemVisible = MutableStateFlow(true)
+	override val isSystemVisible: Flow<Boolean> by lazy {
+		_isSystemVisible.combine(enableFullscreenFlow) { isSystemVisible, enableFullscreen ->
+			isSystemVisible || !enableFullscreen
+		}.onIO()
+	}
+
+	override val enableFullscreen: Flow<Boolean> = enableFullscreenFlow
 
 	override fun toggleFocus() {
 		isFocused.value = !isFocused.value
 	}
 
 	override fun toggleSystemVisible() {
-		isFocused.value = isSystemVisible.value
-		isSystemVisible.value = !isSystemVisible.value
+		isFocused.value = _isSystemVisible.value
+		_isSystemVisible.value = !_isSystemVisible.value
 	}
 
 	override fun onReaderClicked() {
@@ -679,7 +695,7 @@ class ChapterReaderViewModel(
 				val newValue = !isFocused.value
 				isFocused.value = newValue
 				if (newValue)
-					isSystemVisible.value = false
+					_isSystemVisible.value = false
 			}
 		}
 	}
@@ -690,7 +706,7 @@ class ChapterReaderViewModel(
 				val newValue = !isFocused.value
 				isFocused.value = newValue
 				if (newValue)
-					isSystemVisible.value = false
+					_isSystemVisible.value = false
 			} else if (doubleTapSystemFlow.first()) {
 				toggleSystemVisible()
 			}

@@ -79,6 +79,7 @@ abstract class AChapterReaderViewModel :
 	 */
 	abstract val isFocused: Flow<Boolean>
 	abstract val isSystemVisible: Flow<Boolean>
+	abstract val enableFullscreen: Flow<Boolean>
 
 	abstract fun toggleFocus()
 	abstract fun toggleSystemVisible()

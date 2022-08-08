@@ -56,6 +56,7 @@ import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.settings.AReaderSettingsViewModel
 import app.shosetsu.android.viewmodel.impl.settings.doubleTapFocus
 import app.shosetsu.android.viewmodel.impl.settings.doubleTapSystem
+import app.shosetsu.android.viewmodel.impl.settings.enableFullscreen
 import app.shosetsu.android.viewmodel.impl.settings.invertChapterSwipeOption
 import app.shosetsu.android.viewmodel.impl.settings.paragraphIndentOption
 import app.shosetsu.android.viewmodel.impl.settings.paragraphSpacingOption
@@ -314,12 +315,17 @@ fun ReaderSettingsContent(
 			)
 		}
 
+		item { viewModel.enableFullscreen() }
+
 		item {
 			viewModel.showReaderDivider()
 		}
 
 		item { viewModel.doubleTapFocus() }
-		item { viewModel.doubleTapSystem() }
+		item {
+			val enableFullscreen by viewModel.enableFullscreen.collectAsState(true)
+			viewModel.doubleTapSystem(enableFullscreen)
+		}
 	}
 
 }

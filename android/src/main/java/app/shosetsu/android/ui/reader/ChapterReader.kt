@@ -166,6 +166,7 @@ class ChapterReader
 			val isBookmarked by viewModel.isCurrentChapterBookmarked.collectAsState(false)
 			val isRotationLocked by viewModel.liveIsScreenRotationLocked.collectAsState(false)
 			val isFocused by viewModel.isFocused.collectAsState(false)
+			val enableFullscren by viewModel.enableFullscreen.collectAsState(true)
 			val chapterType by viewModel.chapterType.collectAsState(null)
 			val currentChapterID by viewModel.currentChapterID.collectAsState(-1)
 			val isTTSCapable by isTTSCapable.collectAsState()
@@ -249,13 +250,14 @@ class ChapterReader
 								//item { viewModel.horizontalSwitchOption() }
 								item { viewModel.invertChapterSwipeOption() }
 								item { viewModel.readerKeepScreenOnOption() }
+								item { viewModel.enableFullscreen() }
 								item { viewModel.showReaderDivider() }
 								item { viewModel.stringAsHtmlOption() }
 								item { viewModel.doubleTapFocus() }
-								item { viewModel.doubleTapSystem() }
+								item { viewModel.doubleTapSystem(enableFullscren) }
 							},
 							toggleFocus = viewModel::toggleFocus,
-							onShowNavigation = viewModel::toggleSystemVisible,
+							onShowNavigation = viewModel::toggleSystemVisible.takeIf { enableFullscren },
 						)
 					},
 					content = { paddingValues ->

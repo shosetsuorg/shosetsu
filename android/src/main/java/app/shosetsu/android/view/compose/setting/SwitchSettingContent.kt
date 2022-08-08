@@ -22,12 +22,14 @@ fun SwitchSettingContent(
 	description: String,
 	isChecked: Boolean,
 	modifier: Modifier = Modifier,
+	enabled: Boolean = true,
 	onCheckChange: (newValue: Boolean) -> Unit
 ) {
 	GenericRightSettingLayout(title, description, modifier, onClick = { onCheckChange(!isChecked) }) {
 		Switch(
 			isChecked,
 			null,
+			enabled = enabled
 		)
 	}
 }
@@ -39,10 +41,11 @@ fun SwitchSettingContent(
 	repo: ISettingsRepository,
 	key: SettingKey<Boolean>,
 	modifier: Modifier = Modifier,
+	enabled: Boolean = true
 ) {
 	val value by repo.getBooleanFlow(key).collectAsState(key.default)
 	SwitchSettingContent(
-		title, description, value, modifier
+		title, description, value, modifier, enabled
 	) {
 		launchIO { repo.setBoolean(key, it) }
 	}
