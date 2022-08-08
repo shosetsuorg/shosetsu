@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -72,6 +74,7 @@ fun BrowseControllerFilterMenu(viewModel: ABrowseViewModel) {
 		modifier = Modifier
 			.fillMaxWidth()
 			.padding(vertical = 16.dp)
+			.verticalScroll(rememberScrollState())
 	) {
 		BrowseControllerNameFilter(searchTerm, viewModel::setSearch)
 
@@ -195,7 +198,8 @@ fun BrowseControllerLanguagesContent(
 	onLanguageChecked: (String, Boolean) -> Unit
 ) {
 	Column(
-		Modifier.fillMaxWidth()
+		Modifier
+			.fillMaxWidth()
 			.padding(top = 8.dp, bottom = 8.dp)
 	) {
 		languages.forEach { language ->
