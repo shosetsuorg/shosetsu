@@ -1109,6 +1109,7 @@ fun PreviewHeaderContent() {
 fun NovelInfoCoverContent(
 	imageURL: String,
 	modifier: Modifier = Modifier,
+	contentScale: ContentScale = ContentScale.Fit,
 	onClick: () -> Unit,
 ) {
 	SubcomposeAsyncImage(
@@ -1119,6 +1120,7 @@ fun NovelInfoCoverContent(
 		stringResource(string.controller_novel_info_image),
 		modifier = modifier
 			.clickable(onClick = onClick),
+		contentScale = contentScale,
 		error = {
 			ImageLoadingError()
 		},
@@ -1188,7 +1190,8 @@ fun NovelInfoHeaderContent(
 						modifier = Modifier.fillMaxWidth(.35f)
 							.aspectRatio(coverRatio)
 							.padding(top = 8.dp, start = 4.dp)
-							.clip(MaterialTheme.shapes.medium)
+							.clip(MaterialTheme.shapes.medium),
+						contentScale = ContentScale.Crop
 					) {
 						isCoverClicked = true
 					}
