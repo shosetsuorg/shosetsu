@@ -103,6 +103,7 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object ReaderDoubleTapFocus : BooleanKey("reader_double_tap_focus", false)
 	object ReaderDoubleTapSystem : BooleanKey("reader_double_tap_system", false)
 	object ReaderEnableFullscreen : BooleanKey("reader_enable_fullscreen", true)
+	object ReaderMatchFullscreenToFocus : BooleanKey("reader_match_fullscreen_focus", false)
 
 	/**
 	 * User customization for CSS in html reader

@@ -30,5 +30,7 @@ abstract class AReaderSettingsViewModel(iSettingsRepository: ISettingsRepository
 
 	abstract val enableFullscreen: Flow<Boolean>
 
+	abstract val matchFullscreenToFocus: Flow<Boolean>
+
 	abstract fun getReaderThemes(): Flow<List<ColorChoiceUI>>
 }
