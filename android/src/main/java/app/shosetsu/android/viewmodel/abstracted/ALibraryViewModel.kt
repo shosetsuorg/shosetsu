@@ -60,6 +60,7 @@ abstract class ALibraryViewModel :
 
 	abstract val columnsInH: Flow<Int>
 	abstract val columnsInV: Flow<Int>
+	abstract val badgeUnreadToastFlow: Flow<Boolean>
 
 	abstract fun cycleUnreadFilter(currentState: ToggleableState)
 	abstract fun getUnreadFilter(): Flow<ToggleableState>
