@@ -164,15 +164,15 @@ dependencies {
 	implementation("androidx.annotation:annotation:1.4.0")
 	implementation("androidx.core:core-ktx:1.8.0")
 	implementation("androidx.collection:collection-ktx:1.2.0")
-	implementation("androidx.core:core-splashscreen:1.0.0-rc01")
+	implementation("androidx.core:core-splashscreen:1.0.0")
 	implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
 	implementation("androidx.window:window:1.0.0")
 
 	// - Life Cycle
-	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0")
-	implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0")
-	implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.0")
-	implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.0")
+	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+	implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
+	implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
+	implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
 	implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
 
 	// Test classes
@@ -187,7 +187,7 @@ dependencies {
 	// Core libraries
 	implementation("org.luaj:luaj-jse:3.0.1")
 	implementation("com.github.shosetsuorg:kotlin-lib:b4d6511d")
-	implementation("org.jsoup:jsoup:1.15.1")
+	implementation("org.jsoup:jsoup:1.15.2")
 
 	// Image loading
 	implementation("io.coil-kt:coil-compose:2.1.0")
@@ -205,7 +205,7 @@ dependencies {
 	implementation(kotlin("stdlib-jdk8"))
 	//implementation(kotlin("reflect"))
 
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.3")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
 	// Error logging
 	val acraVersion = "5.9.5"
@@ -255,7 +255,7 @@ dependencies {
 
 	// KTX
 
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.3")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.4")
 
 	// KTX - Serialization
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
@@ -305,10 +305,10 @@ dependencies {
 	implementation(accompanist("accompanist-placeholder-material"))
 	implementation(accompanist("accompanist-pager-indicators"))
 	//- Integration with observables
-	implementation("androidx.compose.runtime:runtime-livedata:1.1.1")
+	implementation("androidx.compose.runtime:runtime-livedata:1.2.0")
 
 	// MDC Adapter
-	implementation("com.google.android.material:compose-theme-adapter:1.1.14")
+	implementation("com.google.android.material:compose-theme-adapter:1.1.15")
 
 	val androidxActivity = "1.4.0"
 	fun androidxActivity(module: String, version: String = androidxActivity) =
@@ -320,7 +320,7 @@ dependencies {
 	implementation("com.chargemap.compose:numberpicker:1.0.3")
 
 	// QR Code
-	implementation("io.github.g00fy2.quickie:quickie-bundled:1.4.2")
+	implementation("io.github.g00fy2.quickie:quickie-bundled:1.5.0")
 
 	implementation("com.github.doomsdayrs:qrcode-kotlin:513d290b")
 
