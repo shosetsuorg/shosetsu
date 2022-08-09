@@ -6,57 +6,15 @@ import android.database.sqlite.SQLiteException
 import android.os.Bundle
 import android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
 import android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
-import android.view.ActionMode
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.NumberPicker
 import androidx.appcompat.app.AlertDialog
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Card
-import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.*
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
@@ -81,20 +39,7 @@ import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.FilePermissionException
 import app.shosetsu.android.common.NoSuchExtensionException
 import app.shosetsu.android.common.enums.ReadingStatus
-import app.shosetsu.android.common.ext.collectLA
-import app.shosetsu.android.common.ext.collectLatestLA
-import app.shosetsu.android.common.ext.displayOfflineSnackBar
-import app.shosetsu.android.common.ext.firstLa
-import app.shosetsu.android.common.ext.getNovelID
-import app.shosetsu.android.common.ext.logE
-import app.shosetsu.android.common.ext.logI
-import app.shosetsu.android.common.ext.makeSnackBar
-import app.shosetsu.android.common.ext.navigateSafely
-import app.shosetsu.android.common.ext.openChapter
-import app.shosetsu.android.common.ext.openInWebView
-import app.shosetsu.android.common.ext.openShare
-import app.shosetsu.android.common.ext.setShosetsuTransition
-import app.shosetsu.android.common.ext.viewModel
+import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_BUNDLE_KEY
 import app.shosetsu.android.view.compose.ImageLoadingError
 import app.shosetsu.android.view.compose.LazyColumnScrollbar
@@ -182,10 +127,6 @@ class NovelController : ShosetsuController(),
 			activity!!.layoutInflater,
 			viewModel
 		).build()
-
-	init {
-		setHasOptionsMenu(true)
-	}
 
 	override fun onAttach(context: Context) {
 		if (viewModel.isFromChapterReader) viewModel.deletePrevious().collectDeletePrevious()
@@ -329,7 +270,7 @@ class NovelController : ShosetsuController(),
 			viewModel.downloadAllChapters()
 			true
 		}
-		else -> super.onOptionsItemSelected(item)
+		else -> false
 	}
 
 	private fun openChapterJumpDialog() {
@@ -1187,7 +1128,8 @@ fun NovelInfoHeaderContent(
 				) {
 					NovelInfoCoverContent(
 						novelInfo.imageURL,
-						modifier = Modifier.fillMaxWidth(.35f)
+						modifier = Modifier
+							.fillMaxWidth(.35f)
 							.aspectRatio(coverRatio)
 							.padding(top = 8.dp, start = 4.dp)
 							.clip(MaterialTheme.shapes.medium),

@@ -5,6 +5,7 @@ import app.shosetsu.android.common.enums.TextAsset
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.readAsset
 import app.shosetsu.android.viewmodel.abstracted.ATextAssetReaderViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapLatest
@@ -33,6 +34,7 @@ import kotlinx.coroutines.flow.mapLatest
  * @author Doomsdayrs
  */
 class TextAssetReaderViewModel(val application: Application) : ATextAssetReaderViewModel() {
+	@OptIn(ExperimentalCoroutinesApi::class)
 	override val liveData: Flow<String?>
 		get() = targetFlow.mapLatest {
 			if (it != null) {

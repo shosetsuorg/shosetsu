@@ -91,7 +91,7 @@ fun ErrorContent(
 	ErrorContent(
 		message = stringResource(id = messageRes),
 		stackTrace = stackTrace,
-		actions = *actions
+		actions = actions
 	)
 
 @Composable

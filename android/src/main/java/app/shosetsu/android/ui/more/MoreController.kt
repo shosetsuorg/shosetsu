@@ -122,7 +122,7 @@ fun MoreItemContent(
 @Preview
 @Composable
 fun PreviewMoreContent() {
-	MoreContent({}) { id, singleTop -> }
+	MoreContent({}) { _, _ -> }
 }
 
 @Composable

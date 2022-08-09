@@ -73,6 +73,7 @@ class SearchViewModel(
 
 	override val query: Flow<String?> by lazy { queryFlow.onIO() }
 
+	@OptIn(ExperimentalCoroutinesApi::class)
 	override val listings: Flow<List<SearchRowUI>> by lazy {
 		loadSearchRowUIUseCase().transformLatest { ogList ->
 			emitAll(

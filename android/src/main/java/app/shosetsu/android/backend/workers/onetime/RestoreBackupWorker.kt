@@ -37,6 +37,7 @@ import coil.request.ImageRequest
 import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.decodeFromStream
 import org.acra.ACRA
 import org.kodein.di.DI
@@ -112,6 +113,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		return BackupEntity(bis.readBytes())
 	}
 
+	@OptIn(ExperimentalSerializationApi::class)
 	@Throws(IOException::class)
 	override suspend fun doWork(): Result {
 		logI("Starting restore")

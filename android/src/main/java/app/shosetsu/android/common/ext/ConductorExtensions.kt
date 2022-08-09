@@ -1,6 +1,5 @@
 package app.shosetsu.android.common.ext
 
-import android.content.res.Resources
 import android.provider.Settings
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
@@ -28,8 +27,3 @@ fun Fragment.makeSnackBar(
 	string: String,
 	@BaseTransientBottomBar.Duration length: Int = Snackbar.LENGTH_SHORT,
 ) = (activity as? MainActivity)?.makeSnackBar(string, length)
-
-
-@Throws(Resources.NotFoundException::class)
-fun Fragment.getString(@StringRes resId: Int, vararg formatArgs: Any): String =
-	resources.getString(resId, *formatArgs)
