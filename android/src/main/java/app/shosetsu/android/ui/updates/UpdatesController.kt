@@ -141,7 +141,7 @@ fun UpdatesContent(
 		} else {
 			SwipeRefresh(rememberSwipeRefreshState(false), onRefresh) {
 				LazyColumn(
-					contentPadding = PaddingValues(bottom = 112.dp, top = 4.dp),
+					contentPadding = PaddingValues(bottom = 112.dp),
 					verticalArrangement = Arrangement.spacedBy(4.dp)
 				) {
 					items.forEach { (header, updateItems) ->
@@ -247,7 +247,10 @@ fun UpdateItemContent(updateUI: UpdatesUI, onClick: () -> Unit) {
 
 @Composable
 fun UpdateHeaderItemContent(dateTime: DateTime) {
-	Surface(modifier = Modifier.fillMaxWidth()) {
+	Surface(
+		modifier = Modifier.fillMaxWidth(),
+		elevation = 2.dp
+	) {
 		val context = LocalContext.current
 		val text = remember(dateTime, context) {
 			when (dateTime) {
