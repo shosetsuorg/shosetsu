@@ -1,24 +1,18 @@
 {
-  "latestVersion": "2377",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r2377/shosetsu-r2377-universal.apk",
+  "latestVersion": "2411",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r2411/shosetsu-r2411-universal.apk",
   "releaseNotes": [
-    "Stable in August?",
-    "",
     "New:",
-    "- Add clicking a novel update notification to open up the new chapter",
-    "- Re-add animations to navigation",
+    "- Option to enable / disable fullscreen",
+    "- Option to match fullscreen with focus",
     "",
-    "Fix:",
-    "- Catalog filter button not having filter text",
-    "- QRCode reader crashing when opening content",
+    "Fixes:",
+    "- Prevent downloading when there are no chapters",
+    "- Prevent crashes from clicking two buttons at once",
     "",
     "Misc:",
-    "- Hide filter button when there are no filters in a catalog",
-    "- Improve restore UI",
-    "- Minor logging improvements",
-    "- Scanned QRCode is now auto added to match UI",
-    "- Remove continuous scroll from settings",
-    "- Use VerticalArrangment for spacing",
-    "- Force reader bottom bar to be sharp"
+    "- Improve UI performance (thanks @jobobby04)",
+    "- Various UI/UX improvements (thanks @jobobby04)",
+    "- Upgrade dependencies"
   ]
 }
