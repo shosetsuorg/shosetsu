@@ -4,6 +4,7 @@ import androidx.compose.ui.state.ToggleableState
 import app.shosetsu.android.common.enums.NovelCardType
 import app.shosetsu.android.common.enums.NovelSortType
 import app.shosetsu.android.view.uimodels.model.LibraryNovelUI
+import app.shosetsu.android.view.uimodels.model.LibraryUI
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.android.viewmodel.base.StartUpdateManagerViewModel
@@ -35,7 +36,7 @@ import kotlinx.coroutines.flow.Flow
  * @author github.com/doomsdayrs
  */
 abstract class ALibraryViewModel :
-	SubscribeViewModel<List<LibraryNovelUI>>,
+	SubscribeViewModel<LibraryUI>,
 	ShosetsuViewModel(),
 	IsOnlineCheckViewModel,
 	StartUpdateManagerViewModel {
@@ -97,5 +98,8 @@ abstract class ALibraryViewModel :
 
 	abstract val queryFlow: Flow<String>
 	abstract fun setQuery(s: String)
+
+	abstract val activeCategory: Flow<Int>
+	abstract fun setActiveCategory(category: Int)
 
 }

@@ -39,4 +39,5 @@ data class LibraryNovelEntity(
 	val authors: List<String>,
 	val artists: List<String>,
 	val tags: List<String>,
+	val category: Int,
 )

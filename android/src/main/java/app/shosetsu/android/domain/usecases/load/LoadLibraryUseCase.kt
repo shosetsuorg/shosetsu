@@ -1,10 +1,14 @@
 package app.shosetsu.android.domain.usecases.load
 
 import android.database.sqlite.SQLiteException
+import app.shosetsu.android.domain.repository.base.ICategoryRepository
 import app.shosetsu.android.domain.repository.base.INovelsRepository
+import app.shosetsu.android.view.uimodels.model.CategoryUI
 import app.shosetsu.android.view.uimodels.model.LibraryNovelUI
+import app.shosetsu.android.view.uimodels.model.LibraryUI
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapLatest
 
 /*
@@ -30,10 +34,11 @@ import kotlinx.coroutines.flow.mapLatest
  */
 class LoadLibraryUseCase(
 	private val novelsRepo: INovelsRepository,
+	private val categoryRepository: ICategoryRepository
 ) {
 	@Throws(SQLiteException::class)
 	@OptIn(ExperimentalCoroutinesApi::class)
-	operator fun invoke(): Flow<List<LibraryNovelUI>> =
+	operator fun invoke(): Flow<LibraryUI> =
 		novelsRepo.loadLibraryNovelEntities().mapLatest { origin ->
 			origin.map { (id,
 							 title,
@@ -43,10 +48,20 @@ class LoadLibraryUseCase(
 							 genres,
 							 authors,
 							 artists,
-							 tags) ->
+							 tags,
+							 category) ->
 				LibraryNovelUI(
-					id, title, imageURL, bookmarked, unread, genres, authors, artists, tags
+					id, title, imageURL, bookmarked, unread, genres, authors, artists, tags, category
 				)
-			}
+			}.groupBy { it.category }
+		}.combine(
+			categoryRepository.getCategoriesAsFlow()
+				.mapLatest { origin ->
+					origin.sortedBy { it.order }.map { (id, name, order) ->
+						CategoryUI(id!!, name, order)
+					}
+				}
+		) { novels, categories ->
+			LibraryUI(categories, novels)
 		}
 }
