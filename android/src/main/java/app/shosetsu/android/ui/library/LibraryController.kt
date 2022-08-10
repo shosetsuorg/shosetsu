@@ -410,26 +410,28 @@ fun LibraryPager(
 	}
 
 	Column(Modifier.fillMaxWidth()) {
-		ScrollableTabRow(
-			selectedTabIndex = state.currentPage,
-			indicator = { tabPositions ->
-				TabRowDefaults.Indicator(
-					Modifier.pagerTabIndicatorOffset(state, tabPositions)
-				)
-			},
-			backgroundColor = MaterialTheme.colors.primary.copy(alpha = 0.1F),
-			edgePadding = 0.dp,
-		) {
-			library.categories.forEachIndexed { index, category ->
-				Tab(
-					text = { Text(category.name) },
-					selected = state.currentPage == index,
-					onClick = {
-						scope.launch {
-							state.animateScrollToPage(index)
-						}
-					},
-				)
+		if (!(library.categories.size == 1 && library.categories.first().id == 0)) {
+			ScrollableTabRow(
+				selectedTabIndex = state.currentPage,
+				indicator = { tabPositions ->
+					TabRowDefaults.Indicator(
+						Modifier.pagerTabIndicatorOffset(state, tabPositions)
+					)
+				},
+				backgroundColor = MaterialTheme.colors.primary.copy(alpha = 0.1F),
+				edgePadding = 0.dp,
+			) {
+				library.categories.forEachIndexed { index, category ->
+					Tab(
+						text = { Text(category.name) },
+						selected = state.currentPage == index,
+						onClick = {
+							scope.launch {
+								state.animateScrollToPage(index)
+							}
+						},
+					)
+				}
 			}
 		}
 		HorizontalPager(
