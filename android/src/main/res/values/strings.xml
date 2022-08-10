@@ -387,6 +387,7 @@
     <string name="controller_repositories_action_add">Add</string>
 
     <string name="categories">Categories</string>
+    <string name="set_categories">Set categories</string>
     <string name="categories_add_name_hint">Category name</string>
     <string name="categories_add_title">Add Category</string>
     <string name="toast_categories_added">Category Added</string>

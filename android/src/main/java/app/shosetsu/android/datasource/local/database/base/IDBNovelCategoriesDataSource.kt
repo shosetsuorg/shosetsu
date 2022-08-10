@@ -1,5 +1,6 @@
 package app.shosetsu.android.datasource.local.database.base
 
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.domain.model.local.NovelCategoryEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -32,4 +33,16 @@ interface IDBNovelCategoriesDataSource {
     fun getNovelCategoriesFromNovelFlow(novelID: Int): Flow<List<NovelCategoryEntity>>
 
     fun getNovelCategoriesFromCategoryFlow(categoryID: Int): Flow<List<NovelCategoryEntity>>
+
+    /**
+     * Set the categories for a novel
+     */
+    @Throws(SQLiteException::class)
+    suspend fun setNovelCategories(entities: List<NovelCategoryEntity>): Array<Long>
+
+    /**
+     * Delete the categories for a novel
+     */
+    @Throws(SQLiteException::class)
+    suspend fun deleteNovelCategories(novelID: Int)
 }

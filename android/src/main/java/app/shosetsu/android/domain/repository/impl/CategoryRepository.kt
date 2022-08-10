@@ -43,6 +43,7 @@ class CategoryRepository(
     override suspend fun categoryExists(name: String): Boolean =
         database.categoryExists(name)
 
+    @Throws(SQLiteException::class)
     override suspend fun getNextCategoryOrder() =
         database.getNextCategoryOrder()
 

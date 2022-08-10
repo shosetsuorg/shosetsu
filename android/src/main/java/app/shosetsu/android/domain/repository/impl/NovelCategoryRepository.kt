@@ -32,4 +32,10 @@ class NovelCategoryRepository(
 
     override fun getNovelCategoriesFromCategoryFlow(categoryID: Int): Flow<List<NovelCategoryEntity>> =
         database.getNovelCategoriesFromCategoryFlow(categoryID)
+
+    override suspend fun setNovelCategories(entities: List<NovelCategoryEntity>) =
+        database.setNovelCategories(entities)
+
+    override suspend fun deleteNovelCategories(novelID: Int) =
+        database.deleteNovelCategories(novelID)
 }

@@ -125,7 +125,9 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			loadNovelUITypeUseCase = instance(),
 			loadNovelUIColumnsHUseCase = instance(),
 			loadNovelUIColumnsPUseCase = instance(),
-			instance()
+			setNovelUIType = instance(),
+			getCategoriesUseCase = instance(),
+			setNovelCategoriesUseCase = instance()
 		)
 	}
 
@@ -185,7 +187,9 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			trueDeleteChapter = instance(),
 			getInstalledExtensionUseCase = instance(),
 			getRepositoryUseCase = instance(),
-			chapterRepo = instance()
+			chapterRepo = instance(),
+			getCategoriesUseCase = instance(),
+			setNovelCategoriesUseCase = instance()
 		)
 	}
 

@@ -25,5 +25,5 @@ package app.shosetsu.android.domain.model.local
 
 data class NovelCategoryEntity(
 	val novelID: Int,
-	val categoryId: Int,
+	val categoryID: Int,
 )

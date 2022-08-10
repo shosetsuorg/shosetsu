@@ -45,4 +45,10 @@ interface NovelCategoriesDao : BaseDao<DBNovelCategoryEntity> {
 	 */
 	@Query("SELECT * FROM novel_categories WHERE categoryID = :categoryID")
 	fun getNovelCategoriesFromCategoryFlow(categoryID: Int): Flow<List<DBNovelCategoryEntity>>
+
+	/**
+	 * Delete the categories for a novel
+	 */
+	@Query("DELETE FROM novel_categories WHERE novelID = :novelID")
+	suspend fun deleteNovelCategories(novelID: Int)
 }

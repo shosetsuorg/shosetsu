@@ -1,6 +1,8 @@
 package app.shosetsu.android.datasource.local.database.impl
 
+import app.shosetsu.android.common.ext.onIO
 import app.shosetsu.android.datasource.local.database.base.IDBNovelCategoriesDataSource
+import app.shosetsu.android.domain.model.database.DBNovelCategoryEntity
 import app.shosetsu.android.domain.model.local.NovelCategoryEntity
 import app.shosetsu.android.dto.convertList
 import app.shosetsu.android.providers.database.dao.NovelCategoriesDao
@@ -40,4 +42,18 @@ class DBNovelCategoriesDataSource(
 	override fun getNovelCategoriesFromCategoryFlow(categoryID: Int): Flow<List<NovelCategoryEntity>> =
 		novelCategoriesDao.getNovelCategoriesFromCategoryFlow(categoryID).map { it.convertList() }
 
+	override suspend fun setNovelCategories(entities: List<NovelCategoryEntity>) =
+		novelCategoriesDao.insertAllIgnore(entities.toDB())
+
+	override suspend fun deleteNovelCategories(novelID: Int) =
+		onIO { novelCategoriesDao.deleteNovelCategories(novelID) }
+
+	fun NovelCategoryEntity.toDB() =
+		DBNovelCategoryEntity(
+			id = null,
+			novelID = novelID,
+			categoryID = categoryID
+		)
+
+	fun List<NovelCategoryEntity>.toDB() = map { it.toDB() }
 }

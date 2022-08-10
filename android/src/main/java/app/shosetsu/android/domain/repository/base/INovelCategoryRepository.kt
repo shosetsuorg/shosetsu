@@ -18,6 +18,7 @@
 
 package app.shosetsu.android.domain.repository.base
 
+import android.database.sqlite.SQLiteException
 import app.shosetsu.android.domain.model.local.NovelCategoryEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -32,4 +33,16 @@ interface INovelCategoryRepository {
      * Loads all [NovelCategoryEntity]s from a category id in a flow
      */
     fun getNovelCategoriesFromCategoryFlow(categoryID: Int): Flow<List<NovelCategoryEntity>>
+
+    /**
+     * Set the categories for a novel
+     */
+    @Throws(SQLiteException::class)
+    suspend fun setNovelCategories(entities: List<NovelCategoryEntity>): Array<Long>
+
+    /**
+     * Delete the categories for a novel
+     */
+    @Throws(SQLiteException::class)
+    suspend fun deleteNovelCategories(novelID: Int)
 }

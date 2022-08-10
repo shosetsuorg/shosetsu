@@ -49,6 +49,7 @@ import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_B
 import app.shosetsu.android.view.compose.ImageLoadingError
 import app.shosetsu.android.view.compose.LazyColumnScrollbar
 import app.shosetsu.android.view.compose.ShosetsuCompose
+import app.shosetsu.android.view.compose.TextButton
 import app.shosetsu.android.view.compose.coverRatio
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
@@ -56,6 +57,7 @@ import app.shosetsu.android.view.controller.base.ExtendedFABController.EFabMaint
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.view.openQRCodeShareDialog
 import app.shosetsu.android.view.openShareMenu
+import app.shosetsu.android.view.uimodels.model.CategoryUI
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
@@ -374,6 +376,10 @@ class NovelController : ShosetsuController(),
 
 	private var state = LazyListState(0)
 
+	private fun setCategories(categories: IntArray) {
+		viewModel.setNovelCategories(categories).firstLa(this, catch = {}) {}
+	}
+
 	private fun toggleBookmark() {
 		viewModel.toggleNovelBookmark().firstLa(this@NovelController, catch = {}) {
 			when (it) {
@@ -414,6 +420,7 @@ class NovelController : ShosetsuController(),
 				val isRefreshing by viewModel.isRefreshing.collectAsState(false)
 				val hasSelected by viewModel.hasSelected.collectAsState(false)
 				val itemAt by viewModel.itemIndex.collectAsState(0)
+				val categories by viewModel.categories.collectAsState(emptyList())
 
 				activity?.invalidateOptionsMenu()
 				// If the data is not present, loads it
@@ -439,6 +446,8 @@ class NovelController : ShosetsuController(),
 							else displayOfflineSnackBar()
 						},
 						openWebView = ::openWebView,
+						categories = categories,
+						setCategories = ::setCategories,
 						toggleBookmark = ::toggleBookmark,
 						openFilter = ::openFilterMenu,
 						openChapterJump = ::openChapterJumpDialog,
@@ -718,6 +727,8 @@ fun PreviewNovelInfoContent() {
 			isRefreshing = false,
 			onRefresh = {},
 			openWebView = {},
+			emptyList(),
+			{},
 			toggleBookmark = {},
 			openFilter = {},
 			openChapterJump = {},
@@ -750,6 +761,8 @@ fun NovelInfoContent(
 	isRefreshing: Boolean,
 	onRefresh: () -> Unit,
 	openWebView: () -> Unit,
+	categories: List<CategoryUI>,
+	setCategories: (IntArray) -> Unit,
 	toggleBookmark: () -> Unit,
 	openFilter: () -> Unit,
 	openChapterJump: () -> Unit,
@@ -785,6 +798,8 @@ fun NovelInfoContent(
 								NovelInfoHeaderContent(
 									novelInfo = novelInfo,
 									openWebview = openWebView,
+									categories = categories,
+									setCategories = setCategories,
 									toggleBookmark = toggleBookmark,
 									openChapterJump = openChapterJump,
 									openFilter = openFilter,
@@ -1039,6 +1054,8 @@ fun PreviewHeaderContent() {
 			info,
 			chapterCount = 0,
 			{},
+			emptyList(),
+			{},
 			{},
 			{},
 			{}
@@ -1077,6 +1094,8 @@ fun NovelInfoHeaderContent(
 	novelInfo: NovelUI,
 	chapterCount: Int,
 	openWebview: () -> Unit,
+	categories: List<CategoryUI>,
+	setCategories: (IntArray) -> Unit,
 	toggleBookmark: () -> Unit,
 	openFilter: () -> Unit,
 	openChapterJump: () -> Unit
@@ -1091,6 +1110,14 @@ fun NovelInfoHeaderContent(
 				isCoverClicked = false
 			}
 		}
+
+	var isCategoriesDialog by remember { mutableStateOf(false) }
+	if (isCategoriesDialog)
+		CategoriesDialog(
+			onDismissRequest = { isCategoriesDialog = false },
+			categories,
+			setCategories
+		)
 
 	Column(
 		modifier = Modifier.fillMaxWidth(),
@@ -1211,7 +1238,16 @@ fun NovelInfoHeaderContent(
 					verticalAlignment = Alignment.CenterVertically
 				) {
 					TextButton(
-						onClick = toggleBookmark,
+						onClick = {
+							if (novelInfo.bookmarked || categories.isEmpty()) {
+								toggleBookmark()
+							} else {
+								isCategoriesDialog = true
+							}
+						},
+						onLongClick = {
+							isCategoriesDialog = true
+						},
 						modifier = Modifier
 							.padding(vertical = 8.dp, horizontal = 4.dp)
 							.weight(1F)
@@ -1402,4 +1438,62 @@ fun ExpandedText(
 			Icon(painterResource(drawable.expand_more), contentDescription = stringResource(string.more))
 		else Icon(painterResource(drawable.expand_less), contentDescription = stringResource(string.less))
 	}
+}
+
+@Composable
+fun CategoriesDialog(
+	onDismissRequest: () -> Unit,
+	categories: List<CategoryUI>,
+	toggleBookmark: (IntArray) -> Unit
+) {
+	val selectedCategories = remember {
+		mutableStateListOf<Int>()
+	}
+	AlertDialog(
+		onDismissRequest = onDismissRequest,
+		confirmButton = {
+			TextButton(
+				onClick = {
+					toggleBookmark(selectedCategories.toIntArray())
+					onDismissRequest()
+				}
+			) {
+				Text(stringResource(android.R.string.ok))
+			}
+		},
+		dismissButton = {
+			TextButton(onClick = onDismissRequest) {
+				Text(stringResource(android.R.string.cancel))
+			}
+		},
+		title = {
+			Text(stringResource(string.set_categories))
+		},
+		text = {
+			Column(Modifier.verticalScroll(rememberScrollState())) {
+				categories.forEach {
+					Row(
+						Modifier
+							.fillMaxWidth()
+							.height(56.dp)
+							.clickable {
+								if (it.id in selectedCategories) {
+									selectedCategories -= it.id
+								} else {
+									selectedCategories += it.id
+								}
+							},
+						verticalAlignment = Alignment.CenterVertically
+					) {
+						Checkbox(
+							checked = it.id in selectedCategories,
+							onCheckedChange = null,
+							modifier = Modifier.padding(horizontal = 8.dp)
+						)
+						Text(it.name)
+					}
+				}
+			}
+		}
+	)
 }
