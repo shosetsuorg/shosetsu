@@ -129,6 +129,16 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 		)
 	}
 
+	// Catalog(s)
+	bind<ACategoriesViewModel>() with provider {
+		CategoriesViewModel(
+			instance(),
+			instance(),
+			instance(),
+			instance()
+		)
+	}
+
 	// Extensions
 	bind<ABrowseViewModel>() with provider {
 		ExtensionsViewModel(

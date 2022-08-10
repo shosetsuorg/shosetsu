@@ -1,3 +1,9 @@
+package app.shosetsu.android.domain.usecases
+
+import android.database.sqlite.SQLiteException
+import app.shosetsu.android.domain.model.local.CategoryEntity
+import app.shosetsu.android.domain.repository.base.ICategoryRepository
+
 /*
  * This file is part of Shosetsu.
  *
@@ -13,24 +19,22 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- *
  */
 
-package app.shosetsu.android.view.uimodels.model
+/**
+ * 13 / 01 / 2021
+ */
+class AddCategoryUseCase(
+	private val repo: ICategoryRepository
+) {
+	@Throws(SQLiteException::class)
+	suspend operator fun invoke(name: String) {
+		if (repo.categoryExists(name)) {
+			throw Exception("Name already exists")
+		}
 
-import androidx.compose.runtime.Immutable
-import app.shosetsu.android.domain.model.local.CategoryEntity
-import app.shosetsu.android.dto.Convertible
+		val nextOrder = repo.getNextCategoryOrder()
 
-@Immutable
-data class CategoryUI(
-    val id: Int,
-    val name: String,
-    val order: Int
-) : Convertible<CategoryEntity> {
-    override fun convertTo() = CategoryEntity(
-        id = id,
-        name = name,
-        order = order
-    )
+		repo.addCategory(CategoryEntity(name = name, order = nextOrder))
+	}
 }

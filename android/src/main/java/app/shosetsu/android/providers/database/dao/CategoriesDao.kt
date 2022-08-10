@@ -1,8 +1,11 @@
 package app.shosetsu.android.providers.database.dao
 
+import android.database.sqlite.SQLiteException
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import app.shosetsu.android.domain.model.database.DBCategoryEntity
+import app.shosetsu.android.domain.model.local.CategoryEntity
 import app.shosetsu.android.providers.database.dao.base.BaseDao
 import kotlinx.coroutines.flow.Flow
 
@@ -39,4 +42,30 @@ interface CategoriesDao : BaseDao<DBCategoryEntity> {
 	 */
 	@Query("SELECT * FROM categories")
 	fun getCategoriesFlow(): Flow<List<DBCategoryEntity>>
+
+	/**
+	 * Gets a list of the categories
+	 */
+	@Query("SELECT * FROM categories")
+	suspend fun getCategories(): List<DBCategoryEntity>
+
+	/**
+	 * If the category already exists
+	 */
+	@Query("SELECT count(*) FROM categories WHERE name LIKE :name")
+	suspend fun categoryExists(name: String): Int
+
+	/**
+	 * Get the next [CategoryEntity.order] variable
+	 */
+	@Query("SELECT count(*) + 1 FROM categories")
+	suspend fun getNextCategoryOrder(): Int
+
+	@Transaction
+	@Throws(SQLiteException::class)
+	suspend fun update(list: List<DBCategoryEntity>) {
+		list.forEach { entity ->
+			update(entity)
+		}
+	}
 }

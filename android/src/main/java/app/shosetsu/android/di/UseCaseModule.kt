@@ -231,6 +231,19 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 		LoadLibraryFilterSettingsUseCase(instance())
 	}
 
+	bind<GetCategoriesUseCase>() with provider { GetCategoriesUseCase(instance()) }
+
+	bind<AddCategoryUseCase>() with provider {
+		AddCategoryUseCase(instance())
+	}
+
+	bind<DeleteCategoryUseCase>() with provider {
+		DeleteCategoryUseCase(instance())
+	}
+
+	bind<MoveCategoryUseCase>() with provider {
+		MoveCategoryUseCase(instance(), instance())
+	}
 
 	bind<UpdateLibraryFilterSettingsUseCase>() with provider {
 		UpdateLibraryFilterSettingsUseCase(instance())

@@ -386,6 +386,19 @@
     <string name="controller_repositories_snackbar_repo_removed">Repository removed.</string>
     <string name="controller_repositories_action_add">Add</string>
 
+    <string name="categories">Categories</string>
+    <string name="categories_add_name_hint">Category name</string>
+    <string name="categories_add_title">Add Category</string>
+    <string name="toast_categories_added">Category Added</string>
+    <string name="toast_categories_add_fail">Failed to add category</string>
+    <string name="toast_categories_remove_fail">Failed to remove category!</string>
+    <string name="toast_categories_move_fail">Failed to move category</string>
+    <string name="controller_categories_snackbar_repo_removed">Category removed.</string>
+    <string name="controller_categories_action_add">Add</string>
+    <string name="alert_dialog_title_warn_categories_removal">Category Removal Warning</string>
+    <string name="alert_dialog_message_warn_categories_removal">Are you sure about removing this category?</string>
+    <string name="controller_categories_snackbar_fail_undo_repo_removal">Failed to undo repository removal</string>
+
 
     <string name="text_alignment_start">Start</string>
     <string name="text_alignment_center">Center</string>

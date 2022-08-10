@@ -1,3 +1,9 @@
+package app.shosetsu.android.domain.usecases
+
+import android.database.sqlite.SQLiteException
+import app.shosetsu.android.domain.repository.base.ICategoryRepository
+import app.shosetsu.android.view.uimodels.model.CategoryUI
+
 /*
  * This file is part of Shosetsu.
  *
@@ -13,24 +19,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
- *
  */
 
-package app.shosetsu.android.view.uimodels.model
-
-import androidx.compose.runtime.Immutable
-import app.shosetsu.android.domain.model.local.CategoryEntity
-import app.shosetsu.android.dto.Convertible
-
-@Immutable
-data class CategoryUI(
-    val id: Int,
-    val name: String,
-    val order: Int
-) : Convertible<CategoryEntity> {
-    override fun convertTo() = CategoryEntity(
-        id = id,
-        name = name,
-        order = order
-    )
+/**
+ * 13 / 01 / 2021
+ */
+class DeleteCategoryUseCase(
+	private val repo: ICategoryRepository
+) {
+	@Throws(SQLiteException::class)
+	suspend operator fun invoke(category: CategoryUI) = repo.deleteCategory(category.convertTo())
 }

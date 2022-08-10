@@ -1,6 +1,9 @@
 package app.shosetsu.android.datasource.local.database.impl
 
+import android.database.sqlite.SQLiteException
+import app.shosetsu.android.common.ext.onIO
 import app.shosetsu.android.datasource.local.database.base.IDBCategoriesDataSource
+import app.shosetsu.android.domain.model.database.DBCategoryEntity
 import app.shosetsu.android.domain.model.local.CategoryEntity
 import app.shosetsu.android.dto.convertList
 import app.shosetsu.android.providers.database.dao.CategoriesDao
@@ -36,4 +39,52 @@ class DBCategoriesDataSource(
 
 	override fun getCategoriesFlow(): Flow<List<CategoryEntity>> =
 		categoriesDao.getCategoriesFlow().map { it.convertList() }
+
+	@Throws(SQLiteException::class)
+	override suspend fun getCategories(): List<CategoryEntity> =
+		onIO { categoriesDao.getCategories().convertList() }
+
+	/**
+	 * Add category to the database
+	 */
+	@Throws(SQLiteException::class)
+	override suspend fun addCategory(categoryEntity: CategoryEntity) =
+		onIO { categoriesDao.insertAbort(categoryEntity.toDB()) }
+
+	/**
+	 * If the category already exists
+	 */
+	@Throws(SQLiteException::class)
+	override suspend fun categoryExists(name: String): Boolean =
+		onIO { categoriesDao.categoryExists(name) != 0 }
+
+	/**
+	 * Get the next [CategoryEntity.order] variable
+	 */
+	@Throws(SQLiteException::class)
+	override suspend fun getNextCategoryOrder(): Int =
+		onIO { categoriesDao.getNextCategoryOrder() }
+
+	/**
+	 * Delete a [CategoryEntity] from the database
+	 */
+	@Throws(SQLiteException::class)
+	override suspend fun deleteCategory(categoryEntity: CategoryEntity) =
+		onIO { categoriesDao.delete(categoryEntity.toDB()) }
+
+	/**
+	 * Update a list of [CategoryEntity]s
+	 */
+	@Throws(SQLiteException::class)
+	override suspend fun updateCategories(categories: List<CategoryEntity>) =
+		onIO { categoriesDao.update(categories.toDB()) }
+
+	fun CategoryEntity.toDB() =
+		DBCategoryEntity(
+			id = id,
+			name = name,
+			order = order
+		)
+
+	fun List<CategoryEntity>.toDB() = map { it.toDB() }
 }

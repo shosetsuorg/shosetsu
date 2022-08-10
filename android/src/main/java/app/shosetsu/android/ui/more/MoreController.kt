@@ -171,6 +171,12 @@ fun MoreContent(
 			}
 
 			item {
+				MoreItemContent(R.string.categories, R.drawable.ic_baseline_label_24) {
+					pushController(R.id.action_moreController_to_categoriesController, true)
+				}
+			}
+
+			item {
 				MoreItemContent(R.string.styles, R.drawable.ic_baseline_style_24) {
 					showStyleBar()
 				}
