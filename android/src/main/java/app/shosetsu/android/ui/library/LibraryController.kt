@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
@@ -363,7 +362,6 @@ class LibraryController
 	}
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LibraryContent(
 	items: LibraryUI?,
@@ -381,7 +379,9 @@ fun LibraryContent(
 ) {
 	if (!isEmpty) {
 		if (items == null) {
-			CircularProgressIndicator()
+			Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+				CircularProgressIndicator(Modifier.size(64.dp))
+			}
 		} else {
 			LibraryPager(
 				library = items,
@@ -452,7 +452,8 @@ fun LibraryPager(
 		}
 		HorizontalPager(
 			count = library.categories.size,
-			state = state
+			state = state,
+			modifier = Modifier.fillMaxSize()
 		) {
 			val items by produceState(emptyList(), library, it) {
 				value = withContext(Dispatchers.IO) {
@@ -490,7 +491,8 @@ fun LibraryCategory(
 ) {
 	SwipeRefresh(
 		state = SwipeRefreshState(false),
-		onRefresh = onRefresh
+		onRefresh = onRefresh,
+		modifier = Modifier.fillMaxSize()
 	) {
 		val w = LocalConfiguration.current.screenWidthDp
 		val o = LocalConfiguration.current.orientation
