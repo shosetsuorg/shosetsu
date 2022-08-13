@@ -255,7 +255,7 @@ class LibraryViewModel(
 
 	private fun Flow<LibraryUI>.addDefaultCategory() = mapLatest {
 		if (it.novels.containsKey(0)) {
-			it.copy(categories = listOf(CategoryUI(0, "Default", 0)) + it.categories)
+			it.copy(categories = listOf(CategoryUI.default()) + it.categories)
 		} else {
 			it
 		}

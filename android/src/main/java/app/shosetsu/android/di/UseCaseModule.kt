@@ -83,7 +83,7 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 		GetRemoteNovelUseCase(instance(), instance(), instance(), instance())
 	}
 	bind<StartDownloadWorkerAfterUpdateUseCase>() with provider {
-		StartDownloadWorkerAfterUpdateUseCase(instance(), instance(), instance())
+		StartDownloadWorkerAfterUpdateUseCase(instance(), instance(), instance(), instance())
 	}
 
 	bind<GetCatalogueListingDataUseCase>() with provider {

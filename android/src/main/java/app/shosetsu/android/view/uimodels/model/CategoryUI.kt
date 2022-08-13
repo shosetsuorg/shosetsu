@@ -33,4 +33,9 @@ data class CategoryUI(
         name = name,
         order = order
     )
+
+    companion object {
+        val default: () -> CategoryUI
+            get() = { CategoryUI(0, "Default", 0) }
+    }
 }

@@ -3,6 +3,7 @@ package app.shosetsu.android.view.uimodels.model
 import androidx.compose.runtime.Immutable
 import app.shosetsu.android.domain.model.local.LibraryNovelEntity
 import app.shosetsu.android.dto.Convertible
+import app.shosetsu.lib.Novel
 
 @Immutable
 data class LibraryNovelUI(
@@ -15,6 +16,7 @@ data class LibraryNovelUI(
 	val authors: List<String>,
 	val artists: List<String>,
 	val tags: List<String>,
+	val status: Novel.Status,
 	val category: Int,
 	val isSelected: Boolean = false
 ) : Convertible<LibraryNovelEntity> {
@@ -29,6 +31,7 @@ data class LibraryNovelUI(
 			authors,
 			artists,
 			tags,
+			status,
 			category
 		)
 }

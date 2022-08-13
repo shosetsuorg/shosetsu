@@ -48,9 +48,10 @@ class LoadLibraryUseCase(
 							 authors,
 							 artists,
 							 tags,
+							 status,
 							 category) ->
 				LibraryNovelUI(
-					id, title, imageURL, bookmarked, unread, genres, authors, artists, tags, category
+					id, title, imageURL, bookmarked, unread, genres, authors, artists, tags, status, category
 				)
 			}.groupBy { it.category }
 		}.combine(getCategoriesUseCase()) { novels, categories ->

@@ -548,6 +548,11 @@
     <string name="settings_update_novel_show_progress_desc">If toggled on, You will have no idea what novels are being updated</string>
     <string name="settings_update_novel_classic_notification_title">Classic notification completion</string>
     <string name="settings_update_novel_classic_notification_desc">Instead of showing you which how many chapters are in each novel, simply says \"Completed Update\"</string>
+    <string name="settings_update_novel_categories_update">Categories to update</string>
+    <string name="settings_update_novel_categories_download">Categories to download</string>
+    <string name="settings_update_novel_categories_open">Open</string>
+    <string name="settings_update_novel_include_categories">Include: %s</string>
+    <string name="settings_update_novel_exclude_categories">Exclude: %s</string>
     <string name="settings_update_repo_on_metered_title">Allow updating on metered connection</string>
     <string name="settings_update_repo_on_low_bat_title">Update on low battery</string>
     <string name="settings_update_repo_on_low_sto_title">Update on low storage</string>

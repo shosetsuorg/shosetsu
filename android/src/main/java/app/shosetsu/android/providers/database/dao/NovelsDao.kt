@@ -71,7 +71,8 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 				novels.genres,
 				novels.authors,
 				novels.artists,
-				novels.tags
+				novels.tags,
+				novels.status
 			  FROM novels
 			  WHERE novels.bookmarked = 1
 		) AS M
