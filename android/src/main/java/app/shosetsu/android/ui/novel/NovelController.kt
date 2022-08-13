@@ -231,6 +231,11 @@ class NovelController : ShosetsuController(),
 		)
 	}
 
+	override fun onPrepareMenu(menu: Menu) {
+		super.onPrepareMenu(menu)
+		menu.findItem(R.id.set_categories).isVisible = runBlocking { viewModel.categories.first().isNotEmpty() }
+	}
+
 	override fun onMenuItemSelected(item: MenuItem): Boolean = when (item.itemId) {
 		R.id.source_migrate -> {
 			migrateOpen()
@@ -270,6 +275,10 @@ class NovelController : ShosetsuController(),
 		}
 		R.id.download_all -> {
 			viewModel.downloadAllChapters()
+			true
+		}
+		R.id.set_categories -> {
+			categoriesDialogOpen = true
 			true
 		}
 		else -> false
@@ -375,6 +384,7 @@ class NovelController : ShosetsuController(),
 	}
 
 	private var state = LazyListState(0)
+	private var categoriesDialogOpen by mutableStateOf(false)
 
 	private fun setCategories(categories: IntArray) {
 		viewModel.setNovelCategories(categories).firstLa(this, catch = {}) {}
@@ -448,8 +458,7 @@ class NovelController : ShosetsuController(),
 						},
 						openWebView = ::openWebView,
 						categories = categories,
-						novelCategories = novelCategories,
-						setCategories = ::setCategories,
+						setCategoriesDialogOpen = { categoriesDialogOpen = true },
 						toggleBookmark = ::toggleBookmark,
 						openFilter = ::openFilterMenu,
 						openChapterJump = ::openChapterJumpDialog,
@@ -479,6 +488,14 @@ class NovelController : ShosetsuController(),
 						hasSelected = hasSelected,
 						state = state
 					)
+
+					if (categoriesDialogOpen)
+						CategoriesDialog(
+							onDismissRequest = { categoriesDialogOpen = false },
+							categories = categories,
+							novelCategories = novelCategories,
+							setCategories = ::setCategories
+						)
 				}
 			}
 		}
@@ -730,7 +747,6 @@ fun PreviewNovelInfoContent() {
 			onRefresh = {},
 			openWebView = {},
 			emptyList(),
-			emptyList(),
 			{},
 			toggleBookmark = {},
 			openFilter = {},
@@ -765,8 +781,7 @@ fun NovelInfoContent(
 	onRefresh: () -> Unit,
 	openWebView: () -> Unit,
 	categories: List<CategoryUI>,
-	novelCategories: List<Int>,
-	setCategories: (IntArray) -> Unit,
+	setCategoriesDialogOpen: (Boolean) -> Unit,
 	toggleBookmark: () -> Unit,
 	openFilter: () -> Unit,
 	openChapterJump: () -> Unit,
@@ -803,8 +818,7 @@ fun NovelInfoContent(
 									novelInfo = novelInfo,
 									openWebview = openWebView,
 									categories = categories,
-									novelCategories = novelCategories,
-									setCategories = setCategories,
+									setCategoriesDialogOpen = setCategoriesDialogOpen,
 									toggleBookmark = toggleBookmark,
 									openChapterJump = openChapterJump,
 									openFilter = openFilter,
@@ -1060,7 +1074,6 @@ fun PreviewHeaderContent() {
 			chapterCount = 0,
 			{},
 			emptyList(),
-			emptyList(),
 			{},
 			{},
 			{},
@@ -1101,11 +1114,10 @@ fun NovelInfoHeaderContent(
 	chapterCount: Int,
 	openWebview: () -> Unit,
 	categories: List<CategoryUI>,
-	novelCategories: List<Int>,
-	setCategories: (IntArray) -> Unit,
 	toggleBookmark: () -> Unit,
 	openFilter: () -> Unit,
-	openChapterJump: () -> Unit
+	openChapterJump: () -> Unit,
+	setCategoriesDialogOpen: (Boolean) -> Unit,
 ) {
 	var isCoverClicked: Boolean by remember { mutableStateOf(false) }
 	if (isCoverClicked)
@@ -1117,15 +1129,6 @@ fun NovelInfoHeaderContent(
 				isCoverClicked = false
 			}
 		}
-
-	var isCategoriesDialog by remember { mutableStateOf(false) }
-	if (isCategoriesDialog)
-		CategoriesDialog(
-			onDismissRequest = { isCategoriesDialog = false },
-			categories = categories,
-			novelCategories = novelCategories,
-			setCategories = setCategories
-		)
 
 	Column(
 		modifier = Modifier.fillMaxWidth(),
@@ -1250,11 +1253,11 @@ fun NovelInfoHeaderContent(
 							if (novelInfo.bookmarked || categories.isEmpty()) {
 								toggleBookmark()
 							} else {
-								isCategoriesDialog = true
+								setCategoriesDialogOpen(true)
 							}
 						},
 						onLongClick = {
-							isCategoriesDialog = true
+							setCategoriesDialogOpen(true)
 						},
 						modifier = Modifier
 							.padding(vertical = 8.dp, horizontal = 4.dp)
