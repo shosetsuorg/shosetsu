@@ -39,6 +39,9 @@ class DBNovelCategoriesDataSource(
 	override fun getNovelCategoriesFromNovelFlow(novelID: Int): Flow<List<NovelCategoryEntity>> =
 		novelCategoriesDao.getNovelCategoriesFromNovelFlow(novelID).map { it.convertList() }
 
+	override suspend fun getNovelCategoriesFromNovel(novelID: Int): List<NovelCategoryEntity> =
+		onIO { novelCategoriesDao.getNovelCategoriesFromNovel(novelID).convertList() }
+
 	override fun getNovelCategoriesFromCategoryFlow(categoryID: Int): Flow<List<NovelCategoryEntity>> =
 		novelCategoriesDao.getNovelCategoriesFromCategoryFlow(categoryID).map { it.convertList() }
 

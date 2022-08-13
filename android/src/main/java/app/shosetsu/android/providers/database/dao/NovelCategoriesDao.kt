@@ -41,6 +41,12 @@ interface NovelCategoriesDao : BaseDao<DBNovelCategoryEntity> {
 	fun getNovelCategoriesFromNovelFlow(novelID: Int): Flow<List<DBNovelCategoryEntity>>
 
 	/**
+	 * Gets a flow of the novel categories corresponding to the novel
+	 */
+	@Query("SELECT * FROM novel_categories WHERE novelID = :novelID")
+	suspend fun getNovelCategoriesFromNovel(novelID: Int): List<DBNovelCategoryEntity>
+
+	/**
 	 * Gets a flow of the novel categories corresponding to the category
 	 */
 	@Query("SELECT * FROM novel_categories WHERE categoryID = :categoryID")

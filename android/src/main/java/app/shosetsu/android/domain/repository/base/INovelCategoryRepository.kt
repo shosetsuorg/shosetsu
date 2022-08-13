@@ -30,6 +30,12 @@ interface INovelCategoryRepository {
     fun getNovelCategoriesFromNovelFlow(novelID: Int): Flow<List<NovelCategoryEntity>>
 
     /**
+     * Loads all [NovelCategoryEntity]s from a novel id
+     */
+    @Throws(SQLiteException::class)
+    suspend fun getNovelCategoriesFromNovel(novelID: Int): List<NovelCategoryEntity>
+
+    /**
      * Loads all [NovelCategoryEntity]s from a category id in a flow
      */
     fun getNovelCategoriesFromCategoryFlow(categoryID: Int): Flow<List<NovelCategoryEntity>>

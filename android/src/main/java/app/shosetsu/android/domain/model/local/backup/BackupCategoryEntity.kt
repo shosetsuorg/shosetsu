@@ -1,9 +1,3 @@
-package app.shosetsu.android.domain.usecases
-
-import android.database.sqlite.SQLiteException
-import app.shosetsu.android.domain.model.local.CategoryEntity
-import app.shosetsu.android.domain.repository.base.ICategoryRepository
-
 /*
  * This file is part of Shosetsu.
  *
@@ -19,22 +13,15 @@ import app.shosetsu.android.domain.repository.base.ICategoryRepository
  *
  * You should have received a copy of the GNU General Public License
  * along with Shosetsu.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-/**
- * 13 / 01 / 2021
- */
-class AddCategoryUseCase(
-	private val repo: ICategoryRepository
-) {
-	@Throws(SQLiteException::class)
-	suspend operator fun invoke(name: String): Int {
-		if (repo.categoryExists(name)) {
-			throw Exception("Name already exists")
-		}
+package app.shosetsu.android.domain.model.local.backup
 
-		val nextOrder = repo.getNextCategoryOrder()
+import kotlinx.serialization.Serializable
 
-		return repo.addCategory(CategoryEntity(name = name, order = nextOrder)).toInt()
-	}
-}
+@Serializable
+data class BackupCategoryEntity(
+	val name: String,
+	val order: Int,
+)
