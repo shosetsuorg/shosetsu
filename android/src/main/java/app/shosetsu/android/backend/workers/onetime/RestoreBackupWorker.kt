@@ -23,6 +23,7 @@ import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.backupJSON
 import app.shosetsu.android.domain.model.local.BackupEntity
 import app.shosetsu.android.domain.model.local.ChapterEntity
+import app.shosetsu.android.domain.model.local.GenericExtensionEntity
 import app.shosetsu.android.domain.model.local.NovelEntity
 import app.shosetsu.android.domain.model.local.NovelSettingEntity
 import app.shosetsu.android.domain.model.local.backup.*
@@ -213,8 +214,9 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 
 			// Install the extensions
 			val repoNovels: List<NovelEntity> = novelsRepo.loadNovels()
+			val extensions = extensionsRepo.loadRepositoryExtensions()
 
-			backup.extensions.forEach { restoreExtension(repoNovels, it) }
+			backup.extensions.forEach { restoreExtension(extensions, repoNovels, it) }
 		}
 
 
@@ -230,13 +232,14 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 	}
 
 	private suspend fun restoreExtension(
+		extensions: List<GenericExtensionEntity>,
 		repoNovels: List<NovelEntity>,
 		backupExtensionEntity: BackupExtensionEntity
 	) {
 		val extensionID = backupExtensionEntity.id
 		val backupNovels = backupExtensionEntity.novels
 		logI("$extensionID")
-		extensionsRepo.getExtension(2, extensionID)?.let { extensionEntity ->
+		extensions.find { it.id == extensionID }?.let { extensionEntity ->
 			// Install the extension
 			if (!extensionsRepo.isExtensionInstalled(extensionEntity)) {
 				notify(getString(R.string.installing) + " ${extensionEntity.id} | ${extensionEntity.name}")
