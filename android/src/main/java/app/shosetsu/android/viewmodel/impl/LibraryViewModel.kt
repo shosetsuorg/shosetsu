@@ -27,6 +27,7 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.utils.copy
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
+import app.shosetsu.android.domain.usecases.SetNovelsCategoriesUseCase
 import app.shosetsu.android.domain.usecases.load.LoadLibraryUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUIBadgeToastUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUIColumnsHUseCase
@@ -59,7 +60,8 @@ class LibraryViewModel(
 	private val loadNovelUIColumnsH: LoadNovelUIColumnsHUseCase,
 	private val loadNovelUIColumnsP: LoadNovelUIColumnsPUseCase,
 	private val loadNovelUIBadgeToast: LoadNovelUIBadgeToastUseCase,
-	private val setNovelUITypeUseCase: SetNovelUITypeUseCase
+	private val setNovelUITypeUseCase: SetNovelUITypeUseCase,
+	private val setNovelsCategoriesUseCase: SetNovelsCategoriesUseCase
 ) : ALibraryViewModel() {
 
 	private val selectedNovels = MutableStateFlow<Map<Int, Map<Int, Boolean>>>(emptyMap())
@@ -425,7 +427,12 @@ class LibraryViewModel(
 	}
 
 	override fun getSelectedIds(): Flow<IntArray> = flow {
-		val ints = selectedNovels.first().keys.toIntArray()
+		val ints = selectedNovels.first().entries
+			.flatMap { (_, map) ->
+				map.entries.filter { it.value }
+			}
+			.map { it.key }
+			.toIntArray()
 		if (ints.isEmpty()) return@flow
 		clearSelected()
 		emit(ints)
@@ -518,6 +525,13 @@ class LibraryViewModel(
 
 	override fun setViewType(cardType: NovelCardType) {
 		launchIO { setNovelUITypeUseCase(cardType) }
+	}
+
+	override fun setCategories(categories: IntArray) {
+		launchIO {
+			val selected = getSelectedIds().first()
+			setNovelsCategoriesUseCase(selected, categories)
+		}
 	}
 
 	override fun cycleUnreadFilter(currentState: ToggleableState) {

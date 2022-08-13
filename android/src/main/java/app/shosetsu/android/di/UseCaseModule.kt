@@ -253,6 +253,10 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 		SetNovelCategoriesUseCase(instance())
 	}
 
+	bind<SetNovelsCategoriesUseCase>() with provider {
+		SetNovelsCategoriesUseCase(instance())
+	}
+
 	bind<UpdateLibraryFilterSettingsUseCase>() with provider {
 		UpdateLibraryFilterSettingsUseCase(instance())
 	}

@@ -87,6 +87,8 @@ abstract class ALibraryViewModel :
 	abstract fun resetSortAndFilters()
 	abstract fun setViewType(cardType: NovelCardType)
 
+	abstract fun setCategories(categories: IntArray)
+
 	abstract fun removeSelectedFromLibrary()
 
 	abstract fun getSelectedIds(): Flow<IntArray>

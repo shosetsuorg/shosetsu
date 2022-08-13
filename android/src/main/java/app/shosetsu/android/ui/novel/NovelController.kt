@@ -1480,7 +1480,7 @@ fun CategoriesDialog(
 		},
 		text = {
 			Column(Modifier.verticalScroll(rememberScrollState())) {
-				categories.forEach {
+				categories.filterNot { it.id == 0 }.forEach {
 					Row(
 						Modifier
 							.fillMaxWidth()

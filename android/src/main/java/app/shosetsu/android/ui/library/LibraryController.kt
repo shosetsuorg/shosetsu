@@ -24,8 +24,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,6 +49,7 @@ import app.shosetsu.android.common.enums.NovelCardType.*
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.library.listener.LibrarySearchQuery
 import app.shosetsu.android.ui.migration.MigrationController
+import app.shosetsu.android.ui.novel.CategoriesDialog
 import app.shosetsu.android.view.ComposeBottomSheetDialog
 import app.shosetsu.android.view.compose.*
 import app.shosetsu.android.view.controller.ShosetsuController
@@ -104,6 +107,7 @@ class LibraryController
 
 	/***/
 	val viewModel: ALibraryViewModel by viewModel()
+	var categoriesDialogOpen by mutableStateOf(false)
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -170,6 +174,14 @@ class LibraryController
 						} else null,
 						fab
 					)
+					if (categoriesDialogOpen) {
+						CategoriesDialog(
+							onDismissRequest = { categoriesDialogOpen = false },
+							categories = items?.categories.orEmpty(),
+							novelCategories = emptyList(),
+							setCategories = viewModel::setCategories
+						)
+					}
 				}
 			}
 		}
@@ -286,6 +298,10 @@ class LibraryController
 					)
 				}
 
+				true
+			}
+			R.id.set_categories -> {
+				categoriesDialogOpen = true
 				true
 			}
 			R.id.view_type_normal -> {

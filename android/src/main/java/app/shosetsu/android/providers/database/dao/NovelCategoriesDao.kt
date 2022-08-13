@@ -51,4 +51,10 @@ interface NovelCategoriesDao : BaseDao<DBNovelCategoryEntity> {
 	 */
 	@Query("DELETE FROM novel_categories WHERE novelID = :novelID")
 	suspend fun deleteNovelCategories(novelID: Int)
+
+	/**
+	 * Delete the categories for a novel
+	 */
+	@Query("DELETE FROM novel_categories WHERE novelID IN (:novelIDs)")
+	suspend fun deleteNovelsCategories(novelIDs: List<Int>)
 }

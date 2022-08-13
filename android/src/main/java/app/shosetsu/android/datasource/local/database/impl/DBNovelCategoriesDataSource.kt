@@ -48,6 +48,9 @@ class DBNovelCategoriesDataSource(
 	override suspend fun deleteNovelCategories(novelID: Int) =
 		onIO { novelCategoriesDao.deleteNovelCategories(novelID) }
 
+	override suspend fun deleteNovelsCategories(novelIDs: List<Int>) =
+		onIO { novelCategoriesDao.deleteNovelsCategories(novelIDs) }
+
 	fun NovelCategoryEntity.toDB() =
 		DBNovelCategoryEntity(
 			id = null,

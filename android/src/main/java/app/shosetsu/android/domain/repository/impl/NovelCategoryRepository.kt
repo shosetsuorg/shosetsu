@@ -38,4 +38,7 @@ class NovelCategoryRepository(
 
     override suspend fun deleteNovelCategories(novelID: Int) =
         database.deleteNovelCategories(novelID)
+
+    override suspend fun deleteNovelsCategories(novelIDs: List<Int>) =
+        database.deleteNovelsCategories(novelIDs)
 }

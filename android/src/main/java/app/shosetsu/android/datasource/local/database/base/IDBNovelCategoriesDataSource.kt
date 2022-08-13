@@ -45,4 +45,10 @@ interface IDBNovelCategoriesDataSource {
      */
     @Throws(SQLiteException::class)
     suspend fun deleteNovelCategories(novelID: Int)
+
+    /**
+     * Delete the categories for multiple novels
+     */
+    @Throws(SQLiteException::class)
+    suspend fun deleteNovelsCategories(novelIDs: List<Int>)
 }
