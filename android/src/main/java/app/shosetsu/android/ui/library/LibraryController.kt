@@ -22,6 +22,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -140,7 +141,7 @@ class LibraryController
 						columnsInH,
 						hasSelected = hasSelected,
 						onRefresh = {
-							onRefresh()
+							onRefresh(it)
 						},
 						onOpen = { (id) ->
 							try {
@@ -262,7 +263,7 @@ class LibraryController
 		when (item.itemId) {
 			R.id.updater_now -> {
 				if (viewModel.isOnline())
-					viewModel.startUpdateManager()
+					viewModel.startUpdateManager(-1)
 				else displayOfflineSnackBar()
 				true
 			}
@@ -355,9 +356,9 @@ class LibraryController
 		fab.setIconResource(R.drawable.filter)
 	}
 
-	fun onRefresh() {
+	fun onRefresh(categoryID: Int) {
 		if (viewModel.isOnline())
-			viewModel.startUpdateManager()
+			viewModel.startUpdateManager(categoryID)
 		else displayOfflineSnackBar(R.string.generic_error_cannot_update_library_offline)
 	}
 }
@@ -371,7 +372,7 @@ fun LibraryContent(
 	columnsInV: Int,
 	columnsInH: Int,
 	hasSelected: Boolean,
-	onRefresh: () -> Unit,
+	onRefresh: (Int) -> Unit,
 	onOpen: (LibraryNovelUI) -> Unit,
 	toggleSelection: (LibraryNovelUI) -> Unit,
 	toastNovel: ((LibraryNovelUI) -> Unit)?,
@@ -413,7 +414,7 @@ fun LibraryPager(
 	columnsInV: Int,
 	columnsInH: Int,
 	hasSelected: Boolean,
-	onRefresh: () -> Unit,
+	onRefresh: (Int) -> Unit,
 	onOpen: (LibraryNovelUI) -> Unit,
 	toggleSelection: (LibraryNovelUI) -> Unit,
 	toastNovel: ((LibraryNovelUI) -> Unit)?,
@@ -455,9 +456,12 @@ fun LibraryPager(
 			state = state,
 			modifier = Modifier.fillMaxSize()
 		) {
-			val items by produceState(emptyList(), library, it) {
+			val id by derivedStateOf {
+				library.categories[it].id
+			}
+			val items by produceState(emptyList(), library, it, id) {
 				value = withContext(Dispatchers.IO) {
-					library.novels[library.categories[it].id].orEmpty()
+					library.novels[id].orEmpty()
 				}
 			}
 			LibraryCategory(
@@ -466,7 +470,7 @@ fun LibraryPager(
 				columnsInV = columnsInV,
 				columnsInH = columnsInH,
 				hasSelected = hasSelected,
-				onRefresh = onRefresh,
+				onRefresh = { onRefresh(id) },
 				onOpen = onOpen,
 				toggleSelection = toggleSelection,
 				toastNovel = toastNovel,

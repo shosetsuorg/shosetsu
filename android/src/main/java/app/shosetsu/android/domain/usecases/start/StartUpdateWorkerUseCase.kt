@@ -1,6 +1,8 @@
 package app.shosetsu.android.domain.usecases.start
 
+import androidx.work.Data
 import androidx.work.await
+import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker
 import app.shosetsu.android.backend.workers.onetime.NovelUpdateWorker.Manager
 import app.shosetsu.android.common.ext.launchIO
 
@@ -32,7 +34,7 @@ class StartUpdateWorkerUseCase(
 	 * Starts the update worker
 	 * @param override if true then will override the current update loop
 	 */
-	operator fun invoke(override: Boolean = false) {
+	operator fun invoke(categoryID: Int, override: Boolean = false) {
 		launchIO {
 			if (manager.isRunning())
 				if (override)
@@ -40,7 +42,11 @@ class StartUpdateWorkerUseCase(
 				else
 					return@launchIO
 
-			manager.start()
+			if (categoryID >= 0) {
+				manager.start(Data(mapOf(NovelUpdateWorker.KEY_CATEGORY to categoryID)))
+			} else {
+				manager.start()
+			}
 		}
 	}
 }

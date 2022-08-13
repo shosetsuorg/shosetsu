@@ -408,8 +408,8 @@ class LibraryViewModel(
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
 
-	override fun startUpdateManager() {
-		startUpdateWorkerUseCase(true)
+	override fun startUpdateManager(categoryID: Int) {
+		startUpdateWorkerUseCase(categoryID, true)
 	}
 
 	override fun removeSelectedFromLibrary() {

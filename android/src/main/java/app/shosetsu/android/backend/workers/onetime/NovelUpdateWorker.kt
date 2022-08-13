@@ -154,6 +154,11 @@ class NovelUpdateWorker(
 		val updatedChapters = arrayListOf<ChapterEntity>()
 
 		iNovelsRepository.loadLibraryNovelEntities().first().let { list ->
+			val categoryID = inputData.getInt(KEY_CATEGORY, -1)
+			if (categoryID >= 0) {
+				list.filter { it.category == categoryID }
+			} else list
+		}.let { list ->
 			if (onlyUpdateOngoing())
 				list.filter { it.status != Novel.Status.COMPLETED }
 			else list
@@ -446,7 +451,7 @@ class NovelUpdateWorker(
 							if (SDK_INT >= VERSION_CODES.M)
 								setRequiresDeviceIdle(updateOnlyIdle())
 						}.build()
-					).build()
+					).setInputData(data).build()
 				)
 				workerManager.getWorkInfosForUniqueWork(UPDATE_WORK_ID).await()[0].let {
 					Log.d(logID(), "State ${it.state}")
@@ -466,6 +471,6 @@ class NovelUpdateWorker(
 		const val KEY_CHAPTERS: String = "Novels"
 
 		const val KEY_NOVELS: Int = 0x00
-		const val KEY_CATEGORY: Int = 0x01
+		const val KEY_CATEGORY: String = "category"
 	}
 }
