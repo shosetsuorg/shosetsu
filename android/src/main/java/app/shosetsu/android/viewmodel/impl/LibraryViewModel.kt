@@ -427,11 +427,11 @@ class LibraryViewModel(
 	}
 
 	override fun getSelectedIds(): Flow<IntArray> = flow {
-		val ints = selectedNovels.first().entries
+		val ints = selectedNovels.first()
 			.flatMap { (_, map) ->
 				map.entries.filter { it.value }
+					.map { it.key }
 			}
-			.map { it.key }
 			.toIntArray()
 		if (ints.isEmpty()) return@flow
 		clearSelected()
