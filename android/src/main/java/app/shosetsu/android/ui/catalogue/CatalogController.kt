@@ -182,12 +182,13 @@ class CatalogController : ShosetsuController(), ExtendedFABController, MenuProvi
 						CategoriesDialog(
 							onDismissRequest = { categoriesDialogItem = null },
 							categories = categories,
-							toggleBookmark = {
+							setCategories = {
 								itemLongClicked(
 									item = categoriesDialogItem ?: return@CategoriesDialog,
 									categories = it
 								)
-							}
+							},
+							novelCategories = emptyList()
 						)
 					}
 				}

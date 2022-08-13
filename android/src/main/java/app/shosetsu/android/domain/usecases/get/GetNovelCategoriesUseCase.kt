@@ -1,8 +1,7 @@
 package app.shosetsu.android.domain.usecases.get
 
 import android.database.sqlite.SQLiteException
-import app.shosetsu.android.domain.repository.base.ICategoryRepository
-import app.shosetsu.android.view.uimodels.model.CategoryUI
+import app.shosetsu.android.domain.repository.base.INovelCategoryRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.mapLatest
 
@@ -29,11 +28,11 @@ import kotlinx.coroutines.flow.mapLatest
  * @since 06 / 03 / 2022
  * @author Doomsdayrs
  */
-class GetCategoriesUseCase(
-	private val repo: ICategoryRepository
+class GetNovelCategoriesUseCase(
+	private val repo: INovelCategoryRepository
 ) {
 	@OptIn(ExperimentalCoroutinesApi::class)
 	@Throws(SQLiteException::class)
-	operator fun invoke() = repo.getCategoriesAsFlow()
-		.mapLatest { entities -> entities.map { CategoryUI(it.id!!, it.name, it.order) }.sortedBy { it.order } }
+	operator fun invoke(novelID: Int) = repo.getNovelCategoriesFromNovelFlow(novelID)
+		.mapLatest { entities -> entities.map { it.categoryID } }
 }

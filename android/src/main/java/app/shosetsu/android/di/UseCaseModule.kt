@@ -245,6 +245,10 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 		MoveCategoryUseCase(instance(), instance())
 	}
 
+	bind<GetNovelCategoriesUseCase>() with provider {
+		GetNovelCategoriesUseCase(instance())
+	}
+
 	bind<SetNovelCategoriesUseCase>() with provider {
 		SetNovelCategoriesUseCase(instance())
 	}

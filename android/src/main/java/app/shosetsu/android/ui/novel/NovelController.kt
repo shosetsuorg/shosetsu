@@ -421,6 +421,7 @@ class NovelController : ShosetsuController(),
 				val hasSelected by viewModel.hasSelected.collectAsState(false)
 				val itemAt by viewModel.itemIndex.collectAsState(0)
 				val categories by viewModel.categories.collectAsState(emptyList())
+				val novelCategories by viewModel.novelCategories.collectAsState(emptyList())
 
 				activity?.invalidateOptionsMenu()
 				// If the data is not present, loads it
@@ -447,6 +448,7 @@ class NovelController : ShosetsuController(),
 						},
 						openWebView = ::openWebView,
 						categories = categories,
+						novelCategories = novelCategories,
 						setCategories = ::setCategories,
 						toggleBookmark = ::toggleBookmark,
 						openFilter = ::openFilterMenu,
@@ -728,6 +730,7 @@ fun PreviewNovelInfoContent() {
 			onRefresh = {},
 			openWebView = {},
 			emptyList(),
+			emptyList(),
 			{},
 			toggleBookmark = {},
 			openFilter = {},
@@ -762,6 +765,7 @@ fun NovelInfoContent(
 	onRefresh: () -> Unit,
 	openWebView: () -> Unit,
 	categories: List<CategoryUI>,
+	novelCategories: List<Int>,
 	setCategories: (IntArray) -> Unit,
 	toggleBookmark: () -> Unit,
 	openFilter: () -> Unit,
@@ -799,6 +803,7 @@ fun NovelInfoContent(
 									novelInfo = novelInfo,
 									openWebview = openWebView,
 									categories = categories,
+									novelCategories = novelCategories,
 									setCategories = setCategories,
 									toggleBookmark = toggleBookmark,
 									openChapterJump = openChapterJump,
@@ -1055,6 +1060,7 @@ fun PreviewHeaderContent() {
 			chapterCount = 0,
 			{},
 			emptyList(),
+			emptyList(),
 			{},
 			{},
 			{},
@@ -1095,6 +1101,7 @@ fun NovelInfoHeaderContent(
 	chapterCount: Int,
 	openWebview: () -> Unit,
 	categories: List<CategoryUI>,
+	novelCategories: List<Int>,
 	setCategories: (IntArray) -> Unit,
 	toggleBookmark: () -> Unit,
 	openFilter: () -> Unit,
@@ -1115,8 +1122,9 @@ fun NovelInfoHeaderContent(
 	if (isCategoriesDialog)
 		CategoriesDialog(
 			onDismissRequest = { isCategoriesDialog = false },
-			categories,
-			setCategories
+			categories = categories,
+			novelCategories = novelCategories,
+			setCategories = setCategories
 		)
 
 	Column(
@@ -1444,17 +1452,18 @@ fun ExpandedText(
 fun CategoriesDialog(
 	onDismissRequest: () -> Unit,
 	categories: List<CategoryUI>,
-	toggleBookmark: (IntArray) -> Unit
+	novelCategories: List<Int>,
+	setCategories: (IntArray) -> Unit
 ) {
-	val selectedCategories = remember {
-		mutableStateListOf<Int>()
+	val selectedCategories = remember(novelCategories) {
+		novelCategories.toMutableStateList()
 	}
 	AlertDialog(
 		onDismissRequest = onDismissRequest,
 		confirmButton = {
 			TextButton(
 				onClick = {
-					toggleBookmark(selectedCategories.toIntArray())
+					setCategories(selectedCategories.toIntArray())
 					onDismissRequest()
 				}
 			) {

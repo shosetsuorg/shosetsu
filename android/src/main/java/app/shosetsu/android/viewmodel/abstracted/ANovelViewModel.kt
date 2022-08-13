@@ -58,6 +58,7 @@ abstract class ANovelViewModel
 	abstract val novelSettingFlow: Flow<NovelSettingUI?>
 
 	abstract val categories: Flow<List<CategoryUI>>
+	abstract val novelCategories: Flow<List<Int>>
 
 	/** Set's the value to be loaded */
 	abstract fun setNovelID(novelID: Int)

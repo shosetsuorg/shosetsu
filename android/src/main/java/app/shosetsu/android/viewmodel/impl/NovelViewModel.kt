@@ -86,6 +86,7 @@ class NovelViewModel(
 	private val getInstalledExtensionUseCase: GetInstalledExtensionUseCase,
 	private val getRepositoryUseCase: GetRepositoryUseCase,
 	private val getCategoriesUseCase: GetCategoriesUseCase,
+	private val getNovelCategoriesUseCase: GetNovelCategoriesUseCase,
 	private val setNovelCategoriesUseCase: SetNovelCategoriesUseCase
 ) : ANovelViewModel() {
 
@@ -154,6 +155,12 @@ class NovelViewModel(
 
 	override val categories: Flow<List<CategoryUI>> by lazy {
 		getCategoriesUseCase()
+	}
+
+	override val novelCategories: Flow<List<Int>> by lazy {
+		novelIDLive.transformLatest { id: Int ->
+			emitAll(getNovelCategoriesUseCase(id))
+		}
 	}
 
 	override fun getIfAllowTrueDelete(): Flow<Boolean> =
