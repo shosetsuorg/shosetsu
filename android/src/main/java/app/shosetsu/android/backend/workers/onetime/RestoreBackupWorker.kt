@@ -21,11 +21,7 @@ import app.shosetsu.android.common.consts.WorkerTags.RESTORE_WORK_ID
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.common.utils.backupJSON
-import app.shosetsu.android.domain.model.local.BackupEntity
-import app.shosetsu.android.domain.model.local.ChapterEntity
-import app.shosetsu.android.domain.model.local.GenericExtensionEntity
-import app.shosetsu.android.domain.model.local.NovelEntity
-import app.shosetsu.android.domain.model.local.NovelSettingEntity
+import app.shosetsu.android.domain.model.local.*
 import app.shosetsu.android.domain.model.local.backup.*
 import app.shosetsu.android.domain.repository.base.*
 import app.shosetsu.android.domain.usecases.InstallExtensionUseCase
@@ -242,11 +238,15 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		extensions.find { it.id == extensionID }?.let { extensionEntity ->
 			// Install the extension
 			if (!extensionsRepo.isExtensionInstalled(extensionEntity)) {
+				logI("Installing extension $extensionID via repo ${extensionEntity.repoID}")
 				notify(getString(R.string.installing) + " ${extensionEntity.id} | ${extensionEntity.name}")
 				installExtension(extensionEntity)
+			} else {
+				logI("Extension is installed, moving on")
 			}
 			val iExt = extensionEntitiesRepo.get(extensionEntity)
 
+			logI("Restoring extension novels")
 			backupNovels.forEach novelLoop@{ novelEntity ->
 				try {
 					restoreNovel(
@@ -268,6 +268,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		backupNovelEntity: BackupNovelEntity,
 		repoNovels: List<NovelEntity>
 	) {
+		logV("$extensionID, ${backupNovelEntity.url}")
 		// Use a single memory location for the bitmap
 		var bitmap: Bitmap? = null
 
