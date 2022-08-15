@@ -8,6 +8,7 @@ import androidx.paging.cachedIn
 import app.shosetsu.android.common.enums.NovelCardType
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
+import app.shosetsu.android.common.utils.copy
 import app.shosetsu.android.domain.usecases.NovelBackgroundAddUseCase
 import app.shosetsu.android.domain.usecases.get.GetCatalogueListingDataUseCase
 import app.shosetsu.android.domain.usecases.get.GetCatalogueQueryDataUseCase
@@ -193,9 +194,7 @@ class CatalogViewModel(
 
 	override fun applyQuery(newQuery: String) {
 		queryFlow.value = newQuery
-		launchIO {
-			_applyFilter()
-		}
+		_applyFilter()
 	}
 
 	override fun resetView() {
@@ -231,14 +230,21 @@ class CatalogViewModel(
 			emit(BackgroundNovelAddProgress.ADDED)
 		}.onIO()
 
-	private fun _applyFilter() {
-		filterDataFlow.value = filterDataState.mapValues { it.value.value }
+	@Throws(ConcurrentModificationException::class)
+	@Synchronized
+	private fun _applyFilter(retry: Boolean = false) {
+		try {
+			filterDataFlow.value = filterDataState.copy().mapValues { it.value.value }
+		} catch (e: ConcurrentModificationException) {
+			if (!retry)
+				_applyFilter(true)
+			else throw e
+		}
 	}
 
 	override fun applyFilter() {
-		launchIO {
-			_applyFilter()
-		}
+		@Suppress("CheckedExceptionsKotlin")
+		_applyFilter()
 	}
 
 	override fun getFilterStringState(id: Filter<String>): Flow<String> =
