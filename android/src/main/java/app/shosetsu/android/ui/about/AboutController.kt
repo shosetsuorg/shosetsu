@@ -109,14 +109,7 @@ class AboutController : ShosetsuController() {
 	}
 
 	private fun onClickDisclaimer() {
-		findNavController().navigateSafely(
-			R.id.action_aboutController_to_textAssetReader,
-			TextAsset.DISCLAIMER.bundle,
-			navOptions = navOptions {
-				launchSingleTop = true
-				setShosetsuTransition()
-			}
-		)
+		openSite(URL_DISCLAIMER)
 	}
 
 	private fun openSite(url: String) {
