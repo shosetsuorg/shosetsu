@@ -90,7 +90,8 @@ class AboutController : ShosetsuController() {
 					onOpenPatreon = ::openPatreon,
 					onOpenLicense = ::onClickLicense,
 					onOpenDisclaimer = ::onClickDisclaimer,
-					onOpenMatrix = ::openMatrix
+					onOpenMatrix = ::openMatrix,
+					onOpenPrivacy = ::openPrivacy
 				)
 			}
 		}
@@ -140,6 +141,9 @@ class AboutController : ShosetsuController() {
 
 	private fun openGithub() =
 		openSite(URL_GITHUB_APP)
+
+	private fun openPrivacy() =
+		openSite(URL_PRIVACY)
 }
 
 @ExperimentalMaterialApi
@@ -157,7 +161,8 @@ fun PreviewAboutContent() {
 			onOpenPatreon = {},
 			onOpenLicense = {},
 			onOpenDisclaimer = {},
-			onOpenMatrix = {}
+			onOpenMatrix = {},
+			onOpenPrivacy = {}
 		)
 	}
 }
@@ -220,7 +225,8 @@ fun AboutContent(
 	onOpenPatreon: () -> Unit,
 	onOpenLicense: () -> Unit,
 	onOpenDisclaimer: () -> Unit,
-	onOpenMatrix: () -> Unit
+	onOpenMatrix: () -> Unit,
+	onOpenPrivacy: () -> Unit
 ) {
 	LazyColumn(
 		modifier = Modifier.fillMaxSize(),
@@ -299,6 +305,12 @@ fun AboutContent(
 			AboutItem(
 				R.string.disclaimer,
 				onClick = onOpenDisclaimer
+			)
+		}
+		item {
+			AboutItem(
+				R.string.privacy_policy,
+				onClick = onOpenPrivacy
 			)
 		}
 	}
