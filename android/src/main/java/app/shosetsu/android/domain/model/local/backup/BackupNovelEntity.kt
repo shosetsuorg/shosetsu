@@ -9,5 +9,5 @@ data class BackupNovelEntity(
 	val imageURL: String = "",
 	val chapters: List<BackupChapterEntity> = emptyList(),
 	val settings: BackupNovelSettingEntity = BackupNovelSettingEntity(),
-	val categories: List<Int>
+	val categories: List<Int> = emptyList()
 )
