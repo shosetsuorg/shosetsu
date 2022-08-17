@@ -67,11 +67,9 @@ import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
 /*
  * This file is part of Shosetsu.
@@ -458,7 +456,7 @@ fun LibraryPager(
 				library.categories[it].id
 			}
 			val items by produceState(emptyList(), library, it, id) {
-				value = withContext(Dispatchers.IO) {
+				value = onIO {
 					library.novels[id].orEmpty()
 				}
 			}
