@@ -34,7 +34,10 @@
     kotlinx.serialization.KSerializer serializer(...);
 }
 
-# Change here com.yourcompany.yourpackage
+# Keep lib intact
+-keep class app.shosetsu.lib.** { *; }
+-keep class org.luaj.** { *; }
+
 -keep,includedescriptorclasses class app.shosetsu.**$$serializer { *; } # <-- change package name to your app's
 -keepclassmembers class app.shosetsu.* { # <-- change package name to your app's
     *** Companion;
