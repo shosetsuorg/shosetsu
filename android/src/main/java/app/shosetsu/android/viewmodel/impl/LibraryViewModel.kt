@@ -18,6 +18,7 @@ package app.shosetsu.android.viewmodel.impl
  */
 
 import androidx.compose.ui.state.ToggleableState
+import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.enums.InclusionState
 import app.shosetsu.android.common.enums.InclusionState.EXCLUDE
 import app.shosetsu.android.common.enums.InclusionState.INCLUDE
@@ -40,8 +41,10 @@ import app.shosetsu.android.view.uimodels.model.CategoryUI
 import app.shosetsu.android.view.uimodels.model.LibraryNovelUI
 import app.shosetsu.android.view.uimodels.model.LibraryUI
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.plus
 import java.util.Locale.getDefault as LGD
 
 /**
@@ -238,7 +241,11 @@ class LibraryViewModel(
 			.combineUnreadStatus()
 			.combineSortType()
 			.combineSortReverse()
-			.combineFilter().onIO()
+			.combineFilter()
+			// Replay the latest library for library re-load
+			.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Lazily, replay = 1)
+			.distinctUntilChanged()
+			.onIO()
 	}
 
 	override val columnsInH by lazy {
