@@ -12,6 +12,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
+import app.shosetsu.android.R
 import app.shosetsu.android.backend.receivers.NotificationBroadcastReceiver
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
@@ -28,7 +29,6 @@ import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.android.domain.repository.base.IDownloadsRepository
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.get.GetExtensionUseCase
-import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import org.kodein.di.DI

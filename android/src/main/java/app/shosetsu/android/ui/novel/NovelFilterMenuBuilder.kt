@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
+import app.shosetsu.android.R
 import app.shosetsu.android.common.enums.ChapterSortType.SOURCE
 import app.shosetsu.android.common.enums.ChapterSortType.UPLOAD
 import app.shosetsu.android.common.enums.ReadingStatus.READ
@@ -15,12 +16,11 @@ import app.shosetsu.android.common.ext.collectLatestLA
 import app.shosetsu.android.common.ext.logD
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.makeSnackBar
+import app.shosetsu.android.databinding.ControllerNovelInfoBottomMenu0Binding
+import app.shosetsu.android.databinding.ControllerNovelInfoBottomMenu1Binding
+import app.shosetsu.android.databinding.ControllerNovelInfoBottomMenuBinding
 import app.shosetsu.android.view.uimodels.NovelSettingUI
 import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottomMenu0Binding
-import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottomMenu1Binding
-import com.github.doomsdayrs.apps.shosetsu.databinding.ControllerNovelInfoBottomMenuBinding
 import kotlinx.coroutines.flow.Flow
 import org.acra.ACRA
 

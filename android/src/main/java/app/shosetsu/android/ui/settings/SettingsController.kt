@@ -19,11 +19,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.findNavController
 import androidx.navigation.navOptions
+import app.shosetsu.android.R
 import app.shosetsu.android.common.ext.navigateSafely
 import app.shosetsu.android.common.ext.setShosetsuTransition
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
-import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
  * This file is part of shosetsu.

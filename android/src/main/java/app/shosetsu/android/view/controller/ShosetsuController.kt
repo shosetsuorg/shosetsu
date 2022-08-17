@@ -9,7 +9,7 @@ import androidx.lifecycle.LifecycleOwner
 import app.shosetsu.android.common.ext.collectLA
 import app.shosetsu.android.common.ext.collectLatestLA
 import app.shosetsu.android.common.ext.logI
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.R
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import org.kodein.di.DI

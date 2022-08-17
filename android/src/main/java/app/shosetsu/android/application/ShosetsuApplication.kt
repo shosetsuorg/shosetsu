@@ -25,8 +25,8 @@ import app.shosetsu.android.viewmodel.factory.ViewModelFactory
 import app.shosetsu.lib.ShosetsuSharedLib
 import app.shosetsu.lib.lua.ShosetsuLuaLib
 import app.shosetsu.lib.lua.shosetsuGlobals
-import com.github.doomsdayrs.apps.shosetsu.BuildConfig
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.BuildConfig
+import app.shosetsu.android.R
 import com.google.android.material.color.DynamicColors
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient

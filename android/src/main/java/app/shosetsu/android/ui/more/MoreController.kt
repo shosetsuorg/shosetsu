@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
+import app.shosetsu.android.R
 import app.shosetsu.android.common.ext.makeSnackBar
 import app.shosetsu.android.common.ext.navigateSafely
 import app.shosetsu.android.common.ext.setShosetsuTransition
@@ -32,7 +33,6 @@ import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
 import app.shosetsu.android.view.controller.base.HomeFragment
-import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
  * This file is part of Shosetsu.

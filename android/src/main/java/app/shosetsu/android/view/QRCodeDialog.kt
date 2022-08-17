@@ -23,8 +23,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
 import androidx.savedstate.SavedStateRegistryOwner
+import app.shosetsu.android.R
 import app.shosetsu.android.view.compose.ShosetsuCompose
-import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.flow.Flow
 
 /*

@@ -20,7 +20,9 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import app.shosetsu.android.R
 import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.databinding.RepositoryAddBinding
 import app.shosetsu.android.view.compose.ErrorAction
 import app.shosetsu.android.view.compose.ErrorContent
 import app.shosetsu.android.view.compose.ShosetsuCompose
@@ -30,8 +32,6 @@ import app.shosetsu.android.view.controller.base.ExtendedFABController.EFabMaint
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.view.uimodels.model.RepositoryUI
 import app.shosetsu.android.viewmodel.abstracted.ARepositoryViewModel
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.databinding.RepositoryAddBinding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.snackbar.BaseTransientBottomBar.BaseCallback.DISMISS_EVENT_CONSECUTIVE

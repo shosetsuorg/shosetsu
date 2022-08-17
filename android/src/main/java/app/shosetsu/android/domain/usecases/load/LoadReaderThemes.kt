@@ -2,6 +2,7 @@ package app.shosetsu.android.domain.usecases.load
 
 import android.content.Context
 import androidx.core.content.ContextCompat
+import app.shosetsu.android.R
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
@@ -10,7 +11,6 @@ import app.shosetsu.android.domain.model.local.ColorChoiceData
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.dto.convertList
 import app.shosetsu.android.view.uimodels.model.ColorChoiceUI
-import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest

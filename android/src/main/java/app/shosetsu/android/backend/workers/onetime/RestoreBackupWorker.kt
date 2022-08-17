@@ -9,6 +9,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.work.*
+import app.shosetsu.android.R
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
 import app.shosetsu.android.common.NullContentResolverException
@@ -31,7 +32,6 @@ import app.shosetsu.lib.Version
 import app.shosetsu.lib.exceptions.HTTPException
 import coil.imageLoader
 import coil.request.ImageRequest
-import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.ExperimentalSerializationApi

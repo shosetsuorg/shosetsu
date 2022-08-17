@@ -57,6 +57,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
+import app.shosetsu.android.R
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_EXTENSION
 import app.shosetsu.android.common.consts.REPOSITORY_HELP_URL
@@ -77,7 +78,6 @@ import app.shosetsu.android.viewmodel.abstracted.ABrowseViewModel
 import app.shosetsu.lib.Version
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
-import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState

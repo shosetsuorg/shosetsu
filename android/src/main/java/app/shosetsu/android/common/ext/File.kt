@@ -5,7 +5,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
-import com.github.doomsdayrs.apps.shosetsu.BuildConfig.APPLICATION_ID
+import app.shosetsu.android.BuildConfig.APPLICATION_ID
 import java.io.File
 
 /*

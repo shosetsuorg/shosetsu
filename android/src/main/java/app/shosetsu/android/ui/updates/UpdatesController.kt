@@ -51,7 +51,7 @@ import app.shosetsu.android.view.uimodels.model.UpdatesUI
 import app.shosetsu.android.viewmodel.abstracted.AUpdatesViewModel
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.R
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState

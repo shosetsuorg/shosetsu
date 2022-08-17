@@ -1,7 +1,7 @@
 package app.shosetsu.android.common.enums
 
 import androidx.annotation.StringRes
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.R
 
 enum class TextAsset(val assetName: String, @StringRes val titleRes: Int) {
 	LICENSE(

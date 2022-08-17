@@ -16,10 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import app.shosetsu.android.R
 import app.shosetsu.android.domain.model.local.NovelReaderSettingEntity
 import app.shosetsu.android.view.compose.DiscreteSlider
 import app.shosetsu.android.view.compose.setting.GenericBottomSettingLayout
-import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 

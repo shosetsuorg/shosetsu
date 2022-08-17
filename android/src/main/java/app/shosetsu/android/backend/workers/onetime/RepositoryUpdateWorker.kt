@@ -8,6 +8,7 @@ import android.os.Build.VERSION.SDK_INT
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
+import app.shosetsu.android.R
 import app.shosetsu.android.backend.receivers.NotificationBroadcastReceiver
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
@@ -31,7 +32,6 @@ import app.shosetsu.lib.Version
 import app.shosetsu.lib.exceptions.HTTPException
 import app.shosetsu.lib.json.RepoExtension
 import app.shosetsu.lib.json.RepoLibrary
-import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.delay
 import org.kodein.di.DI
 import org.kodein.di.DIAware

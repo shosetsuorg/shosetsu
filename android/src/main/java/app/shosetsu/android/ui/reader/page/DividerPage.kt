@@ -10,8 +10,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.shosetsu.android.R
 import app.shosetsu.android.view.compose.ShosetsuCompose
-import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
  * This file is part of shosetsu.

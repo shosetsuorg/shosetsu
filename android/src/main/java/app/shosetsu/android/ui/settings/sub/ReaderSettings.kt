@@ -9,12 +9,7 @@ import android.view.ViewGroup
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -35,12 +30,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.shosetsu.android.common.SettingKey.ChaptersResumeFirstUnread
-import app.shosetsu.android.common.SettingKey.ReaderKeepScreenOn
-import app.shosetsu.android.common.SettingKey.ReaderMarkReadAsReading
-import app.shosetsu.android.common.SettingKey.ReaderTextAlignment
-import app.shosetsu.android.common.SettingKey.ReaderTheme
-import app.shosetsu.android.common.SettingKey.ReadingMarkingType
+import app.shosetsu.android.R
+import app.shosetsu.android.common.SettingKey.*
 import app.shosetsu.android.common.consts.SELECTED_STROKE_WIDTH
 import app.shosetsu.android.common.enums.MarkingType
 import app.shosetsu.android.common.ext.launchIO
@@ -54,17 +45,7 @@ import app.shosetsu.android.view.compose.setting.GenericBottomSettingLayout
 import app.shosetsu.android.view.compose.setting.SwitchSettingContent
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.settings.AReaderSettingsViewModel
-import app.shosetsu.android.viewmodel.impl.settings.doubleTapFocus
-import app.shosetsu.android.viewmodel.impl.settings.doubleTapSystem
-import app.shosetsu.android.viewmodel.impl.settings.enableFullscreen
-import app.shosetsu.android.viewmodel.impl.settings.invertChapterSwipeOption
-import app.shosetsu.android.viewmodel.impl.settings.matchFullscreenToFocus
-import app.shosetsu.android.viewmodel.impl.settings.paragraphIndentOption
-import app.shosetsu.android.viewmodel.impl.settings.paragraphSpacingOption
-import app.shosetsu.android.viewmodel.impl.settings.showReaderDivider
-import app.shosetsu.android.viewmodel.impl.settings.stringAsHtmlOption
-import app.shosetsu.android.viewmodel.impl.settings.textSizeOption
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.viewmodel.impl.settings.*
 
 /*
  * This file is part of shosetsu.
