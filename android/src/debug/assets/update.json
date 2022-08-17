@@ -1,18 +1,12 @@
 {
-  "latestVersion": "2411",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r2411/shosetsu-r2411-universal.apk",
+  "latestVersion": "2417",
+  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r2417/shosetsu-r2417-universal.apk",
   "releaseNotes": [
     "New:",
-    "- Option to enable / disable fullscreen",
-    "- Option to match fullscreen with focus",
+    "- Add privacy button to about",
+    "- Add disclaimer to about",
     "",
     "Fixes:",
-    "- Prevent downloading when there are no chapters",
-    "- Prevent crashes from clicking two buttons at once",
-    "",
-    "Misc:",
-    "- Improve UI performance (thanks @jobobby04)",
-    "- Various UI/UX improvements (thanks @jobobby04)",
-    "- Upgrade dependencies"
+    "- Fix importing external repository novels in backup worker"
   ]
 }
