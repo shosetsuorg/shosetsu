@@ -6,7 +6,7 @@ import androidx.core.content.pm.ShortcutInfoCompat.Builder
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat.createWithResource
 import app.shosetsu.android.activity.MainActivity
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.R
 
 /*
  * This file is part of shosetsu.

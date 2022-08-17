@@ -4,10 +4,10 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
+import app.shosetsu.android.R
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
 import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.common.ext.setShosetsuTransition
-import com.github.doomsdayrs.apps.shosetsu.R
 
 /*
  * This file is part of Shosetsu.

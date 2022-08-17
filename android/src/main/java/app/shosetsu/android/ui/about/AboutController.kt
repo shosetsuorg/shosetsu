@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
+import app.shosetsu.android.BuildConfig
+import app.shosetsu.android.R
 import app.shosetsu.android.common.consts.*
 import app.shosetsu.android.common.enums.TextAsset
 import app.shosetsu.android.common.ext.navigateSafely
@@ -39,8 +41,6 @@ import app.shosetsu.android.ui.settings.sub.TextAssetReader.Companion.bundle
 import app.shosetsu.android.view.compose.ShosetsuCompose
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.viewmodel.abstracted.AAboutViewModel
-import com.github.doomsdayrs.apps.shosetsu.BuildConfig
-import com.github.doomsdayrs.apps.shosetsu.R
 import org.acra.util.Installation
 
 /*

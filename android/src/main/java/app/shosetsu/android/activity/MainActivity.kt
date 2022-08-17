@@ -34,11 +34,13 @@ import androidx.navigation.navOptions
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.window.layout.WindowMetricsCalculator
+import app.shosetsu.android.R
 import app.shosetsu.android.common.consts.*
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_QUERY
 import app.shosetsu.android.common.enums.NavigationStyle.LEGACY
 import app.shosetsu.android.common.enums.NavigationStyle.MATERIAL
 import app.shosetsu.android.common.ext.*
+import app.shosetsu.android.databinding.ActivityMainBinding
 import app.shosetsu.android.domain.repository.base.IBackupRepository
 import app.shosetsu.android.ui.intro.IntroductionActivity
 import app.shosetsu.android.view.controller.base.CollapsedToolBarController
@@ -46,8 +48,6 @@ import app.shosetsu.android.view.controller.base.ExtendedFABController
 import app.shosetsu.android.view.controller.base.HomeFragment
 import app.shosetsu.android.view.controller.base.LiftOnScrollToolBarController
 import app.shosetsu.android.viewmodel.abstracted.AMainViewModel
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityMainBinding
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.snackbar.BaseTransientBottomBar.Duration

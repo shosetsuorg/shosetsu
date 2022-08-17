@@ -3,8 +3,8 @@ package app.shosetsu.android.common.ext
 import android.provider.Settings
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
+import app.shosetsu.android.R
 import app.shosetsu.android.activity.MainActivity
-import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 

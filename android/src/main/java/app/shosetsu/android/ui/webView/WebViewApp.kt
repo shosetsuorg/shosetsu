@@ -18,9 +18,9 @@ import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.openInBrowser
 import app.shosetsu.android.common.utils.CookieJarSync
-import com.github.doomsdayrs.apps.shosetsu.R
-import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityWebviewBinding
-import com.github.doomsdayrs.apps.shosetsu.databinding.ActivityWebviewBinding.inflate
+import app.shosetsu.android.R
+import app.shosetsu.android.databinding.ActivityWebviewBinding
+import app.shosetsu.android.databinding.ActivityWebviewBinding.inflate
 import okhttp3.Cookie
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.kodein.di.DI

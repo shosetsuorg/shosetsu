@@ -16,7 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.R
 import kotlin.random.Random
 
 /*

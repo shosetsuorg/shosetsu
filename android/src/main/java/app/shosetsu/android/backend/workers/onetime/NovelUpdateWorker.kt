@@ -17,6 +17,7 @@ import androidx.work.*
 import androidx.work.ExistingWorkPolicy.REPLACE
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.NetworkType.UNMETERED
+import app.shosetsu.android.R
 import app.shosetsu.android.backend.receivers.NotificationBroadcastReceiver
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
@@ -39,7 +40,6 @@ import app.shosetsu.lib.Novel
 import app.shosetsu.lib.exceptions.HTTPException
 import coil.imageLoader
 import coil.request.ImageRequest
-import com.github.doomsdayrs.apps.shosetsu.R
 import kotlinx.coroutines.delay
 import org.kodein.di.DI
 import org.kodein.di.DIAware

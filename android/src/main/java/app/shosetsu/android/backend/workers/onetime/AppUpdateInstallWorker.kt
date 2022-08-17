@@ -9,6 +9,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.work.*
+import app.shosetsu.android.R
 import app.shosetsu.android.backend.workers.CoroutineWorkerManager
 import app.shosetsu.android.backend.workers.NotificationCapable
 import app.shosetsu.android.common.EmptyResponseBodyException
@@ -23,7 +24,6 @@ import app.shosetsu.android.common.consts.WorkerTags.APP_UPDATE_INSTALL_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.repository.base.IAppUpdatesRepository
 import app.shosetsu.lib.exceptions.HTTPException
-import com.github.doomsdayrs.apps.shosetsu.R
 import org.acra.ACRA
 import org.kodein.di.DI
 import org.kodein.di.DIAware

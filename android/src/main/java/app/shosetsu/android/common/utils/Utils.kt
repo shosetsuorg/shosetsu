@@ -1,7 +1,7 @@
 package app.shosetsu.android.common.utils
 
 import app.shosetsu.android.common.enums.ProductFlavors
-import com.github.doomsdayrs.apps.shosetsu.BuildConfig
+import app.shosetsu.android.BuildConfig
 import kotlinx.serialization.json.Json
 
 

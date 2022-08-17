@@ -1,7 +1,7 @@
 package app.shosetsu.android.common.ext
 
 import androidx.navigation.NavOptionsBuilder
-import com.github.doomsdayrs.apps.shosetsu.R
+import app.shosetsu.android.R
 
 /*
  * This file is part of shosetsu.

@@ -9,8 +9,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import app.shosetsu.android.R
 import app.shosetsu.android.view.uimodels.model.reader.ReaderUIItem
-import com.github.doomsdayrs.apps.shosetsu.R
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.flow.distinctUntilChanged
 
