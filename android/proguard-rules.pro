@@ -14,13 +14,9 @@
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+-keepattributes SourceFile,LineNumberTable
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
-
-# Open source app, lol who cares about this
+# Open source app, lol who cares about obfuscating
 -dontobfuscate
 
 -keepattributes *Annotation*, InnerClasses
@@ -35,8 +31,10 @@
 }
 
 # Keep lib intact
--keep class app.shosetsu.lib.** { *; }
--keep class org.luaj.** { *; }
+-keepclasseswithmembers class app.shosetsu.lib.** { *; }
+-keepclasseswithmembers class org.luaj.** { *; }
+-keepclasseswithmembers class org.jsoup.** { *; }
+-keepclasseswithmembers class okhttp3.** { *; }
 
 -keep,includedescriptorclasses class app.shosetsu.**$$serializer { *; } # <-- change package name to your app's
 -keepclassmembers class app.shosetsu.* { # <-- change package name to your app's
