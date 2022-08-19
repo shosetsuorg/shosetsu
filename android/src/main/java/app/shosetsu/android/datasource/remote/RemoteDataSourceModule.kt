@@ -51,7 +51,7 @@ val remoteDataSouceModule: DI.Module = DI.Module("remote_data_source") {
 	bind<IRemoteAppUpdateDataSource>() with singleton {
 		when (flavor()) {
 			ProductFlavors.PLAY_STORE -> PlayAppUpdateDataSource()
-			ProductFlavors.F_DROID -> FDroidAppUpdateDataSource()
+			ProductFlavors.F_DROID -> FDroidAppUpdateDataSource(instance())
 			ProductFlavors.UP_TO_DOWN -> UpToDownAppUpdateDataSource()
 			ProductFlavors.STANDARD -> GithubAppUpdateDataSource(instance())
 		}
