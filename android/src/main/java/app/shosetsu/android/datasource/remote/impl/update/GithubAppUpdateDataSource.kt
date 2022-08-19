@@ -43,9 +43,9 @@ class GithubAppUpdateDataSource(
 ) : IRemoteAppUpdateDataSource, IRemoteAppUpdateDataSource.Downloadable {
 	private val shosetsuGitUpdateURL: String by lazy {
 		"https://raw.githubusercontent.com/shosetsuorg/shosetsu/${
-			if (DEBUG) "development" else "master"
+			if (DEBUG) "development" else "main"
 		}/android/src/${
-			if (DEBUG) "debug" else "master"
+			if (DEBUG) "debug" else "main"
 		}/assets/update.json"
 	}
 
