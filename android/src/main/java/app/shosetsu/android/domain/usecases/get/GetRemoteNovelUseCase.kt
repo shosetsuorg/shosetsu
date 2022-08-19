@@ -77,7 +77,7 @@ class GetRemoteNovelUseCase(
 						cR.handleChapters(
 							novelID = novel.id!!,
 							extensionID = novel.extensionID,
-							list = page.chapters
+							list = page.chapters.toList()
 						).let {
 							UpdatedNovelInfo()
 						}
@@ -87,7 +87,7 @@ class GetRemoteNovelUseCase(
 						cR.handleChaptersReturn(
 							novelID = novel.id!!,
 							extensionID = novel.extensionID,
-							list = page.chapters
+							list = page.chapters.toList()
 						).let { chapters ->
 							uR.addUpdates(chapters.map {
 								UpdateEntity(it.id!!, novel.id!!, System.currentTimeMillis())

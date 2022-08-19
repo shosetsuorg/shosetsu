@@ -125,7 +125,7 @@ class NovelsRepository(
 			remoteSource.loadNovel(extension, novelEntity.url, loadChapters)
 				.let { info ->
 					info.copy(
-						chapters = info.chapters.distinctBy { it.link }
+						chapters = info.chapters.distinctBy { it.link }.toTypedArray()
 					)
 				}
 		}

@@ -65,7 +65,7 @@ android {
 	}
 
 	composeOptions {
-		kotlinCompilerExtensionVersion = "1.1.0"
+		kotlinCompilerExtensionVersion = "1.3.0"
 	}
 
 	splits {
@@ -122,7 +122,7 @@ android {
 		jvmTarget = "11"
 		freeCompilerArgs = freeCompilerArgs + "-Xjvm-default=enable"
 	}
-	buildToolsVersion = "30.0.3"
+	buildToolsVersion = "31.0.0"
 
 	lint {
 		abortOnError = false
@@ -160,7 +160,7 @@ dependencies {
 	// Androidx
 	implementation("androidx.work:work-runtime:2.7.1")
 	implementation("androidx.work:work-runtime-ktx:2.7.1")
-	implementation("androidx.appcompat:appcompat:1.4.2")
+	implementation("androidx.appcompat:appcompat:1.5.0")
 	implementation("androidx.annotation:annotation:1.4.0")
 	implementation("androidx.core:core-ktx:1.8.0")
 	implementation("androidx.collection:collection-ktx:1.2.0")
@@ -186,14 +186,14 @@ dependencies {
 
 	// Core libraries
 	implementation("org.luaj:luaj-jse:3.0.1")
-	implementation("com.github.shosetsuorg:kotlin-lib:b4d6511d")
+	implementation("com.github.shosetsuorg:kotlin-lib:1.0.0")
 	implementation("org.jsoup:jsoup:1.15.2")
 
 	// Image loading
-	implementation("io.coil-kt:coil-compose:2.1.0")
+	implementation("io.coil-kt:coil-compose:2.2.0")
 
 	// Time control
-	implementation("joda-time:joda-time:2.10.14")
+	implementation("joda-time:joda-time:2.11.0")
 
 	// Cloud flare calculator
 	//implementation("com.zhkrb.cloudflare-scrape-android:scrape-webview:0.0.3")
@@ -208,7 +208,7 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
 	// Error logging
-	val acraVersion = "5.9.5"
+	val acraVersion = "5.9.6"
 	fun acra(module: String, version: String = acraVersion) =
 		"ch.acra:$module:$version"
 
@@ -229,7 +229,7 @@ dependencies {
 	implementation("com.github.shosetsuorg:material-intro:0c2f0b2772")
 
 	// Room
-	val roomVersion = "2.5.0-alpha01"
+	val roomVersion = "2.4.3"
 	fun room(module: String, version: String = roomVersion) =
 		"androidx.room:$module:$version"
 
@@ -243,7 +243,7 @@ dependencies {
 	implementation("com.google.guava:guava:31.1-android")
 
 	// kode-in
-	val kodeinVersion = "7.12.0"
+	val kodeinVersion = "7.14.0"
 	fun kodein(module: String, version: String = kodeinVersion) =
 		"org.kodein.di:$module:$version"
 
@@ -270,7 +270,7 @@ dependencies {
 	}
 
 	// Compose
-	val androidxCompose = "1.1.1"
+	val androidxCompose = "1.2.1"
 	fun androidxCompose(
 		module: String,
 		submodule: String = module,
@@ -279,7 +279,7 @@ dependencies {
 
 	implementation(androidxCompose("ui"))
 
-	implementation(androidxCompose("compiler"))
+	implementation(androidxCompose("compiler", version = "1.3.0"))
 
 	//- Tooling support (Previews, etc.)
 	implementation(androidxCompose("ui-tooling", "ui"))
@@ -294,7 +294,7 @@ dependencies {
 	implementation(androidxCompose("material"))
 
 	// - accompanist
-	val accompanistVersion = "0.24.11-rc"
+	val accompanistVersion = "0.25.1"
 	fun accompanist(module: String, version: String = accompanistVersion) =
 		"com.google.accompanist:$module:$version"
 
@@ -305,12 +305,12 @@ dependencies {
 	implementation(accompanist("accompanist-placeholder-material"))
 	implementation(accompanist("accompanist-pager-indicators"))
 	//- Integration with observables
-	implementation("androidx.compose.runtime:runtime-livedata:1.2.0")
+	implementation("androidx.compose.runtime:runtime-livedata:1.2.1")
 
 	// MDC Adapter
-	implementation("com.google.android.material:compose-theme-adapter:1.1.15")
+	implementation("com.google.android.material:compose-theme-adapter:1.1.16")
 
-	val androidxActivity = "1.4.0"
+	val androidxActivity = "1.5.1"
 	fun androidxActivity(module: String, version: String = androidxActivity) =
 		"androidx.activity:$module:$version"
 	implementation(androidxActivity("activity"))
@@ -320,7 +320,7 @@ dependencies {
 	implementation("com.chargemap.compose:numberpicker:1.0.3")
 
 	// QR Code
-	implementation("io.github.g00fy2.quickie:quickie-bundled:1.5.0")
+	implementation("io.github.g00fy2.quickie:quickie-bundled:1.5.1")
 
 	implementation("com.github.doomsdayrs:qrcode-kotlin:513d290b")
 
@@ -333,7 +333,7 @@ dependencies {
 	implementation(paging("paging-compose", "1.0.0-alpha14"))
 	implementation(kotlin("reflect"))
 
-	val navVersion = "2.5.0"
+	val navVersion = "2.5.1"
 	fun navigation(module: String, version: String = navVersion) =
 		"androidx.navigation:navigation-$module:$version"
 
