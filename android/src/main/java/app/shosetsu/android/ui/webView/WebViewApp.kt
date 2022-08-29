@@ -11,14 +11,15 @@ import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
+import app.shosetsu.android.R
 import app.shosetsu.android.activity.MainActivity
 import app.shosetsu.android.common.consts.BundleKeys.BUNDLE_URL
+import app.shosetsu.android.common.consts.USER_AGENT
 import app.shosetsu.android.common.ext.launchUI
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.ext.logV
 import app.shosetsu.android.common.ext.openInBrowser
 import app.shosetsu.android.common.utils.CookieJarSync
-import app.shosetsu.android.R
 import app.shosetsu.android.databinding.ActivityWebviewBinding
 import app.shosetsu.android.databinding.ActivityWebviewBinding.inflate
 import okhttp3.Cookie
@@ -95,6 +96,7 @@ class WebViewApp : AppCompatActivity(), DIAware {
 			setDisplayHomeAsUpEnabled(true)
 		}
 
+		binding.webview.settings.userAgentString = USER_AGENT
 		binding.webview.settings.javaScriptEnabled = true
 		CookieManager.getInstance().setAcceptThirdPartyCookies(binding.webview, true)
 

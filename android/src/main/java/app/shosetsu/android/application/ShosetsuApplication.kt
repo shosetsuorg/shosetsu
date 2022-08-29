@@ -9,9 +9,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.work.Configuration
+import app.shosetsu.android.BuildConfig
+import app.shosetsu.android.R
 import app.shosetsu.android.common.SettingKey
 import app.shosetsu.android.common.consts.Notifications
 import app.shosetsu.android.common.consts.ShortCuts
+import app.shosetsu.android.common.consts.USER_AGENT
 import app.shosetsu.android.common.ext.fileOut
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
@@ -25,8 +28,6 @@ import app.shosetsu.android.viewmodel.factory.ViewModelFactory
 import app.shosetsu.lib.ShosetsuSharedLib
 import app.shosetsu.lib.lua.ShosetsuLuaLib
 import app.shosetsu.lib.lua.shosetsuGlobals
-import app.shosetsu.android.BuildConfig
-import app.shosetsu.android.R
 import com.google.android.material.color.DynamicColors
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
@@ -204,7 +205,7 @@ class ShosetsuApplication : Application(), LifecycleEventObserver, DIAware,
 		}
 
 		ShosetsuSharedLib.shosetsuHeaders = arrayOf(
-			"User-Agent" to "Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0"
+			"User-Agent" to USER_AGENT
 		)
 	}
 
