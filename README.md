@@ -1,4 +1,5 @@
 #  Shosetsu
+# MOVED TO GITLAB https://gitlab.com/shosetsuorg/shosetsu
 
 The Free & Open Source Android Application for reading (Light) Novels!
 
