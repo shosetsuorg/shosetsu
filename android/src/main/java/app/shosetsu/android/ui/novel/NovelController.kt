@@ -231,11 +231,6 @@ class NovelController : ShosetsuController(),
 		)
 	}
 
-	override fun onPrepareMenu(menu: Menu) {
-		super.onPrepareMenu(menu)
-		menu.findItem(R.id.set_categories).isVisible = runBlocking { viewModel.categories.first().isNotEmpty() }
-	}
-
 	override fun onMenuItemSelected(item: MenuItem): Boolean = when (item.itemId) {
 		R.id.source_migrate -> {
 			migrateOpen()
@@ -380,6 +375,7 @@ class NovelController : ShosetsuController(),
 
 		runBlocking {
 			menu.findItem(R.id.source_migrate).isVisible = viewModel.isBookmarked().first()
+			menu.findItem(R.id.set_categories).isVisible = viewModel.categories.first().isNotEmpty()
 		}
 	}
 
