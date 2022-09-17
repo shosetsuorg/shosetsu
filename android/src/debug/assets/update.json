@@ -1,12 +1,8 @@
 {
-  "latestVersion": "2417",
-  "url": "https://github.com/shosetsuorg/shosetsu-preview/releases/download/r2417/shosetsu-r2417-universal.apk",
+  "latestVersion": "9999",
+  "url": "https://cdn.shosetsu.app/v2.0.0/shosetsu-v2.0.0.apk",
   "releaseNotes": [
-    "New:",
-    "- Add privacy button to about",
-    "- Add disclaimer to about",
-    "",
-    "Fixes:",
-    "- Fix importing external repository novels in backup worker"
+    "v2.0.0 has been released",
+    "Please migrate, contact the developer for migration help"
   ]
 }
