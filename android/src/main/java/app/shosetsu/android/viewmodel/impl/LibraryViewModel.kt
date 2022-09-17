@@ -29,11 +29,7 @@ import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.utils.copy
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
 import app.shosetsu.android.domain.usecases.SetNovelsCategoriesUseCase
-import app.shosetsu.android.domain.usecases.load.LoadLibraryUseCase
-import app.shosetsu.android.domain.usecases.load.LoadNovelUIBadgeToastUseCase
-import app.shosetsu.android.domain.usecases.load.LoadNovelUIColumnsHUseCase
-import app.shosetsu.android.domain.usecases.load.LoadNovelUIColumnsPUseCase
-import app.shosetsu.android.domain.usecases.load.LoadNovelUITypeUseCase
+import app.shosetsu.android.domain.usecases.load.*
 import app.shosetsu.android.domain.usecases.settings.SetNovelUITypeUseCase
 import app.shosetsu.android.domain.usecases.start.StartUpdateWorkerUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateBookmarkedNovelUseCase
@@ -261,7 +257,7 @@ class LibraryViewModel(
 	}
 
 	private fun Flow<LibraryUI>.addDefaultCategory() = mapLatest {
-		if (it.novels.containsKey(0)) {
+		if (it.novels.containsKey(0) || (it.novels.isEmpty() && it.categories.isEmpty())) {
 			it.copy(categories = listOf(CategoryUI.default()) + it.categories)
 		} else {
 			it
