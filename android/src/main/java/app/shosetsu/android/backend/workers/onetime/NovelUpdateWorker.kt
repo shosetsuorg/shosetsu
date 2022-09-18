@@ -30,7 +30,7 @@ import app.shosetsu.android.common.consts.Notifications.ID_CHAPTER_UPDATE
 import app.shosetsu.android.common.consts.WorkerTags.UPDATE_WORK_ID
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.domain.model.local.ChapterEntity
-import app.shosetsu.android.domain.model.local.NovelEntity
+import app.shosetsu.android.domain.model.local.LibraryNovelEntity
 import app.shosetsu.android.domain.repository.base.INovelsRepository
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerAfterUpdateUseCase
@@ -41,6 +41,7 @@ import app.shosetsu.lib.exceptions.HTTPException
 import coil.imageLoader
 import coil.request.ImageRequest
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -118,6 +119,12 @@ class NovelUpdateWorker(
 	private suspend fun onlyUpdateOngoing(): Boolean =
 		iSettingsRepository.getBoolean(OnlyUpdateOngoingNovels)
 
+	private suspend fun includedCategoriesInLibraryUpdate(): List<Int> =
+		iSettingsRepository.getStringSet(IncludeCategoriesInUpdate).map(String::toInt)
+
+	private suspend fun excludedCategoriesInLibraryUpdate(): List<Int> =
+		iSettingsRepository.getStringSet(ExcludedCategoriesInUpdate).map(String::toInt)
+
 	private suspend fun downloadOnUpdate(): Boolean =
 		iSettingsRepository.getBoolean(DownloadNewNovelChapters)
 
@@ -141,17 +148,39 @@ class NovelUpdateWorker(
 		}
 
 		/** Count of novels that have been updated */
-		val updateNovels = arrayListOf<NovelEntity>()
+		val updateNovels = arrayListOf<LibraryNovelEntity>()
 
 		/** Collect updated chapters to be used */
 		val updatedChapters = arrayListOf<ChapterEntity>()
 
-		iNovelsRepository.loadBookmarkedNovelEntities().let { list ->
+		iNovelsRepository.loadLibraryNovelEntities().first().let { list ->
+			val categoryID = inputData.getInt(KEY_CATEGORY, -1)
+			if (categoryID >= 0) {
+				list.filter { it.category == categoryID }
+			} else list
+		}.let { list ->
 			if (onlyUpdateOngoing())
 				list.filter { it.status != Novel.Status.COMPLETED }
 			else list
 		}.let { list ->
-			list.sortedBy { it.title }
+			val includedCategories = includedCategoriesInLibraryUpdate()
+			val includedNovels = if (includedCategories.isNotEmpty()) {
+				list.filter { it.category in includedCategories }
+			} else {
+				list
+			}
+
+			val excludedCategories = excludedCategoriesInLibraryUpdate()
+			val excludedNovels = if (excludedCategories.isNotEmpty()) {
+				list.filter { it.category in excludedCategories }.map { it.id }.toSet()
+			} else {
+				emptySet()
+			}
+
+			includedNovels.filterNot { it.id in excludedNovels }
+		}.let { list ->
+			list.distinctBy { it.id }
+				.sortedBy { it.title }
 		}.let { novels ->
 			var progress = 0
 
@@ -178,12 +207,12 @@ class NovelUpdateWorker(
 				}
 
 				val it = try {
-					loadRemoteNovelUseCase(nE, true)
+					loadRemoteNovelUseCase(nE.id, true)
 				} catch (e: LuaError) {
 					logE("Failed to load novel: $nE", e)
 					notify(
 						"${e.message}",
-						10000 + nE.id!!
+						10000 + nE.id
 					) {
 						setContentTitle(
 							getString(
@@ -202,7 +231,7 @@ class NovelUpdateWorker(
 					logE("Failed to load novel: $nE", e)
 					notify(
 						"${e.message}",
-						10000 + nE.id!!
+						10000 + nE.id
 					) {
 						setContentTitle(
 							getString(
@@ -221,7 +250,7 @@ class NovelUpdateWorker(
 					logE("Failed to load novel: $nE", e)
 					notify(
 						"${e.message}",
-						10000 + nE.id!!
+						10000 + nE.id
 					) {
 						setContentTitle(
 							getString(
@@ -244,7 +273,7 @@ class NovelUpdateWorker(
 					logE("Failed to load novel: $nE", e)
 					notify(
 						"${e.message}",
-						10000 + nE.id!!
+						10000 + nE.id
 					) {
 						setContentTitle(
 							getString(
@@ -260,7 +289,7 @@ class NovelUpdateWorker(
 
 						addReportErrorAction(
 							applicationContext,
-							10000 + nE.id!!,
+							10000 + nE.id,
 							e
 						)
 					}
@@ -307,7 +336,7 @@ class NovelUpdateWorker(
 							chapterSize,
 							chapterSize
 						),
-						10000 + novel.id!!
+						10000 + novel.id
 					) {
 						setContentTitle(
 							getString(
@@ -324,7 +353,7 @@ class NovelUpdateWorker(
 
 						if (firstChapterId != null) {
 							addOpenReader(
-								novel.id ?: return@notify,
+								novel.id,
 								firstChapterId
 							)
 							setAutoCancel(true)
@@ -422,7 +451,7 @@ class NovelUpdateWorker(
 							if (SDK_INT >= VERSION_CODES.M)
 								setRequiresDeviceIdle(updateOnlyIdle())
 						}.build()
-					).build()
+					).setInputData(data).build()
 				)
 				workerManager.getWorkInfosForUniqueWork(UPDATE_WORK_ID).await()[0].let {
 					Log.d(logID(), "State ${it.state}")
@@ -442,6 +471,6 @@ class NovelUpdateWorker(
 		const val KEY_CHAPTERS: String = "Novels"
 
 		const val KEY_NOVELS: Int = 0x00
-		const val KEY_CATEGORY: Int = 0x01
+		const val KEY_CATEGORY: String = "category"
 	}
 }

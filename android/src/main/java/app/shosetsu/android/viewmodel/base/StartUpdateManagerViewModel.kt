@@ -24,5 +24,5 @@ package app.shosetsu.android.viewmodel.base
 interface StartUpdateManagerViewModel {
 
 	/** Starts the update manager, Will not start if it is running */
-	fun startUpdateManager()
+	fun startUpdateManager(categoryID: Int)
 }

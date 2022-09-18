@@ -43,7 +43,7 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 
 	bind<LoadDownloadsUseCase>() with provider { LoadDownloadsUseCase(instance()) }
 
-	bind<LoadLibraryUseCase>() with provider { LoadLibraryUseCase(instance()) }
+	bind<LoadLibraryUseCase>() with provider { LoadLibraryUseCase(instance(), instance()) }
 
 	bind<SearchBookMarkedNovelsUseCase>() with provider { SearchBookMarkedNovelsUseCase(instance()) }
 
@@ -83,7 +83,7 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 		GetRemoteNovelUseCase(instance(), instance(), instance(), instance())
 	}
 	bind<StartDownloadWorkerAfterUpdateUseCase>() with provider {
-		StartDownloadWorkerAfterUpdateUseCase(instance(), instance(), instance())
+		StartDownloadWorkerAfterUpdateUseCase(instance(), instance(), instance(), instance())
 	}
 
 	bind<GetCatalogueListingDataUseCase>() with provider {
@@ -231,6 +231,31 @@ val useCaseModule: DI.Module = DI.Module("useCase") {
 		LoadLibraryFilterSettingsUseCase(instance())
 	}
 
+	bind<GetCategoriesUseCase>() with provider { GetCategoriesUseCase(instance()) }
+
+	bind<AddCategoryUseCase>() with provider {
+		AddCategoryUseCase(instance())
+	}
+
+	bind<DeleteCategoryUseCase>() with provider {
+		DeleteCategoryUseCase(instance())
+	}
+
+	bind<MoveCategoryUseCase>() with provider {
+		MoveCategoryUseCase(instance(), instance())
+	}
+
+	bind<GetNovelCategoriesUseCase>() with provider {
+		GetNovelCategoriesUseCase(instance())
+	}
+
+	bind<SetNovelCategoriesUseCase>() with provider {
+		SetNovelCategoriesUseCase(instance())
+	}
+
+	bind<SetNovelsCategoriesUseCase>() with provider {
+		SetNovelsCategoriesUseCase(instance())
+	}
 
 	bind<UpdateLibraryFilterSettingsUseCase>() with provider {
 		UpdateLibraryFilterSettingsUseCase(instance())

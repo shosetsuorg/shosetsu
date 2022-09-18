@@ -2,6 +2,7 @@ package app.shosetsu.android.viewmodel.abstracted
 
 import androidx.paging.PagingData
 import app.shosetsu.android.common.enums.NovelCardType
+import app.shosetsu.android.view.uimodels.model.CategoryUI
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.base.ShosetsuViewModel
 import app.shosetsu.lib.Filter
@@ -65,6 +66,8 @@ abstract class ACatalogViewModel :
 	abstract val columnsInH: Flow<Int>
 	abstract val columnsInV: Flow<Int>
 
+	abstract val categories: Flow<List<CategoryUI>>
+
 	/**
 	 * Sets the [IExtension]
 	 *
@@ -88,7 +91,7 @@ abstract class ACatalogViewModel :
 	 * Bookmarks and loads the specific novel in the background
 	 * @param novelID ID of novel to load
 	 */
-	abstract fun backgroundNovelAdd(novelID: Int): Flow<BackgroundNovelAddProgress>
+	abstract fun backgroundNovelAdd(novelID: Int, categories: IntArray): Flow<BackgroundNovelAddProgress>
 
 	enum class BackgroundNovelAddProgress { ADDING, ADDED }
 

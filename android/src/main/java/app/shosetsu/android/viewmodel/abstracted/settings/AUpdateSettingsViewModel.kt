@@ -1,6 +1,8 @@
 package app.shosetsu.android.viewmodel.abstracted.settings
 
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import app.shosetsu.android.view.uimodels.model.CategoryUI
+import kotlinx.coroutines.flow.Flow
 
 /*
  * This file is part of shosetsu.
@@ -24,4 +26,7 @@ import app.shosetsu.android.domain.repository.base.ISettingsRepository
  * 31 / 08 / 2020
  */
 abstract class AUpdateSettingsViewModel(iSettingsRepository: ISettingsRepository) :
-	ASubSettingsViewModel(iSettingsRepository)
+	ASubSettingsViewModel(iSettingsRepository) {
+
+	abstract val categories: Flow<List<CategoryUI>>
+}

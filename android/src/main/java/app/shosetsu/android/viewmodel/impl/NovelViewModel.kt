@@ -13,6 +13,7 @@ import app.shosetsu.android.common.utils.share.toURL
 import app.shosetsu.android.domain.repository.base.IChaptersRepository
 import app.shosetsu.android.domain.usecases.DownloadChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
+import app.shosetsu.android.domain.usecases.SetNovelCategoriesUseCase
 import app.shosetsu.android.domain.usecases.StartDownloadWorkerAfterUpdateUseCase
 import app.shosetsu.android.domain.usecases.delete.DeleteChapterPassageUseCase
 import app.shosetsu.android.domain.usecases.delete.TrueDeleteChapterUseCase
@@ -24,6 +25,7 @@ import app.shosetsu.android.domain.usecases.update.UpdateNovelSettingUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateNovelUseCase
 import app.shosetsu.android.view.AndroidQRCodeDrawable
 import app.shosetsu.android.view.uimodels.NovelSettingUI
+import app.shosetsu.android.view.uimodels.model.CategoryUI
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
@@ -36,6 +38,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.plus
+import kotlin.collections.set
 
 /*
  * This file is part of shosetsu.
@@ -81,7 +84,10 @@ class NovelViewModel(
 	private val getTrueDelete: GetTrueDeleteChapterUseCase,
 	private val trueDeleteChapter: TrueDeleteChapterUseCase,
 	private val getInstalledExtensionUseCase: GetInstalledExtensionUseCase,
-	private val getRepositoryUseCase: GetRepositoryUseCase
+	private val getRepositoryUseCase: GetRepositoryUseCase,
+	private val getCategoriesUseCase: GetCategoriesUseCase,
+	private val getNovelCategoriesUseCase: GetNovelCategoriesUseCase,
+	private val setNovelCategoriesUseCase: SetNovelCategoriesUseCase
 ) : ANovelViewModel() {
 
 	override val chaptersException: MutableStateFlow<Throwable?> = MutableStateFlow(null)
@@ -145,6 +151,16 @@ class NovelViewModel(
 
 	override val novelSettingFlow: Flow<NovelSettingUI?> by lazy {
 		novelSettingsFlow.onIO()
+	}
+
+	override val categories: Flow<List<CategoryUI>> by lazy {
+		getCategoriesUseCase()
+	}
+
+	override val novelCategories: Flow<List<Int>> by lazy {
+		novelIDLive.transformLatest { id: Int ->
+			emitAll(getNovelCategoriesUseCase(id))
+		}
 	}
 
 	override fun getIfAllowTrueDelete(): Flow<Boolean> =
@@ -440,6 +456,15 @@ class NovelViewModel(
 			}
 		}
 		novelIDLive.value = novelID
+	}
+
+	override fun setNovelCategories(categories: IntArray): Flow<Unit> = flow {
+		val novel = novelFlow.first { it != null }!!
+		if (!novel.bookmarked) {
+			toggleNovelBookmark().collect()
+		}
+		setNovelCategoriesUseCase(novel.id, categories)
+		emit(Unit)
 	}
 
 	override fun toggleNovelBookmark(): Flow<ToggleBookmarkResponse> {

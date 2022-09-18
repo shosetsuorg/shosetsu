@@ -18,6 +18,7 @@ package app.shosetsu.android.viewmodel.impl
  */
 
 import androidx.compose.ui.state.ToggleableState
+import androidx.lifecycle.viewModelScope
 import app.shosetsu.android.common.enums.InclusionState
 import app.shosetsu.android.common.enums.InclusionState.EXCLUDE
 import app.shosetsu.android.common.enums.InclusionState.INCLUDE
@@ -27,19 +28,19 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logE
 import app.shosetsu.android.common.utils.copy
 import app.shosetsu.android.domain.usecases.IsOnlineUseCase
-import app.shosetsu.android.domain.usecases.load.LoadLibraryUseCase
-import app.shosetsu.android.domain.usecases.load.LoadNovelUIBadgeToastUseCase
-import app.shosetsu.android.domain.usecases.load.LoadNovelUIColumnsHUseCase
-import app.shosetsu.android.domain.usecases.load.LoadNovelUIColumnsPUseCase
-import app.shosetsu.android.domain.usecases.load.LoadNovelUITypeUseCase
+import app.shosetsu.android.domain.usecases.SetNovelsCategoriesUseCase
+import app.shosetsu.android.domain.usecases.load.*
 import app.shosetsu.android.domain.usecases.settings.SetNovelUITypeUseCase
 import app.shosetsu.android.domain.usecases.start.StartUpdateWorkerUseCase
 import app.shosetsu.android.domain.usecases.update.UpdateBookmarkedNovelUseCase
+import app.shosetsu.android.view.uimodels.model.CategoryUI
 import app.shosetsu.android.view.uimodels.model.LibraryNovelUI
+import app.shosetsu.android.view.uimodels.model.LibraryUI
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.plus
 import java.util.Locale.getDefault as LGD
 
 /**
@@ -58,12 +59,13 @@ class LibraryViewModel(
 	private val loadNovelUIColumnsH: LoadNovelUIColumnsHUseCase,
 	private val loadNovelUIColumnsP: LoadNovelUIColumnsPUseCase,
 	private val loadNovelUIBadgeToast: LoadNovelUIBadgeToastUseCase,
-	private val setNovelUITypeUseCase: SetNovelUITypeUseCase
+	private val setNovelUITypeUseCase: SetNovelUITypeUseCase,
+	private val setNovelsCategoriesUseCase: SetNovelsCategoriesUseCase
 ) : ALibraryViewModel() {
 
-	private val selectedNovels = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
-	private suspend fun copySelected(): HashMap<Int, Boolean> =
-		selectedNovels.first().copy()
+	private val selectedNovels = MutableStateFlow<Map<Int, Map<Int, Boolean>>>(emptyMap())
+	private fun copySelected(): HashMap<Int, Map<Int, Boolean>> =
+		selectedNovels.value.copy()
 
 	private fun clearSelected() {
 		selectedNovels.value = emptyMap()
@@ -71,12 +73,15 @@ class LibraryViewModel(
 
 	override fun selectAll() {
 		launchIO {
-			val list = liveData.first()
+			val category = activeCategory.value
+			val list = liveData.first().novels[category].orEmpty()
 			val selection = copySelected()
 
+			val selectionCategory = selection[category].orEmpty().copy()
 			list.forEach {
-				selection[it.id] = true
+				selectionCategory[it.id] = true
 			}
+			selection[category] = selectionCategory
 
 			selectedNovels.value = selection
 		}
@@ -84,11 +89,12 @@ class LibraryViewModel(
 
 	override fun selectBetween() {
 		launchIO {
+			val category = activeCategory.value
 			val list = liveData.first()
 			val selection = copySelected()
 
-			val firstSelected = list.indexOfFirst { it.isSelected }
-			val lastSelected = list.indexOfLast { it.isSelected }
+			val firstSelected = list.novels[category]?.indexOfFirst { it.isSelected } ?: -1
+			val lastSelected = list.novels[category]?.indexOfLast { it.isSelected } ?: -1
 
 			if (listOf(firstSelected, lastSelected).any { it == -1 }) {
 				logE("Received -1 index")
@@ -105,9 +111,11 @@ class LibraryViewModel(
 				return@launchIO
 			}
 
-			list.subList(firstSelected + 1, lastSelected).forEach {
-				selection[it.id] = true
+			val selectionCategory = selection[category].orEmpty().copy()
+			list.novels[category].orEmpty().subList(firstSelected + 1, lastSelected).forEach { item ->
+				selectionCategory[item.id] = true
 			}
+			selection[category] = selectionCategory
 
 			selectedNovels.value = selection
 		}
@@ -117,7 +125,9 @@ class LibraryViewModel(
 		launchIO {
 			val selection = copySelected()
 
-			selection[item.id] = !item.isSelected
+			selection[item.category] = selection[item.category].orEmpty().copy().apply {
+				set(item.id, !item.isSelected)
+			}
 
 			selectedNovels.value = selection
 		}
@@ -125,28 +135,31 @@ class LibraryViewModel(
 
 	override fun invertSelection() {
 		launchIO {
+			val category = activeCategory.value
 			val list = liveData.first()
 			val selection = copySelected()
 
-			list.forEach {
-				selection[it.id] = !it.isSelected
+			val selectionCategory = selection[category].orEmpty().copy()
+			list.novels.get(category).orEmpty().forEach { item ->
+				selectionCategory[item.id] = !item.isSelected
 			}
+			selection[category] = selectionCategory
 
 			selectedNovels.value = selection
 		}
 	}
 
-	private val librarySourceFlow: Flow<List<LibraryNovelUI>> by lazy { libraryAsCardsUseCase() }
+	private val librarySourceFlow: Flow<LibraryUI> by lazy { libraryAsCardsUseCase() }
 
 	override val isEmptyFlow: Flow<Boolean> by lazy {
 		librarySourceFlow.map {
-			it.isEmpty()
+			it.novels.isEmpty()
 		}
 	}
 
 	override val hasSelectionFlow: Flow<Boolean> by lazy {
 		selectedNovels.mapLatest { map ->
-			val b = map.values.any { it }
+			val b = map.values.any { it.any { it.value } }
 			hasSelection = b
 			b
 		}
@@ -213,8 +226,9 @@ class LibraryViewModel(
 	 *
 	 * This also connects all the filtering as well
 	 */
-	override val liveData: Flow<List<LibraryNovelUI>> by lazy {
+	override val liveData: Flow<LibraryUI> by lazy {
 		librarySourceFlow
+			.addDefaultCategory()
 			.combineSelection()
 			.combineArtistFilter()
 			.combineAuthorFilter()
@@ -223,7 +237,11 @@ class LibraryViewModel(
 			.combineUnreadStatus()
 			.combineSortType()
 			.combineSortReverse()
-			.combineFilter().onIO()
+			.combineFilter()
+			// Replay the latest library for library re-load
+			.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Lazily, replay = 1)
+			.distinctUntilChanged()
+			.onIO()
 	}
 
 	override val columnsInH by lazy {
@@ -238,6 +256,14 @@ class LibraryViewModel(
 		loadNovelUIBadgeToast().onIO()
 	}
 
+	private fun Flow<LibraryUI>.addDefaultCategory() = mapLatest {
+		if (it.novels.containsKey(0) || (it.novels.isEmpty() && it.categories.isEmpty())) {
+			it.copy(categories = listOf(CategoryUI.default()) + it.categories)
+		} else {
+			it
+		}
+	}
+
 	/**
 	 * Removes the list for filtering from the [LibraryNovelUI] with the flow
 	 */
@@ -245,7 +271,7 @@ class LibraryViewModel(
 		strip: (LibraryNovelUI) -> List<String>
 	): Flow<List<String>> = librarySourceFlow.mapLatest { result ->
 		ArrayList<String>().apply {
-			result.let { list ->
+			result.novels.flatMap { it.value }.distinctBy { it.id }.let { list ->
 				list.forEach { ui ->
 					strip(ui).forEach { key ->
 						if (!contains(key.replaceFirstChar { if (it.isLowerCase()) it.titlecase(LGD()) else it.toString() }) && key.isNotBlank()) {
@@ -261,7 +287,7 @@ class LibraryViewModel(
 	 * @param flow What [Flow] to merge in updates from
 	 * @param against Return a [List] of [String] to compare against
 	 */
-	private fun Flow<List<LibraryNovelUI>>.applyFilterList(
+	private fun Flow<LibraryUI>.applyFilterList(
 		flow: Flow<Map<String, InclusionState>>,
 		against: (LibraryNovelUI) -> List<String>
 	) = combine(flow) { list, filters ->
@@ -270,25 +296,33 @@ class LibraryViewModel(
 			filters.forEach { (s, inclusionState) ->
 				result = when (inclusionState) {
 					INCLUDE ->
-						result.filter { novelUI ->
-							against(novelUI).any { g ->
-								g.replaceFirstChar {
-									if (it.isLowerCase()) it.titlecase(
-										LGD()
-									) else it.toString()
-								} == s
+						result.copy(
+							novels = result.novels.mapValues {
+								it.value.filter { novelUI ->
+									against(novelUI).any { g ->
+										g.replaceFirstChar {
+											if (it.isLowerCase()) it.titlecase(
+												LGD()
+											) else it.toString()
+										} == s
+									}
+								}
 							}
-						}
+						)
 					EXCLUDE ->
-						result.filterNot { novelUI ->
-							against(novelUI).any { g ->
-								g.replaceFirstChar {
-									if (it.isLowerCase()) it.titlecase(
-										LGD()
-									) else it.toString()
-								} == s
+						result.copy(
+							novels = result.novels.mapValues {
+								it.value.filterNot { novelUI ->
+									against(novelUI).any { g ->
+										g.replaceFirstChar {
+											if (it.isLowerCase()) it.titlecase(
+												LGD()
+											) else it.toString()
+										} == s
+									}
+								}
 							}
-						}
+						)
 				}
 			}
 			result
@@ -297,63 +331,79 @@ class LibraryViewModel(
 		}
 	}
 
-	private fun Flow<List<LibraryNovelUI>>.combineGenreFilter() =
+	private fun Flow<LibraryUI>.combineGenreFilter() =
 		applyFilterList(genreFilterFlow) { it.genres }
 
-	private fun Flow<List<LibraryNovelUI>>.combineTagsFilter() =
+	private fun Flow<LibraryUI>.combineTagsFilter() =
 		applyFilterList(tagFilterFlow) { it.tags }
 
-	private fun Flow<List<LibraryNovelUI>>.combineAuthorFilter() =
+	private fun Flow<LibraryUI>.combineAuthorFilter() =
 		applyFilterList(authorFilterFlow) { it.authors }
 
-	private fun Flow<List<LibraryNovelUI>>.combineArtistFilter() =
+	private fun Flow<LibraryUI>.combineArtistFilter() =
 		applyFilterList(artistFilterFlow) { it.artists }
 
 
-	private fun Flow<List<LibraryNovelUI>>.combineSortReverse() =
+	private fun Flow<LibraryUI>.combineSortReverse() =
 		combine(areNovelsReversedFlow) { novelResult, reversed ->
-			novelResult.let { list ->
+			novelResult.let { library ->
 				if (reversed)
-					list.reversed()
-				else list
+					library.copy(
+						novels = library.novels.mapValues { it.value.reversed() }
+					)
+				else library
 			}
 		}
 
-	private fun Flow<List<LibraryNovelUI>>.combineFilter() =
-		combine(queryFlow) { list, query ->
-			list.filter {
-				it.title.contains(query, ignoreCase = true)
-			}
-		}
-
-	private fun Flow<List<LibraryNovelUI>>.combineSelection() =
-		combine(selectedNovels) { list, query ->
-			list.map {
-				it.copy(
-					isSelected = query.getOrElse(it.id) { false }
-				)
-			}
-		}
-
-
-	private fun Flow<List<LibraryNovelUI>>.combineSortType() =
-		combine(novelSortTypeFlow) { novelResult, sortType ->
-			novelResult.let { list ->
-				when (sortType) {
-					NovelSortType.BY_TITLE -> list.sortedBy { it.title }
-					NovelSortType.BY_UNREAD_COUNT -> list.sortedBy { it.unread }
-					NovelSortType.BY_ID -> list.sortedBy { it.id }
+	private fun Flow<LibraryUI>.combineFilter() =
+		combine(queryFlow) { library, query ->
+			library.copy(
+				novels = library.novels.mapValues {
+					it.value.filter { it.title.contains(query, ignoreCase = true) }
 				}
-			}
+			)
 		}
 
-	private fun Flow<List<LibraryNovelUI>>.combineUnreadStatus() =
+	private fun Flow<LibraryUI>.combineSelection() =
+		combine(selectedNovels) { library, query ->
+			library.copy(
+				novels = library.novels.mapValues { (category, novels) ->
+					novels.map {
+						it.copy(
+							isSelected = query[category]?.get(it.id) ?: false
+						)
+					}
+				}
+			)
+		}
+
+
+	private fun Flow<LibraryUI>.combineSortType() =
+		combine(novelSortTypeFlow) { library, sortType ->
+			library.copy(
+				novels = when (sortType) {
+					NovelSortType.BY_TITLE -> library.novels.mapValues { it.value.sortedBy { it.title } }
+					NovelSortType.BY_UNREAD_COUNT -> library.novels.mapValues { it.value.sortedBy { it.unread } }
+					NovelSortType.BY_ID -> library.novels.mapValues { it.value.sortedBy { it.id } }
+				}
+			)
+		}
+
+	private fun Flow<LibraryUI>.combineUnreadStatus() =
 		combine(unreadStatusFlow) { novelResult, sortType ->
 			novelResult.let { list ->
 				sortType?.let {
 					when (sortType) {
-						INCLUDE -> list.filter { it.unread > 0 }
-						EXCLUDE -> list.filterNot { it.unread > 0 }
+						INCLUDE -> list.copy(
+							novels = list.novels.mapValues {
+								it.value.filter { it.unread > 0 }
+							}
+						)
+						EXCLUDE -> list.copy(
+							novels = list.novels.mapValues {
+								it.value.filterNot { it.unread > 0 }
+							}
+						)
 					}
 				} ?: list
 			}
@@ -361,13 +411,17 @@ class LibraryViewModel(
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
 
-	override fun startUpdateManager() {
-		startUpdateWorkerUseCase(true)
+	override fun startUpdateManager(categoryID: Int) {
+		startUpdateWorkerUseCase(categoryID, true)
 	}
 
 	override fun removeSelectedFromLibrary() {
 		launchIO {
-			val selected = liveData.first().filter { it.isSelected }
+			val selected = liveData.first().novels
+				.flatMap { it.value }
+				.distinctBy { it.id }
+				.filter { it.isSelected }
+
 			clearSelected()
 			updateBookmarkedNovelUseCase(selected.map {
 				it.copy(bookmarked = false)
@@ -376,7 +430,12 @@ class LibraryViewModel(
 	}
 
 	override fun getSelectedIds(): Flow<IntArray> = flow {
-		val ints = selectedNovels.first().keys.toIntArray()
+		val ints = selectedNovels.first()
+			.flatMap { (_, map) ->
+				map.entries.filter { it.value }
+					.map { it.key }
+			}
+			.toIntArray()
 		if (ints.isEmpty()) return@flow
 		clearSelected()
 		emit(ints)
@@ -471,6 +530,13 @@ class LibraryViewModel(
 		launchIO { setNovelUITypeUseCase(cardType) }
 	}
 
+	override fun setCategories(categories: IntArray) {
+		launchIO {
+			val selected = getSelectedIds().first()
+			setNovelsCategoriesUseCase(selected, categories)
+		}
+	}
+
 	override fun cycleUnreadFilter(currentState: ToggleableState) {
 		unreadStatusFlow.value = currentState.toInclusionState().cycle()
 	}
@@ -500,5 +566,13 @@ class LibraryViewModel(
 
 	override fun setQuery(s: String) {
 		queryFlow.value = s
+	}
+
+	override val activeCategory: MutableStateFlow<Int> by lazy {
+		MutableStateFlow(0)
+	}
+
+	override fun setActiveCategory(category: Int) {
+		activeCategory.value = category
 	}
 }

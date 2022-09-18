@@ -14,6 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -37,6 +40,7 @@ import app.shosetsu.android.common.enums.NovelCardType
 import app.shosetsu.android.common.enums.NovelCardType.*
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.catalogue.listeners.CatalogueSearchQuery
+import app.shosetsu.android.ui.novel.CategoriesDialog
 import app.shosetsu.android.view.ComposeBottomSheetDialog
 import app.shosetsu.android.view.compose.*
 import app.shosetsu.android.view.controller.ShosetsuController
@@ -105,6 +109,9 @@ class CatalogController : ShosetsuController(), ExtendedFABController, MenuProvi
 					val exception by viewModel.exceptionFlow.collectAsState(null)
 					val hasFilters by viewModel.hasFilters.collectAsState(false)
 
+					val categories by viewModel.categories.collectAsState(emptyList())
+					var categoriesDialogItem by remember { mutableStateOf<ACatalogNovelUI?>(null) }
+
 					if (exception != null)
 						LaunchedEffect(Unit) {
 							launchUI {
@@ -162,11 +169,28 @@ class CatalogController : ShosetsuController(), ExtendedFABController, MenuProvi
 							}
 						},
 						onLongClick = {
-							itemLongClicked(it)
+							if (categories.isNotEmpty() && !it.bookmarked) {
+								categoriesDialogItem = it
+							} else {
+								itemLongClicked(it)
+							}
 						},
 						hasFilters = hasFilters,
 						fab
 					)
+					if (categoriesDialogItem != null) {
+						CategoriesDialog(
+							onDismissRequest = { categoriesDialogItem = null },
+							categories = categories,
+							setCategories = {
+								itemLongClicked(
+									item = categoriesDialogItem ?: return@CategoriesDialog,
+									categories = it
+								)
+							},
+							novelCategories = emptyList()
+						)
+					}
 				}
 			}
 		}
@@ -175,7 +199,7 @@ class CatalogController : ShosetsuController(), ExtendedFABController, MenuProvi
 	/**
 	 * A [ACatalogNovelUI] was long clicked, invoking a background add
 	 */
-	private fun itemLongClicked(item: ACatalogNovelUI): Boolean {
+	private fun itemLongClicked(item: ACatalogNovelUI, categories: IntArray = intArrayOf()): Boolean {
 		logI("Adding novel to library in background: $item")
 
 		if (item.bookmarked) {
@@ -183,7 +207,7 @@ class CatalogController : ShosetsuController(), ExtendedFABController, MenuProvi
 			return false
 		}
 
-		viewModel.backgroundNovelAdd(item.id).observe(
+		viewModel.backgroundNovelAdd(item.id, categories).observe(
 			catch = {
 				makeSnackBar(
 					getString(

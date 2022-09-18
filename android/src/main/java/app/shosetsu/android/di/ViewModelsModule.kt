@@ -59,6 +59,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			startUpdateWorkerUseCase = instance(),
 			loadNovelUITypeUseCase = instance(),
 			setNovelUITypeUseCase = instance(),
+			setNovelsCategoriesUseCase = instance(),
 			loadNovelUIColumnsH = instance(),
 			loadNovelUIColumnsP = instance(),
 			loadNovelUIBadgeToast = instance()
@@ -125,6 +126,18 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			loadNovelUITypeUseCase = instance(),
 			loadNovelUIColumnsHUseCase = instance(),
 			loadNovelUIColumnsPUseCase = instance(),
+			setNovelUIType = instance(),
+			getCategoriesUseCase = instance(),
+			setNovelCategoriesUseCase = instance()
+		)
+	}
+
+	// Catalog(s)
+	bind<ACategoriesViewModel>() with provider {
+		CategoriesViewModel(
+			instance(),
+			instance(),
+			instance(),
 			instance()
 		)
 	}
@@ -175,7 +188,10 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 			trueDeleteChapter = instance(),
 			getInstalledExtensionUseCase = instance(),
 			getRepositoryUseCase = instance(),
-			chapterRepo = instance()
+			chapterRepo = instance(),
+			getCategoriesUseCase = instance(),
+			getNovelCategoriesUseCase = instance(),
+			setNovelCategoriesUseCase = instance()
 		)
 	}
 
@@ -249,6 +265,7 @@ val viewModelsModule: DI.Module = DI.Module("view_models_module") {
 	bind<AUpdateSettingsViewModel>() with provider {
 		UpdateSettingsViewModel(
 			iSettingsRepository = instance(),
+			instance(),
 			instance(),
 			instance(),
 			instance()

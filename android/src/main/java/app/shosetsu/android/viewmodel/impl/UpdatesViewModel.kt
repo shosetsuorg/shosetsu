@@ -59,7 +59,7 @@ class UpdatesViewModel(
 		}.shareIn(viewModelScope + Dispatchers.IO, SharingStarted.Lazily, 1)
 	}
 
-	override fun startUpdateManager() = startUpdateWorkerUseCase()
+	override fun startUpdateManager(categoryID: Int) = startUpdateWorkerUseCase(categoryID)
 
 	override fun isOnline(): Boolean = isOnlineUseCase()
 

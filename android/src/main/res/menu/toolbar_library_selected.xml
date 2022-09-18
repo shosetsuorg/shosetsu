@@ -13,6 +13,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/set_categories"
+        android:title="@string/set_categories"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/library_deselect_all"
         android:title="@string/deselect_all"
         app:showAsAction="never" />

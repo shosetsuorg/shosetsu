@@ -55,21 +55,33 @@ interface NovelsDao : BaseDao<DBNovelEntity> {
 
 	@Throws(SQLiteException::class)
 	@Query(
-		"""SELECT 
-						novels.id, 
-						novels.title, 
-						novels.imageURL, 
-						novels.bookmarked,  
-						( 
-							SELECT 
-									count(*) 
-							FROM chapters WHERE novelID = novels.id AND readingStatus != 2 
-						) as unread,
-						novels.genres,
-						novels.authors,
-						novels.artists,
-						novels.tags
-					FROM novels WHERE novels.bookmarked = 1"""
+		"""
+		SELECT M.*, COALESCE(MC.categoryID, 0) AS category
+		FROM (
+			SELECT novels.id,
+				novels.title,
+				novels.imageURL,
+				novels.bookmarked,
+				(
+					SELECT count(*)
+					FROM chapters
+					WHERE novelID = novels.id
+					AND readingStatus != 2
+				) as unread,
+				novels.genres,
+				novels.authors,
+				novels.artists,
+				novels.tags,
+				novels.status
+			  FROM novels
+			  WHERE novels.bookmarked = 1
+		) AS M
+		LEFT JOIN (
+			SELECT *
+			FROM novel_categories
+		) AS MC
+		ON M.id = MC.novelID
+		"""
 	)
 	fun loadBookmarkedNovelsFlow(): Flow<List<LibraryNovelEntity>>
 

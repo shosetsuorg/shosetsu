@@ -386,6 +386,20 @@
     <string name="controller_repositories_snackbar_repo_removed">Repository removed.</string>
     <string name="controller_repositories_action_add">Add</string>
 
+    <string name="categories">Categories</string>
+    <string name="set_categories">Set categories</string>
+    <string name="categories_add_name_hint">Category name</string>
+    <string name="categories_add_title">Add Category</string>
+    <string name="toast_categories_added">Category Added</string>
+    <string name="toast_categories_add_fail">Failed to add category</string>
+    <string name="toast_categories_remove_fail">Failed to remove category!</string>
+    <string name="toast_categories_move_fail">Failed to move category</string>
+    <string name="controller_categories_snackbar_repo_removed">Category removed.</string>
+    <string name="controller_categories_action_add">Add</string>
+    <string name="alert_dialog_title_warn_categories_removal">Category Removal Warning</string>
+    <string name="alert_dialog_message_warn_categories_removal">Are you sure about removing this category?</string>
+    <string name="controller_categories_snackbar_fail_undo_repo_removal">Failed to undo repository removal</string>
+
 
     <string name="text_alignment_start">Start</string>
     <string name="text_alignment_center">Center</string>
@@ -474,6 +488,7 @@
     <string name="settings_download_notify_extension_install_title">Notify extension downloading</string>
     <string name="settings_download_notify_extension_install_desc">Create a notification displaying progress when an extension is being downloaded/installed.</string>
     <string name="restore_notification_content_settings_restore">Restore novel settings</string>
+    <string name="restore_notification_content_categories_restore">Restore novel categories</string>
     <string name="controller_novel_snackbar_refresh_empty_result">Error: Received empty result while reloading</string>
     <string name="controller_novel_snackbar_cannot_inital_load_offline">Cannot load novel content while offline</string>
     <string name="controller_novel_snackbar_finished_reading">You have read all the chapters.</string>
@@ -533,6 +548,11 @@
     <string name="settings_update_novel_show_progress_desc">If toggled on, You will have no idea what novels are being updated</string>
     <string name="settings_update_novel_classic_notification_title">Classic notification completion</string>
     <string name="settings_update_novel_classic_notification_desc">Instead of showing you which how many chapters are in each novel, simply says \"Completed Update\"</string>
+    <string name="settings_update_novel_categories_update">Categories to update</string>
+    <string name="settings_update_novel_categories_download">Categories to download</string>
+    <string name="settings_update_novel_categories_open">Open</string>
+    <string name="settings_update_novel_include_categories">Include: %s</string>
+    <string name="settings_update_novel_exclude_categories">Exclude: %s</string>
     <string name="settings_update_repo_on_metered_title">Allow updating on metered connection</string>
     <string name="settings_update_repo_on_low_bat_title">Update on low battery</string>
     <string name="settings_update_repo_on_low_sto_title">Update on low storage</string>

@@ -176,6 +176,12 @@ sealed class SettingKey<T : Any>(val name: String, val default: T) {
 	object OnlyUpdateOngoingNovels : BooleanKey("onlyUpdateOngoing", false)
 	object UpdateNovelsOnStartup : BooleanKey("updateOnStartup", true)
 
+	object IncludeCategoriesInUpdate : StringSetKey("includedCategoriesInUpdate", emptySet())
+	object ExcludedCategoriesInUpdate : StringSetKey("excludedCategoriesInUpdate", emptySet())
+
+	object IncludeCategoriesToDownload : StringSetKey("includedCategoriesToDownload", emptySet())
+	object ExcludedCategoriesToDownload : StringSetKey("excludedCategoriesToDownload", emptySet())
+
 	object NovelUpdateCycle : IntKey("updateCycle", 12)
 	object NovelUpdateOnLowStorage : BooleanKey("updateLowStorage", true)
 	object NovelUpdateOnLowBattery : BooleanKey("updateLowBattery", true)

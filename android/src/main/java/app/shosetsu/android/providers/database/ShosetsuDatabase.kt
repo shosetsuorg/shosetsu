@@ -38,18 +38,20 @@ import kotlinx.coroutines.launch
 @Fts4
 @Database(
 	entities = [
+		DBCategoryEntity::class,
 		DBChapterEntity::class,
 		DBDownloadEntity::class,
 		DBInstalledExtensionEntity::class,
 		DBRepositoryExtensionEntity::class,
 		DBExtLibEntity::class,
+		DBNovelCategoryEntity::class,
 		DBNovelReaderSettingEntity::class,
 		DBNovelEntity::class,
 		DBNovelSettingsEntity::class,
 		DBRepositoryEntity::class,
 		DBUpdate::class,
 	],
-	version = 6
+	version = 7
 )
 @TypeConverters(
 	ChapterSortTypeConverter::class,
@@ -65,11 +67,13 @@ import kotlinx.coroutines.launch
 @GenerateRoomMigrations
 abstract class ShosetsuDatabase : RoomDatabase() {
 
+	abstract val categoriesDao: CategoriesDao
 	abstract val chaptersDao: ChaptersDao
 	abstract val downloadsDao: DownloadsDao
 	abstract val extensionLibraryDao: ExtensionLibraryDao
 	abstract val installedExtensionsDao: InstalledExtensionsDao
 	abstract val repositoryExtensionDao: RepositoryExtensionsDao
+	abstract val novelCategoriesDao: NovelCategoriesDao
 	abstract val novelReaderSettingsDao: NovelReaderSettingsDao
 	abstract val novelsDao: NovelsDao
 	abstract val novelSettingsDao: NovelSettingsDao
@@ -93,6 +97,7 @@ abstract class ShosetsuDatabase : RoomDatabase() {
 					Migration3To4,
 					Migration4To5,
 					Migration5To6,
+					Migration6To7
 				).build()
 
 			GlobalScope.launch {

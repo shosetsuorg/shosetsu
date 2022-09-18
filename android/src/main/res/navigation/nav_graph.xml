@@ -228,6 +228,9 @@
         <action
             android:id="@+id/action_moreController_to_novelController"
             app:destination="@id/novelController" />
+        <action
+            android:id="@+id/action_moreController_to_categoriesController"
+            app:destination="@id/categoriesController" />
     </fragment>
     <fragment
         android:id="@+id/settingsController"
@@ -271,4 +274,8 @@
             android:id="@+id/action_viewSettings_to_settingsController"
             app:destination="@id/settingsController" />
     </fragment>
+    <fragment
+        android:id="@+id/categoriesController"
+        android:name="app.shosetsu.android.ui.categories.CategoriesController"
+        android:label="NovelController"/>
 </navigation>

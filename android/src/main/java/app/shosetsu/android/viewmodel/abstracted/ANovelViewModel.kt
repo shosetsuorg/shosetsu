@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.ImageBitmap
 import app.shosetsu.android.common.enums.ReadingStatus
 import app.shosetsu.android.view.uimodels.NovelSettingUI
+import app.shosetsu.android.view.uimodels.model.CategoryUI
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.base.IsOnlineCheckViewModel
@@ -56,8 +57,16 @@ abstract class ANovelViewModel
 
 	abstract val novelSettingFlow: Flow<NovelSettingUI?>
 
+	abstract val categories: Flow<List<CategoryUI>>
+	abstract val novelCategories: Flow<List<Int>>
+
 	/** Set's the value to be loaded */
 	abstract fun setNovelID(novelID: Int)
+
+	/**
+	 * Set the categories of the novel
+	 */
+	abstract fun setNovelCategories(categories: IntArray): Flow<Unit>
 
 	/**
 	 * Toggles the bookmark of this ui

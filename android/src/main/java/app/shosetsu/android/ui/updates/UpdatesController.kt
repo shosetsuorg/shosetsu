@@ -112,7 +112,7 @@ class ComposeUpdatesController : ShosetsuController(), HomeFragment {
 
 	fun onRefresh() {
 		if (viewModel.isOnline())
-			viewModel.startUpdateManager()
+			viewModel.startUpdateManager(-1)
 		else displayOfflineSnackBar(R.string.generic_error_cannot_update_library_offline)
 	}
 }

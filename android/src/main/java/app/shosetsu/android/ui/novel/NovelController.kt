@@ -49,6 +49,7 @@ import app.shosetsu.android.ui.migration.MigrationController.Companion.TARGETS_B
 import app.shosetsu.android.view.compose.ImageLoadingError
 import app.shosetsu.android.view.compose.LazyColumnScrollbar
 import app.shosetsu.android.view.compose.ShosetsuCompose
+import app.shosetsu.android.view.compose.TextButton
 import app.shosetsu.android.view.compose.coverRatio
 import app.shosetsu.android.view.controller.ShosetsuController
 import app.shosetsu.android.view.controller.base.ExtendedFABController
@@ -56,6 +57,7 @@ import app.shosetsu.android.view.controller.base.ExtendedFABController.EFabMaint
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.view.openQRCodeShareDialog
 import app.shosetsu.android.view.openShareMenu
+import app.shosetsu.android.view.uimodels.model.CategoryUI
 import app.shosetsu.android.view.uimodels.model.ChapterUI
 import app.shosetsu.android.view.uimodels.model.NovelUI
 import app.shosetsu.android.viewmodel.abstracted.ANovelViewModel
@@ -270,6 +272,10 @@ class NovelController : ShosetsuController(),
 			viewModel.downloadAllChapters()
 			true
 		}
+		R.id.set_categories -> {
+			categoriesDialogOpen = true
+			true
+		}
 		else -> false
 	}
 
@@ -369,10 +375,16 @@ class NovelController : ShosetsuController(),
 
 		runBlocking {
 			menu.findItem(R.id.source_migrate).isVisible = viewModel.isBookmarked().first()
+			menu.findItem(R.id.set_categories).isVisible = viewModel.categories.first().isNotEmpty()
 		}
 	}
 
 	private var state = LazyListState(0)
+	private var categoriesDialogOpen by mutableStateOf(false)
+
+	private fun setCategories(categories: IntArray) {
+		viewModel.setNovelCategories(categories).firstLa(this, catch = {}) {}
+	}
 
 	private fun toggleBookmark() {
 		viewModel.toggleNovelBookmark().firstLa(this@NovelController, catch = {}) {
@@ -414,6 +426,8 @@ class NovelController : ShosetsuController(),
 				val isRefreshing by viewModel.isRefreshing.collectAsState(false)
 				val hasSelected by viewModel.hasSelected.collectAsState(false)
 				val itemAt by viewModel.itemIndex.collectAsState(0)
+				val categories by viewModel.categories.collectAsState(emptyList())
+				val novelCategories by viewModel.novelCategories.collectAsState(emptyList())
 
 				activity?.invalidateOptionsMenu()
 				// If the data is not present, loads it
@@ -439,6 +453,8 @@ class NovelController : ShosetsuController(),
 							else displayOfflineSnackBar()
 						},
 						openWebView = ::openWebView,
+						categories = categories,
+						setCategoriesDialogOpen = { categoriesDialogOpen = true },
 						toggleBookmark = ::toggleBookmark,
 						openFilter = ::openFilterMenu,
 						openChapterJump = ::openChapterJumpDialog,
@@ -468,6 +484,14 @@ class NovelController : ShosetsuController(),
 						hasSelected = hasSelected,
 						state = state
 					)
+
+					if (categoriesDialogOpen)
+						CategoriesDialog(
+							onDismissRequest = { categoriesDialogOpen = false },
+							categories = categories,
+							novelCategories = novelCategories,
+							setCategories = ::setCategories
+						)
 				}
 			}
 		}
@@ -718,6 +742,8 @@ fun PreviewNovelInfoContent() {
 			isRefreshing = false,
 			onRefresh = {},
 			openWebView = {},
+			emptyList(),
+			{},
 			toggleBookmark = {},
 			openFilter = {},
 			openChapterJump = {},
@@ -750,6 +776,8 @@ fun NovelInfoContent(
 	isRefreshing: Boolean,
 	onRefresh: () -> Unit,
 	openWebView: () -> Unit,
+	categories: List<CategoryUI>,
+	setCategoriesDialogOpen: (Boolean) -> Unit,
 	toggleBookmark: () -> Unit,
 	openFilter: () -> Unit,
 	openChapterJump: () -> Unit,
@@ -785,6 +813,8 @@ fun NovelInfoContent(
 								NovelInfoHeaderContent(
 									novelInfo = novelInfo,
 									openWebview = openWebView,
+									categories = categories,
+									setCategoriesDialogOpen = setCategoriesDialogOpen,
 									toggleBookmark = toggleBookmark,
 									openChapterJump = openChapterJump,
 									openFilter = openFilter,
@@ -1039,6 +1069,8 @@ fun PreviewHeaderContent() {
 			info,
 			chapterCount = 0,
 			{},
+			emptyList(),
+			{},
 			{},
 			{},
 			{}
@@ -1077,9 +1109,11 @@ fun NovelInfoHeaderContent(
 	novelInfo: NovelUI,
 	chapterCount: Int,
 	openWebview: () -> Unit,
+	categories: List<CategoryUI>,
 	toggleBookmark: () -> Unit,
 	openFilter: () -> Unit,
-	openChapterJump: () -> Unit
+	openChapterJump: () -> Unit,
+	setCategoriesDialogOpen: (Boolean) -> Unit,
 ) {
 	var isCoverClicked: Boolean by remember { mutableStateOf(false) }
 	if (isCoverClicked)
@@ -1211,7 +1245,16 @@ fun NovelInfoHeaderContent(
 					verticalAlignment = Alignment.CenterVertically
 				) {
 					TextButton(
-						onClick = toggleBookmark,
+						onClick = {
+							if (novelInfo.bookmarked || categories.isEmpty()) {
+								toggleBookmark()
+							} else {
+								setCategoriesDialogOpen(true)
+							}
+						},
+						onLongClick = {
+							setCategoriesDialogOpen(true)
+						},
 						modifier = Modifier
 							.padding(vertical = 8.dp, horizontal = 4.dp)
 							.weight(1F)
@@ -1402,4 +1445,63 @@ fun ExpandedText(
 			Icon(painterResource(drawable.expand_more), contentDescription = stringResource(string.more))
 		else Icon(painterResource(drawable.expand_less), contentDescription = stringResource(string.less))
 	}
+}
+
+@Composable
+fun CategoriesDialog(
+	onDismissRequest: () -> Unit,
+	categories: List<CategoryUI>,
+	novelCategories: List<Int>,
+	setCategories: (IntArray) -> Unit
+) {
+	val selectedCategories = remember(novelCategories) {
+		novelCategories.toMutableStateList()
+	}
+	AlertDialog(
+		onDismissRequest = onDismissRequest,
+		confirmButton = {
+			TextButton(
+				onClick = {
+					setCategories(selectedCategories.toIntArray())
+					onDismissRequest()
+				}
+			) {
+				Text(stringResource(android.R.string.ok))
+			}
+		},
+		dismissButton = {
+			TextButton(onClick = onDismissRequest) {
+				Text(stringResource(android.R.string.cancel))
+			}
+		},
+		title = {
+			Text(stringResource(string.set_categories))
+		},
+		text = {
+			Column(Modifier.verticalScroll(rememberScrollState())) {
+				categories.filterNot { it.id == 0 }.forEach {
+					Row(
+						Modifier
+							.fillMaxWidth()
+							.height(56.dp)
+							.clickable {
+								if (it.id in selectedCategories) {
+									selectedCategories -= it.id
+								} else {
+									selectedCategories += it.id
+								}
+							},
+						verticalAlignment = Alignment.CenterVertically
+					) {
+						Checkbox(
+							checked = it.id in selectedCategories,
+							onCheckedChange = null,
+							modifier = Modifier.padding(horizontal = 8.dp)
+						)
+						Text(it.name)
+					}
+				}
+			}
+		}
+	)
 }

@@ -25,6 +25,7 @@ import app.shosetsu.android.common.utils.backupJSON
 import app.shosetsu.android.domain.model.local.*
 import app.shosetsu.android.domain.model.local.backup.*
 import app.shosetsu.android.domain.repository.base.*
+import app.shosetsu.android.domain.usecases.AddCategoryUseCase
 import app.shosetsu.android.domain.usecases.InstallExtensionUseCase
 import app.shosetsu.android.domain.usecases.StartRepositoryUpdateManagerUseCase
 import app.shosetsu.lib.IExtension
@@ -82,6 +83,9 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 	private val novelsSettingsRepo by instance<INovelSettingsRepository>()
 	private val chaptersRepo by instance<IChaptersRepository>()
 	private val backupUriRepo by instance<IBackupUriRepository>()
+	private val categoriesRepo by instance<ICategoryRepository>()
+	private val novelCategoriesRepo by instance<INovelCategoryRepository>()
+	private val addCategoryUseCase by instance<AddCategoryUseCase>()
 	override val baseNotificationBuilder: NotificationCompat.Builder
 		get() = notificationBuilder(applicationContext, Notifications.CHANNEL_BACKUP)
 			.setSubText(getString(R.string.restore_notification_subtitle))
@@ -186,6 +190,17 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		unGZip(decodedBytes).use { stream ->
 			val backup = backupJSON.decodeFromStream<FleshedBackupEntity>(stream)
 
+			notify("Adding categories")
+			val currentCategories = categoriesRepo.getCategories()
+			val categoryOrderToCategoryIds = backup.categories.sortedBy { it.order }.associate { backupCategory ->
+				val currentCategory = currentCategories.find { backupCategory.name == it.name }
+				backupCategory.order to if (currentCategory != null) {
+					currentCategory.id!!
+				} else {
+					addCategoryUseCase(backupCategory.name)
+				}
+			}
+
 			notify("Adding repositories")
 			// Adds the repositories
 			backup.repos.forEach { (url, name) ->
@@ -212,7 +227,7 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 			val repoNovels: List<NovelEntity> = novelsRepo.loadNovels()
 			val extensions = extensionsRepo.loadRepositoryExtensions()
 
-			backup.extensions.forEach { restoreExtension(extensions, repoNovels, it) }
+			backup.extensions.forEach { restoreExtension(extensions, repoNovels, it, categoryOrderToCategoryIds) }
 		}
 
 
@@ -230,7 +245,8 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 	private suspend fun restoreExtension(
 		extensions: List<GenericExtensionEntity>,
 		repoNovels: List<NovelEntity>,
-		backupExtensionEntity: BackupExtensionEntity
+		backupExtensionEntity: BackupExtensionEntity,
+		categoryOrderToCategoryIds: Map<Int, Int>
 	) {
 		val extensionID = backupExtensionEntity.id
 		val backupNovels = backupExtensionEntity.novels
@@ -253,7 +269,8 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 						iExt,
 						extensionID,
 						novelEntity,
-						repoNovels
+						repoNovels,
+						categoryOrderToCategoryIds
 					)
 				} catch (e: Exception) {
 					e.printStackTrace()
@@ -266,7 +283,8 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 		iExt: IExtension,
 		extensionID: Int,
 		backupNovelEntity: BackupNovelEntity,
-		repoNovels: List<NovelEntity>
+		repoNovels: List<NovelEntity>,
+		categoryOrderToCategoryIds: Map<Int, Int>
 	) {
 		logV("$extensionID, ${backupNovelEntity.url}")
 		// Use a single memory location for the bitmap
@@ -486,6 +504,42 @@ class RestoreBackupWorker(appContext: Context, params: WorkerParameters) : Corou
 			)
 		}
 
+		notify(R.string.restore_notification_content_categories_restore) {
+			setContentTitle(name)
+		}
+		val novelCategories = try {
+		    novelCategoriesRepo.getNovelCategoriesFromNovel(targetNovelID)
+		} catch (e: Exception) {// TODO specify
+			logE("Failed to load novel categories")
+			ACRA.errorReporter.handleSilentException(e)
+			return
+		}
+
+		if (novelCategories.isEmpty()) {
+			logI("Inserting novel categories")
+			novelCategoriesRepo.setNovelCategories(
+				backupNovelEntity.categories.map {
+					NovelCategoryEntity(
+						targetNovelID,
+						categoryOrderToCategoryIds[it]!!
+					)
+				}
+			)
+		} else {
+			val existingNovelCategories = novelCategories.map { it.categoryID }
+			novelCategoriesRepo.setNovelCategories(
+				backupNovelEntity.categories.mapNotNull {
+					val category = categoryOrderToCategoryIds[it]
+					if (category == null || it in existingNovelCategories)
+						return@mapNotNull null
+
+					NovelCategoryEntity(
+						targetNovelID,
+						categoryOrderToCategoryIds[it]!!
+					)
+				}
+			)
+		}
 
 		loadImageJob.join() // Finish the image loading job
 

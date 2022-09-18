@@ -72,6 +72,8 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 	private val chaptersRepository by instance<IChaptersRepository>()
 	private val extensionRepoRepository by instance<IExtensionRepoRepository>()
 	private val backupRepository by instance<IBackupRepository>()
+	private val categoriesRepository by instance<ICategoryRepository>()
+	private val novelCategoriesRepository by instance<INovelCategoryRepository>()
 
 	override val notificationManager: NotificationManagerCompat by notificationManager()
 
@@ -123,6 +125,15 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 		return emptyList()
 	}
 
+	private suspend fun getBackupCategories(): Map<Int, BackupCategoryEntity> {
+		return categoriesRepository.getCategories().associate {
+			it.id!! to BackupCategoryEntity(
+				it.name,
+				it.order
+			)
+		}
+	}
+
 
 	@Throws(IOException::class)
 	override suspend fun doWork(): Result {
@@ -135,6 +146,7 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 
 		lateinit var novelsToChapters: List<Pair<NovelEntity, List<BackupChapterEntity>>>
 		lateinit var extensions: List<InstalledExtensionEntity>
+		lateinit var categories: Map<Int, BackupCategoryEntity>
 
 		/*
 		Run to isolate the variable 'novels' so it can be trashed, hopefully saving memory
@@ -169,6 +181,16 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 					null
 				}
 			}.distinct()
+
+			// Categories each novel requires
+			categories = try {
+				getBackupCategories()
+			} catch (e: SQLiteException) {
+				ACRA.errorReporter.handleSilentException(e)
+				e.printStackTrace()
+				emptyMap()
+			}
+
 
 			true
 		}
@@ -217,16 +239,21 @@ class BackupWorker(appContext: Context, params: WorkerParameters) : CoroutineWor
 											)
 										} ?: BackupNovelSettingEntity()
 
+										val novelCategories = novelCategoriesRepository.getNovelCategoriesFromNovel(novel.id!!)
+											.map { categories[it.categoryID]!!.order }
+
 										BackupNovelEntity(
 											novel.url,
 											novel.title,
 											novel.imageURL,
 											chapters,
-											settings = bSettings
+											settings = bSettings,
+											categories = novelCategories
 										)
 									}
 								)
-							}
+							},
+							categories = categories.values.toList()
 						)
 
 						logI("Encoding to json")

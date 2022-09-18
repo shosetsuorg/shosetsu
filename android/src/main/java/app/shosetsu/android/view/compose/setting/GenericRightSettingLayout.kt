@@ -40,6 +40,7 @@ fun GenericRightSettingLayout(
 	Row(
 		modifier = modifier then Modifier
 			.defaultMinSize(minHeight = 56.dp)
+			.fillMaxWidth()
 			.let {
 				if (onClick != null)
 					it.clickable(onClick = onClick, enabled = enabled)

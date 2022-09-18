@@ -1,5 +1,7 @@
 package app.shosetsu.android.domain.model.local
 
+import app.shosetsu.lib.Novel
+
 /*
  * This file is part of shosetsu.
  *
@@ -39,4 +41,6 @@ data class LibraryNovelEntity(
 	val authors: List<String>,
 	val artists: List<String>,
 	val tags: List<String>,
+	val status: Novel.Status,
+	val category: Int,
 )

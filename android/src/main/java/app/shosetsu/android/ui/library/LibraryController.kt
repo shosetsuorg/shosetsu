@@ -13,12 +13,21 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ScrollableTabRow
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +49,7 @@ import app.shosetsu.android.common.enums.NovelCardType.*
 import app.shosetsu.android.common.ext.*
 import app.shosetsu.android.ui.library.listener.LibrarySearchQuery
 import app.shosetsu.android.ui.migration.MigrationController
+import app.shosetsu.android.ui.novel.CategoriesDialog
 import app.shosetsu.android.view.ComposeBottomSheetDialog
 import app.shosetsu.android.view.compose.*
 import app.shosetsu.android.view.controller.ShosetsuController
@@ -48,11 +58,17 @@ import app.shosetsu.android.view.controller.base.ExtendedFABController.EFabMaint
 import app.shosetsu.android.view.controller.base.HomeFragment
 import app.shosetsu.android.view.controller.base.syncFABWithCompose
 import app.shosetsu.android.view.uimodels.model.LibraryNovelUI
+import app.shosetsu.android.view.uimodels.model.LibraryUI
 import app.shosetsu.android.viewmodel.abstracted.ALibraryViewModel
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.pagerTabIndicatorOffset
+import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 /*
@@ -89,6 +105,7 @@ class LibraryController
 
 	/***/
 	val viewModel: ALibraryViewModel by viewModel()
+	var categoriesDialogOpen by mutableStateOf(false)
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -100,7 +117,7 @@ class LibraryController
 		return ComposeView(requireContext()).apply {
 			setContent {
 				ShosetsuCompose {
-					val items by viewModel.liveData.collectAsState(emptyList())
+					val items by viewModel.liveData.collectAsState(null)
 					val isEmpty by viewModel.isEmptyFlow.collectAsState(false)
 					val hasSelected by viewModel.hasSelectionFlow.collectAsState(false)
 					val type by viewModel.novelCardTypeFlow.collectAsState(NORMAL)
@@ -116,12 +133,13 @@ class LibraryController
 					LibraryContent(
 						items,
 						isEmpty = isEmpty,
+						setActiveCategory = viewModel::setActiveCategory,
 						type,
 						columnsInV,
 						columnsInH,
 						hasSelected = hasSelected,
 						onRefresh = {
-							onRefresh()
+							onRefresh(it)
 						},
 						onOpen = { (id) ->
 							try {
@@ -137,9 +155,7 @@ class LibraryController
 								// ignore dup
 							}
 						},
-						toggleSelection = { item ->
-							viewModel.toggleSelection(item)
-						},
+						toggleSelection = viewModel::toggleSelection,
 						toastNovel = if (badgeToast) {
 							{ item ->
 								try {
@@ -156,6 +172,14 @@ class LibraryController
 						} else null,
 						fab
 					)
+					if (categoriesDialogOpen) {
+						CategoriesDialog(
+							onDismissRequest = { categoriesDialogOpen = false },
+							categories = items?.categories.orEmpty(),
+							novelCategories = emptyList(),
+							setCategories = viewModel::setCategories
+						)
+					}
 				}
 			}
 		}
@@ -237,7 +261,7 @@ class LibraryController
 		when (item.itemId) {
 			R.id.updater_now -> {
 				if (viewModel.isOnline())
-					viewModel.startUpdateManager()
+					viewModel.startUpdateManager(-1)
 				else displayOfflineSnackBar()
 				true
 			}
@@ -272,6 +296,10 @@ class LibraryController
 					)
 				}
 
+				true
+			}
+			R.id.set_categories -> {
+				categoriesDialogOpen = true
 				true
 			}
 			R.id.view_type_normal -> {
@@ -326,18 +354,131 @@ class LibraryController
 		fab.setIconResource(R.drawable.filter)
 	}
 
-	fun onRefresh() {
+	fun onRefresh(categoryID: Int) {
 		if (viewModel.isOnline())
-			viewModel.startUpdateManager()
+			viewModel.startUpdateManager(categoryID)
 		else displayOfflineSnackBar(R.string.generic_error_cannot_update_library_offline)
 	}
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LibraryContent(
-	items: List<LibraryNovelUI>,
+	items: LibraryUI?,
 	isEmpty: Boolean,
+	setActiveCategory: (Int) -> Unit,
+	cardType: NovelCardType,
+	columnsInV: Int,
+	columnsInH: Int,
+	hasSelected: Boolean,
+	onRefresh: (Int) -> Unit,
+	onOpen: (LibraryNovelUI) -> Unit,
+	toggleSelection: (LibraryNovelUI) -> Unit,
+	toastNovel: ((LibraryNovelUI) -> Unit)?,
+	fab: EFabMaintainer?
+) {
+	if (!isEmpty) {
+		if (items == null) {
+			LinearProgressIndicator(Modifier.fillMaxWidth())
+		} else {
+			LibraryPager(
+				library = items,
+				setActiveCategory = setActiveCategory,
+				cardType = cardType,
+				columnsInV = columnsInV,
+				columnsInH = columnsInH,
+				hasSelected = hasSelected,
+				onRefresh = onRefresh,
+				onOpen = onOpen,
+				toggleSelection = toggleSelection,
+				toastNovel = toastNovel,
+				fab = fab
+			)
+		}
+	} else {
+		ErrorContent(
+			stringResource(R.string.empty_library_message)
+		)
+	}
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun LibraryPager(
+	library: LibraryUI,
+	setActiveCategory: (Int) -> Unit,
+	cardType: NovelCardType,
+	columnsInV: Int,
+	columnsInH: Int,
+	hasSelected: Boolean,
+	onRefresh: (Int) -> Unit,
+	onOpen: (LibraryNovelUI) -> Unit,
+	toggleSelection: (LibraryNovelUI) -> Unit,
+	toastNovel: ((LibraryNovelUI) -> Unit)?,
+	fab: EFabMaintainer?
+) {
+	val scope = rememberCoroutineScope()
+	val state = rememberPagerState()
+	LaunchedEffect(state.currentPage) {
+		setActiveCategory(library.categories[state.currentPage].id)
+	}
+
+	Column(Modifier.fillMaxWidth()) {
+		if (!(library.categories.size == 1 && library.categories.first().id == 0)) {
+			ScrollableTabRow(
+				selectedTabIndex = state.currentPage,
+				indicator = { tabPositions ->
+					TabRowDefaults.Indicator(
+						Modifier.pagerTabIndicatorOffset(state, tabPositions)
+					)
+				},
+				backgroundColor = MaterialTheme.colors.primary.copy(alpha = 0.1F),
+				edgePadding = 0.dp,
+			) {
+				library.categories.forEachIndexed { index, category ->
+					Tab(
+						text = { Text(category.name) },
+						selected = state.currentPage == index,
+						onClick = {
+							scope.launch {
+								state.animateScrollToPage(index)
+							}
+						},
+					)
+				}
+			}
+		}
+		HorizontalPager(
+			count = library.categories.size,
+			state = state,
+			modifier = Modifier.fillMaxSize()
+		) {
+			val id by derivedStateOf {
+				library.categories[it].id
+			}
+			val items by produceState(emptyList(), library, it, id) {
+				value = onIO {
+					library.novels[id].orEmpty()
+				}
+			}
+			LibraryCategory(
+				items = items,
+				cardType = cardType,
+				columnsInV = columnsInV,
+				columnsInH = columnsInH,
+				hasSelected = hasSelected,
+				onRefresh = { onRefresh(id) },
+				onOpen = onOpen,
+				toggleSelection = toggleSelection,
+				toastNovel = toastNovel,
+				fab = fab
+			)
+		}
+	}
+}
+
+@Composable
+fun LibraryCategory(
+	items: List<LibraryNovelUI>,
 	cardType: NovelCardType,
 	columnsInV: Int,
 	columnsInH: Int,
@@ -348,132 +489,126 @@ fun LibraryContent(
 	toastNovel: ((LibraryNovelUI) -> Unit)?,
 	fab: EFabMaintainer?
 ) {
-	if (!isEmpty) {
-		SwipeRefresh(
-			state = SwipeRefreshState(false),
-			onRefresh = onRefresh
+	SwipeRefresh(
+		state = SwipeRefreshState(false),
+		onRefresh = onRefresh,
+		modifier = Modifier.fillMaxSize()
+	) {
+		val w = LocalConfiguration.current.screenWidthDp
+		val o = LocalConfiguration.current.orientation
+
+		val size =
+			(w / when (o) {
+				Configuration.ORIENTATION_LANDSCAPE -> columnsInH
+				else -> columnsInV
+			}).dp - 16.dp
+
+
+		val state = rememberLazyGridState()
+		if (fab != null)
+			syncFABWithCompose(state, fab)
+
+		LazyVerticalGrid(
+			columns = GridCells.Adaptive(if (cardType != COMPRESSED) size else 400.dp),
+			contentPadding = PaddingValues(
+				bottom = 300.dp,
+				start = 8.dp,
+				end = 8.dp,
+				top = 4.dp
+			),
+			state = state,
+			horizontalArrangement = Arrangement.spacedBy(4.dp),
+			verticalArrangement = Arrangement.spacedBy(4.dp)
 		) {
-			val w = LocalConfiguration.current.screenWidthDp
-			val o = LocalConfiguration.current.orientation
+			fun onClick(item: LibraryNovelUI) {
+				if (hasSelected)
+					toggleSelection(item)
+				else onOpen(item)
+			}
 
-			val size =
-				(w / when (o) {
-					Configuration.ORIENTATION_LANDSCAPE -> columnsInH
-					else -> columnsInV
-				}).dp - 16.dp
-
-
-			val state = rememberLazyGridState()
-			if (fab != null)
-				syncFABWithCompose(state, fab)
-
-			LazyVerticalGrid(
-				columns = GridCells.Adaptive(if (cardType != COMPRESSED) size else 400.dp),
-				contentPadding = PaddingValues(
-					bottom = 300.dp,
-					start = 8.dp,
-					end = 8.dp,
-					top = 4.dp
-				),
-				state = state,
-				horizontalArrangement = Arrangement.spacedBy(4.dp),
-				verticalArrangement = Arrangement.spacedBy(4.dp)
-			) {
-				fun onClick(item: LibraryNovelUI) {
-					if (hasSelected)
-						toggleSelection(item)
-					else onOpen(item)
-				}
-
-				fun onLongClick(item: LibraryNovelUI) {
-					if (!hasSelected)
-						toggleSelection(item)
-				}
-				items(
-					items,
-					key = { it.hashCode() }
-				) { item ->
-					val onClickBadge = if (toastNovel != null) {
-						{ toastNovel(item) }
-					} else null
-					when (cardType) {
-						NORMAL -> {
-							NovelCardNormalContent(
-								item.title,
-								item.imageURL,
-								onClick = {
-									onClick(item)
-								},
-								onLongClick = {
-									onLongClick(item)
-								},
-								overlay = {
-									if (item.unread > 0)
-										Badge(
-											Modifier
-												.align(Alignment.TopStart)
-												.padding(top = 4.dp, start = 4.dp),
-											text = item.unread.toString(),
-											onClick = onClickBadge
-										)
-								},
-								isSelected = item.isSelected
-							)
-						}
-						COMPRESSED -> {
-							NovelCardCompressedContent(
-								item.title,
-								item.imageURL,
-								onClick = {
-									onClick(item)
-								},
-								onLongClick = {
-									onLongClick(item)
-								},
-								overlay = {
-									if (item.unread > 0)
-										Badge(
-											Modifier.padding(8.dp),
-											text = item.unread.toString(),
-											onClick = onClickBadge
-										)
-								},
-								isSelected = item.isSelected
-							)
-						}
-						COZY -> {
-							NovelCardCozyContent(
-								item.title,
-								item.imageURL,
-								onClick = {
-									onClick(item)
-								},
-								onLongClick = {
-									onLongClick(item)
-								},
-								overlay = {
-									if (item.unread > 0)
-										Badge(
-											Modifier
-												.align(Alignment.TopStart)
-												.padding(top = 4.dp, start = 4.dp),
-											text = item.unread.toString(),
-											onClick = onClickBadge
-										)
-								},
-								isSelected = item.isSelected
-							)
-						}
+			fun onLongClick(item: LibraryNovelUI) {
+				if (!hasSelected)
+					toggleSelection(item)
+			}
+			items(
+				items,
+				key = { it.hashCode() }
+			) { item ->
+				val onClickBadge = if (toastNovel != null) {
+					{ toastNovel(item) }
+				} else null
+				when (cardType) {
+					NORMAL -> {
+						NovelCardNormalContent(
+							item.title,
+							item.imageURL,
+							onClick = {
+								onClick(item)
+							},
+							onLongClick = {
+								onLongClick(item)
+							},
+							overlay = {
+								if (item.unread > 0)
+									Badge(
+										Modifier
+											.align(Alignment.TopStart)
+											.padding(top = 4.dp, start = 4.dp),
+										text = item.unread.toString(),
+										onClick = onClickBadge
+									)
+							},
+							isSelected = item.isSelected
+						)
+					}
+					COMPRESSED -> {
+						NovelCardCompressedContent(
+							item.title,
+							item.imageURL,
+							onClick = {
+								onClick(item)
+							},
+							onLongClick = {
+								onLongClick(item)
+							},
+							overlay = {
+								if (item.unread > 0)
+									Badge(
+										Modifier.padding(8.dp),
+										text = item.unread.toString(),
+										onClick = onClickBadge
+									)
+							},
+							isSelected = item.isSelected
+						)
+					}
+					COZY -> {
+						NovelCardCozyContent(
+							item.title,
+							item.imageURL,
+							onClick = {
+								onClick(item)
+							},
+							onLongClick = {
+								onLongClick(item)
+							},
+							overlay = {
+								if (item.unread > 0)
+									Badge(
+										Modifier
+											.align(Alignment.TopStart)
+											.padding(top = 4.dp, start = 4.dp),
+										text = item.unread.toString(),
+										onClick = onClickBadge
+									)
+							},
+							isSelected = item.isSelected
+						)
 					}
 				}
 			}
 		}
-	} else {
-		ErrorContent(
-			stringResource(R.string.empty_library_message)
-		)
 	}
-
 }
 
 @Composable

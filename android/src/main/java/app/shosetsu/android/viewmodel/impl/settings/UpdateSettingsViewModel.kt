@@ -8,8 +8,12 @@ import app.shosetsu.android.common.SettingKey.*
 import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.domain.repository.base.ISettingsRepository
+import app.shosetsu.android.domain.usecases.get.GetCategoriesUseCase
+import app.shosetsu.android.view.uimodels.model.CategoryUI
 import app.shosetsu.android.viewmodel.abstracted.settings.AUpdateSettingsViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.mapLatest
 
 /*
  * This file is part of shosetsu.
@@ -37,6 +41,7 @@ class UpdateSettingsViewModel(
 	private val novelUpdateCycleManager: NovelUpdateCycleWorker.Manager,
 	private val novelUpdateManager: NovelUpdateWorker.Manager,
 	private val repoUpdateManager: RepositoryUpdateWorker.Manager,
+	private val getCategoriesUseCase: GetCategoriesUseCase,
 ) : AUpdateSettingsViewModel(iSettingsRepository) {
 	private fun restartNovelUpdater() {
 		launchIO {
@@ -55,6 +60,12 @@ class UpdateSettingsViewModel(
 
 		repoUpdateManager.stop()
 		repoUpdateManager.start()
+	}
+
+	override val categories: Flow<List<CategoryUI>> by lazy {
+		getCategoriesUseCase().mapLatest {
+			listOf(CategoryUI.default()) + it
+		}
 	}
 
 	init {

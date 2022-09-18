@@ -10,13 +10,16 @@ import app.shosetsu.android.common.ext.launchIO
 import app.shosetsu.android.common.ext.logI
 import app.shosetsu.android.common.utils.copy
 import app.shosetsu.android.domain.usecases.NovelBackgroundAddUseCase
+import app.shosetsu.android.domain.usecases.SetNovelCategoriesUseCase
 import app.shosetsu.android.domain.usecases.get.GetCatalogueListingDataUseCase
 import app.shosetsu.android.domain.usecases.get.GetCatalogueQueryDataUseCase
+import app.shosetsu.android.domain.usecases.get.GetCategoriesUseCase
 import app.shosetsu.android.domain.usecases.get.GetExtensionUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUIColumnsHUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUIColumnsPUseCase
 import app.shosetsu.android.domain.usecases.load.LoadNovelUITypeUseCase
 import app.shosetsu.android.domain.usecases.settings.SetNovelUITypeUseCase
+import app.shosetsu.android.view.uimodels.model.CategoryUI
 import app.shosetsu.android.view.uimodels.model.catlog.ACatalogNovelUI
 import app.shosetsu.android.viewmodel.abstracted.ACatalogViewModel
 import app.shosetsu.lib.Filter
@@ -57,6 +60,8 @@ class CatalogViewModel(
 	private val loadNovelUIColumnsHUseCase: LoadNovelUIColumnsHUseCase,
 	private val loadNovelUIColumnsPUseCase: LoadNovelUIColumnsPUseCase,
 	private val setNovelUIType: SetNovelUITypeUseCase,
+	private val getCategoriesUseCase: GetCategoriesUseCase,
+	private val setNovelCategoriesUseCase: SetNovelCategoriesUseCase
 ) : ACatalogViewModel() {
 	private val queryFlow: MutableStateFlow<String?> by lazy { MutableStateFlow(null) }
 
@@ -223,10 +228,12 @@ class CatalogViewModel(
 		filterItemsFlow.first().forEach { filter -> resetFilter(filter) }
 	}
 
-	override fun backgroundNovelAdd(novelID: Int): Flow<BackgroundNovelAddProgress> =
+	override fun backgroundNovelAdd(novelID: Int, categories: IntArray): Flow<BackgroundNovelAddProgress> =
 		flow {
 			emit(BackgroundNovelAddProgress.ADDING)
 			backgroundAddUseCase(novelID)
+			if (categories.isNotEmpty())
+				setNovelCategoriesUseCase(novelID, categories)
 			emit(BackgroundNovelAddProgress.ADDED)
 		}.onIO()
 
@@ -314,6 +321,10 @@ class CatalogViewModel(
 
 	override val columnsInV: Flow<Int> by lazy {
 		loadNovelUIColumnsPUseCase().onIO()
+	}
+
+	override val categories: Flow<List<CategoryUI>> by lazy {
+		getCategoriesUseCase()
 	}
 
 	override fun destroy() {
