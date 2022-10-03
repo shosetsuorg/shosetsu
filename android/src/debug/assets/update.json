@@ -1,8 +1,9 @@
 {
   "latestVersion": "9999",
-  "url": "https://cdn.shosetsu.app/v2.0.0/shosetsu-v2.0.0.apk",
+  "url": "https://cdn.shosetsu.app/v2.1.5/shosetsu-v2.1.5.apk",
   "releaseNotes": [
     "v2.0.0 has been released",
-    "Please migrate, contact the developer for migration help"
+    "Please migrate, contact the developer for migration help",
+    "This will install a separate application, simply export your backup from the darker icon shosetsu and import into the lighter icon shosetsu."
   ]
 }
